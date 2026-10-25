@@ -14,6 +14,8 @@ export function createDatumTransformExecutor(
     signal?: AbortSignal;
     threshold?: number;
     typedNormals?: boolean;
+    /** Final streams are private until publication, then read-only to consumers. */
+    sharedOutput?: boolean;
   } = {},
 ) {
   const workers: Worker[] = [];
@@ -142,7 +144,16 @@ export function createDatumTransformExecutor(
       input.length / 3 >= (options.threshold ?? 1_048_576);
     if (usePool) start();
     const lanes = usePool && workers.length ? workers.length : 1;
-    const output = new Float32Array(input.length),
+    const output =
+        options.sharedOutput === true &&
+        globalThis.crossOriginIsolated === true &&
+        typeof SharedArrayBuffer !== "undefined"
+          ? new Float32Array(
+              new SharedArrayBuffer(
+                input.length * Float32Array.BYTES_PER_ELEMENT,
+              ),
+            )
+          : new Float32Array(input.length),
       min = [Infinity, Infinity, Infinity],
       max = [-Infinity, -Infinity, -Infinity];
     for (

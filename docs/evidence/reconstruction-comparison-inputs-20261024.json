@@ -1,0 +1,110 @@
+{
+  "status": "full-aligned-comparison-inputs-exported-and-data-roundtrip-verified",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeImportRoundTripVerified": false,
+  "nativeOutputCompared": false,
+  "nativeAcceptance": false,
+  "comparisonPackName": "native-reconstruction-comparison-20261024-r1",
+  "inputManifest": {
+    "status": "full-aligned-indexed-comparison-inputs-prepared",
+    "projectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "units": "mm",
+    "requestedReconstructionSpacingMm": 0.5,
+    "files": [
+      {
+        "file": "scan-1.posed.ply",
+        "vertices": 139338,
+        "triangles": 273139,
+        "positionsSha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b",
+        "indicesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+        "fileSha256": "d43ea51367880cc315e215b7e8a3e833cfeacb32e143cc7d0cb4e8bd4619a59a",
+        "bytes": 5223110,
+        "allCoordinatesAndIndicesRoundTripExactly": true,
+        "sourceName": "scan-1.stl"
+      },
+      {
+        "file": "scan-2.posed.ply",
+        "vertices": 1299033,
+        "triangles": 2547403,
+        "positionsSha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+        "indicesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+        "fileSha256": "1ff4c8a524067d3442c8d50fe60826e68c2ec1255d8af6ba18eddc486870b9cf",
+        "bytes": 48704884,
+        "allCoordinatesAndIndicesRoundTripExactly": true,
+        "sourceName": "scan-2.stl"
+      },
+      {
+        "file": "scan-3.posed.ply",
+        "vertices": 1683605,
+        "triangles": 3326910,
+        "positionsSha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+        "indicesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+        "fileSha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f",
+        "bytes": 63453339,
+        "allCoordinatesAndIndicesRoundTripExactly": true,
+        "sourceName": "scan-3.stl"
+      }
+    ],
+    "sourceVertices": 3121976,
+    "sourceTriangles": 6147452,
+    "downsamplingUsed": false,
+    "geometryWorldCoordinates": "Exact saved current indexed geometry after application alignment; no new transform or solve.",
+    "normalPolicy": "PLY contains coordinates and indexed faces; normal carriers and cached native source state are outside this export.",
+    "referenceNativeExecutionPerformed": false,
+    "nativeImportRoundTripVerified": false,
+    "nativeOutputCompared": false,
+    "controlPassed": {
+      "signedZeroAndSubnormalCoordinates": true,
+      "unusedVertexPreserved": true,
+      "faceOrderAndWindingPreserved": true
+    },
+    "limits": [
+      "Exact owned PLY data round trip does not establish native importer or cached-normal equivalence.",
+      "Native numerical equivalence requires corresponding input preparation, units, settings, execution mode and output evidence.",
+      "No application capability, GUI/MCP operation, original source file or active user scene was changed."
+    ]
+  },
+  "manifestSha256": "cfe41ecc40558439ddb2588167be2d79482e88a3756d4faef9c6d4002fdaa793",
+  "dataBytes": 117381333,
+  "widthEvidence": {
+    "staticInstructionsDecoded": 26,
+    "returnPaths": 2,
+    "allDirectBranchesFollowed": true,
+    "finiteBoxResult": "Maximum of the three Double axis extents.",
+    "translationChanged": false,
+    "firstLinearDecodeScope": "The initial linear read stopped at the first return; the retained control-flow decode follows both return paths."
+  },
+  "cleanupReview": {
+    "directEmitterBranch": "Distinct vertex identities and Float32 cross-product area gate before triangle append.",
+    "compactionRoutine": "Marks unused vertices, copies surviving points in stable order and rewrites triangle point references.",
+    "triangleRemovalPassInTheseRoutinesFound": false,
+    "scope": "Selected recovered functions and fresh-output domain only; not a proof that no other native workflow can remove triangles."
+  },
+  "boundedJob": {
+    "receiptSha256": "dd24d639b50cd7f4e907e6c1574f768d50368fcf243061b1511aee74f74f9879",
+    "limitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "peakOwnedJobBytes": 257830912,
+    "elapsedSeconds": 1.8757184999994934,
+    "exitCode": 0,
+    "ownedDescendantsAtExit": 0,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "privateExportHelperAdvertised": false,
+    "productionReconstructionBackendReplaced": false
+  },
+  "limitations": [
+    "The pack contains exact posed coordinates and indexed faces only. Native importer behavior, normal carriers, flags and cached source state remain unverified.",
+    "A matching native output with corresponding input preparation, poses, units, settings and mode is still required for numerical comparison.",
+    "No source sampling, native application execution or active-scene modification was performed.",
+    "The private field outputs retain their documented topology defects; these files are comparison inputs, not an accepted reconstruction.",
+    "No full application build or new GUI/MCP acceptance was run because application code did not change."
+  ],
+  "privateProofSha256": "df66124b620b652b3def1346711839161f67f220990322958879452e8076d74a"
+}

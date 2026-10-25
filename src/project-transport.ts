@@ -48,8 +48,12 @@ export async function packProjectTransport(
         buffers.add(v.buffer);
       return v;
     }
-    if (v instanceof ArrayBuffer) {
-      if (options.ownedTypedArrays) buffers.add(v);
+    if (
+      v instanceof ArrayBuffer ||
+      (typeof SharedArrayBuffer !== "undefined" &&
+        v instanceof SharedArrayBuffer)
+    ) {
+      if (options.ownedTypedArrays && v instanceof ArrayBuffer) buffers.add(v);
       return v;
     }
     if (Array.isArray(v) && v.length >= CHUNK && typeof v[0] === "number") {
@@ -127,7 +131,13 @@ export async function unpackProjectTransport<T = unknown>(
     check();
     if (!v || typeof v !== "object") return v;
     if (memo.has(v)) return memo.get(v);
-    if (ArrayBuffer.isView(v) || v instanceof ArrayBuffer) return v;
+    if (
+      ArrayBuffer.isView(v) ||
+      v instanceof ArrayBuffer ||
+      (typeof SharedArrayBuffer !== "undefined" &&
+        v instanceof SharedArrayBuffer)
+    )
+      return v;
     const out: any = Array.isArray(v) ? new Array(v.length) : {};
     memo.set(v, out);
     for (const key of Object.keys(v))

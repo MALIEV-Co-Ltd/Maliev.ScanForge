@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Internal circle backend constructs and retires real bundled-kernel edges; shared authoring and native acceptance remain incomplete",
+  "applicationAssetChanged": true,
+  "userFacingCapabilityChanged": false,
+  "workerMessageContractChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "nativeProgramExecuted": false,
+  "browserValidationPerformed": false,
+  "sources": [
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "99e73fef2b43601ee7c9e6445afadae765f1c72c2ea8c3b758179fa3e0faa1b9"
+    },
+    {
+      "path": "tests/kernel-circle-smoke.mjs",
+      "sha256": "292e3fb5da4b2a8955ced8ece7cf8a33ce028fc5bf07f5a7b147168d337e78a9"
+    },
+    {
+      "path": "tests/kernel-smoke.mjs",
+      "sha256": "b579376e9f0b67c4deba262fd5bfe222359ae9543172e77d3d604ef62f48bf2a"
+    },
+    {
+      "path": "tests/kernel-curves-smoke.mjs",
+      "sha256": "88b99e17b3273d68ef449e70533b19ed888b95733ae8b2f9baa59da46ce9b46e"
+    },
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "0f2d10218d9a3e9d17d2239fa494f9aba1623e8e569d380306f46a880337832e"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "tests/cad-client.test.ts",
+      "sha256": "6e9ebe743862a9bfd28316726eaff230ca022bb171e4cb70cc37bb1dedf35dc8"
+    },
+    {
+      "path": "tests/cad-create-selection.test.ts",
+      "sha256": "ef58430eecb879415c85f12dab813157726d476c3d40822a227ea89d1017a9b3"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "e464640495dbdf9a5f050cf3c29461e040a2b419bd3e5d0d39207618d612b995"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "022226b5725ed27d1a2558c26b6bbbf6ead97e39fc3a7fbab9b8c7a7924741da"
+    },
+    {
+      "path": "public/kernel/SOURCE_BUILD.md",
+      "sha256": "8d522f942a5620cd2743472221e5ab8ec0bbf7e5e91e4e16e5f24176cf640267"
+    },
+    {
+      "path": "public/kernel/opencascade.js",
+      "sha256": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+    }
+  ],
+  "nativeBasis": {
+    "path": "docs/evidence/reference-sketch-circle-rebuild-20261024.json",
+    "sha256": "907c02f5576dec07c7a4577bc3e3cc6c6e804c7fe48f64c84c077de2c68b2e0c",
+    "scope": "Previously traced and passively bound circle preparation, backend admission and reset; no new native probes this turn"
+  },
+  "kernel": {
+    "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+    "bindingsArtifact": "circle-kernel-bindings-r1.json",
+    "bindingsSha256": "cb0ecc21fe4d5d0dcd44a550ff7c9ae35ab1741dc241e992b0bbdedc0be2eafe",
+    "construction": [
+      "gp_Ax2 with local +Z and +X",
+      "gp_Circ",
+      "GC_MakeCircle",
+      "Handle_Geom_Curve",
+      "BRepBuilderAPI_MakeEdge"
+    ],
+    "ownedOutput": "One local circle edge plus center-only backend records; no scene shape registration",
+    "originalNativeParityEstablished": false
+  },
+  "validation": {
+    "buildPassed": true,
+    "buildHeapMiB": 3072,
+    "aggregateJobBytes": 4294967296,
+    "focusedPassed": 208,
+    "focusedFiles": 11,
+    "circleKernelSmoke": {
+      "passed": true,
+      "checks": 18,
+      "replacementCycles": 32,
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+      "scope": "Real bundled kernel circle edge, local basis, threshold, replacement and disposal; no native-program numerical comparison"
+    },
+    "existingCadSmokePassed": true,
+    "existingCurvedSketchSmokePassed": true,
+    "fullSuiteRerun": false,
+    "controlledFaults": [
+      "Circle Value throws with real allocated temporaries",
+      "Edge IsDone false with real allocated temporaries"
+    ],
+    "temporaryOwnershipChecks": "Constructor-created handles plus the returned circle handle are deleted; old edge wrappers are deleted after replacement/failure; final edge disposed. This is not exhaustive heap-leak proof.",
+    "failedAttempts": [
+      "Expected undefined-backend-class red run",
+      "First real-kernel check assumed positive zero in calculated X-axis Z component; changed test to direction equality without altering kernel output"
+    ],
+    "publicBundle": "scanforge-255aef6bfcb544e0",
+    "browserLoadedBundleVerified": false,
+    "receipts": [
+      {
+        "artifact": "project-index-validation-circle-kernel-bindings-r1-cad.receipt.json",
+        "sha256": "58e77274326e0f224401f5794a1a88b061e654c12030b365e19df34d080aef4e",
+        "exitCode": 0,
+        "elapsedSeconds": 0.6140683999983594,
+        "peakAggregateBytes": 437821440,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-build-build.receipt.json",
+        "sha256": "0292b0c26a93b9ce303563b6d2eac7642f0ca81b118bab4cf737f198246bb26d",
+        "exitCode": 0,
+        "elapsedSeconds": 32.69325039998512,
+        "peakAggregateBytes": 2508730368,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 3072,
+        "effectiveNodeHeapMiB": 3072
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-cad-cad.receipt.json",
+        "sha256": "f6252924bf186aa354283455b5cca22734b911d55df19dd0e2c57913896051fc",
+        "exitCode": 0,
+        "elapsedSeconds": 6.574688499997137,
+        "peakAggregateBytes": 750170112,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-curves-mirror-focused.receipt.json",
+        "sha256": "121a42dc72cb5b28b0e6798d484aaa94fbcf58beca4989c7ecd145444ba2b4f1",
+        "exitCode": 0,
+        "elapsedSeconds": 1.6729451999999583,
+        "peakAggregateBytes": 704638976,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-format-mirror-focused.receipt.json",
+        "sha256": "8f36bf278eb4e562365d0b8cc0144a1703c788d87e5bdc51160f48164048e0f8",
+        "exitCode": 0,
+        "elapsedSeconds": 0.35966769998776726,
+        "peakAggregateBytes": 111439872,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-format-r2-mirror-focused.receipt.json",
+        "sha256": "0fe7e66df913f040df7066464d3a88080fe66fd7d27a119c6770b95d4c25b7fc",
+        "exitCode": 0,
+        "elapsedSeconds": 0.3603461999737192,
+        "peakAggregateBytes": 111742976,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-green-mirror-focused.receipt.json",
+        "sha256": "ff5aa4dfe9480ac95e695b4f19dfe43f8678ca7aacf2ca6c3f9cd1f03ec4126f",
+        "exitCode": 0,
+        "elapsedSeconds": 2.885315499996068,
+        "peakAggregateBytes": 365740032,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-kernel-mirror-focused.receipt.json",
+        "sha256": "89027024189114db98d878c682e5ad7bd08bcf981232bd1f61d2446c4fef8938",
+        "exitCode": 1,
+        "elapsedSeconds": 0.7128691999823786,
+        "peakAggregateBytes": 451272704,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-kernel-r2-mirror-focused.receipt.json",
+        "sha256": "257bb2b2a36ac92bf3c43fbb067c09363bc0fb1cefef34634c556ab9482744b5",
+        "exitCode": 0,
+        "elapsedSeconds": 0.8142742000054568,
+        "peakAggregateBytes": 464216064,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-kernel-r3-mirror-focused.receipt.json",
+        "sha256": "2375dc202e4a2f81983dcf74c02b51a9f269e67f008023f50ace46f8264f4c85",
+        "exitCode": 0,
+        "elapsedSeconds": 0.7141689000127371,
+        "peakAggregateBytes": 462610432,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-backend-r1-kernel-red-mirror-focused.receipt.json",
+        "sha256": "eb38c7b9c9b410c0f1b74b9dcf2023cf134ea856663cef866d8757ddaa5e5601",
+        "exitCode": 1,
+        "elapsedSeconds": 0.7637593999970704,
+        "peakAggregateBytes": 450850816,
+        "childrenRetired": true,
+        "handlesClosed": true,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768
+      }
+    ]
+  },
+  "remaining": [
+    "Worker child-session ownership/cancellation and source/backend result propagation",
+    "Stateful arc rebuilding including closed and prior-state behavior",
+    "Common geometry/source editing, constraints, trim, mirror, history and project persistence",
+    "Shared GUI/MCP source discovery and publication",
+    "Original-native numerical fixtures, native save/reopen and rendered GUI/MCP validation"
+  ]
+}

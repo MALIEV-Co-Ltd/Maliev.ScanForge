@@ -1,0 +1,130 @@
+{
+  "status": "distance-arithmetic-ported-in-private",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 6,
+  "newInstructionAddressesIndependentlyDecoded": 794,
+  "targetExecuted": false,
+  "liveProcessOpened": false,
+  "nativeRuntimeParity": false,
+  "findings": [
+    "The projected triangle classifier uses a dominant-normal axis and Float32-rounded coordinate equality and product comparisons; a generic double-precision orientation test is not equivalent.",
+    "The segment helper collapses squared lengths at most 9.999999974752427e-7 to the first endpoint; its returned parameter is not clamped, while the closest point is clamped and stored as Float32.",
+    "Signed triangle sampling has a strict absolute plane-distance cutoff, signed distance result, ordered nearest-edge selection and flags for all outside edges.",
+    "Float32 direction normalization rounds each square and addition, uses sqrtf, then divides using double precision and stores Float32; its length threshold is 2^-52.",
+    "Triangle-box admission uses a plane overlap test followed by edge-axis overlap tests. The full ordered admission path has not been ported."
+  ],
+  "historicalMathBinding": {
+    "exports": ["floor", "sqrt", "sqrtf"],
+    "moduleSha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca",
+    "confidence": "derived from archived IAT pointers, exact matching module exports and a module base retained from a separate same-day process",
+    "freshProcessBinding": false
+  },
+  "privatePorts": [
+    {
+      "name": "segment-sample",
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "redFailuresObserved": 12,
+      "sources": [
+        {
+          "name": "repolygon-segment-sample-r1.mjs",
+          "sha256": "d29449e6ddc116cc1fe73995b6d4f8213df02cf763e988b42e925350b9466286"
+        },
+        {
+          "name": "test-repolygon-segment-sample-r1.mjs",
+          "sha256": "7f1525f83f9cca941d063a2a011d394fe34a42473ecda24cd05e9c01361c3fa4"
+        }
+      ]
+    },
+    {
+      "name": "triangle-sample",
+      "testsPassed": 16,
+      "testsFailed": 0,
+      "redFailuresObserved": 15,
+      "sources": [
+        {
+          "name": "repolygon-triangle-sample-r1.mjs",
+          "sha256": "c04e6b92550eb1ecf1d75234711c4458b4aca90a86bacd794a81c44cba4d7066"
+        },
+        {
+          "name": "test-repolygon-triangle-sample-r1.mjs",
+          "sha256": "2032312315ce052d29938c3d0a647d014be78f7d88e216994d0e4ae4cad3ae8c"
+        },
+        {
+          "name": "repolygon-segment-sample-r1.mjs",
+          "sha256": "d29449e6ddc116cc1fe73995b6d4f8213df02cf763e988b42e925350b9466286"
+        }
+      ]
+    }
+  ],
+  "boundedJobs": [
+    {
+      "receipt": "project-index-validation-repolygon-distance-r1-full.receipt.json",
+      "sha256": "40001fe4df6a758689f27955282b15508238d28f7a64eaace3a67c8c9d5740b1",
+      "expectedExitCode": 0,
+      "peakBytes": 881238016,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-predicates-r1-full.receipt.json",
+      "sha256": "07d91e156988d2b90b5432dfddb06c7db4c18df457e4bb63f011dcf9ee8b4f48",
+      "expectedExitCode": 0,
+      "peakBytes": 897212416,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-segment-sample-r1-red-full.receipt.json",
+      "sha256": "02b873df07377f1e7ef672bd5c4a83fc83b8022419c86eb9120dbd24d018c23f",
+      "expectedExitCode": 1,
+      "peakBytes": 34795520,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-segment-sample-r1-green-full.receipt.json",
+      "sha256": "7e73a9f6c8e98e88559e22d3efe2d6f5e04c164c35b74cdcf291668065fc8ba9",
+      "expectedExitCode": 0,
+      "peakBytes": 32989184,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-triangle-sample-r1-red-full.receipt.json",
+      "sha256": "6e0a16d2c191e918ba91474d85d469740b63bb2ea5bf46ea2e1a95481e81410c",
+      "expectedExitCode": 1,
+      "peakBytes": 34557952,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "receipt": "project-index-validation-repolygon-triangle-sample-r1-green-full.receipt.json",
+      "sha256": "3d8afa93c9fc0ad4646a07962a1f57ec01520bffdfcb6067a28d0d6647480909",
+      "expectedExitCode": 0,
+      "peakBytes": 32706560,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "applicationChanged": false,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false,
+    "pointCloudReconstructionImplemented": false
+  },
+  "remaining": [
+    "Port and verify complete ordered spatial admission, source boundary preparation and corner reduction.",
+    "Integrate signed field and extraction through the shared GUI/MCP operation with ownership, cancellation, revision and history semantics.",
+    "Validate full original inputs, reconstructed projects, topology and native output before acceptance."
+  ],
+  "limitations": [
+    "Historical archived code only; no fresh original execution or native geometry capture.",
+    "Function extents, local types and some call signatures remain inferred.",
+    "The analytic controls cover supplied normals and nondegenerate triangle samples; source-normal preparation and degenerate-input admission remain unresolved.",
+    "Math attribution uses a separate historical module-base observation and does not establish a fresh runtime binding.",
+    "Private arithmetic ports are not a user-facing or MCP reconstruction implementation."
+  ],
+  "privateProofSha256": "c52da4ae2a3026e5d995f31bec9f3019df2d6ce6e91ed2ab31d52af982cbb47a"
+}

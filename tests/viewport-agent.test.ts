@@ -54,6 +54,53 @@ it("rejects degenerate camera frames without changing the current pose", () => {
     ).toThrow();
   expect(camera.position.toArray()).toEqual([0, 0, 10]);
 });
+
+it.each(["orthographic", "perspective"])(
+  "reconstructs %s point projection using only the public camera matrices",
+  (kind) => {
+    const camera =
+      kind === "orthographic"
+        ? new THREE.OrthographicCamera(-7, 9, 5, -3, 0.1, 100)
+        : new THREE.PerspectiveCamera(55, 1.5, 0.1, 100);
+    camera.setViewOffset(1800, 1200, 100, 200, 900, 600);
+    setCameraPose(
+      camera,
+      new THREE.Vector3(),
+      [4, 5, 10],
+      [1, 1, 0],
+      [0, 1, 0],
+      1.7,
+    );
+    const receipt = inspectCamera(
+      camera,
+      new THREE.Vector3(1, 1, 0),
+      new THREE.Box3(),
+      900,
+      600,
+    ) as any;
+    expect(receipt.cameraMatrixFormat).toBe("column-major-4x4");
+    expect(receipt.projectionMatrix).toHaveLength(16);
+    expect(receipt.cameraWorldMatrix).toHaveLength(16);
+    expect(
+      [...receipt.projectionMatrix, ...receipt.cameraWorldMatrix].every(
+        Number.isFinite,
+      ),
+    ).toBe(true);
+    const restored = new THREE.Camera();
+    restored.projectionMatrix.fromArray(receipt.projectionMatrix);
+    restored.projectionMatrixInverse.copy(restored.projectionMatrix).invert();
+    restored.matrixWorld.fromArray(receipt.cameraWorldMatrix);
+    restored.matrixWorldInverse.copy(restored.matrixWorld).invert();
+    for (const point of [
+      [3.1, 2.2, -1],
+      [-2, -3, 0],
+      [1, 1, 0],
+    ])
+      expect(new THREE.Vector3(...point).project(restored).toArray()).toEqual(
+        new THREE.Vector3(...point).project(camera).toArray(),
+      );
+  },
+);
 it("picks rendered object geometry with world points, respecting visibility, selectability and clipping", () => {
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   setCameraPose(camera, new THREE.Vector3(), [0, 0, 10], [0, 0, 0]);

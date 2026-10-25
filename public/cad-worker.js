@@ -33,6 +33,144 @@ function cleanup(handles) {
   for (let i = handles.length - 1; i >= 0; i--) handles[i]?.delete?.();
 }
 
+let sketchBackendConstructors;
+function loadSketchBackends() {
+  if (!sketchBackendConstructors) {
+    importScripts(new URL("kernel/sketch-backend.js", self.location.href).href);
+    sketchBackendConstructors = ScanForgeSketchBackend;
+  }
+  return sketchBackendConstructors;
+}
+
+function createSketchArcBackend(oc) {
+  return new (loadSketchBackends().SketchArcBackend)(oc);
+}
+
+function createSketchConicChild(kind, oc) {
+  if (kind !== "arc" && kind !== "circle")
+    throw new Error("Unsupported conic child kind.");
+  const constructors = loadSketchBackends();
+  const backend =
+    kind === "arc"
+      ? new constructors.SketchArcBackend(oc)
+      : new SketchCircleBackend(oc);
+  try {
+    return new constructors.SketchConicChild(kind, backend);
+  } catch (error) {
+    backend.dispose();
+    throw error;
+  }
+}
+
+/**
+ * Internal native-style circle backend, owned by a future sketch child session.
+ * It retains a CAD edge and center-only backend records, not the child's four
+ * defining/source records. It does not register scene shapes or add a worker
+ * command. GUI/MCP publication still belongs to the shared authoring lifecycle.
+ */
+class SketchCircleBackend {
+  #oc;
+  #edge;
+  #center;
+  #radius;
+  #disposed = false;
+
+  constructor(oc) {
+    this.#oc = oc;
+  }
+
+  #requireLive() {
+    if (this.#disposed) throw new Error("Sketch circle backend is disposed.");
+  }
+
+  #reset() {
+    const previous = this.#edge;
+    this.#edge = undefined;
+    this.#center = undefined;
+    this.#radius = undefined;
+    previous?.delete();
+  }
+
+  /** Borrowed within this worker only; invalidated by rebuild or disposal. */
+  get edge() {
+    this.#requireLive();
+    return this.#edge;
+  }
+
+  snapshot() {
+    return this.#edge
+      ? {
+          disposed: this.#disposed,
+          kind: "circle",
+          records: [[...this.#center]],
+          radius: this.#radius,
+        }
+      : { disposed: this.#disposed, kind: "empty", records: [] };
+  }
+
+  rebuild(input) {
+    this.#requireLive();
+    if (
+      !input ||
+      input.kind !== "circle" ||
+      !Array.isArray(input.center) ||
+      input.center.length !== 3 ||
+      !Number.isFinite(input.center[0]) ||
+      !Number.isFinite(input.center[1]) ||
+      !Number.isFinite(input.center[2]) ||
+      !Number.isFinite(input.radius)
+    )
+      throw new Error(
+        "Circle backend requires finite center and radius values.",
+      );
+    const center = [...input.center],
+      radius = input.radius;
+    // Canonical application validation precedes mutation. A finite failed-fit
+    // sentinel is a valid request: native reset precedes radius rejection.
+    this.#reset();
+    if (radius < 2 ** -23) return false;
+    const oc = this.#oc,
+      handles = [];
+    const keep = (handle) => (handles.push(handle), handle);
+    let candidate;
+    try {
+      try {
+        const origin = keep(new oc.gp_Pnt_3(...center));
+        const normal = keep(new oc.gp_Dir_4(0, 0, 1));
+        const xDirection = keep(new oc.gp_Dir_4(1, 0, 0));
+        const placement = keep(new oc.gp_Ax2_2(origin, normal, xDirection));
+        const circle = keep(new oc.gp_Circ_2(placement, radius));
+        const maker = keep(new oc.GC_MakeCircle_1(circle));
+        if (!maker.IsDone()) return false;
+        const circleHandle = keep(maker.Value());
+        if (circleHandle.IsNull()) return false;
+        const curveHandle = keep(
+          new oc.Handle_Geom_Curve_2(circleHandle.get()),
+        );
+        const edgeMaker = keep(new oc.BRepBuilderAPI_MakeEdge_24(curveHandle));
+        if (!edgeMaker.IsDone()) return false;
+        candidate = edgeMaker.Edge();
+      } finally {
+        cleanup(handles);
+      }
+      if (candidate.IsNull()) return false;
+      this.#center = center;
+      this.#radius = radius;
+      this.#edge = candidate;
+      candidate = undefined; // Ownership transfers only after temporary cleanup.
+      return true;
+    } finally {
+      candidate?.delete();
+    }
+  }
+
+  dispose() {
+    if (this.#disposed) return;
+    this.#disposed = true;
+    this.#reset();
+  }
+}
+
 function statusValue(status) {
   return status?.value ?? status;
 }
@@ -799,7 +937,12 @@ function alignmentReferences(oc, input) {
             axis: coordinates(direction),
             firstV: adaptor.FirstVParameter(),
             lastV: adaptor.LastVParameter(),
-            radius: kind === "cone" ? primitive.RefRadius() : 0,
+            radius:
+              kind === "cylinder"
+                ? primitive.Radius()
+                : kind === "cone"
+                  ? primitive.RefRadius()
+                  : 0,
             semiAngle: kind === "cone" ? primitive.SemiAngle() : 0,
           });
         } else
@@ -1287,6 +1430,141 @@ function extrudeShape(oc, input) {
     if (!prism.IsDone()) throw new Error("CAD extrusion construction failed.");
     return register(oc, prism.Shape());
   } finally {
+    cleanup(handles);
+  }
+}
+
+// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
+function extrudeCurvesShape(oc, input) {
+  const { edges, height } = input;
+  const frame = sketchPlacement(input.frame);
+  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
+    throw new Error(
+      "Extrusion height must be positive and at most one billion.",
+    );
+  if (!Array.isArray(edges) || edges.length < 2 || edges.length > 10000)
+    throw new Error("Choose a closed profile with 2 to 10000 edges.");
+  const point = (p) =>
+    Array.isArray(p) &&
+    p.length === 2 &&
+    p.every((n) => Number.isFinite(n) && Math.abs(n) <= 1e9);
+  const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  const sweeps = [];
+  let area = 0;
+  const anchor = edges[0]?.start;
+  if (!point(anchor)) throw new Error("Invalid sketch profile coordinates.");
+  for (let i = 0; i < edges.length; i++) {
+    const edge = edges[i],
+      next = edges[(i + 1) % edges.length];
+    if (
+      !edge ||
+      !point(edge.start) ||
+      !point(edge.end) ||
+      !point(next?.start) ||
+      distance(edge.start, edge.end) < 1e-8 ||
+      distance(edge.end, next.start) > 1e-8
+    )
+      throw new Error(
+        "Sketch profile must form a closed cycle without zero-length edges.",
+      );
+    const a = edge.start.map((n, j) => n - anchor[j]),
+      b = edge.end.map((n, j) => n - anchor[j]);
+    if (edge.kind === "line") {
+      area += a[0] * b[1] - a[1] * b[0];
+      sweeps.push(0);
+    } else if (
+      edge.kind === "arc" &&
+      point(edge.center) &&
+      typeof edge.clockwise === "boolean"
+    ) {
+      const r = distance(edge.start, edge.center),
+        endRadius = distance(edge.end, edge.center);
+      if (r < 1e-8 || Math.abs(r - endRadius) > Math.max(1e-5, r * 1e-6))
+        throw new Error("Sketch arc radii are inconsistent.");
+      let sweep =
+        Math.atan2(edge.end[1] - edge.center[1], edge.end[0] - edge.center[0]) -
+        Math.atan2(
+          edge.start[1] - edge.center[1],
+          edge.start[0] - edge.center[0],
+        );
+      if (edge.clockwise) {
+        if (sweep >= 0) sweep -= 2 * Math.PI;
+      } else if (sweep <= 0) sweep += 2 * Math.PI;
+      const c = edge.center.map((n, j) => n - anchor[j]);
+      area += c[0] * (b[1] - a[1]) - c[1] * (b[0] - a[0]) + r * r * sweep;
+      sweeps.push(sweep);
+    } else throw new Error("Unknown sketch profile edge.");
+  }
+  if (!Number.isFinite(area) || Math.abs(area) < 1e-8)
+    throw new Error("Sketch profile has zero area.");
+  const handles = [];
+  const keep = (h) => (handles.push(h), h);
+  const placed = (uv) => {
+    const world = frame.origin.map(
+      (n, i) => n + frame.u[i] * uv[0] + frame.v[i] * uv[1],
+    );
+    if (world.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e9))
+      throw new Error("Placed sketch coordinates must be finite and bounded.");
+    return keep(new oc.gp_Pnt_3(...world));
+  };
+  let solid;
+  try {
+    const wireMaker = keep(new oc.BRepBuilderAPI_MakeWire_1());
+    for (let i = 0; i < edges.length; i++) {
+      const edge = edges[i],
+        start = placed(edge.start),
+        end = placed(edge.end);
+      let maker;
+      if (edge.kind === "line")
+        maker = keep(new oc.BRepBuilderAPI_MakeEdge_3(start, end));
+      else {
+        const r = distance(edge.start, edge.center),
+          angle =
+            Math.atan2(
+              edge.start[1] - edge.center[1],
+              edge.start[0] - edge.center[0],
+            ) +
+            sweeps[i] / 2;
+        const middle = placed([
+          edge.center[0] + r * Math.cos(angle),
+          edge.center[1] + r * Math.sin(angle),
+        ]);
+        const arc = keep(new oc.GC_MakeArcOfCircle_4(start, middle, end));
+        if (!arc.IsDone()) throw new Error("CAD arc construction failed.");
+        const trimmed = keep(arc.Value()),
+          curve = keep(new oc.Handle_Geom_Curve_2(trimmed.get()));
+        maker = keep(new oc.BRepBuilderAPI_MakeEdge_24(curve));
+      }
+      if (!maker.IsDone()) throw new Error("CAD edge construction failed.");
+      wireMaker.Add_1(keep(maker.Edge()));
+      if (!wireMaker.IsDone()) throw new Error("CAD wire construction failed.");
+    }
+    const wire = keep(wireMaker.Wire()),
+      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
+    if (!faceMaker.IsDone())
+      throw new Error("CAD sketch face construction failed.");
+    const face = keep(faceMaker.Face()),
+      faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
+    if (!faceCheck.IsValid_2())
+      throw new Error(
+        "Sketch profile intersects itself or has invalid geometry.",
+      );
+    const direction = keep(
+      new oc.gp_Vec_4(...frame.normal.map((n) => n * height)),
+    );
+    const prism = keep(
+      new oc.BRepPrimAPI_MakePrism_1(face, direction, true, true),
+    );
+    if (!prism.IsDone()) throw new Error("CAD extrusion construction failed.");
+    solid = prism.Shape();
+    const check = keep(new oc.BRepCheck_Analyzer(solid, true));
+    if (!check.IsValid_2())
+      throw new Error("CAD extrusion failed topology and geometry validation.");
+    const owned = solid;
+    solid = undefined;
+    return register(oc, owned);
+  } finally {
+    solid?.delete();
     cleanup(handles);
   }
 }
@@ -1916,6 +2194,8 @@ self.onmessage = (event) => {
       else if (operation === "mirror") result = mirrorShape(oc, payload);
       else if (operation === "split") result = splitShape(oc, payload);
       else if (operation === "extrude") result = extrudeShape(oc, payload);
+      else if (operation === "extrudeCurves")
+        result = extrudeCurvesShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "loft") result = loftShape(oc, payload);
       else if (operation === "sweep") result = sweepShape(oc, payload);

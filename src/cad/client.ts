@@ -1,3 +1,4 @@
+import type { SketchProfileEdge } from "../sketch";
 import type { IndexedMesh, KernelMesh, KernelPrimitive, Vec3 } from "../types";
 import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
@@ -114,6 +115,19 @@ export class CadClient {
       xDirection: [inverse[0], inverse[4], inverse[8]],
       zDirection: [inverse[2], inverse[6], inverse[10]],
     }) as Promise<KernelMesh & { placementMatrix: number[] }>;
+  }
+
+  extrudeCurves(
+    edges: SketchProfileEdge[],
+    height: number,
+    frame?: SketchFrame,
+  ): Promise<KernelMesh> {
+    if (frame !== undefined) validateSketchFrame(frame);
+    return this.request("extrudeCurves", {
+      edges,
+      height,
+      frame,
+    }) as Promise<KernelMesh>;
   }
 
   extrude(

@@ -1,0 +1,137 @@
+{
+  "feature": "Fresh pointer and camera-frame orbit centers",
+  "date": "2026-10-25",
+  "passed": true,
+  "behavior": {
+    "mouse": "Fresh pointer surface, frame-center surface, then current camera target; fixed for one gesture only",
+    "mcp": "viewport_control rotate with x/y shares the same fallback; empty misses no longer error",
+    "largeClouds": "Rendered point depth with matching pixel size, adaptive sampling, world transforms, clipping and log-depth occlusion"
+  },
+  "validation": {
+    "focusedTests": {
+      "files": 28,
+      "tests": 341,
+      "passed": true
+    },
+    "applicationSourceTypecheck": "passed",
+    "productionBundle": "Vite build and offline manifest passed",
+    "fullProjectTypecheck": "blocked by unrelated untracked tests/automation-api-owner.test.ts (retainOwner contract under development)",
+    "meshGpuBrowser": {
+      "passed": true,
+      "unreadyIndex": true,
+      "triangles": 20736,
+      "deviceScaleFactor": 2,
+      "results": [
+        {
+          "projection": "orthographic",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 2.1462398796255083e-7,
+          "mcpDrift": 3.3910564044024265e-6
+        },
+        {
+          "projection": "orthographic",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 2.187085660697109e-6,
+          "mcpDrift": 5.935447236415785e-6
+        },
+        {
+          "projection": "perspective",
+          "x": 0.62,
+          "y": 0.42,
+          "guiDrift": 1.3206167826103467e-7,
+          "mcpDrift": 4.068796144474252e-7
+        },
+        {
+          "projection": "perspective",
+          "x": 0.43,
+          "y": 0.61,
+          "guiDrift": 9.767901845934417e-7,
+          "mcpDrift": 4.657558665504456e-6
+        }
+      ],
+      "errors": []
+    },
+    "largeCloudGpuBrowser": [
+      {
+        "view": "main",
+        "projection": "orthographic",
+        "pointerPivot": [1.999993584528165, 0.9999995200394494, 0],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "main",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000000774978783, 0.9999998611617202, 3.705814375365435e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "fixed",
+        "projection": "orthographic",
+        "pointerPivot": [
+          7.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "fixed",
+        "projection": "perspective",
+        "pointerPivot": [
+          7.000000974516382, 0.9999999037764387, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "moving",
+        "projection": "orthographic",
+        "pointerPivot": [
+          2.000001270999941, 0.9999997761253498, -1.525878889907517e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      },
+      {
+        "view": "moving",
+        "projection": "perspective",
+        "pointerPivot": [
+          2.0000009745163823, 1.0000006644647523, 5.555882083285724e-7
+        ],
+        "emptyFramePivot": [20, 20, 0]
+      }
+    ],
+    "additionalChecks": [
+      "Mixed mesh/cloud occlusion",
+      "Sampling-hidden foreground points excluded",
+      "Visible point sprite-edge pivot",
+      "Main/fixed/moving views in orthographic and perspective",
+      "Fresh camera target fallback after moving the camera",
+      "GUI and MCP orbit invariance",
+      "Landmark three-view workflow, divider, point removal, preview, accept/undo regression browser passed"
+    ],
+    "review": "Two review findings corrected; final read-only confirmation had no remaining actionable findings",
+    "notRun": [
+      "full repository test suite",
+      "million-point performance benchmark"
+    ]
+  },
+  "resourceCleanup": [
+    {
+      "port": 51610,
+      "closed": true
+    },
+    {
+      "pid": 46448,
+      "exited": true
+    },
+    {
+      "port": 51612,
+      "closed": true
+    },
+    {
+      "pid": 43540,
+      "exited": true
+    }
+  ]
+}

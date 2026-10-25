@@ -1,0 +1,72 @@
+{
+  "feature": "Live N-point alignment with three independent views",
+  "date": "2026-10-24",
+  "passed": true,
+  "checks": [
+    "Actual mesh and point-cloud canvas clicks preserve native Float32 pick records",
+    "Three independent views isolate moving/reference geometry and original-pose picks",
+    "Third and fourth complete pairs update automatically; incomplete edits invalidate acceptance",
+    "Read-only MCP ray queries agree with GUI picks",
+    "Picking and cancel preserve modeling history",
+    "Ribbon and MCP command share source eligibility and active-session admission",
+    "Real canvas picks produce equal GUI/MCP previews; accept translates only the moving scan; undo restores it",
+    "Held pending native worker cannot publish after an incomplete edit",
+    "Cancel removes the two picking canvases and preserves source/history",
+    "Light and dark screenshots inspected"
+  ],
+  "validation": {
+    "focusedVitest": {
+      "files": 24,
+      "tests": 256,
+      "passed": true
+    },
+    "productionBundle": "passed",
+    "applicationTypecheck": "passed",
+    "fullTypecheck": "passed on final retry; unrelated in-progress tests briefly failed earlier",
+    "review": "Independent read-only reviewer reported no actionable findings",
+    "notRun": [
+      "full repository test suite",
+      "million-point performance benchmarks"
+    ]
+  },
+  "browserCases": [
+    {
+      "kind": "mesh",
+      "pairs": 4,
+      "rmsMm": 1.1022116548752993e-5,
+      "guiMcpPreviewEqual": true,
+      "acceptUndo": true
+    },
+    {
+      "kind": "pointcloud",
+      "pairs": 4,
+      "rmsMm": 0,
+      "guiMcpPreviewEqual": true,
+      "acceptUndo": true
+    }
+  ],
+  "resourceCleanup": [
+    {
+      "port": 60441,
+      "closed": true
+    },
+    {
+      "port": 60442,
+      "closed": true
+    },
+    {
+      "pid": 37932,
+      "exited": true
+    },
+    {
+      "pid": 8304,
+      "exited": true
+    }
+  ],
+  "screenshots": [
+    ".resources/landmark-canvas-browser/mesh-three-views.png",
+    ".resources/landmark-canvas-browser/mesh-three-views-dark.png",
+    ".resources/landmark-canvas-browser/pointcloud-three-views.png",
+    ".resources/landmark-canvas-browser/pointcloud-three-views-dark.png"
+  ]
+}

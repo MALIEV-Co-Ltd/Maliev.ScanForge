@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Individual arc point editing implemented and internally validated; shared GUI/MCP editor and native acceptance remain incomplete",
+  "applicationAssetChanged": true,
+  "userFacingCapabilityChanged": false,
+  "workerMessageContractChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "nativeProgramExecuted": false,
+  "browserValidationPerformed": false,
+  "sources": [
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "tests/kernel-circle-smoke.mjs",
+      "sha256": "292e3fb5da4b2a8955ced8ece7cf8a33ce028fc5bf07f5a7b147168d337e78a9"
+    },
+    {
+      "path": "tests/kernel-smoke.mjs",
+      "sha256": "b579376e9f0b67c4deba262fd5bfe222359ae9543172e77d3d604ef62f48bf2a"
+    },
+    {
+      "path": "tests/kernel-curves-smoke.mjs",
+      "sha256": "88b99e17b3273d68ef449e70533b19ed888b95733ae8b2f9baa59da46ce9b46e"
+    },
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "0f2d10218d9a3e9d17d2239fa494f9aba1623e8e569d380306f46a880337832e"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "tests/cad-client.test.ts",
+      "sha256": "6e9ebe743862a9bfd28316726eaff230ca022bb171e4cb70cc37bb1dedf35dc8"
+    },
+    {
+      "path": "tests/cad-create-selection.test.ts",
+      "sha256": "ef58430eecb879415c85f12dab813157726d476c3d40822a227ea89d1017a9b3"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "ef66a0e4afcc17f6b2e8bc30b677407fbfe69a5443b710ca5975e34de241cb0d"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "07c4642557b4f947e8d5b2c7a030cc46bb79886d89f1f859539040fd1958a302"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "7599ccbfb8dc915204f38906b28c4521644ca5f927af5028399ea90d8d79af56"
+    },
+    {
+      "path": "public/kernel/SOURCE_BUILD.md",
+      "sha256": "8d522f942a5620cd2743472221e5ab8ec0bbf7e5e91e4e16e5f24176cf640267"
+    },
+    {
+      "path": "public/kernel/opencascade.js",
+      "sha256": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+    },
+    {
+      "path": "src/sketch-arc-rebuild.ts",
+      "sha256": "ad412f7e4bc97983d6baa5639965904d77d0498e1b3dbfa501b3b4d90316622d"
+    },
+    {
+      "path": "tests/sketch-arc-rebuild.test.ts",
+      "sha256": "70d577dc7b209681544cdf60e27a983d1ea1196771f2687e78f521d6e2c141ab"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "src/cad/sketch-arc-backend.ts",
+      "sha256": "1ea7858b19486e6e370e09ae63b6b8aeea78be749826809474675643a10afc5c"
+    },
+    {
+      "path": "tests/kernel-arc-smoke.mjs",
+      "sha256": "4c0746c8b900698ae72d6aac6fef84fa4eac07844367c59926ec66378d243241"
+    },
+    {
+      "path": "scripts/prepare-kernel.mjs",
+      "sha256": "ef707490f6ca4af41d94957fc0f5ae34245dacf5ebbadf9d3579d4c5f7cf2acd"
+    },
+    {
+      "path": "src/cad/sketch-conic-child.ts",
+      "sha256": "d30e763a26d147f7fcb135e3e328ff194af80d57c6b9e637aa121c780e3e6c76"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "57b781280f69406a92a1212c97c183057dd74c3cda47bd034ed8e6cd984e0c31"
+    },
+    {
+      "path": "tests/kernel-conic-child-smoke.mjs",
+      "sha256": "769d4f55f7be5e6d9a7882512f6036d2d372fac00d60f01f8cfb28a4edad8fee"
+    },
+    {
+      "path": "tests/sketch-arc-local-replacement.test.ts",
+      "sha256": "14eb5682587023a0c8cfeae75e71147d478505334591bef55eaee95126812bbe"
+    },
+    {
+      "path": "tests/sketch-arc-placed-replacement.test.ts",
+      "sha256": "b78ea17b104bd98b8875b5a1cc93afa311938aaf1fe6dcfd16ea01f4091cd99a"
+    },
+    {
+      "path": "tests/sketch-arc-point-edit.test.ts",
+      "sha256": "02663c300687966050e32cc2edb1bb610aa7222ece6531be95edd2065ebf4a99"
+    }
+  ],
+  "nativeBasis": {
+    "priorEvidence": {
+      "path": "docs/evidence/reference-sketch-arc-placed-replacement-20261024.json",
+      "sha256": "d5d9fc8e3f8d2756ceb5b989f6c95c795fb318aa90ff2dc2db1becdccfa1bfd0"
+    },
+    "pointEdit": {
+      "artifact": "construction-arc-point-edit-verified-r1.json",
+      "sha256": "da96ff607f56b6b6c209b4281f6767631545f3b97d990e4eaf8dfdc65c457b91",
+      "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+      "instructionCount": 144,
+      "directFlowsChecked": 14,
+      "operandAnchors": 34,
+      "centerBranchDirectStores": 13,
+      "scope": "Static local arc point-index dispatch, closure carry, XY-only center translation and direct stores; no native numerical execution, fresh live binding or outer editor rollback claim",
+      "verifierSha256": "fd6ae3a698d1ffd2f15718ab0adf7528bb5b658bab9ebf4de399f416f4a5f734"
+    },
+    "newLiveBinding": false,
+    "originalNativeNumericalReplay": false
+  },
+  "implementation": {
+    "preparation": "prepareNativeSketchArcPointEdit",
+    "childOperation": "editArcPoint",
+    "definingPoints": "Indices 0..2 replace one internal A/B/C and refit with existing frame and closure; ordinary flattening, failure and closure rules remain",
+    "center": "Index 3 computes XY delta, ignores target Z, adds delta to internal points/center and literal positive zero to existing Z; preserves radius, placement and closure; regenerates sources and rebuilds backend without fitting",
+    "sharedStateProducer": "Explicit closure parameter distinguishes individual edits from collection replacements",
+    "applicationAdmission": "Prepared arc, integer index 0..3, finite canonical XYZ/intermediates and pre-mutation validation; invalid index raises an application validation error rather than returning native false"
+  },
+  "validation": {
+    "buildPassed": true,
+    "buildHeapMiB": 3072,
+    "aggregateJobBytes": 4294967296,
+    "conicChildKernelSmoke": {
+      "passed": true,
+      "checks": 25,
+      "helperSha256": "ee415d58637479dac1c8a1ee41755cd47f3f9b69ffaeb1c39316745077e38ed2",
+      "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+      "scope": "Real worker-local conic child ownership and outcomes; public editor/native parity not established"
+    },
+    "arcSmokePassed": true,
+    "circleSmokePassed": true,
+    "curvedSketchSmokePassed": true,
+    "cadSmokePassed": true,
+    "focusedPassed": 132,
+    "focusedFiles": 8,
+    "newAnalyticCases": 13,
+    "fullSuiteRepeated": false,
+    "priorFullSuiteEvidence": "docs/evidence/reference-sketch-conic-child-20261024.json",
+    "publicBundle": "scanforge-d79dd831674acd2a",
+    "browserLoadedBundleVerified": false,
+    "receipts": [
+      {
+        "artifact": "project-index-validation-construction-arc-point-edit-verify-r1-cad.receipt.json",
+        "sha256": "cbe787dea5c6c5821c9c23223026011e22406160a28209f1ee5a65581ad79cc4",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 384,
+        "elapsedSeconds": 0.2587490000005346,
+        "peakAggregateBytes": 97574912,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-arc-mirror-focused.receipt.json",
+        "sha256": "f638155906868fd9b4a4a3567e21bd312de3f0058af05bec6c99793d68d968b6",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.9149897999886889,
+        "peakAggregateBytes": 463708160,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-build-build.receipt.json",
+        "sha256": "bf4d9a1daeca34f287d11613d3bcad9583f5b30921d8ef8d4eac92dffe04eee1",
+        "exitCode": 0,
+        "environmentHeapMiB": 3072,
+        "effectiveNodeHeapMiB": 3072,
+        "elapsedSeconds": 33.49822299997322,
+        "peakAggregateBytes": 2474098688,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-cad-cad.receipt.json",
+        "sha256": "e16abfdadbb9845869f413e1e331367e7dd5cd014a41fb4672b1639d8d211f1e",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 6.774311699991813,
+        "peakAggregateBytes": 758222848,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-circle-mirror-focused.receipt.json",
+        "sha256": "476c9f4dbfc622916cdd0ec37da1d5e51e6f0e315c2371e306e9487e36cfc715",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.7133961000072304,
+        "peakAggregateBytes": 467558400,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-curves-mirror-focused.receipt.json",
+        "sha256": "0bca93616b532d1d05e4447762287a313d424e215c2b318ea37fd2180421c00b",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 1.4715168999973685,
+        "peakAggregateBytes": 710025216,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-format-mirror-focused.receipt.json",
+        "sha256": "1c951ecdb7a2d5ad9fc671b43533a8074da3c77ba1e0515fec7230a10d53be7a",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 0.5649759000225458,
+        "peakAggregateBytes": 136826880,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-kernel-mirror-focused.receipt.json",
+        "sha256": "4227155e1224f0a2fd9f4e3ab40a4a2d37d2f439b37234cf56bd071402ab8628",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.8650987999862991,
+        "peakAggregateBytes": 464195584,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-red-mirror-focused.receipt.json",
+        "sha256": "913a10540a5d152acc61a6af54eb489d4e2976888ac2d5d22ede8e5b35ff70f9",
+        "exitCode": 1,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 768,
+        "elapsedSeconds": 0.7133995000040159,
+        "peakAggregateBytes": 460279808,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-unit-mirror-focused.receipt.json",
+        "sha256": "9df2d329f6959f52de498354563561e65693a78dc512c6d241feb9d2be019026",
+        "exitCode": 0,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 1.72376439999789,
+        "peakAggregateBytes": 352464896,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-arc-point-edit-r1-unit-red-mirror-focused.receipt.json",
+        "sha256": "ceeaa6f84d87473bbab35eb576b8fa6aa2372fddc9a142f7f756e07441698b9a",
+        "exitCode": 1,
+        "environmentHeapMiB": 1024,
+        "effectiveNodeHeapMiB": 1024,
+        "elapsedSeconds": 1.774366999976337,
+        "peakAggregateBytes": 352591872,
+        "childrenRetired": true,
+        "handlesClosed": true
+      }
+    ],
+    "failedAttempts": [
+      "Expected missing individual-point preparation function and worker method before implementation"
+    ],
+    "ownershipScope": "Real center movement and defining-point refit, closure rejection, early-fit retention followed by backend retirement, malformed/pre-abort preservation, exception cleanup and post-work cancellation. No exhaustive heap-leak or native outer-rollback claim."
+  },
+  "workerBuild": {
+    "entry": "src/cad/sketch-backend.ts",
+    "generatedAsset": "kernel/sketch-backend.js",
+    "helperSha256": "ee415d58637479dac1c8a1ee41755cd47f3f9b69ffaeb1c39316745077e38ed2",
+    "distMatchesTestedAsset": true,
+    "offlineManifestIncludesHelper": true
+  },
+  "mcpCoverage": {
+    "existingTools": ["sketch_get", "sketch_set", "sketch_manage"],
+    "catalogAndSharedExecutorUnchanged": true,
+    "architectureDocumentationUpdated": true,
+    "status": "Internal edit path only; no public request/schema or GUI behavior changed. Shared edit-intent model and full GUI/MCP publication remain required."
+  },
+  "remaining": [
+    "Distinct transform edit semantics and complete other curve-child edit models",
+    "Common authoritative ordered curve/source edit model and solver/trim/mirror integration",
+    "Shared host revision/retry/lock/resource and worker session lifecycle",
+    "History/project persistence and source publication",
+    "Original native numerical, save/reopen and rendered GUI/MCP acceptance"
+  ]
+}

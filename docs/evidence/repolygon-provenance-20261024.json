@@ -1,0 +1,174 @@
+{
+  "status": "full-aligned-defect-provenance-and-source-iterator-verified",
+  "applicationChanged": false,
+  "privateExtractorChangedForDiagnostics": true,
+  "nativeExecuted": false,
+  "nativeAcceptance": false,
+  "tests": {
+    "provenanceRed": {
+      "passed": 2,
+      "failed": 5
+    },
+    "provenanceGreen": {
+      "passed": 7,
+      "failed": 0
+    },
+    "existingExtractionRegression": {
+      "passed": 6,
+      "failed": 1,
+      "retainedFailure": "Two-source ideal-plane quality control remains unresolved."
+    }
+  },
+  "fullReplay": {
+    "acceptedInputTriangles": 6147452,
+    "sourcePasses": [65, 65, 65],
+    "allPreviousOutputPositionIndexAndNormalBytesMatch": true,
+    "sourcePositionsIndicesAndSavedProjectUnchanged": true,
+    "traceCounts": {
+      "edgeEvents": 285397,
+      "acceptedRawTriangles": 101966,
+      "rawVertices": 52974,
+      "differingReusedPoints": 9,
+      "maxReuseDeltaMm": 6.340320640027871e-5,
+      "hotVertices": 272,
+      "hotCells": 1097,
+      "hotOccurrences": 2122
+    },
+    "nonmanifoldEdges": 165,
+    "duplicateFaceGroups": 7
+  },
+  "originAssociations": {
+    "multipleRawOriginWorkRoots": 5,
+    "singleRawOriginWorkRoot": 160,
+    "anyRawOriginCellOnWorkRootBoundary": 18,
+    "allRawOriginCellsOnWorkRootBoundary": 10,
+    "edgeLengthsMm": {
+      "count": 165,
+      "minimum": 0.41819661789678386,
+      "median": 0.4943873246591765,
+      "maximum": 0.7212921280522225
+    },
+    "hotVertexLatticeEdgeMultiplicity": {
+      "count": 272,
+      "minimum": 1,
+      "median": 3.0,
+      "maximum": 4
+    },
+    "projectionBranches": {
+      "endpoint-a": 1131,
+      "endpoint-b": 987,
+      "mean-projections": 4
+    },
+    "independentProjectionControls": 3,
+    "independentProjectionOccurrencesVerified": 2122
+  },
+  "worstVertexMechanism": {
+    "recordedOutputDistanceToFullSourceSurfaceMm": 1.0130738240370794,
+    "sourceSignedDistancesMm": [-1.1660618156911136, 0.9779079149025148],
+    "bothClassifiedInterior": true,
+    "retainedMeanDistanceMm": -0.09407695039429936,
+    "endpointProjectionSelected": true,
+    "originCellTouchesWorkRootUpperZ": true,
+    "interpretation": "In this private reference, distant opposite signed samples cancel to a near-zero aggregate that selects an endpoint projection. This is not established as native application behavior or a complete explanation of all defects."
+  },
+  "independentHotCornerComparison": {
+    "diagnosticCorners": 3702,
+    "allSourceTriangles": 6147452,
+    "analyticControls": 5,
+    "underGlobalNearestByMoreThan1e6Mm": 0,
+    "maximumObservedUnderestimateMm": 5.278870474079156e-8,
+    "maximumLocalOverestimateMm": 0.6312560979458386,
+    "scope": "Nearest points on complete posed source surfaces. This selected diagnostic corner set is not a replacement for full-size acceptance."
+  },
+  "staticIterator": {
+    "constructorAndMethodsInspected": 6,
+    "instructionsIndependentlyDecoded": 56,
+    "sourceCountReadFromTriangleContainer": true,
+    "initialCachedRecordIndex": 0,
+    "advanceIsSequentialIndexAccess": true,
+    "additionalFilterInInspectedMethods": false,
+    "scope": "Bound constructor vtable and five entry methods from retained image bytes. Container/controller and runtime equivalence remain separate gates."
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-field-provenance-r1-red",
+      "expectedExitCode": 1,
+      "receiptSha256": "d33b78f70163d64e069640d9969469d25b6f959d00a1e1b38e47e4b28fa56f10",
+      "peakOwnedJobBytes": 38899712,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-field-provenance-r1-green",
+      "expectedExitCode": 0,
+      "receiptSha256": "b44cad1b11ca9b01827e4325360fdde0e635a2f6f5d3eedebf52e638e947d9fa",
+      "peakOwnedJobBytes": 37986304,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-field-provenance-r1-regression",
+      "expectedExitCode": 1,
+      "receiptSha256": "4d9e14fdfb21b1f4c50fcbafbc488e40fcd35a77767b91b7bfff80146a656d4c",
+      "peakOwnedJobBytes": 38240256,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-aligned-provenance-r1",
+      "expectedExitCode": 0,
+      "receiptSha256": "38e8c6460a74cc4c1fda31516b5a90d932e7a78d88ba7255fa47a0828ffe5140",
+      "peakOwnedJobBytes": 1031958528,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-source-iterator-r1",
+      "expectedExitCode": 0,
+      "receiptSha256": "0824eef858d01db8945e0fd0b3343daa42bca6963509edd1c5312a4b12ad90de",
+      "peakOwnedJobBytes": 969854976,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-source-iterator-methods-r1",
+      "expectedExitCode": 0,
+      "receiptSha256": "2614cda2161887bca5e5e3d54b8225e4b470a5fb69d4306560b1c51cc9300d8f",
+      "peakOwnedJobBytes": 731521024,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-hot-corner-source-r1",
+      "expectedExitCode": 0,
+      "receiptSha256": "9e7a31aa1e482c9162c7beecd65a552ce7585d91241afdd6e71f5b24e31b3ddc",
+      "peakOwnedJobBytes": 693305344,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    }
+  ],
+  "peakOwnedJobBytes": 1031958528,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "privateTracingAdvertised": false,
+    "productionVoxelBackendReplaced": false
+  },
+  "limitations": [
+    "The trace confirms the private output and its arithmetic associations, not native reconstruction equivalence or a native defect.",
+    "Only 18 bad edges have a raw originating cell directly on a work-root boundary; boundary behavior cannot explain all bad edges by itself.",
+    "Near-exact quantization reuse and endpoint projection associations do not justify changing native precision or adding a generic mesh cleanup.",
+    "Native mutable globals, cached source state, complete controller/scheduling, point-cloud reconstruction and integrated GUI/MCP/history/cancel/save/rendered acceptance remain open.",
+    "Previous private extraction source hashes identify historical code. This traced replay uses the new diagnostic-only extractor and verifies identical final buffers. Production provider files were unchanged.",
+    "No full application build was run because application code and behavior did not change."
+  ],
+  "privateProofSha256": "43a896ccd6555c2379817ad9a55eb6606de1d59873eb40a2377aa83d37f11c57"
+}

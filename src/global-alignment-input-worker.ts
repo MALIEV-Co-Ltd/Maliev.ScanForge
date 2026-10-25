@@ -21,11 +21,17 @@ if (
   scope.onmessage = ({ data }) => {
     try {
       const result = executeGlobalAlignmentInputPreparation(data);
-      scope.postMessage({ result }, [
-        result.vertices.buffer,
-        result.triangles.buffer,
-        result.normals.buffer,
-      ]);
+      scope.postMessage(
+        { result },
+        [
+          result.vertices.buffer,
+          result.triangles.buffer,
+          result.normals.buffer,
+          result.flags.buffer,
+        ].filter(
+          (buffer): buffer is ArrayBuffer => buffer instanceof ArrayBuffer,
+        ),
+      );
     } catch (error) {
       scope.postMessage({
         error: error instanceof Error ? error.message : String(error),

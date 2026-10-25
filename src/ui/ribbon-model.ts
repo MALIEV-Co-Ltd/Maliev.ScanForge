@@ -1,4 +1,6 @@
 import { ribbonVerification } from "./ribbon-verification";
+import type { Entity } from "../types";
+import { supportsSampledGeometry } from "../reference-entity";
 
 export const RIBBON_ACTION_IDS = [
   "newDocument",
@@ -39,6 +41,7 @@ export const RIBBON_ACTION_IDS = [
   "splitMesh",
   "wireframe",
   "objectColor",
+  "autoColorize",
   "fitSurface",
   "nurbsSurface",
   "newFreeform",
@@ -288,7 +291,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
       ),
       group(
         "Colors",
-        planned("autoColorize", "Auto colorize", "color"),
+        tool("autoColorize", "Auto colorize", "color"),
         planned("defaultColor", "Set default color", "color"),
         tool("objectColor", "Object color", "color", true),
       ),
@@ -524,6 +527,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 ];
 
 export interface RibbonState {
+  selectionKind?: Entity["kind"];
   landmarkSourceId?: string | null;
   interactiveTargetError?: string | null;
   globalAlignmentError?: string | null;
@@ -569,6 +573,34 @@ export function ribbonToolAvailability(
     return { available: false, reason: state.globalAlignmentError };
   if (tool.requiresSelection && !state.hasSelection)
     return { available: false, reason: "Select an object first" };
+  if (
+    state.selectionKind &&
+    !supportsSampledGeometry({ kind: state.selectionKind }) &&
+    (tool.requiresSelection ||
+      [
+        "reducePolygons",
+        "reduceNoise",
+        "scaleMesh",
+        "flipNormals",
+        "shrinkwrap",
+        "repolygonize",
+        "averageMesh",
+        "mirrorMesh",
+        "unroll",
+        "splitMesh",
+        "repairMesh",
+        "segmentMesh",
+        "smoothMesh",
+        "decimateMesh",
+        "prepareScan",
+      ].includes(tool.action)) &&
+    !["measure", "objectColor", "wireframe", "delete"].includes(tool.action)
+  )
+    return {
+      available: false,
+      reason:
+        "This command requires sampled mesh, point-cloud or CAD geometry.",
+    };
   if (tool.action === "undo" && !state.canUndo)
     return { available: false, reason: "Nothing to undo" };
   if (tool.action === "redo" && !state.canRedo)

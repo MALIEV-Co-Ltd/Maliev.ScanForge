@@ -3,16 +3,25 @@ import type { ScanFile } from "./import-parser";
 export interface AscPointCloud {
   positions: Float32Array;
   normals?: Float32Array;
+  pointColors?: Uint8Array;
 }
+
+export type AscAttributes = "xyz-rgb" | "xyz-normal";
+export const DEFAULT_ASC_ATTRIBUTES: AscAttributes = "xyz-rgb";
 
 /** Two bounded streaming passes retain every point without retaining the full text. */
 export async function readAscPointCloud(
   file: ScanFile,
   options: {
+    attributes?: AscAttributes;
     signal?: AbortSignal;
     onProgress?: (fraction: number) => void;
   } = {},
 ): Promise<AscPointCloud> {
+  const attributes = options.attributes ?? DEFAULT_ASC_ATTRIBUTES;
+  if (attributes !== "xyz-rgb" && attributes !== "xyz-normal")
+    throw new Error("Unsupported ASC attribute interpretation.");
+  if (attributes === "xyz-rgb") return readAscColors(file, options);
   const check = () => {
     if (options.signal?.aborted)
       throw new DOMException("Import cancelled", "AbortError");
@@ -83,4 +92,120 @@ export async function readAscPointCloud(
   if (point !== count) throw new Error("ASC file changed during import.");
   options.onProgress?.(1);
   return { positions, normals };
+}
+
+/** Observed native XYZ/RGB scan formats; the explicit normal mode retains the extension. */
+async function readAscColors(
+  file: ScanFile,
+  options: { signal?: AbortSignal; onProgress?: (fraction: number) => void },
+): Promise<AscPointCloud> {
+  const check = () => options.signal?.throwIfAborted();
+  let separator: string | undefined;
+  let examined = 0;
+  const float =
+    /^[+-]?(?:(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|infinity|inf|nan)/i;
+  const integer = /^[+-]?\d+/;
+  const parse = (
+    text: string,
+    delimiter: string,
+    rgb = false,
+  ): number[] | undefined => {
+    const values: number[] = [];
+    let rest = text;
+    for (let i = 0; i < (rgb ? 6 : 3); i++) {
+      if (i && delimiter !== " ") {
+        if (!rest.startsWith(delimiter)) return;
+        rest = rest.slice(1);
+      }
+      rest = rest.trimStart();
+      const match = (i < 3 ? float : integer).exec(rest);
+      if (!match) return;
+      values.push(Number(match[0]));
+      rest = rest.slice(match[0].length);
+    }
+    return values;
+  };
+  const scan = async (
+    pass: number,
+    accept: (values: number[], colors: number[]) => void,
+  ) => {
+    const decoder = new TextDecoder("utf-8", { fatal: true });
+    let carry = "";
+    const consume = (text: string) => {
+      if (!separator) {
+        if (++examined > 50)
+          throw new Error(
+            "ASC has no XYZ record in its first 50 native reader chunks.",
+          );
+        separator = [" ", ",", ";"].find((candidate) => parse(text, candidate));
+        if (!separator) return;
+      }
+      const xyz = parse(text, separator);
+      if (!xyz) return;
+      if (
+        xyz.some(
+          (value) =>
+            !Number.isFinite(Math.fround(value)) || Math.abs(value) > 1e9,
+        )
+      )
+        throw new Error(
+          "ASC coordinates must be finite and within the supported range.",
+        );
+      const colored = parse(text, separator, true);
+      const rgb = colored?.slice(3);
+      // CRT overflow is not yet bound; reject it rather than inventing native conversion results.
+      if (
+        rgb?.some(
+          (value) =>
+            !Number.isInteger(value) ||
+            value < -2147483648 ||
+            value > 2147483647,
+        )
+      )
+        throw new Error("ASC RGB integers must fit the signed 32-bit range.");
+      accept(xyz, rgb ? rgb.map((value) => value & 255) : [255, 255, 255]);
+    };
+    for (let offset = 0; offset < file.size; offset += 1_048_576) {
+      check();
+      const end = Math.min(file.size, offset + 1_048_576);
+      carry += decoder.decode(await file.slice(offset, end).arrayBuffer(), {
+        stream: true,
+      });
+      let cursor = 0,
+        chunks = 0;
+      while (cursor < carry.length) {
+        const newline = carry.indexOf("\n", cursor);
+        const size =
+          newline >= cursor && newline - cursor < 199
+            ? newline - cursor + 1
+            : carry.length - cursor >= 199
+              ? 199
+              : 0;
+        if (!size) break;
+        if (++chunks % 4096 === 0) check();
+        consume(carry.slice(cursor, cursor + size));
+        cursor += size;
+      }
+      carry = carry.slice(cursor);
+      options.onProgress?.((pass + end / file.size) / 2);
+    }
+    carry += decoder.decode();
+    if (carry) consume(carry);
+    check();
+  };
+  let count = 0;
+  await scan(0, () => count++);
+  if (!count) throw new Error("ASC file contains no points.");
+  const positions = new Float32Array(count * 3);
+  const pointColors = new Uint8Array(count * 4);
+  let point = 0;
+  await scan(1, (xyz, rgb) => {
+    if (point >= count) throw new Error("ASC file changed during import.");
+    positions.set(xyz, point * 3);
+    pointColors.set([...rgb, 255], point * 4);
+    point++;
+  });
+  if (point !== count) throw new Error("ASC file changed during import.");
+  options.onProgress?.(1);
+  return { positions, pointColors };
 }

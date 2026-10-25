@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Stored sketch-record selection traced and internal stable-identity resolver branch implemented; source-model integration and full shared construction lifecycle remain incomplete",
+  "applicationBehaviorChanged": false,
+  "internalResolverBranchAdded": true,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+    },
+    {
+      "path": "tests/reference-circle-inputs.test.ts",
+      "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+    },
+    {
+      "path": "tests/reference-circumcenter.test.ts",
+      "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "06fcdc3e13fb0b77c85080a7bfe09262dae1cc050e8c5db3eea953b42bc9da35"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "f1549b8fe86683f3074023ac687aa7883f9592b2cb2c65888b97974ed9580935"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+    },
+    {
+      "path": "tests/reference-sketch-pick-acquisition.test.ts",
+      "sha256": "07908f5c39dc3e1c847b24500573fa32a6558011d62b42d439ba98e2fece4364"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "tests/reference-construction-resolver.test.ts",
+      "sha256": "8bed5ea0be9ad77489aa88fb53dd961f2ca18f5eb6081f65db2e3dd607ccf0f3"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "capture": {
+      "artifact": "native-construction-source-metadata-20261024-sketch-selection-r1/evidence.json",
+      "sha256": "faceea9b212cc48e764c55fe70f3824b30ccbf16ccb33a305afc5547bbe781d8",
+      "matchedCodeConstantAndMetadataBytesPerPass": 12575,
+      "twoReadsAgree": true,
+      "readBytes": 26318,
+      "regionQueries": 158,
+      "closed": true
+    },
+    "proceduresChecked": 10,
+    "instructionStartsChecked": 2953,
+    "directFlowsChecked": 301,
+    "selectedSelectionAndBindingAnchors": [
+      {
+        "address": "0x1406b19f1",
+        "instruction": "mov byte ptr [r15 + 0x100], 1",
+        "bytesSha256": "6b69ea49d5cc7fc2c744626b4be1a6663c2dafd3003b0ac3eece49726c78954d"
+      },
+      {
+        "address": "0x1406b356e",
+        "instruction": "call 0x140698040",
+        "bytesSha256": "edc210ecae2026095eb82990f31c5fd845da59c87ee18f0000bc42e2b8c4389c"
+      },
+      {
+        "address": "0x1406b359d",
+        "instruction": "cmp dword ptr [rsi + 0x11c], -1",
+        "bytesSha256": "9dce8601ca39cc6228bfd729fc9955f7f48bac56741d58407ca40436f9d990a1"
+      },
+      {
+        "address": "0x1406b35c4",
+        "instruction": "cmp rbx, qword ptr [rax + 0x168]",
+        "bytesSha256": "72245d04151a78adbaca87f5dff7d8bacf53b292cee6265cb9d258c7b99d4bfe"
+      },
+      {
+        "address": "0x1406b35d2",
+        "instruction": "call 0x140697f80",
+        "bytesSha256": "e82392e4e026a6102c1f730ae3b0776f00f16151e0e93c142e546b1e2834722e"
+      },
+      {
+        "address": "0x140698165",
+        "instruction": "cmp eax, 0x30d40",
+        "bytesSha256": "41321cf70bebc734f765dbde083762ba97d5fb901428a4439099ab970fb80f4a"
+      },
+      {
+        "address": "0x14069816d",
+        "instruction": "jb 0x1406982ed",
+        "bytesSha256": "513ae2b5920eeca8ee0564eb63fe546471a8e3d6422eb5ba2c8daeee3d68fc2d"
+      },
+      {
+        "address": "0x14069821b",
+        "instruction": "call qword ptr [rdx + 0x1d8]",
+        "bytesSha256": "fae042a765060ed20ab31c7dac7cd2f948cffb1606a6ee6e84803dd959b23f9e"
+      },
+      {
+        "address": "0x14069823a",
+        "instruction": "call qword ptr [r8 + 0x1e8]",
+        "bytesSha256": "0b7f98f07645655e05cf8170bf162f269da090ac1d6efbb4dfd4634412dc09a6"
+      },
+      {
+        "address": "0x14069824a",
+        "instruction": "call qword ptr [rdx + 0x170]",
+        "bytesSha256": "3f6df0cbc47d04418060b852c907bd442cc79ddc8bdf96f9977bf4c28f352f17"
+      },
+      {
+        "address": "0x140698290",
+        "instruction": "lea eax, [rdi + 0x30d40]",
+        "bytesSha256": "27b309a047ad30a90a2fa6df9c2d75f445c6cc7acace41491c4c91fbc1685b66"
+      },
+      {
+        "address": "0x140698298",
+        "instruction": "je 0x1406982bb",
+        "bytesSha256": "03bd82dbf6f2d768f3041a00ffd984fc9ed5413955855454754c5c8497d26eea"
+      },
+      {
+        "address": "0x1406982bf",
+        "instruction": "mov qword ptr [rdi + 0x18], r15",
+        "bytesSha256": "0c2b7ded05b179a7127ceabb8268cffc3745cc067eb1d7a99579064a86cfaad5"
+      },
+      {
+        "address": "0x1406982c3",
+        "instruction": "mov dword ptr [rdi + 0x20], r14d",
+        "bytesSha256": "50fc15a64ce295a190f2ce726c810b09c06517c80d895fe24bccead56e342c9b"
+      },
+      {
+        "address": "0x1406982c7",
+        "instruction": "mov dword ptr [rdi + 0x24], ecx",
+        "bytesSha256": "ae717a911bb207e9e869b58d62bf4ab3b273f876d02eb7211a02dd8cb7545392"
+      },
+      {
+        "address": "0x1406982ce",
+        "instruction": "cmovne r12, qword ptr [rbp - 0x39]",
+        "bytesSha256": "8958df3ec82004f4954abf996f289339bef78d41ad04a4c16a0f8e35319dcedd"
+      },
+      {
+        "address": "0x1406982e0",
+        "instruction": "mov rax, r12",
+        "bytesSha256": "c2dbe0e8ee765c6eb27b086a78255d866135e2d25aaf074e565b4ebe1ec61e3c"
+      },
+      {
+        "address": "0x14069801c",
+        "instruction": "mov dword ptr [rbx + 0x20], ecx",
+        "bytesSha256": "89adf0a8b0d019556ef63153fad0ca1a50eb20c3ed938f56b7510e8f76b2632c"
+      },
+      {
+        "address": "0x140698023",
+        "instruction": "mov dword ptr [rbx + 0x24], esi",
+        "bytesSha256": "9279aa9c97e99ed8c683688a572d76bc25aaa444f84957b4de7442b414889c65"
+      }
+    ],
+    "scope": "Static decoding plus identity-bound repeated passive code, descriptors, vtable and selected exception-entry reads. No target calls, writes, geometry-buffer reads, UI input or preserved-image execution."
+  },
+  "contracts": {
+    "selectionState": "The line tool embeds the shared selector and enables sketch selection. Cached owner, child, child index and record index are separate. The updater locates the supplied child by pointer in the owner list.",
+    "storedRecordNamespace": "Selection values >=200000 use scene iterator order and its +0x230 object predicate, then sketch owner, child and stored +0x170 record order. Match assigns child pointer, child index and record index. Owner return is gated by the selector sketch flag. Lower values use separate child/object paths.",
+    "lineHoverAdmission": "Reject sketch selection with record index -1 and exclude the line being constructed.",
+    "selectionDrawing": "The selected drawing caller initializes child/record counters at 10000/200000, disables alternate/control-record flags and uses +0x170 records. Recursive child drawing exists; nested-group index correspondence remains unresolved.",
+    "highlightPrecision": "Selected-record highlight transforms original Float64 local coordinates before final Float32 display conversion. Do not reuse click acquisition, which also rounds local coordinates first.",
+    "genericHitTesting": "Separate provider and scan branches remain to be fully bound and validated numerically; full-code matching alone does not establish their complete behavior."
+  },
+  "implemented": [
+    "resolveSketchConstructionPick binds source ID, child ID and record index against an already resolved ordered snapshot.",
+    "Returns detached selection description, retained Float32 object pick and evaluated primitive from the existing ordered nearest-record resolver.",
+    "Rejects source mismatch, missing/duplicate child identities, invalid record indices and nonfinite canonical source data.",
+    "Stable arbitrary application string IDs are adapter policy, not native viewport numbers. No missing legacy records are fabricated."
+  ],
+  "verification": {
+    "red": "New resolver suite failed to import the absent module before implementation.",
+    "build": {
+      "passed": true,
+      "heapMiB": 3072,
+      "jobLimitBytes": 4294967296,
+      "elapsedSeconds": 32.94448700000066,
+      "peakAggregateBytes": 2498154496,
+      "bundle": "scanforge-9f1d31f32b856ccc"
+    },
+    "focused": {
+      "passed": 299,
+      "files": 12,
+      "newAnalyticTests": 12
+    },
+    "full": {
+      "passed": 48324,
+      "skipped": 64,
+      "passedFiles": 616,
+      "skippedFiles": 18,
+      "elapsedSeconds": 263.82663950001006,
+      "peakAggregateBytes": 973811712
+    },
+    "receipts": [
+      {
+        "label": "construction-line-selection-noanalysis-r1",
+        "sha256": "227de98f9d2f381905dee511b1ecd254df97c8aa83c8551a7b5fff2cc8545188",
+        "exitCode": 0,
+        "elapsedSeconds": 11.571727000002284,
+        "peakAggregateBytes": 729460736,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-hit-selection-noanalysis-r1",
+        "sha256": "fa34bfc31906aacbc7cb4e6aa3a95fc6f9fdae0d5f2b0d1b87626baa45495eaf",
+        "exitCode": 0,
+        "elapsedSeconds": 11.87846669999999,
+        "peakAggregateBytes": 772169728,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-line-selection-setup-noanalysis-r1",
+        "sha256": "58febc7b3e41e5561c69887af30bd3bb959f1d646deceff0dd1365eb72b8531c",
+        "exitCode": 0,
+        "elapsedSeconds": 11.72957579998183,
+        "peakAggregateBytes": 752398336,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selector-table-r1",
+        "sha256": "648692408dfb7cab756595b1c0120f3981c0212fb3cc2cff9bdc8a714ef3594b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.2588910000049509,
+        "peakAggregateBytes": 94568448,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selector-render-noanalysis-r1",
+        "sha256": "41366a62584ca533ee8748bcc3a311c9e7a1b54851de833906ade8d9f34e5859",
+        "exitCode": 0,
+        "elapsedSeconds": 11.727011699986178,
+        "peakAggregateBytes": 1153400832,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selection-draw-noanalysis-r1",
+        "sha256": "1b29828d1350e53cb5cb0d47b9b8381a4518472674d779c39db90ae08fd7ea8f",
+        "exitCode": 0,
+        "elapsedSeconds": 11.42369000002509,
+        "peakAggregateBytes": 740941824,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selection-points-noanalysis-r1",
+        "sha256": "71888a848f775e6788884a283b8d267aaa90fe9d4fcfbf50ebeb9f3cebc74ac4",
+        "exitCode": 0,
+        "elapsedSeconds": 11.373799799999688,
+        "peakAggregateBytes": 1156182016,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selection-semantics-r1",
+        "sha256": "a19dbe57ab6def10f077f9e3b8332a6ef5681f6417dedd36fb46fc411dcee6bf",
+        "exitCode": 0,
+        "elapsedSeconds": 0.2585724999953527,
+        "peakAggregateBytes": 97009664,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-selection-bindings-r1",
+        "sha256": "e7dce643c00db3a3fb8f6b7359f6eca20deb1c6aceaed0f3628e96572e1de61b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.3093168000050355,
+        "peakAggregateBytes": 105394176,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-construction-resolver-r1-red",
+        "sha256": "fb7cac24d6901223858e9b3ff93b4293cfe880ffed2b8ea70e4bb4f0234088aa",
+        "exitCode": 1,
+        "elapsedSeconds": 0.6120351999998093,
+        "peakAggregateBytes": 258568192,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-construction-resolver-r1-format",
+        "sha256": "30b5a7ed732215fdd1ff0c4df8e7755b4763782dc14cd28b8054d1c9112a219b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.20857230000547133,
+        "peakAggregateBytes": 95268864,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-construction-resolver-r1-build",
+        "sha256": "e1cffaa6c0e39668410cd9ce4cf177fa17b28ac30640988df5ceb192722da83a",
+        "exitCode": 0,
+        "elapsedSeconds": 32.94448700000066,
+        "peakAggregateBytes": 2498154496,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-construction-resolver-r1-green",
+        "sha256": "10057805b55072953b13ac7c6133cbfe5a2f4c670541836e28db3bd0edf31940",
+        "exitCode": 0,
+        "elapsedSeconds": 3.08700040000258,
+        "peakAggregateBytes": 374243328,
+        "cleanedUp": true
+      },
+      {
+        "label": "reference-construction-resolver-r1-full",
+        "sha256": "fa07d7fec50e4254dbc48c0cc2d9467f86ba7f6c7f28a4da1fee5e0e1cc02b0a",
+        "exitCode": 0,
+        "elapsedSeconds": 263.82663950001006,
+        "peakAggregateBytes": 973811712,
+        "cleanedUp": true
+      }
+    ],
+    "unchangedPriorSourcePins": [
+      {
+        "path": "src/reference-geometry-numerics.ts",
+        "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+      },
+      {
+        "path": "tests/reference-circle-inputs.test.ts",
+        "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+      },
+      {
+        "path": "tests/reference-circumcenter.test.ts",
+        "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+      },
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+      },
+      {
+        "path": "src/sketch-frame.ts",
+        "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+      },
+      {
+        "path": "src/types.ts",
+        "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+      },
+      {
+        "path": "docs/AGENT_GUIDE.md",
+        "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+      },
+      {
+        "path": "docs/MCP_ARCHITECTURE.md",
+        "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+      },
+      {
+        "path": "src/reference-source-primitives.ts",
+        "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+      },
+      {
+        "path": "tests/reference-sketch-pick-acquisition.test.ts",
+        "sha256": "07908f5c39dc3e1c847b24500573fa32a6558011d62b42d439ba98e2fece4364"
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": {
+    "scope": "Internal shared resolver branch only. GUI/MCP operations, agent usage and discovery unchanged.",
+    "existingSharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "plannedSharedOperations": [
+      "reference_construction_sources",
+      "reference_construction_edit",
+      "reference_construction_get",
+      "reference_construction_apply"
+    ],
+    "requiredIntegration": "Add genuine ordered defining records to common sketch storage, preserve three-point provenance and stable source identities, then share scene snapshots, revision/lock/eligibility/resource/cancellation checks, dependency refresh, acceptance/history/persistence and structured diagnostics between GUI/MCP. Do not advertise incomplete modes."
+  },
+  "limitations": [
+    "No native numerical fixture, original-native save/reopen or rendered GUI/MCP acceptance is established.",
+    "Current Sketch v1 lacks common child order and retained three-point input provenance; the resolver cannot consume display geometry as a substitute.",
+    "This is the selected sketch branch, not a complete resolveReferenceConstructionInputs scene operation.",
+    "Generic hit-test provider/scan behavior, nested-group selection and remaining point/CAD retained fields require more evidence.",
+    "Some selected methods span multiple exception fragments; entry metadata alone is not their whole extent.",
+    "Decompiler-inferred void return for the selector is not authoritative; the caller consumes the owner result and instructions put it in RAX on the return path.",
+    "Scene revision, locks, permission, resources, cancellation, dependency refresh and publication remain host responsibilities and are not implemented by this pure branch."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-line-selection-setup-noanalysis-r1/evidence.json",
+      "sha256": "0699c0824c00fdf9f02207c585b528dcfeab0a875bfca7e76b3023c317d80783"
+    },
+    {
+      "artifact": "construction-line-selection-noanalysis-r1/evidence.json",
+      "sha256": "8385fc406a8c7aa6b7bc66752709bec456e3baf785133e696df052069ad98ad1"
+    },
+    {
+      "artifact": "construction-sketch-hit-selection-noanalysis-r1/evidence.json",
+      "sha256": "628d01001ea99cc36afbe5364c3d8b08be0743ec231535f32fe315edddfaedbf"
+    },
+    {
+      "artifact": "construction-sketch-selector-render-noanalysis-r1/evidence.json",
+      "sha256": "df09e25d7b8154cd389ec357244ed81199b4b9e6bcb63cbb21a46cd7681267e8"
+    },
+    {
+      "artifact": "construction-sketch-selection-draw-noanalysis-r1/evidence.json",
+      "sha256": "5beabc7cf3d44a8e9b48afd0f4d414076bb74b6ce5941ca03ee05cae3d0394da"
+    },
+    {
+      "artifact": "construction-sketch-selection-points-noanalysis-r1/evidence.json",
+      "sha256": "a0c6b7b8b161a43f2dff657b107ae990658c0fd7462d6779fb7f604549e5b051"
+    },
+    {
+      "artifact": "construction-sketch-selection-semantics-r1.json",
+      "sha256": "c25c8e3f0bdebbc90e8d454d1ab6263f9972bcd5bd3cb4250238bed836b25cd9"
+    },
+    {
+      "artifact": "construction-sketch-selection-code-bindings-r1.json",
+      "sha256": "788f8fbd04765ebb2941decffa8ae963e49edfc188054797ccb0f459ce6b9681"
+    },
+    {
+      "artifact": "construction-sketch-selector-table-r1.json",
+      "sha256": "1b96ddbc7c3524adc7917d4d085c23067e591254bb58bdedb5a64894e7c4fd21"
+    }
+  ]
+}

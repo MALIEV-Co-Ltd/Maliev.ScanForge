@@ -7,8 +7,9 @@ import {
 import type { Vec3 } from "./types";
 import type { NavigationCamera } from "./camera-gizmo";
 const ORIGIN_MARKER_RADIUS = 0.7;
+const ORIGIN_AXIS_LENGTH = 35;
 
-/** Keep the origin dot six CSS pixels across, independent of model size or zoom. */
+/** Keep origin guides readable at every zoom; dimensions here are CSS pixels. */
 export function updateOriginMarker(
   group: THREE.Group,
   camera: NavigationCamera,
@@ -26,6 +27,10 @@ export function updateOriginMarker(
   const worldHeight =
     (2 * (perspective ? depth : 1)) /
     Math.abs(camera.projectionMatrix.elements[5]);
+  const guideScale = (60 * worldHeight) / (viewportHeight * ORIGIN_AXIS_LENGTH);
+  if (Number.isFinite(guideScale) && guideScale > 0)
+    for (const child of group.children)
+      if (child !== marker) child.scale.setScalar(guideScale);
   const scale = (3 * worldHeight) / (viewportHeight * ORIGIN_MARKER_RADIUS);
   if (Number.isFinite(scale) && scale > 0) marker.scale.setScalar(scale);
 }
@@ -77,7 +82,13 @@ export function createOriginGeometry(
 ): THREE.Group {
   const group = new THREE.Group();
   group.name = "World origin";
-  group.add(new THREE.AxesHelper(35).setColors(0xff0000, 0x00ff00, 0x0000ff));
+  group.add(
+    new THREE.AxesHelper(ORIGIN_AXIS_LENGTH).setColors(
+      0xff0000,
+      0x00ff00,
+      0x0000ff,
+    ),
+  );
   const colors = { OXY: 0x669bd1, OYZ: 0xdb7971, OXZ: 0x79ba8c };
   for (const plane of ORIGIN_PLANES) {
     const frame = coordinateSketchFrame(plane, 0);

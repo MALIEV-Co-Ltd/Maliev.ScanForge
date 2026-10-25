@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal CAD-axis resolution from ordered projected snapshots",
+  "behavior": [
+    "Round and promote the retained pick through Float32 before squared-distance comparison.",
+    "Reject projected X values whose native Float32 sentinel subtraction fails the epsilon gate.",
+    "Preserve strict nearest selection in original traversal order under promoted Float32 maximum squared distance.",
+    "Inspect axis parameters only after choosing the nearest face; no farther eligible-face retry.",
+    "Reuse established OpenCascade positive-extent axis conversion; missing source and unsuccessful extraction remain distinct."
+  ],
+  "sources": [
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "3279abf252bb55cfc9c6bc4de1f7de28bcfbecfe72aebb55b9e048dd03cd675e"
+    },
+    {
+      "path": "tests/reference-cad-pick.test.ts",
+      "sha256": "59f5cdb21c0134e8401cca28ea8099934d5345b1051c3694b092256579dfee42"
+    },
+    {
+      "path": "src/scan-native-datum-cad.ts",
+      "sha256": "12059517e8b582799e52ad0aab2afdbfd2eb926e9a93d11012cd3ba59ca1c150"
+    }
+  ],
+  "nativeBasis": {
+    "existing": "reference-source-resolution-20261023.json",
+    "retainedStaticProofSha256": "fa24dc2036a0478d25640543ae3979032b267a99588f45cb659f3c1f4f33f74b",
+    "independentlyDecodedInstructions": 31,
+    "projectionFailureScalar": 3.4028234663852886e38,
+    "nativeExecution": false
+  },
+  "verification": {
+    "red": {
+      "receiptSha256": "627f3628d3e9e1d553b23a16449365fd6e992e6c253327b3237939ebc93796bd",
+      "exitCode": 1,
+      "elapsedSeconds": 0.663276399980532,
+      "peakJobMemoryBytes": 307154944
+    },
+    "build": {
+      "receiptSha256": "b74420970be62f7ea6b27debbbd2ded08cb09337b1ac8e7f716ae0d6db4bd806",
+      "exitCode": 0,
+      "elapsedSeconds": 33.4994646999985,
+      "peakJobMemoryBytes": 2563616768
+    },
+    "focused": {
+      "receiptSha256": "8b26c042b54f9cbce50ff55ca9ac014635de5687ac37aa3a470e5bbef8b2f897",
+      "exitCode": 0,
+      "elapsedSeconds": 1.070897600002354,
+      "peakJobMemoryBytes": 315305984
+    },
+    "format": {
+      "receiptSha256": "c7b78571ca894a18bf9a95013a94a95773fba7e84efb5f7c399fdefa7547ce58",
+      "exitCode": 0,
+      "elapsedSeconds": 0.2591936999815516,
+      "peakJobMemoryBytes": 108421120
+    },
+    "testsPassed": 178,
+    "testFiles": [
+      {
+        "path": "tests/cad-alignment-reference.test.ts",
+        "passed": 105
+      },
+      {
+        "path": "tests/reference-cad-pick.test.ts",
+        "passed": 12
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-source-primitives.test.ts",
+        "passed": 28
+      }
+    ],
+    "buildIdentitySha256": "b5c822e2e7b113096451c333983ec2525cccfc131b49c010a71f9e49687347a5",
+    "aggregateMemoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": {
+    "internalHelper": "resolvePickedCadReferenceAxis",
+    "publicOperationAdded": false,
+    "catalogChanged": false,
+    "publicationGate": "GUI/MCP reference construction remains unfinished and undiscoverable. Provider projection, owner traversal, source admission and refresh must be integrated through shared host operations."
+  },
+  "acceptance": {
+    "analyticRegression": true,
+    "existingCadFixturesRegressed": true,
+    "newNativeRuntimeComparison": false,
+    "renderedConstruction": false,
+    "completeFeature": false
+  }
+}

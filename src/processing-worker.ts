@@ -40,6 +40,7 @@ import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
 import { prepareScanRenderData } from "./scan-render-data";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -68,6 +69,7 @@ function summarize(topology: MeshTopology): TopologySummary {
 }
 let geometryKey: number | undefined;
 let canonicalPositions: ProcessingRequest["positions"] | undefined;
+let borrowedCanonical = false;
 let topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
 const selectedSmoothing = new SelectedSmoothingPool();
 let scanPreview: ScanPreviewSession | undefined;
@@ -109,6 +111,13 @@ scope.onmessage = async ({ data: incoming }) => {
     clearTimeout(previewExpiry);
     topologyCache = {};
     canonicalPositions = incoming.positions;
+    borrowedCanonical =
+      incoming.kind === "report" &&
+      (incoming as ProcessingRequest & { borrowedReportSource?: true })
+        .borrowedReportSource === true &&
+      incoming.positions instanceof Float32Array &&
+      typeof SharedArrayBuffer !== "undefined" &&
+      incoming.positions.buffer instanceof SharedArrayBuffer;
   } else if (canonicalPositions)
     request = { ...incoming, positions: canonicalPositions };
   geometryKey = key;
@@ -153,6 +162,18 @@ scope.onmessage = async ({ data: incoming }) => {
     }
   }
   try {
+    if (borrowedCanonical && request.kind !== "report" && canonicalPositions) {
+      // Every later command owns a private source, retaining already-built adjacency.
+      const borrowed = canonicalPositions;
+      const privatePositions = borrowed.slice();
+      if (topologyCache.positions === borrowed)
+        topologyCache.positions = privatePositions;
+      if (previousCache.positions === borrowed)
+        previousCache.positions = privatePositions;
+      canonicalPositions = privatePositions;
+      request = { ...request, positions: privatePositions };
+      borrowedCanonical = false;
+    }
     const tolerance = preparationTolerance(request);
     const persistent =
       tolerance !== undefined && typeof indexedDB !== "undefined"
@@ -385,6 +406,7 @@ scope.onmessage = async ({ data: incoming }) => {
         maxVertexDisplacement: reduced.maxVertexDisplacement,
       };
     } else if (request.kind === "segment") {
+      const tolerance = request.tolerance;
       const segmented = segmentMesh(request.positions, {
         tolerance: request.tolerance,
         angleDegrees: request.angleDegrees,
@@ -412,7 +434,7 @@ scope.onmessage = async ({ data: incoming }) => {
           "Classifying surface regions",
         );
         return classifyRegion(positions, {
-          tolerance: request.tolerance,
+          tolerance,
           onProgress: (fraction, stage) => progress(fraction, stage),
         });
       });
@@ -496,6 +518,10 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = {
           vertices,
           triangles: Uint32Array.from(request.sourceIndexed.triangles),
+          geometryNormals: rotateIndexedNormals(
+            meshGeometryNormals(request.sourceIndexed),
+            registration.transform.rotation,
+          ),
           ...(request.sourceIndexed.normals
             ? {
                 normals: rotateIndexedNormals(
@@ -553,19 +579,17 @@ scope.onmessage = async ({ data: incoming }) => {
           r[8],
           t[2],
         ];
+        const sourceLandmarks = request.sourceLandmarks;
         const seeds = nativeAlignmentOriginalVertexIndices(
           Float32Array.from(request.sourceIndexed.vertices),
-          Array.from(
-            { length: request.sourceLandmarks.length / 3 },
-            (_, id) => ({
-              fixed: false,
-              point: request.sourceLandmarks.slice(id * 3, id * 3 + 3) as [
-                number,
-                number,
-                number,
-              ],
-            }),
-          ),
+          Array.from({ length: sourceLandmarks.length / 3 }, (_, id) => ({
+            fixed: false,
+            point: sourceLandmarks.slice(id * 3, id * 3 + 3) as [
+              number,
+              number,
+              number,
+            ],
+          })),
         );
         const refined = await refineNativeLandmarkAfterCoarse(
           request.sourceIndexed,
@@ -582,7 +606,7 @@ scope.onmessage = async ({ data: incoming }) => {
           },
         );
         result.indexedMesh = refined.indexedMesh;
-        result.positions = expandPlyTopology(refined.indexedMesh);
+        result.positions = expandPlyTopology(refined.indexedMesh, true);
         result.refinement = refined.refinement;
         result.selection = refined.selection;
         Object.assign(result.diagnostics, refined.diagnostics, {
@@ -638,15 +662,13 @@ scope.onmessage = async ({ data: incoming }) => {
     for (const segment of result.scanEdit?.segments ?? [])
       transfers.push(segment.buffer);
     if (result.selection) transfers.push(result.selection.buffer);
-    // Preserve the existing weld-based display normals, but never perform their
-    // welding/statistics on the UI thread when the aligned mesh is displayed.
-    if (
-      request.kind === "paired" &&
-      request.sourceIndexed &&
-      result.positions
-    ) {
+    // Display borrows the computed state already transformed with the mesh.
+    if (result.indexedMesh && result.positions) {
       progress(0.99, "Preparing aligned mesh display");
-      result.renderData = prepareScanRenderData(result.positions);
+      result.renderData = prepareScanRenderData(
+        result.positions,
+        result.indexedMesh,
+      );
       if (result.renderData.normals)
         transfers.push(result.renderData.normals.buffer as ArrayBuffer);
     }
@@ -655,6 +677,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.indexedMesh.vertices.buffer);
     if (result.indexedMesh?.normals instanceof Float32Array)
       transfers.push(result.indexedMesh.normals.buffer);
+    if (result.indexedMesh?.geometryNormals instanceof Float32Array)
+      transfers.push(result.indexedMesh.geometryNormals.buffer);
     if (result.indexedMesh?.triangles instanceof Uint32Array)
       transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)
@@ -664,7 +688,10 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.noiseComparison?.renderDistances)
       transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
-    scope.postMessage({ result }, transfers);
+    // Published shared geometry stays attached; only private buffers transfer.
+    scope.postMessage({ result }, [
+      ...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer)),
+    ]);
   } catch (error) {
     // A rejected edit may have analyzed temporary geometry. Never reinterpret
     // that temporary mesh as the next request's original input.

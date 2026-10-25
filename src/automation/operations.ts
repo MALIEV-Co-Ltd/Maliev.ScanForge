@@ -5,6 +5,7 @@ import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
 import { renameObjects } from "../object-renaming";
+import { autoColorScene } from "../scene-auto-color";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
 import { createGlobalAlignmentOperations } from "./global-alignment-operations";
@@ -16,9 +17,16 @@ import {
   backupProjectId,
   BACKUP_INTERVAL_MS,
 } from "../project-backup";
-import { DEFAULT_PART_COLOR, DEFAULT_FREEFORM_COLOR } from "../appearance";
+import {
+  DEFAULT_PART_COLOR,
+  DEFAULT_FREEFORM_COLOR,
+  DEFAULT_POINT_SIZE,
+  DEFAULT_POINT_DENSITY,
+  validatePointCloudDisplay,
+} from "../appearance";
 import { CadClient } from "../cad/client";
 import { prepareImportedScan } from "../imported-scan";
+import { DEFAULT_ASC_ATTRIBUTES } from "../asc-import";
 import { beginWorkingJob } from "../working-job-status";
 import {
   importBatch,
@@ -37,6 +45,11 @@ import {
 } from "../parametric";
 import { duplicateObject, toggleObjectVisibility } from "../object-operations";
 import { scanMeshCopy } from "../scan-mesh-copy";
+import { partitionMeshSelection } from "../mesh-selection-edit";
+import {
+  assertSampledGeometry,
+  inspectReferenceEntity,
+} from "../reference-entity";
 import { partitionTriangles, selectionCount } from "../selection";
 import {
   meshStats,
@@ -51,6 +64,11 @@ import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
+import { cornerTrimSketch } from "../sketch-corner";
+import { filletSketchCorner } from "../sketch-fillet";
+import { trimSketchStroke } from "../sketch-trim";
+import { mirrorSketch } from "../sketch-mirror";
+import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
 import {
@@ -233,8 +251,14 @@ function object(state: WorkspaceSnapshot, entityId: string) {
   if (!entity) throw new Error(`Object ${entityId} is not in this project.`);
   return entity;
 }
+function sampledObject(state: WorkspaceSnapshot, entityId: string) {
+  const entity = object(state, entityId);
+  assertSampledGeometry(entity);
+  return entity;
+}
 function editable(entity: Entity, meshOnly = false) {
   if (entity.locked) throw new Error("Object is locked.");
+  assertSampledGeometry(entity);
   if (meshOnly && entity.kind === "pointcloud")
     throw new Error(
       "This tool requires triangle mesh geometry, not a point cloud.",
@@ -242,7 +266,8 @@ function editable(entity: Entity, meshOnly = false) {
   if (meshOnly && (entity.kernelId || entity.parametric))
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
-function summary(e: Entity) {
+function summary(e: Entity, scene: readonly Entity[]) {
+  const reference = inspectReferenceEntity(e, scene);
   const {
     positions,
     normals: _normals,
@@ -252,10 +277,29 @@ function summary(e: Entity) {
     meshSelection: _selection,
     indexedMesh: _indexedMesh,
     pointCloudPlacement: _placement,
+    pointColors: _pointColors,
+    reference: _reference,
     ...metadata
   } = e;
   return {
     ...metadata,
+    ...(e.kind === "pointcloud"
+      ? {
+          pointSize: e.pointSize ?? DEFAULT_POINT_SIZE,
+          pointAutoDensity: e.pointAutoDensity ?? true,
+          pointDensity: e.pointDensity ?? DEFAULT_POINT_DENSITY,
+          pointColorMode: e.pointColorMode ?? "source",
+        }
+      : {}),
+    ...(e.pointColors
+      ? {
+          pointColorAttributes: {
+            encoding: "rgba8",
+            points: e.pointColors.length / 4,
+            bytes: e.pointColors.byteLength,
+          },
+        }
+      : {}),
     pointCloudPose: cloudPlacement(e)?.matrixBits,
     ...(e.indexedMesh
       ? {
@@ -265,9 +309,10 @@ function summary(e: Entity) {
           },
         }
       : {}),
-    ...(e.kind === "pointcloud"
-      ? { points: positions.length / 3 }
-      : { triangles: positions.length / 9 }),
+    ...(reference ??
+      (e.kind === "pointcloud"
+        ? { points: positions.length / 3 }
+        : { triangles: positions.length / 9 })),
     ...(e.kind === "mesh" && !e.kernelId && !e.parametric
       ? { meshPreparation: backgroundMeshPreparation(e.positions) }
       : {}),
@@ -276,6 +321,7 @@ function summary(e: Entity) {
   };
 }
 function mask(state: WorkspaceSnapshot, e: Entity, required = true) {
+  assertSampledGeometry(e);
   const slots = e.positions.length / (e.kind === "pointcloud" ? 3 : 9);
   const selection = state.selectedId === e.id ? state.selection : null;
   if (!selection || selection.length !== slots) {
@@ -295,6 +341,7 @@ function selectedPositions(
   e: Entity,
   selectionOnly?: boolean,
 ): Positions {
+  assertSampledGeometry(e);
   if (!selectionOnly) return e.positions;
   return e.kind === "pointcloud"
     ? editPointCloud({
@@ -330,6 +377,26 @@ function meshEdited(e: Entity, positions: Positions): Entity {
 
 /** The UI and MCP call these same operation handlers; geometry always comes from the owning workspace. */
 export function createOperations(host: WorkspaceHost): Record<string, Handler> {
+  const finishSelectionEdit = (
+    source: Entity,
+    next: Entity[],
+    copy?: Entity,
+  ) => {
+    const remaining = next.find((entity) => entity.id === source.id);
+    const stride = source.kind === "pointcloud" ? 3 : 9;
+    if (remaining && remaining.positions === source.positions)
+      host.setSelection(
+        remaining.id,
+        new Uint8Array(remaining.positions.length / stride),
+      );
+    if (copy)
+      host.setSelection(
+        copy.id,
+        new Uint8Array(copy.positions.length / stride),
+      );
+    else if (!remaining)
+      host.select(source.kind === "pointcloud" ? null : (next[0]?.id ?? null));
+  };
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
     const write = () => host.commit(entities.map(retainIndexedMesh), label);
     if (c.mutate) c.mutate(write);
@@ -430,12 +497,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             entities: await restore(revision.entities),
           });
         c.check();
-        host.replace({ ...project, entities: restored }, cad, {
-          history,
-          future,
-          projectId: a.recoveryProjectId ?? session.projectId,
-        });
-        transferred = true;
+        const publish = () => {
+          host.replace({ ...project, entities: restored }, cad, {
+            history,
+            future,
+            projectId: a.recoveryProjectId ?? session.projectId,
+          });
+          transferred = true;
+          if (fit) host.view("fit");
+        };
+        if (c.mutate) c.mutate(publish);
+        else publish();
+        c.progress(0.98, "Rendering restored project");
+        await host.present?.(c.signal);
         return { objects: restored.length };
       } finally {
         if (!transferred) cad.dispose();
@@ -466,6 +540,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     } else {
       entity = await prepareImportedScan(new File([blob], name), {
         unit: a.unit ?? "mm",
+        placeAtOrigin:
+          a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
+        ascAttributes:
+          a.ascAttributes ??
+          s.settings?.importAscAttributes ??
+          DEFAULT_ASC_ATTRIBUTES,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),
       });
@@ -484,7 +564,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name: s.name,
         projectId: s.projectId,
         units: "mm",
-        objects: s.entities.map(summary),
+        objects: s.entities.map((entity) => summary(entity, s.entities)),
         selectedId: s.selectedId,
         selectedIds: s.selectedIds ?? (s.selectedId ? [s.selectedId] : []),
         selectionAnchorId: s.selectionAnchorId ?? s.selectedId,
@@ -548,28 +628,52 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         { ...c, artifactBlob: () => backup.file },
       );
     },
+    object_geometry_digest: (a, c) =>
+      digestEntityGeometry(object(host.snapshot(), a.entityId), {
+        signal: c.signal,
+        check: c.check,
+        onProgress: (fraction) => c.progress(fraction, "Hashing geometry"),
+      }),
     object_get: (a, c) => {
-      const e = object(host.snapshot(), a.entityId);
+      const state = host.snapshot(),
+        e = object(state, a.entityId);
+      const details = summary(e, state.entities);
       return {
-        ...summary(e),
+        ...details,
         ...(a.includeGeometry
           ? {
               geometry: json(
                 c,
-                {
-                  positions: Array.from(e.positions),
-                  indexedMesh: e.indexedMesh
-                    ? {
-                        vertices: Array.from(e.indexedMesh.vertices),
-                        triangles: Array.from(e.indexedMesh.triangles),
-                        ...(e.indexedMesh.normals
-                          ? { normals: Array.from(e.indexedMesh.normals) }
-                          : {}),
-                      }
-                    : undefined,
-                  normals: e.normals ? Array.from(e.normals) : undefined,
-                  edgePositions: e.edgePositions,
-                },
+                "reference" in details
+                  ? {
+                      units: "mm",
+                      semantic: details.reference.geometry,
+                      encoding: details.reference.geometryEncoding,
+                    }
+                  : {
+                      positions: Array.from(e.positions),
+                      indexedMesh: e.indexedMesh
+                        ? {
+                            vertices: Array.from(e.indexedMesh.vertices),
+                            triangles: Array.from(e.indexedMesh.triangles),
+                            ...(e.indexedMesh.normals
+                              ? { normals: Array.from(e.indexedMesh.normals) }
+                              : {}),
+                            ...(e.indexedMesh.geometryNormals
+                              ? {
+                                  geometryNormals: Array.from(
+                                    e.indexedMesh.geometryNormals,
+                                  ),
+                                }
+                              : {}),
+                          }
+                        : undefined,
+                      normals: e.normals ? Array.from(e.normals) : undefined,
+                      pointColors: e.pointColors
+                        ? Array.from(e.pointColors)
+                        : undefined,
+                      edgePositions: e.edgePositions,
+                    },
                 "geometry.json",
               ),
             }
@@ -591,6 +695,35 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           .map((entity) => ({ entityId: entity.id, visible: entity.visible })),
       };
     },
+    scene_auto_color: (_a, c) => {
+      c.check();
+      const state = host.snapshot();
+      const result = autoColorScene(state.entities);
+      const showColors = state.settings.normalsDisplay !== false;
+      if (result.changed || showColors) {
+        const write = () => {
+          if (result.changed)
+            host.commit(
+              result.entities.map(retainIndexedMesh),
+              "Auto colorize objects",
+            );
+          if (showColors) host.settings({ normalsDisplay: false });
+        };
+        if (c.mutate) c.mutate(write);
+        else {
+          c.check();
+          write();
+        }
+      }
+      return {
+        changed: result.changed,
+        normalsDisplay: false,
+        objects: result.entities.map((entity) => ({
+          entityId: entity.id,
+          color: entity.color,
+        })),
+      };
+    },
     object_rename: (a, c) => {
       const s = host.snapshot();
       const ids =
@@ -610,6 +743,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const allowed = new Set([
         "name",
         "color",
+        "pointSize",
+        "pointAutoDensity",
+        "pointDensity",
+        "pointColorMode",
         "opacity",
         "visible",
         "locked",
@@ -617,6 +754,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       ]);
       if (Object.keys(a.patch).some((k) => !allowed.has(k)))
         throw new Error("Only display and protection metadata may be updated.");
+      validatePointCloudDisplay({ ...e, ...a.patch });
+      if (
+        e.kind !== "pointcloud" &&
+        ("pointSize" in a.patch ||
+          "pointColorMode" in a.patch ||
+          "pointAutoDensity" in a.patch ||
+          "pointDensity" in a.patch)
+      )
+        throw new Error("Point display options require a point cloud.");
       commit(
         c,
         s.entities.map((x) => (x.id === e.id ? { ...x, ...a.patch } : x)),
@@ -632,31 +778,49 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return { entityId: copy.id };
     },
     object_delete: (a, c) => {
-      const s = host.snapshot(),
-        e = object(s, a.entityId);
-      editable(e);
-      if (
-        e.parametric &&
-        s.entities.some(
-          (x) =>
-            x.parametric &&
-            x.parametric.feature.id !== e.parametric!.feature.id &&
-            featureDependencies(x.parametric.feature.recipe).some(
-              (r) => r.featureId === e.parametric!.feature.id,
-            ),
+      const s = host.snapshot();
+      if (a.entityId !== undefined && a.entityIds !== undefined)
+        throw new Error("Specify entityId or entityIds, not both.");
+      const ids: string[] =
+        a.entityId !== undefined
+          ? [a.entityId]
+          : (a.entityIds ??
+            s.selectedIds ??
+            (s.selectedId ? [s.selectedId] : []));
+      if (!ids.length) throw new Error("Select at least one object to delete.");
+      const targets = new Set(ids);
+      if (targets.size !== ids.length)
+        throw new Error("Object IDs must be unique.");
+      for (const id of ids) {
+        const e = object(s, id);
+        editable(e);
+        if (
+          e.parametric &&
+          s.entities.some(
+            (x) =>
+              !targets.has(x.id) &&
+              x.parametric &&
+              x.parametric.feature.id !== e.parametric!.feature.id &&
+              featureDependencies(x.parametric.feature.recipe).some(
+                (r) => r.featureId === e.parametric!.feature.id,
+              ),
+          )
         )
-      )
-        throw new Error("Remove dependent features first.");
-      if (e.parametric?.feature.recipe.kind === "split")
-        throw new Error(
-          "Delete both split outputs together through the feature workflow.",
-        );
+          throw new Error("Remove dependent features first.");
+        if (e.parametric?.feature.recipe.kind === "split")
+          throw new Error(
+            "Delete both split outputs together through the feature workflow.",
+          );
+      }
       commit(
         c,
-        s.entities.filter((x) => x.id !== e.id),
-        "Delete object",
+        s.entities.filter((x) => !targets.has(x.id)),
+        ids.length === 1 ? "Delete object" : "Delete objects",
       );
-      return { entityId: e.id };
+      return {
+        ...(ids.length === 1 ? { entityId: ids[0] } : {}),
+        entityIds: ids,
+      };
     },
     mesh_copy: (a, c) => {
       const s = host.snapshot(),
@@ -695,6 +859,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         e = object(s, a.entityId);
       if (e.locked || e.selectable === false)
         throw new Error("Object cannot be selected.");
+      assertSampledGeometry(e);
       const pointCloud = e.kind === "pointcloud";
       if (pointCloud ? !Array.isArray(a.points) : !Array.isArray(a.triangles))
         throw new Error(
@@ -714,6 +879,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           );
         selected[triangle] = 1;
       }
+      for (const hidden of e.meshSelection?.hidden ?? []) selected[hidden] = 0;
       c.check();
       host.setSelection(e.id, selected);
       return { count: selectionCount(selected) };
@@ -729,6 +895,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           action: "extract",
           positions: e.positions,
           normals: e.normals,
+          pointColors: e.pointColors,
           selection,
         });
         let next = s.entities;
@@ -739,6 +906,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             id: id(),
             name: `${e.name} selection`,
             positions: extracted.positions!,
+            pointColors: extracted.pointColors,
+            pointCloudPlacement: undefined,
             normals: extracted.normals
               ? Array.from(extracted.normals)
               : undefined,
@@ -752,6 +921,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             action: "delete",
             positions: e.positions,
             normals: e.normals,
+            pointColors: e.pointColors,
             selection,
           });
           next = remainder.positions!.length
@@ -760,6 +930,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                   ? {
                       ...e,
                       positions: remainder.positions!,
+                      pointColors: remainder.pointColors,
+                      pointCloudPlacement: undefined,
                       normals: remainder.normals
                         ? Array.from(remainder.normals)
                         : undefined,
@@ -770,28 +942,31 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             : next.filter((entity) => entity.id !== e.id);
         }
         commit(c, next, `${a.operation} selected points`);
+        finishSelectionEdit(e, next, copy);
         return { entityId: copy?.id, points: extracted.positions!.length / 3 };
       }
-      const parts = partitionTriangles(e.positions, mask(s, e));
+      const parts = partitionMeshSelection(e, mask(s, e), id());
       let next = s.entities;
       let copy: Entity | undefined;
       if (a.operation !== "delete") {
-        copy = scanMeshCopy(e, id());
-        copy.positions = parts.selected;
+        copy = parts.selected;
         next = [...next, copy];
       }
       if (a.operation !== "copy")
-        next = parts.remainder.length
-          ? next.map((x) =>
-              x.id === e.id ? meshEdited(e, parts.remainder) : x,
-            )
+        next = parts.remainder.positions.length
+          ? next.map((x) => (x.id === e.id ? parts.remainder : x))
           : next.filter((x) => x.id !== e.id);
       commit(c, next, `${a.operation} selected triangles`);
-      return { entityId: copy?.id, triangles: parts.selected.length / 9 };
+      finishSelectionEdit(e, next, copy);
+      return {
+        entityId: copy?.id,
+        triangles: parts.selected.positions.length / 9,
+      };
     },
     mesh_analyze: async (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      assertSampledGeometry(e);
       if (e.kind === "pointcloud")
         throw new Error("Point clouds do not have triangle topology.");
       const result = await processMesh(
@@ -812,7 +987,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_process: async (a, c) => {
       const bridgePreview = validateBridgePreview(a);
       const s = host.snapshot(),
-        e = object(s, a.entityId);
+        e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
       if (
@@ -927,6 +1102,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "pointCloudEdit")
         Object.assign(request, {
           normals: e.normals,
+          pointColors: e.pointColors,
           selection: [
             "delete",
             "extract",
@@ -940,7 +1116,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
         Object.assign(request, {
-          target: object(s, a.targetId).positions,
+          target: sampledObject(s, a.targetId).positions,
           sourceTriangleMask: selection,
         });
       }
@@ -955,7 +1131,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           request,
           await prepareLandmarkRefinementTargets(
             e,
-            [object(s, a.targetId)],
+            [sampledObject(s, a.targetId)],
             (kernelId) => host.cad().alignmentMesh(kernelId),
             op.workerCount ?? 2,
             op.parallel ?? true,
@@ -979,7 +1155,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           request,
           nativeSurfaceRefinementRequest(
             e,
-            ids.map((id) => object(s, id)),
+            ids.map((id) => sampledObject(s, id)),
             op.sampleBudget,
             op.initialRadius,
             selection,
@@ -992,7 +1168,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanEdit")
         Object.assign(request, {
           selection,
-          ...(a.targetId ? { target: object(s, a.targetId).positions } : {}),
+          ...(a.targetId
+            ? { target: sampledObject(s, a.targetId).positions }
+            : {}),
         });
       if (kind === "connectedSelection")
         Object.assign(request, { seeds: mask(s, e) });
@@ -1039,12 +1217,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             );
           op.operation.targets = reconstructionTargets(
             e,
-            (a.targetIds ?? []).map((id: string) => object(s, id)),
+            (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
           );
         }
         if (op.operation.kind === "averageMesh") {
           if (!a.targetId) throw new Error("Average mesh requires targetId.");
-          op.operation.targets = [object(s, a.targetId).positions];
+          op.operation.targets = [sampledObject(s, a.targetId).positions];
         }
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
@@ -1075,6 +1253,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? {
                 ...e,
                 positions,
+                pointColors: pointEdit ? pointEdit.pointColors : e.pointColors,
+                pointCloudPlacement: pointEdit
+                  ? undefined
+                  : e.pointCloudPlacement,
                 meshSelection: pointEdit ? undefined : e.meshSelection,
                 normals: pointEdit
                   ? pointEdit.normals
@@ -1227,6 +1409,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     analysis_deviation: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      assertSampledGeometry(e);
       if (e.positions.length > 2_250_000)
         throw new Error(
           "Deviation analysis is limited to 250,000 triangles; reduce a mesh copy first.",
@@ -1291,6 +1474,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         await releaseCreated(cad, result.entities, s.entities);
         throw error;
       }
+      if (a.selectCreated === true) host.select(result.created[0].id);
       return {
         entityIds: result.created.map((e) => e.id),
         featureId: result.created[0].parametric!.feature.id,
@@ -1329,9 +1513,77 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     sketch_set: (a, c) => {
       validateSketch(a.sketch);
+      const solution = a.solve ? solveSketch(a.sketch) : undefined;
+      if (solution && !solution.converged)
+        throw new Error(
+          `Conflicting or unsolved constraints: ${solution.conflictingConstraintIds.join(", ")}`,
+        );
       c.check();
-      host.setSketch(structuredClone(a.sketch));
-      return { updated: true };
+      host.setSketch(structuredClone(solution?.sketch ?? a.sketch));
+      return { updated: true, ...(solution ? { solution } : {}) };
+    },
+    sketch_corner_trim: (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = cornerTrimSketch(sketch, {
+        first: a.first,
+        second: a.second,
+        firstEnd: a.firstEnd,
+        secondEnd: a.secondEnd,
+      });
+      c.check();
+      if (result.changed) host.setSketch(result.sketch);
+      const { sketch: _, ...diagnostics } = result;
+      return diagnostics;
+    },
+    sketch_corner_fillet: async (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = await filletSketchCorner(
+        sketch,
+        {
+          first: a.first,
+          second: a.second,
+          firstEnd: a.firstEnd,
+          secondEnd: a.secondEnd,
+          radiusMm: a.radiusMm,
+        },
+        { signal: c.signal, check: c.check },
+      );
+      c.check();
+      host.setSketch(result.sketch);
+      const { sketch: _, ...diagnostics } = result;
+      return diagnostics;
+    },
+    sketch_trim_stroke: async (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = await trimSketchStroke(
+        sketch,
+        { stroke: a.stroke, radiusMm: a.radiusMm },
+        { signal: c.signal, check: c.check },
+      );
+      c.check();
+      if (result.changed) host.setSketch(result.sketch);
+      const { sketch: _, ...diagnostics } = result;
+      return diagnostics;
+    },
+    sketch_mirror: async (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      const result = await mirrorSketch(
+        sketch,
+        { axis: a.axis, curveIds: a.curveIds },
+        { signal: c.signal, check: c.check },
+      );
+      c.check();
+      host.setSketch(result.sketch);
+      const { sketch: _, ...copies } = result;
+      return { changed: true, ...copies };
     },
     sketch_solve: (a, c) => {
       const s = host.snapshot(),
@@ -1387,6 +1639,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     surface_fit: createSurfaceFitOperation(host),
     project_import: (a, c) => importObject(a, c),
     project_import_batch: async (a, c) => {
+      const ascAttributes =
+        a.ascAttributes ??
+        host.snapshot().settings?.importAscAttributes ??
+        DEFAULT_ASC_ATTRIBUTES;
+      const placeAtOrigin =
+        a.placeAtOrigin ??
+        host.snapshot().settings?.importPlaceAtOrigin === true;
       const names = a.artifactIds.map((artifactId: string) => {
         const blob = c.artifactBlob(artifactId);
         return (blob as File).name ?? "import.stl";
@@ -1408,6 +1667,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             return /\.(stl|obj|ply|asc)$/i.test(file.name)
               ? prepareImportedScan(file, {
                   unit: a.unit ?? "mm",
+                  placeAtOrigin,
+                  ascAttributes,
                   signal: context.signal,
                   onProgress: (fraction) =>
                     context.progress(fraction, "Importing"),

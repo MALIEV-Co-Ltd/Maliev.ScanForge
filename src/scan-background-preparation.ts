@@ -4,6 +4,10 @@ import {
   type ScanDiagnostics,
 } from "./scan-diagnostics";
 import { hasProcessingWork } from "./processing-queue";
+import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
+import { SCAN_DEFAULT_BUDGET_BYTES } from "./scan-geometry-source";
+// Optional warmup reservation policy, not an engine/process memory upper bound.
+const WARMUP_BYTES_PER_FACET = 512;
 type State = ScanDiagnostics | { phase: "scheduled" } | { phase: "inactive" };
 interface Entry {
   positions: Positions;
@@ -15,6 +19,34 @@ interface Entry {
   leave?: () => void;
 }
 let active: Entry | undefined;
+let priorityPreparations = 0;
+const priorityListeners = new Set<() => void>();
+export function hasPriorityScanPreparation(): boolean {
+  return priorityPreparations > 0;
+}
+export function watchPriorityScanPreparation(listener: () => void): () => void {
+  priorityListeners.add(listener);
+  return () => {
+    priorityListeners.delete(listener);
+  };
+}
+
+/** Imports and picking take priority over preparation without a foreground owner. */
+export function beginPriorityScanPreparation(): () => void {
+  priorityPreparations++;
+  for (const listener of priorityListeners) listener();
+  if (active) yieldSpeculativePreparation(active.positions);
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    priorityPreparations--;
+    for (const listener of priorityListeners) listener();
+  };
+}
+export function priorityScanPreparationCount(): number {
+  return priorityPreparations;
+}
 export function backgroundMeshPreparation(positions: Positions): State {
   return active?.positions === positions
     ? { ...active.state }
@@ -42,6 +74,11 @@ export function prepareMeshInBackground(
 ) {
   stopBackgroundMeshPreparation();
   if (!positions?.length || positions.length % 9) return () => {};
+  if (
+    (positions.length / 9) * WARMUP_BYTES_PER_FACET >
+    SCAN_DEFAULT_BUDGET_BYTES
+  )
+    return () => {};
   const entry: Entry = {
     positions,
     state: { phase: "scheduled" },
@@ -49,7 +86,10 @@ export function prepareMeshInBackground(
     expiresAt: Date.now() + 15 * 60 * 1000,
   };
   active = entry;
-  const allowed = () => !hasProcessingWork() && (options.canStart?.() ?? true);
+  const allowed = () =>
+    !priorityPreparations &&
+    !hasProcessingWork() &&
+    (options.canStart?.() ?? true);
   const begin = () => {
     entry.idle = undefined;
     if (entry.stopped) return;
@@ -66,7 +106,16 @@ export function prepareMeshInBackground(
       {
         prepareTopology: true,
         speculative: true,
-        onYield: () => stop(entry),
+        onYield: () => {
+          if (!priorityPreparations) {
+            stop(entry);
+            return;
+          }
+          entry.leave?.();
+          entry.leave = undefined;
+          entry.state = { phase: "scheduled" };
+          entry.timer = setTimeout(schedule, 250);
+        },
       },
     );
   };

@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-25",
+  "scope": "Internal cached numeric reference Apply and trusted source identity migration through the shared host commit",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "uncommitted; not a shipped or pushed candidate"
+  },
+  "sources": [
+    {
+      "path": "src/object-operations.ts",
+      "sha256": "024548c2e152b876dcd6d79b587fe4a4b62a4517e8291ae98fb8617443c9cbf5"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "82c5ca194487f5a56b6f86b94cce3bc9fa7ab3930ea6e02c624b5566f456a5f0"
+    },
+    {
+      "path": "src/automation/use-workspace-api.ts",
+      "sha256": "8c6a10ec198a8f0f963bc22f2a50a42dec7495a74b52a429974b5ef7a8d88500"
+    },
+    {
+      "path": "src/automation/reference-construction-apply.ts",
+      "sha256": "28b579ba3abae9c225d19b53fae3ca3f0b52d5c0646d8e801ef42968161d19fe"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "7eb48ae4193111ca281d5b3b66fc6aabb8ba758f82c13b60da1d6a0e324a45bf"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "26f8c5051311de9f7b9546408222c3b66a805801ef259d839d82b5bc9cc184ef"
+    },
+    {
+      "path": "tests/reference-construction-apply.test.ts",
+      "sha256": "b1c8d0a50253a93617412f6983069888c1117880e56c7d7f6cf01c4917025c02"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "7526e81936e08a70d52539489678915bc826e12fef9d934b998d4d3c7c82039f"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "11e4e3b36d1cfcc02c5532e8edede457086f0fc6d013ef23169dbc45ff4f251c"
+    }
+  ],
+  "behavior": [
+    "Copies cached numeric point/endpoint definition, Float64 geometry and completion state without evaluator calls on Apply.",
+    "One context.mutate/host commit publishes the reference and selected common-source missing keys.",
+    "Trusted commit policy requires deterministic absent keys, distinct policy IDs, whole-scene collision validation and identical remaining source fields/carriers.",
+    "Both App commit guards enforce the policy; ordinary commits preserve their prior argument shape and protection rules.",
+    "Existing unlocked numeric references retain identity and display metadata; locked targets, self-dependencies, known dependent references, changed source keys, stale/expired/version-mismatched sessions and duplicate destinations reject before publication.",
+    "Failed commit keeps the cached preview retryable; post-commit cleanup failure returns cleanup pending. Exact request retry cannot publish again."
+  ],
+  "mcp": {
+    "publicConstructionTools": false,
+    "catalogChanged": false,
+    "schemaChanges": null,
+    "coverage": "Shared CommandContext mutation/revision/retry semantics, stable React host proxy, actual App commit and existing history operations.",
+    "fixtureDisclosure": "Owned browser temporarily replaces one existing handler slot solely to pass the real API context to the internal helper. It does not demonstrate an available public construction command or completed GUI construction editor.",
+    "commitPolicy": "Internal host metadata only; absent from public transport inputs."
+  },
+  "validation": {
+    "red": {
+      "result": "Missing internal Apply module reproduced before implementation.",
+      "fixtureCorrection": "Initial focused run reached publication tests; three pure-policy tests failed in afterEach because fake timers were enabled only by setup. Moved fake-timer setup to beforeEach and expanded cases."
+    },
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 34.314646299986634,
+        "childPeakJobMemoryBytes": 2525302784,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "identitySha256": "eea0bc2f61b46cffbea3dd35e98b233424cb90e7c66856d857da5b8c04ad71eb"
+    },
+    "focused": {
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/** with seven absolute paths",
+      "passed": 148,
+      "failed": 0,
+      "files": 7,
+      "newTests": 18,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.493756499956362,
+        "childPeakJobMemoryBytes": 359272448,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48908,
+      "skipped": 64,
+      "failed": 0,
+      "files": 681,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 272.1396085000015,
+        "childPeakJobMemoryBytes": 992362496,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "realAppBrowser": {
+      "fixture": "Production App source with relocated module paths and real hook capture, StrictMode root, synthetic sources and test-only handler slot.",
+      "forgedMigrationRejected": true,
+      "applied": true,
+      "historyStepsAdded": 1,
+      "sourceBufferIdentityPreserved": true,
+      "sourceRemainsLocked": true,
+      "unselectedSourceUnkeyed": true,
+      "signedZeroAfterApply": true,
+      "exactRetryReceipt": true,
+      "guiUndoRemovedPointAndKey": true,
+      "sharedApiRedoRestoredPointAndKey": true,
+      "signedZeroAfterRedo": true,
+      "errors": [],
+      "warnings": [],
+      "failedResponses": [],
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.8955610999837518,
+        "childPeakJobMemoryBytes": 584159232,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshotSha256": "45bcaf1c5f73890135e72d213d72428b677332c456336cd98253fb9192e56dbf"
+    },
+    "format": {
+      "exitCode": 0,
+      "elapsedSeconds": 1.0169859000016004,
+      "childPeakJobMemoryBytes": 164790272,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "limits": [
+    "Numeric cached transaction prerequisite only; public source admission, construction tools/editor and dependency reevaluation remain unfinished.",
+    "Derived-mode acceptance rejects until source-specific finalization, including sketch-pair transitions, is implemented.",
+    "Known dependent references block numeric edits until dependency rebuild is available; this is not a completed dependency lifecycle.",
+    "Source carriers follow the existing immutable-publication contract. No source-buffer traversal/copy is introduced by identity migration; in-place external buffer writes are not authorized or detected.",
+    "Project import/restore admission for semantic references stays gated; save/reopen acceptance remains unverified.",
+    "No native runtime geometry comparison or new native feature acceptance is claimed. Native reconstruction export remains unavailable."
+  ]
+}

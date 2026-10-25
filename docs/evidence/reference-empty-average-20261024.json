@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal shared average-line common-source guard",
+  "behavior": "Empty common sources skip record binding in average mode; definition validation, prior-endpoint finalization and completion state remain. Pair mode still binds records.",
+  "nativeBasis": "reference-line-state-20261023.json and NATIVE_REFERENCE_GEOMETRY.md average common-input guard",
+  "sources": [
+    {
+      "path": "src/reference-construction-evaluation.ts",
+      "sha256": "dd3ae08f06af9eb1155dc5b0805f3b6dbdda99ceb2b84686bf3603c9b24503f9"
+    },
+    {
+      "path": "tests/reference-average-empty-sources.test.ts",
+      "sha256": "a731da449bf62b2f2255d0a4ccba2f3505bc968358f7b8857f9d5b7640f0433f"
+    },
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "b0f66c849c040c774dec907d919fdd7edd2782a7ddb008aab4dc8424436f947e"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    }
+  ],
+  "validation": {
+    "red": {
+      "sha256": "fcd3e6b78014c89e565d52f0cfb2a8edb484d73ff746466eb6e636db18c4d226",
+      "exitCode": 1,
+      "seconds": 0.6633207999984734,
+      "peakBytes": 295809024
+    },
+    "initialBuild": {
+      "sha256": "db7558b964dd347b9af8d44efd8c7971afe1e3d725b5c08f857e439418537309",
+      "exitCode": 2,
+      "seconds": 25.87214569997741,
+      "peakBytes": 2526310400
+    },
+    "build": {
+      "sha256": "a6ed64fb8b3e5c1246b15a29a3e9fd1cf8273e356bb1ce8f11962df2dcb87afc",
+      "exitCode": 0,
+      "seconds": 33.959839499992086,
+      "peakBytes": 2564182016
+    },
+    "focused": {
+      "sha256": "4ff207d68342a66a0c23ba68bb338d2c38b134930d7548590b0f4eb04cef8912",
+      "exitCode": 0,
+      "seconds": 1.5221635999914724,
+      "peakBytes": 304877568
+    },
+    "format": {
+      "sha256": "e29f013adfe53c6cd6a64b6482e2b72590558b9abc29042328f9348f7ade5100",
+      "exitCode": 0,
+      "seconds": 0.20875900000100955,
+      "peakBytes": 104091648
+    },
+    "testFiles": [
+      {
+        "path": "tests/reference-average-empty-sources.test.ts",
+        "passed": 7
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-construction-resolver.test.ts",
+        "passed": 12
+      },
+      {
+        "path": "tests/reference-construction.test.ts",
+        "passed": 49
+      },
+      {
+        "path": "tests/reference-geometry-numerics.test.ts",
+        "passed": 14
+      },
+      {
+        "path": "tests/reference-line-evaluation.test.ts",
+        "passed": 55
+      },
+      {
+        "path": "tests/reference-source-primitives.test.ts",
+        "passed": 28
+      }
+    ],
+    "testsPassed": 198,
+    "initialBuildFailure": "TS2345 test tuple inference; corrected with readonly tuple annotation.",
+    "previousBroadRun": "771-test broader path match superseded by exact seven-file run.",
+    "buildIdentitySha256": "df8dc213296fd7bf5a94fd4c632df2470bd8e4312d9797abad69445d071855a6",
+    "aggregateMemoryBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": {
+    "sharedEvaluator": "evaluateReferenceConstruction",
+    "catalogChanged": false,
+    "published": false,
+    "gate": "Reference GUI/MCP operations and project admission remain unfinished."
+  },
+  "acceptance": {
+    "internalRegression": true,
+    "nativeRuntimeComparison": false,
+    "renderedFeature": false,
+    "completeReferenceFeature": false
+  }
+}

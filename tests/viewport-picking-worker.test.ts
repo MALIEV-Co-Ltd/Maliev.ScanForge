@@ -2,14 +2,16 @@ import { expect, it, vi } from "vitest";
 import { BufferAttribute, BufferGeometry } from "three";
 import { MeshBVH, type SerializedBVH } from "three-mesh-bvh";
 
-it("transfers disposable picking buffers without duplicating the worker index", async () => {
+it("transfers picking roots and facet mapping without returning the unused index", async () => {
   let received: SerializedBVH | undefined;
+  let transferred: Transferable[] | undefined;
   const scope = {
     onmessage: undefined as undefined | ((event: { data: unknown }) => void),
     postMessage(
       message: { tree: SerializedBVH },
       options: StructuredSerializeOptions,
     ) {
+      transferred = options.transfer;
       received = structuredClone(message, options).tree;
     },
   };
@@ -30,9 +32,10 @@ it("transfers disposable picking buffers without duplicating the worker index", 
         groups: [],
       },
     });
-    // The input index belongs to the disposable worker, so it can move directly.
-    expect(indices.byteLength).toBe(0);
-    expect(received?.index).toEqual(expected.index);
+    expect(indices.byteLength).toBe(12);
+    expect(transferred).not.toContain(indices.buffer);
+    expect(transferred).toHaveLength(expected.roots.length + 1);
+    expect(received?.index).toBeNull();
     expect(received?.indirectBuffer).toEqual(expected.indirectBuffer);
     expect(received?.roots.map((root) => new Uint8Array(root))).toEqual(
       expected.roots.map((root) => new Uint8Array(root)),

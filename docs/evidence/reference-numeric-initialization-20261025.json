@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-25",
+  "scope": "Native constructor state and finite Float32 scene seeding for new internal numeric drafts",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "uncommitted; not a shipped or pushed candidate"
+  },
+  "sources": [
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "ab1f32309303d9517518e66a320f68219f323951e9ccda883e74a887f6ac8d97"
+    },
+    {
+      "path": "src/automation/reference-construction-preview.ts",
+      "sha256": "6d92efab36a5f08e402a29a433db24602eb2639597e3aea867464cd2dc88ed55"
+    },
+    {
+      "path": "src/automation/reference-construction-apply.ts",
+      "sha256": "28b579ba3abae9c225d19b53fae3ca3f0b52d5c0646d8e801ef42968161d19fe"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "26f8c5051311de9f7b9546408222c3b66a805801ef259d839d82b5bc9cc184ef"
+    },
+    {
+      "path": "tests/reference-numeric-initialization.test.ts",
+      "sha256": "9d5ba299d0b25f60d1c49591f7350397c042f49b915a1a8525bc64eea14964d7"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "d0db21f2ae721a530015ced8d44c07d52caf5d9459157a78249834b4bf0e0461"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "657499237e4c68126776f9b43e6b56e2ef8a1c28ff46ff9646d23a9c8c3c0587"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "mode": "Retained static image only; no native execution, fresh process reads or executable mapping.",
+    "newProceduresRecovered": 5,
+    "independentlyCorroboratedProcedures": 7,
+    "listedInstructionStartsChecked": 574,
+    "constructorWordStores": 2,
+    "initialCompletionWord": 256,
+    "validityGetter": "Shared getter returns the upper state byte; it does not by itself establish typed-Apply admission.",
+    "evidenceSha256": "132ac1b1c86833b0c685e20b5f61d94249fbefac4e1de792253c25e5c7cab85f",
+    "queryReceipt": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.309500300034415,
+      "childPeakJobMemoryBytes": 83673088,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    },
+    "analysisReceipt": {
+      "exitCode": 0,
+      "elapsedSeconds": 18.747388700023293,
+      "childPeakJobMemoryBytes": 725819392,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    },
+    "verificationReceipt": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.2583063999773003,
+      "childPeakJobMemoryBytes": 85389312,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "behavior": [
+    "Explicit new numeric point inputs use constructor word 0x100; no raw inner point coordinate default is inferred.",
+    "New lines require a caller-bound six-value scene snapshot. Finite Float32 carriers are established before bounds comparisons.",
+    "Any axis inversion, lower bound at negative maximum Float32, or upper bound at positive maximum Float32 selects the origin-to-10 mm X seed.",
+    "A valid zero X span does not select that fallback; the strict virtual setter leaves cleared start, direction and length.",
+    "Typed endpoint writes follow command seeding. Rejected candidates retain the seed, and cached Apply does not reevaluate it.",
+    "Existing-object edits must keep their saved prior geometry/state rather than use new-object initialization."
+  ],
+  "mcp": {
+    "catalogChanged": false,
+    "publicConstructionTools": false,
+    "coverage": "Internal initializer joins the existing shared host registry, lease/binding/display, cached Apply and API mutation/retry paths. No agent-editable completion flag.",
+    "fixtureDisclosure": "Real App source and shared API context are used in an owned fixture with a test-only handler slot; public construction command/editor acceptance is not claimed."
+  },
+  "validation": {
+    "red": "New initializer exports were absent. First build found array-row spreading in one parameterized fixture; object-wrapped rows corrected it.",
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 34.761739500041585,
+        "childPeakJobMemoryBytes": 2524352512,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "identitySha256": "9c1998054633d8f929cde468e01ff6b7328a2e9efaf54ee97338a67124e7ebf4"
+    },
+    "focused": {
+      "command": "vitest run --maxWorkers=1 --exclude **/.resources/** with nine absolute paths",
+      "passed": 249,
+      "failed": 0,
+      "files": 9,
+      "newInitializationTests": 21,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.29000239999732,
+        "childPeakJobMemoryBytes": 360529920,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48929,
+      "skipped": 64,
+      "failed": 0,
+      "files": 682,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 273.6759354000096,
+        "childPeakJobMemoryBytes": 988606464,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      }
+    },
+    "realAppBrowser": {
+      "constructorWord": 256,
+      "pointApplyUndoRedo": true,
+      "rejectedTypedEndpointsRetainedSeed": true,
+      "cachedSeedPublished": true,
+      "zeroXSpanGeometry": {
+        "kind": "line",
+        "start": [0, 0, 0],
+        "direction": [0, 0, 0],
+        "length": 0
+      },
+      "errors": [],
+      "warnings": [],
+      "failedResponses": [],
+      "fixtureCorrection": "First attempt mixed separate dynamic import URLs and lost registry ownership. Fresh fixture uses one statically imported, versioned module graph; no application source changed between attempts.",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 4.653096799971536,
+        "childPeakJobMemoryBytes": 603422720,
+        "rootExited": true,
+        "childJobActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshotSha256": "36a6e8d201414a7e502662331bd967614883029dd5e809653ba43714de6f5133"
+    },
+    "format": {
+      "exitCode": 0,
+      "elapsedSeconds": 1.0172768000047654,
+      "childPeakJobMemoryBytes": 181391360,
+      "rootExited": true,
+      "childJobActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "nativeNumericReplay": false,
+  "publicRenderedGuiMcpAcceptance": false,
+  "limits": [
+    "Static constructor/selected dispatch evidence and synthetic browser checks do not prove original native outputs or complete interactive defaults.",
+    "Bounds provider eligibility/aggregation remains a caller-side source-admission obligation.",
+    "Only finite Float32 bound carriers are supported; behavior for NaN, infinity and conversion overflow is not claimed equivalent.",
+    "No typed-Apply rejection is inferred solely from the generic upper-byte validity getter.",
+    "Public construction source/edit/get/apply/discard tools, common editor, dependency reevaluation and save/reopen/native acceptance remain unfinished."
+  ]
+}

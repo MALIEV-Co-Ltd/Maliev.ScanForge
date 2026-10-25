@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "scope": "PUBLIC_ANALYTIC_MIRROR_COPY_GUI_MCP_HISTORY",
+  "nativeAcceptance": false,
+  "startedAt": "2026-10-22T18:05:59.111Z",
+  "finishedAt": "2026-10-22T18:06:05.090Z",
+  "buildId": "scanforge-0dda0d4e46b3e241",
+  "testedBaseCommit": "0d94f92a25eb18973309cf0372efe027556b4f7f",
+  "testedWorkingTreeIncludedPreExistingChanges": [
+    "docs/AGENT_GUIDE.md",
+    "docs/MCP_ARCHITECTURE.md",
+    "src/automation/api.ts",
+    "tests/interactive-alignment-api.test.ts",
+    "tests/interactive-public-browser.mjs"
+  ],
+  "results": {
+    "scope": "PUBLIC_ANALYTIC_MIRROR_COPY_GUI_MCP_HISTORY",
+    "nativeAcceptance": false,
+    "planes": [
+      {
+        "plane": "OXY",
+        "frame": {
+          "origin": [0, 0, 12],
+          "u": [1, 0, 0],
+          "v": [0, 1, 0],
+          "normal": [0, 0, 1]
+        },
+        "sketchId": "02c44d97-28ba-4566-902f-553b3b7e3228",
+        "literalUVAndArcOrientation": true,
+        "originalConstraintsPreserved": true,
+        "deterministicGuiMcpEquality": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true
+      },
+      {
+        "plane": "OYZ",
+        "frame": {
+          "origin": [13, 0, 0],
+          "u": [0, 1, 0],
+          "v": [0, 0, 1],
+          "normal": [1, 0, 0]
+        },
+        "sketchId": "3c3563f9-4455-488e-bba6-87b0df432dc3",
+        "literalUVAndArcOrientation": true,
+        "originalConstraintsPreserved": true,
+        "deterministicGuiMcpEquality": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true
+      },
+      {
+        "plane": "OXZ",
+        "frame": {
+          "origin": [0, -7, 0],
+          "u": [0, 0, 1],
+          "v": [1, 0, 0],
+          "normal": [0, 1, 0]
+        },
+        "sketchId": "b78d7ed4-5715-4d00-955f-38588b7fe35a",
+        "literalUVAndArcOrientation": true,
+        "originalConstraintsPreserved": true,
+        "deterministicGuiMcpEquality": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true
+      }
+    ],
+    "failures": [
+      {
+        "name": "unknown-axis",
+        "atomic": true,
+        "code": "OPERATION_FAILED"
+      },
+      {
+        "name": "axis-must-be-construction",
+        "atomic": true,
+        "code": "OPERATION_FAILED"
+      },
+      {
+        "name": "empty-selection",
+        "atomic": true,
+        "code": "INVALID_ARGUMENT"
+      }
+    ],
+    "savedAndLegacyHistoryIsolated": true,
+    "staleRevisionAtomic": true,
+    "meaning": "Three offset-plane analytic mirror-copy fixtures through real GUI and public MCP; no native numerical or visual fidelity claim",
+    "completedWorkflowPassed": true
+  },
+  "validation": {
+    "newMirrorTests": 36,
+    "focusedTests": 92,
+    "fullSuitePassed": 47656,
+    "fullSuiteSkipped": 64,
+    "productionBuild": true,
+    "cadSmoke": true
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuPercent": 25,
+    "peakJobMemoryBytes": 623394816,
+    "processCount": 17,
+    "allOwnedProcessesExited": true,
+    "finalActiveProcesses": 0,
+    "portsClosed": true,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "console": {
+    "pageExceptions": [],
+    "workflowGpuReadbackWarnings": 4,
+    "teardownBridgeErrors": [
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      },
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+      }
+    ],
+    "serviceWorkerCacheStorage": "Pre-existing initialization error in browser stderr; offline caching not validated"
+  },
+  "limits": [
+    "Independent copies do not weld coincident endpoints; open half-profiles may require topology relinking before extrusion.",
+    "Native workflow supported by retained manual; numerical controller, ID, tolerance and original-window pixel equivalence not established.",
+    "Three-scan alignment acceptance remains open."
+  ],
+  "evidenceSha256": "73a413e6a1de0637016beeffca13e45214c4bfbb1d5053e49a5459836d71fa76",
+  "resourceLedgerSha256": "6f59bd03cc1adec6058d7daca94bf707acb1210a8f5c650ffa933ef4f1af4924"
+}

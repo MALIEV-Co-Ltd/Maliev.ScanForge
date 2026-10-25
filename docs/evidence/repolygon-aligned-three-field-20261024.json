@@ -1,0 +1,199 @@
+{
+  "status": "full-aligned-project-private-field-and-finalization-verified",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeAcceptance": false,
+  "fullAlignedProject": {
+    "status": "full-aligned-three-field-private-finalization-completed",
+    "projectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "inputs": [
+      {
+        "name": "scan-1.stl",
+        "positionsSha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b",
+        "indicesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+        "vertices": 139338,
+        "triangles": 273139
+      },
+      {
+        "name": "scan-2.stl",
+        "positionsSha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+        "indicesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+        "vertices": 1299033,
+        "triangles": 2547403
+      },
+      {
+        "name": "scan-3.stl",
+        "positionsSha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+        "indicesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+        "vertices": 1683605,
+        "triangles": 3326910
+      }
+    ],
+    "acceptedInputTriangles": 6147452,
+    "spacing": 0.5,
+    "workRoots": 64,
+    "dataLeaves": 77152,
+    "cornerRecords": 157319,
+    "fieldDiagnostics": {
+      "nodeCount": 197177,
+      "candidateVisits": 10052166,
+      "admittedVisits": 9809903,
+      "triangleCornerUpdates": 66415310,
+      "repeatedTriangleCornerSkips": 12063914,
+      "outsideRootVisits": 0,
+      "clampedFrontierVisits": 1303493,
+      "frontierBoundsRejects": 386377954
+    },
+    "finalizationDiagnostics": {
+      "boundaryWalks": 470,
+      "handledThreeEdgeWalks": 124,
+      "appendedCaps": 38,
+      "removedTriangles": 86,
+      "normalsUpdatedAfterRepair": true,
+      "adjacencyRebuiltAfterRepair": false,
+      "retiredPointerReads": 0
+    },
+    "topology": {
+      "vertices": 52703,
+      "triangles": 101918,
+      "usedVertices": 52703,
+      "edges": 154911,
+      "edgeIncidenceHistogram": {
+        "1": 4249,
+        "2": 150497,
+        "3": 149,
+        "4": 16
+      },
+      "boundaryEdges": 4249,
+      "nonmanifoldEdges": 165,
+      "windingConflicts": 0,
+      "repeatedIndexTriangles": 0,
+      "zeroAreaTriangles": 0,
+      "duplicateUnorientedTriangles": 7,
+      "edgeConnectedComponentTriangles": [
+        101045, 167, 47, 21, 17, 17, 16, 14, 12, 11, 11, 11, 11, 11, 10, 10, 10,
+        9, 9, 9, 9, 9, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+        7, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+        4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1,
+        1
+      ],
+      "boundaryVertexDegreeHistogram": {
+        "1": 172,
+        "2": 4021,
+        "3": 8,
+        "4": 65
+      },
+      "surfaceArea": 13276.665520067387,
+      "selfIntersectionsChecked": false
+    },
+    "normals": {
+      "nonfiniteNormals": 0,
+      "zeroNormals": 0
+    },
+    "outputPositionsSha256": "2a36f1cdb3a554256371c9cb9dc0071fe72c7c1f3025e969142c9276b0f8ff8e",
+    "outputIndicesSha256": "ac0af9bccc1c6f76b6626792521278d32e8bbcf832d39725e95482d6e5d3eab7",
+    "outputNormalsSha256": "b7b85b4ccfe578808581622bc9b694bea166984c83d346261cf78c61cdbd030b",
+    "sourcePasses": [65, 65, 65],
+    "fieldSeconds": 352.7590178,
+    "elapsedSeconds": 356.8836213,
+    "memory": {
+      "rss": 811560960,
+      "heapTotal": 393351168,
+      "heapUsed": 347437760,
+      "external": 321759922,
+      "arrayBuffers": 319595778
+    },
+    "sourceBuffersAndProjectUnchanged": true,
+    "initializerSuppliedAsZero": true,
+    "providerBucketTolerance": 1.1920928955078125e-7,
+    "nativeExecuted": false,
+    "nativeAcceptance": false,
+    "scope": "Complete saved aligned-project indexed geometry, private field/finalization port; no native output, point-cloud or integrated GUI/MCP acceptance."
+  },
+  "originalPoseBaseline": {
+    "topology": {
+      "vertices": 89485,
+      "triangles": 167025,
+      "usedVertices": 89485,
+      "edges": 256667,
+      "edgeIncidenceHistogram": {
+        "1": 12328,
+        "2": 244292,
+        "3": 25,
+        "4": 22
+      },
+      "boundaryEdges": 12328,
+      "nonmanifoldEdges": 47,
+      "windingConflicts": 1,
+      "repeatedIndexTriangles": 0,
+      "zeroAreaTriangles": 0,
+      "duplicateUnorientedTriangles": 11,
+      "edgeConnectedComponentTriangles": [
+        166851, 144, 8, 4, 4, 3, 3, 2, 2, 2, 2
+      ],
+      "boundaryVertexDegreeHistogram": {
+        "1": 31,
+        "2": 12239,
+        "3": 3,
+        "4": 33,
+        "6": 1
+      },
+      "surfaceArea": 21453.824814255673,
+      "selfIntersectionsChecked": false
+    },
+    "normals": {
+      "nonfiniteNormals": 0,
+      "zeroNormals": 4,
+      "maxUnitLengthError": 1.3400147913511518e-7
+    },
+    "finalizationDiagnostics": {
+      "boundaryWalks": 122,
+      "handledThreeEdgeWalks": 23,
+      "appendedCaps": 19,
+      "removedTriangles": 4,
+      "normalsUpdatedAfterRepair": true,
+      "adjacencyRebuiltAfterRepair": false,
+      "retiredPointerReads": 0
+    }
+  },
+  "inputAuthority": {
+    "savedProjectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "indexedGeometryComparedToPriorGuiMcpApplyDigests": true,
+    "triangleBuffersMatchOriginalRetainedHashes": true,
+    "originalSourceVertices": 3121976,
+    "acceptedTriangles": 6147452,
+    "downsamplingUsed": false,
+    "freshOriginalFileImportPerformed": false,
+    "positionsAndIndicesAndProjectIdentityRechecked": true
+  },
+  "boundedJob": {
+    "receiptSha256": "eeffdfc1969f7826c1de5157db7a3c07e83ed77da1f20ea1d354ecd5906b1e65",
+    "limitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "peakOwnedJobBytes": 878477312,
+    "elapsedSeconds": 357.00764520000666,
+    "exitCode": 0,
+    "ownedDescendantsAtExit": 0,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "privatePortAdvertised": false,
+    "productionVoxelBackendReplaced": false
+  },
+  "limitations": [
+    "The exact saved posed indexed coordinates are used. This is not a new alignment solve, source import or native controller comparison.",
+    "The original-pose baseline and aligned-project run also derive different grid bounds; their differences are not an isolated proof of a particular defect cause.",
+    "Direction initializer is explicitly zero; provider epsilon is explicit Float32 epsilon. Native mutable globals and parallel scheduling remain unresolved.",
+    "The finite finalizer guards retired pointer reads; native allocator reuse and full controller semantics remain unproven.",
+    "Topology defects and boundaries must be assessed separately from numerical equivalence. Self intersections and geometric deviation are not checked in this checkpoint.",
+    "JavaScript acos bit equivalence, point-cloud reconstruction, integrated history/cancellation/save/reopen and rendered GUI/MCP acceptance remain open.",
+    "No full application build was run because application behavior did not change."
+  ],
+  "privateProofSha256": "56ec924d85f4eacee59a4a27961c9716999d8f79805cbe04296187c30c82d805"
+}

@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "scope": "Full original STL in-flight cancellation after worker progress; no successful alignment or native acceptance",
+  "verification": {
+    "auditPassed": true,
+    "cancellationContractPassed": true,
+    "successfulAlignmentProved": false,
+    "nativeAcceptance": false,
+    "sourceAndDistFilesRehashed": 2136,
+    "cancellationsAfterWorkerProgress": 2,
+    "runningJobsObservedBeforeCancel": 2,
+    "closedProcessingWorkerTargets": 2,
+    "cachedRetriesMatched": 2,
+    "cancelRoutes": ["GUI Cancel during MCP-issued preview", "MCP job_cancel"],
+    "publicDigestJobs": 21,
+    "fullBufferSnapshotReads": 7,
+    "originalCarriersPerSnapshot": 9,
+    "historyAndPublicStatePreserved": true,
+    "corruptedDigestRejected": true,
+    "peakJobMemoryBytes": 2016997376,
+    "all17OwnedProcessesExited": true,
+    "handlesAndPortsClosed": true,
+    "cleanupErrors": [],
+    "productFixApplied": false
+  },
+  "build": {
+    "head": "d257101f39f10f627909671dd1e1cb7d5004f94a",
+    "tree": "30b4a026b12ec6d1da6ad2392c9ea0e0afdb147a",
+    "exitCode": 0,
+    "sourceFiles": 1864,
+    "sourceUnchangedAcrossBuild": true
+  },
+  "cases": [
+    {
+      "moving": "scan-2.stl",
+      "targetScope": "visibleScene",
+      "targetCount": 2,
+      "workerProgressBeforeCancel": 1,
+      "jobBeforeCancel": "running",
+      "publicProgressBeforeCancel": 1,
+      "cancelRoute": "GUI Cancel during MCP-issued preview",
+      "terminalJob": {
+        "jobId": "30184fb7-673e-44fe-827c-da4fd4401d2e",
+        "command": "landmark_preview",
+        "status": "cancelled",
+        "progress": 1,
+        "stage": "Processing cancelled.",
+        "error": {
+          "code": "CANCELLED",
+          "message": "Processing cancelled."
+        }
+      },
+      "workerTargetClosed": true,
+      "retrySameReceipt": true,
+      "sessionActiveAfterJob": false,
+      "historyCursor": 3
+    },
+    {
+      "moving": "scan-3.stl",
+      "targetScope": "visibleScene",
+      "targetCount": 2,
+      "workerProgressBeforeCancel": 1,
+      "jobBeforeCancel": "running",
+      "publicProgressBeforeCancel": 1,
+      "cancelRoute": "MCP job_cancel",
+      "terminalJob": {
+        "jobId": "5f1672ce-1767-488c-8f60-badf33e6a7d4",
+        "command": "landmark_preview",
+        "status": "cancelled",
+        "progress": 1,
+        "stage": "Processing cancelled.",
+        "error": {
+          "code": "CANCELLED",
+          "message": "Processing cancelled."
+        }
+      },
+      "workerTargetClosed": true,
+      "retrySameReceipt": true,
+      "sessionActiveAfterJob": true,
+      "historyCursor": 3
+    }
+  ],
+  "pins": [
+    {
+      "name": "original-stl-inflight-cancel-browser.mjs",
+      "sha256": "eb5d67113604ac47a5eeef1dc0a5b3b6dcd9b7e95ef7649eabb4157d75f403ca"
+    },
+    {
+      "name": "original-stl-inflight-cancel-runner-r3.py",
+      "sha256": "0663c2f52c50faaccaf93433437766ebf99841cf1af42f301cc9bac50dc7e434"
+    },
+    {
+      "name": "original-stl-inflight-cancel-plan-20261022T232550098973Z.json",
+      "sha256": "3308615f20bdd2e5d7d3e126bcc8ca1b92f3c70e653bf04aedb05efaa984c127"
+    },
+    {
+      "name": "original-stl-inflight-cancel-build-source-verified-final-20261023.json",
+      "sha256": "938263a6a3ad49eb07e8dd018c0dcb0ac455088ab4c75358d70e7c048b2d9013"
+    },
+    {
+      "name": "verify-stl-inflight-cancellation.py",
+      "sha256": "cb2e12752d63be13b307ca5d3e84d75c6d1c810ecb14b41837f6e882235afa9b"
+    },
+    {
+      "name": "stl-inflight-cancel-independent-verification.json",
+      "sha256": "63eab50c2ede12b0eb7a95e466e35d3a04a4bd294592aef4f7047294d717e070"
+    },
+    {
+      "name": "original-stl-inflight-cancel-evidence-20261022T232550098973Z-browser/evidence.json",
+      "sha256": "8b0f908969c43198222db98371d467949ba8ec635872e3e5724275d8785b8c77"
+    },
+    {
+      "name": "original-stl-inflight-cancel-evidence-20261022T232550098973Z-kernel/resource-ledger.json",
+      "sha256": "f7bcb513261505cbc77a1d749c8304cf688b5fe91cd18bb15d6d51ec7026fb0a"
+    },
+    {
+      "name": "inflight-cancellation-completed.png",
+      "sha256": "978f521cb161d216f1d8860ac62ef1bc5fbc5ed04ab80cf787cc09a81bc3bfce"
+    }
+  ],
+  "limits": [
+    "Both jobs were MCP-issued; one was cancelled through the real GUI button",
+    "Worker progress and running job status were observed; later native CAD/controller stages were not exercised",
+    "Early-cancellation peak is not a successful-solve peak or a controlled memory comparison",
+    "Node-budget and expanded-normal acceptance issues remain unresolved",
+    "No product fix, successful alignment acceptance or native final-controller comparison",
+    "Unit and CAD suites were not repeated for this evidence-only update"
+  ]
+}

@@ -2,6 +2,7 @@ import {
   NativeStlVertexTable,
   nativeStlCoordinateKey,
 } from "./scan-native-stl-vertices";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 
 export interface NativeStlSpatialNode {
   bounds: number[];
@@ -73,6 +74,7 @@ export function nativeStlTopology(
   options: {
     signal?: AbortSignal;
     onProgress?: (fraction: number) => void;
+    sharedReadonlyBuffers?: boolean;
   } = {},
 ) {
   function progress(fraction: number) {
@@ -150,10 +152,18 @@ export function nativeStlTopology(
       triangles[count++] = c;
     }
   }
-  const result = {
-    vertices: vertices.slice(0, vertexCount * 3),
-    triangles: triangles.slice(0, count),
-  };
+  const finalVertices = new Float32Array(
+    allocateImportedReadonlyBuffer(
+      vertexCount * 12,
+      options.sharedReadonlyBuffers,
+    ),
+  );
+  finalVertices.set(vertices.subarray(0, vertexCount * 3));
+  const finalTriangles = new Uint32Array(
+    allocateImportedReadonlyBuffer(count * 4, options.sharedReadonlyBuffers),
+  );
+  finalTriangles.set(triangles.subarray(0, count));
+  const result = { vertices: finalVertices, triangles: finalTriangles };
   progress(1);
   return result;
 }

@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "scope": "passive actual GUI controller/local boundary trace; not final-geometry acceptance",
+  "evidenceId": "ev_7a2ca141a162aa5ea6f0f50d6cc7f284a86131b3a1472c285517a57805d54df4",
+  "rawCaptureSha256": "1d5f67a7f082bdb6e1981cf42110bbb50f81c783a36cc05eccff04a774e01fd5",
+  "installedArtifactSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "videoSha256": "7aca9bf5a0e263f6e597f2ac7f46c3400cebeb8cb4b3cd702a7642392391a59b",
+  "observedGui": {
+    "command": "Global Fine Align",
+    "searchToleranceMm": 0.5,
+    "finalButton": "OK",
+    "visibleSelectedScans": 3
+  },
+  "pointerAliasing": "A/B/C assigned in initial source and corresponding descriptor order; file-name mapping not captured",
+  "events": [
+    {
+      "type": "entry",
+      "anchor": "outer",
+      "id": 1,
+      "elapsedMs": 0,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      }
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 2,
+      "elapsedMs": 0,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "A",
+        "poseBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "statisticsBits": "00000000000000000000000000000000",
+        "flag110": 0,
+        "flag111": 232
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 2,
+      "elapsedMs": 14,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "A",
+        "poseBits": "44a585a3feffef3fae92474781c1263f4ec078351773523fa03d23df5c3ad63f86ee6285e6a626bffeece072ffffef3f956fd1f4fa1247bf7f89f7f40420cbbf0686bd289a7352bfd2234e0e5811473fe0508226feffef3f6aedb5a6ac4b73bf",
+        "statisticsBits": "642a95694137a53f15810cf667b4a63f",
+        "flag110": 0,
+        "flag111": 0
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 3,
+      "elapsedMs": 14,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "B",
+        "poseBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "statisticsBits": "00000000000000000000000000000000",
+        "flag110": 0,
+        "flag111": 227
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 3,
+      "elapsedMs": 19,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "B",
+        "poseBits": "0c775affffffef3fab60c36b55d2e13eaa7633d9ea57093fc6695572319e943fdcfe2a463fd1e1be209682ffffffef3f3a8cf82443f305bf69adcbc8a5838cbfbecf5212f75709bf10ea190835f3053f71f9e6feffffef3f93079a39d5324cbf",
+        "statisticsBits": "ec5ed5b09cea973fe745951d1778963f",
+        "flag110": 0,
+        "flag111": 0
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 4,
+      "elapsedMs": 19,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "C",
+        "poseBits": "000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000000000000000000000000000000000000000000000000000000000000000f03f0000000000000000",
+        "statisticsBits": "00000000000000000000000000000000",
+        "flag110": 0,
+        "flag111": 37
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 4,
+      "elapsedMs": 21,
+      "sourceOrder": ["A", "B", "C"],
+      "descriptorOrder": ["A", "B", "C"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "C",
+        "poseBits": "fe21d4ffffffef3fd174eb9e9c08a1be7776b07dd27cfabe00f8c2ba679587bf7ee3a0bdd408a13e83e9ffffffffef3f87a255ea1ff3b03e00c0912af6c0663f28abaa74d27cfa3e8a85dd032ef3b0be9114d4ffffffef3f0000f25b564b673f",
+        "statisticsBits": "8ada0e5d36eca03fcfd8bb05e147a73f",
+        "flag110": 0,
+        "flag111": 0
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 5,
+      "elapsedMs": 22,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "C",
+        "poseBits": "fe21d4ffffffef3fd174eb9e9c08a1be7776b07dd27cfabe00f8c2ba679587bf7ee3a0bdd408a13e83e9ffffffffef3f87a255ea1ff3b03e00c0912af6c0663f28abaa74d27cfa3e8a85dd032ef3b0be9114d4ffffffef3f0000f25b564b673f",
+        "statisticsBits": "8ada0e5d36eca03f0000000000005540",
+        "flag110": 0,
+        "flag111": 0
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 5,
+      "elapsedMs": 31,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "C",
+        "poseBits": "2eb70ffeffffef3f1cce929ecc4af7be2a7517e8c08015bfe897c394cb0da2bff7e985ad434af73ea089b5ffffffef3fd61fb37a9279f9be8c2fd281253b373ff8135c2dca80153fc21099451579f93e121009feffffef3fe001f9ab8d9f823f",
+        "statisticsBits": "d17272936942a23fe133e1f54099a73f",
+        "flag110": 0,
+        "flag111": 1
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 6,
+      "elapsedMs": 31,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "B",
+        "poseBits": "0c775affffffef3fab60c36b55d2e13eaa7633d9ea57093fc6695572319e943fdcfe2a463fd1e1be209682ffffffef3f3a8cf82443f305bf69adcbc8a5838cbfbecf5212f75709bf10ea190835f3053f71f9e6feffffef3f93079a39d5324cbf",
+        "statisticsBits": "ec5ed5b09cea973f0000000000c05540",
+        "flag110": 0,
+        "flag111": 0
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 6,
+      "elapsedMs": 39,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "B",
+        "poseBits": "a4afd5ffffffef3fa3a4f2b659c0eb3eaeb5f443d602f63e7202755aa0a57a3f22365962e4bfebbe065082ffffffef3f9264cd24665205bf2f1beb18ecdd7ebf86f7fe3efb02f6bed4ca7f995c52053f601070ffffffef3f231379eca9df7e3f",
+        "statisticsBits": "1326815744ec983f37b8cc346768973f",
+        "flag110": 0,
+        "flag111": 1
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "entry",
+      "anchor": "local",
+      "id": 7,
+      "elapsedMs": 39,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "A",
+        "poseBits": "44a585a3feffef3fae92474781c1263f4ec078351773523fa03d23df5c3ad63f86ee6285e6a626bffeece072ffffef3f956fd1f4fa1247bf7f89f7f40420cbbf0686bd289a7352bfd2234e0e5811473fe0508226feffef3f6aedb5a6ac4b73bf",
+        "statisticsBits": "642a95694137a53f0000000000805140",
+        "flag110": 0,
+        "flag111": 0
+      }
+    },
+    {
+      "type": "exit",
+      "anchor": "local",
+      "id": 7,
+      "elapsedMs": 51,
+      "sourceOrder": ["C", "B", "A"],
+      "descriptorOrder": ["C", "B", "A"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "localState": {
+        "descriptor": "A",
+        "poseBits": "9d42f7a7fbffef3f4216bcbce53d303fc9d68900ad8c603f41f8f2585de9e33fb43aae305b1330bf94dcda48feffef3fc57051e3199154bf1e025d7c061cd8bf7ae7bf22538d60bf95814d02038f543f6b727511faffef3f318ea4da9ece82bf",
+        "statisticsBits": "e0dd729a99d6a43f640ab8ab56bba43f",
+        "flag110": 0,
+        "flag111": 1
+      },
+      "resultLow32": 0
+    },
+    {
+      "type": "exit",
+      "anchor": "outer",
+      "id": 1,
+      "elapsedMs": 94,
+      "sourceOrder": ["A", "C", "B"],
+      "descriptorOrder": ["A", "C", "B"],
+      "settings": {
+        "phaseAt08": 1,
+        "displayFlagAt0c": 0,
+        "thresholdF32At88": 0.05000000074505806,
+        "thresholdF32BitsAt88": "cdcc4c3d"
+      },
+      "resultLow32": 0
+    }
+  ],
+  "setterEntries": [
+    {
+      "stage": 1,
+      "receiverAlias": 0,
+      "descriptorMatrixAlias": "A",
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    },
+    {
+      "stage": 2,
+      "receiverAlias": 1,
+      "descriptorMatrixAlias": "C",
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    },
+    {
+      "stage": 3,
+      "receiverAlias": 2,
+      "descriptorMatrixAlias": "B",
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    },
+    {
+      "stage": 4,
+      "receiverAlias": 0,
+      "descriptorMatrixAlias": null,
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    },
+    {
+      "stage": 5,
+      "receiverAlias": 1,
+      "descriptorMatrixAlias": null,
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    },
+    {
+      "stage": 6,
+      "receiverAlias": 2,
+      "descriptorMatrixAlias": null,
+      "ownerVtableRva": "0x1248370",
+      "geometryVtableRva": "0xebfcf0",
+      "setterRva": "0x1de8d0",
+      "matrixCaptured": false,
+      "guardAdmitted": false
+    }
+  ],
+  "messagesTruncated": false,
+  "limits": [
+    "Original file bytes were not captured by this observer; video supplies import context, not a byte-bound scan identity.",
+    "Native RNG and clock inputs, query correspondences and coverage records were not captured.",
+    "Descriptor statistics at +0x108 change meaning between local and outer boundaries; retained as raw bits.",
+    "Entry flag111 bytes may be uninitialized; do not interpret initial values as boolean status.",
+    "The wrong derived-class guard rejected all setter matrices. No native final positions/normals or setter matrix bytes were captured.",
+    "Relative times are observer wall clock, not native timing inputs. No application numerical-equivalence claim."
+  ]
+}

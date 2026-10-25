@@ -52,8 +52,8 @@ export async function createBridge({
     }
     pending.clear();
   }
-  function expire() {
-    if (session && session.expires <= Date.now()) {
+  function expire(now = Date.now()) {
+    if (session && session.expires <= now) {
       session = undefined;
       rejectAll("Browser session expired");
     }
@@ -179,15 +179,20 @@ export async function createBridge({
         pollWaiter = waiter;
         req.once("aborted", abort);
         res.once("close", abort);
-        timer = setTimeout(
-          () => {
-            expire();
-            if (pollWaiter === waiter)
-              waiter.finish(200, () => ({ requests: [] }));
-          },
-          Math.min(waitMs, Math.max(1, session.expires - Date.now())),
-        );
-        timer.unref();
+        const waitUntil = Date.now() + waitMs;
+        const checkDeadline = () => {
+          if (timer) clearTimeout(timer);
+          const now = Date.now();
+          expire(now);
+          if (pollWaiter !== waiter) return;
+          const remaining = Math.min(waitUntil, session.expires) - now;
+          // A timer wake is only a notification; it can precede its deadline.
+          if (remaining > 0) {
+            timer = setTimeout(checkDeadline, remaining);
+            timer.unref();
+          } else waiter.finish(200, () => ({ requests: [] }));
+        };
+        checkDeadline();
         return;
       }
       if (req.method === "POST" && url.pathname === "/result") {

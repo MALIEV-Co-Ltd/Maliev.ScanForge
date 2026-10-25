@@ -24,7 +24,9 @@ class TestWorker {
     if (this.payload.index)
       g.setIndex(new THREE.BufferAttribute(this.payload.index, 1));
     const tree = new MeshBVH(g, { indirect: true });
-    this.onmessage?.({ data: { tree: MeshBVH.serialize(tree) } });
+    const serialized = MeshBVH.serialize(tree);
+    serialized.index = null;
+    this.onmessage?.({ data: { tree: serialized } });
   }
 }
 function mesh() {

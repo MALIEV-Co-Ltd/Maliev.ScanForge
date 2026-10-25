@@ -4,6 +4,7 @@ import type { GlobalSceneInput } from "../src/scan-global-scene-core";
 const mock = vi.hoisted(() => ({
   events: [] as string[],
   applicationThreshold: -1,
+  applicationSharedOutput: undefined as boolean | undefined,
   routedInputs: [] as GlobalSceneInput["scans"][],
   close: vi.fn(),
   failQuery: false,
@@ -67,6 +68,7 @@ vi.mock("../src/datum-transform-pool", async (importOriginal) => {
     ...original,
     createDatumTransformExecutor: (options: any) => {
       mock.applicationThreshold = options.threshold;
+      mock.applicationSharedOutput = options.sharedOutput;
       mock.events.push("application-start");
       const executor = original.createDatumTransformExecutor(options);
       return {
@@ -117,6 +119,8 @@ afterEach(() => {
   mock.failQuery = false;
   mock.failApply = false;
   mock.abort = undefined;
+  mock.applicationSharedOutput = undefined;
+  vi.unstubAllGlobals();
   vi.clearAllMocks();
 });
 it("connects one query initialization to ordered staged mesh setters without publishing or mutating authored buffers", async () => {
@@ -139,12 +143,43 @@ it("connects one query initialization to ordered staged mesh setters without pub
   expect(entities.map((e) => Array.from(e.positions))).toEqual(before);
   expect(result.entities[0]).not.toBe(entities[0]);
   expect(mock.applicationThreshold).toBe(0);
+  expect(mock.applicationSharedOutput).toBe(true);
   expect(result.diagnostics.queries).toBe(2);
   expect(result.diagnostics.queryWorkers).toBe(2);
   expect(result.diagnostics.mode).toBe("target-average");
   expect(vi.mocked(nativeGlobalRefineOuter).mock.calls[0][2]?.clock?.()).toBe(
     17,
   );
+});
+it("publishes isolated shared final carriers without changing authored scan buffers", async () => {
+  vi.stubGlobal("crossOriginIsolated", true);
+  const entities = sources();
+  const before = entities.map((e) =>
+    Buffer.from((e.positions as Float32Array).buffer).toString("hex"),
+  );
+  const result = await refineGlobalScanSet(input(entities), entities, {
+    parallel: false,
+    clock: () => 17,
+  });
+  expect(mock.applicationSharedOutput).toBe(true);
+  expect(
+    result.entities.every(
+      (e) =>
+        e.positions instanceof Float32Array &&
+        e.positions.buffer instanceof SharedArrayBuffer,
+    ),
+  ).toBe(true);
+  expect(
+    entities.map((e) =>
+      Buffer.from((e.positions as Float32Array).buffer).toString("hex"),
+    ),
+  ).toEqual(before);
+  result.entities.forEach((e, i) => {
+    expect(e.positions).not.toBe(entities[i].positions);
+    expect(
+      Buffer.from((e.positions as Float32Array).buffer).toString("hex"),
+    ).toBe(before[i]);
+  });
 });
 it("closes the query pool and never creates application workers after a query failure", async () => {
   mock.failQuery = true;

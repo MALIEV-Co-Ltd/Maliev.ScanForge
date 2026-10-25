@@ -1,0 +1,212 @@
+{
+  "schema": 1,
+  "scope": "Native/application WASM nonlinear curve component equivalence for pending sketch duplication",
+  "passed": true,
+  "fullControllerAcceptance": false,
+  "applicationFeatureImplemented": false,
+  "mcpDiscoveryAdvertised": false,
+  "componentBindingPrerequisite": "sketch-duplicate-curve-numerics.json",
+  "baseCommit": "65dad6d",
+  "nativeKernelFileVersion": "7.7.0",
+  "fixtureCount": 6,
+  "sampleCount": 48,
+  "coreNativeOutputDoublesCompared": 480,
+  "allCapturedDoublesCompared": 672,
+  "allComparedF64BytesEqual": true,
+  "coreNativeOutputs": [
+    "first parameter",
+    "last parameter",
+    "range length",
+    "solved parameter",
+    "point x/y/z",
+    "D1 x/y/z"
+  ],
+  "additionalComparedValues": [
+    "requested distance",
+    "clamped distance",
+    "normalized parameter",
+    "evaluated parameter"
+  ],
+  "tenInstalledExportBindingsVerified": true,
+  "distanceFunctions": {
+    "nativeLength": "TKGeomBase.dll + 0x35a70",
+    "nativeConstructor": "TKGeomBase.dll + 0x35350",
+    "overload": "Adaptor3d_Curve, distance, start parameter; no explicit tolerance",
+    "applicationWasmLength": "GCPnts_AbscissaPoint.Length_5",
+    "applicationWasmConstructor": "GCPnts_AbscissaPoint_2",
+    "applicationWasmAdaptor": "BRepAdaptor_Curve_2(edge).Curve()"
+  },
+  "metrics": {
+    "independentPointError": 3.552713678800501e-15,
+    "independentDerivativeError": 1.9539925233402755e-14,
+    "distanceRatioParameterGap": 0.3256644374765935,
+    "straightDistanceResidual": 1.7763568394002505e-15
+  },
+  "independentMathSelfTests": true,
+  "reversedCurvePairVerified": true,
+  "closedEndpointPairVerified": true,
+  "trimmedRangeVerified": true,
+  "stationaryEndpointD1Verified": true,
+  "sampleFractions": [-0.125, 0, 0.125, 0.5, 0.875, 0.999, 1, 1.125],
+  "fixtures": [
+    {
+      "id": "bezier-open",
+      "kind": "bezier",
+      "poles": [
+        [0, 0, 0],
+        [0.25, 7, 0],
+        [2, -3, 5],
+        [20, 0, -1]
+      ],
+      "nativeLength": 23.372062885226164,
+      "halfDistanceNormalizedParameter": 0.7313368860354995
+    },
+    {
+      "id": "bezier-reversed",
+      "kind": "bezier",
+      "reversed": true,
+      "poles": [
+        [0, 0, 0],
+        [0.25, 7, 0],
+        [2, -3, 5],
+        [20, 0, -1]
+      ],
+      "nativeLength": 23.372062885226164,
+      "halfDistanceNormalizedParameter": 0.7313368860354995
+    },
+    {
+      "id": "bezier-trimmed",
+      "kind": "bezier",
+      "trim": [0.2, 0.85],
+      "poles": [
+        [0, 0, 0],
+        [0.25, 7, 0],
+        [2, -3, 5],
+        [20, 0, -1]
+      ],
+      "nativeLength": 13.432555264819085,
+      "halfDistanceNormalizedParameter": 0.6894179684289098
+    },
+    {
+      "id": "bezier-closed",
+      "kind": "bezier",
+      "poles": [
+        [0, 0, 0],
+        [2, 6, 1],
+        [-4, 3, -2],
+        [0, 0, 0]
+      ],
+      "nativeLength": 8.689877136949866,
+      "halfDistanceNormalizedParameter": 0.48751554989394
+    },
+    {
+      "id": "bezier-stationary-start",
+      "kind": "bezier",
+      "poles": [
+        [0, 0, 0],
+        [0, 0, 0],
+        [1, 0, 0],
+        [10, 0, 0]
+      ],
+      "nativeLength": 10,
+      "halfDistanceNormalizedParameter": 0.7714952998365227,
+      "straightCoordinatePolynomial": "x(u) = 3u^2 + 7u^3",
+      "firstDerivativeAtStart": [0, 0, 0]
+    },
+    {
+      "id": "bspline-nonuniform",
+      "kind": "bspline",
+      "degree": 3,
+      "poles": [
+        [0, 0, 0],
+        [0, 9, 2],
+        [2, -4, 5],
+        [6, 3, -2],
+        [20, 0, 1]
+      ],
+      "knots": [0, 0.35, 1],
+      "multiplicities": [4, 1, 4],
+      "nativeLength": 29.291662862894565,
+      "halfDistanceNormalizedParameter": 0.6486674836293488
+    }
+  ],
+  "negativeControls": [
+    { "name": "uniform-distance-parameter", "rejected": true },
+    { "name": "omit-trim-origin", "rejected": true },
+    { "name": "change-zero-sign-bit", "rejected": true }
+  ],
+  "owners": {
+    "duplicate-spline-fixtures-generated-20261023-r2": {
+      "receiptSha256": "043d370a2d09e9ebbee9d47bdf4edf08533be18c4ca1d69fec7bc23b7d925157",
+      "peakJobMemoryBytes": 509140992,
+      "allOwnedChildrenExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    "duplicate-spline-native-numerics-20261023-r2": {
+      "receiptSha256": "26e29d4e27c27effc036a2cf640746abf15f0479a2def0de4ced249fc8d6cd37",
+      "peakJobMemoryBytes": 36212736,
+      "allOwnedChildrenExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    "duplicate-spline-wasm-comparison-20261023-r2": {
+      "receiptSha256": "a6894fd2c62fdf28fe21a88cdffb86da4a3f316e03b24d9dc879e99f402791fd",
+      "peakJobMemoryBytes": 513400832,
+      "allOwnedChildrenExited": true,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    }
+  },
+  "fixedPolicy": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "maximumConcurrentProcessesIncludingOwner": 2,
+    "physicalAdmissionBytes": 3221225472,
+    "diskAdmissionBytes": 2147483648,
+    "leaseSeconds": 180,
+    "cleanupBudgetSeconds": 15
+  },
+  "initialFixtureCleanupFailure": {
+    "receiptSha256": "242f49aee57ffa8c7e22a92b25bef83fb80e0de043f7c409b03a44a302479870",
+    "failurePhase": "WASM object disposal",
+    "failedScriptRetained": true,
+    "allOwnedChildrenExited": true,
+    "handlesClosed": true,
+    "countedAsPassingValidation": false
+  },
+  "retainedArtifacts": {
+    "nativeCapture": {
+      "name": "duplicate-spline-native-numerics-20261023-r2.json",
+      "sha256": "a34bbd8619e1f9329315ec233ad0585b926604468b21432bfbd36c9d20a7d194"
+    },
+    "wasmComparison": {
+      "name": "duplicate-spline-wasm-comparison-20261023-r2.json",
+      "sha256": "39d151d6bdda6f23f8294737ac9bcd3b01238f5b73f218708908a3eaaa71beb8"
+    },
+    "fixtureManifest": {
+      "name": "duplicate-spline-fixtures-generated-20261023-r2.json",
+      "sha256": "7bc59939b0d9b58ae320815570f5fb66447cb23558d7d1c04387c664ff3dc7dc"
+    },
+    "independentVerifier": {
+      "name": "verify-duplicate-spline-comparison.py",
+      "sha256": "5bf208bab88b9c57a853ecf786bb57dc64b57623fb5a973e9388098f9b72dd80"
+    },
+    "independentVerification": {
+      "name": "duplicate-spline-comparison-independent-verification-20261023-r1.json",
+      "sha256": "1001afdfd901fd09a2169548643328f6ece4701b0133976a5171f9187a275e1b"
+    }
+  },
+  "sourceInputs": {
+    "public/cad-worker.js": "d1df515002cfbd4bce559f67b9f4df6476fc2ef68e371d53d5ea3babb5296fbc",
+    "public/kernel/opencascade.wasm.wasm": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+    "public/kernel/opencascade.js": "5d69a156ccd5d2f7e09b2c4c1a0043ad4ced5fcc48e5b6fabe4d5040d6aa8e0d"
+  },
+  "limits": [
+    "Geometry component replay only; no native full-controller acceptance",
+    "No separate reported-length kernel or unit conversion replay",
+    "No native normalization wrapper execution",
+    "No general periodic/rational spline or arbitrary degree coverage",
+    "No GUI/MCP duplication operation implemented or tested"
+  ]
+}

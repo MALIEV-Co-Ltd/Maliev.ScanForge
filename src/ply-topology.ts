@@ -6,9 +6,12 @@ import { parsePackedBinaryPly } from "./ply-binary-topology";
  */
 export function parsePlyTopology(
   data: ArrayBuffer,
-  options: { onNormals?: (normals: Float32Array) => void } = {},
+  options: {
+    onNormals?: (normals: Float32Array) => void;
+    sharedReadonlyBuffers?: boolean;
+  } = {},
 ) {
-  const packed = parsePackedBinaryPly(data);
+  const packed = parsePackedBinaryPly(data, options.sharedReadonlyBuffers);
   if (packed) {
     options.onNormals?.(packed.normals);
     return packed;
@@ -63,11 +66,20 @@ export function parsePlyTopology(
   }
 }
 
-export function expandPlyTopology(topology: {
-  vertices: ArrayLike<number>;
-  triangles: ArrayLike<number>;
-}) {
-  const positions = new Float32Array(topology.triangles.length * 3);
+export function expandPlyTopology(
+  topology: {
+    vertices: ArrayLike<number>;
+    triangles: ArrayLike<number>;
+  },
+  sharedReadonlyBuffers = false,
+): Float32Array {
+  const length = topology.triangles.length * 3;
+  const positions =
+    sharedReadonlyBuffers &&
+    globalThis.crossOriginIsolated === true &&
+    typeof SharedArrayBuffer !== "undefined"
+      ? new Float32Array(new SharedArrayBuffer(length * 4))
+      : new Float32Array(length);
   for (let slot = 0; slot < topology.triangles.length; slot++) {
     const offset = topology.triangles[slot] * 3;
     positions[slot * 3] = topology.vertices[offset];

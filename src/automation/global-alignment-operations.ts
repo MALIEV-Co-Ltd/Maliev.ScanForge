@@ -5,6 +5,7 @@ import type {
   WorkspaceSnapshot,
 } from "./api";
 import type { Entity } from "../types";
+import { cloudPoseBits } from "../point-cloud-placement";
 import type { refineGlobalScanSet } from "../scan-global-registration";
 import { assertNoUnresolvedOwnedWorkers } from "../scan-global-worker-cleanup";
 
@@ -19,12 +20,18 @@ export interface GlobalAlignmentPreviewState {
   inputSummary?: unknown;
   diagnostics?: Registration["diagnostics"];
   outer?: {
+    matrixFormat: "row-major-3x4";
+    matrixEncoding: "float64-le-hex";
+    translationUnits: "mm";
+    applications: { id: string; matrix: number[]; matrixBits: string }[];
     passes: number;
     order: string[];
     gaugeId?: string;
     seed: number;
     states: {
       id: string;
+      matrix: number[];
+      matrixBits: string;
       pointCount: number;
       mean: number | null;
       std: number | null;
@@ -101,12 +108,22 @@ export function inspectGlobalAlignmentPreview(
           inputSummary: preview.inputSummary,
           diagnostics: result.diagnostics,
           outer: {
+            matrixFormat: "row-major-3x4",
+            matrixEncoding: "float64-le-hex",
+            translationUnits: "mm",
+            applications: result.outer.applications.map((s) => ({
+              id: s.id,
+              matrix: [...s.matrix],
+              matrixBits: cloudPoseBits(s.matrix),
+            })),
             passes: result.outer.passes,
-            order: result.outer.order,
+            order: [...result.outer.order],
             gaugeId: result.outer.gaugeId,
             seed: result.outer.seed,
             states: result.outer.states.map((s) => ({
               id: s.id,
+              matrix: [...s.matrix],
+              matrixBits: cloudPoseBits(s.matrix),
               pointCount: s.pointCount,
               mean: finite(s.mean),
               std: finite(s.std),
@@ -135,6 +152,7 @@ function sourceGuard(
     e.indexedMesh?.vertices,
     e.indexedMesh?.triangles,
     e.indexedMesh?.normals,
+    e.indexedMesh?.geometryNormals,
     e.pointCloudPlacement,
     e.pointCloudPlacement?.sourcePositions,
     e.pointCloudPlacement?.sourceNormals,

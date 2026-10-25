@@ -1,5 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { createOperations } from "../src/automation/operations";
+import { createAuthoringOperations } from "../src/automation/authoring-operations";
 import { editPointCloud } from "../src/point-cloud-processing";
 import { processMesh } from "../src/processing-client";
 import {
@@ -36,6 +37,9 @@ function setup() {
       state.selectedId = id;
       state.selection = mask;
     }),
+    select: vi.fn((id) => {
+      state.selectedId = id;
+    }),
   } as unknown as WorkspaceHost;
   const context = {
     signal: new AbortController().signal,
@@ -55,6 +59,39 @@ beforeEach(() => {
       diagnostics: result.diagnostics,
     };
   });
+});
+it("selects every visible point and inverts without selecting hidden source slots", () => {
+  const { state, host, context } = setup();
+  state.entities[0].meshSelection = { hidden: [1], saved: [] };
+  const operations = createAuthoringOperations(host);
+  operations.selection_modify({ entityId: "cloud", operation: "all" }, context);
+  expect(Array.from(state.selection!)).toEqual([1, 0, 1]);
+  operations.selection_modify(
+    { entityId: "cloud", operation: "invert" },
+    context,
+  );
+  expect(Array.from(state.selection!)).toEqual([0, 0, 0]);
+});
+it("round-trips named point selections using original point IDs", () => {
+  const { state, host, context } = setup();
+  const operations = createAuthoringOperations(host);
+  state.selection = Uint8Array.from([0, 0, 1]);
+  const saved = operations.selection_saved(
+    { entityId: "cloud", action: "save", name: "Last point" },
+    context,
+  ) as { selectionId: string };
+  state.selection = new Uint8Array(3);
+  operations.selection_saved(
+    { entityId: "cloud", action: "load", selectionId: saved.selectionId },
+    context,
+  );
+  expect(Array.from(state.selection!)).toEqual([0, 0, 1]);
+});
+it("excludes hidden points from explicit MCP selection while retaining source indices", () => {
+  const { state, context, operations } = setup();
+  state.entities[0].meshSelection = { hidden: [1], saved: [] };
+  operations.selection_set({ entityId: "cloud", points: [1, 2] }, context);
+  expect(Array.from(state.selection!)).toEqual([0, 0, 1]);
 });
 it("discovers and validates explicit point index selection and point processing", () => {
   const schema = catalog.find(

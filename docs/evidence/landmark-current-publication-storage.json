@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "scope": "Current native point-pair preview publication and separate vertex-normal storage; static analysis with passive live code binding",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "installedImageSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "analysisRecords": [
+    {
+      "name": "native-current-npoint-preview-20261023.json",
+      "sha256": "f40b40ca0d2969087040d181de0bec2cfa286129ad9b313001365f6f9988e416",
+      "evidenceId": "ev_89dfa9fdaf8532842046787e308328422a463cccea7fee83cb4caadf3a9a4003",
+      "procedure": {
+        "procedure": "0x14054ca20"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x14054ca20",
+            "end": "0x14054cb6a"
+          }
+        ],
+        "total_bytes": 331,
+        "span_bytes": 331,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    },
+    {
+      "name": "native-current-npoint-publication-20261023.json",
+      "sha256": "70a6201db685df0c9da22fcad797c1ce7a71c4200d943fbc831f72605fe5ff22",
+      "evidenceId": "ev_fb84d5f4b64d42c88425688c918104f53a5e0286a38d866db5bbcd7c3b974fa7",
+      "procedure": {
+        "procedure": "0x14054c410"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x14054c410",
+            "end": "0x14054c799"
+          }
+        ],
+        "total_bytes": 906,
+        "span_bytes": 906,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    },
+    {
+      "name": "native-current-mesh-clone-20261023.json",
+      "sha256": "6759d1a4e8ce329e3870e2a24310cd29ca2a9f1fc00fc7ba578e689b8ce25a0c",
+      "evidenceId": "ev_64929d6816e1c308b335b3e68d7f5bb34b1e616b853b2dbb0bcf1e252dc35d56",
+      "procedure": {
+        "procedure": "0x140b350e0"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x140b350e0",
+            "end": "0x140b3522e"
+          }
+        ],
+        "total_bytes": 335,
+        "span_bytes": 335,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    },
+    {
+      "name": "native-current-mesh-copy-20261023.json",
+      "sha256": "5e22c4814ff1267e589180451760910529aef1da2670178e67954d90d4bbb522",
+      "evidenceId": "ev_2f6a6461d7fa948a98de31af6bae0fea61c76a07d09ff9f1e01a061efa795138",
+      "procedure": {
+        "procedure": "0x140b35990"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x140b35990",
+            "end": "0x140b35d8e"
+          }
+        ],
+        "total_bytes": 1023,
+        "span_bytes": 1023,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    },
+    {
+      "name": "native-current-vertex-transform-20261023.json",
+      "sha256": "2fb85efa59204aa9660e29e50316925d3cc73e75be3abda5898f8aa5b3fb42f1",
+      "evidenceId": "ev_2e7b01de7d1014425cdc560c8aefd26d10063053fb948f6563e2bf699acddd08",
+      "procedure": {
+        "procedure": "0x1401deb20"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x1401deb20",
+            "end": "0x1401ded1b"
+          }
+        ],
+        "total_bytes": 508,
+        "span_bytes": 508,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    }
+  ],
+  "anchors": [
+    {
+      "address": "0x14054cae9",
+      "hex": "e862050000"
+    },
+    {
+      "address": "0x14054cb34",
+      "hex": "e867fcffff"
+    },
+    {
+      "address": "0x14054cb44",
+      "hex": "e8c7f8ffff"
+    },
+    {
+      "address": "0x14054cb4c",
+      "hex": "e8ef080000"
+    },
+    {
+      "address": "0x14054cb54",
+      "hex": "c683c801000001"
+    },
+    {
+      "address": "0x14054c4bd",
+      "hex": "4839be88010000"
+    },
+    {
+      "address": "0x14054c532",
+      "hex": "e8a98b5e00"
+    },
+    {
+      "address": "0x14054c5b6",
+      "hex": "e8258b5e00"
+    },
+    {
+      "address": "0x14054c5f0",
+      "hex": "ff9050020000"
+    },
+    {
+      "address": "0x1401dec58",
+      "hex": "f30f106110f30f107114f30f106918"
+    },
+    {
+      "address": "0x1401dec95",
+      "hex": "660f5ac2f30f114110"
+    },
+    {
+      "address": "0x1401decb8",
+      "hex": "660f5ac3f30f114114"
+    },
+    {
+      "address": "0x1401decd8",
+      "hex": "660f5ac6f30f114118"
+    }
+  ],
+  "passiveBinding": {
+    "twoReadsAgree": true,
+    "regionQueries": 28,
+    "handleClosed": true,
+    "helperSelfJob": {
+      "memoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "killOnClose": false,
+      "assigned": true,
+      "closed": true,
+      "targetAssigned": false,
+      "childrenCreated": false,
+      "peakJobMemoryBytes": 15155200
+    },
+    "receiptSha256": "152858df61bce0997fdecf4587dc47908f7cca5c9a6ae19c7b47d29d4c87c001",
+    "helperSha256": "170405f47f73951b53a6651b2504a589f8b4ce2edc4345e7b05884107eb0343f",
+    "negativeControlsRejected": 26
+  },
+  "independentVerification": {
+    "passed": true,
+    "directCallTargetsDecoded": 6,
+    "virtualDispatchSlotsDecoded": 1,
+    "Float32NormalStoreSequencesDecoded": 3,
+    "liveAnchorRanges": 13,
+    "liveAnchorBytes": 92,
+    "codeOnly": true,
+    "targetFunctionsExecuted": false,
+    "geometryBuffersRead": false,
+    "source": {
+      "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+      "installedSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d"
+    }
+  },
+  "findings": [
+    "Preview maps landmarks, builds/selects a coarse candidate, applies it, refines, then marks preview active",
+    "Publication helper retains original geometry and restores from that source before reapplying a candidate",
+    "Publication invokes owner virtual slot 0x250; this evidence does not resolve its complete runtime dispatch",
+    "Separate vertex worker widens Float32 normals for double arithmetic, then stores Float32 components at offsets 0x10/0x14/0x18"
+  ],
+  "limitations": [
+    "No native function was executed in this investigation",
+    "No native scan geometry, final controller poses or accuracy were captured",
+    "Selected live code matches do not establish every instruction in the five functions matches live memory",
+    "Complete virtual-dispatch connectivity, UI acceptance lifecycle and runtime allocation stacks are not proved",
+    "The proposed application memory fix remains unapplied and unvalidated"
+  ]
+}

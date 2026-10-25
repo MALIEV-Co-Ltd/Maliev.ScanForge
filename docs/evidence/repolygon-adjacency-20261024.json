@@ -1,0 +1,127 @@
+{
+  "status": "computed-adjacency-ported-explicit-epsilon",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 9,
+  "newInstructionAddressesIndependentlyDecoded": 1536,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "privatePorts": [
+    {
+      "name": "adjacency-match",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "name": "adjacency-buckets",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "integrationControls": {
+    "passed": 5,
+    "failed": 0,
+    "coverage": [
+      "Computed bucket IDs build six reciprocal pairs on a closed tetrahedron.",
+      "Computed adjacency plus ordered boundary collection and cap repair closes a triangular tetrahedron opening.",
+      "A single-frontier discovered plane retains unit area, exact plane location, eight boundary edges and unit normals.",
+      "An isolated triangle is removed and its orphan points compacted.",
+      "Topology and normals leave the shared source position buffer unchanged."
+    ],
+    "initializerSuppliedAsZero": true,
+    "epsilonSuppliedAsZero": true
+  },
+  "findings": [
+    "The normal-update wrapper renumbers vertices, refreshes bounds, recomputes angle-weighted normals and conditionally invokes adjacency construction.",
+    "Two candidate table entries differ: one contains an adjacency builder and one returns immediately. Archived RTTI locator structure does not bind a current concrete output object.",
+    "Adjacency construction handles triangles wholly within a spatial bucket first, then unmatched triangles in original triangle order.",
+    "Reverse-edge matching retains the first directed record. A second match links a pair; a later reverse incidence is left unlinked instead of replacing that pair.",
+    "The bucket constructor and selector have differing Y/Z bit directions in the static trace. The port retains those differences rather than substituting uniform spatial bins.",
+    "The native spatial epsilon is outside archived raw sections and remains an explicit private-port input; no default value is inferred."
+  ],
+  "boundedJobs": [
+    {
+      "label": "repolygon-adjacency-r1",
+      "receiptSha256": "157d556eed7650b4ee8260574c6cf71779a7d3f5e266c25ce558175c6c2ef43a",
+      "expectedExitCode": 0,
+      "peakBytes": 756404224,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-worker-r1",
+      "receiptSha256": "d64deab49e3b0832657c0da8c1f2ae4e003c4a265339eb9071e9962464ca8c5a",
+      "expectedExitCode": 0,
+      "peakBytes": 777576448,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-setup-r1",
+      "receiptSha256": "f8b73214a029d71067d83c89bb1a7816bf960361857c70747b51d90844ef967a",
+      "expectedExitCode": 0,
+      "peakBytes": 1022193664,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-match-r1-red",
+      "receiptSha256": "dda00adda114ba850a806cecdf273b52a0ae951e5a944b3216b7976619a14f33",
+      "expectedExitCode": 1,
+      "peakBytes": 34852864,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-match-r1-green",
+      "receiptSha256": "a51d4adce574314ff585d53805635ff3ff8edf607a0f4ae77d206b8bf6c701e0",
+      "expectedExitCode": 0,
+      "peakBytes": 33067008,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-buckets-r1-red",
+      "receiptSha256": "bf6455d6ee20fe409022b9d791b68a47ff0bc97a40c45094e6c077e0859c36e1",
+      "expectedExitCode": 1,
+      "peakBytes": 32804864,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-buckets-r1-green",
+      "receiptSha256": "86bf5eddfce3e2e386e4c2ca05fa119fc57cfa4bbef24042269e0f3f80703144",
+      "expectedExitCode": 0,
+      "peakBytes": 33091584,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-adjacency-integration-r1-verify",
+      "receiptSha256": "996550d643408e22756147db3af12283a2835038512eb4fed480400361df4de0",
+      "expectedExitCode": 0,
+      "peakBytes": 35319808,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Bind the concrete reconstruction output class and its adjacency entry using stronger construction/dispatch evidence.",
+    "Resolve native spatial epsilon and mutable direction initializer; selected direct-reference scans are not complete write-set proofs.",
+    "Verify source preparation, exact-lattice behavior, parallel reconstruction frontiers and pre-collected triangle-pointer lifetime during deletion.",
+    "Integrate a coherent shared GUI/MCP operation and validate full original/native geometry, history, cancellation, saved projects and rendered output."
+  ],
+  "limitations": [
+    "Static bytes plus synthetic geometry; no fresh native runtime output or original-scan acceptance.",
+    "Serial bucket processing assumes the recovered disjoint vertex-bucket ownership; native scheduling and allocation metadata are not replicated.",
+    "The private finite/index/bucket guards are validation safeguards rather than proven native GUI admission rules.",
+    "Candidate boundaries and decompiler types remain inferred. Independently decoding instruction starts does not prove complete function extents.",
+    "Existing two-source and exact-lattice quality failures remain open; these passing controls do not close them."
+  ],
+  "privateProofSha256": "0a91e64ad4a2ba85b3196e80a8c394c4a0083a3451d016a27e1a1e774776077c"
+}

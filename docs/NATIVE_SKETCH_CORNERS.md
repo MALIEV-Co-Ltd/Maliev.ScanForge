@@ -1,0 +1,9 @@
+# Sketch corner intersection evidence
+
+The retained installed reference manual, SHA-256 `acaeb787431300f8fbeaf0f12845d35008f0732b6d938e011c9798db014a6018`, documents corner intersection on printed page 68 (PDF page 74). Two straight primitives are selected and their ends meet at the intersection; Undo reverses the operation. Printed page 60 also illustrates extending a line to close an otherwise open contour. The manual treats rounded corners and paint trimming separately (printed pages 68–75).
+
+The application implements the two-straight-line operation with explicit endpoint selectors and the shared `sketch_corner_trim` operation. It computes the analytic infinite-line intersection in the existing UV frame and merges the selected ends onto one point, preserving the opposite ends and unrelated data. It rejects affected constraints and other uses of the selected points before applying. This conservative dependency policy is an application contract; the manual does not establish the native policy.
+
+Helper tests cover inward trim, extension, mixed direction, oblique lines and endpoint reversal, shared topology, closed-profile use, preserved placement/reference and source immutability. Shared-operation and browser tests cover discoverability, GUI/MCP agreement, revision/retry, no-op and failed edits, sketch history and saved-project recovery. Executed counts and source/build identity belong in the candidate validation report.
+
+This supports documented geometric workflow and independent analytic correctness. It does not establish native numerical equivalence or native mouse-selection behavior. Fixed-radius line fillets use a separate [shared analytic operation](NATIVE_SKETCH_FILLET.md). Automatic fillets, corner arc intersections and automatic corner recognition remain open. General paint trimming uses a separate [shared stroke operation](NATIVE_SKETCH_PAINT_TRIM.md). The broader construction/sketch milestone remains open.

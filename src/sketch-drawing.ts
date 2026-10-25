@@ -2,7 +2,7 @@ import { solveSketch, validateSketch, type Sketch } from "./sketch";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 
 export type SketchDrawingTool =
-  "navigate" | "line" | "move" | "circle" | "circle3" | "arc3";
+  "navigate" | "line" | "move" | "circle" | "circle3" | "arc3" | "trim";
 export type SketchUV = [number, number];
 function finishCurve(next: Sketch): Sketch {
   const frame = next.frame ?? coordinateSketchFrame("OXY", 0);

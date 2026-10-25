@@ -1,5 +1,5 @@
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { RECONSTRUCTION_MAX_COORDINATES } from "./scan-reconstruction-targets";
+import { admitReconstructionInputs } from "./scan-reconstruction-input";
 import {
   sampleReconstructionGrid,
   closeReconstructionGrid,
@@ -34,21 +34,8 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   const resolution = o.resolution ?? 0.5;
   if (!Number.isFinite(resolution) || resolution <= 0)
     throw new Error("Point resolution must be positive and finite.");
-  if (
-    !positions.length ||
-    positions.length % 9 ||
-    positions.length > RECONSTRUCTION_MAX_COORDINATES
-  )
-    throw new Error("Expected complete triangles within the processing limit.");
   const inputs = [positions, ...(o.targets ?? [])];
-  if (
-    inputs.length > 33 ||
-    inputs.some((p) => !p.length || p.length % 9) ||
-    inputs.reduce((n, p) => n + p.length, 0) > RECONSTRUCTION_MAX_COORDINATES
-  )
-    throw new Error(
-      "Expected complete triangles within the combined reconstruction processing limit (up to 32 additional meshes).",
-    );
+  admitReconstructionInputs(inputs);
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
   for (const input of inputs)
@@ -93,32 +80,6 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
     throw new Error("No surface samples found at this point resolution.");
   const filled = closeReconstructionGrid(occupancy, dimensions, progress),
     shellRadius = resolution * 0.75;
-  const chunks: Float32Array[] = [];
-  const CHUNK = 294_912; // Complete triangles, roughly one MiB each.
-  let current = new Float32Array(CHUNK),
-    used = 0,
-    length = 0;
-  const append = (value: number) => {
-    if (length === MAX_OUTPUT)
-      throw new Error(
-        "Reconstructed mesh exceeds the sixteen-million-triangle processing limit; increase resolution.",
-      );
-    if (used === current.length) {
-      chunks.push(current);
-      current = new Float32Array(CHUNK);
-      used = 0;
-    }
-    current[used++] = value;
-    length++;
-  };
-
-  const verification = new ReconstructionTopology();
-  const actual = new Float32Array(48),
-    keys = new Float64Array(16),
-    expires = new Float64Array(16);
-  const triangle = new Float32Array(9),
-    triangleKeys = new Float64Array(3),
-    triangleExpires = new Float64Array(3);
   const window = (i: number) => {
     const shift = i & 31,
       word = i >>> 5;
@@ -128,6 +89,33 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
           0
       : occupancy.words[word];
   };
+  const uniformWindow = (id: number, x: number) => {
+    if (x + 32 >= nx) return false;
+    const a = window(id),
+      b = window(id + nx),
+      c = window(id + slice),
+      d = window(id + slice + nx);
+    if (a !== b || a !== c || a !== d || (a !== 0 && a !== 0xffffffff))
+      return false;
+    const last = occupancy.get(id + 32);
+    return (
+      last === (a & 1) &&
+      occupancy.get(id + nx + 32) === last &&
+      occupancy.get(id + slice + 32) === last &&
+      occupancy.get(id + slice + nx + 32) === last
+    );
+  };
+  const cellMask = (id: number) => {
+    let mask = 0;
+    for (let k = 0; k < 8; k++) {
+      const [dx, dy, dz] = cubeCorners[k];
+      mask |= occupancy.get(id + dx + dy * nx + dz * slice) << k;
+    }
+    return mask;
+  };
+  // Count the same immutable contours before allocating their one contiguous output.
+  let length = 0;
+  checkpoint(o, 0.7, "Counting reconstructed triangles");
   for (let z = 0; z < nz - 1; z++)
     for (let y = 0; y < ny - 1; y++)
       for (let x = 0; x < nx - 1; x++) {
@@ -135,32 +123,44 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
         if (id % 2048 === 0)
           checkpoint(
             o,
-            0.7 + (0.2 * id) / total,
+            0.7 + (0.05 * id) / total,
+            "Counting reconstructed triangles",
+          );
+        if (uniformWindow(id, x)) {
+          x += 31;
+          continue;
+        }
+        length += cubeContours[cellMask(id)].triangles.length * 9;
+        if (length > MAX_OUTPUT)
+          throw Error(
+            "Reconstructed mesh exceeds the sixteen-million-triangle processing limit; increase resolution.",
+          );
+      }
+  checkpoint(o, 0.75, "Extracting watertight surface");
+  const result = new Float32Array(length);
+  let written = 0;
+  const verification = new ReconstructionTopology();
+  const actual = new Float32Array(48),
+    keys = new Float64Array(16),
+    expires = new Float64Array(16);
+  const triangle = new Float32Array(9),
+    triangleKeys = new Float64Array(3),
+    triangleExpires = new Float64Array(3);
+  for (let z = 0; z < nz - 1; z++)
+    for (let y = 0; y < ny - 1; y++)
+      for (let x = 0; x < nx - 1; x++) {
+        const id = x + y * nx + z * slice;
+        if (id % 2048 === 0)
+          checkpoint(
+            o,
+            0.75 + (0.15 * id) / total,
             "Extracting watertight surface",
           );
-        if (x + 32 < nx) {
-          const a = window(id),
-            b = window(id + nx),
-            c = window(id + slice),
-            d = window(id + slice + nx);
-          if (a === b && a === c && a === d && (a === 0 || a === 0xffffffff)) {
-            const last = occupancy.get(id + 32);
-            if (
-              last === (a & 1) &&
-              occupancy.get(id + nx + 32) === last &&
-              occupancy.get(id + slice + 32) === last &&
-              occupancy.get(id + slice + nx + 32) === last
-            ) {
-              x += 31;
-              continue;
-            }
-          }
+        if (uniformWindow(id, x)) {
+          x += 31;
+          continue;
         }
-        let mask = 0;
-        for (let k = 0; k < 8; k++) {
-          const [dx, dy, dz] = cubeCorners[k];
-          mask |= occupancy.get(id + dx + dy * nx + dz * slice) << k;
-        }
+        const mask = cellMask(id);
         if (mask === 0 || mask === 255) continue;
         const template = cubeContours[mask];
         verification.advance(id);
@@ -193,23 +193,17 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
             for (let k = 0; k < 3; k++) {
               const value = actual[t[j] * 3 + k];
               triangle[j * 3 + k] = value;
-              append(value);
+              result[written++] = value;
             }
           }
           verification.addTriangle(triangleKeys, triangleExpires, triangle);
         }
       }
-  const result = new Float32Array(length);
-  let offset = 0;
-  for (let i = 0; i < chunks.length; i++) {
-    checkpoint(o, 0.905, "Collecting reconstructed triangles");
-    result.set(chunks[i], offset);
-    offset += chunks[i].length;
-  }
-  chunks.length = 0;
-  result.set(current.subarray(0, used), offset);
-  current = new Float32Array(0);
-  if (!result.length || result.some((v) => !Number.isFinite(v)))
+  if (
+    written !== length ||
+    !result.length ||
+    result.some((v) => !Number.isFinite(v))
+  )
     throw new Error("Reconstruction produced invalid geometry.");
   checkpoint(o, 0.92, "Verifying reconstructed topology");
   const tolerance = Math.min(1e-6, resolution / 1000);

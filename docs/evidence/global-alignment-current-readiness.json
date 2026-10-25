@@ -1,0 +1,64 @@
+{
+  "scope": "Current native ordinary-PLY adjacency readiness metadata; no geometry or solver acceptance",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "staticImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "reaEvidenceIds": [
+    "ev_74bb4b5d412af98ce84c08d411876e6c41538d46536170ced8da364430289b5b",
+    "ev_ddaaa91396220c8a8b02bbb14745bc2e33914c0972cf2c8812f25dda4c31d465"
+  ],
+  "meshes": [
+    {
+      "vertices": 140113,
+      "facets": 274154,
+      "adjacencyReady": true
+    },
+    {
+      "vertices": 1865848,
+      "facets": 3691133,
+      "adjacencyReady": true
+    },
+    {
+      "vertices": 1375494,
+      "facets": 2697877,
+      "adjacencyReady": true
+    }
+  ],
+  "dispatch": {
+    "adjacencyBuilder": "0x140b38e30",
+    "boundaryMarker": "0x1401dfed0",
+    "readinessByteOffset": "0x108",
+    "vertexFlagClear": "0x1401ddac0"
+  },
+  "validation": {
+    "twoReadsAgree": true,
+    "codeBytesMatched": 276,
+    "instructionAnchors": 10,
+    "vtableSlots": 2,
+    "tamperedInstructionControlsRejected": 2,
+    "metadataControls": {
+      "positive": 1,
+      "negative": 4
+    },
+    "regionQueries": 68,
+    "helperPeakJobBytes": 15290368,
+    "helperJobCapBytes": 4294967296,
+    "helperCpuPercent": 25,
+    "handleClosed": true,
+    "jobHandleClosed": true,
+    "targetAssignedToJob": false,
+    "nativeFunctionsCalled": false,
+    "geometryBuffersRead": false
+  },
+  "pins": {
+    "captureSha256": "602ef392606c48501cb0949fe45c0c85f81f71dbb8364f515ee9137234e8641d",
+    "helperSha256": "e4734037d8d29a3058b7b1fe9a42613bed63db5f2062538e509d0ede3865abc5",
+    "staticBundleSha256": "a7161431b238d09c3ea5fe27336c30fffe87298367b0daf18a2ac65e0ede6494"
+  },
+  "limits": [
+    "Readiness is a non-atomic repeated metadata snapshot of this current session, not proof of all edit invalidations.",
+    "No starting geometry, setter matrix bytes or clock/query inputs captured.",
+    "No full native numerical or registration-quality acceptance.",
+    "The boundary marker was decoded directly from digest-bound instruction bytes; the current Ghidra session did not recover it as a procedure.",
+    "No application behavior or MCP contract changed; unit/CAD/browser suites not rerun."
+  ]
+}

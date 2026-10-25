@@ -1,0 +1,15 @@
+# Shared reconstruction job validation
+
+On 2026-10-22, GUI Re-polygonize was routed through the existing public `mesh_process` executor. The previous GUI path used a reusable processing session even though reconstruction clears source adjacency; it retained a canonical output and sent a separate scene copy. The shared path uses a disposable worker and one executor-owned model commit. Geometry algorithms, parameters and admission limits are unchanged.
+
+Production build `scanforge-44dd2573da1d67e5` passed with all 1841 compiler inputs identical before/after. The affected run passed 63 tests across eleven files. The full suite passed 47479 tests with 61 skipped, across 571 passing and 17 skipped files. An initial build caught erased mock call signatures in the new test fixture; the fixture was corrected without production casts and the fresh build passed.
+
+Accepted browser run `20261022T115857974547Z` imported two synthetic eleven-facet open STL cubes through public import. Actual GUI controls selected the additional reference and 0.5 mm resolution. Apply created one public `mesh_process` job and exactly one model history entry. The output contained 504 facets and one closed component, with no boundary edges, nonmanifold edges/vertices, winding conflicts, duplicates or degeneracies. Independent mesh analysis agreed. Additional reference geometry was unchanged.
+
+The main-thread observer recorded exactly one new worker receiving `scanTools/repolygonize` and its termination request. A unique same-URL CDP worker target within the recorded creation window was destroyed. This is temporal correlation, not a process-identity claim; physical cleanup was independently verified by the outer Windows Job. GUI and MCP full public geometry artifacts matched, and Undo/Redo restored the expected complete Float32 position hashes. Export/reopen restored both full geometry artifacts.
+
+A valid positive resolution of 1e-9 mm reached the worker and failed the grid-size preflight before grid allocation, preserving geometry and history. A separately observed running reconstruction was cancelled through `job_cancel`; its terminal status was cancelled and geometry/history remained unchanged. Unit tests also cover late terminal success, abort/receipt races, observer errors, finite leases and listener/timer cleanup. A cancellation request alone is not treated as proof of rollback.
+
+The 4 GiB aggregate Job peaked at 782032896 bytes. All 17 observed processes exited, final active count was zero, retained handles closed and capture/cleanup errors were empty. Browser errors were empty. Source/build/tool identities were checked before and after the run.
+
+This synthetic workflow does not establish original-three reconstruction or native numerical equivalence. The three-million-input-facet limit still rejects the approximately 6.66 million original PLY facets; point-cloud reconstruction is still unsupported. Input transport copies, output staging, topology-frontier objects and display preparation remain relevant to full-size peak memory. No whole-workflow 4 GiB bound is claimed for the independent maximum reconstruction limits.

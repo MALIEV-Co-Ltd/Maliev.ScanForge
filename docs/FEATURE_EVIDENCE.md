@@ -36,7 +36,7 @@ Every entry in the evidence column is a **documented workflow**, not a claim tha
 | Sections                | Create a section on a chosen plane; repeat sections along an axis or guiding curve                                                 | 49–55                   | Axis clipping and CSV segments; arbitrary/staked sections absent             |
 | Sketch geometry         | Build lines, circles, arcs and editable freeform curves from section data                                                          | 56–64, 67               | Straight XY polygon only                                                     |
 | Automatic sketch        | Derive sketch candidates from selected section data with fitting tolerances                                                        | 65–66                   | Absent                                                                       |
-| Sketch editing          | Resolve corners/intersections, add rounded corners, trim, offset, mirror and repeat geometry                                       | 68–75, 81–88            | Polygon point editing only                                                   |
+| Sketch editing          | Resolve corners/intersections, add rounded corners, trim, offset, mirror and repeat geometry                                       | 68–75, 81–88            | Corner/trim/fillet and mirror-copy GUI/MCP; offset/repeat remain open        |
 | Sketch constraints      | Constrain geometry orientation, coincidence, tangency, symmetry and fixed positions; edit dimensional relationships                | 76–80                   | No solver or constrained curve model                                         |
 | Outline extraction      | Recover projected scan outlines for sketch construction                                                                            | 89–90                   | Absent                                                                       |
 | Sketch export           | Export sketch curves to DXF                                                                                                        | 91, 250–252             | Absent                                                                       |
@@ -239,3 +239,38 @@ This resolves the supplied-graph connection-pool boundary and two geometric inpu
 - Tiny-face normal repair: implemented the recovered mode-2 neighbor-selection and propagation rules with native pass-limit status preserved separately from actual repair counts. Nine tests include indexed scan geometry through recovered cache/adjacency/repair. UI binding, native runtime comparison and large-browser workflows remain unverified.
 
 - Default field constraints: implemented inclusive fixed-strength classification, first-face fallback and ordered supplied symmetry transfers, preserving opaque lane bits and pre-transfer fixed masks. Six focused tests include scan-derived connection-pool integration. Automatic symmetry detection and UI reconstruction binding remain incomplete.
+
+## Construction-axis sketch symmetry check (2026-10-22)
+
+The installed manual's printed page 80 (PDF page 86) documents symmetry between two lines or two arcs around a construction line. The current manual SHA-256 is `acaeb787431300f8fbeaf0f12845d35008f0732b6d938e011c9798db014a6018`; the page was extracted and visually inspected locally. ScanForge now stores this relation in Sketch v1 with stable curve/axis references and explicit endpoint pairing, solves it in the shared constraint evaluator, and applies GUI/MCP edits through atomic `sketch_set` solving. Mathematical fixtures and public GUI/MCP persistence/history checks validate the implementation; original solver numerical equivalence is not established. The historical inventory table above remains a baseline, while `CAPABILITIES.md` describes current implementation.
+
+## Sketch duplication controller follow-up
+
+Static recovery binds the shipped Duplicate selected dialog to its preview and
+Accept handlers. In addition to linear, grid and circular modes, it contains an
+along-curve mode. Circular endpoint spacing, retained-orientation anchoring and
+selective relation copying are now supported by controller evidence. Duplication
+remains unimplemented in GUI and MCP; see [the native behavior and open gates](NATIVE_SKETCH_DUPLICATION.md).
+
+The duplication follow-up maps copied numeric kinds 3, 4, 19 and 20 to native
+Perpendicular, Parallel, Colinear and Equal commands. Retained REA UI labels and
+a callback, two digest-bound raw dispatch tables and 25 instruction checks
+support these derived static names. Native equations, equal-quantity behavior,
+curve categories and runtime acceptance remain unverified. The default-spacing
+helper also performs formatting/precision and parse-back after a virtual
+conversion; a simple unit multiplier is not established. Shared collinear
+constraint support is an implementation prerequisite. This is evidence progress
+for M4, with no added application behavior or MCP operation.
+
+The subsequent [collinear application slice](SKETCH_COLLINEAR.md) implements kind
+19's geometric capability through the shared GUI/MCP sketch constraint path.
+Analytic tests and actual rendered/public-MCP workflows validate its documented
+application contract, including history and persistence. Native solver equations
+and numerical equivalence remain unverified; duplication is still incomplete.
+
+The duplication direction/count follow-up binds six native handlers, verifies
+46 instruction anchors and rejects a wrong editor-minimum negative control.
+It records axis selection, the Direction 2 reset, separate editor/generator count
+limits and full binary64 spacing arguments crossing the unit-service boundary.
+Picked-line normalization, unit conversion and live duplication acceptance remain
+open. No application or MCP duplication capability is advertised from these checks.

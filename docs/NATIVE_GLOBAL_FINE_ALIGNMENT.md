@@ -1,6 +1,319 @@
 # Native Global Fine Align
 
-Global Fine Align is a distinct native workflow, not the existing coarse `mesh_process` registration kind `global`. Its ribbon entry remains planned while native geometry preparation, overlap queries and the complete multi-scan controller are being integrated. The numerical code below is internal groundwork; no new GUI command or MCP math tool is advertised.
+## Original-file and shared-staging comparison (2026-10-23)
+
+The actual parser now has a full comparison against the same-run native baseline
+for all three original PLY files. Indexed positions, ordered topology and derived
+alignment normals match exactly. Applying the generated controller matrices
+through the actual shared entity-staging operation matches all 70,112,841 final
+indexed and expanded position values.
+
+Authored scanner normals remain distinct from native computed normals. The
+actual display-normal cache also differs from the native geometry-normal buffer;
+its native renderer binding and visual effect remain unverified. The exact
+normal results in the numerical replay below apply to derived geometry-normal
+streams, not every normal field stored or displayed by the application.
+See [original PLY staging](NATIVE_GLOBAL_ORIGINAL_PLY_STAGING.md) for the measured
+comparisons, resource receipts and remaining public GUI/MCP boundary.
+
+## Complete same-run numerical replay (2026-10-23)
+
+The source-mask candidate now reproduces the captured original-three run through
+all numerical stages using only its recorded clocks as environmental inputs.
+The shared cores generate all 45 query poses and results, six local results,
+three final controller states and six geometry-application matrices. Their final
+position, vertex-normal and facet-normal buffers match all 40,278,222 native
+Float32 values byte for byte. Captured query poses, correspondence records and
+final matrices are used only for comparison.
+
+See the [complete numerical replay](NATIVE_GLOBAL_COMPLETE_NUMERICAL_REPLAY.md)
+for source hashes, resources and scope. The public browser coordinator and
+rendered GUI/MCP workflow remain unverified for this candidate; this result does
+not close application acceptance or the wider alignment milestone.
+
+## Source preparation and correspondence correction (2026-10-23)
+
+The native group command uses source mask zero. The earlier mask-one
+interpretation confused its raw target-index stride with the separate source
+mask. Static constructor/settings checks and a later passive GUI preparation
+capture establish the corrected fields. All three observed temporary groups
+return null for the direct mesh interface, skipping boundary marking.
+
+The shared GUI/MCP preparation candidate now retains boundary vertices and
+omits boundary-adjacency allocation. Its connected input, scene and query-core
+replay matches all 96 angular sample counts and all 45 native query results:
+31,463 records bit for bit. The app-derived vertex normals independently match
+all 10,144,365 captured Float32 values. This replay uses recorded native clocks
+and query-entry poses; it does not prove public coordinator scheduling or
+rendered workflow equivalence.
+
+All 114 focused tests and 47,709 full-suite tests passed (64 skips), as did the
+production build and CAD smoke. The existing MCP operations expose the changed
+shared behavior and report `inputSummary.mask: 0`. Rendered GUI/MCP comparison
+remains outstanding, so the application change is an uncommitted candidate.
+See [source eligibility](GLOBAL_ALIGNMENT_SOURCE_FLAGS.md) and the
+[sanitized evidence](evidence/global-fine-source-mask-query-replay-20261023.json)
+for scope, hashes, resource receipts and limitations.
+
+## Same-run geometry application (2026-10-23)
+
+A subsequent native GUI run at 0.500 mm captured the matrices forwarded from
+each source wrapper to its original scan owner. All six calls were observed:
+three descriptor transforms followed by three common inverse-gauge transforms.
+The owner receives the same matrix pointer and bytes as its wrapper, through
+forwarding return site RVA `0xd57720`. The wrapper's one-member owner list and
+both class chains were checked before matrix reads. This explains why the
+earlier observer, which expected a direct controller return site, recorded no
+ordinary-owner calls.
+
+The [same-run application evidence](evidence/global-fine-same-run-applied-geometry-20261023.json)
+feeds those actual matrices and complete before-state buffers through the
+existing shared `executeDatumTransform` operation. Every final position,
+vertex normal and facet normal matches the native after-state byte for byte:
+nine buffers, 40,278,222 Float32 values, zero differing words. The three scans
+contain 3,381,455 vertices and 6,663,164 facets; triangle indices remain
+unchanged. Both matrix stages retain their intermediate Float32 stores.
+Intermediate native geometry was not captured separately.
+
+This run starts from the prior dispatch run's aligned final scene. All fifteen
+before-field hashes match that prior after-state, verified by rehashing all
+thirty files. It is not a pristine original-input alignment replay. The native
+controller returned zero with three stable sources and no converged sources.
+The trace also retains six local calls and 38 correspondence queries, but this
+checkpoint does not replay their generation.
+
+The observer passed 44 bounded VM cases and ten static code-anchor checks.
+Its live capture completed all six owner entry/return pairs, detached its hooks
+and verified the restored anchors with no cleanup errors. All scripts were
+then unloaded and the session detached. Full before/after captures read every
+field twice with equal hashes; these remain non-atomic snapshots.
+
+The shared-core replay took 1,287 ms and peaked at 616,837,120 bytes across its
+owned Job, under the unchanged 4 GiB cap and 25% CPU quota. Its child processes
+exited and owned handles closed without cleanup errors. Source and tool hashes
+were verified before and after execution; input and expected buffers were
+checked against the pinned capture manifests.
+
+This is an evidence-only checkpoint for the unchanged transform core shared by
+GUI and MCP global alignment. It changes no application behavior or agent
+contract and does not rerun the public GUI/MCP workflow. Sampling,
+correspondence generation, scheduling, rendering and complete alignment
+acceptance remain separate validation work.
+
+## Same-run local solver replay (2026-10-23)
+
+A fresh native GUI run imported the three original full-size PLY scans and ran
+Global Fine Align at 0.500 mm. Its passive trace retained 3,901 sampler clock
+inputs and one outer clock input, 96 angular sampler calls, six local solver calls and all 45 ordered
+correspondence query results without message truncation. Separate before/after
+captures retained every used position, vertex normal, triangle index, facet
+normal and complete vertex record on all three scans. Each capture read those
+fields twice with matching hashes; these remain non-atomic snapshots.
+
+The [same-run replay evidence](evidence/global-fine-same-run-local-replay-20261023.json)
+feeds those captured query results into the existing shared local solver.
+All six calls match bit for bit: every requested query pose, final twelve-Double
+pose, mean and standard deviation, convergence/stability flags and return
+status. The calls consume exactly 9, 3, 9, 8, 7 and 9 queries. Descriptor aliases
+identify the observed call order, not verified original-file or owner mappings.
+Opaque correspondence bytes remain uninterpreted, and entry flag bytes are not
+used as initialized state. Decoder checks include malformed-record rejection
+and a signed-zero corruption control.
+All 31,463 captured records are active; this run does not exercise inactive
+correspondence handling. Reported iteration counts are the port's counters.
+
+The replay completed in 196 ms with a 157,126,656-byte aggregate Job peak,
+under the unchanged 4 GiB cap and 25% CPU quota. The owned processes exited
+and handles closed without cleanup errors. Source and input hashes were
+verified before and after the replay. This checkpoint changes no application
+behavior or MCP contract: it exercises the local solver already shared by GUI
+and MCP global alignment.
+
+This establishes the local solver arithmetic for this actual native run using
+its recorded correspondences. It does not establish the port's correspondence
+generation, sampling, scheduling or complete final transform application.
+The command returned with all sources stable and no source converged. The
+ordinary-owner setter observer recorded no matching calls despite changed
+post-state positions. The separate dispatch observation below identifies a
+different direct receiver implementation. The later geometry checkpoint above
+captures original-owner forwarding and matrix application in its own run;
+full-controller equivalence remains unestablished.
+
+### Wrapper transform dispatch
+
+A separate 0.500 mm GUI run started from that already-aligned scene. All
+fifteen complete before-field hashes match the previous final capture; this is
+not another pristine original-input replay. Its
+[passive dispatch trace](evidence/global-fine-wrapper-dispatch-20261023.json)
+observes six successful interface queries and six virtual `+0x250` calls:
+three descriptor transforms, then three inverse-gauge transforms. Every
+receiver is the source wrapper itself, with table RVA `0xec1de0` and method
+RVA `0xd58d50`, rather than a direct call to ordinary-owner method `0x88b070`.
+This distinguishes the actual direct dispatch from the earlier observer's
+assumption; it does not retrospectively capture the prior run's setter calls.
+
+The diagnostic permits only paired permutations of the three source/descriptor
+identities before the first interface result, then freezes their order through
+both transform loops and return. Forty-two bounded mock cases passed before
+loading it. The live capture read 1,632 metadata bytes, completed both loops,
+detached all hooks, verified the restored code anchors and reported no cleanup
+errors. The script was unloaded and the session detached. It read no matrix or
+geometry payload and invoked no native application functions. Separate full
+post-state captures confirm changed positions and unchanged topology on all
+three original owners. The later geometry checkpoint above verifies forwarded
+owner calls and applied matrix bytes in a separate run. Complete
+query-generation parity remains unverified.
+
+No application behavior, catalog entry or GUI/MCP contract changes in this
+evidence-only checkpoint.
+
+## Current installed controller check (2026-10-22)
+
+This current check supersedes the historical-only qualification for the outer
+and local stop rules below. It does not establish a complete current native
+GUI registration result. Later integration sections supersede the early
+internal-only implementation checkpoints.
+
+The installed executable is version 8.0.123.0, SHA-256
+`0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`.
+Its retained original-process image and metadata-only static derivative are
+identified in [the ASC contract investigation](NATIVE_ASC_IMPORT_CONTRACT.md).
+The derivative preserves all thirteen original sections and was never executed.
+
+Fresh outer-controller pseudocode and complete assembly for
+`0x140af8cb0` confirm a maximum of nineteen passes and separate stop predicates:
+every source converged, or every source stable. The correspondence record
+stride is `0x48`; its distance at `+0x38` is counted only when strictly below
+the Float32 controller threshold. The integer-truncated coverage percentage
+overwrites the Double slot at context `+0x108`, previously used by the local
+standard deviation. Convergence and stability remain separate bytes at
+`+0x110` and `+0x111`.
+
+Fresh local-controller pseudocode for `0x140aeb080` confirms the distinct
+mean-distance convergence threshold and entry-mean stability comparison.
+These observations support the existing shared controller's stop and diagnostic
+semantics. They do not justify reporting stability as convergence or changing
+the acceptance threshold to make a failed quality gate pass.
+
+Evidence: outer pseudocode
+`ev_704d6039e587259681a38e0f1dcb9c7dbde7f6e6cdacfca95ebc64ae50492ec7`;
+complete outer assembly
+`ev_3dd207a91827fe6e8d2dbc66b651f183b6bd2cfa4b96f813f62c480c599b5356`;
+local pseudocode
+`ev_973c87f321b6acdfbf77d2dd839126554b480222b2afc7bd1bb0f149f5f5f7ce`.
+
+The original-three ScanForge workflow described in
+[the import validation report](IMPORT_GUI_MCP_PARITY.md) completes under the
+4 GiB process cap but remains non-converged. That memory/workflow result is
+separate from both strict registration quality and full current-native
+numerical equivalence. No runtime behavior or MCP contract changes in this
+documentation checkpoint.
+
+## Actual three-scan GUI controller trace (2026-10-22)
+
+The user-supplied screen recording confirms the native reference application 8.0.123 importing
+three PLY scans, selecting **Global Fine Align**, entering **0.500 mm** and
+pressing **OK**. Passive instrumentation captured command entry/return, one
+outer entry/exit, six local entry/exits and six geometry-setter entry/exits.
+The [normalized runtime trace](evidence/global-fine-live-gui-controller-20261022.json)
+retains exact descriptor pose/statistic bytes, source permutations and the
+capture's limitations. Evidence:
+`ev_7a2ca141a162aa5ea6f0f50d6cc7f284a86131b3a1472c285517a57805d54df4`.
+The provider reported no truncated messages. The recording SHA-256 is
+`7aca9bf5a0e263f6e597f2ac7f46c3400cebeb8cb4b3cd702a7642392391a59b`.
+
+Aliases A/B/C denote initial source/descriptor order, not verified file names.
+Local order is A/B/C, then C/B/A. The second sweep returns stability byte 1
+for each descriptor while convergence byte remains 0. This is observed native
+stability termination, not proof of converged registration. The outer exit
+order is A/C/B; the first three setter inputs point to the corresponding
+descriptor matrices, followed by three calls using one shared matrix pointer.
+The actual setter matrix bytes were not captured.
+
+The controller threshold at `+0x88` remained Float32
+`0.05000000074505806` (`cdcc4c3d`). It is the coverage threshold described
+above, distinct from the dialog's 0.500 mm search tolerance. At the next local
+entry, `+0x108` contains the prior sweep's integer coverage percentage, not
+its local standard deviation. Initial `+0x111` bytes must not be treated as
+initialized boolean state. Native clocks, random seeds and query records
+were not captured; observer elapsed times do not supply those inputs.
+
+The setter guard incorrectly required derived geometry table `141155E60`.
+All six calls instead used ordinary PLY owner table `141248370`, base
+geometry table `140EBFCF0` and setter slot `1401DE8D0`. Retained owner
+constructor evidence
+`ev_d9bfce2c46c26ce42e468433514386a87318334ab42de7c38ecb8fe83dc6e527`
+already binds this base class. The guard failed closed and skipped matrix
+reads. A corrected private observer now checks that exact owner/base/setter
+combination; a mock execution rejects the derived class, wrong owner and
+wrong setter before matrix reads. It has not been loaded into the native
+application. Full geometry observation also needs the base container layout;
+derived pool accessors cannot be assumed valid.
+
+All four scripts from this observation were unloaded and the Frida session
+detached. The user-owned native reference process remained running. This slice
+changes no application behavior or GUI/MCP contract. JSON readback verified
+all fourteen boundary events, six setter entries and exact Double encodings.
+
+### Complete native post-state geometry comparison
+
+A subsequent read-only capture bound the three live ordinary PLY owners and
+their paged vertex/facet containers. Each pool uses 16,384 records per page;
+the vertex and facet strides are `0x30` and `0x50`. Pool fields at geometry
+`+0x48` and `+0x130` store pointers, not inline structures. Capture validated
+the exact process creation FILETIME, executable hash, mapped setter bytes,
+owner/geometry/pool tables, counts, readable page spans and every facet's
+vertex-pointer membership. It read each complete used field twice, with
+identical hashes and unchanged container descriptors. The snapshot remains
+non-atomic: these checks do not suspend the native application.
+
+All 3,381,455 vertices and 6,663,164 triangles were retained as packed
+positions, computed vertex normals, ordered triangle indices and facet
+normals: 241,070,856 bytes total. The three unique count pairs and complete
+triangle arrays bind aliases A/C/B to `ply-1.ply` / `ply-3.ply` / `ply-2.ply`.
+Applying each recorded final descriptor pose, then the predicted inverse of
+largest-scan C's pose, through the actual shared ScanForge transform code
+matches **every byte of all four native fields on all three scans**. Native
+computed vertex normals match the existing angle-weighted normal producer;
+the source file's authored scanner normals do not. This supports the existing
+command-local derivation while preserving authored normal buffers.
+
+The [full-input regression fixture](../tests/fixtures/global-fine-live-post-owner-native.json)
+pins original file hashes, exact pose bits and native output hashes. Run
+`SCANFORGE_ALIGNMENT_EXAMPLES=C:/repo/alignment-example-files` with
+`tests/scan-native-global-live-post-owner.test.ts` to compare every element;
+without those files the three cases are explicitly skipped. No reduced or
+synthetic source replaces this acceptance input.
+
+The fresh production build passed without warnings/errors
+(`scanforge-55b609ad6bb23e70`); 89 focused tests passed across four files,
+including all three full-input comparisons. The native read-only capture took
+22.37 seconds with a 15.73 MiB helper Job peak; its target handle and helper
+Job handle closed. The independent comparison took 2.61 seconds with a
+459.95 MiB Job peak. Both retained the 4 GiB cap and 25% CPU quota. The native
+application remained running. No application behavior, catalog or GUI/MCP
+contract changed; these checks exercise the same geometry-application kernel
+already used by both interfaces. Five pre-existing unrelated working edits
+remain outside this change and were present in the tested tree.
+
+This verifies the post-state application arithmetic on the complete inputs,
+not complete solver equivalence. Native before-state and individual setter
+matrix bytes were not directly captured; the gauge inverse is predicted from
+the recorded descriptor pose and largest live count. Native clocks, query
+correspondences and equivalent full-controller replay remain open under
+tracking issue #3. The passing post-state comparison does not close that gate.
+
+The subsequent [full-size final proximity measurement](NATIVE_GLOBAL_FINAL_PROXIMITY.md)
+queries every vertex against both other complete captured scans. It records
+directional coverage and residual distributions separately from controller
+coverage, native numerical parity and successful registration. Fresh
+[common target-preparation evidence](NATIVE_GLOBAL_RAW_TARGET_ROUTING.md)
+also qualifies the historical CAD-only label for `0x140aec260`; evaluator
+presence by itself does not establish exact CAD admission.
+
+## Historical groundwork
+
+Global Fine Align is a distinct native workflow, not the coarse `mesh_process` registration kind `global`. At the initial checkpoint below, its ribbon entry and connected controller were still planned. Later integration sections record the subsequent public GUI/MCP implementation; the early kernel captures alone did not establish that integration.
 
 Prepared indexed-mesh evaluation now has a facet-normal/index producer connected to the packed query provider. Controlled original captures constrain its normal arithmetic and index contents; complete owner-scan registration and public GUI/MCP publication remain gated.
 

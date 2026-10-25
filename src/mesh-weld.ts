@@ -23,7 +23,6 @@ export function weldMeshPositions(
     next: Uint32Array = new Uint32Array(capacity);
   let head: Uint32Array = new Uint32Array(1024),
     tail: Uint32Array = new Uint32Array(1024);
-  let keys: Float64Array = new Float64Array(1024 * 3);
   const ox = positions[0],
     oy = positions[1],
     oz = positions[2];
@@ -36,34 +35,34 @@ export function weldMeshPositions(
   };
   const slotFor = (x: number, y: number, z: number) => {
     let slot = hash(x, y, z) & (head.length - 1);
-    while (
-      head[slot] &&
-      (keys[slot * 3] !== x ||
-        keys[slot * 3 + 1] !== y ||
-        keys[slot * 3 + 2] !== z)
-    )
+    // The first representative retains this cell's exact Float64 coordinates.
+    while (head[slot]) {
+      const first = (head[slot] - 1) * 3;
+      if (
+        Math.floor((vertices[first] - ox) / tolerance) === x &&
+        Math.floor((vertices[first + 1] - oy) / tolerance) === y &&
+        Math.floor((vertices[first + 2] - oz) / tolerance) === z
+      )
+        break;
       slot = (slot + 1) & (head.length - 1);
+    }
     return slot;
   };
   const growCells = (fraction: number) => {
     if (head.length >= 0x40000000)
       throw new Error("Mesh weld exceeds cell index capacity.");
     const oldHead = head,
-      oldTail = tail,
-      oldKeys = keys;
+      oldTail = tail;
     head = new Uint32Array(oldHead.length * 2);
     tail = new Uint32Array(head.length);
-    keys = new Float64Array(head.length * 3);
     for (let slot = 0; slot < oldHead.length; slot++) {
       if (slot % 16384 === 0) progress?.(fraction);
       if (oldHead[slot]) {
-        const x = oldKeys[slot * 3],
-          y = oldKeys[slot * 3 + 1],
-          z = oldKeys[slot * 3 + 2],
+        const first = (oldHead[slot] - 1) * 3,
+          x = Math.floor((vertices[first] - ox) / tolerance),
+          y = Math.floor((vertices[first + 1] - oy) / tolerance),
+          z = Math.floor((vertices[first + 2] - oz) / tolerance),
           to = slotFor(x, y, z);
-        keys[to * 3] = x;
-        keys[to * 3 + 1] = y;
-        keys[to * 3 + 2] = z;
         head[to] = oldHead[slot];
         tail[to] = oldTail[slot];
       }
@@ -124,9 +123,6 @@ export function weldMeshPositions(
       const slot = slotFor(cx, cy, cz);
       if (head[slot]) next[tail[slot] - 1] = id + 1;
       else {
-        keys[slot * 3] = cx;
-        keys[slot * 3 + 1] = cy;
-        keys[slot * 3 + 2] = cz;
         head[slot] = id + 1;
         cells++;
       }

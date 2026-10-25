@@ -82,6 +82,47 @@ async function settle(
   throw new Error("Job did not settle");
 }
 describe("MCP alignment reference discovery", () => {
+  it("exposes the exact kernel cylinder radius in millimetres without authoring changes", async () => {
+    const { api, host, state } = setup([
+      {
+        kind: "cylinder",
+        faceIndex: 0,
+        firstTriangle: 0,
+        triangleCount: 8,
+        location: [8, 2, 12],
+        axis: [0, 0, 1],
+        firstV: 0,
+        lastV: 5,
+        radius: 2,
+        semiAngle: 0,
+      },
+    ]);
+    try {
+      const before = structuredClone(state),
+        revision = api.currentRevision();
+      const response = await settle(
+        api,
+        await api.invoke("alignment_references", { entityId: "cad" }),
+      );
+      expect(response.status).toBe("succeeded");
+      expect(response.result.references).toEqual([
+        expect.objectContaining({
+          source: "cadFace",
+          surfaceKind: "cylinder",
+          kind: "direction",
+          radiusMm: 2,
+          point: [8, 2, 12],
+          direction: [0, 0, 1],
+          length: 5,
+        }),
+      ]);
+      expect(state).toEqual(before);
+      expect(api.currentRevision()).toBe(revision);
+      expect(host.commit).not.toHaveBeenCalled();
+    } finally {
+      api.dispose();
+    }
+  });
   it("maps original render triangle slots to exact half-open CAD face ranges", async () => {
     const { api, host } = setup([
       {

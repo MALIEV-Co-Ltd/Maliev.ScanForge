@@ -1,4 +1,5 @@
-import { BufferAttribute, type Mesh, type Points } from "three";
+import { BufferAttribute, type Mesh, type Points, type Line } from "three";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 import {
   acceleratedRaycast,
   MeshBVH,
@@ -15,7 +16,9 @@ const prepared = new WeakMap<object, Promise<void>>();
 /** Camera gestures must not wait for a linear scan of an unindexed large scan.
  * Exact object/facet picking retains its ordinary fallback independently.
  */
-export function canQueryNavigationSurface(object: Mesh | Points): boolean {
+export function canQueryNavigationSurface(
+  object: Mesh | Points | Line,
+): boolean {
   const geometry = object.geometry;
   return (
     !!geometry.boundsTree ||
@@ -42,6 +45,7 @@ export function prepareViewportPicking(mesh: Mesh): Promise<void> {
     (geometry.index?.count ?? positions.count) < 30_000
   )
     return Promise.resolve();
+  const releasePreparation = beginPriorityScanPreparation();
   let resolve!: () => void;
   const ready = new Promise<void>((done) => {
     resolve = done;
@@ -59,6 +63,7 @@ export function prepareViewportPicking(mesh: Mesh): Promise<void> {
     const index = queue.indexOf(job);
     if (index >= 0) queue.splice(index, 1);
     if (active === job) active = undefined;
+    releasePreparation();
     resolve();
     pump();
   };

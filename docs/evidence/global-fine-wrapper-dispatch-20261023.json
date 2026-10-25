@@ -1,0 +1,380 @@
+{
+  "schema": 1,
+  "scope": "One subsequent full-size native GUI Global Fine Align run at 0.500 mm; passive interface and virtual dispatch metadata only",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "runtimeEvidence": "ev_578c7e3653425ad297f3f87aa0f99892108da5bf5b234f803784b53e4852abd9",
+  "canonicalBundleSha256": "aa8efbb57e1cc7893a0c1b509b2bfb9bbcb84f701bab3410cfa420bdd7f88afb",
+  "baseline": "Already aligned R1 final scene; all fifteen R2 before-field hashes equal R1 after-field hashes. This is not a pristine original-input replay.",
+  "observedDispatch": {
+    "virtualSlot": "0x250",
+    "wrapperVtableRva": "0xec1de0",
+    "wrapperSetterRva": "0xd58d50",
+    "ordinaryOwnerSetterRva": "0x88b070",
+    "directOrdinaryOwnerDispatchObserved": false,
+    "nonnullInterfaceReturns": 6,
+    "virtualCallSitesObserved": 6,
+    "firstStageReturnSiteRva": "0xaf9128",
+    "secondStageReturnSiteRva": "0xaf918a"
+  },
+  "geometry": [
+    {
+      "owner": "0x2f6f030",
+      "vertexCount": 140113,
+      "facetCount": 274154,
+      "beforePositionsSha256": "989146c136e537d2a37233e95c46b539590f4fbb60ae562579573b8cf2f77f3d",
+      "afterPositionsSha256": "f6da8c442cba0f65827160a799a5c0a4e6915b4f0ff0b38fda79b24c0de5a390",
+      "topologySha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+    },
+    {
+      "owner": "0x2f6f900",
+      "vertexCount": 1375494,
+      "facetCount": 2697877,
+      "beforePositionsSha256": "094ae8cc4ea5a280044989865c491511db34e2a26e4ad6cf8073d0bb78a55ae6",
+      "afterPositionsSha256": "1f87c4c424972b49166e23101b3a3a82766b6cf02110d02b65f6b6f56df82b84",
+      "topologySha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+    },
+    {
+      "owner": "0x2f6ed40",
+      "vertexCount": 1865848,
+      "facetCount": 3691133,
+      "beforePositionsSha256": "f1cc8ee4e3c6fdddbe3c1f869d3d5432b542866d13b92f37f9be38304d6c726f",
+      "afterPositionsSha256": "eafe9e284721e6c04659beb31119b8ea02de318262b963aa90b4d3cdbd8b04c4",
+      "topologySha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+    }
+  ],
+  "events": [
+    {
+      "anchors": [
+        {
+          "bytes32": "488bc444894820555356574154415541564157488d68a14881ecd800000048c7",
+          "name": "outer",
+          "rva": 11504816
+        },
+        {
+          "bytes32": "488bf04885c00f8494000000488d5567488b8860010000e86ce2250090488b08",
+          "name": "first-qi-return",
+          "rva": 11505800
+        },
+        {
+          "bytes32": "4885c074114c8b00488d5587488bc841ff90500200004883c308493b5f0875bc",
+          "name": "inverse-qi-return",
+          "rva": 11506036
+        },
+        {
+          "bytes32": "ff90500200004883c3084883c708498b7708483bde0f8523ffffff498b1f488d",
+          "name": "first-setter-call",
+          "rva": 11505954
+        },
+        {
+          "bytes32": "41ff90500200004883c308493b5f0875bc33c04c8d9c24d8000000410f2873e8",
+          "name": "inverse-setter-call",
+          "rva": 11506051
+        }
+      ],
+      "cleanupBudgetMs": 15000,
+      "componentOwnership": "AF8CB0 and four exact sites only; unload clock/outer and prior same-site hooks before loading",
+      "deadlineEpochMs": 1792739433523,
+      "elapsedMs": 71,
+      "identityLimitation": "Fresh root PID/FILETIME/disk-hash attestations; not independently queried by script",
+      "matrixOrGeometryPayloadsRead": false,
+      "maxEventBytes": 65536,
+      "maxEvents": 32,
+      "maxRangeChecks": 4096,
+      "maxReadBytes": 65536,
+      "nativeFunctionsCalled": false,
+      "pid": 32152,
+      "protectionRace": "Non-atomic range check/read; any failure invalidates capture",
+      "queryId": "0x141176d28",
+      "referenceSha256": "01612fc953b697abe2048a58891f4830de1215f5597501fc443f6b9ef8fd5e23",
+      "rootIdentity": {
+        "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+        "identityVerifiedAtEpochMs": 1792738233370,
+        "rawCreationFileTime": "134372093588457253"
+      },
+      "scope": "One outer invocation; three unique paired identities derived at entry may permute before first QI, then order is frozen through both loops and return; metadata only",
+      "type": "qi-setter-metadata-ready"
+    },
+    {
+      "aliases": [
+        {
+          "alias": "source-1",
+          "descriptor": "0x5ca4d7b0",
+          "index": 0,
+          "source": "0x108999190"
+        },
+        {
+          "alias": "source-2",
+          "descriptor": "0x5ca4f070",
+          "index": 1,
+          "source": "0x108998b90"
+        },
+        {
+          "alias": "source-3",
+          "descriptor": "0x5ca4d210",
+          "index": 2,
+          "source": "0x108999790"
+        }
+      ],
+      "controller": "0x15b600",
+      "descriptorVector": "0x15b470",
+      "elapsedMs": 11864,
+      "mappingLimit": "Current invocation identity/order only; no source-file or original imported-owner equivalence",
+      "sourceVector": "0x15b458",
+      "threadId": 47004,
+      "type": "outer-identities"
+    },
+    {
+      "aliases": [
+        {
+          "alias": "source-2",
+          "descriptor": "0x5ca4f070",
+          "entryIndex": 1,
+          "loopIndex": 0,
+          "source": "0x108998b90"
+        },
+        {
+          "alias": "source-3",
+          "descriptor": "0x5ca4d210",
+          "entryIndex": 2,
+          "loopIndex": 1,
+          "source": "0x108999790"
+        },
+        {
+          "alias": "source-1",
+          "descriptor": "0x5ca4d7b0",
+          "entryIndex": 0,
+          "loopIndex": 2,
+          "source": "0x108999190"
+        }
+      ],
+      "elapsedMs": 11938,
+      "type": "setter-loop-order"
+    },
+    {
+      "descriptor": "0x5ca4f070",
+      "elapsedMs": 11938,
+      "index": 0,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "descriptor-transform",
+      "result": "0x108998b90",
+      "site": "0x140af9088",
+      "source": "0x108998b90",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4f070",
+      "elapsedMs": 11984,
+      "index": 0,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "descriptor-transform",
+      "receiver": "0x108998b90",
+      "site": "0x140af9122",
+      "source": "0x108998b90",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "descriptor": "0x5ca4d210",
+      "elapsedMs": 12016,
+      "index": 1,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "descriptor-transform",
+      "result": "0x108999790",
+      "site": "0x140af9088",
+      "source": "0x108999790",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4d210",
+      "elapsedMs": 12061,
+      "index": 1,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "descriptor-transform",
+      "receiver": "0x108999790",
+      "site": "0x140af9122",
+      "source": "0x108999790",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "descriptor": "0x5ca4d7b0",
+      "elapsedMs": 12098,
+      "index": 2,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "descriptor-transform",
+      "result": "0x108999190",
+      "site": "0x140af9088",
+      "source": "0x108999190",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4d7b0",
+      "elapsedMs": 12144,
+      "index": 2,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "descriptor-transform",
+      "receiver": "0x108999190",
+      "site": "0x140af9122",
+      "source": "0x108999190",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "descriptor": "0x5ca4f070",
+      "elapsedMs": 12169,
+      "index": 0,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "inverse-largest-gauge",
+      "result": "0x108998b90",
+      "site": "0x140af9174",
+      "source": "0x108998b90",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4f070",
+      "elapsedMs": 12214,
+      "index": 0,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "inverse-largest-gauge",
+      "receiver": "0x108998b90",
+      "site": "0x140af9183",
+      "source": "0x108998b90",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "descriptor": "0x5ca4d210",
+      "elapsedMs": 12246,
+      "index": 1,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "inverse-largest-gauge",
+      "result": "0x108999790",
+      "site": "0x140af9174",
+      "source": "0x108999790",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4d210",
+      "elapsedMs": 12292,
+      "index": 1,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "inverse-largest-gauge",
+      "receiver": "0x108999790",
+      "site": "0x140af9183",
+      "source": "0x108999790",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "descriptor": "0x5ca4d7b0",
+      "elapsedMs": 12327,
+      "index": 2,
+      "isNull": false,
+      "meaning": "Observed return pointer only; no target QI call issued by observer",
+      "phase": "inverse-largest-gauge",
+      "result": "0x108999190",
+      "site": "0x140af9174",
+      "source": "0x108999190",
+      "type": "qi-result"
+    },
+    {
+      "descriptor": "0x5ca4d7b0",
+      "elapsedMs": 12372,
+      "index": 2,
+      "meaning": "Dispatch metadata only; no matrix, geometry payload or setter completion read",
+      "phase": "inverse-largest-gauge",
+      "receiver": "0x108999190",
+      "site": "0x140af9183",
+      "source": "0x108999190",
+      "target": "0x140d58d50",
+      "targetIs88B070": false,
+      "targetMainRva": "0xd58d50",
+      "type": "setter-callsite",
+      "vtable": "0x140ec1de0",
+      "vtableMainRva": "0xec1de0"
+    },
+    {
+      "elapsedMs": 12397,
+      "nonnullQiReturns": [3, 3],
+      "qiReturns": [3, 3],
+      "type": "outer-metadata-return",
+      "virtualCallSites": [3, 3]
+    },
+    {
+      "cleanupErrors": [],
+      "complete": true,
+      "elapsedMs": 12488,
+      "eventBytesBeforeTerminal": 6584,
+      "eventsBeforeTerminal": 16,
+      "ignoredSites": 0,
+      "matrixOrGeometryPayloadsRead": false,
+      "nativeFunctionsCalled": false,
+      "nonnullQiReturns": [3, 3],
+      "outerCount": 1,
+      "outerReturned": true,
+      "postDetachCodeAnchorsVerified": true,
+      "qiReturns": [3, 3],
+      "rangeChecks": 83,
+      "readBytes": 1632,
+      "reason": "one-outer-invocation-returned",
+      "type": "qi-setter-metadata-terminal",
+      "virtualCallSites": [3, 3],
+      "wholeAcceptance": false
+    }
+  ],
+  "validation": {
+    "boundedVmMockCasesPassed": 42,
+    "mockJobMemoryCapBytes": 4294967296,
+    "mockCpuRate": 2500,
+    "mockCleanupErrors": [],
+    "metadataReadBytes": 1632,
+    "metadataRangeChecks": 83,
+    "postDetachCodeAnchorsVerified": true,
+    "targetFunctionsInvokedByObserver": false,
+    "matrixOrGeometryPayloadsReadByObserver": false,
+    "scriptUnloaded": true,
+    "sessionDetached": true
+  },
+  "privateArtifactSha256": {
+    "native-outer-qi-setter-metadata-r1.js": "330ae019f1d381b4ef85783c6c43b316035436750b90ea1740648bee361faeb1",
+    "native-outer-qi-setter-metadata.selftest-r1.cjs": "19069625932131314d5f8da4ecffece477f1679940d8dfe34a78ba5af62e409f",
+    "native-bound-32152-qi-metadata-r2.js": "2948308d8c2b3319e404430e8b2b36f29b7ef3c9d1dbc0a58a8869c5b0786bcc",
+    "native-qi-metadata-mock-r1.receipt.json": "e09b5372cc03bacfcea9c3e6d6f9378776b2b1d7c4f74868e8e63394d6b94e5e",
+    "native-base-ply-32152-before-r2/evidence.json": "97cd4f9b5eed0eb90229c5a174bdb011130e26caf8b36b0003e255055b3dfeff",
+    "native-base-ply-32152-after-r2/evidence.json": "a9b4125389e0453628547902a5fe713e9ac2724cb862b64e3dd77bc7b758bc96"
+  },
+  "applicationBehaviorChanged": false,
+  "guiMcpContractChanged": false,
+  "nativeFullControllerEquivalenceVerified": false,
+  "limitations": [
+    "Dispatch observations apply to this separate already-aligned R2 run, not retrospectively observed R1 setter calls.",
+    "No matrix payload, ordinary-owner forwarded call, setter-stage geometry or registration quality was captured by this observer.",
+    "Wrapper identity is not original owner or filename identity.",
+    "Geometry snapshots remain non-atomic; producers read all used fields twice with matching hashes."
+  ]
+}

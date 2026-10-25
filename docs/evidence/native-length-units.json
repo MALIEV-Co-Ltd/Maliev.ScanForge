@@ -1,0 +1,85 @@
+{
+  "scope": "Static unit tables/multipliers/default formatting plus passive current-unit binding; no native function execution",
+  "passed": true,
+  "nativeNumericalAcceptance": false,
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "instructionCount": 34,
+  "unitTables": [
+    {
+      "id": 0,
+      "name": "mm",
+      "vtable": "0x14117b590",
+      "toDisplay": "0x140404210",
+      "toMillimetres": "0x140404210",
+      "displayMultiplier": 1.0,
+      "millimetreMultiplier": 1.0
+    },
+    {
+      "id": 1,
+      "name": "in",
+      "vtable": "0x14117b620",
+      "toDisplay": "0x140404260",
+      "toMillimetres": "0x140404280",
+      "displayMultiplier": 0.03937007874,
+      "millimetreMultiplier": 25.4
+    },
+    {
+      "id": 2,
+      "name": "m",
+      "vtable": "0x14117b5d8",
+      "toDisplay": "0x140404220",
+      "toMillimetres": "0x140404240",
+      "displayMultiplier": 0.001,
+      "millimetreMultiplier": 1000.0
+    }
+  ],
+  "exactReciprocalNegativeControlRejected": true,
+  "vtableSlotsVerified": 6,
+  "startupPrecision": 6,
+  "defaultFormatting": "Fixed decimal formatting followed by stod; precision N except inch N+1",
+  "currentRuntime": {
+    "unitKind": 0,
+    "unit": "mm",
+    "precision": 6,
+    "effectiveDefaultPrecision": 6,
+    "wrapperBytesSha256": "325e06a438c500080bcf9f3e9acef1bf44d623b1c1dddc2841cfe7190fa889ae"
+  },
+  "runtimeQueries": 12,
+  "runtimePeakBytes": 15396864,
+  "runtimeHandlesClosed": true,
+  "remaining": [
+    "Native numerical replay of defaults across units and precision settings.",
+    "Locale, rounding ties, overflow and invalid-input behavior.",
+    "Picked-line eligibility/frame fixtures, curve categories, relation equations and complete duplication acceptance."
+  ],
+  "evidence": {
+    "0x1404040e0": "ev_138bb13a2adfe26e7d91a7020d727e69cbf9557bb246a4e0cd4852017659a80b",
+    "0x140404570": "ev_9f73aaa6df4d59b89502bbc9400a6141c5b72b9e28069a5637f9d9acf902ccd2",
+    "0x1407b9ad0": "ev_572b7a370eec908492b0b7213c3671f18d5cf8446407af3a3fee073ff186a261"
+  },
+  "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "mcpCapabilityAdded": false,
+  "applicationBehaviorChanged": false,
+  "rawMethodFunctionOwners": "Ghidra did not recover owners for the short conversion methods or formatting manipulator; constants/instructions verified independently with Capstone 5.0.6.",
+  "analysisSessionClosed": true,
+  "cleanupPending": false,
+  "verificationReceiptSha256": "a2cabb67fa2375938cf30bbdeb8bdbab2a6aa6287f4583e453430f2b3a267dfe",
+  "runtimeReceiptSha256": "a01f80a5a8dd4cd92a8436116a162c8c713363edec8c91f604b8ce0e20883843",
+  "formatFlagSource": "https://raw.githubusercontent.com/microsoft/STL/main/stl/inc/xiosbase",
+  "helperSha256": "a2e895ead5d41fae9b993552d102b76a85ce4e624f512e8d5fba6c9d7e94aca3",
+  "staticVerifierSha256": "2c4337a5ced813818709597d23b882cfa0ac57513b31063ae740551a1e3699f4",
+  "decoderCases": {
+    "passed": 3,
+    "negativeCasesRejected": 3
+  },
+  "runtimeProbeLimits": {
+    "leaseSeconds": 30,
+    "readBytesPerCall": 256,
+    "maximumRegionQueries": 64,
+    "helperJobBytes": 4294967296,
+    "helperCpuPercent": 25,
+    "targetAssignedToJob": false,
+    "targetFunctionsCalled": false,
+    "targetWrites": false
+  }
+}

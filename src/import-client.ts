@@ -1,7 +1,11 @@
-import type { ScanImportOptions, ScanSource } from "./import-parser";
+import type {
+  ImportedIndexedMesh,
+  ScanImportOptions,
+  ScanSource,
+} from "./import-parser";
 import type { ScanUnit } from "./import-units";
-import type { parsePlyTopology } from "./ply-topology";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 /** Dedicated, cancellable import worker; its final geometry is transferred. */
 export function importScan(
   file: File,
@@ -13,7 +17,8 @@ export function importScan(
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   if (options.signal?.aborted)
     return Promise.reject(new DOMException("Import cancelled", "AbortError"));
-  return new Promise((resolve, reject) => {
+  const releaseImport = beginPriorityScanPreparation();
+  return new Promise<Float32Array>((resolve, reject) => {
     const worker = new Worker(new URL("./import-worker.ts", import.meta.url), {
       type: "module",
     });
@@ -52,9 +57,9 @@ export function importScan(
         positions?: Float32Array;
         renderData?: ScanRenderData;
         source?: ScanSource;
-        pointCloud?: { normals?: Float32Array };
+        pointCloud?: { normals?: Float32Array; pointColors?: Uint8Array };
         meshNormals?: Float32Array;
-        indexedMesh?: ReturnType<typeof parsePlyTopology>;
+        indexedMesh?: ImportedIndexedMesh;
         error?: string;
       }>,
     ) => {
@@ -64,25 +69,29 @@ export function importScan(
         return;
       }
       cleanup();
-      if (event.data.positions) {
-        if (event.data.renderData)
-          cacheScanRenderData(event.data.positions, event.data.renderData);
-        if (event.data.indexedMesh)
-          options.onIndexedMesh?.(event.data.indexedMesh);
-        if (event.data.meshNormals)
-          options.onMeshNormals?.(event.data.meshNormals);
-        if (event.data.pointCloud)
-          options.onPointCloud?.(event.data.pointCloud);
-        else
-          options.onSource?.(
-            event.data.source ?? {
-              bytes: file.size,
-              triangles: event.data.positions.length / 9,
-              displayedTriangles: event.data.positions.length / 9,
-            },
-          );
-        resolve(event.data.positions);
-      } else reject(new Error(event.data.error ?? "Scan import failed."));
+      try {
+        if (event.data.positions) {
+          if (event.data.renderData)
+            cacheScanRenderData(event.data.positions, event.data.renderData);
+          if (event.data.indexedMesh)
+            options.onIndexedMesh?.(event.data.indexedMesh);
+          if (event.data.meshNormals)
+            options.onMeshNormals?.(event.data.meshNormals);
+          if (event.data.pointCloud)
+            options.onPointCloud?.(event.data.pointCloud);
+          else
+            options.onSource?.(
+              event.data.source ?? {
+                bytes: file.size,
+                triangles: event.data.positions.length / 9,
+                displayedTriangles: event.data.positions.length / 9,
+              },
+            );
+          resolve(event.data.positions);
+        } else reject(new Error(event.data.error ?? "Scan import failed."));
+      } catch (error) {
+        reject(error);
+      }
     };
     worker.onerror = (event) => {
       cleanup();
@@ -104,10 +113,11 @@ export function importScan(
         previewTriangles: options.previewTriangles,
         unit: options.unit,
         placeAtOrigin: options.placeAtOrigin,
+        ascAttributes: options.ascAttributes,
       });
     } catch (error) {
       cleanup();
       reject(error);
     }
-  });
+  }).finally(releaseImport);
 }

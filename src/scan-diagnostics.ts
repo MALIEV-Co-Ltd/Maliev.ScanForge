@@ -137,6 +137,7 @@ export function observeScanDiagnostics(
     {
       signal: controller.signal,
       reuseTopology: true,
+      borrowReadonlyReportSource: options.speculative === true,
       onProgress: (fraction, stage) => {
         if (!controller.signal.aborted)
           publish({

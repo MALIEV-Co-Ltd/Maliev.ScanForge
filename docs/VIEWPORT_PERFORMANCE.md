@@ -2,9 +2,13 @@
 
 Viewport surface queries use a disposable, indirect triangle BVH prepared in a background worker. Canvas selection, orbit-pivot picking, pick-through and MCP `viewport_pick` query the same display objects. This changes query cost, not geometry, triangle numbering, clipping rules, history or the public tool schema.
 
+Worker replies transfer only BVH roots and the indirect facet mapping. The receiver preserves the live geometry index, so replies omit the disposable construction index. An original-data diagnostic measured 35,664,372 bytes of unused index replies across the first two scans; omitting them reduces transport volume, while peak-memory impact requires a separate guarded replay.
+
 The build starts when display geometry is installed and is serialized across the viewport. Live positions and indices remain attached; only private copies are transferred. Meshes below 10,000 rendered triangles retain ordinary picking. The worker terminates on completion, failure, geometry disposal or its 120-second lease. Replacing geometry cancels obsolete queued/active builds and releases its index. Before readiness, or if a worker fails, ordinary picking remains available. Clouds continue to use measured-point picking.
 
 Passive pointer movement updates the navigation cursor without submitting a full scene. Button drags, touch navigation, origin-plane highlighting and sketch/selection overlays retain their redraw paths. Explicit MCP viewport presentation remains available.
+
+Packed scanner PLY imports read a header of at most 65,536 bytes and record-aligned chunks of at most 1 MiB. Face counts are preflighted before output allocation, preserving polygon fallback and validation order. Vertex and face decoding share the synchronous parser's arithmetic; final geometry, scanner normals and display preparation remain unchanged. Face preflight adds a second pass over face records. Unsupported layouts retain the general loader. This avoids a whole-file raw buffer on the recognized path; guarded replay is required to establish its effect on peak memory.
 
 ## Measured owner-scan scenario
 
@@ -54,3 +58,66 @@ Validation:
 - Set `SCANFORGE_ALIGNMENT_EXAMPLES=B:/temp/alignment-example-files`, then run `node tests/viewport-post-landmark-browser.mjs`. This optional real-data test verifies source hashes/counts, public MCP export, public landmark preview/accept, camera gestures, browser errors and a 100 ms maximum-frame budget on the test machine. CPU profiles, screenshots and resource ledgers remain in ignored `.resources/`.
 
 This fixes the measured post-alignment viewport stalls. Full import, modeling and native algorithm verification remain separate workstreams.
+
+## Imports and speculative topology preparation
+
+The original full three-PLY import diagnostic found the second scan's speculative
+topology preparation still running while the third scan imported. The Job reported
+a memory-limit event. GUI and MCP scan imports now share an import lease: before
+creating an import worker, they yield preparation that has no foreground owner.
+Scheduled preparation waits until all active imports finish. A foreground diagnostics
+observer or queued topology consumer retains its preparation; stateful previews keep
+their owning worker. After an import fails or is cancelled, preparation of the same
+selected source can resume under its existing lease. Disposal and replacement cancel
+that retry. Import completion callback exceptions reject the import, releasing the
+lease. Public parameters, schemas, geometry and history semantics are unchanged.
+
+The repeated original-file diagnostic confirmed that the speculative topology worker
+terminated before the third import worker started, with preparation reported as
+`scheduled` during import. It still hit the unchanged 2 GiB Job limit. Reported Job
+peaks were 2,244,792,320 bytes before the change and 2,254,524,416 bytes afterward;
+both observations ended at a memory-limit failure and do not establish a reduction
+in peak memory. Full three-scan import and native alignment equivalence remain
+unverified.
+
+Validation for this change passed the source build and 66 focused tests.
+`tests/parallel-import-browser.mjs` passed GUI parallel import with two workers,
+three objects and three undo steps, plus MCP progress and cancellation, with zero
+active import workers or browser errors afterward. `tests/global-alignment-browser.mjs`
+passed Preview, Cancel, cached Apply, Undo/Redo and timeline checks using two synthetic
+STL scans of 5,120 facets each. These browser checks cover shared workflow behavior;
+the original full-scan memory failure remains open.
+
+### Bounded warmup checkpoint
+
+Optional topology warmup now reserves 512 bytes per facet against the existing
+128 MiB scan budget, admitting up to 262,144 facets. Larger sources start no
+speculative worker or retry timer. Uncached counts remain uncalculated until
+GUI Calculate, MCP `mesh_analyze`, or a topology-dependent tool requests the
+full-resolution index. This reservation is a scheduling policy, not a guaranteed
+process-memory bound. Existing cached counts, source geometry, weld tolerance,
+foreground operations and resource caps are unchanged.
+
+The original three-PLY GUI import replay with normal selection now passes all
+three imports, nine MCP orbit/pan/zoom probes and exactly three import history
+steps under the unchanged 2 GiB Job cap. Peak Job memory was 1,981,325,312 bytes.
+Both inner cleanup and outer retained-handle verification passed: all 15 observed
+processes exited, final active count was zero, test ports closed and cleanup
+errors were empty. The probes include transport, inspection and rendering waits;
+they do not measure production p50/p95 navigation latency.
+
+The instrumented replay with a 60-second settling window also completed imports
+and navigation, then exceeded the cap when automatic backup encoding started.
+Its snapshot contained 479,747,808 shared bytes and 161,112,888 ordinary bytes in
+indexed geometry; the latter cross the worker boundary by cloning. Peak Job
+memory was 2,157,821,952 bytes. All 15 observed processes exited with zero active
+and no outer cleanup errors. This identifies a further backup transport peak;
+it does not establish complete large-scan save/restore, processing, native
+alignment or registration quality.
+
+Validation passed a fresh build, 47,249 tests with 60 skipped, focused MCP
+contracts and GUI/MCP indexed-mesh integration. The final MCP discovery text
+documents the admission policy; it introduces no parameter or schema change.
+Separate pre-existing alignment revision edits were preserved, so validation
+used the combined working tree. Exact replay/build receipts are retained in the
+coordinator's private evidence.

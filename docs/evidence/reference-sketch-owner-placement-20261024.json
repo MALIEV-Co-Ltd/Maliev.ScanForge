@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Selected sketch owner insertion and placed-circle rebuild established; complete source acquisition and editor transaction remain incomplete",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "sources": [
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+    },
+    {
+      "path": "tests/reference-circle-inputs.test.ts",
+      "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+    },
+    {
+      "path": "tests/reference-circumcenter.test.ts",
+      "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "907061597d0d80bc5f061177306816111ec621b5893102996119cc46dcc3c452"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "9d25c25a7bd5cc037a4fba7e553b2aa0cf1fdd804c94d6b1927b975b275bb4e6"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261024-sketch-owner-r1/evidence.json",
+        "sha256": "2bd02cd32e0e98e58905dd888f67faac8059bcd2eaed8c6131f5f21b4171b81f",
+        "matchedCodeConstantAndMetadataBytesPerPass": 6746,
+        "twoReadsAgree": true,
+        "readBytes": 14868,
+        "regionQueries": 148,
+        "closed": true
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261024-sketch-owner-r2/evidence.json",
+        "sha256": "e3ca5f9d23dacf0fc9f38289ad6dafc98418bbc4fa82a21ca48afd17c20f44d1",
+        "matchedCodeConstantAndMetadataBytesPerPass": 6816,
+        "twoReadsAgree": true,
+        "readBytes": 15008,
+        "regionQueries": 152,
+        "closed": true
+      }
+    ],
+    "proceduresChecked": 18,
+    "instructionStartsChecked": 1395,
+    "directFlowsChecked": 90,
+    "selectedArithmeticAndAdmissionAnchors": [
+      {
+        "address": "0x14016bb00",
+        "instruction": "addsd xmm2, xmm0",
+        "bytesSha256": "881c0cb2ff936ac2305434d47845a82804cd409be920a4cfbe1c80bfe319f041"
+      },
+      {
+        "address": "0x14016bb11",
+        "instruction": "addsd xmm2, xmm1",
+        "bytesSha256": "e75262fafec0e3955c1811eaa178944f8b0bc25eb2e13d9530686abc7b666210"
+      },
+      {
+        "address": "0x14016bb2a",
+        "instruction": "addsd xmm2, qword ptr [rcx + 0x18]",
+        "bytesSha256": "af90c9175347018a0fef4e8086783eb0d78e8928b2f3099288b4758fafd22239"
+      },
+      {
+        "address": "0x14016bb26",
+        "instruction": "addsd xmm3, xmm0",
+        "bytesSha256": "fcc1c0ebe5ac70a0fe4c9f43a8e87d3f1f69b5b4af63f7ce2919d4f16257283a"
+      },
+      {
+        "address": "0x14016bb33",
+        "instruction": "addsd xmm3, xmm1",
+        "bytesSha256": "b095db9b863d8cb0936cbe62d7a1e1eb06ff22e0de5c4c72b49befd07e5a8c0f"
+      },
+      {
+        "address": "0x14016bb40",
+        "instruction": "addsd xmm3, qword ptr [rcx + 0x38]",
+        "bytesSha256": "8ea80b9955b7aa2321554afc33259f62cff57b50e487d27aa6c7b5723cd53b3a"
+      },
+      {
+        "address": "0x140a59b40",
+        "instruction": "call qword ptr [rax + 0x110]",
+        "bytesSha256": "20524a5744309661f8e989a12d06129640fe7450d4abdc0aeaa202a600b13a22"
+      },
+      {
+        "address": "0x140a59b48",
+        "instruction": "je 0x140a59b98",
+        "bytesSha256": "373f02a5f2b6ade271be382f142d64274a82598fd0096a4c7df03c4fb9e96c0b"
+      },
+      {
+        "address": "0x140a59b5e",
+        "instruction": "call 0x14016bde0",
+        "bytesSha256": "97aaca081f0871285fa306720955e6d893bb0cc2ab8dc9293039e2f7cef60740"
+      },
+      {
+        "address": "0x140447058",
+        "instruction": "comisd xmm0, xmm2",
+        "bytesSha256": "fee306f8ae44323e627392c52f258309693e7524736761b18b11fd7fec59e948"
+      },
+      {
+        "address": "0x14044705c",
+        "instruction": "jbe 0x140447065",
+        "bytesSha256": "12632e25696bd10f4763a3be38c75961c9d3e6a95cf8149d30d0e72a238f69d9"
+      },
+      {
+        "address": "0x14044705e",
+        "instruction": "xor al, al",
+        "bytesSha256": "35b660100acac77a09eed3bdd6b22a8db7b27c1e8c4c4ed44bd52d51c9084b03"
+      },
+      {
+        "address": "0x1404470d6",
+        "instruction": "mulsd xmm0, xmm6",
+        "bytesSha256": "8b4fe546075cf0a84a7ddfc472dacee13b092f76cd0993e7c2a26590a402c7ee"
+      },
+      {
+        "address": "0x1404470da",
+        "instruction": "addsd xmm0, qword ptr [rdx]",
+        "bytesSha256": "42207565f4e34f1f518396dd9b6e6c588d55dccd3f3342c0d8230ca5c6b673a2"
+      },
+      {
+        "address": "0x140447124",
+        "instruction": "mulsd xmm0, xmm6",
+        "bytesSha256": "8b4fe546075cf0a84a7ddfc472dacee13b092f76cd0993e7c2a26590a402c7ee"
+      },
+      {
+        "address": "0x140447128",
+        "instruction": "addsd xmm0, qword ptr [rbx]",
+        "bytesSha256": "1238a782b3d1a8c2db3e2a1f32e6fb74c1a5cc6a3da459299e6c9d1e472a015d"
+      },
+      {
+        "address": "0x14044717a",
+        "instruction": "mulsd xmm1, xmm6",
+        "bytesSha256": "5755bcea25947eb7455072d0f0d7c1ece558ce2dac49f471856e31d1ef251db8"
+      },
+      {
+        "address": "0x140447182",
+        "instruction": "subsd xmm0, xmm1",
+        "bytesSha256": "d9039213de1183ea2a3bf5e339fd955cc53bc1f558ddf6f976bf32dd26f20d5c"
+      },
+      {
+        "address": "0x1404471ac",
+        "instruction": "call qword ptr [rax + 0x168]",
+        "bytesSha256": "f3ab736e0a35e20063d9056b3f7fbcfb9fa57c0fed353e93facbb41df383398c"
+      },
+      {
+        "address": "0x1404471b2",
+        "instruction": "movzx ebx, al",
+        "bytesSha256": "af694414e5ff3789256d820861b50cf9efa9a19ec3a4c23f234331ef360dd28c"
+      },
+      {
+        "address": "0x1404471c2",
+        "instruction": "movzx eax, bl",
+        "bytesSha256": "91465142c0ede97da28bf9e72f601a10a0ccdf97732aca4babe3e6d0fa44202c"
+      }
+    ],
+    "scope": "Static decoding plus identity-bound repeated passive code, vtable, constant and selected exception-metadata reads. No target calls, writes, geometry buffers, UI or preserved-image execution."
+  },
+  "contracts": {
+    "frameStorage": "Getter returns the stored twelve-double frame. Setter copies it exactly without normalization; selected callers explicitly copy owner frame into child before insertion.",
+    "ownerInsertion": "Reject null or invalid child before list insertion. For a circle, require positive stored radius, nonnull backend, nonzero backend kind and nonempty backend record range. After insertion, register child backend with owner backend. No complete transaction rollback established.",
+    "placedCircle": "Transform existing local defining points forward and compare to supplied first three records. With count >=4 and all three squared distances strictly below 1e-5, inverse-transform fourth record, translate defining points and center by the resulting local center delta, refresh records and rebuild backend. Otherwise inverse-transform the supplied first three records and call three-point builder with supplied frame.",
+    "inversePlacement": "Subtract translation, then multiply by transposed rotation. This is the native rigid-frame assumption, not a general affine inverse. Preserve per-component operation order.",
+    "provenance": "Retained pick acquisition and exact source owner binding still need tracing; these helper contracts cannot assign a frame to otherwise unidentified data."
+  },
+  "verification": {
+    "ownedJobs": [
+      {
+        "label": "construction-sketch-owner-placement-noanalysis-r1",
+        "sha256": "dd169bfa7047000087ebaf60c9b3d3e2422459296ba23e9bb15cc1d242b0837d",
+        "exitCode": 0,
+        "elapsedSeconds": 11.32476710001356,
+        "peakAggregateBytes": 864137216,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-admission-noanalysis-r1",
+        "sha256": "386931219b85d714ed38cf12463f359b7299ed85f462bceb0ce2a88260ee868f",
+        "exitCode": 0,
+        "elapsedSeconds": 11.11933929999941,
+        "peakAggregateBytes": 870068224,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-insertion-noanalysis-r1",
+        "sha256": "190987c378f2418e51b51b1adaea8950c8f1b025c039a836734baba37a913ff9",
+        "exitCode": 0,
+        "elapsedSeconds": 11.117957100010244,
+        "peakAggregateBytes": 864088064,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-bindings-r1",
+        "sha256": "4814e92c78bfe562c1ed50787e6c9e10e7e21e3ce37d5fe481c0ffe6e521cd6a",
+        "exitCode": 0,
+        "elapsedSeconds": 0.30942160001723096,
+        "peakAggregateBytes": 102727680,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-semantics-r1",
+        "sha256": "f9353770855755b44c836c73beb719994fe2eb887c091a25425a54896fdab16b",
+        "exitCode": 0,
+        "elapsedSeconds": 0.2587274000106845,
+        "peakAggregateBytes": 97103872,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-bindings-r2",
+        "sha256": "45ffee084dc2478277927316882b0a4df20209a1e8032df7cf07008d2df6fce6",
+        "exitCode": 0,
+        "elapsedSeconds": 0.30895040000905283,
+        "peakAggregateBytes": 102842368,
+        "cleanedUp": true
+      },
+      {
+        "label": "construction-sketch-owner-semantics-r2",
+        "sha256": "c79f223c3a1dc850b006dadfe0680112762721607cb0d95e3f6a47e90c5a6df3",
+        "exitCode": 0,
+        "elapsedSeconds": 0.25871680001728237,
+        "peakAggregateBytes": 97189888,
+        "cleanedUp": true
+      }
+    ],
+    "sameTurnCodeCheckpoint": {
+      "artifact": "docs/evidence/reference-sketch-circle-inputs-20261024.json",
+      "sha256": "2d190fa4df1b1e12da2e87a311f155daa286d82f5a6a0d288fcd84233c6b09a9",
+      "build": {
+        "passed": true,
+        "heapMiB": 3072,
+        "jobLimitBytes": 4294967296,
+        "elapsedSeconds": 33.30209649997414,
+        "peakAggregateBytes": 2494918656,
+        "bundle": "scanforge-9f1d31f32b856ccc"
+      },
+      "focused": {
+        "passed": 275,
+        "files": 10,
+        "newAnalyticTests": 12
+      },
+      "full": {
+        "passed": 48300,
+        "skipped": 64,
+        "passedFiles": 614,
+        "skippedFiles": 18,
+        "elapsedSeconds": 263.26608520001173,
+        "peakAggregateBytes": 1006510080
+      }
+    },
+    "applicationAndTestPinsVerifiedUnchanged": [
+      {
+        "path": "src/reference-geometry-numerics.ts",
+        "sha256": "8b86b2cda3d38718a59533bbe2074b6a6a51311189165cac1f475851f0aea96e"
+      },
+      {
+        "path": "tests/reference-circle-inputs.test.ts",
+        "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+      },
+      {
+        "path": "tests/reference-circumcenter.test.ts",
+        "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+      },
+      {
+        "path": "src/sketch.ts",
+        "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+      },
+      {
+        "path": "src/sketch-frame.ts",
+        "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+      },
+      {
+        "path": "src/sketch-drawing.ts",
+        "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+      },
+      {
+        "path": "src/types.ts",
+        "sha256": "8267bc42335bf8f3e0b7a930456b8142c3f3f4f8786df778a0ea2cb73b207ad6"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+      },
+      {
+        "path": "docs/AGENT_GUIDE.md",
+        "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+      },
+      {
+        "path": "docs/MCP_ARCHITECTURE.md",
+        "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+      }
+    ],
+    "nativeNumericReplay": false,
+    "renderedGuiMcpAcceptance": false
+  },
+  "mcpParity": {
+    "scope": "Evidence-only extension; existing GUI and MCP capabilities unchanged.",
+    "sharedOperations": ["sketch_get", "sketch_set", "sketch_manage"],
+    "requiredIntegration": "Use one source resolver and shared editor/executor for ordered defining records, placement, admission, dependencies, history and publication. Planned reference construction operations remain undiscoverable until implemented and validated."
+  },
+  "limitations": [
+    "Static code identity does not establish native numerical outputs or original-native save/reopen.",
+    "Child validity does not establish outer editor exception handling, allocation failure cleanup or command result publication.",
+    "Interactive admission, complete source acquisition and retained pick frame ownership remain open.",
+    "Rigid inverse evidence does not permit loosening current bounded orthonormal sketch-frame validation.",
+    "Large controller pseudocode remains exploratory, as documented in the preceding checkpoint.",
+    "No code changed after the same-turn build and 48,300-test full pass; changed documentation hashes supersede preceding doc pins."
+  ],
+  "privateEvidence": [
+    {
+      "artifact": "construction-sketch-owner-insertion-noanalysis-r1/evidence.json",
+      "sha256": "b66fc34abe62922b1b0fa66d609adb25bf3bf874f359a9ff17d4c7a14f188b42"
+    },
+    {
+      "artifact": "construction-sketch-owner-placement-noanalysis-r1/evidence.json",
+      "sha256": "91de6bf10506555a853b9d8e7020eb9a29640a732e9df3415ae8f518d1116638"
+    },
+    {
+      "artifact": "construction-sketch-owner-admission-noanalysis-r1/evidence.json",
+      "sha256": "4ad8c49358d414b4de611fcc5a16108e02b13ab0e3e612b0180737c5caef0c17"
+    },
+    {
+      "artifact": "construction-sketch-circle-definition-noanalysis-r1/evidence.json",
+      "sha256": "779320ceb9f908f8e321c3c1fff6750c5dfa50b90ffd3bc22587d77f8c8a27a4"
+    },
+    {
+      "artifact": "construction-sketch-circle-controller-noanalysis-r1/evidence.json",
+      "sha256": "dedf43599d32a33da7c26fe59ee618b1d84f810fa0651186efe3bb602529b718"
+    },
+    {
+      "artifact": "construction-sketch-circle-authoring-noanalysis-r1/evidence.json",
+      "sha256": "2540e8a4e8d8bdd64d071fc86d746e8b7012cf2cb217bfac003fd49d11e4ad80"
+    },
+    {
+      "artifact": "construction-sketch-circle-inputs-noanalysis-r1/evidence.json",
+      "sha256": "6d2c1f8594f53edee47f9cbfa461061d5863ead82cbd46be5d136f0e4cc574db"
+    },
+    {
+      "artifact": "construction-sketch-circle-factory-noanalysis-r1/evidence.json",
+      "sha256": "4a7c0bc023190196febd2e639741fc00d823105328e0259a9ee461aff42c8b5d"
+    },
+    {
+      "artifact": "construction-sketch-conic-create-noanalysis-r1/evidence.json",
+      "sha256": "4f2f03675b7a42c730077b6c44a615a082f95ca76095157d5a48e19c07594263"
+    },
+    {
+      "artifact": "construction-sketch-conic-rebuild-noanalysis-r1/evidence.json",
+      "sha256": "6138578d509c8bba30c1486c3a66de35462c14042f6f09428257c229ad7bf3ba"
+    },
+    {
+      "artifact": "construction-sketch-owner-code-bindings-r1.json",
+      "sha256": "23cb7892c841944421056c6a74c4aad137e5a232d476954cf7df2e8a89114864"
+    },
+    {
+      "artifact": "construction-sketch-owner-code-bindings-r2.json",
+      "sha256": "83194db206089951f722b03051db871c3a80cb0c34654798260a3dbc672878fd"
+    },
+    {
+      "artifact": "construction-sketch-owner-semantics-r1.json",
+      "sha256": "2fca1bbeb8c0d2ce5d26405a983b6bcd13cc480c608d0b4d30781239da0d4ca7"
+    },
+    {
+      "artifact": "construction-sketch-owner-semantics-r2.json",
+      "sha256": "14378545646c7d549e1005ce1a3a17b7c388ad00f7acda1f5b89bcec77c4e22c"
+    }
+  ]
+}

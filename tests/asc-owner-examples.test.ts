@@ -14,24 +14,27 @@ it.skipIf(!folder).each([
     const path = join(folder!, `asc-${scan}.asc`),
       fd = openSync(path, "r");
     try {
-      const cloud = await readAscPointCloud({
-        size: statSync(path).size,
-        arrayBuffer: async () => {
-          throw new Error(
-            "Full-file reads are forbidden in this streaming regression.",
-          );
-        },
-        slice: (start = 0, end = statSync(path).size) => ({
+      const cloud = await readAscPointCloud(
+        {
+          size: statSync(path).size,
           arrayBuffer: async () => {
-            const raw = Buffer.alloc(end - start);
-            expect(readSync(fd, raw, 0, raw.length, start)).toBe(raw.length);
-            return raw.buffer.slice(
-              raw.byteOffset,
-              raw.byteOffset + raw.length,
-            ) as ArrayBuffer;
+            throw new Error(
+              "Full-file reads are forbidden in this streaming regression.",
+            );
           },
-        }),
-      });
+          slice: (start = 0, end = statSync(path).size) => ({
+            arrayBuffer: async () => {
+              const raw = Buffer.alloc(end - start);
+              expect(readSync(fd, raw, 0, raw.length, start)).toBe(raw.length);
+              return raw.buffer.slice(
+                raw.byteOffset,
+                raw.byteOffset + raw.length,
+              ) as ArrayBuffer;
+            },
+          }),
+        },
+        { attributes: "xyz-normal" },
+      );
       expect(cloud.positions.length).toBe(count * 3);
       expect(cloud.normals?.length).toBe(count * 3);
       const ply = readFileSync(join(folder!, `ply-${scan}.ply`));

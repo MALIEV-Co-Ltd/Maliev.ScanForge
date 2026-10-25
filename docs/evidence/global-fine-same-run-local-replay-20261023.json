@@ -1,0 +1,287 @@
+{
+  "schema": 1,
+  "scope": "Six local solver invocations from one current installed native three-PLY GUI alignment run, replayed with its recorded correspondence queries",
+  "testedRepositoryHead": "129b259eb1f08cbd53f04602b786077e78218753",
+  "executableVersion": "8.0.123.0",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "runtimeEvidence": "ev_f5053e301fef163bf4d5d2e07116787052423bd6c0428fcd184e7cd57df2c89e",
+  "canonicalBundleSha256": "2325314cdc9404587cf2412131181620a16d14d8c3e5cd6e9001e22bf94dc92c",
+  "searchToleranceMm": 0.5,
+  "localTolerance": 0.0010000000474974513,
+  "samplingClockInputs": 3901,
+  "outerClockInputs": 1,
+  "angularSamplerCalls": 96,
+  "localCalls": 6,
+  "recordedQueries": 45,
+  "beforeAndAfterCapturedVertices": 3381455,
+  "beforeAndAfterCapturedTriangles": 6663164,
+  "passed": true,
+  "nativeControllerConverged": false,
+  "correspondenceGenerationVerified": false,
+  "setterCallCaptureComplete": false,
+  "fullControllerEquivalenceVerified": false,
+  "guiMcpContractChanged": false,
+  "mcpCoverage": "Existing shared local solver used by GUI and MCP global alignment; this evidence-only checkpoint adds no operation or schema.",
+  "sourcePins": [
+    {
+      "path": "src/cad/alignment-reference.ts",
+      "sha256": "11e14811cb423b85c5796c5f5f049f9e35f26bee8edd98ca3fda4a8239f0e6a6"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/datum-transform-scratch.ts",
+      "sha256": "2669e3d05a0c3069503f7e5babdfa237ffcc2ba7f3a24a888c678f13e50f4366"
+    },
+    {
+      "path": "src/native-surface-fitting.ts",
+      "sha256": "67e96225d176e547c7595d3e6a61ad4cd21a4616378e26b042c01d7dc5c4dc15"
+    },
+    {
+      "path": "src/native-surface-quadrature.ts",
+      "sha256": "9f0a52496e11177db3f4d52b645cc02d41453e17f41cb0984172a4f2113bcd33"
+    },
+    {
+      "path": "src/parametric.ts",
+      "sha256": "bd0c17dc4377c640eda045dd5f899a4fdac9e3b421dc78a14582f18f837583b1"
+    },
+    {
+      "path": "src/point-cloud-placement.ts",
+      "sha256": "6b20c2ab5f042f81c400a410051aaf6d14431175ca228c6d3a2efe0ba2ebc606"
+    },
+    {
+      "path": "src/scan-native-alignment-refinement.ts",
+      "sha256": "71f1a37bbcf62a0d1411c9d2321cf20c75ce2bf4b10a4d461f7286d2a4f12efa"
+    },
+    {
+      "path": "src/scan-native-alignment-transform.ts",
+      "sha256": "cdf1a72e51f43321cd5495401e7bc76ccf01a5609b7882cbfebf67e131ae4b61"
+    },
+    {
+      "path": "src/scan-native-alignment.ts",
+      "sha256": "c5eabb958b626a665387c571e86f7ff44b74aba1c18aad1468b0a719987750f6"
+    },
+    {
+      "path": "src/scan-native-datum-apply.ts",
+      "sha256": "5d3fef68aa8936578de5ad5ef9f4bca5ba41a2fba5468057591e9dee7d179870"
+    },
+    {
+      "path": "src/scan-native-datum-cad.ts",
+      "sha256": "12059517e8b582799e52ad0aab2afdbfd2eb926e9a93d11012cd3ba59ca1c150"
+    },
+    {
+      "path": "src/scan-native-global-eigen.ts",
+      "sha256": "6dc2e88f7291dacffc1a63dce11e64cfbf29177d6ca1f6fdf6cb02cee8367354"
+    },
+    {
+      "path": "src/scan-native-global-local.ts",
+      "sha256": "568c420fdf68895061f372622d8d07b48f323675d3b5781642dea1f0f3b5b1f8"
+    },
+    {
+      "path": "src/scan-native-global-rigid-fit.ts",
+      "sha256": "485e355b6a7654cf76f137c6156dc30a396cddbf7155cf0383f404e797034a19"
+    },
+    {
+      "path": "src/scan-native-simplex.ts",
+      "sha256": "08a5ef013b37de0c39d36de9cbc083c8d245ce80c302a565d633791e20d69bbc"
+    },
+    {
+      "path": "src/scan-source.ts",
+      "sha256": "362f098a18e568309fdb44e371a415a84c60712b1dd57a7177e3c691718f3dfa"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-reference.ts",
+      "sha256": "17fb3e32ea35cbc3b6e1c13cc399b80f4e5b66a5d680ea03e7211cee0095876d"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/surface-approximation.ts",
+      "sha256": "23595db4fa722474ed3be626e3cb5dfebc35d9c7de57195cb977bc78e80269e8"
+    },
+    {
+      "path": "src/surfaces.ts",
+      "sha256": "047a2e8fbafb313955c52b8936cb75c01857ff1c9e279745df315ee2ec129b95"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "60b96c62efb225fa5258f6cfcaa74d0b9dec798a98a1ffc074da47e43bcb25e9"
+    },
+    {
+      "path": "tests/scan-native-global-local.test.ts",
+      "sha256": "6827e7961611816f780d144bfa51e442780aca184e6a114f20f9b7661601f91c"
+    },
+    {
+      "path": "tests/scan-native-global-query.test.ts",
+      "sha256": "97274a1d99e497645531c806515b1c705f9a20a3d8c61b1328cfd41630ef37c5"
+    }
+  ],
+  "rows": [
+    {
+      "localId": 1,
+      "descriptorAlias": "A",
+      "queriesCaptured": 9,
+      "queriesConsumed": 9,
+      "iterations": 8,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "de299715feffef3f2e7533348fef06bf81d9c99b3222563f005c4bb73f22db3fac8edee8bbad073f322729d8feffef3fae5b1b001e2f51bf4851a39c5fd3d4bf6641048b002256bf207ebe7b5e2f513f12eecfeefcffef3f138308ad660f86bf",
+        "statistics": "319e484d5a94a53f58a60d3ed59ba53f",
+        "flags": "0000",
+        "status": 0
+      },
+      "expected": {
+        "pose": "de299715feffef3f2e7533348fef06bf81d9c99b3222563f005c4bb73f22db3fac8edee8bbad073f322729d8feffef3fae5b1b001e2f51bf4851a39c5fd3d4bf6641048b002256bf207ebe7b5e2f513f12eecfeefcffef3f138308ad660f86bf",
+        "statistics": "319e484d5a94a53f58a60d3ed59ba53f",
+        "flags": "0000",
+        "status": 0
+      },
+      "exact": true
+    },
+    {
+      "localId": 2,
+      "descriptorAlias": "B",
+      "queriesCaptured": 3,
+      "queriesConsumed": 3,
+      "iterations": 2,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "e233cffeffffef3f5c4eee714b34fdbe0b6af1138cb70f3fbe92923f656a963f14358f3a0735fd3ed6783effffffef3f2c14a52aa6ae07bf428145bca9cc90bf6b243dd960b70fbf7cba8f0fe0ae073fde4b78feffffef3ffe2b81fdc3c444bf",
+        "statistics": "c9255f4e6fcd973f0ede2d1ce35f963f",
+        "flags": "0000",
+        "status": 0
+      },
+      "expected": {
+        "pose": "e233cffeffffef3f5c4eee714b34fdbe0b6af1138cb70f3fbe92923f656a963f14358f3a0735fd3ed6783effffffef3f2c14a52aa6ae07bf428145bca9cc90bf6b243dd960b70fbf7cba8f0fe0ae073fde4b78feffffef3ffe2b81fdc3c444bf",
+        "statistics": "c9255f4e6fcd973f0ede2d1ce35f963f",
+        "flags": "0000",
+        "status": 0
+      },
+      "exact": true
+    },
+    {
+      "localId": 3,
+      "descriptorAlias": "C",
+      "queriesCaptured": 9,
+      "queriesConsumed": 9,
+      "iterations": 8,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "dc77c3feffffef3fc0aaf861d25d033f1c218884c9d90d3f1af2dc97f4ea693fce6eaed34d5d03bf9ec066feffffef3f6ae05df32ac311bfcc58c45f745788bf5842b6821fda0dbfd5c9fbd106c3113f46bbe5fdffffef3f2a7894fc573b933f",
+        "statistics": "42e0dbce4930a43f8f86829c680caa3f",
+        "flags": "0000",
+        "status": 0
+      },
+      "expected": {
+        "pose": "dc77c3feffffef3fc0aaf861d25d033f1c218884c9d90d3f1af2dc97f4ea693fce6eaed34d5d03bf9ec066feffffef3f6ae05df32ac311bfcc58c45f745788bf5842b6821fda0dbfd5c9fbd106c3113f46bbe5fdffffef3f2a7894fc573b933f",
+        "statistics": "42e0dbce4930a43f8f86829c680caa3f",
+        "flags": "0000",
+        "status": 0
+      },
+      "exact": true
+    },
+    {
+      "localId": 4,
+      "descriptorAlias": "C",
+      "queriesCaptured": 8,
+      "queriesConsumed": 8,
+      "iterations": 7,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "364d3af9ffffef3f0e9f03fee6240d3f9a1d0a4b9480233f91977a0834d79c3f58e1963bf7220dbf8e86a5fcffffef3fa9b4cd22d66b19bf56eec3215f5d93bfaeae1497c28023bfc8fbbe0e486b193f606888f7ffffef3fa5a88b5a82b2963f",
+        "statistics": "51663119e882a43f77e7041a3161a93f",
+        "flags": "0001",
+        "status": 0
+      },
+      "expected": {
+        "pose": "364d3af9ffffef3f0e9f03fee6240d3f9a1d0a4b9480233f91977a0834d79c3f58e1963bf7220dbf8e86a5fcffffef3fa9b4cd22d66b19bf56eec3215f5d93bfaeae1497c28023bfc8fbbe0e486b193f606888f7ffffef3fa5a88b5a82b2963f",
+        "statistics": "51663119e882a43f77e7041a3161a93f",
+        "flags": "0001",
+        "status": 0
+      },
+      "exact": true
+    },
+    {
+      "localId": 5,
+      "descriptorAlias": "B",
+      "queriesCaptured": 7,
+      "queriesConsumed": 7,
+      "iterations": 6,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "d87627edffffef3fe657a5a83c7ed03eb89ae2ebe05c313ff9c0ad925fd3b23f0a3e3cb1825cd0be3a0739fcffffef3f9bfad05e50141fbf04e18ffd0edba0bfb0526eeae25c31bfea723e8b3e141f3fc89962e9ffffef3fed86f298bb72933f",
+        "statistics": "9d2a74277cde983fe0a70ecbabd5963f",
+        "flags": "0001",
+        "status": 0
+      },
+      "expected": {
+        "pose": "d87627edffffef3fe657a5a83c7ed03eb89ae2ebe05c313ff9c0ad925fd3b23f0a3e3cb1825cd0be3a0739fcffffef3f9bfad05e50141fbf04e18ffd0edba0bfb0526eeae25c31bfea723e8b3e141f3fc89962e9ffffef3fed86f298bb72933f",
+        "statistics": "9d2a74277cde983fe0a70ecbabd5963f",
+        "flags": "0001",
+        "status": 0
+      },
+      "exact": true
+    },
+    {
+      "localId": 6,
+      "descriptorAlias": "A",
+      "queriesCaptured": 9,
+      "queriesConsumed": 9,
+      "iterations": 8,
+      "allQueryPoseBitsEqual": true,
+      "actual": {
+        "pose": "a437996dfaffef3fa476af16f153f93eae3d3d3d00e2623fcd0ecda3e2c8e63fb4fc1f287b5bf5be74ee762bfdffef3f7a50552b45ea5abf0e7525c4a21ae0bf0a8b53df13e262bfeb1d69120eea5a3f3a425499f7ffef3ffe64edd8581790bf",
+        "statistics": "9fc85b21b144a43fd9b129267f1aa23f",
+        "flags": "0001",
+        "status": 0
+      },
+      "expected": {
+        "pose": "a437996dfaffef3fa476af16f153f93eae3d3d3d00e2623fcd0ecda3e2c8e63fb4fc1f287b5bf5be74ee762bfdffef3f7a50552b45ea5abf0e7525c4a21ae0bf0a8b53df13e262bfeb1d69120eea5a3f3a425499f7ffef3ffe64edd8581790bf",
+        "statistics": "9fc85b21b144a43fd9b129267f1aa23f",
+        "flags": "0001",
+        "status": 0
+      },
+      "exact": true
+    }
+  ],
+  "validation": {
+    "decoderSelftestPassed": true,
+    "signedZeroAndMalformedRecordNegativeControlsPassed": true,
+    "jobMemoryCapBytes": 4294967296,
+    "cpuRate": 2500,
+    "peakJobMemoryBytes": 157126656,
+    "elapsedMs": 196,
+    "ownedProcessExited": true,
+    "remainingChildProcesses": 0,
+    "cleanupErrors": []
+  },
+  "privateArtifacts": {
+    "replay-native-local-32152-r1.mjs": "1e54c42642e776041394e2b7724511742f30c744abc5e7c65201626972006a54",
+    "replay-native-local-32152-r1.pins.json": "8ff964c3a35be9a70fa51dbcfa4ab2ca4dac708868b8a6f137da654ce61e940e",
+    "native-local-r1-selftest.receipt.json": "4c79a18d9d811a2026cfa8dbe1d00d5baa343b89c46709452017e78a4a6d51a4",
+    "native-local-r1-replay.receipt.json": "e217319376d9799786d571194b92004b68889415acdcd87b46f8def4deceae29",
+    "native-local-replay-32152-r1-root1/evidence.json": "6982adbb77e6612f5e1d1a0a963a44737f16a0a091033b873f566c5c1a622232",
+    "native-same-run-alignment-32152-r1-reconciliation.json": "5e008cef25236051b464874711b0346173fd169d30d0989f4dd053fcf73ff0d4"
+  },
+  "limitations": [
+    "All 31463 captured records are active; inactive-record behavior is not exercised. Iterations are port counters, not independently observed native counters.",
+    "Correspondences are supplied from the observed native run; this does not test ScanForge sampling, target preparation, query generation, scheduling, or final setter application.",
+    "Descriptor aliases identify observed local call identity, not original file names or imported owners.",
+    "Entry flag bytes may be uninitialized and are not consumed by the replay.",
+    "Opaque first eight bytes of correspondence records remain uninterpreted.",
+    "Geometry snapshots are non-atomic; each producer read all used fields twice with matching hashes.",
+    "The native command stopped with every source stable and every convergence flag clear."
+  ]
+}

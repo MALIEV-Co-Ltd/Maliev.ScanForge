@@ -46,9 +46,9 @@ it.skipIf(!folder).each(controllers.cases[0].registrations)(
     expect(digest(new Uint8Array(result.indexedMesh.vertices.buffer))).toBe(
       row.finalPositionsSha256,
     );
-    expect(digest(new Uint8Array(result.indexedMesh.normals.buffer))).toBe(
-      row.finalNormalsSha256,
-    );
+    expect(
+      digest(new Uint8Array(result.indexedMesh.geometryNormals.buffer)),
+    ).toBe(row.finalNormalsSha256);
     expect(result.selection.some(Boolean)).toBe(false);
   },
   120000,

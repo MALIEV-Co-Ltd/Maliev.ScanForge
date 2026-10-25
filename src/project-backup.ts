@@ -99,6 +99,22 @@ export class IntervalBackupController<T> {
     enabled: boolean;
   };
   private saved = new Map<string, readonly unknown[]>();
+  // Change detection must not own the geometry/history it compares.
+  private identities = new WeakMap<object, symbol>();
+  private identity(value: unknown): unknown {
+    if (
+      value !== null &&
+      (typeof value === "object" || typeof value === "function")
+    ) {
+      let token = this.identities.get(value);
+      if (!token) {
+        token = Symbol();
+        this.identities.set(value, token);
+      }
+      return token;
+    }
+    return value;
+  }
   private deleted = new Set<string>();
   private tail: Promise<void> = Promise.resolve();
   private writing = false;
@@ -108,7 +124,7 @@ export class IntervalBackupController<T> {
       id: string,
       value: T,
       allowed: () => boolean,
-    ) => Promise<void>,
+    ) => Promise<void | false>,
     private remove: (id: string) => Promise<void>,
     private failed: (error: unknown) => void,
   ) {}
@@ -118,6 +134,7 @@ export class IntervalBackupController<T> {
     key: readonly unknown[],
     enabled: boolean,
   ): void {
+    if (this.stopped) return;
     this.current = { id, value, key, enabled };
   }
   tick(): Promise<void> {
@@ -133,7 +150,7 @@ export class IntervalBackupController<T> {
     if (
       saved &&
       saved.length === snapshot.key.length &&
-      saved.every((item, i) => item === snapshot.key[i])
+      saved.every((item, i) => item === this.identity(snapshot.key[i]))
     )
       return this.tail;
     this.writing = true;
@@ -141,8 +158,12 @@ export class IntervalBackupController<T> {
     this.tail = this.tail.then(async () => {
       try {
         if (allowed()) {
-          await this.save(snapshot.id, snapshot.value, allowed);
-          if (allowed()) this.saved.set(snapshot.id, snapshot.key);
+          const saved = await this.save(snapshot.id, snapshot.value, allowed);
+          if (saved !== false && allowed())
+            this.saved.set(
+              snapshot.id,
+              snapshot.key.map((item) => this.identity(item)),
+            );
         }
       } catch (error) {
         this.failed(error);
@@ -164,6 +185,8 @@ export class IntervalBackupController<T> {
   }
   stop(): void {
     this.stopped = true;
+    this.current = undefined;
+    this.saved.clear();
   }
 }
 

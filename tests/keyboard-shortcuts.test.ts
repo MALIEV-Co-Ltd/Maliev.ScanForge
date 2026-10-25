@@ -26,6 +26,48 @@ import {
   type ShortcutContext,
 } from "../src/keyboard-shortcuts";
 
+it("R enters interactive alignment while Shift+R keeps Right view and sketch R keeps arcs", () => {
+  const context: ShortcutContext = {
+    mode: "main",
+    allowExtensions: true,
+    availableActions: new Set([
+      "align-interactive",
+      "view-right",
+      "sketch-arc",
+    ]),
+  };
+  for (const mode of ["main", "selection"] as const)
+    expect(resolveKeyboardShortcut({ key: "r" }, { ...context, mode })).toEqual(
+      { id: "align-interactive" },
+    );
+  expect(
+    resolveKeyboardShortcut({ key: "R", shiftKey: true }, context),
+  ).toEqual({ id: "view-right" });
+  expect(
+    resolveKeyboardShortcut({ key: "r" }, { ...context, mode: "sketch" }),
+  ).toEqual({ id: "sketch-arc" });
+  for (const blocked of [
+    { textEditing: true },
+    { modalOpen: true },
+    { busy: true },
+    { availableActions: new Set<ShortcutActionId>() },
+  ])
+    expect(
+      resolveKeyboardShortcut({ key: "r" }, { ...context, ...blocked }),
+    ).toBeNull();
+  for (const guard of [
+    "repeat",
+    "isComposing",
+    "defaultPrevented",
+    "ctrlKey",
+    "metaKey",
+    "altKey",
+  ] as const)
+    expect(
+      resolveKeyboardShortcut({ key: "r", [guard]: true }, context),
+    ).toBeNull();
+});
+
 it("V toggles selected-object visibility and respects focus, dialogs, busy state and availability", () => {
   const context: ShortcutContext = {
     mode: "main",
@@ -140,7 +182,6 @@ describe("shipped keyboard shortcut catalog", () => {
     ["T", "view-top"],
     ["M", "view-bottom"],
     ["L", "view-left"],
-    ["R", "view-right"],
     ["F", "view-front"],
     ["K", "view-back"],
     ["I", "view-isometric"],

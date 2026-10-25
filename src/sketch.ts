@@ -23,6 +23,15 @@ export interface SketchArc {
   clockwise: boolean;
   construction?: boolean;
 }
+export type SketchProfileEdge =
+  | { kind: "line"; start: [number, number]; end: [number, number] }
+  | {
+      kind: "arc";
+      start: [number, number];
+      end: [number, number];
+      center: [number, number];
+      clockwise: boolean;
+    };
 export type SketchConstraint =
   | { id: string; kind: "fixed"; point: string; x: number; y: number }
   | { id: string; kind: "coincident"; a: string; b: string }
@@ -37,6 +46,14 @@ export type SketchConstraint =
   | { id: string; kind: "radius"; arc: string; value: number }
   | {
       id: string;
+      kind: "symmetric";
+      first: string;
+      second: string;
+      axis: string;
+      reverse: boolean;
+    }
+  | {
+      id: string;
       kind: "tangent";
       first: string;
       second: string;
@@ -44,7 +61,7 @@ export type SketchConstraint =
     }
   | {
       id: string;
-      kind: "parallel" | "perpendicular" | "equal";
+      kind: "parallel" | "perpendicular" | "equal" | "collinear";
       first: string;
       second: string;
     }
@@ -140,11 +157,21 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     } else if (c.kind === "radius") {
       if (!string(c.arc) || !finite(c.value))
         throw new Error("Radius constraint structure is invalid.");
+    } else if (c.kind === "symmetric") {
+      if (
+        !string(c.first) ||
+        !string(c.second) ||
+        !string(c.axis) ||
+        typeof c.reverse !== "boolean"
+      )
+        throw new Error("Symmetry constraint structure is invalid.");
     } else if (c.kind === "tangent") {
       if (!string(c.first) || !string(c.second) || !string(c.point))
         throw new Error("Tangent constraint structure is invalid.");
     } else if (
-      ["parallel", "perpendicular", "equal", "angle"].includes(c.kind)
+      ["parallel", "perpendicular", "equal", "collinear", "angle"].includes(
+        c.kind,
+      )
     ) {
       if (
         !string(c.first) ||
@@ -209,8 +236,57 @@ export function validateSketch(input: unknown): asserts input is Sketch {
       !segments.has(c.segment)
     )
       throw new Error("Constraint segment is missing.");
+    if (c.kind === "collinear") {
+      if (!segments.has(c.first) || !segments.has(c.second))
+        throw new Error("Collinearity requires two straight segments.");
+      if (c.first === c.second)
+        throw new Error(
+          "Collinearity requires two distinct straight segments.",
+        );
+      for (const id of [c.first, c.second]) {
+        const segment = sketch.segments.find((s) => s.id === id)!;
+        const a = sketch.points.find((p) => p.id === segment.a)!,
+          b = sketch.points.find((p) => p.id === segment.b)!;
+        const length = Math.hypot(b.x - a.x, b.y - a.y);
+        if (!Number.isFinite(length) || length < 1e-10)
+          throw new Error(
+            "Collinearity requires nondegenerate finite segments.",
+          );
+      }
+    }
     if (c.kind === "radius" && (!arcs.has(c.arc) || c.value <= 0))
       throw new Error("Radius requires an arc and a positive dimension.");
+    if (c.kind === "symmetric") {
+      const axis = sketch.segments.find((s) => s.id === c.axis);
+      if (
+        !curves.has(c.first) ||
+        !curves.has(c.second) ||
+        c.first === c.second ||
+        arcs.has(c.first) !== arcs.has(c.second)
+      )
+        throw new Error(
+          "Symmetry requires two distinct curves of the same kind.",
+        );
+      if (!axis?.construction || c.axis === c.first || c.axis === c.second)
+        throw new Error("Symmetry requires a separate construction axis.");
+      const a = sketch.points.find((p) => p.id === axis.a)!,
+        b = sketch.points.find((p) => p.id === axis.b)!;
+      const length = Math.hypot(b.x - a.x, b.y - a.y);
+      if (!Number.isFinite(length) || length < 1e-10)
+        throw new Error("Symmetry axis must be nondegenerate and finite.");
+      const first = arcs.get(c.first),
+        second = arcs.get(c.second);
+      if (
+        first &&
+        second &&
+        (c.reverse
+          ? first.clockwise !== second.clockwise
+          : first.clockwise === second.clockwise)
+      )
+        throw new Error(
+          "Symmetric arc orientation must match the endpoint correspondence.",
+        );
+    }
     if (c.kind === "tangent") {
       const a = curves.get(c.first),
         b = curves.get(c.second);
@@ -229,6 +305,7 @@ export function validateSketch(input: unknown): asserts input is Sketch {
     if (
       "first" in c &&
       c.kind !== "tangent" &&
+      c.kind !== "symmetric" &&
       (!segments.has(c.first) || !segments.has(c.second))
     )
       throw new Error("Constraint segment is missing.");
@@ -293,6 +370,12 @@ export function removeSketchGeometry(
     if (c.kind === "tangent")
       return (
         pointIds.has(c.point) && curveIds.has(c.first) && curveIds.has(c.second)
+      );
+    if (c.kind === "symmetric")
+      return (
+        curveIds.has(c.first) &&
+        curveIds.has(c.second) &&
+        segmentIds.has(c.axis)
       );
     return "first" in c && segmentIds.has(c.first) && segmentIds.has(c.second);
   });
@@ -363,6 +446,17 @@ export function solveSketch(
   const index = new Map(input.points.map((p, i) => [p.id, i * 2]));
   const segments = new Map(input.segments.map((s) => [s.id, s]));
   const arcs = new Map((input.arcs ?? []).map((arc) => [arc.id, arc]));
+  const guardsDegeneracy = input.constraints.some(
+    (c) => c.kind === "symmetric" || c.kind === "collinear",
+  );
+  const residualCount = (c: SketchConstraint) =>
+    c.kind === "fixed" || c.kind === "coincident" || c.kind === "collinear"
+      ? 2
+      : c.kind === "symmetric"
+        ? arcs.has(c.first)
+          ? 6
+          : 4
+        : 1;
   const point = (x: number[], id: string) => {
     const i = index.get(id)!;
     return [x[i], x[i + 1]];
@@ -406,6 +500,37 @@ export function solveSketch(
           center = point(x, arc.center);
         return [Math.hypot(a[0] - center[0], a[1] - center[1]) - c.value];
       }
+      if (c.kind === "symmetric") {
+        const axis = segments.get(c.axis)!,
+          origin = point(x, axis.a),
+          direction = vector(x, c.axis);
+        const length = Math.hypot(...direction),
+          width = residualCount(c);
+        // Invalid trial axes are rejected by the cost comparison without losing row alignment.
+        const invalid = () => Array<number>(width).fill(Infinity);
+        if (!Number.isFinite(length) || length < 1e-10) return invalid();
+        const nx = -direction[1] / length,
+          ny = direction[0] / length;
+        const first = segments.get(c.first) ?? arcs.get(c.first)!;
+        const second = segments.get(c.second) ?? arcs.get(c.second)!;
+        const pairs = [
+          [first.a, c.reverse ? second.b : second.a],
+          [first.b, c.reverse ? second.a : second.b],
+        ];
+        const firstArc = arcs.get(c.first);
+        if (firstArc) pairs.push([firstArc.center, arcs.get(c.second)!.center]);
+        const values = pairs.flatMap(([aId, bId]) => {
+          const a = point(x, aId),
+            b = point(x, bId);
+          const normalDistance =
+            (a[0] - origin[0]) * nx + (a[1] - origin[1]) * ny;
+          return [
+            a[0] - 2 * normalDistance * nx - b[0],
+            a[1] - 2 * normalDistance * ny - b[1],
+          ];
+        });
+        return values.every(Number.isFinite) ? values : invalid();
+      }
       if (c.kind === "tangent") {
         const tangent = (id: string) => {
           const arc = arcs.get(id);
@@ -424,6 +549,28 @@ export function solveSketch(
       if (c.kind === "horizontal" || c.kind === "vertical") {
         const v = vector(x, c.segment);
         return [v[c.kind === "horizontal" ? 1 : 0]];
+      }
+      if (c.kind === "collinear") {
+        const a = vector(x, c.first),
+          b = vector(x, c.second),
+          length = Math.hypot(...a),
+          secondLength = Math.hypot(...b);
+        if (
+          !Number.isFinite(length) ||
+          !Number.isFinite(secondLength) ||
+          length < 1e-10 ||
+          secondLength < 1e-10
+        )
+          return [Infinity, Infinity];
+        const origin = point(x, segments.get(c.first)!.a),
+          second = segments.get(c.second)!;
+        // Two signed distances constrain the supporting line without joining endpoints.
+        return [second.a, second.b].map((id) => {
+          const p = point(x, id);
+          return (
+            ((p[0] - origin[0]) * a[1] - (p[1] - origin[1]) * a[0]) / length
+          );
+        });
       }
       if (!("first" in c)) throw new Error("Unsupported segment constraint.");
       const a = vector(x, c.first),
@@ -451,12 +598,50 @@ export function solveSketch(
   ];
   const jacobian = (x: number[], r: number[]) => {
     const j = r.map(() => Array(x.length).fill(0) as number[]);
+    const geometrySteps = new Map<number, number>();
+    for (const c of input.constraints) {
+      const ids =
+        c.kind === "symmetric"
+          ? [c.axis]
+          : c.kind === "collinear"
+            ? [c.first, c.second]
+            : [];
+      for (const id of ids) {
+        const segment = segments.get(id)!;
+        const length = Math.hypot(...vector(x, id));
+        for (const pointId of [segment.a, segment.b]) {
+          const offset = index.get(pointId)!;
+          for (const coordinate of [offset, offset + 1])
+            geometrySteps.set(
+              coordinate,
+              Math.min(
+                geometrySteps.get(coordinate) ?? Infinity,
+                length * 1e-5,
+              ),
+            );
+        }
+      }
+    }
     for (let k = 0; k < x.length; k++) {
-      const h = 1e-5 * Math.max(1, Math.abs(x[k]));
+      const defaultStep = 1e-5 * Math.max(1, Math.abs(x[k]));
+      const axisStep = geometrySteps.get(k);
+      const h =
+        axisStep === undefined
+          ? defaultStep
+          : Math.max(
+              Number.EPSILON * Math.max(1, Math.abs(x[k])) * 4,
+              Math.min(defaultStep, axisStep),
+            );
       const t = [...x];
       t[k] += h;
-      const rr = residual(t);
-      for (let i = 0; i < r.length; i++) j[i][k] = (rr[i] - r[i]) / h;
+      let rr = residual(t),
+        step = axisStep === undefined ? h : t[k] - x[k];
+      if (guardsDegeneracy && rr.some((v) => !Number.isFinite(v))) {
+        t[k] = x[k] - h;
+        rr = residual(t);
+        step = axisStep === undefined ? -h : t[k] - x[k];
+      }
+      for (let i = 0; i < r.length; i++) j[i][k] = (rr[i] - r[i]) / step;
     }
     return j;
   };
@@ -464,10 +649,17 @@ export function solveSketch(
     r = residual(x),
     damping = 1e-3,
     iterations = 0;
-  const cost = (v: number[]) => v.reduce((sum, n) => sum + n * n, 0);
+  const cost = (v: number[]) =>
+    guardsDegeneracy && v.some((n) => !Number.isFinite(n))
+      ? Infinity
+      : v.reduce((sum, n) => sum + n * n, 0);
+  const violated = (v: number) =>
+    (guardsDegeneracy && !Number.isFinite(v)) || Math.abs(v) > tolerance;
   for (
     ;
-    iterations < maxIterations && r.some((v) => Math.abs(v) > tolerance);
+    iterations < maxIterations &&
+    (!guardsDegeneracy || r.every(Number.isFinite)) &&
+    r.some(violated);
     iterations++
   ) {
     const j = jacobian(x, r),
@@ -498,16 +690,16 @@ export function solveSketch(
   let cursor = 0;
   const conflictingConstraintIds = input.constraints
     .filter((c) => {
-      const count = c.kind === "fixed" || c.kind === "coincident" ? 2 : 1;
+      const count = residualCount(c);
       const values = r.slice(cursor, cursor + count);
       cursor += count;
-      return values.some((v) => Math.abs(v) > tolerance);
+      return values.some(violated);
     })
     .map((c) => c.id);
   [...arcs.values()].forEach((arc, i) => {
-    if (Math.abs(r[cursor + i]) > tolerance)
-      conflictingConstraintIds.push(`arc:${arc.id}`);
+    if (violated(r[cursor + i])) conflictingConstraintIds.push(`arc:${arc.id}`);
   });
+  const finalJacobian = jacobian(x, r);
   return {
     sketch: {
       ...input,
@@ -518,9 +710,20 @@ export function solveSketch(
       })),
     },
     converged: !conflictingConstraintIds.length,
-    maxResidual: Math.max(0, ...r.map(Math.abs)),
+    maxResidual:
+      guardsDegeneracy && r.some((v) => !Number.isFinite(v))
+        ? Infinity
+        : Math.max(0, ...r.map(Math.abs)),
     conflictingConstraintIds,
-    degreesOfFreedom: Math.max(0, x.length - rank(jacobian(x, r))),
+    degreesOfFreedom: Math.max(
+      0,
+      x.length -
+        rank(
+          guardsDegeneracy
+            ? finalJacobian.filter((row) => row.every(Number.isFinite))
+            : finalJacobian,
+        ),
+    ),
     iterations,
   };
 }
@@ -575,25 +778,129 @@ export function sampleSketchArc(
   });
 }
 
+/** Endpoint aliases join only in the derived wire; authored IDs and relations stay separate. */
+function profileTopology(sketch: Sketch) {
+  validateSketch(sketch);
+  const sourceCurves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+    (curve) => !curve.construction,
+  );
+  if (sourceCurves.length < 2)
+    throw new Error("Extrusion requires one closed profile.");
+  const points = new Map(sketch.points.map((p) => [p.id, p]));
+  const coordinates = new Map<number, Map<number, string>>();
+  const vertex = (id: string) => {
+    const point = points.get(id)!;
+    let column = coordinates.get(point.x);
+    if (!column) coordinates.set(point.x, (column = new Map()));
+    const existing = column.get(point.y);
+    if (existing !== undefined) return existing;
+    column.set(point.y, id);
+    return id;
+  };
+  const curves = sourceCurves.map((curve) => {
+    const a = points.get(curve.a)!,
+      b = points.get(curve.b)!;
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 1e-8)
+      throw new Error("Profile has zero-length edges.");
+    return { ...curve, a: vertex(curve.a), b: vertex(curve.b) };
+  });
+  const adjacent = new Map<string, string[]>();
+  for (const curve of curves) {
+    for (const id of [curve.a, curve.b]) {
+      let neighbours = adjacent.get(id);
+      if (!neighbours) adjacent.set(id, (neighbours = []));
+      neighbours.push(curve.id);
+    }
+  }
+  if ([...adjacent.values()].some((v) => v.length !== 2))
+    throw new Error("Profile must be a single unbranched cycle.");
+  return { curves, points, adjacent };
+}
+
+/** Preserve one ordered analytic cycle; the CAD kernel validates the resulting wire. */
+export function sketchCurveProfile(sketch: Sketch): SketchProfileEdge[] {
+  const { curves, points, adjacent } = profileTopology(sketch);
+  const byId = new Map(curves.map((curve) => [curve.id, curve]));
+  const arcs = new Map((sketch.arcs ?? []).map((arc) => [arc.id, arc]));
+  const used = new Set<string>(),
+    edges: SketchProfileEdge[] = [];
+  const first = curves[0].a,
+    anchor = points.get(first)!;
+  let current = first,
+    previous = "",
+    twiceArea = 0;
+  while (used.size < curves.length) {
+    const id = adjacent
+      .get(current)!
+      .find((id) => id !== previous && !used.has(id));
+    if (!id) break;
+    const curve = byId.get(id)!,
+      arc = arcs.get(id),
+      reverse = curve.b === current;
+    const a = points.get(current)!,
+      b = points.get(reverse ? curve.a : curve.b)!;
+    const start: [number, number] = [a.x, a.y],
+      end: [number, number] = [b.x, b.y];
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 1e-8)
+      throw new Error("Profile has zero-length edges.");
+    // Translation keeps the closed integral unchanged and avoids large-origin cancellation.
+    const ax = a.x - anchor.x,
+      ay = a.y - anchor.y;
+    const bx = b.x - anchor.x,
+      by = b.y - anchor.y;
+    if (arc) {
+      const center = points.get(arc.center)!;
+      const radius = Math.hypot(a.x - center.x, a.y - center.y);
+      const endRadius = Math.hypot(b.x - center.x, b.y - center.y);
+      if (
+        radius < 1e-8 ||
+        Math.abs(radius - endRadius) > Math.max(1e-5, radius * 1e-6)
+      )
+        throw new Error(
+          "Arc endpoints must lie on the same positive-radius circle; solve constraints first.",
+        );
+      const clockwise = reverse ? !arc.clockwise : arc.clockwise;
+      let sweep =
+        Math.atan2(b.y - center.y, b.x - center.x) -
+        Math.atan2(a.y - center.y, a.x - center.x);
+      if (clockwise) {
+        while (sweep >= 0) sweep -= Math.PI * 2;
+      } else {
+        while (sweep <= 0) sweep += Math.PI * 2;
+      }
+      twiceArea +=
+        (center.x - anchor.x) * (by - ay) -
+        (center.y - anchor.y) * (bx - ax) +
+        radius * radius * sweep;
+      edges.push({
+        kind: "arc",
+        start,
+        end,
+        center: [center.x, center.y],
+        clockwise,
+      });
+    } else {
+      twiceArea += ax * by - ay * bx;
+      edges.push({ kind: "line", start, end });
+    }
+    used.add(id);
+    current = reverse ? curve.a : curve.b;
+    previous = id;
+    if (current === first) break;
+  }
+  if (current !== first || used.size !== curves.length)
+    throw new Error("Profile contains disconnected cycles.");
+  if (!Number.isFinite(twiceArea) || Math.abs(twiceArea) < 1e-8)
+    throw new Error("Profile area is zero or non-finite.");
+  return edges;
+}
+
 /** Traverse one mixed line/arc cycle. Arcs become polygon chords for extrusion. */
 export function sketchProfile(
   sketch: Sketch,
   chordTolerance = 0.1,
 ): [number, number][] {
-  validateSketch(sketch);
-  const curves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
-    (curve) => !curve.construction,
-  );
-  if (curves.length < 2)
-    throw new Error("Extrusion requires one closed profile.");
-  const adjacent = new Map(sketch.points.map((p) => [p.id, [] as string[]]));
-  for (const s of curves) {
-    adjacent.get(s.a)!.push(s.id);
-    adjacent.get(s.b)!.push(s.id);
-  }
-  if ([...adjacent.values()].some((v) => v.length !== 0 && v.length !== 2))
-    throw new Error("Profile must be a single unbranched cycle.");
-  const points = new Map(sketch.points.map((p) => [p.id, p]));
+  const { curves, points, adjacent } = profileTopology(sketch);
   const byId = new Map(curves.map((curve) => [curve.id, curve])),
     used = new Set<string>();
   const byArcId = new Map((sketch.arcs ?? []).map((arc) => [arc.id, arc]));
@@ -611,7 +918,7 @@ export function sketchProfile(
     const arc = byArcId.get(id);
     if (arc)
       profile.push(
-        ...sampleSketchArc(sketch, arc, arc.b === current, chordTolerance),
+        ...sampleSketchArc(sketch, arc, curve.b === current, chordTolerance),
       );
     else {
       const point = points.get(current)!;

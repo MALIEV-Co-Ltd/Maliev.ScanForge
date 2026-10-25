@@ -1,5 +1,11 @@
 # Project loading memory and responsiveness
 
+The [current three-scan lifetime measurement](THREE_SCAN_PROJECT_LIFETIME.md)
+holds all original scans and their alignment history together, then verifies two
+binary project reopens under the 4 GiB cap. It adds exact buffer and cleanup
+evidence for the shared non-browser path; the browser measurements below retain
+their original workload and source scope.
+
 Project restoration previously decoded and repeatedly validated large arrays on the UI thread, then rebuilt uncached display normals using ordinary JavaScript coordinate arrays and string-key welding tables. Automatic backup also structured-cloned large ordinary arrays into its encoder worker. Those temporary allocations survived until garbage collection; their lifetime explains a heap rise followed by a later drop. This is allocation pressure, not by itself evidence of a retained-memory leak. Collection and synchronous processing both interrupt navigation.
 
 Restoration now performs decoding, validation and current mesh display preparation in a disposable worker. A typed hash table preserves the previous weld order and Float32 normal arithmetic. Large ordinary numeric arrays use lossless transferable staging buffers; reconstruction yields between bounded chunks. Existing authored/history buffers never detach. File format 2/3 and public GUI/MCP contracts remain unchanged.
@@ -25,3 +31,39 @@ Run `SCANFORGE_ALIGNMENT_EXAMPLES` pointing to the owner scan folder, then `node
 Unit coverage checks exact legacy weld output, allocation structure, lossless numeric transfer/shared identities, authored buffer retention, cloud placement, cancellation, malformed replies, worker expiry, codec round trips and backup behavior. Current meshes are prepared eagerly; distinct historical geometry is prepared when needed. Large imports still have other main-thread work (the measured startup longest frame was 634–801 ms across the two replays). This change does not claim that all loading work or all future history navigation is free of stalls. GPU geometry copies and worker heaps are separate from the status bar's UI-heap reading.
 
 The final validation passed an isolated production build and 151 focused tests. The complete current-tree suite passed 43,417 tests with 40 optional skips and zero failures. The saved browser regression passed its frame budgets, retained both mesh counts/history, reported no browser errors, and released its decoder and owned browser/bridge.
+
+## Binary topology and history publication
+
+A later original-three-STL replay exposed two additional allocations after opening
+an existing binary project: `u32` topology expanded into ordinary numeric arrays,
+and the encoder cloned private restored Float32 geometry for the complete history.
+The shared decoder now keeps topology typed and the background decoder opts into
+immutable shared publication when available. Selection lists remain arrays even
+when they share a container chunk with topology. Private fallback, legacy JSON/f64,
+face order, signed zero, current/history aliases and public GUI/MCP contracts remain
+unchanged. Publication can temporarily retain both private chunks and final shared
+buffers during decoding; it is not a general constant-memory loading guarantee.
+
+The full 410,861,843-byte coarse-aligned project reopened through the GUI with all
+6,147,452 triangles and 3,121,976 indexed vertices intact. Global Fine Align at
+0.5 mm used the actual controller seed, cached MCP Apply, all-carrier digests,
+Undo/Redo and a GUI save with all six history steps. The complete owned process
+group peaked at 4,065,284,096 bytes (3,876.96 MiB) under the unchanged 4 GiB/25% CPU
+Job. All 17 processes exited, with zero active descendants and no capture or
+cleanup errors. Earlier candidates reached the cap during Undo or saving. This
+single successful run has about 219 MiB headroom; it does not prove every workload
+will fit. The saved file is 666,828,179 bytes, SHA-256
+`ab67731336431afa966e1fd8b2fde36a9f19828e0438a60fd2b3c25e1480a66f`.
+
+An independent streaming decoder verified every saved chunk, all 13 current
+geometry carriers, every indexed/expanded position and authored normal after two
+ordered Float32 transform stages, and exact preservation of the prior five-step
+history plus the new pre-alignment state. It rehashed 2,410 source/dist entries and
+verified 1,866 compiler inputs. The controller stopped after three passes without
+reporting convergence. This proves the memory/persistence workflow, not final
+registration quality or native numerical equivalence. [Structured evidence](evidence/project-restoration-memory-fix.json)
+records identities, actual resource results and these limits.
+
+Validation passed the current production build, 87 focused tests and the complete
+47,697-test suite (64 optional skips, zero failures). Tests and runtime replay
+included the five preserved pre-existing working edits listed in the evidence.

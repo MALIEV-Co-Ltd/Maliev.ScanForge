@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "status": "Circle preparation and source-record production implemented from selected native paths; backend/editor/public GUI-MCP integration remains incomplete",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "publicConstructionActivated": false,
+  "nativeNumericalExecutionPerformed": false,
+  "browserValidationPerformed": false,
+  "sources": [
+    {
+      "path": "src/sketch-circle-rebuild.ts",
+      "sha256": "a29134ca9d354b855cd4f66419972cd42b623d60a9645036388137d90f879897"
+    },
+    {
+      "path": "tests/sketch-circle-rebuild.test.ts",
+      "sha256": "0125f4a6ae0c7a23c700b0d58dff0834c911116e06c675a072c7aa856e4df9c6"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "051b31443ee384df5e630f82ab654f874c54951327b630ab47bcaf37f7b60951"
+    },
+    {
+      "path": "src/sketch-source-records.ts",
+      "sha256": "7387040c39bf6f96774e7724de00b4663589176ba0cd7ef0bf8f1e39dc48c58b"
+    },
+    {
+      "path": "tests/sketch-source-records.test.ts",
+      "sha256": "b3ade45eb9a45b54e4c1de02a4f339f4e4b3940eb4ea75e490f5c4f61da083d4"
+    },
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "5d3bc61e045f7adbd3b1f427f4c43aba02c69c2b0f853fae901ca770faa956d2"
+    },
+    {
+      "path": "tests/reference-construction-resolver.test.ts",
+      "sha256": "8bed5ea0be9ad77489aa88fb53dd961f2ca18f5eb6081f65db2e3dd607ccf0f3"
+    },
+    {
+      "path": "tests/reference-circumcenter.test.ts",
+      "sha256": "6895496e2660cc2ed90ba9bc2f377b7a25533e81c4a0b7f2e8fcdcca8f572da5"
+    },
+    {
+      "path": "tests/reference-circle-inputs.test.ts",
+      "sha256": "0f8f493062b9795626e6d2ad2c872ddf36b9f207821f5fd42f3685b8661105ac"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/sketch-drawing.ts",
+      "sha256": "075bdae4b564f9a327eeea1ef6a963559eadd5d755e38fa28657054e0bccc8e3"
+    },
+    {
+      "path": "src/sketch-undo.ts",
+      "sha256": "618747118fcac82c40edf0fd33aa5e5d0ddd9c0fd9924567e87f4b7e8a2a2384"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "d1df515002cfbd4bce559f67b9f4df6476fc2ef68e371d53d5ea3babb5296fbc"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "4004b22504b117ade17cb1d6860295ebdb04be3a3fd760e7fb38cd74b737393c"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "d51f687b05b34037c03ffe28cf868cd776a3f01b1b596556f0451e87062ef3c0"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "087b9e2b8d22c8dd9b9e9eab93d3718ffe8e02d8cc7704d82b8e66ab1353c35d"
+    }
+  ],
+  "nativeEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "semanticsArtifact": "construction-circle-rebuild-semantics-r1.json",
+    "semanticsSha256": "a7bf8be586d347b926788cc22cb1384c07c9979d4fedfb9fdd4e2ca608326190",
+    "selectedEntries": 7,
+    "instructionStartsChecked": 890,
+    "directFlowsChecked": 90,
+    "selectedAnchors": 19,
+    "constants": [
+      {
+        "address": "0x14126ad40",
+        "f64": 2.220446049250313e-16,
+        "bytes": "000000000000b03c"
+      },
+      {
+        "address": "0x14126ae00",
+        "f64": 1.1920928955078125e-7,
+        "bytes": "000000000000803e"
+      },
+      {
+        "address": "0x14126ae90",
+        "f64": 0.0001,
+        "bytes": "2d431cebe2361a3f"
+      },
+      {
+        "address": "0x14126ade0",
+        "f64": 1e-8,
+        "bytes": "3a8c30e28e79453e"
+      }
+    ],
+    "captures": [
+      {
+        "artifact": "native-construction-source-metadata-20261024-circle-rebuild-r1/evidence.json",
+        "sha256": "66deccbd5b85f055fee60ef14d849c7cbdc6a262f26dd4810f8659ac9a39905b",
+        "twoReadsAgree": true,
+        "matchedBytesPerPass": 4196,
+        "totalReadBytes": 8872,
+        "regionQueries": 82,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "native-construction-source-metadata-20261024-circle-rebuild-r2/evidence.json",
+        "sha256": "bee85493bfa0d4a892baf8803c9f023c0b6688ed72e7a205900c629c66a73821",
+        "twoReadsAgree": true,
+        "matchedBytesPerPass": 4228,
+        "totalReadBytes": 8936,
+        "regionQueries": 90,
+        "handlesClosed": true
+      }
+    ],
+    "limits": "Selected exception-entry metadata may describe only an initial fragment; reset includes a tail-called fragment. Passive code/metadata matches do not establish native numerical output or transaction rollback."
+  },
+  "behavior": {
+    "localZ": "positive zero for all three defining points and center",
+    "orderedRecords": ["first", "middle", "last", "center"],
+    "fitFailureRadius": "negative Number.MAX_VALUE",
+    "fitFailureCenter": "middle defining point, not generic circumcenter centroid",
+    "radiusArithmetic": "sqrt(dy*dy + dx*dx + dz*dz), measured from the third point",
+    "fitRadiusTest": "strictly greater than 2 ** -23",
+    "backendRadiusTest": "greater than or equal to 2 ** -23 after backend reset",
+    "backendRequestOnFitFailure": true,
+    "implementedStage": "Pure local preparation, not kernel execution or publication",
+    "arcRebuildImplemented": false
+  },
+  "validation": {
+    "buildPassed": true,
+    "buildHeapMiB": 3072,
+    "aggregateJobBytes": 4294967296,
+    "focusedPassed": 199,
+    "focusedFiles": 9,
+    "newPreparationCases": 22,
+    "fullSuiteRerun": false,
+    "publicBundle": "scanforge-9f1d31f32b856ccc",
+    "scope": "Analytic preparation, exact source codec and selected-sketch resolver integration. No native numerical/save-reopen/rendered acceptance.",
+    "receipts": [
+      {
+        "artifact": "project-index-validation-construction-circle-backend-reset-noanalysis-r1-cad.receipt.json",
+        "sha256": "cc45cef934ef89cd6dd0586b0f4062db56c97efb30f4610ff476dc9482564106",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 11.678900500002783,
+        "peakAggregateBytes": 833773568,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-construction-circle-rebuild-bindings-r1-cad.receipt.json",
+        "sha256": "1145afa0a03b9cf9230039d3a67799fed0243ca1d3684025420adeab338cbdca",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.3090844000107609,
+        "peakAggregateBytes": 102350848,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-construction-circle-rebuild-bindings-r2-cad.receipt.json",
+        "sha256": "f4f1adbe5aac2ea86e8c90afd06bb18c1011ce4bdf21fd664f0e0b2d8f19f51b",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.3088483999890741,
+        "peakAggregateBytes": 102612992,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-construction-circle-rebuild-semantics-r1-cad.receipt.json",
+        "sha256": "25df7c90e0e78dcf657f07734aa9980948728b8e54512f7b745cf002ba4b0a22",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.25904309999896213,
+        "peakAggregateBytes": 95727616,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-rebuild-r1-build-build.receipt.json",
+        "sha256": "0d723b7f80122f72a2dce2dead7f38f68e47fe35ec60b4f26d5328c9ebc1fc0e",
+        "exitCode": 0,
+        "heapMiB": 3072,
+        "elapsedSeconds": 32.48753879999276,
+        "peakAggregateBytes": 2510876672,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-rebuild-r1-format-mirror-focused.receipt.json",
+        "sha256": "511fa718799505d3772330e580515d9ecede329ab16940ffbe5575a4d398222d",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.25876259998767637,
+        "peakAggregateBytes": 108154880,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-rebuild-r1-green-mirror-focused.receipt.json",
+        "sha256": "8bfcad1d7b170d8bc15d817d74e7c58745f3b94869821a1baeb5db889a70a417",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 1.8263963999925181,
+        "peakAggregateBytes": 350855168,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-rebuild-r1-red-mirror-focused.receipt.json",
+        "sha256": "8491aa7b49009bcb2b0d89a6a2b8e55d91aa154cf430be951de07f49287f0da3",
+        "exitCode": 1,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.6123197999841068,
+        "peakAggregateBytes": 261451776,
+        "childrenRetired": true,
+        "handlesClosed": true
+      },
+      {
+        "artifact": "project-index-validation-sketch-circle-reset-query-r1-cad.receipt.json",
+        "sha256": "1cbbe608c41e1f2cfc50dff0fadfb82b1d0f05e75ccca58dd81f0cdb733f7c45",
+        "exitCode": 0,
+        "heapMiB": 1024,
+        "elapsedSeconds": 0.2592497000005096,
+        "peakAggregateBytes": 95023104,
+        "childrenRetired": true,
+        "handlesClosed": true
+      }
+    ]
+  },
+  "remaining": [
+    "Actual shared kernel backend lifecycle adapter and outcome propagation",
+    "Stateful arc rebuilding including prior records/radius and closed handling",
+    "Authoritative sketch geometry/source updates through constraints, trim, mirror, history and project persistence",
+    "Shared GUI/MCP source discovery and construction publication",
+    "Native numerical, native save-reopen and rendered GUI/MCP validation"
+  ]
+}

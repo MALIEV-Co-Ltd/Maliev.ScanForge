@@ -1,11 +1,16 @@
+import { flushSync } from "react-dom";
+import type { ParametricProfile } from "../parametric";
 import { AppSelect } from "./AppSelect";
 import { useMemo, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
 import { resetSketchRectangle } from "../sketch-authoring";
+import { cornerTrimSketch, type SketchCornerSelection } from "../sketch-corner";
+import { filletSketchCorner, type SketchFilletRequest } from "../sketch-fillet";
+import { mirrorSketch, type SketchMirrorRequest } from "../sketch-mirror";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
   rectangleSketch,
-  sketchProfile,
+  sketchCurveProfile,
   solveSketch,
   sampleSketchArc,
   removeSketchGeometry,
@@ -17,14 +22,16 @@ import {
 export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
-  onExtrude: (
-    points: [number, number][],
-    height: number,
-    profile?: { sketch: Sketch; chordTolerance: number },
-  ) => void;
+  onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
+  onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
+  onCornerFillet?: (options: SketchFilletRequest) => void | Promise<void>;
+  onMirror?: (options: SketchMirrorRequest) => void | Promise<void>;
+  onExtrude: (profile: ParametricProfile, height: number) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
   onDrawingTool?: (tool: SketchDrawingTool) => void;
+  trimRadiusMm?: number;
+  onTrimRadiusMm?: (radius: number) => void;
   drawingConstraints?: boolean;
   onDrawingConstraints?: (enabled: boolean) => void;
   onNormalView?: () => void;
@@ -48,10 +55,16 @@ const constraintLabel = (kind: string) =>
 export function SketchTools({
   value,
   onChange,
+  onConstrain,
+  onCornerTrim,
+  onCornerFillet,
+  onMirror,
   onExtrude,
   disabled = false,
   drawingTool = "navigate",
   onDrawingTool,
+  trimRadiusMm = 1,
+  onTrimRadiusMm,
   drawingConstraints = true,
   onDrawingConstraints,
   onNormalView,
@@ -87,6 +100,38 @@ export function SketchTools({
     [dimension, setDimension] = useState(40);
   const [requestedTangentPoint, setTangentPoint] = useState("p1");
   const [chordTolerance, setChordTolerance] = useState(0.1);
+  const [requestedAxis, setAxis] = useState("");
+  const [reversePairing, setReversePairing] = useState(false);
+  const [cornerFirst, setCornerFirst] = useState("");
+  const [cornerSecond, setCornerSecond] = useState("");
+  const [cornerFirstEnd, setCornerFirstEnd] = useState<"a" | "b">("b");
+  const [cornerSecondEnd, setCornerSecondEnd] = useState<"a" | "b">("a");
+  const [cornerPending, setCornerPending] = useState(false);
+  const [filletRadiusMm, setFilletRadiusMm] = useState(2);
+  const [requestedMirrorAxis, setMirrorAxis] = useState("");
+  const [mirrorSelection, setMirrorSelection] = useState<string[]>([]);
+  const [mirrorPending, setMirrorPending] = useState(false);
+  const firstLine = sketch.segments.some((s) => s.id === cornerFirst)
+    ? cornerFirst
+    : (sketch.segments[0]?.id ?? "");
+  const otherLines = sketch.segments.filter((s) => s.id !== firstLine);
+  const secondLine = otherLines.some((s) => s.id === cornerSecond)
+    ? cornerSecond
+    : (otherLines[0]?.id ?? "");
+  const axes = sketch.segments.filter((segment) => segment.construction);
+  const mirrorAxis = axes.some((segment) => segment.id === requestedMirrorAxis)
+    ? requestedMirrorAxis
+    : (axes[0]?.id ?? "");
+  const mirrorCurves = [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+    (curve) => curve.id !== mirrorAxis,
+  );
+  const mirrorSelectedIds = new Set(mirrorSelection);
+  const selectedMirrorCurves = mirrorCurves
+    .filter((curve) => mirrorSelectedIds.has(curve.id))
+    .map((curve) => curve.id);
+  const symmetryAxis = axes.some((segment) => segment.id === requestedAxis)
+    ? requestedAxis
+    : (axes[0]?.id ?? "");
   const update = (next: Sketch) => {
     setLocal(next);
     onChange?.(next);
@@ -110,12 +155,15 @@ export function SketchTools({
   const getReferences = (kind: SketchConstraint["kind"]) =>
     kind === "radius"
       ? (sketch.arcs ?? [])
-      : kind === "tangent"
-        ? [...sketch.segments, ...(sketch.arcs ?? [])]
+      : kind === "tangent" || kind === "symmetric"
+        ? [...sketch.segments, ...(sketch.arcs ?? [])].filter(
+            (curve) => kind !== "symmetric" || curve.id !== symmetryAxis,
+          )
         : [
               "horizontal",
               "vertical",
               "parallel",
+              "collinear",
               "perpendicular",
               "equal",
               "angle",
@@ -126,9 +174,23 @@ export function SketchTools({
   const first = references.some((r) => r.id === requestedFirst)
     ? requestedFirst
     : (references[0]?.id ?? "");
-  const second = references.some((r) => r.id === requestedSecond)
+  const firstCurve = references.find((r) => r.id === first);
+  const secondReferences =
+    kind === "collinear"
+      ? references.filter((r) => r.id !== first)
+      : kind === "symmetric"
+        ? references.filter(
+            (r) =>
+              r.id !== first &&
+              "center" in r ===
+                (firstCurve !== undefined && "center" in firstCurve),
+          )
+        : references;
+  const second = secondReferences.some((r) => r.id === requestedSecond)
     ? requestedSecond
-    : (references[1]?.id ?? references[0]?.id ?? "");
+    : ((kind === "symmetric" || kind === "collinear"
+        ? secondReferences[0]?.id
+        : (references[1]?.id ?? references[0]?.id)) ?? "");
   const tangentPoint = sketch.points.some((p) => p.id === requestedTangentPoint)
     ? requestedTangentPoint
     : (sketch.points[0]?.id ?? "");
@@ -156,8 +218,23 @@ export function SketchTools({
         constraint = { id, kind, arc: first, value: dimension };
       else if (kind === "tangent")
         constraint = { id, kind, first, second, point: tangentPoint };
+      else if (kind === "symmetric")
+        constraint = {
+          id,
+          kind,
+          first,
+          second,
+          axis: symmetryAxis,
+          reverse: reversePairing,
+        };
       else constraint = { id, kind, first, second };
-      update(constrainSketch(sketch, constraint));
+      if (onConstrain) {
+        void Promise.resolve(onConstrain(constraint)).catch((error: unknown) =>
+          setError(
+            error instanceof Error ? error.message : "Constraint failed.",
+          ),
+        );
+      } else update(constrainSketch(sketch, constraint));
     });
   const preview = sketch.points;
   const arcPreview = (sketch.arcs ?? []).map((arc) => {
@@ -200,7 +277,15 @@ export function SketchTools({
           <legend>Model-view drawing</legend>
           <div className="button-row">
             {(
-              ["navigate", "line", "circle", "circle3", "arc3", "move"] as const
+              [
+                "navigate",
+                "line",
+                "circle",
+                "circle3",
+                "arc3",
+                "move",
+                "trim",
+              ] as const
             ).map((tool) => (
               <button
                 key={tool}
@@ -215,6 +300,7 @@ export function SketchTools({
                     circle3: "Circle · 3 points",
                     arc3: "Arc · 3 points",
                     move: "Move endpoint",
+                    trim: "Paint trim",
                   }[tool]
                 }
               </button>
@@ -227,6 +313,28 @@ export function SketchTools({
               Redo sketch edit
             </button>
           </div>
+          {drawingTool === "trim" && (
+            <>
+              <label>
+                Trim radius (mm)
+                <input
+                  type="number"
+                  min="0"
+                  max="1000000000"
+                  step="any"
+                  value={trimRadiusMm}
+                  onChange={(event) =>
+                    onTrimRadiusMm?.(Number(event.target.value))
+                  }
+                />
+              </label>
+              <p className="hint">
+                Paint unwanted portions between intersections in the model view.
+                Release to apply one edit; Escape cancels. Affected constraints
+                must be removed first.
+              </p>
+            </>
+          )}
           <label className="check">
             <input
               type="checkbox"
@@ -311,6 +419,216 @@ export function SketchTools({
           }
         />
       </label>
+      <fieldset disabled={disabled || cornerPending}>
+        <legend>Corner Trim</legend>
+        <label>
+          First line
+          <AppSelect
+            value={firstLine}
+            onChange={(event) => setCornerFirst(event.target.value)}
+          >
+            {sketch.segments.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <label>
+          First line end
+          <AppSelect
+            value={cornerFirstEnd}
+            onChange={(event) =>
+              setCornerFirstEnd(event.target.value as "a" | "b")
+            }
+          >
+            <option value="a">Start · a</option>
+            <option value="b">End · b</option>
+          </AppSelect>
+        </label>
+        <label>
+          Second line
+          <AppSelect
+            value={secondLine}
+            onChange={(event) => setCornerSecond(event.target.value)}
+          >
+            {otherLines.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <label>
+          Second line end
+          <AppSelect
+            value={cornerSecondEnd}
+            onChange={(event) =>
+              setCornerSecondEnd(event.target.value as "a" | "b")
+            }
+          >
+            <option value="a">Start · a</option>
+            <option value="b">End · b</option>
+          </AppSelect>
+        </label>
+        <p className="muted">
+          Move the chosen ends to their intersection. Other geometry and
+          dependent constraints must be detached first.
+        </p>
+        <button
+          disabled={!firstLine || !secondLine}
+          onClick={async () => {
+            const options = {
+              first: firstLine,
+              second: secondLine,
+              firstEnd: cornerFirstEnd,
+              secondEnd: cornerSecondEnd,
+            };
+            setCornerPending(true);
+            try {
+              if (onCornerTrim) await onCornerTrim(options);
+              else update(cornerTrimSketch(sketch, options).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error ? error.message : "Corner trim failed.",
+              );
+            } finally {
+              setCornerPending(false);
+            }
+          }}
+        >
+          Join corner
+        </button>
+        <label>
+          Fillet radius (mm)
+          <input
+            type="number"
+            min="0"
+            max="1000000000"
+            step="any"
+            value={filletRadiusMm}
+            onChange={(event) => setFilletRadiusMm(Number(event.target.value))}
+          />
+        </label>
+        <p className="hint">
+          Round the selected line ends with a tangent circular arc. Radius must
+          fit before both opposite ends. Affected constraints or endpoints
+          shared with other geometry must be detached first.
+        </p>
+        <button
+          disabled={!firstLine || !secondLine}
+          onClick={async () => {
+            const options = {
+              first: firstLine,
+              second: secondLine,
+              firstEnd: cornerFirstEnd,
+              secondEnd: cornerSecondEnd,
+              radiusMm: filletRadiusMm,
+            };
+            setCornerPending(true);
+            try {
+              if (onCornerFillet) await onCornerFillet(options);
+              else update((await filletSketchCorner(sketch, options)).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : "Sketch fillet failed.",
+              );
+            } finally {
+              setCornerPending(false);
+            }
+          }}
+        >
+          Create fillet
+        </button>
+      </fieldset>
+      <fieldset disabled={disabled || mirrorPending}>
+        <legend>Mirror geometry</legend>
+        <label>
+          Mirror axis
+          <AppSelect
+            value={mirrorAxis}
+            disabled={!axes.length}
+            onChange={(event) => setMirrorAxis(event.target.value)}
+          >
+            {!axes.length && (
+              <option value="">Create a construction line first</option>
+            )}
+            {axes.map((axis) => (
+              <option key={axis.id} value={axis.id}>
+                {axis.id}
+              </option>
+            ))}
+          </AppSelect>
+        </label>
+        <div className="button-row">
+          <button
+            disabled={!mirrorCurves.length}
+            onClick={() =>
+              setMirrorSelection(mirrorCurves.map((curve) => curve.id))
+            }
+          >
+            Select all curves
+          </button>
+          <button
+            disabled={!selectedMirrorCurves.length}
+            onClick={() => setMirrorSelection([])}
+          >
+            Clear mirror selection
+          </button>
+        </div>
+        <div className="sketch-mirror-curves">
+          {mirrorCurves.map((curve) => (
+            <label className="check" key={curve.id}>
+              <input
+                type="checkbox"
+                checked={mirrorSelectedIds.has(curve.id)}
+                onChange={(event) =>
+                  setMirrorSelection((selected) =>
+                    event.target.checked
+                      ? [...selected, curve.id]
+                      : selected.filter((id) => id !== curve.id),
+                  )
+                }
+              />
+              Mirror {curve.id} · {"center" in curve ? "arc" : "line"}
+            </label>
+          ))}
+        </div>
+        <p className="hint">
+          Copy selected curves across the construction line. Originals and
+          existing relations stay in place; copies have no new relations. Select
+          both arcs of a circle.
+        </p>
+        <button
+          disabled={!mirrorAxis || !selectedMirrorCurves.length}
+          onClick={async () => {
+            const options = {
+              axis: mirrorAxis,
+              curveIds: selectedMirrorCurves,
+            };
+            setMirrorPending(true);
+            try {
+              if (onMirror) await onMirror(options);
+              else update((await mirrorSketch(sketch, options)).sketch);
+              setError("");
+            } catch (error) {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : "Sketch mirror failed.",
+              );
+            } finally {
+              setMirrorPending(false);
+            }
+          }}
+        >
+          Mirror selected
+        </button>
+      </fieldset>
       <svg
         role="img"
         aria-label="Sketch profile preview"
@@ -688,11 +1006,13 @@ export function SketchTools({
               "horizontalDistance",
               "verticalDistance",
               "parallel",
+              "collinear",
               "perpendicular",
               "equal",
               "angle",
               "radius",
               "tangent",
+              "symmetric",
             ].map((k) => (
               <option key={k} value={k}>
                 {constraintLabel(k)}
@@ -717,13 +1037,38 @@ export function SketchTools({
               value={second}
               onChange={(e) => setSecond(e.target.value)}
             >
-              {references.map((p) => (
+              {secondReferences.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.id.slice(0, 6)}
                 </option>
               ))}
             </AppSelect>
           </label>
+        )}
+        {kind === "symmetric" && (
+          <>
+            <label>
+              Symmetry construction line
+              <AppSelect
+                value={symmetryAxis}
+                onChange={(event) => setAxis(event.target.value)}
+              >
+                {axes.map((axis) => (
+                  <option key={axis.id} value={axis.id}>
+                    {axis.id.slice(0, 6)}
+                  </option>
+                ))}
+              </AppSelect>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={reversePairing}
+                onChange={(event) => setReversePairing(event.target.checked)}
+              />
+              Reverse endpoint pairing
+            </label>
+          </>
         )}
         {kind === "tangent" && (
           <label>
@@ -779,7 +1124,7 @@ export function SketchTools({
         Solve constraints
       </button>
       <label>
-        Arc chord tolerance (mm)
+        Arc preview tolerance (mm)
         <input
           type="number"
           min="0.000001"
@@ -790,7 +1135,8 @@ export function SketchTools({
         />
       </label>
       <p className="muted">
-        Circular arcs are sampled into polygon chords for extrusion.
+        Circular arcs remain analytic in CAD. Tolerance controls the sketch
+        preview.
       </p>
       <label>
         Extrusion height
@@ -813,12 +1159,10 @@ export function SketchTools({
               );
             if (!(height > 0) || !Number.isFinite(height))
               throw new Error("Extrusion height must be positive.");
-            const profile = sketchProfile(result.sketch, chordTolerance);
-            update(result.sketch);
-            onExtrude(profile, height, {
-              sketch: result.sketch,
-              chordTolerance,
-            });
+            sketchCurveProfile(result.sketch);
+            // Publish the solved draft before the shared operation captures its revision.
+            flushSync(() => update(result.sketch));
+            onExtrude({ kind: "sketch-curves", sketch: result.sketch }, height);
           })
         }
       >

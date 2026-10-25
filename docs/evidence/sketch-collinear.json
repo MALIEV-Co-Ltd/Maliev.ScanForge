@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "scope": "Collinear straight-segment constraints through shared GUI/MCP sketch_set",
+  "nativeNumericalAcceptance": false,
+  "testedBaseCommit": "6e9e87b71faf4cc61d0a358a9ca9c682ef7d75f7",
+  "workingTreeIncludesPreservedViewportRevisionEdits": true,
+  "sharedOperation": "sketch_set",
+  "constraint": {
+    "kind": "collinear",
+    "parameters": ["id", "first", "second"],
+    "units": "local UV millimetres",
+    "residuals": "Two signed distances from second-segment endpoints to the first supporting line",
+    "minimumSegmentLengthMm": 1e-10,
+    "solverResidualTolerance": 1e-6,
+    "endpointIdsWelded": false
+  },
+  "validation": {
+    "newTests": 16,
+    "redBeforeFix": {
+      "failed": 15,
+      "passed": 1
+    },
+    "focusedPassed": 148,
+    "fullPassed": 47683,
+    "fullSkipped": 64,
+    "productionBuild": true,
+    "cadSmoke": true,
+    "planes": [
+      {
+        "plane": "OXY",
+        "frame": {
+          "origin": [0, 0, 12],
+          "u": [1, 0, 0],
+          "v": [0, 1, 0],
+          "normal": [0, 0, 1]
+        },
+        "guiMcpExactCoordinates": true,
+        "sourceIdsPreserved": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true,
+        "points": [
+          {
+            "id": "a",
+            "x": 1.9546485018811696e-11,
+            "y": -1.4180597398080362e-7
+          },
+          {
+            "id": "b",
+            "x": 9.999999999968392,
+            "y": 2.294245850040374e-7
+          },
+          {
+            "id": "c",
+            "x": 20.000109234861778,
+            "y": 6.324256323719888e-7
+          },
+          {
+            "id": "d",
+            "x": 30.00017879863704,
+            "y": 1.0233245971856173e-6
+          }
+        ]
+      },
+      {
+        "plane": "OYZ",
+        "frame": {
+          "origin": [13, 0, 0],
+          "u": [0, 1, 0],
+          "v": [0, 0, 1],
+          "normal": [1, 0, 0]
+        },
+        "guiMcpExactCoordinates": true,
+        "sourceIdsPreserved": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true,
+        "points": [
+          {
+            "id": "a",
+            "x": 1.9546485018811696e-11,
+            "y": -1.4180597398080362e-7
+          },
+          {
+            "id": "b",
+            "x": 9.999999999968392,
+            "y": 2.294245850040374e-7
+          },
+          {
+            "id": "c",
+            "x": 20.000109234861778,
+            "y": 6.324256323719888e-7
+          },
+          {
+            "id": "d",
+            "x": 30.00017879863704,
+            "y": 1.0233245971856173e-6
+          }
+        ]
+      },
+      {
+        "plane": "OXZ",
+        "frame": {
+          "origin": [0, -7, 0],
+          "u": [0, 0, 1],
+          "v": [1, 0, 0],
+          "normal": [0, 1, 0]
+        },
+        "guiMcpExactCoordinates": true,
+        "sourceIdsPreserved": true,
+        "oneSketchUndoRedo": true,
+        "modelHistoryUnchanged": true,
+        "exactRetry": true,
+        "points": [
+          {
+            "id": "a",
+            "x": 1.9546485018811696e-11,
+            "y": -1.4180597398080362e-7
+          },
+          {
+            "id": "b",
+            "x": 9.999999999968392,
+            "y": 2.294245850040374e-7
+          },
+          {
+            "id": "c",
+            "x": 20.000109234861778,
+            "y": 6.324256323719888e-7
+          },
+          {
+            "id": "d",
+            "x": 30.00017879863704,
+            "y": 1.0233245971856173e-6
+          }
+        ]
+      }
+    ],
+    "guiMcpConflictAtomicity": true,
+    "saveReopenPreservesAllSketches": true,
+    "independentReview": "No actionable findings after verifying private harness wiring and execution; read-only review"
+  },
+  "browser": {
+    "pageIdentity": {
+      "url": "http://127.0.0.1:57978/",
+      "title": "ScanForge - Reverse Engineering on Browser",
+      "meaningfulBody": true,
+      "frameworkOverlayCount": 0
+    },
+    "pageExceptions": [],
+    "gpuReadbackWarnings": 4,
+    "bridgeTeardownErrors": [
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+      },
+      {
+        "stage": "cleanup",
+        "text": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+      }
+    ],
+    "offlineCaching": "Not validated"
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuPercent": 25,
+    "peakJobMemoryBytes": 608428032,
+    "ownedProcesses": 17,
+    "allOwnedProcessesExited": true,
+    "finalActiveProcesses": 0,
+    "handlesClosed": true,
+    "portsClosed": true,
+    "cleanupErrors": []
+  },
+  "evidenceSha256": "55c22bea354620acada792c7eac9df1bdc0c26c21e7755980f827a950fae3b70",
+  "resourceLedgerSha256": "04f9faaaa1bfde8e465c214a3fa9cf91cb892e26871507022f0acb6799d40958",
+  "buildReceiptSha256": "43707bf749e40107acf531780ddba3c5086c94ba31eb139e829ac6be3e416f73",
+  "limits": [
+    "Native command kind 19 is statically bound, but native equations and numerical solver equivalence remain unverified.",
+    "Residual tolerance is relative to the first supporting line; extrapolating against the other line can amplify error.",
+    "Arcs and degenerate segments are not accepted.",
+    "Complete duplication and the three-scan alignment controller comparison remain open."
+  ]
+}

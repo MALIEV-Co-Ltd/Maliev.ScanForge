@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "scope": "Full original three PLY post-geometry application comparison; no complete solver equivalence",
+  "evidenceId": "ev_7a2ca141a162aa5ea6f0f50d6cc7f284a86131b3a1472c285517a57805d54df4",
+  "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "captureManifestSha256": "ae692795dae25962a98c19e3dd27ec99d1f015c686e924f24f84d0728b530838",
+  "comparisonSha256": "ef0351a60afaee632c2ce785aea700e9e1c844bd03b8163a52bfa8463716d533",
+  "nonAtomicSnapshot": true,
+  "twoPassHashesMatched": true,
+  "inverseGaugeBits": "2eb70ffeffffef3ff7e985ad434af73ef8135c2dca80153f4933b848b20da23f1cce929ecc4af7bea089b5ffffffef3fc21099451579f93eec0edf66fe4b37bf2a7517e8c08015bfd61fb37a9279f9be121009feffffef3fe18f20b910a182bf",
+  "gaugeAlias": "C",
+  "cases": [
+    {
+      "name": "ply-1.ply",
+      "fileSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "vertices": 140113,
+      "facets": 274154,
+      "descriptorAlias": "A",
+      "matrixBits": "9d42f7a7fbffef3f4216bcbce53d303fc9d68900ad8c603f41f8f2585de9e33fb43aae305b1330bf94dcda48feffef3fc57051e3199154bf1e025d7c061cd8bf7ae7bf22538d60bf95814d02038f543f6b727511faffef3f318ea4da9ece82bf",
+      "nativeSha256": {
+        "positions": "f30cfde48ed66e244b0f50942a78b099694eabdf4e166c5a8e2ee8edac4195be",
+        "topology": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674",
+        "derivedNormals": "2a702f095f49e38c5cd11d0ee7b9477d8c88e3274b559a5f585d28457747f610",
+        "facetNormals": "c726ce03fe24b2063f214cc6ece22f9cd102099e00a1df6f29e5d79e046a7ddd"
+      }
+    },
+    {
+      "name": "ply-3.ply",
+      "fileSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "vertices": 1865848,
+      "facets": 3691133,
+      "descriptorAlias": "C",
+      "matrixBits": "2eb70ffeffffef3f1cce929ecc4af7be2a7517e8c08015bfe897c394cb0da2bff7e985ad434af73ea089b5ffffffef3fd61fb37a9279f9be8c2fd281253b373ff8135c2dca80153fc21099451579f93e121009feffffef3fe001f9ab8d9f823f",
+      "nativeSha256": {
+        "positions": "44a3ad0c76b8b305f075af1e27fb3155d553699c8c91e44347a1b924d8e21e15",
+        "topology": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+        "derivedNormals": "730b11e4095a018b36a83b82824618d09f22065d797bc5106237358087772b2f",
+        "facetNormals": "a893393137e4c2cc61658e46f455b6d2abbf59b63365b0c8f86b635b30c4de2a"
+      }
+    },
+    {
+      "name": "ply-2.ply",
+      "fileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "vertices": 1375494,
+      "facets": 2697877,
+      "descriptorAlias": "B",
+      "matrixBits": "a4afd5ffffffef3fa3a4f2b659c0eb3eaeb5f443d602f63e7202755aa0a57a3f22365962e4bfebbe065082ffffffef3f9264cd24665205bf2f1beb18ecdd7ebf86f7fe3efb02f6bed4ca7f995c52053f601070ffffffef3f231379eca9df7e3f",
+      "nativeSha256": {
+        "positions": "bfca7fdf2854478ac46f521e96100fdcdd2d44bd2b7c640a60961255d1cfefcb",
+        "topology": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76",
+        "derivedNormals": "88373218aefe8afffdc3d3b1c8278a8adf302ad6c616317136e8e80b5275d31a",
+        "facetNormals": "7b90344a8df5a956943d2554019a3a23023dd1b0469c343ab191554952ae6140"
+      }
+    }
+  ],
+  "limits": [
+    "Native before-state, setter matrix bytes and clock/query inputs were not captured. Gauge inverse is predicted from the largest captured geometry and recorded descriptor pose.",
+    "Source-file mapping uses exact unique counts and verifies every topology element; it is not an observed native filename binding.",
+    "Normal hypotheses are reported separately; mismatches are not hidden by tolerances. The native snapshot is not atomic.",
+    "Native computed vertex normals matched; original file-authored scanner normals did not match. Authored normals remain preserved in the application.",
+    "Hashes cover every packed native post-state element. The optional regression requires the complete pinned original source files; no samples substitute for them."
+  ]
+}

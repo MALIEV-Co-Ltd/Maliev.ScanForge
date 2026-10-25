@@ -621,6 +621,12 @@ try {
         }
       } else if (face.kind !== "unsupported") {
         assert.equal(face.kind, specification.kind);
+        if (face.kind === "cylinder")
+          close(
+            face.radius,
+            specification.radius,
+            "Exact kernel cylinder radius",
+          );
         face.location.forEach((value, i) =>
           close(
             value,

@@ -13,9 +13,11 @@ export function reportedHeapBytes(source: unknown): number | undefined {
 export function StatusMetrics({
   facets,
   points,
+  reference,
 }: {
   facets?: number;
   points?: number;
+  reference?: { points: number; lines: number };
 }) {
   const [heap, setHeap] = useState(() =>
     reportedHeapBytes(globalThis.performance),
@@ -31,14 +33,20 @@ export function StatusMetrics({
     <div className="status-metrics">
       <span
         title={
-          points !== undefined
-            ? "Total scan points including hidden points."
-            : "Total mesh facets of the selected object, including hidden facets. CAD objects show display tessellation facets."
+          reference
+            ? "Semantic reference objects; no sampled mesh facets or scan points."
+            : points !== undefined
+              ? "Total scan points including hidden points."
+              : "Total mesh facets of the selected object, including hidden facets. CAD objects show display tessellation facets."
         }
       >
-        {points !== undefined
-          ? `Points: ${points.toLocaleString()}`
-          : `Facets: ${facets === undefined ? "\u2014" : facets.toLocaleString()}`}
+        {reference
+          ? reference.lines
+            ? `Reference lines: ${reference.lines.toLocaleString()}`
+            : `Reference points: ${reference.points.toLocaleString()}`
+          : points !== undefined
+            ? `Points: ${points.toLocaleString()}`
+            : `Facets: ${facets === undefined ? "\u2014" : facets.toLocaleString()}`}
       </span>
       <span
         title={

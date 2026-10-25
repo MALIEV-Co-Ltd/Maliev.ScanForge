@@ -5,6 +5,65 @@ import {
   backupProjectId,
 } from "../src/project-backup";
 
+it("does not keep saved geometry or history alive after switching projects", async () => {
+  const geometry = { positions: new Float32Array([1, 2, 3]) };
+  const history = [{ geometry }];
+  const save = vi.fn(async () => {});
+  const writer = new IntervalBackupController<unknown>(
+    save,
+    async () => {},
+    () => {},
+  );
+  writer.update("old", geometry, [geometry, history, "name"], true);
+  await writer.tick();
+  writer.update("new", {}, [], true);
+  // Inspect ownership directly rather than depending on forced GC or timing.
+  const saved = (
+    writer as unknown as { saved: Map<string, readonly unknown[]> }
+  ).saved;
+  expect(saved.get("old")).not.toContain(geometry);
+  expect(saved.get("old")).not.toContain(history);
+  writer.update("old", geometry, [geometry, history, "name"], true);
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(1);
+  writer.update("old", geometry, [{ ...geometry }, history, "name"], true);
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(2);
+  writer.stop();
+});
+
+it("releases the current snapshot when the writer stops", () => {
+  const writer = new IntervalBackupController<unknown>(
+    async () => {},
+    async () => {},
+    () => {},
+  );
+  writer.update("project", { geometry: new Float32Array([1]) }, [], true);
+  writer.stop();
+  expect((writer as unknown as { current?: unknown }).current).toBeUndefined();
+});
+
+it("retries a deferred snapshot and then saves the latest session", async () => {
+  const save = vi
+    .fn()
+    .mockResolvedValueOnce(false)
+    .mockResolvedValue(undefined);
+  const failed = vi.fn();
+  const writer = new IntervalBackupController<number>(
+    save,
+    async () => {},
+    failed,
+  );
+  writer.update("project", 1, [1], true);
+  await writer.tick();
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(2);
+  writer.update("project", 2, [2], true);
+  await writer.tick();
+  expect(save.mock.calls.map((args) => args[1])).toEqual([1, 1, 2]);
+  expect(failed).not.toHaveBeenCalled();
+});
+
 it("coalesces edits until the interval and skips unchanged or busy projects", async () => {
   vi.useFakeTimers();
   const saved: [string, number][] = [];

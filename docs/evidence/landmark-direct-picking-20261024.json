@@ -1,0 +1,58 @@
+{
+  "feature": "Direct fixed/moving picking and per-view deselection",
+  "date": "2026-10-24",
+  "passed": true,
+  "validation": {
+    "productionBuild": "npm run build passed including TypeScript, Vite and offline manifest",
+    "focusedTests": {
+      "files": 24,
+      "tests": 233,
+      "passed": true
+    },
+    "browser": [
+      "Actual mesh and point-cloud canvas clicks preserve native Float32 pick records",
+      "Three independent views isolate moving/reference geometry and original-pose picks",
+      "Divider drag, keyboard limits and MCP resizing preserve preview, picks, cameras and history; pending solves retain resized layout",
+      "No result caption overlaps behind the panel",
+      "Fixed canvas is above Moving; direct picks need no mode buttons; per-view undo, marker deselection and clear preserve the other side",
+      "Third and fourth complete pairs update automatically; incomplete edits invalidate acceptance",
+      "Read-only MCP ray queries agree with GUI picks",
+      "Picking and cancel preserve modeling history",
+      "Ribbon and MCP command share source eligibility and active-session admission",
+      "Real canvas picks produce equal GUI/MCP previews; accept translates only the moving scan; undo restores it"
+    ],
+    "review": "Independent read-only reviewer reported no actionable findings",
+    "notRun": [
+      "full repository test suite",
+      "million-point performance benchmark"
+    ]
+  },
+  "semantics": {
+    "fixedView": "top-right",
+    "movingView": "bottom-right",
+    "markerClick": "remove-point with entityId and zero-based entity-local pointIndex",
+    "undoAndClear": "remove-last/clear scoped by entityId; legacy unscoped actions retained"
+  },
+  "resourceCleanup": [
+    {
+      "port": 53074,
+      "closed": true
+    },
+    {
+      "port": 53075,
+      "closed": true
+    },
+    {
+      "pid": 47844,
+      "exited": true
+    },
+    {
+      "pid": 45708,
+      "exited": true
+    }
+  ],
+  "screenshots": [
+    ".resources/landmark-canvas-browser/mesh-three-views-dark.png",
+    ".resources/landmark-canvas-browser/pointcloud-three-views-dark.png"
+  ]
+}

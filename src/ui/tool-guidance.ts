@@ -13,8 +13,7 @@ export interface ToolGuidanceContext {
   selectThrough?: boolean;
   subtract?: boolean;
   sketchTool?: SketchDrawingTool;
-  landmarkSide?: "moving" | "fixed";
-  landmarkPreview?: boolean;
+  landmarkAlignment?: boolean;
   reference?: "plane" | "cylinder";
   panel?: "components" | "holes" | "boundaries";
   parameterTool?: string;
@@ -32,6 +31,7 @@ export function compactToolGuidance(context: ToolGuidanceContext): string {
   if (context.busy) return "Processing · Cancel to stop";
   if (context.interactiveAlignment) return "Left-drag handles · Escape cancels";
   if (context.planePicking) return "Left-click creates sketch · Escape cancels";
+  if (context.landmarkAlignment) return full;
   if (context.mode === "section" && full.includes(" section ·"))
     return full.split(" · ").slice(0, 2).join(" · ");
   if (context.parameterTool && full.startsWith(`${context.parameterTool}:`))
@@ -48,10 +48,8 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
     return `Hover highlights plane · Left-click creates sketch · Hold left-click selects through · Escape cancels`;
   if (context.reference)
     return `Left-click picks ${context.reference === "plane" ? "planar reference" : "cylinder"} · Escape cancels picking`;
-  if (context.landmarkSide)
-    return context.landmarkPreview
-      ? `Alignment preview · Choose moving/fixed picking to edit points · Apply accepts · Cancel discards`
-      : `Left-click adds ${context.landmarkSide} landmark · Pick matching points on the other object`;
+  if (context.landmarkAlignment)
+    return "Top-right: pick fixed points \u00b7 Bottom-right: pick moving points \u00b7 Click a numbered marker to deselect";
   if (context.sketchTool) {
     const instructions: Record<SketchDrawingTool, string> = {
       navigate: `Left/middle-drag orbits · Ctrl+drag pans · Shift+drag zooms`,
@@ -62,6 +60,7 @@ export function activeToolGuidance(context: ToolGuidanceContext): string {
       circle3:
         "Left-click three points creates circle · Right-click or Escape clears unfinished points",
       arc3: "Left-click start, through point, then end creates arc · Right-click or Escape clears unfinished points",
+      trim: "Left-drag paints unwanted intervals · Release applies one sketch edit · Right-click or Escape cancels painting",
     };
     return context.sketchTool === "navigate"
       ? instructions.navigate

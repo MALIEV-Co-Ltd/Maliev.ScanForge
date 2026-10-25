@@ -8,6 +8,7 @@ export function inspectCamera(
   width: number,
   height: number,
 ) {
+  camera.updateMatrixWorld(true);
   return {
     projection:
       camera instanceof THREE.OrthographicCamera
@@ -19,6 +20,9 @@ export function inspectCamera(
     zoom: camera.zoom,
     near: camera.near,
     far: camera.far,
+    cameraMatrixFormat: "column-major-4x4",
+    projectionMatrix: camera.projectionMatrix.toArray(),
+    cameraWorldMatrix: camera.matrixWorld.toArray(),
     viewport: {
       width,
       height,
@@ -73,6 +77,7 @@ export function setCameraPose(
 
 /** Surface hits keep their intersection; cloud hits identify a measured vertex. */
 export function pickedWorldPoint(hit: THREE.Intersection) {
+  if (hit.object.userData.referenceKind) return hit.point;
   if (!(hit.object instanceof THREE.Points) || hit.index === undefined)
     return hit.point;
   const attribute = hit.object.geometry.getAttribute("position");
@@ -85,7 +90,7 @@ export function pickedWorldPoint(hit: THREE.Intersection) {
 
 export function pickCamera(
   camera: NavigationCamera,
-  objects: THREE.Mesh[],
+  objects: THREE.Object3D[],
   x: number,
   y: number,
   maxHits: number,
@@ -106,12 +111,17 @@ export function pickCamera(
   for (const mesh of eligible) mesh.updateMatrixWorld(true);
   const ray = new THREE.Raycaster();
   const bounds = new THREE.Box3();
-  for (const mesh of eligible)
-    bounds.union(new THREE.Box3().setFromObject(mesh));
+  // Visibility defines scene scale; protection affects admission, not tolerance.
+  // Canvas picking uses the same visible scene bounds, including locked objects.
+  for (const mesh of objects.filter((object) => object.visible))
+    bounds.union(
+      mesh.userData.referenceBounds ?? new THREE.Box3().setFromObject(mesh),
+    );
   ray.params.Points.threshold = Math.max(
     bounds.getSize(new THREE.Vector3()).length() / 800,
     0.05,
   );
+  ray.params.Line.threshold = ray.params.Points.threshold;
   ray.setFromCamera(new THREE.Vector2(x * 2 - 1, 1 - y * 2), camera);
   return {
     hits: ray
@@ -121,7 +131,9 @@ export function pickCamera(
           !hit.object.visible ||
           !(
             hit.object instanceof THREE.Mesh ||
-            hit.object instanceof THREE.Points
+            hit.object instanceof THREE.Points ||
+            (hit.object instanceof THREE.Line &&
+              hit.object.userData.referenceKind === "line")
           )
         )
           return false;
@@ -139,12 +151,19 @@ export function pickCamera(
         point: pickedWorldPoint(hit).toArray(),
         distance: hit.distance,
         triangleIndex: hit.faceIndex ?? null,
-        ...(hit.object instanceof THREE.Points
+        ...(hit.object.userData.referenceKind
+          ? {
+              referenceKind: hit.object.userData.referenceKind as
+                "point" | "line",
+            }
+          : {}),
+        ...(hit.object instanceof THREE.Points &&
+        !hit.object.userData.referenceKind
           ? { pointIndex: hit.index ?? null }
           : {}),
       })),
     coordinates: { x, y },
     units: "mm",
-    note: "Triangle indices refer to rendered tessellation; pointIndex refers to a point-cloud vertex. Neither is a native CAD edge/face reference.",
+    note: "Triangle indices refer to rendered tessellation; pointIndex refers to a point-cloud vertex. referenceKind identifies a semantic point or line without triangle or cloud indices. These are not native CAD edge/face references.",
   };
 }

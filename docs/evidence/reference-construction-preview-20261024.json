@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-24",
+  "scope": "Internal host-scoped reference preview ownership and staged edit publication",
+  "sources": [
+    {
+      "path": "src/automation/reference-construction-preview.ts",
+      "sha256": "579ffd0a0f7a502766d8c154c75791e51f5bd8297394fbed04d77c974fccb6f4"
+    },
+    {
+      "path": "src/reference-construction-session.ts",
+      "sha256": "eda11e24188a86fc15acc63c6826c42c45dd6d409c4e6bdd7e3a12a842350e9b"
+    },
+    {
+      "path": "src/automation/reference-construction-binding.ts",
+      "sha256": "166edf477f2fd97ebf2203dd1766beae384a3e6400e8b3b29ba23da59eb373c1"
+    },
+    {
+      "path": "tests/reference-construction-preview.test.ts",
+      "sha256": "8a2fe0386baaa3b5146f31cb7ca857b370e5e39852f5f74f912f5c9a4ee77ec4"
+    },
+    {
+      "path": "tests/reference-construction-edit-publication.test.ts",
+      "sha256": "462f115cf1c09863110c8720cb17203dd24251923878b26a537d9ddc02f720db"
+    }
+  ],
+  "behavior": [
+    "Display publication stages a detached edit candidate before accepting its cache/version/lease.",
+    "One preview owner per host; eight existing competing preview families are rejected before allocation.",
+    "A timer expires its owner without inspection polling; successful edits retain exactly one renewed timer.",
+    "Wrong-owner cancellation does nothing; cancellation/disposal clears only the expected owner.",
+    "Rejected edits restore the prior display or retire the owner after failed restoration.",
+    "Stale model and initial publication failures retire the owned cache and display.",
+    "Failed cleanup is retained and inspectable for an explicit owner-scoped retry.",
+    "Committed Apply returns cleanup-pending diagnostics instead of inviting a second publication."
+  ],
+  "validation": {
+    "editPublicationRed": {
+      "receiptSha256": "b67f67a9e742a4265bdb9087bec6bac9666cf3b2f47b0eb44246f81a694b596b",
+      "exitCode": 1,
+      "elapsedSeconds": 0.6634818000020459,
+      "peakJobMemoryBytes": 293650432
+    },
+    "editPublicationRedResult": "3 failed / 1 passed before staged-publication support.",
+    "ownerRegistryRed": {
+      "receiptSha256": "94966c43b8ce18ccc834e00acfe4bf60148962c189f0f3b56bbdb18c01f99a27",
+      "exitCode": 1,
+      "elapsedSeconds": 0.6125659999961499,
+      "peakJobMemoryBytes": 283418624
+    },
+    "ownerRegistryRedResult": "New preview module absent.",
+    "build": {
+      "receiptSha256": "7ed872cf03576555193afe4a6092f877c1bcc7c03cf25a268662f0f3cbf71561",
+      "exitCode": 0,
+      "elapsedSeconds": 34.0017419999931,
+      "peakJobMemoryBytes": 2534543360
+    },
+    "focused": {
+      "receiptSha256": "ce41bdd5fa326b4acb095c61e2781b69b9b0e99e6f17ee60d4c89d4a27e81597",
+      "exitCode": 0,
+      "elapsedSeconds": 1.5223166999930982,
+      "peakJobMemoryBytes": 338239488
+    },
+    "format": {
+      "receiptSha256": "89f07308caa4731031814230294923a1d18886159fc0c8acef0cb45933f10c81",
+      "exitCode": 0,
+      "elapsedSeconds": 0.2589460000162944,
+      "peakJobMemoryBytes": 108515328
+    },
+    "testsPassed": 93,
+    "newOwnerTests": 25,
+    "newEditPublicationTests": 4,
+    "timerCountAfterEveryOwnerTest": 0,
+    "testFiles": [
+      {
+        "path": "tests/reference-construction-binding.test.ts",
+        "passed": 16
+      },
+      {
+        "path": "tests/reference-construction-edit-publication.test.ts",
+        "passed": 4
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-construction-preview.test.ts",
+        "passed": 25
+      },
+      {
+        "path": "tests/reference-construction-session.test.ts",
+        "passed": 15
+      }
+    ],
+    "buildIdentitySha256": "f95132baab24bea0df788829c68774d4a9d655f744501fa5898659fe2195bf97",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500,
+    "displayCallbacksMocked": true,
+    "gpuDisposalVerifiedByThisRun": false
+  },
+  "mcp": {
+    "schemaChanged": false,
+    "catalogChanged": false,
+    "publicConstructionActivated": false,
+    "sharedModule": "automation/reference-construction-preview.ts",
+    "remaining": [
+      "Actual viewport display adapter and stable host proxy",
+      "API lifetime disposal and competing-preview publication in every other family",
+      "Shared session handlers/editor, revisions/retry/context cancellation and resource/lock/source admission",
+      "Atomic source-key/dependency/history publication and native/rendered lifecycle acceptance"
+    ]
+  },
+  "limitations": [
+    "Display show/clear and model publication callbacks must be synchronous, owner-scoped and atomic/idempotent as appropriate.",
+    "The registry is not registered with public API or the React editor yet.",
+    "Mock display lifecycle is not GPU/native cleanup evidence."
+  ],
+  "acceptance": {
+    "internalOwnerLifecycle": true,
+    "publicGuiMcpWorkflow": false,
+    "actualViewportOwnerLifecycle": false,
+    "nativeLifecycle": false,
+    "completeFeature": false
+  }
+}

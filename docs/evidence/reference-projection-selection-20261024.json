@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-24",
+  "scope": "Correct unsupported CAD-provider composition; retain pure projected-candidate selection",
+  "supersedes": {
+    "path": "reference-cad-pick-20261024.json",
+    "sha256": "719fcf55caa745b7bb10c104b572fe6b39cbabc5ee7971f1b9c47dc632aef821",
+    "reason": "That internal adapter combined a recovered alternate-provider projection path with OpenCascade axis parameter completion without established source/provider correspondence. Its receipts are historical tests of supplied snapshots, not native picked-axis proof."
+  },
+  "change": [
+    "Remove unpublished resolvePickedCadReferenceAxis composition.",
+    "Retain a pure selectProjectedReferenceCandidate returning an original candidate index only.",
+    "Keep direct/OpenCascade and alternate-provider extraction helpers separate; supply no inferred extent."
+  ],
+  "sources": [
+    {
+      "path": "src/reference-projection-selection.ts",
+      "sha256": "91b3981d4873f637dc73856939e757b66b22b2f3e0593733732e47750fa2454e"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+    },
+    {
+      "path": "tests/reference-projection-selection.test.ts",
+      "sha256": "1c857e4d01d988a8a8df3b42c26331a9b3fcaae0b8aab14b3bb48b956d9eb7c0"
+    },
+    {
+      "path": "tests/reference-provider-axis.test.ts",
+      "sha256": "bb244af53c6de8b575191eb4a2f9c614df47e528a9c6c1083a93ac475763ecd8"
+    },
+    {
+      "path": "src/scan-native-datum-cad.ts",
+      "sha256": "12059517e8b582799e52ad0aab2afdbfd2eb926e9a93d11012cd3ba59ca1c150"
+    }
+  ],
+  "nativeBasis": {
+    "existing": [
+      "reference-source-resolution-20261023.json",
+      "reference-source-identities-20261023.json",
+      "reference-provider-axis-20261023.json"
+    ],
+    "projectionSelectionStaticProofSha256": "fa24dc2036a0478d25640543ae3979032b267a99588f45cb659f3c1f4f33f74b",
+    "providerExtentAuditSha256": "de5c57b6c52414b47409215749c4d9952cdfb66d71bb8847e7eb2f544a18d1a9",
+    "finding": "Projection uses alternate-provider slots; axis extraction branches on provider state. Caller extent remains unwritten on the active alternate branch; caller-entry upper bytes and actual output are unestablished.",
+    "newNativeExecution": false
+  },
+  "verification": {
+    "red": {
+      "receiptSha256": "6c652b5a654a9a3d145cdcb11989a67944c9dfbb92995ee17d1e25633c31339f",
+      "exitCode": 1,
+      "elapsedSeconds": 2.532034300005762,
+      "peakJobMemoryBytes": 281694208
+    },
+    "redReason": "New selector module absent.",
+    "build": {
+      "receiptSha256": "c512a1cd40e3daa7a39a40e936eaa29daee705aa9a599ff826d5b78a5c876282",
+      "exitCode": 0,
+      "elapsedSeconds": 34.21074270000099,
+      "peakJobMemoryBytes": 2569359360
+    },
+    "focused": {
+      "receiptSha256": "f97d5ba477fb60f923cd7e3fa004f0732f96057936ddd5a464d940a4b9ff3b6d",
+      "exitCode": 0,
+      "elapsedSeconds": 1.219369500002358,
+      "peakJobMemoryBytes": 302583808
+    },
+    "format": {
+      "receiptSha256": "dccabc8de5ea0fa1b530211a750f81e12525b04c2b31a6579919ee36ff3a6509",
+      "exitCode": 0,
+      "elapsedSeconds": 0.20857519999844953,
+      "peakJobMemoryBytes": 107261952
+    },
+    "testsPassed": 191,
+    "testFiles": [
+      {
+        "path": "tests/cad-alignment-reference.test.ts",
+        "passed": 105
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-projection-selection.test.ts",
+        "passed": 12
+      },
+      {
+        "path": "tests/reference-provider-axis.test.ts",
+        "passed": 13
+      },
+      {
+        "path": "tests/reference-source-primitives.test.ts",
+        "passed": 28
+      }
+    ],
+    "buildIdentitySha256": "5ebb4f0f3ae9fa8e5a13ff30b35222d1a63edf8acf3bd5a11776bc35b1c1e23b",
+    "memoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": {
+    "publicCapabilityRemoved": false,
+    "publicCapabilityAdded": false,
+    "catalogChanged": false,
+    "gate": "Construction GUI/MCP operations remain unpublished until exact source providers, refresh and lifecycle are integrated."
+  },
+  "acceptance": {
+    "projectionSelectionRegression": true,
+    "providerCompositionVerified": false,
+    "nativePickedAxisOutput": false,
+    "renderedLifecycle": false,
+    "completeFeature": false
+  }
+}

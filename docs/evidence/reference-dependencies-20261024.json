@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-24",
+  "scope": "Semantic reference common-source links in the existing shared dependency graph",
+  "behavior": "Validated reference definitions contribute their persisted common source IDs, including inactive retained common sets. Ordered pick records do not create dependency links. Existing graph order and candidate eligibility are unchanged.",
+  "nativeBasis": [
+    "NATIVE_REFERENCE_GEOMETRY.md: Source and dependent references",
+    "evidence/reference-line-state-20261023.json"
+  ],
+  "sources": [
+    {
+      "path": "src/datum-dependencies.ts",
+      "sha256": "49340486e835d0d4076b73fa1bf76a89f706b5c32a1259442ef9c78d230601bf"
+    },
+    {
+      "path": "tests/reference-dependencies.test.ts",
+      "sha256": "293a21e1698fd7844afc20571ee785a1c0a7447203fd64a7fc4a5e7822ae7b7a"
+    },
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "79fa38b726bf9d44dc52339f1f4fa410185414a1ee6f853497ffc25fb8241e38"
+    },
+    {
+      "path": "src/automation/datum-operations.ts",
+      "sha256": "f4d32d515455a97db012a80d8a3b0b65afdfb321ac2322ba09d03742744ca499"
+    },
+    {
+      "path": "src/native-landmark-roots.ts",
+      "sha256": "7047c4825b5e34ef60b4fe2375b59a2e093047c14132c047620da5b66085d11f"
+    },
+    {
+      "path": "src/ui/DatumAlignmentTools.tsx",
+      "sha256": "56fbeaa5835c05f0270a5c087d2c94dd82619bd78e7d1d9f89e20a106ec35243"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "9b67a4c858db3095c99981607b651b991da5bd3958ae65191ee7b14826c4e1a9"
+    }
+  ],
+  "verification": {
+    "jobs": {
+      "red": {
+        "receiptSha256": "dfc9a56aa70e08c1b7b348143a99d633b7f3687c3fb1d65ecf5835b2d0780510",
+        "exitCode": 1,
+        "elapsedSeconds": 0.9147937999805436,
+        "peakJobMemoryBytes": 340865024
+      },
+      "build": {
+        "receiptSha256": "a2e357a647f5658f24d449e624cf3dcc0538b37cf5ab8649cef9643f9a19c205",
+        "exitCode": 0,
+        "elapsedSeconds": 33.74840879999101,
+        "peakJobMemoryBytes": 2575323136
+      },
+      "focused": {
+        "receiptSha256": "0b9561c608e5bf01d7a5d2bfcd507964c68b791abfff7397b1c2adc706d2e235",
+        "exitCode": 0,
+        "elapsedSeconds": 9.400254300009692,
+        "peakJobMemoryBytes": 493125632
+      },
+      "format": {
+        "receiptSha256": "e8a823d52bdec6fd8112c25a1f5a4f25eff256086176049a07d81428578f6586",
+        "exitCode": 0,
+        "elapsedSeconds": 0.20805580000160262,
+        "peakJobMemoryBytes": 96673792
+      }
+    },
+    "testsPassed": 198,
+    "testFiles": [
+      {
+        "path": "tests/datum-automation.test.ts",
+        "passed": 128
+      },
+      {
+        "path": "tests/datum-dependencies.test.ts",
+        "passed": 3
+      },
+      {
+        "path": "tests/native-landmark-roots.test.ts",
+        "passed": 28
+      },
+      {
+        "path": "tests/reference-construction-evaluation.test.ts",
+        "passed": 33
+      },
+      {
+        "path": "tests/reference-dependencies.test.ts",
+        "passed": 6
+      }
+    ],
+    "buildIdentitySha256": "d5151609278fcea2b7967228b9a5a42e5f6ae39b4fdcda211a427ba1a65724d0",
+    "processMemoryCapBytes": 4294967296,
+    "cpuRate": 2500
+  },
+  "mcp": {
+    "tool": "alignment_targets",
+    "schemaChanged": false,
+    "guiCaller": "DatumAlignmentTools.includeDependents",
+    "sharedOperation": "createDatumOperations.alignment_targets",
+    "contractProof": "ApplicationApi.invoke returns transitive dependentIds, reference links and blocked reasons without committing or changing revision.",
+    "referenceConstructionPublished": false
+  },
+  "acceptance": {
+    "scopedRegression": true,
+    "newNativeExecution": false,
+    "renderedReferenceLifecycle": false,
+    "sourceReevaluation": false,
+    "fullReferenceFeature": false
+  }
+}

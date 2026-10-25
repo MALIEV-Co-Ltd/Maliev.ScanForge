@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "scope": "Read-only ordered tree census of original STL targets 1 and 3 and their shared joined target; existing operations, measurement-only streamed traversal",
+  "baseCommit": "f1597cc80669fd7a8567345e3d473aed2b235897",
+  "projectSha256": "d7d617128e899be8eafe70609a6fd2cf354baec48d9a3bd6841b3c3102d91190",
+  "sourcePins": [
+    {
+      "name": "src/scan-native-noise.ts",
+      "sha256": "d82b43320955e62a3588641f8f8d4adfe1872f4f342fbe163f2be564e9f1c427"
+    },
+    {
+      "name": "src/native-landmark-target.ts",
+      "sha256": "48e4d9c75fd559bb2feac9e963ac2415c329a79b6c9861585120ba6d150724ec"
+    },
+    {
+      "name": "src/scan-noise-octree-bounds.ts",
+      "sha256": "b6d29631d88d9bc6f2105ff2c44420b92288c975463be171ee60c6d1866f24c1"
+    },
+    {
+      "name": "src/scan-noise-overlap.ts",
+      "sha256": "2b6e6677848f302aec06b78a7eb92f5cb1a2d3fe6d05ef5017d36b26b3b3c793"
+    },
+    {
+      "name": "src/scan-noise-octree.ts",
+      "sha256": "f4d0dee39bbecd31f771f1916af35908f0f4e1462c217f73cb911bef58e6610b"
+    },
+    {
+      "name": "stl-tree-census-verified.ts",
+      "sha256": "769b9c00dd40c78a365446158e18b04c9f41fc99369b8c14999e7d3bd850c022"
+    }
+  ],
+  "analysisBundleSha256": "765f65cb6a957919f6ed22e51b9bf568e177a2dc96ef48eee29292199a265305",
+  "ownerSha256": "ce87ab289fd1e7d86ea96dafdfef1eff439c46094cd361f8cc021788b14b8c84",
+  "rawReportSha256": "9f0e1637f20bcf4b13310b1bf328ff21d002e1757642fd4b63a24b619367e6bb",
+  "ownerReceiptSha256": "e7834deb7b17cad4b7d26919fc8033d09785e8ddc1299a2d91304ecf5ed389d9",
+  "minimumExtentMm": 0.5,
+  "maximumDepth": 10,
+  "membershipThreshold": 25,
+  "applicationNodeCap": 100000,
+  "targets": [
+    {
+      "name": "scan-1.stl",
+      "triangles": 273139,
+      "vertices": 139338,
+      "vertexSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+      "indexSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+      "rootBounds": [
+        -59.796932220458984, -52.92218780517578, -383.5491638183594,
+        60.76023483276367, 67.63497924804688, -262.9919738769531
+      ],
+      "nodes": 60539,
+      "descendants": 60538,
+      "leaves": 47310,
+      "leafMemberships": 639591,
+      "generatedMemberships": 2837393,
+      "maximumLeafMemberships": 33,
+      "byDepth": {
+        "0": 1,
+        "1": 8,
+        "2": 24,
+        "3": 64,
+        "4": 257,
+        "5": 927,
+        "6": 3443,
+        "7": 12508,
+        "8": 43307
+      },
+      "orderedTreeSha256": "0b0d5bfb053cef90af1191c0d45adf12a60e8bd99da5f1b03e2a9c15cface9a8",
+      "directProductionTreeHashMatches": true,
+      "exceedsApplicationNodeCap": false,
+      "elapsedMs": 296,
+      "memory": {
+        "rss": 671674368,
+        "heapTotal": 87375872,
+        "heapUsed": 62707872,
+        "external": 527006003,
+        "arrayBuffers": 524962936
+      }
+    },
+    {
+      "name": "scan-3.stl",
+      "triangles": 3326910,
+      "vertices": 1683605,
+      "vertexSha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1",
+      "indexSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+      "rootBounds": [
+        -36.44767761230469, -37.787498474121094, -351.3946228027344,
+        74.534912109375, 73.1950912475586, -240.41201782226562
+      ],
+      "nodes": 79477,
+      "descendants": 79476,
+      "leaves": 60361,
+      "leafMemberships": 4617801,
+      "generatedMemberships": 29118076,
+      "maximumLeafMemberships": 232,
+      "byDepth": {
+        "0": 1,
+        "1": 8,
+        "2": 20,
+        "3": 81,
+        "4": 281,
+        "5": 1059,
+        "6": 4049,
+        "7": 15334,
+        "8": 58644
+      },
+      "orderedTreeSha256": "4f9bc0f323e0f413ce5c9e96956aadfbec14b28a0f1e3330e68b6351e7be6245",
+      "directProductionTreeHashMatches": true,
+      "exceedsApplicationNodeCap": false,
+      "elapsedMs": 1888,
+      "memory": {
+        "rss": 997416960,
+        "heapTotal": 158363648,
+        "heapUsed": 129294624,
+        "external": 693843963,
+        "arrayBuffers": 691800856
+      }
+    },
+    {
+      "name": "joined-visible-scene-1-and-3",
+      "triangles": 3600049,
+      "vertices": 1822943,
+      "rootBounds": [
+        -59.79692840576172, -54.79681396484375, -364.2001037597656,
+        71.87053680419922, 76.87065124511719, -232.53262329101562
+      ],
+      "nodes": 275562,
+      "descendants": 275561,
+      "leaves": 213841,
+      "leafMemberships": 6199177,
+      "generatedMemberships": 37053322,
+      "maximumLeafMemberships": 109,
+      "byDepth": {
+        "0": 1,
+        "1": 8,
+        "2": 28,
+        "3": 113,
+        "4": 397,
+        "5": 1489,
+        "6": 5758,
+        "7": 21583,
+        "8": 79631,
+        "9": 166554
+      },
+      "orderedTreeSha256": "1d23c319c2064a1e7f1a77f35fcbccae4e7cad53c887412d1b3ecd49545ba637",
+      "exceedsApplicationNodeCap": true,
+      "elapsedMs": 2838,
+      "memory": {
+        "rss": 994492416,
+        "heapTotal": 50446336,
+        "heapUsed": 17746760,
+        "external": 797183523,
+        "arrayBuffers": 795140416
+      }
+    }
+  ],
+  "productionGuard": {
+    "reproduced": true,
+    "name": "RangeError",
+    "message": "Noise tree exceeds its node budget"
+  },
+  "controls": {
+    "smallFixtureTrees": 2,
+    "completeIndividualTreesCompared": 2,
+    "joinedOrderedTreeHashRepeated": true,
+    "independentSourceAndCleanupAudit": true
+  },
+  "resourceLimits": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "leaseSeconds": 300,
+    "physicalAdmissionMiB": 3072,
+    "diskAdmissionGiB": 2,
+    "peakJobMemoryBytes": 1390219264,
+    "elapsedSeconds": 11.790088499998092,
+    "childExited": true,
+    "handlesClosed": true,
+    "cleanupErrors": []
+  },
+  "explanation": "Joining targets widens the root cube: depth-8 width exceeds 0.5 mm, so eligible cells split to depth 9. The two individual cubes fall below 0.5 mm at depth 8.",
+  "mcpCoverage": "Read-only investigation of the shared GUI/MCP N-point refinement target. No application behavior, operation schema or agent usage changed.",
+  "limitations": [
+    "The measurement traverses and releases completed branches; its peak is not a complete application or full resident tree peak.",
+    "This preserves the application subdivision implementation; it is not an independent native final-tree or alignment result oracle.",
+    "The normal production joined build still throws at the unchanged node cap.",
+    "No successful joined N-point solve or acceptance was established; buffer/tree fixes remain pending design approval.",
+    "No unit, CAD or browser suite was rerun; this investigation uses private read-only probes."
+  ]
+}

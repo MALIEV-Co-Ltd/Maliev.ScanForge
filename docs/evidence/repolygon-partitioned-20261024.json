@@ -1,0 +1,190 @@
+{
+  "status": "partitioned-work-root-reference-ported-quality-open",
+  "historicalAnalysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "newFunctionsDecompiled": 1,
+  "newInstructionAddressesIndependentlyDecoded": 29,
+  "contextInstructionStartsReAudited": 123,
+  "targetExecuted": false,
+  "nativeRuntimeParity": false,
+  "applicationChanged": false,
+  "newControls": {
+    "passed": 11,
+    "failed": 0,
+    "coverage": [
+      "Work-root selection in global child order",
+      "Separate corner pools across work roots",
+      "Inclusive root-overlap filtering and clamped descent",
+      "Reciprocal multiplication rather than division before floor",
+      "Analytic single-plane position and unit area after global extraction",
+      "Per-source worker counter reset and persistent last-triangle metadata",
+      "Preabort, aggregate private resource budgets and input immutability"
+    ],
+    "earlierRoundingFailureRetained": true
+  },
+  "affectedRegressions": {
+    "passed": 59,
+    "failedQualityControlsRetained": 1
+  },
+  "findings": [
+    "The partitioned command path selects each first-level child that has no children, otherwise its grandchildren, preserving child order.",
+    "Each work root has an independent corner-key pool. Equal coordinates can have separate corner objects in different pools.",
+    "The triangle bounds overlap check is inclusive; admitted candidate centers outside a selected work root descend to its boundary leaves instead of being discarded.",
+    "The worker resets its triangle counter for each source/work-root invocation. Source-slot advance appends sample storage without an explicit last-triangle-ID reset in the inspected function.",
+    "A synthetic one-triangle-per-source control preserves the resulting counter collision in this static reference. This is not proof of a native application defect.",
+    "The implementation is sequential and models partition ownership/order; it does not execute or validate native parallel scheduling."
+  ],
+  "partitionedGeometryProbe": {
+    "status": "partitioned-frontier-quality-open",
+    "nativeRuntimeParity": false,
+    "geometryAcceptance": false,
+    "initializerSuppliedAsZero": true,
+    "adjacencyEpsilonSuppliedAsZero": true,
+    "sourceBoundaryFlagsDerived": true,
+    "rows": [
+      {
+        "sources": [0],
+        "frontierCount": 64,
+        "clampedFrontierVisits": 272,
+        "contributionHistogram": {
+          "1": 196
+        },
+        "sourceBoundaryMasks": [[7, 7]],
+        "dataLeaves": 32,
+        "sharedCorners": 196,
+        "negativeCorners": 0,
+        "caseHistogram": {
+          "0": 32
+        },
+        "rawVertices": 0,
+        "compactedVertices": 0,
+        "triangles": 0,
+        "area": 0,
+        "maxPlaneDeviation": null,
+        "boundaryLoopLengths": []
+      },
+      {
+        "sources": [0.25],
+        "frontierCount": 64,
+        "clampedFrontierVisits": 272,
+        "contributionHistogram": {
+          "1": 196
+        },
+        "sourceBoundaryMasks": [[7, 7]],
+        "dataLeaves": 32,
+        "sharedCorners": 196,
+        "negativeCorners": 49,
+        "caseHistogram": {
+          "0": 16,
+          "51": 16
+        },
+        "rawVertices": 9,
+        "compactedVertices": 9,
+        "triangles": 8,
+        "area": 1,
+        "maxPlaneDeviation": 0,
+        "boundaryLoopLengths": [8]
+      },
+      {
+        "sources": [0.25, 0.375],
+        "frontierCount": 64,
+        "clampedFrontierVisits": 544,
+        "contributionHistogram": {
+          "2": 196
+        },
+        "sourceBoundaryMasks": [
+          [7, 7],
+          [7, 7]
+        ],
+        "dataLeaves": 32,
+        "sharedCorners": 196,
+        "negativeCorners": 49,
+        "caseHistogram": {
+          "0": 16,
+          "51": 16
+        },
+        "rawVertices": 25,
+        "compactedVertices": 21,
+        "triangles": 24,
+        "area": 1.0148562684394218,
+        "maxPlaneDeviation": 7.155537605285645e-5,
+        "boundaryLoopLengths": [16]
+      }
+    ]
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-frontier-worker-r1",
+      "receiptSha256": "9c27713202e5a9037bc5bb1ba40e18de766af8c3f0d90b4739fa8e9b4623b49a",
+      "expectedExitCode": 0,
+      "peakBytes": 859021312,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-admission-r1-red",
+      "receiptSha256": "730301b7f42556feb90f39a63621c28e1dd47f076d197e6cd473c6c982eb8846",
+      "expectedExitCode": 1,
+      "peakBytes": 39260160,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-admission-r1-green",
+      "receiptSha256": "cf13dbf3d7318a5a07f6f1d8e4572c4286eeb4726473b8e3d3b9a78a69d68499",
+      "expectedExitCode": 0,
+      "peakBytes": 47128576,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-admission-r1-red2",
+      "receiptSha256": "2328b43846d974edef814b2d30b4325bb5ca700ee619bd3a022ae9f07569b527",
+      "expectedExitCode": 1,
+      "peakBytes": 47022080,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-admission-r1-green2",
+      "receiptSha256": "2f6fff7bf88b87bf3861f108a48fb8305e7c067b83a0aa5c8d987c9e00c0ab9a",
+      "expectedExitCode": 0,
+      "peakBytes": 47181824,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-regressions-r1-verify",
+      "receiptSha256": "f004836bef849c6888fc3997d41fc4aa26f750fa0a13972e2db8e585d8bb0e04",
+      "expectedExitCode": 0,
+      "peakBytes": 54939648,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    },
+    {
+      "label": "repolygon-partitioned-quality-r1-verify",
+      "receiptSha256": "6b22ba50dab53d8e54a63e1b53237e4c8756645dfd76313b11c4eea6c0fb888a",
+      "expectedExitCode": 0,
+      "peakBytes": 42020864,
+      "childFinalActive": 0,
+      "handlesClosed": true
+    }
+  ],
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "contractChanged": false,
+    "privatePortsExposedAsCapability": false
+  },
+  "remaining": [
+    "Compare partitioned behavior and source-counter lifetime against the full native controller and original inputs.",
+    "Resolve exact-lattice no-surface behavior and finite-boundary fusion quality; partitioning does not close either.",
+    "Resolve mutable globals, imported-source cache equivalence and deletion-pointer lifetime.",
+    "Complete point-cloud reconstruction and coherent shared GUI/MCP integration, including original/native/rendered/history/cancellation/persistence acceptance."
+  ],
+  "limitations": [
+    "New and regression controls are component/reference evidence, not original-scan or native-runtime acceptance.",
+    "The geometric probes explicitly supply zero direction initializer and adjacency epsilon.",
+    "The partitioned two-source probe differs from the serial reference; the matching one-source result does not establish general mode equivalence.",
+    "Earlier source hashes are historical; current code is pinned by this checkpoint."
+  ],
+  "privateProofSha256": "9b2a0fdb558bf4760b065fe4a9f0888d4348e8c842e3cdd166b7b1fbd1bcd389"
+}

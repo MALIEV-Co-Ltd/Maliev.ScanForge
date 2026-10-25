@@ -149,25 +149,32 @@ export function globalAlignmentInputAdmission(
     let scratch = 0;
     if (indexed) {
       retainedBytes += carrier(indexed.vertices) + carrier(indexed.triangles);
-      // Authored scanner normals remain attached to their entity. The command
-      // owns a distinct native-derived normal output for each scan, even when
-      // multiple scans share their original indexed backing stores.
+      // Scanner attributes and stored computed state have separate lifetimes.
+      // Borrow stored computed carriers; only legacy scans need a fresh output.
       if (indexed.normals) retainedBytes += carrier(indexed.normals);
-      retainedBytes += indexed.vertices.length * 4;
+      retainedBytes +=
+        indexed.geometryNormals !== undefined
+          ? carrier(indexed.geometryNormals)
+          : indexed.vertices.length * 4;
+      retainedBytes += (indexed.vertices.length / 3) * 4;
       // Transferred clones remain live beside the borrowed originals and
       // normal output until the disposable worker response is released.
       scratch =
-        indexed.vertices.length * 4 + indexed.triangles.length * 4 + 1048576;
+        indexed.geometryNormals !== undefined
+          ? 1048576
+          : indexed.vertices.length * 4 +
+            indexed.triangles.length * 4 +
+            1048576;
     } else {
       const bytes = entity.positions.length * 4;
       // Worst-case output keeps every corner: vertices + normals + indices.
-      retainedBytes += (bytes * 7) / 3;
+      retainedBytes += (bytes * 8) / 3;
       // Seven coordinate streams cover copied input, native topology arrays,
       // trimmed output and normal output. Reserve 1024 bytes per corner for
       // the largest possible bucket's keys, linked entries and maps, plus tree.
       const workingPeak =
         bytes * 7 + (entity.positions.length / 3) * 1024 + 1048576;
-      scratch = workingPeak - (bytes * 7) / 3;
+      scratch = workingPeak - (bytes * 8) / 3;
     }
     peakPreparationBytes = Math.max(peakPreparationBytes, scratch);
     estimatedPeakBytes = Math.max(estimatedPeakBytes, retainedBytes + scratch);
@@ -286,7 +293,9 @@ async function derive(
             !(r.vertices instanceof Float32Array) ||
             !(r.triangles instanceof Uint32Array) ||
             !(r.normals instanceof Float32Array) ||
-            r.normals.length !== r.vertices.length
+            r.normals.length !== r.vertices.length ||
+            !(r.flags instanceof Uint32Array) ||
+            r.flags.length !== r.vertices.length / 3
           )
             throw Error("Invalid global alignment input worker buffers.");
           finish(undefined, r);
@@ -304,7 +313,13 @@ async function derive(
       check();
       worker.postMessage(
         packet,
-        Object.values(packet).map((value) => value.buffer as ArrayBuffer),
+        [
+          packet.positions?.buffer,
+          packet.vertices?.buffer,
+          packet.triangles?.buffer,
+        ].filter(
+          (buffer): buffer is ArrayBuffer => buffer instanceof ArrayBuffer,
+        ),
       );
     } catch (error) {
       finish(error instanceof Error ? error : Error(String(error)));
@@ -344,9 +359,12 @@ export async function prepareGlobalAlignmentInput(
     radius,
     spacing: 12,
     budget: 1000,
-    mask: 1,
+    // The group command retains the constructor's +0xa8 source mask (zero).
+    // Its separate +0x80 value of one controls raw target index stride.
+    mask: 0,
   };
   const scans: GlobalSceneInput["scans"][number][] = [];
+  const preparedEntities: Entity[] = [];
   const summary: GlobalAlignmentInputSummary = {
     entityIds: candidates.entityIds,
     scanCount: admitted.length,
@@ -355,7 +373,7 @@ export async function prepareGlobalAlignmentInput(
     searchTolerance: radius,
     spacing: 12,
     budget: 1000,
-    mask: 1,
+    mask: 0,
     parallel: options.parallel ?? true,
     preparation: {
       physicalWorkers: 0,
@@ -364,6 +382,17 @@ export async function prepareGlobalAlignmentInput(
       admission,
     },
   };
+  const derivedBytes = (entity: Entity) =>
+    entity.indexedMesh
+      ? (entity.indexedMesh.geometryNormals === undefined
+          ? entity.indexedMesh.vertices.length * 4
+          : 0) +
+        (entity.indexedMesh.vertices.length / 3) * 4
+      : (entity.positions.length * 4 * 8) / 3;
+  let futureDerivedBytes = admitted.reduce(
+    (sum, entity) => sum + derivedBytes(entity),
+    0,
+  );
   for (const entity of admitted) {
     check();
     options.onProgress?.(
@@ -371,8 +400,45 @@ export async function prepareGlobalAlignmentInput(
       `Preparing ${entity.name}`,
     );
     const indexed = entity.indexedMesh;
+    futureDerivedBytes -= derivedBytes(entity);
+    const flagBytes = indexed
+      ? (indexed.vertices.length / 3) * 4
+      : (entity.positions.length / 3) * 4;
+    const copiedBytes = indexed
+      ? indexed.geometryNormals === undefined
+        ? (indexed.vertices.length + indexed.triangles.length) * 4
+        : 0
+      : entity.positions.length * 4;
+    const storage = {
+      limit: admission.limitBytes,
+      reserved:
+        admission.retainedBytes -
+        futureDerivedBytes -
+        flagBytes +
+        copiedBytes +
+        1048576,
+    };
+    if (
+      !Number.isSafeInteger(storage.reserved) ||
+      storage.reserved < 0 ||
+      storage.reserved > storage.limit
+    )
+      throw Error(
+        "Global alignment exceeds its 512 MiB whole-scene storage admission.",
+      );
     let mesh: GlobalAlignmentPreparedMesh;
     if (indexed) {
+      if (
+        indexed.geometryNormals !== undefined &&
+        (!(
+          Array.isArray(indexed.geometryNormals) ||
+          indexed.geometryNormals instanceof Float32Array
+        ) ||
+          indexed.geometryNormals.length !== indexed.vertices.length)
+      )
+        throw Error(
+          "Global alignment computed normals must match the original indexed vertices.",
+        );
       if (
         !indexed.vertices.length ||
         indexed.vertices.length % 3 ||
@@ -404,25 +470,44 @@ export async function prepareGlobalAlignmentInput(
           if (triangles !== indexed.triangles) triangles[i] = id;
         }
       });
-      // The original polygon import finalizer recomputes vertex normals.
-      // Preserve indexed identities and authored normals; derive command-local
-      // normals in the existing disposable worker from copied topology only.
-      const v = await floats(vertices, check, true);
-      const t = new Uint32Array(triangles.length);
-      await visit(t.length, check, (first, end) =>
-        t.set(triangles.subarray(first, end), first),
-      );
-      const prepared = await derive(
-        { vertices: v, triangles: t },
-        options.signal,
-        check,
-      );
-      mesh = { vertices, triangles, normals: prepared.normals };
-      summary.preparation.physicalWorkers++;
+      if (indexed.geometryNormals !== undefined) {
+        const normals = await floats(indexed.geometryNormals, check);
+        check();
+        // Mask zero requires no boundary traversal. Admission already reserves
+        // this distinct flag carrier; published normals remain attached.
+        mesh = {
+          vertices,
+          triangles,
+          normals,
+          flags: new Uint32Array(vertices.length / 3),
+        };
+      } else {
+        const v = await floats(vertices, check, true);
+        const t = new Uint32Array(triangles.length);
+        await visit(t.length, check, (first, end) =>
+          t.set(triangles.subarray(first, end), first),
+        );
+        const prepared = await derive(
+          { vertices: v, triangles: t, storage },
+          options.signal,
+          check,
+        );
+        mesh = {
+          vertices,
+          triangles,
+          normals: prepared.normals,
+          flags: prepared.flags,
+        };
+        summary.preparation.physicalWorkers++;
+      }
       summary.preparation.reusedIndexedScans++;
     } else {
+      const positions = await floats(entity.positions, check, true);
       mesh = await derive(
-        { positions: await floats(entity.positions, check, true) },
+        {
+          positions,
+          storage,
+        },
         options.signal,
         check,
       );
@@ -431,11 +516,20 @@ export async function prepareGlobalAlignmentInput(
     }
     summary.vertices += mesh.vertices.length / 3;
     summary.triangles += mesh.triangles.length / 3;
+    preparedEntities.push(
+      indexed && indexed.geometryNormals !== mesh.normals
+        ? {
+            ...entity,
+            indexedMesh: { ...indexed, geometryNormals: mesh.normals },
+          }
+        : entity,
+    );
     scans.push({
       id: entity.id,
       geometry: {
         points: mesh.vertices,
         normals: mesh.normals,
+        flags: mesh.flags,
         targetMeshes: [{ vertices: mesh.vertices, triangles: mesh.triangles }],
       },
     });
@@ -445,7 +539,7 @@ export async function prepareGlobalAlignmentInput(
   options.onProgress?.(1, "Global alignment inputs ready");
   return {
     input,
-    entities: admitted,
+    entities: preparedEntities,
     summary,
     release() {
       // Retire command-owned descriptors through every borrowed array alias.

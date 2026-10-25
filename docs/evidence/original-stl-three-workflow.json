@@ -1,0 +1,182 @@
+{
+  "scope": "Original three STL import/alignment-attempt/reconstruction GUI/MCP workflow and memory validation; registration quality failed",
+  "testedBaseCommit": "5b974e8401768725494cd4e3270dab0e37734340",
+  "testedWorkingTree": " M docs/AGENT_GUIDE.md\n M docs/MCP_ARCHITECTURE.md\n M src/automation/api.ts\n M tests/interactive-alignment-api.test.ts\n M tests/interactive-public-browser.mjs\n",
+  "compilerInputsVerified": 1864,
+  "sourceUnchangedAcrossBuildAndReplay": true,
+  "runId": "20261022T212438835195Z",
+  "startedAt": "2026-10-22T21:24:45.657Z",
+  "buildPassed": true,
+  "buildStderrBytes": 0,
+  "workflowPassed": true,
+  "nativeNumericalAcceptance": false,
+  "registrationQualityPassed": false,
+  "input": {
+    "files": [
+      {
+        "name": "scan-1.stl",
+        "bytes": 13657034,
+        "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+      },
+      {
+        "name": "scan-2.stl",
+        "bytes": 127370334,
+        "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+      },
+      {
+        "name": "scan-3.stl",
+        "bytes": 166345584,
+        "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+      }
+    ],
+    "sourceDeclaredTriangles": 6147454,
+    "acceptedTriangles": 6147452,
+    "nativeCollapsedFacetsRejected": 2,
+    "vertices": 3121976,
+    "authoredBuffers": 9,
+    "authoredBytesHashed": 332541408,
+    "nativeInputTopologyDigestsMatched": 6,
+    "normals": "No authored normal carriers are retained by this STL import; disposable/render normals are separate."
+  },
+  "alignmentAttempt": {
+    "settings": {
+      "searchTolerance": 0.5,
+      "parallel": true
+    },
+    "passes": 1,
+    "localResults": [
+      {
+        "id": "b201a212-4c89-4526-8a4d-0cabadc628a5",
+        "pass": 0,
+        "status": -2,
+        "iterations": 0
+      },
+      {
+        "id": "4ef1b798-7e59-4767-b154-d7d4420b6cf6",
+        "pass": 0,
+        "status": -2,
+        "iterations": 0
+      },
+      {
+        "id": "d92f7f8b-fb12-4c8a-a54c-26ecd1858ce9",
+        "pass": 0,
+        "status": -2,
+        "iterations": 0
+      }
+    ],
+    "converged": false,
+    "allTransformsIdentity": true,
+    "allAuthoredBuffersUnchangedAfterApplyAnyway": true,
+    "stateMeans": [0, 0, 0],
+    "stateCoveragePercent": [0, 0, 0],
+    "meaning": "No usable local fit: all three local refinements returned -2 with zero iterations. Initial zero means are not a zero-error registration. Cached Apply anyway and history completed without moving any authored buffer."
+  },
+  "reconstruction": {
+    "resolutionMm": 0.5,
+    "inputTriangles": 6147452,
+    "topology": {
+      "vertices": 265792,
+      "triangles": 531944,
+      "components": 2,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    },
+    "diagnostics": {
+      "watertight": true,
+      "inputMeshes": 3,
+      "resolution": 0.5,
+      "gridPoints": 14674230,
+      "distanceTests": 2800779,
+      "samplingCandidates": 26143180,
+      "verification": "streamed-edge-pairing-and-vertex-fans",
+      "extraction": "face-consistent-cube-contours",
+      "peakTopologyFrontierEdges": 3720,
+      "weldTolerance": 1e-6,
+      "selfIntersectionsChecked": false,
+      "summary": "Verified watertight voxel surface: 2 closed components at 0.5 mm point resolution; 10 enclosed samples filled. Surface offset approximately 0.375 mm. Enclosed regions fused and filled."
+    },
+    "guiMcpFullGeometryDigestsEqual": true,
+    "guiMcpTopologyAndDiagnosticsEqual": true,
+    "targetsUnchanged": true,
+    "undoRestoresAllNineInputBuffers": true,
+    "redoRestoresExactOutput": true,
+    "oneHistoryStep": true,
+    "inputsBorrowedAsSharedFloat32": true,
+    "inputTransfers": 0
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "jobPeakMemoryBytes": 2091593728,
+    "cpuPercent": 25,
+    "totalJobProcesses": 17,
+    "allObservedExited": true,
+    "allJobChildrenObserved": true,
+    "handlesClosed": true,
+    "completionPortClosed": true,
+    "captureErrors": [],
+    "cleanupErrors": [],
+    "finalActiveProcesses": 0,
+    "portsClosed": true
+  },
+  "independentVerification": {
+    "passed": true,
+    "runId": "20261022T212438835195Z",
+    "independentFullDigestComparisons": 5,
+    "nativeInputTopologyDigestsMatched": 6,
+    "sourceDeclaredTriangles": 6147454,
+    "acceptedTriangles": 6147452,
+    "nativeCollapsedFacetsRejected": 2,
+    "vertices": 3121976,
+    "originalAuthoredBytesHashed": 332541408,
+    "authoredInputBuffers": 9,
+    "alignmentChangedAnyAuthoredBuffer": false,
+    "allLocalFitsFailedWithoutIterations": true,
+    "registrationQualityPassed": false,
+    "originalFileHashesUnchanged": true,
+    "compilerInputsVerified": 1864,
+    "preservedFilesVerified": 5,
+    "buildStderrBytes": 0,
+    "jobPeakMemoryBytes": 2091593728,
+    "allOwnedProcessesExited": 17
+  },
+  "pins": {
+    "browserEvidenceSha256": "c1136373f2cee647500b43b3181d92f0814672f87e07136edf07aa3ba0fe74f0",
+    "resourceLedgerSha256": "90338241ceae1d6110957137e1e2011e6bfb33edce7d45c6b9695250c73ac775",
+    "buildReceiptSha256": "ee424e5e71b6c7ab1111ebe147cb3c66d67eb487555f94f22282321f7a46aa15",
+    "frozenPlanSha256": "817bb71248d306c01d249bcec28dca626187d011dbd9eb48e8be90fa25a1c202",
+    "harnessSha256": "9c7b2de28fbd0c82108f97e83c26a9c068f6cd8cb4a5ef27b515e992a055302b"
+  },
+  "initialHarnessFailure": {
+    "runId": "20261022T212200536454Z",
+    "cause": "PLY-specific five-buffer assertion; STL retains exactly three authored buffers. Corrected harness; application unchanged.",
+    "memoryCapHit": false,
+    "all17OwnedProcessesExited": true,
+    "cleanupErrors": []
+  },
+  "foregroundReview": {
+    "url": "http://127.0.0.1:5173/",
+    "tab": 10,
+    "filesLoaded": 3,
+    "mode": "Current Vite workspace; production regression separately pinned",
+    "historySteps": 3,
+    "previewRun": false,
+    "alignmentApplied": false,
+    "warningErrorConsoleEntries": 0
+  },
+  "limits": [
+    "Raw original STL poses did not produce a usable fine-alignment fit at 0.5 mm; coarse-alignment workflow still requires validation.",
+    "Successful identity Apply/Undo/Redo does not prove non-identity STL registration.",
+    "Retained input-topology fixtures do not establish current native GUI/controller/clock/setter parity.",
+    "Two closed components do not establish one usable solid; self-intersections were not checked.",
+    "Voxel reconstruction remains an independent implementation, not native equivalence.",
+    "This single Job peak does not establish general memory budgets, total machine/GPU RAM or a full backup/restore/soak result.",
+    "No unit/CAD suite rerun; application behavior and MCP schemas unchanged."
+  ]
+}

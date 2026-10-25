@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
 import { beginWorkingJob } from "./working-job-status";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
@@ -10,6 +11,10 @@ import type {
 import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
+import {
+  admitReconstructionInputs,
+  isBorrowableReconstructionInput,
+} from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
 import type { ScanToolsRequest } from "./scan-tools";
@@ -156,6 +161,8 @@ export type ProcessingResponse =
 export interface ProcessingOptions {
   /** Geometry arrays must be immutable; replace the array after any edit. */
   reuseTopology?: boolean;
+  /** Internal speculative diagnostics only; authored shared buffers stay immutable. */
+  borrowReadonlyReportSource?: boolean;
   signal?: AbortSignal;
   onProgress?: (
     fraction: number,
@@ -169,6 +176,29 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "pointCloudEdit") {
+    try {
+      validatePointColors(request.pointColors, request.positions.length / 3);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+  if (
+    request.kind === "scanTools" &&
+    request.operation.kind === "repolygonize"
+  ) {
+    try {
+      admitReconstructionInputs([
+        request.positions,
+        ...(request.operation.targets ?? []),
+      ]);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    // Reconstruction reads immutable inputs once; retaining a canonical worker
+    // would keep every source and target alive after the job finishes.
+    options = { ...options, reuseTopology: false };
+  }
   // These transforms do not consume source adjacency. Cancel only speculative
   // preparation, then keep the normal queue so its worker exits before ours starts.
   // Preview requests remain serialized on their stateful owning worker.
@@ -301,6 +331,36 @@ function runProcessingRequest(
         fail(new Error("Unexpected mesh processing response."));
         return;
       }
+      if (request.kind === "pointCloudEdit" && request.pointColors) {
+        try {
+          const edit = event.data.result.pointCloudEdit;
+          if (edit?.positions) {
+            if (request.action === "smooth") {
+              if (edit.positions.length !== request.positions.length)
+                throw new Error(
+                  "Point color correspondence changed smoothing slots.",
+                );
+              edit.pointColors = request.pointColors;
+            } else {
+              if (
+                !(edit.sourceIndices instanceof Uint32Array) ||
+                edit.sourceIndices.length * 3 !== edit.positions.length
+              )
+                throw new Error(
+                  "Point color correspondence requires matching source indices.",
+                );
+              edit.pointColors = reindexPointColors(
+                request.pointColors,
+                edit.sourceIndices,
+                request.positions.length / 3,
+              );
+            }
+          }
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
       settled = true;
       if (
         event.data.result.topology &&
@@ -342,16 +402,32 @@ function runProcessingRequest(
     try {
       // Transfer a dedicated copy. Scene geometry and undo history retain their original buffers.
       const transfers: Transferable[] = [];
+      const borrowReconstruction =
+        !session &&
+        request.kind === "scanTools" &&
+        request.operation.kind === "repolygonize";
       function clone(positions: Positions): Positions {
+        if (borrowReconstruction && isBorrowableReconstructionInput(positions))
+          return positions;
         const copy = positions.slice();
         if (copy instanceof Float32Array) transfers.push(copy.buffer);
         return copy;
       }
       // A retained worker owns the canonical source and adopts edit successors.
       // Send it only on the first request; targets and masks still change per job.
+      const borrowedReportSource =
+        !!session &&
+        !session.initialized &&
+        options.borrowReadonlyReportSource === true &&
+        request.kind === "report" &&
+        request.positions instanceof Float32Array &&
+        typeof SharedArrayBuffer !== "undefined" &&
+        request.positions.buffer instanceof SharedArrayBuffer;
       const source = session?.initialized
         ? new Float32Array(0)
-        : clone(request.positions);
+        : borrowedReportSource
+          ? request.positions
+          : clone(request.positions);
       const copied: ProcessingRequest =
         request.kind === "icp" ||
         request.kind === "global" ||
@@ -374,6 +450,9 @@ function runProcessingRequest(
               ...(target.indexedMesh.normals
                 ? { normals: clone(target.indexedMesh.normals) }
                 : {}),
+              ...(target.indexedMesh.geometryNormals
+                ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
+                : {}),
             },
           };
         });
@@ -385,6 +464,9 @@ function runProcessingRequest(
             vertices: clone(mesh.vertices),
             triangles,
             ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+            ...(mesh.geometryNormals
+              ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
           };
         }
       }
@@ -400,6 +482,9 @@ function runProcessingRequest(
               ...(target.indexedMesh.normals
                 ? { normals: clone(target.indexedMesh.normals) }
                 : {}),
+              ...(target.indexedMesh.geometryNormals
+                ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
+                : {}),
             },
           };
         });
@@ -411,17 +496,30 @@ function runProcessingRequest(
         copied.sourceIndexed
       ) {
         const mesh = copied.sourceIndexed;
-        const triangles = Uint32Array.from(mesh.triangles);
-        transfers.push(triangles.buffer);
+        const sharedConnectivity =
+          copied.kind === "paired" &&
+          mesh.triangles instanceof Uint32Array &&
+          typeof SharedArrayBuffer !== "undefined" &&
+          mesh.triangles.buffer instanceof SharedArrayBuffer;
+        const triangles = sharedConnectivity
+          ? (mesh.triangles as Uint32Array)
+          : Uint32Array.from(mesh.triangles);
+        if (triangles.buffer instanceof ArrayBuffer)
+          transfers.push(triangles.buffer);
         copied.sourceIndexed = {
           vertices: clone(mesh.vertices),
           triangles,
           ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+          ...(mesh.geometryNormals
+            ? { geometryNormals: clone(mesh.geometryNormals) }
+            : {}),
         };
       }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
       if (copied.kind === "pointCloudEdit") {
+        // Colors stay with authored geometry; only returned slot indices need transport.
+        delete copied.pointColors;
         if (copied.normals) copied.normals = clone(copied.normals);
         if (copied.selection) {
           copied.selection = new Uint8Array(copied.selection);
@@ -485,7 +583,13 @@ function runProcessingRequest(
         transfers.push(copied.sourceSeedVertices.buffer);
       }
       worker.postMessage(
-        session ? { ...copied, geometryKey: session.key } : copied,
+        session
+          ? {
+              ...copied,
+              geometryKey: session.key,
+              ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+            }
+          : copied,
         transfers,
       );
     } catch (error) {

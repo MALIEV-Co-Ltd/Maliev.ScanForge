@@ -3,7 +3,7 @@ import { transformDatumCoordinates } from "./datum-transform-kernel";
 import { nativeDatumIsIdentity } from "./scan-native-datum-apply";
 import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import { nativeRefineAlignmentMeshesAsync } from "./scan-native-alignment-surface-controller";
-import { noiseNormals } from "./scan-native-noise";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 import { prepareNativeLandmarkTarget } from "./native-landmark-target";
 
 /** Native indexed source stages. Coarse registration and scene target collection
@@ -27,7 +27,11 @@ export async function refineNativeLandmarkAfterCoarse(
     source.vertices instanceof Float32Array
       ? source.vertices
       : Float32Array.from(source.vertices);
-  const triangles = Uint32Array.from(source.triangles);
+  // Connectivity is immutable; retain the published source index backing.
+  const triangles =
+    source.triangles instanceof Uint32Array
+      ? source.triangles
+      : Uint32Array.from(source.triangles);
   const region = prepareNativeLandmarkRegion(
     originalVertices.length / 3,
     triangles,
@@ -36,15 +40,9 @@ export async function refineNativeLandmarkAfterCoarse(
     options.faceFlags,
     options.signal,
   );
-  // Compute absent scanner normals on original geometry, before coarse rounding.
-  const originalNormals = source.normals
-    ? source.normals instanceof Float32Array
-      ? source.normals
-      : Float32Array.from(source.normals)
-    : noiseNormals(
-        { vertices: Float64Array.from(originalVertices), triangles },
-        options,
-      );
+  // Computed geometry vectors precede coarse coordinate rounding; scanner
+  // attributes are retained separately and never substitute for this state.
+  const originalNormals = meshGeometryNormals(source, options.signal);
   const vertices = transformDatumCoordinates(originalVertices, coarse);
   const normals = transformDatumCoordinates(originalNormals, coarse, true);
   const result = await nativeRefineAlignmentMeshesAsync(
@@ -59,6 +57,9 @@ export async function refineNativeLandmarkAfterCoarse(
     },
   );
   const applied = !nativeDatumIsIdentity(result.matrix, Number.EPSILON);
+  const scannerNormals = source.normals
+    ? transformDatumCoordinates(source.normals, coarse, true)
+    : undefined;
   return {
     selection: nativeLandmarkFaceSelection(region.faceFlags, applied),
     indexedMesh: {
@@ -66,9 +67,16 @@ export async function refineNativeLandmarkAfterCoarse(
         ? transformDatumCoordinates(vertices, result.matrix)
         : vertices,
       triangles,
-      normals: applied
+      geometryNormals: applied
         ? transformDatumCoordinates(normals, result.matrix, true)
         : normals,
+      ...(scannerNormals
+        ? {
+            normals: applied
+              ? transformDatumCoordinates(scannerNormals, result.matrix, true)
+              : scannerNormals,
+          }
+        : {}),
     },
     refinement: {
       accepted: result.accepted,

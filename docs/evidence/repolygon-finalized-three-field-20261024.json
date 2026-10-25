@@ -1,0 +1,139 @@
+{
+  "status": "original-three-field-recovered-finalization-verified-with-quality-defects",
+  "applicationChanged": false,
+  "nativeExecuted": false,
+  "nativeAcceptance": false,
+  "focusedControls": {
+    "redPassed": 0,
+    "greenPassed": 8,
+    "total": 8,
+    "independentTopologyAuditControls": 3
+  },
+  "sequence": [
+    "Stable compaction of fresh extracted geometry",
+    "Initial face/vertex normals and shared packed adjacency",
+    "Recovered boundary collection in tree order",
+    "Three-record helper in retained walk order, preserving move-last deletion",
+    "Conditional adjacency rebuild and cached-face-normal vertex-normal update after handled repairs",
+    "Stable compaction of remaining used vertices and corresponding normals"
+  ],
+  "fullOriginalPoseOutput": {
+    "status": "original-three-field-private-finalization-completed",
+    "inputPositionsSha256": "af1d909ac87d334a9f598458b32aa862f8f79d6ddd5b8d18d207b420d6fcdae8",
+    "inputIndicesSha256": "c4719800ef10e0191703178ce5a3170812827741612711dfc2e61a26c7d7a55f",
+    "outputPositionsSha256": "c0368a9a5fe82f574cc06435f94df87161800e2f48aebad37e01eda7881ed817",
+    "outputIndicesSha256": "4e630884020dbab77bacae4b1e6b9501b5658876cd6d77cd4f73e830abfc8906",
+    "outputNormalsSha256": "9401c38df5cc9751a7762aa827e7d656e582e8987058fd7e899173b1a9dbbcec",
+    "auditControlsPassed": 3,
+    "diagnostics": {
+      "boundaryWalks": 122,
+      "handledThreeEdgeWalks": 23,
+      "appendedCaps": 19,
+      "removedTriangles": 4,
+      "normalsUpdatedAfterRepair": true,
+      "adjacencyRebuiltAfterRepair": false,
+      "retiredPointerReads": 0
+    },
+    "topology": {
+      "vertices": 89485,
+      "triangles": 167025,
+      "usedVertices": 89485,
+      "edges": 256667,
+      "edgeIncidenceHistogram": {
+        "1": 12328,
+        "2": 244292,
+        "3": 25,
+        "4": 22
+      },
+      "boundaryEdges": 12328,
+      "nonmanifoldEdges": 47,
+      "windingConflicts": 1,
+      "repeatedIndexTriangles": 0,
+      "zeroAreaTriangles": 0,
+      "duplicateUnorientedTriangles": 11,
+      "edgeConnectedComponentTriangles": [
+        166851, 144, 8, 4, 4, 3, 3, 2, 2, 2, 2
+      ],
+      "boundaryVertexDegreeHistogram": {
+        "1": 31,
+        "2": 12239,
+        "3": 3,
+        "4": 33,
+        "6": 1
+      },
+      "surfaceArea": 21453.824814255673,
+      "selfIntersectionsChecked": false
+    },
+    "normals": {
+      "nonfiniteNormals": 0,
+      "zeroNormals": 4,
+      "maxUnitLengthError": 1.3400147913511518e-7
+    },
+    "sourceBuffersUnchanged": true,
+    "elapsedSeconds": 1.4764244,
+    "memory": {
+      "rss": 203874304,
+      "heapTotal": 84533248,
+      "heapUsed": 58042360,
+      "external": 10447087,
+      "arrayBuffers": 8370380
+    },
+    "providerBucketTolerance": 1.1920928955078125e-7,
+    "nativeExecuted": false,
+    "nativeAcceptance": false,
+    "scope": "Recovered finite fresh-output finalization sequence on pinned private original-three field output. No unresolved retired pointer read permitted. Native globals, equivalent output, full controller, GUI/MCP and point-cloud acceptance remain open."
+  },
+  "beforeFinalization": {
+    "vertices": 89494,
+    "triangles": 167010,
+    "boundaryEdges": 12397,
+    "nonmanifoldEdges": 47,
+    "duplicateUnorientedTriangles": 11
+  },
+  "boundedJobs": [
+    {
+      "label": "repolygon-finalize-output-r1-red",
+      "expectedExitCode": 1,
+      "receiptSha256": "feb884275b5806dc2574ab7383ce41da20782b83b70fb429ff8196c2712694e7",
+      "peakOwnedJobBytes": 33042432,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-finalize-output-r1-green",
+      "expectedExitCode": 0,
+      "receiptSha256": "d853448c612908957c2ce53168797cac90278589e462f47859a6aed8ad71d7a1",
+      "peakOwnedJobBytes": 34795520,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    },
+    {
+      "label": "repolygon-finalized-three-field-r1",
+      "expectedExitCode": 0,
+      "receiptSha256": "93bd3a297a2ed5dc6f9131f5e58f5f916e4eefe5bfc87cca5f1917cdd0df7dae",
+      "peakOwnedJobBytes": 220504064,
+      "ownedDescendantsAtExit": 0,
+      "handlesClosed": true,
+      "cleanupErrors": []
+    }
+  ],
+  "peakOwnedJobBytes": 220504064,
+  "mcp": {
+    "sharedTool": "mesh_process",
+    "guiEntry": "runReconstructionCommand",
+    "contractChanged": false,
+    "privateFinalizerAdvertised": false,
+    "productionReconstructionBackendReplaced": false
+  },
+  "limitations": [
+    "This finite fresh-output reference does not implement native allocator slot reuse. It rejects a retired triangle reference; the complete original-pose output encountered none.",
+    "Native source globals, parallel scheduling, complete controller behavior and numerical output equivalence remain unresolved. JavaScript acos bit equivalence is unproven.",
+    "The cleaned output retains 47 nonmanifold edges, 11 duplicate faces, one winding conflict and 12328 boundary edges; it is not accepted as usable combined geometry.",
+    "Normals are finite, with four zero vectors. Self intersections were not checked.",
+    "No full application build or GUI/MCP/rendered acceptance was run because application behavior did not change.",
+    "A separate full aligned-project run is necessary to distinguish pose-dependent overlap from field defects; this checkpoint makes no claim about that pending run."
+  ],
+  "privateProofSha256": "4ad682c10c8c772de7f9294a70d6105f51b9d288f476e6f9f089323cac0947af"
+}

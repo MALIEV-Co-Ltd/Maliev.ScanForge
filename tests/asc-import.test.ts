@@ -1,8 +1,13 @@
 import { expect, it } from "vitest";
-import { readAscPointCloud } from "../src/asc-import";
+import { readAscPointCloud as readAsc } from "../src/asc-import";
 import { pointCloudStats } from "../src/point-cloud";
 import { convertScanUnits } from "../src/import-units";
 import { placeScanOnOrigin } from "../src/import-origin";
+
+const readAscPointCloud = (
+  file: Blob,
+  options: Parameters<typeof readAsc>[1] = {},
+) => readAsc(file, { ...options, attributes: "xyz-normal" });
 
 it("reads XYZ and optional scanner normals, including comments, delimiters and the final line", async () => {
   const result = await readAscPointCloud(

@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "scope": "Current-build full original-three GUI/MCP memory/workflow regression; native and registration acceptance remain open",
+  "testedBaseCommit": "e405b17f3134c992b8f48f007390a41aeae70836",
+  "testedWorkingTree": " M docs/AGENT_GUIDE.md\n M docs/MCP_ARCHITECTURE.md\n M src/automation/api.ts\n M tests/interactive-alignment-api.test.ts\n M tests/interactive-public-browser.mjs\n",
+  "compilerInputsVerified": 1864,
+  "sourceUnchangedBeforeAfterBuildAndReplay": true,
+  "runId": "20261022T202205185896Z",
+  "startedAt": "2026-10-22T20:22:12.769Z",
+  "finishedAt": "2026-10-22T20:27:38.866Z",
+  "buildPassed": true,
+  "workflowPassed": true,
+  "nativeNumericalAcceptance": false,
+  "alignmentControllerConverged": false,
+  "input": {
+    "entityIds": [
+      "72d638aa-cf77-4cac-a61d-3cbf4c03adfb",
+      "74e363e9-f547-4eb2-ab69-9fcce9c266e1",
+      "d5f5e31b-d485-413f-ad65-3ddb2ab0e411"
+    ],
+    "scanCount": 3,
+    "vertices": 3381455,
+    "triangles": 6663164,
+    "searchTolerance": 0.5,
+    "spacing": 12,
+    "budget": 1000,
+    "mask": 1,
+    "parallel": true,
+    "preparation": {
+      "physicalWorkers": 3,
+      "reusedIndexedScans": 3,
+      "indexedTriangleSoups": 0,
+      "admission": {
+        "limitBytes": 536870912,
+        "retainedBytes": 215216168,
+        "peakPreparationBytes": 67732348,
+        "estimatedPeakBytes": 282948516
+      }
+    }
+  },
+  "outputTopology": {
+    "vertices": 166846,
+    "triangles": 334240,
+    "components": 4,
+    "boundaryLoops": 0,
+    "boundaryChains": 0,
+    "boundaryEdges": 0,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 0,
+    "inconsistentEdges": 0,
+    "duplicateTriangles": 0,
+    "degenerateTriangles": 0,
+    "watertight": true
+  },
+  "outputDiagnostics": {
+    "watertight": true,
+    "inputMeshes": 3,
+    "resolution": 0.5,
+    "gridPoints": 7404390,
+    "distanceTests": 2909872,
+    "samplingCandidates": 28607619,
+    "verification": "streamed-edge-pairing-and-vertex-fans",
+    "extraction": "face-consistent-cube-contours",
+    "peakTopologyFrontierEdges": 1451,
+    "weldTolerance": 1e-6,
+    "selfIntersectionsChecked": false,
+    "summary": "Verified watertight voxel surface: 4 closed components at 0.5 mm point resolution; 133 enclosed samples filled. Surface offset approximately 0.375 mm. Enclosed regions fused and filled."
+  },
+  "checks": {
+    "guiMcpGeometryDigestsEqual": true,
+    "guiMcpTopologyAndDiagnosticsEqual": true,
+    "targetBuffersUnchanged": true,
+    "undoRestores15AuthoredBuffers": true,
+    "redoRestoresOutput": true,
+    "cachedAlignmentApplyVerified": true,
+    "oneReconstructionHistoryStep": true,
+    "immutableSharedInputsBorrowed": true,
+    "inputTransfers": 0,
+    "resolutionCoarsened": false,
+    "geometryJsonExported": false,
+    "historyCleared": false,
+    "independentReceiptDigestComparisonPassed": true,
+    "originalAuthoredBytesHashed": 640860696,
+    "inputDownsampledBeforeWorkflow": false
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "jobPeakMemoryBytes": 3033473024,
+    "cpuPercent": 25,
+    "ownedProcesses": 17,
+    "allOwnedExited": true,
+    "allChildrenObserved": true,
+    "finalActive": 0,
+    "handlesClosed": true,
+    "completionPortClosed": true,
+    "cleanupErrors": [],
+    "captureErrors": [],
+    "portsClosed": true
+  },
+  "pins": {
+    "browserEvidenceSha256": "96393f68714de9ec4bf570bc5237d90218cb2f6e78c63cae854a456ad6d840b4",
+    "resourceLedgerSha256": "52d1cfd7c661994bee27011ea2e6512ddd7a00b4a57a3c99ee4192acdf6647f0",
+    "buildReceiptSha256": "5cd4850b84fff4adac634d3d31f7544fc8ba267b39a41addab0ffbff885f4131",
+    "planSha256": "cdbd42e35fd0fbd8accd2f467c7a1cd653e613ff6342586a0ee33aa97662bfea"
+  },
+  "limits": [
+    "Controller did not report convergence; no independent registration-quality or native numerical acceptance.",
+    "Four closed components do not establish one usable solid; self-intersections were not checked.",
+    "Peak Job commit is not total machine RAM, GPU memory or process RSS.",
+    "This replay does not verify every automatic-backup snapshot or the full backup/restore/soak workflow.",
+    "Unit/CAD suites were not rerun for this verification-only update."
+  ],
+  "liveApp": {
+    "url": "http://127.0.0.1:5173/",
+    "mode": "Fresh Vite development workspace; regression used pinned production dist",
+    "files": ["ply-1.ply", "ply-2.ply", "ply-3.ply"],
+    "visibleTargets": 3,
+    "searchToleranceMm": 0.5,
+    "parallel": true,
+    "previewRun": true,
+    "alignmentApplied": false,
+    "consoleWarningsOrErrors": 0,
+    "lastPreviewConverged": false,
+    "originalsAndHistoryUnchanged": true,
+    "previewExpiresAt": "2026-10-22T20:50:05.054Z"
+  }
+}

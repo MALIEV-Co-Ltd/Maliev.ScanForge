@@ -1,9 +1,12 @@
 import { readScan, type ScanSource } from "./import-parser";
 import { convertScanUnits, type ScanUnit } from "./import-units";
 import { placeScanOnOrigin } from "./import-origin";
-import { readAscPointCloud } from "./asc-import";
+import { readAscPointCloud, type AscAttributes } from "./asc-import";
 import type { parsePlyTopology } from "./ply-topology";
-import { prepareScanRenderData } from "./scan-render-data";
+import {
+  prepareScanRenderData,
+  prepareStoredScanRenderData,
+} from "./scan-render-data";
 
 const scope = self as unknown as {
   onmessage: (
@@ -13,6 +16,7 @@ const scope = self as unknown as {
       previewTriangles?: number;
       unit?: ScanUnit;
       placeAtOrigin?: boolean;
+      ascAttributes?: AscAttributes;
     }>,
   ) => void;
   postMessage(message: unknown, transfer?: Transferable[]): void;
@@ -24,6 +28,7 @@ scope.onmessage = async ({ data }) => {
     let meshNormals: Float32Array | undefined;
     if (data.extension === "asc") {
       const cloud = await readAscPointCloud(data.file, {
+        attributes: data.ascAttributes,
         onProgress: (progress) =>
           scope.postMessage({ progress: progress * 0.85 }),
       });
@@ -37,10 +42,15 @@ scope.onmessage = async ({ data }) => {
       );
       const transfers = [cloud.positions.buffer as ArrayBuffer];
       if (cloud.normals) transfers.push(cloud.normals.buffer as ArrayBuffer);
+      if (cloud.pointColors)
+        transfers.push(cloud.pointColors.buffer as ArrayBuffer);
       scope.postMessage(
         {
           positions: cloud.positions,
-          pointCloud: { normals: cloud.normals },
+          pointCloud: {
+            normals: cloud.normals,
+            pointColors: cloud.pointColors,
+          },
           renderData,
         },
         transfers,
@@ -55,6 +65,7 @@ scope.onmessage = async ({ data }) => {
         indexedMesh = mesh;
       },
       previewTriangles: data.previewTriangles,
+      sharedReadonlyBuffers: true,
       onSource: (value) => {
         source = value;
       },
@@ -70,7 +81,7 @@ scope.onmessage = async ({ data }) => {
         indexedMesh ? [indexedMesh.vertices] : [],
       );
     scope.postMessage({ progress: 0.9 });
-    const renderData = prepareScanRenderData(positions, indexedMesh);
+    const renderData = prepareStoredScanRenderData(positions, indexedMesh);
     scope.postMessage({ progress: 0.95 });
     const transfers = [positions.buffer as ArrayBuffer];
     if (meshNormals) transfers.push(meshNormals.buffer as ArrayBuffer);
@@ -84,8 +95,14 @@ scope.onmessage = async ({ data }) => {
     if (indexedMesh?.normals instanceof Float32Array)
       transfers.push(indexedMesh.normals.buffer as ArrayBuffer);
     scope.postMessage(
-      { positions, source, indexedMesh, renderData, meshNormals },
-      transfers,
+      {
+        positions,
+        source,
+        indexedMesh: renderData.indexedMesh,
+        renderData,
+        meshNormals,
+      },
+      [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
     );
   } catch (error) {
     scope.postMessage({

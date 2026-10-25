@@ -16,6 +16,7 @@ import {
   type ProcessingResult,
 } from "../src/processing-client";
 import { getWorkingJobStatus } from "../src/working-job-status";
+import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -47,6 +48,114 @@ const request: ProcessingRequest = {
   positions,
   tolerance: 0.001,
 };
+
+it("keeps explicit large diagnostics available after optional warmup admission declines", async () => {
+  const triangles = SCAN_DEFAULT_BUDGET_BYTES / 512 + 1;
+  const source = new Float32Array(triangles * 9);
+  source.set(positions);
+  source[source.length - 1] = 13;
+  prepareMeshInBackground(source);
+  await vi.advanceTimersByTimeAsync(500);
+  expect(ProcessingWorkerDouble.creates).toBe(0);
+  const leave = observeScanDiagnostics(source, () => {});
+  const worker = ProcessingWorkerDouble.latest;
+  expect(ProcessingWorkerDouble.creates).toBe(1);
+  expect(worker.sent).toMatchObject({ kind: "report", tolerance: 0.001 });
+  expect(worker.sent?.positions.length).toBe(source.length);
+  expect(worker.sent?.positions.slice(0, 9)).toEqual(positions);
+  expect(worker.sent?.positions[source.length - 1]).toBe(13);
+  worker.reply({
+    result: { kind: "report", topology: { triangles }, diagnostics: {} },
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  leave();
+});
+
+it("borrows immutable shared positions only for speculative retained reports", async () => {
+  const source = new Float32Array(new SharedArrayBuffer(positions.byteLength));
+  source.set(positions);
+  prepareMeshInBackground(source);
+  try {
+    await vi.advanceTimersByTimeAsync(500);
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent?.positions).toBe(source);
+    expect(worker.sent).toMatchObject({
+      kind: "report",
+      borrowedReportSource: true,
+    });
+    expect(worker.transfers).toEqual([]);
+    const clone = structuredClone(worker.sent!);
+    expect(clone.positions).toEqual(source);
+    expect(clone.positions).not.toBe(source);
+    expect(
+      clone.positions instanceof Float32Array &&
+        clone.positions.buffer instanceof SharedArrayBuffer,
+    ).toBe(true);
+  } finally {
+    stopBackgroundMeshPreparation();
+    await Promise.resolve();
+    await Promise.resolve();
+  }
+});
+
+it.each(["shared", "ordinary", "array"])(
+  "keeps default report ownership private for %s positions",
+  async (backing) => {
+    const source =
+      backing === "array"
+        ? Array.from(positions)
+        : backing === "shared"
+          ? new Float32Array(new SharedArrayBuffer(positions.byteLength))
+          : positions.slice();
+    if (source instanceof Float32Array) source.set(positions);
+    const pending = processMesh(
+      { ...request, positions: source },
+      { reuseTopology: true },
+    );
+    await Promise.resolve();
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent?.positions).not.toBe(source);
+    expect(worker.sent?.positions).toEqual(source);
+    expect(worker.sent).not.toHaveProperty("borrowedReportSource");
+    if (worker.sent?.positions instanceof Float32Array)
+      expect(worker.sent.positions.buffer).toBeInstanceOf(ArrayBuffer);
+    worker.reply({ result: { kind: "report", diagnostics: {} } });
+    await pending;
+  },
+);
+
+it.each(["nonreport", "unretained", "ordinary", "array", "unavailable"])(
+  "does not borrow an opted-in source for %s work",
+  async (mode) => {
+    const shared = new Float32Array(
+      new SharedArrayBuffer(positions.byteLength),
+    );
+    shared.set(positions);
+    const source =
+      mode === "array"
+        ? Array.from(positions)
+        : mode === "ordinary"
+          ? positions.slice()
+          : shared;
+    if (mode === "unavailable") vi.stubGlobal("SharedArrayBuffer", undefined);
+    const submitted: ProcessingRequest =
+      mode === "nonreport"
+        ? { kind: "scanEdit", action: "inventory", positions: source }
+        : { ...request, positions: source };
+    const pending = processMesh(submitted, {
+      reuseTopology: mode !== "unretained",
+      borrowReadonlyReportSource: true,
+    });
+    await Promise.resolve();
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent?.positions).not.toBe(source);
+    expect(worker.sent?.positions).toEqual(source);
+    expect(worker.sent).not.toHaveProperty("borrowedReportSource");
+    worker.reply({ result: { kind: submitted.kind, diagnostics: {} } });
+    await pending;
+  },
+);
 beforeEach(() => {
   vi.useFakeTimers();
   vi.stubGlobal("Worker", ProcessingWorkerDouble);
@@ -1116,3 +1225,33 @@ describe("foreground mesh readiness", () => {
     expect(ProcessingWorkerDouble.creates).toBe(1);
   });
 });
+
+it.each([false, true])(
+  "retains only immutable shared paired connectivity (shared=%s)",
+  async (shared) => {
+    const triangles = shared
+      ? new Uint32Array(new SharedArrayBuffer(12))
+      : new Uint32Array(3);
+    triangles.set([0, 1, 2]);
+    const pending = processMesh({
+      kind: "paired",
+      positions,
+      sourceIndexed: { vertices: positions, triangles },
+      sourceLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      targetLandmarks: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as Extract<ProcessingRequest, { kind: "paired" }>;
+    expect(sent.sourceIndexed!.triangles === triangles).toBe(shared);
+    if (shared) expect(worker.transfers).not.toContain(triangles.buffer);
+    else
+      expect(worker.transfers).toContain(
+        (sent.sourceIndexed!.triangles as Uint32Array).buffer,
+      );
+    expect(triangles).toEqual(new Uint32Array([0, 1, 2]));
+    worker.reply({
+      result: { kind: "paired", positions: positions.slice(), diagnostics: {} },
+    });
+    await pending;
+  },
+);

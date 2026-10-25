@@ -56,6 +56,7 @@ export function evaluateCadAlignmentReference(
   return {
     ...identity,
     kind: input.kind,
+    ...(input.kind === "cylinder" ? { radiusMm: input.radius } : {}),
     ...nativeDatumCadAxisReference(
       input.kind,
       input.location,

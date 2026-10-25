@@ -35,6 +35,9 @@ it.each(axes.cases)("transports native CAD axis inputs: $name", (sample) => {
   expect(bits(result.direction)).toBe(sample.nativeAxisBits);
   expect(bits([result.length])).toBe(sample.nativeLengthBits);
   expect(result).toMatchObject(identity);
+  if (input.kind === "cylinder")
+    expect(result).toHaveProperty("radiusMm", input.radius);
+  else expect(result).not.toHaveProperty("radiusMm");
   expect(input).toEqual(before);
 });
 it.each(planes.cases)("transports native CAD plane inputs: $name", (sample) => {

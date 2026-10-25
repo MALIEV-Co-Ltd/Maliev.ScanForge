@@ -28,6 +28,10 @@ try {
   await page.route("**/project-encoding-regression", (route) =>
     route.fulfill({
       contentType: "text/html",
+      headers: {
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+      },
       body: "<title>Project encoding regression</title>",
     }),
   );
@@ -87,6 +91,34 @@ try {
     )
       throw Error("Authored buffer moved or changed");
     const decoded = await decodeProjectFile(background);
+    const reopened = await decodeProjectFile(background);
+    const originalPositions = decoded.project.entities[0].positions;
+    const reopenedPositions = reopened.project.entities[0].positions;
+    if (
+      !(originalPositions.buffer instanceof SharedArrayBuffer) ||
+      !(reopenedPositions.buffer instanceof SharedArrayBuffer)
+    )
+      throw Error("Restore did not publish shared readonly backing");
+    // Structured clone creates distinct SAB wrappers. A temporary test-only bit
+    // change proves physical aliasing, then restores the original signed zero.
+    const originalBits = new Uint32Array(
+      originalPositions.buffer,
+      originalPositions.byteOffset,
+      originalPositions.length,
+    );
+    const reopenedBits = new Uint32Array(
+      reopenedPositions.buffer,
+      reopenedPositions.byteOffset,
+      reopenedPositions.length,
+    );
+    const saved = originalBits[0];
+    try {
+      originalBits[0] ^= 1;
+      if (reopenedBits[0] !== originalBits[0])
+        throw Error("Repeat restore duplicated shared geometry");
+    } finally {
+      originalBits[0] = saved;
+    }
     if (!cloudPlacement(decoded.project.entities[1]))
       throw Error("Native cloud pose lost");
     let rejected = false;
@@ -103,7 +135,14 @@ try {
     }
     if (!rejected) throw Error("Invalid geometry accepted");
     const controller = new AbortController();
-    const cancelled = encodeProjectFile(session, controller.signal).then(
+    // Use a new snapshot so the completed-file cache cannot settle before abort.
+    const cancelled = encodeProjectFile(
+      {
+        ...session,
+        project: { ...session.project, name: "Cancellation probe" },
+      },
+      controller.signal,
+    ).then(
       () => false,
       (e) => e.name === "AbortError",
     );
@@ -116,6 +155,7 @@ try {
       bytes: bytes.length,
       authoredBuffersIntact: true,
       cloudPoseRetained: true,
+      repeatRestoreSharesBacking: true,
       invalidGeometryRejected: true,
       queueRecovered: true,
       cancellationReleased: true,

@@ -21,7 +21,8 @@ existing artifacts; it does not execute the native application.
 | Spacing                      | 12                                                              | 12                                        |
 | Local tolerance              | Float32 `0x3a83126f` (approximately 0.001)                      | Float32 `0x3d4ccccd` (approximately 0.05) |
 | Search radius                | Absolute unit-converted Float32 dialog entry, widened to double | 5                                         |
-| Source mask                  | 1                                                               | 6                                         |
+| Raw target index stride      | 1                                                               | 6                                         |
+| Source mask                  | Constructor value retained: 0                                   | 0                                         |
 | Coverage tolerance           | Constructor value retained                                      | Float32 `0x3d4ccccd`                      |
 
 The dialog says **Search tolerance**, is titled **Global Fine Align**, and
@@ -31,6 +32,15 @@ of the factory default. A public adapter must deliberately supply the command
 parameters rather than silently inherit private evaluator or constructor
 defaults. The existing canonical controller fixture uses radius 5; it does
 not establish the dialog's factory default or verify a run at radius 0.5.
+
+The source-mask row in the original evidence record was misidentified. The
+`+0x80` field holds the target stride; the actual source mask is `+0xa8`,
+initialized to zero and copied to preparation field `+0x60`. The command copies
+settings only into `+0x68..+0x87`. A later passive native GUI run observed zero
+at `+0xa8` and null mesh-interface results for all three temporary groups.
+See [the corrected source preparation evidence](GLOBAL_ALIGNMENT_SOURCE_FLAGS.md).
+The retained original evidence record remains historical, not the current mask
+contract.
 
 ## Non-convergence and publication
 
@@ -74,12 +84,16 @@ alignment from the supplied coarse poses.
 
 Retained routine `0x14088aeb0` establishes hidden-face admission to vertex bit
 `8`: vertices start with `(old & ~2) | 8`, visible incident faces clear bit `8`,
-and selected visible faces set bit `2`. Vertex bit `1` is preserved. However,
-the global preparation caller `0x140aead00` invokes `0x1401ddac0(mesh, mask | 4)`
-and a mesh virtual at `+0x70(mask)` before sampling. That conversion boundary
-has not been extracted. Global sampling tests the configured mask, whose command
-value is `1`; bit `8` must not be substituted for bit `1` without evidence.
-The public adapter therefore continues to reject partially hidden meshes.
+and selected visible faces set bit `2`. Vertex bit `1` is preserved. Preparation
+task `0x140aeb010` clears flags and calls the boundary-marker virtual only when
+its source returns a mesh interface. The observed temporary groups return null,
+so that path is skipped. The earlier inference from ordinary owner geometry
+to actual group-command dispatch was incorrect. Passive owner adjacency
+readiness does not prove that the group command calls the owner's marker.
+
+These findings do not establish partially hidden mesh behavior across evaluator
+construction and edit invalidation. The public adapter continues to reject
+partially hidden meshes; that GUI/MCP capability boundary is unchanged.
 
 ## Application coverage default
 

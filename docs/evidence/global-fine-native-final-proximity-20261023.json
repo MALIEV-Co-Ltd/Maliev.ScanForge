@@ -1,0 +1,487 @@
+{
+  "schema": 1,
+  "scope": "Full-size final native vertex proximity; no registration, resampling, cropping or filtering",
+  "nativeAcceptance": false,
+  "queries": 6762910,
+  "bruteForceControlQueries": 24,
+  "units": "mm",
+  "frame": "captured final native Float32 positions",
+  "captureManifestSha256": "ae692795dae25962a98c19e3dd27ec99d1f015c686e924f24f84d0728b530838",
+  "captureNonAtomic": true,
+  "inputs": [
+    {
+      "owner": 49330848,
+      "name": "ply-1.ply",
+      "vertices": 140113,
+      "sha256": "f30cfde48ed66e244b0f50942a78b099694eabdf4e166c5a8e2ee8edac4195be",
+      "bytes": 1681356
+    },
+    {
+      "owner": 49336112,
+      "name": "ply-2.ply",
+      "vertices": 1375494,
+      "sha256": "bfca7fdf2854478ac46f521e96100fdcdd2d44bd2b7c640a60961255d1cfefcb",
+      "bytes": 16505928
+    },
+    {
+      "owner": 49335360,
+      "name": "ply-3.ply",
+      "vertices": 1865848,
+      "sha256": "44a3ad0c76b8b305f075af1e27fb3155d553699c8c91e44347a1b924d8e21e15",
+      "bytes": 22390176
+    }
+  ],
+  "directions": [
+    {
+      "source": "ply-2.ply",
+      "target": "ply-1.ply",
+      "count": 1375494,
+      "rmsMm": 1.6860286812571923,
+      "minimumMm": 0.0007732928633314024,
+      "maximumMm": 3.5624282385241295,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 1.3004009777637218
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 2.6370725900450602
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 3.0145069575905077
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 3.213652712437996
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 20586,
+          "totalVertices": 1375494,
+          "fraction": 0.01496625939480652,
+          "conditionalRmsMm": 0.038223871311000676
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 123027,
+          "totalVertices": 1375494,
+          "fraction": 0.0894420477297611,
+          "conditionalRmsMm": 0.07450023829749956
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 428266,
+          "totalVertices": 1375494,
+          "fraction": 0.31135432070223495,
+          "conditionalRmsMm": 0.19774226674805973
+        },
+        {
+          "thresholdMm": 1,
+          "count": 581186,
+          "totalVertices": 1375494,
+          "fraction": 0.42252892415379495,
+          "conditionalRmsMm": 0.4284106818725813
+        }
+      ],
+      "residuals": {
+        "file": "ply-2.ply-to-ply-1.ply.f64",
+        "bytes": 11003952,
+        "sha256": "ad39e879ee81494ada79d75a82ed3fbebdd66e144423fc1eab3fa1d24c696ac8",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    },
+    {
+      "source": "ply-3.ply",
+      "target": "ply-1.ply",
+      "count": 1865848,
+      "rmsMm": 1.6209050745027744,
+      "minimumMm": 0.001050815816137017,
+      "maximumMm": 3.5784928967962597,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 1.1353078971254038
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 2.600733119386895
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 2.986228248694078
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 3.22242952886057
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 34527,
+          "totalVertices": 1865848,
+          "fraction": 0.018504722785564528,
+          "conditionalRmsMm": 0.03812984412752337
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 200339,
+          "totalVertices": 1865848,
+          "fraction": 0.10737155438170741,
+          "conditionalRmsMm": 0.07430235103745184
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 686875,
+          "totalVertices": 1865848,
+          "fraction": 0.36813020138832314,
+          "conditionalRmsMm": 0.19331124030047678
+        },
+        {
+          "thresholdMm": 1,
+          "count": 876524,
+          "totalVertices": 1865848,
+          "fraction": 0.4697724573491517,
+          "conditionalRmsMm": 0.39396266397373664
+        }
+      ],
+      "residuals": {
+        "file": "ply-3.ply-to-ply-1.ply.f64",
+        "bytes": 14926784,
+        "sha256": "fbfe277c65d18f3ff0b9bec162cbd7134144a5b62b7ee7f23de55c63ac2eb5e3",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    },
+    {
+      "source": "ply-1.ply",
+      "target": "ply-2.ply",
+      "count": 140113,
+      "rmsMm": 1.8966258281947563,
+      "minimumMm": 0.0007732928633314024,
+      "maximumMm": 4.994532204986555,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 1.7318231066615444
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 2.9033993405798793
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 3.1412463227634384
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 3.346800023512439
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 13046,
+          "totalVertices": 140113,
+          "fraction": 0.09311056076167094,
+          "conditionalRmsMm": 0.03553084628309361
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 21858,
+          "totalVertices": 140113,
+          "fraction": 0.15600265499989294,
+          "conditionalRmsMm": 0.052532677377707324
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 37064,
+          "totalVertices": 140113,
+          "fraction": 0.26452934417220386,
+          "conditionalRmsMm": 0.19300620055128292
+        },
+        {
+          "thresholdMm": 1,
+          "count": 49802,
+          "totalVertices": 140113,
+          "fraction": 0.35544167921606135,
+          "conditionalRmsMm": 0.4178578282732173
+        }
+      ],
+      "residuals": {
+        "file": "ply-1.ply-to-ply-2.ply.f64",
+        "bytes": 1120904,
+        "sha256": "74194ad35605834b8fe8c23c224a9e4ce855dd33a135eba89e211706b004bf13",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    },
+    {
+      "source": "ply-3.ply",
+      "target": "ply-2.ply",
+      "count": 1865848,
+      "rmsMm": 0.5641383747313451,
+      "minimumMm": 0.0003497258431591767,
+      "maximumMm": 3.1855110066249996,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 0.0377359938207179
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 0.6381815711222317
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 1.5044288899140748
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 2.5589308252484493
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 1370667,
+          "totalVertices": 1865848,
+          "fraction": 0.7346080709682675,
+          "conditionalRmsMm": 0.033531516083823584
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 1547048,
+          "totalVertices": 1865848,
+          "fraction": 0.8291393511154178,
+          "conditionalRmsMm": 0.03799330349604429
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 1656153,
+          "totalVertices": 1865848,
+          "fraction": 0.8876141036140136,
+          "conditionalRmsMm": 0.08327240596542884
+        },
+        {
+          "thresholdMm": 1,
+          "count": 1725509,
+          "totalVertices": 1865848,
+          "fraction": 0.9247854058851525,
+          "conditionalRmsMm": 0.16986032326843653
+        }
+      ],
+      "residuals": {
+        "file": "ply-3.ply-to-ply-2.ply.f64",
+        "bytes": 14926784,
+        "sha256": "c83df58a5c88e94ca7ae7e135179c4c45269a784e0dde9ea8173e51e180e1c3a",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    },
+    {
+      "source": "ply-1.ply",
+      "target": "ply-3.ply",
+      "count": 140113,
+      "rmsMm": 1.8676239031045465,
+      "minimumMm": 0.001050815816137017,
+      "maximumMm": 6.0932858986546234,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 1.4994132778195337
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 3.0644205188996887
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 3.191682101359334
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 3.8828568244810966
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 19996,
+          "totalVertices": 140113,
+          "fraction": 0.14271338134220238,
+          "conditionalRmsMm": 0.03467341957365086
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 30113,
+          "totalVertices": 140113,
+          "fraction": 0.21491938649518602,
+          "conditionalRmsMm": 0.04937485575427286
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 45086,
+          "totalVertices": 140113,
+          "fraction": 0.321783132186164,
+          "conditionalRmsMm": 0.17306615961799673
+        },
+        {
+          "thresholdMm": 1,
+          "count": 57089,
+          "totalVertices": 140113,
+          "fraction": 0.40744970131251207,
+          "conditionalRmsMm": 0.38079683814456783
+        }
+      ],
+      "residuals": {
+        "file": "ply-1.ply-to-ply-3.ply.f64",
+        "bytes": 1120904,
+        "sha256": "1e03237c686c3cb3f7b9757fb653e4ca80ecef80918aba9a40c0b617b8de30c4",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    },
+    {
+      "source": "ply-2.ply",
+      "target": "ply-3.ply",
+      "count": 1375494,
+      "rmsMm": 0.4876731984108113,
+      "minimumMm": 0.0003497258431591767,
+      "maximumMm": 6.001849047058671,
+      "quantiles": [
+        {
+          "p": 0.5,
+          "distanceMm": 0.03463399828912907
+        },
+        {
+          "p": 0.9,
+          "distanceMm": 0.07924874222641926
+        },
+        {
+          "p": 0.95,
+          "distanceMm": 0.5559088688153268
+        },
+        {
+          "p": 0.99,
+          "distanceMm": 2.6263218082679685
+        }
+      ],
+      "thresholds": [
+        {
+          "thresholdMm": 0.05,
+          "count": 1134234,
+          "totalVertices": 1375494,
+          "fraction": 0.8246011978241999,
+          "conditionalRmsMm": 0.0325072110912174
+        },
+        {
+          "thresholdMm": 0.1,
+          "count": 1248988,
+          "totalVertices": 1375494,
+          "fraction": 0.9080286791509087,
+          "conditionalRmsMm": 0.03628985658698414
+        },
+        {
+          "thresholdMm": 0.5,
+          "count": 1302564,
+          "totalVertices": 1375494,
+          "fraction": 0.946979048981675,
+          "conditionalRmsMm": 0.06812945371298335
+        },
+        {
+          "thresholdMm": 1,
+          "count": 1327627,
+          "totalVertices": 1375494,
+          "fraction": 0.9652001390046049,
+          "conditionalRmsMm": 0.12078144464157622
+        }
+      ],
+      "residuals": {
+        "file": "ply-2.ply-to-ply-3.ply.f64",
+        "bytes": 11003952,
+        "sha256": "1dc157fc8f0203551205a5d3cb98d9d10ba07aa0260063b57f76ae1891132d4e",
+        "encoding": "f64-le",
+        "order": "original source vertex order"
+      }
+    }
+  ],
+  "thresholdComparison": "strict distance < threshold",
+  "quantileRule": "nearest rank: sorted[ceil(p*N)-1]",
+  "summationOrder": "source vertex order using Double arithmetic",
+  "searchRadiusMm": 1326.193115234375,
+  "elapsedMs": 14027,
+  "writtenBytes": 54103280,
+  "limits": [
+    "Unequal vertex density biases this vertex metric; this is not surface or physical dimensional accuracy.",
+    "Partial overlap and nearby unrelated surfaces affect both coverage and residuals. Conditional RMS must be read with accepted count.",
+    "Native pre-alignment geometry was not captured: no improvement claim.",
+    "Native controller correspondence coverage, convergence and numerical parity are separate gates.",
+    "Original owner-to-file aliases use verified unique counts and retained topology comparison, not native filename observation."
+  ],
+  "sourceCheckpoint": "6b72447",
+  "runtimeVersion": "v22.22.0",
+  "indexSourceSha256": "47be055d382800360925f9035d9831d0c2a8a9ae17a0caa311d44d2c86b059ee",
+  "resourceValidation": {
+    "memoryLimitBytes": 4294967296,
+    "cpuRate": 2500,
+    "peakJobMemoryBytes": 189583360,
+    "cleanupErrors": [],
+    "allOwnedChildrenExited": true
+  },
+  "independentAudit": {
+    "passed": true,
+    "scope": "Independent every-residual hash/statistic audit; not an independent nearest-search or solver oracle",
+    "sourceSha256": "40e286800c65d4c264b696e6791114a0dbbb43dbe4613fa1696957714961c5ab",
+    "directions": 6,
+    "residualValues": 6762910,
+    "residualBytes": 54103280,
+    "negativeControlsRejected": 2,
+    "elapsedSeconds": 3.5640483000024687,
+    "peakJobMemoryBytes": 139177984
+  },
+  "privateArtifacts": [
+    {
+      "name": "measure-native-post-proximity.ts",
+      "sha256": "22e21b87db9eadb5efbe9b709fad095a94b97d84120a10b18d9671f0e7491f51"
+    },
+    {
+      "name": "measure-native-post-proximity.mjs",
+      "sha256": "f6a9d8b98068875855d84e5f91481075a1b959ec559872a5b293f1180502ec4f"
+    },
+    {
+      "name": "build-native-post-proximity.cjs",
+      "sha256": "b62ab327e684a805f28040bbf3b63c0a093c07c7d7df23a6d2467c1f907c988f"
+    },
+    {
+      "name": "run-native-post-proximity.py",
+      "sha256": "95af00dd01a638c68e82953d2bed19ee4358d4ea674f30e7c9bb6494a90563d5"
+    },
+    {
+      "name": "native-full-proximity-20261023-r1.json",
+      "sha256": "40e286800c65d4c264b696e6791114a0dbbb43dbe4613fa1696957714961c5ab"
+    },
+    {
+      "name": "native-post-proximity-r1-measure.receipt.json",
+      "sha256": "e81e3f20903c465b1d9922c3c64051a075e50cdd339348dbdbbe02bb2d27274a"
+    },
+    {
+      "name": "verify-native-post-proximity.py",
+      "sha256": "f739d7293be5fe4adfcc2451b11a6e92b855200b8e0e89d92d0fa693a09cdaa7"
+    },
+    {
+      "name": "native-full-proximity-audit-20261023-r1.json",
+      "sha256": "a04419329859f40b151cf939fe2fa2bdd016f3a5c1632a9a78dbf22652c7050a"
+    },
+    {
+      "name": "native-full-proximity-audit-20261023-r1.owner.json",
+      "sha256": "f9782ebb96a8518762f9dcfc999c31ba76e97814a9f988488d23327152f7a276"
+    }
+  ],
+  "mcpCoverage": "Evidence only. Existing shared application operations and schemas are unchanged; no new user/agent capability is advertised."
+}
