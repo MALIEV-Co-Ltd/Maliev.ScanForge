@@ -1368,3 +1368,24 @@ An internal optional global alignment environment can supply retained sampler cl
 Cloud placement caches retain a boolean describing the world-normal carrier alongside weak buffer references; reclaiming historical views does not erase this storage choice or add a strong geometry reference. Project encoding snapshots carry optional `typedNormalClouds` entity references through structured cloning, preserving existing deduplication identities. Binary cloud records use optional `cloudNormalsTyped` independently of local normal storage. Decoding strips that internal flag from entity metadata, validates its type/pose prerequisite and restores the world carrier. Omitted flags retain the legacy array fallback; file versions and public tool schemas remain unchanged. GUI history and public MCP export/restore use these same paths.
 
 Computed scan facets use the shared optional `IndexedMesh.facetNormals` Float32 carrier (XYZ per triangle), distinct from scanner and computed vertex normals. Import/render preparation initializes it, shared rigid transforms rotate it stage by stage, and immutable history/project transport retain its bits and aliases. Global input and query admission count its backing storage; GUI and MCP invoke the same production evaluator path. Geometry inspection exposes the carrier through `object_get` and `object_geometry_digest`. Geometry JSON receives a UTF-8 size preflight against the existing 1 GiB artifact capacity before typed-array expansion; larger payloads use binary project export or bounded digest inspection. Derived triangle-soup topology is published only when it expands exactly to the source; the nonmatching legacy geometry fallback remains uncached.
+
+## Inspection parity
+
+`inspection.ts` owns measurement and analytic signed report calculations;
+`inspection-reference.ts` reuses the existing comparison BVH/numerical leaf against
+visible display triangles. `automation/inspection-operations.ts` owns the bounded
+report lease, analysis jobs, guarded display, and saved definitions. GUI reference
+comparison invokes the same analysis/display operations through ApplicationApi.
+The editor host publishes source-bound heatmaps; API disposal clears their lease.
+Unknown/unmatched samples preserve source order and render gray. Reports expose
+sampling, search-radius, tessellation and local-normal limits explicitly.
+
+`authoring.inspections` persists only validated small definitions (maximum 32),
+using the existing project/session/backup metadata carrier. Inspection metadata
+participates in API revision identity. Replays recompute against current geometry;
+result JSON artifacts are independent snapshots. Analysis and display add no model
+history. Save/delete retain authoring fields and mark the document dirty. Existing
+revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
+checks remain active.
+
+`inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.

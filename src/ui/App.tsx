@@ -1,3 +1,11 @@
+import type { SavedInspection } from "../inspection-definition";
+import type { InspectionDisplay } from "../automation/inspection-operations";
+import {
+  inspectDeviation,
+  inspectSection,
+  measureGeometry,
+  type MeasurementKind,
+} from "../inspection";
 import {
   cancelScanToolOnSourceChange,
   cancelShrinkwrapOperation,
@@ -218,12 +226,10 @@ import { selectionCount } from "../selection";
 import { fittedPrimitive } from "../fitted-primitive";
 import {
   cleanupMesh,
-  deviations,
   fitCylinder,
   fitCone,
   fitPlane,
   fitSphere,
-  sectionMesh,
 } from "../geometry";
 import {
   download,
@@ -381,6 +387,18 @@ export function App() {
   const [mode, setMode] = useState<Mode>("inspect");
   const [workspace, setWorkspace] = useState("measure");
   const [savedSketches, setSavedSketches] = useState<SavedSketch[]>([]);
+  const [savedInspections, setSavedInspections] = useState<SavedInspection[]>(
+    [],
+  );
+  const [savedInspectionId, setSavedInspectionId] = useState("");
+  const [inspectionName, setInspectionName] = useState("Inspection");
+  useEffect(() => {
+    if (
+      savedInspectionId &&
+      !savedInspections.some((item) => item.id === savedInspectionId)
+    )
+      setSavedInspectionId("");
+  }, [savedInspections, savedInspectionId]);
   const [activeSketchId, setActiveSketchId] = useState<string | null>(null);
   const sketchUndoSessions = useRef(new Map<string, SketchUndo>());
   const [sketchDrawingTool, setSketchDrawingTool] =
@@ -659,10 +677,22 @@ export function App() {
   const [axis, setAxis] = useState<"x" | "y" | "z">("z");
   const [offset, setOffset] = useState(10);
   const [measure, setMeasure] = useState<Vec3[]>([]);
+  const [measurementKind, setMeasurementKind] =
+    useState<MeasurementKind>("distance");
+  const measurementKindRef = useRef(measurementKind);
+  measurementKindRef.current = measurementKind;
   const [anchor, setAnchor] = useState<Vec3 | null>(null);
   const [localFit, setLocalFit] = useState(false);
   const [fitRadius, setFitRadius] = useState(12);
   const [fit, setFit] = useState<FitResult | null>(null);
+  const [inspectionReferenceId, setInspectionReferenceId] = useState("");
+  const [inspectionMaxDistance, setInspectionMaxDistance] = useState(10);
+  const [inspectionSigned, setInspectionSigned] = useState(false);
+  const [referenceInspection, setReferenceInspection] =
+    useState<InspectionDisplay | null>(null);
+  const inspectionAbort = useRef<AbortController | null>(null);
+  useEffect(() => () => inspectionAbort.current?.abort(), []);
+
   const [showDeviation, setShowDeviation] = useState(false);
   const [tolerance, setTolerance] = useState(1);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
@@ -689,6 +719,7 @@ export function App() {
       name,
       entities,
       authoring: {
+        inspections: savedInspections,
         sketch: activeSketchId ? legacySketch.current : sketchDraft,
         sketches: savedSketches,
         activeSketchId: activeSketchId ?? undefined,
@@ -797,10 +828,14 @@ export function App() {
   );
   const section = useMemo(
     () =>
-      mode === "section" && selected && sampledSelected
-        ? sectionMesh(selected.positions, axis, offset)
+      mode === "section" &&
+      selected &&
+      sampledSelected &&
+      selected.kind !== "pointcloud" &&
+      selected.positions.length <= 2_250_000
+        ? inspectSection(selected, axis, offset)
         : { segments: [], length: 0 },
-    [mode, selected?.positions, sampledSelected, axis, offset],
+    [mode, selected, axis, offset],
   );
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -842,7 +877,10 @@ export function App() {
           setSelectedId(id);
           if (modeRef.current === "measure")
             setMeasure((previous) =>
-              previous.length === 1 ? [previous[0], point] : [point],
+              previous.length <
+              (measurementKindRef.current === "distance" ? 2 : 3)
+                ? [...previous, point]
+                : [point],
             );
           else setAnchor(point);
         },
@@ -1410,19 +1448,62 @@ export function App() {
   }, [entities, createSketch]);
   useEffect(() => () => sketchSectionAbort.current?.abort(), []);
   useEffect(() => {
+    inspectionAbort.current?.abort();
+    setReferenceInspection(null);
+  }, [
+    inspectionReferenceId,
+    inspectionMaxDistance,
+    inspectionSigned,
+    tolerance,
+  ]);
+  const deviationState = useMemo(() => {
+    if (!selected || !showDeviation || !fit) return { report: null, error: "" };
+    try {
+      return { report: inspectDeviation(selected, fit, tolerance), error: "" };
+    } catch (error) {
+      return { report: null, error: errorText(error) };
+    }
+  }, [selected, showDeviation, fit, tolerance]);
+  const retainedInspectionReport =
+    referenceInspection &&
+    selected === referenceInspection.source &&
+    (!referenceInspection.reference ||
+      entities.includes(referenceInspection.reference))
+      ? referenceInspection.report
+      : null;
+  const referenceReport =
+    retainedInspectionReport && "referenceId" in retainedInspectionReport
+      ? retainedInspectionReport
+      : null;
+  const deviationReport = retainedInspectionReport ?? deviationState.report;
+  useEffect(() => {
+    if (
+      referenceInspection &&
+      (!entities.includes(referenceInspection.source) ||
+        (referenceInspection.reference &&
+          !entities.includes(referenceInspection.reference)))
+    ) {
+      inspectionAbort.current?.abort();
+      setReferenceInspection(null);
+    }
+  }, [entities, referenceInspection]);
+  useEffect(() => {
     viewport.current?.setMeasurement(measure);
   }, [measure]);
   useEffect(() => {
     viewport.current?.setDeviation(
       selected?.id ?? "",
-      selected && showDeviation && fit
-        ? deviations(selected.positions, fit)
+      deviationReport
+        ? new Float32Array(
+            deviationReport.distances.map((value) => value ?? NaN),
+          )
         : null,
-      tolerance,
+      deviationReport?.tolerance ?? tolerance,
     );
-  }, [selected, showDeviation, fit, tolerance]);
+  }, [selected, deviationReport, tolerance]);
   useEffect(() => {
     setFit(null);
+    setReferenceInspection(null);
     setShowDeviation(false);
     setAnchor(null);
     setTranslation([0, 0, 0]);
@@ -3326,6 +3407,7 @@ export function App() {
     sketchUndoSessions.current.clear();
     cancelSketchCreation();
     setSavedSketches([]);
+    setSavedInspections([]);
     setActiveSketchId(null);
     legacySketch.current = rectangleSketch();
     setNewDocumentDialog(false);
@@ -3528,6 +3610,7 @@ export function App() {
         setName(project.name);
         sketchUndoSessions.current.clear();
         setSavedSketches(project.authoring?.sketches ?? []);
+        setSavedInspections(project.authoring?.inspections ?? []);
         legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
         setActiveSketchId(project.authoring?.activeSketchId ?? null);
         setSketchDraft(
@@ -3708,6 +3791,93 @@ export function App() {
           );
       },
     );
+  }
+  async function saveInspectionDefinition(
+    definition: import("../inspection-definition").InspectionDefinition,
+  ) {
+    const result = await uiCommand("inspection_manage", {
+      action: "save",
+      name: inspectionName,
+      definition,
+    });
+    if (result.ok)
+      setSavedInspectionId(
+        (result.result as { inspectionId: string }).inspectionId,
+      );
+  }
+  async function runReferenceInspection(savedId?: string) {
+    if ((!selected && !savedId) || busy) return;
+    const controller = new AbortController();
+    inspectionAbort.current = controller;
+    let jobId: string | undefined;
+    const cancel = () => {
+      if (jobId) void workspaceApi.invoke("job_cancel", { jobId });
+    };
+    controller.signal.addEventListener("abort", cancel, { once: true });
+    try {
+      const saved = savedInspections.find((item) => item.id === savedId);
+      if (saved?.definition.kind === "deviation") {
+        const selectedSource = await uiCommand("object_select", {
+          entityId: saved.definition.entityId,
+        });
+        if (!selectedSource.ok) throw new Error(selectedSource.error.message);
+      }
+      const receipt = savedId
+        ? await workspaceApi.invoke("inspection_run", { inspectionId: savedId })
+        : await workspaceApi.invoke("analysis_deviation", {
+            entityId: selected!.id,
+            referenceId: inspectionReferenceId,
+            maxDistance: inspectionMaxDistance,
+            tolerance,
+            signed: inspectionSigned,
+          });
+      if (!receipt.ok) throw new Error(receipt.error.message);
+      jobId = (receipt.result as { jobId: string }).jobId;
+      if (controller.signal.aborted) cancel();
+      const expires = Date.now() + 900000;
+      while (Date.now() < expires) {
+        const response = await workspaceApi.invoke("job_get", { jobId });
+        if (!response.ok) throw new Error(response.error.message);
+        const job = response.result as {
+          status: string;
+          result?: {
+            inspectionId?: string;
+            kind?: MeasurementKind;
+            points?: Vec3[];
+          };
+          error?: { message: string };
+        };
+        if (job.status === "succeeded" && job.result) {
+          controller.signal.throwIfAborted();
+          if (job.result.points && job.result.kind) {
+            setMeasurementKind(job.result.kind);
+            setMeasure(job.result.points);
+            setMode("measure");
+            return;
+          }
+          const shown = await uiCommand("inspection_display", {
+            action: "show",
+            inspectionId: job.result.inspectionId,
+          });
+          if (!shown.ok) throw new Error(shown.error.message);
+          return;
+        }
+        if (job.status !== "running")
+          throw new Error(
+            job.error?.message ?? "Reference comparison cancelled.",
+          );
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      cancel();
+      throw new Error("Reference comparison exceeded its time limit.");
+    } catch (error) {
+      if (!controller.signal.aborted) setError(errorText(error));
+      else setMessage("Reference comparison cancelled");
+    } finally {
+      controller.signal.removeEventListener("abort", cancel);
+      if (inspectionAbort.current === controller)
+        inspectionAbort.current = null;
+    }
   }
   function runFit(kind: "plane" | "sphere" | "cylinder" | "cone") {
     if (selected && !sampledSelected) {
@@ -4322,10 +4492,22 @@ export function App() {
       );
     });
   }
-  const length =
-    measure.length === 2
-      ? Math.hypot(...measure[0].map((x, i) => x - measure[1][i]))
-      : null;
+  let measurementError = "";
+  const measurement = (() => {
+    if (measure.length !== (measurementKind === "distance" ? 2 : 3))
+      return null;
+    try {
+      return measureGeometry({
+        kind: measurementKind,
+        first: measure[0],
+        second: measure[1],
+        third: measure[2],
+      });
+    } catch (error) {
+      measurementError = errorText(error);
+      return null;
+    }
+  })();
   function setInterface(input: InterfacePatch) {
     const patch = coordinateAlignmentInterface(input, selected);
     if (patch.datumAlignmentOpen || patch.globalAlignmentOpen)
@@ -4403,6 +4585,28 @@ export function App() {
     if (patch.dismissError) setError("");
   }
   const workspaceApi = useWorkspaceApi({
+    showInspection: (display) => setReferenceInspection(display),
+    showMeasurement: (measurement) => {
+      if (!measurement) {
+        setMeasure([]);
+        return;
+      }
+      const result = measureGeometry(measurement);
+      setMeasurementKind(measurement.kind ?? "distance");
+      setMeasure(result.points as Vec3[]);
+      setMode("measure");
+      showTools("measure");
+    },
+    showSection: (section) => {
+      if (!section) {
+        setMode((previous) => (previous === "section" ? "inspect" : previous));
+        return;
+      }
+      setAxis(section.axis);
+      setOffset(section.offset);
+      setMode("section");
+      showTools("section");
+    },
     inspectInteractive: interactiveStore.getSnapshot,
     publishInteractive: (next) => {
       const changed = !!next !== !!interactiveStore.getSnapshot();
@@ -4695,6 +4899,7 @@ export function App() {
       setSelectedId(project.entities[0]?.id ?? null);
       setTriangleMask(null);
       setSavedSketches(project.authoring?.sketches ?? []);
+      setSavedInspections(project.authoring?.inspections ?? []);
       setActiveSketchId(project.authoring?.activeSketchId ?? null);
       legacySketch.current = project.authoring?.sketch ?? rectangleSketch();
       setSketchDraft(
@@ -4729,6 +4934,7 @@ export function App() {
         authoring.sketches ?? [],
       );
       setSavedSketches(authoring.sketches ?? []);
+      setSavedInspections(authoring.inspections ?? []);
       setActiveSketchId(authoring.activeSketchId ?? null);
       legacySketch.current = authoring.sketch ?? rectangleSketch();
       setSketchDraft(
@@ -5589,9 +5795,54 @@ export function App() {
           {mode === "measure" && (
             <div className="measurement">
               <Ruler size={17} />
-              {length === null
-                ? "Pick two surface points"
-                : `${number(length)} mm`}
+              <select
+                aria-label="Measurement kind"
+                value={measurementKind}
+                onChange={(e) => {
+                  setMeasurementKind(e.target.value as MeasurementKind);
+                  setMeasure([]);
+                }}
+              >
+                <option value="distance">Distance</option>
+                <option value="angle">Angle</option>
+                <option value="radius">Radius</option>
+                <option value="diameter">Diameter</option>
+              </select>
+              {measurement
+                ? `${number(measurement.value)} ${measurement.units}`
+                : `Pick ${measurementKind === "distance" ? "two" : "three distinct"} surface points${measurementKind === "angle" ? " (second is vertex)" : ""}`}
+              {measurementError && <span role="alert">{measurementError}</span>}
+              {measurement && (
+                <button
+                  disabled={busy}
+                  aria-label="Save measurement"
+                  onClick={() =>
+                    void saveInspectionDefinition({
+                      kind: "measurement",
+                      measurement: {
+                        kind: measurementKind,
+                        first: measure[0],
+                        second: measure[1],
+                        ...(measurementKind === "distance"
+                          ? {}
+                          : { third: measure[2] }),
+                      },
+                    })
+                  }
+                >
+                  Save
+                </button>
+              )}
+              {measurement && (
+                <button
+                  aria-label="Export measurement JSON"
+                  onClick={() =>
+                    download(JSON.stringify(measurement), "measurement.json")
+                  }
+                >
+                  Export
+                </button>
+              )}
               <button
                 aria-label="Clear measurement"
                 onClick={() => setMeasure([])}
@@ -5600,12 +5851,12 @@ export function App() {
               </button>
             </div>
           )}
-          {showDeviation && fit && (
-            <div className="deviation-legend">
-              <span>−{number(tolerance)} mm</span>
-              <i />
-              <span>+{number(tolerance)} mm</span>
-            </div>
+          {deviationReport && !activeNoiseComparison?.visible && (
+            <ReductionColorScale
+              threshold={deviationReport.tolerance}
+              tolerance={deviationReport.tolerance}
+              readOnly
+            />
           )}
           <CanvasError message={error} onDismiss={() => setError("")} />
         </section>
@@ -6369,6 +6620,14 @@ export function App() {
                             />
                             Show cross section
                           </label>
+                          {mode === "section" &&
+                            (selected.kind === "pointcloud" ||
+                              selected.positions.length > 2_250_000) && (
+                              <p role="alert">
+                                Sections require a triangle surface with at most
+                                250,000 triangles. Reduce a copy first.
+                              </p>
+                            )}
                           {mode === "section" && (
                             <>
                               <p className="muted">
@@ -6419,6 +6678,182 @@ export function App() {
                               </button>
                             </>
                           )}
+                        </Panel>
+                      </ToolSection>
+                      <ToolSection tools={["measure", "fit", "deviation"]}>
+                        <Panel title="Saved inspections">
+                          <label>
+                            Inspection name
+                            <input
+                              aria-label="Inspection name"
+                              value={inspectionName}
+                              maxLength={200}
+                              onChange={(e) =>
+                                setInspectionName(e.target.value)
+                              }
+                            />
+                          </label>
+                          <label>
+                            Saved inspection
+                            <AppSelect
+                              aria-label="Saved inspection"
+                              value={savedInspectionId}
+                              onChange={(e) =>
+                                setSavedInspectionId(e.target.value)
+                              }
+                            >
+                              <option value="">Choose inspection</option>
+                              {savedInspections.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </AppSelect>
+                          </label>
+                          <button
+                            disabled={busy || !savedInspectionId}
+                            onClick={() =>
+                              void runReferenceInspection(savedInspectionId)
+                            }
+                          >
+                            Run saved inspection
+                          </button>
+                          <button
+                            disabled={busy || !savedInspectionId}
+                            onClick={() =>
+                              void uiCommand("inspection_manage", {
+                                action: "delete",
+                                inspectionId: savedInspectionId,
+                              }).then((result) => {
+                                if (result.ok) setSavedInspectionId("");
+                              })
+                            }
+                          >
+                            Delete saved inspection
+                          </button>
+                          <p className="muted">
+                            Project files retain definitions. Run again to
+                            compute against current geometry; exported JSON
+                            retains the result snapshot.
+                          </p>
+                        </Panel>
+                      </ToolSection>
+                      <ToolSection tools={["deviation"]}>
+                        <Panel title="Reference comparison">
+                          <label>
+                            Reference surface
+                            <AppSelect
+                              aria-label="Inspection reference surface"
+                              value={inspectionReferenceId}
+                              onChange={(e) =>
+                                setInspectionReferenceId(e.target.value)
+                              }
+                            >
+                              <option value="">Choose reference</option>
+                              {entities
+                                .filter(
+                                  (entity) =>
+                                    entity.id !== selected.id &&
+                                    supportsSampledGeometry(entity) &&
+                                    entity.kind !== "pointcloud",
+                                )
+                                .map((entity) => (
+                                  <option key={entity.id} value={entity.id}>
+                                    {entity.name}
+                                  </option>
+                                ))}
+                            </AppSelect>
+                          </label>
+                          <Field
+                            label="Search distance (mm)"
+                            value={inspectionMaxDistance}
+                            min={0.001}
+                            step={1}
+                            onChange={setInspectionMaxDistance}
+                          />
+                          <Field
+                            label="Comparison tolerance (mm)"
+                            value={tolerance}
+                            min={0.001}
+                            step={0.1}
+                            onChange={setTolerance}
+                          />
+                          <label className="check">
+                            <input
+                              type="checkbox"
+                              checked={inspectionSigned}
+                              onChange={(e) =>
+                                setInspectionSigned(e.target.checked)
+                              }
+                            />
+                            Use reference winding signs
+                          </label>
+                          <button
+                            disabled={busy || !inspectionReferenceId}
+                            onClick={() => void runReferenceInspection()}
+                          >
+                            Compare reference surface
+                          </button>
+                          {busy && inspectionAbort.current && (
+                            <button
+                              onClick={() => inspectionAbort.current?.abort()}
+                            >
+                              Cancel comparison
+                            </button>
+                          )}
+                          {referenceReport && (
+                            <>
+                              <p aria-label="Reference comparison statistics">
+                                {referenceReport.samples}/
+                                {referenceReport.eligible} samples matched ·{" "}
+                                {referenceReport.unmatched} outside search
+                                distance · RMS{" "}
+                                {referenceReport.rms === null
+                                  ? "unavailable"
+                                  : `${number(referenceReport.rms)} mm`}
+                              </p>
+                              <button
+                                disabled={busy}
+                                onClick={() =>
+                                  void saveInspectionDefinition({
+                                    kind: "deviation",
+                                    entityId: referenceReport.entityId,
+                                    referenceId: referenceReport.referenceId,
+                                    maxDistance: referenceReport.maxDistance,
+                                    tolerance: referenceReport.tolerance,
+                                    signed: referenceReport.signed,
+                                  })
+                                }
+                              >
+                                Save reference inspection
+                              </button>
+                              <button
+                                onClick={() =>
+                                  download(
+                                    JSON.stringify(referenceReport),
+                                    "deviation-report.json",
+                                  )
+                                }
+                              >
+                                Export reference comparison JSON
+                              </button>
+                              <button
+                                onClick={() =>
+                                  void uiCommand("inspection_display", {
+                                    action: "clear",
+                                  })
+                                }
+                              >
+                                Clear reference comparison
+                              </button>
+                            </>
+                          )}
+                          <p className="muted">
+                            Visible source samples against reference display
+                            triangles. Gray samples are unmatched. CAD
+                            tessellation and open boundaries limit accuracy;
+                            winding signs do not identify solid inside/outside.
+                          </p>
                         </Panel>
                       </ToolSection>
                       <ToolSection tools={["fit", "deviation"]}>
@@ -6492,10 +6927,59 @@ export function App() {
                               >
                                 Create fitted {fit.kind}
                               </button>
+                              {deviationState.error && (
+                                <p role="alert">{deviationState.error}</p>
+                              )}
+                              {deviationState.report && (
+                                <>
+                                  <p aria-label="Deviation statistics">
+                                    {deviationState.report.samples} samples ·
+                                    RMS {number(deviationState.report.rms)} mm ·
+                                    maximum{" "}
+                                    {number(deviationState.report.maxError)} mm
+                                    · {deviationState.report.withinTolerance}{" "}
+                                    within tolerance ·{" "}
+                                    {deviationState.report.excluded} hidden
+                                    samples excluded
+                                  </p>
+                                  <button
+                                    onClick={() =>
+                                      download(
+                                        JSON.stringify(
+                                          deviationState.report,
+                                          null,
+                                          2,
+                                        ),
+                                        "deviation-report.json",
+                                      )
+                                    }
+                                  >
+                                    Export deviation JSON
+                                  </button>
+                                  <button
+                                    disabled={busy}
+                                    onClick={() =>
+                                      void saveInspectionDefinition({
+                                        kind: "deviation",
+                                        entityId:
+                                          deviationState.report!.entityId,
+                                        fit: deviationState.report!.fit,
+                                        tolerance:
+                                          deviationState.report!.tolerance,
+                                      })
+                                    }
+                                  >
+                                    Save analytic inspection
+                                  </button>
+                                </>
+                              )}
                               <p className="muted">
                                 Analytical surface distances; cylinder fitting
                                 requires a sampled side surface. Color map
-                                covers the entire object.
+                                covers visible source samples against an
+                                infinite analytic surface; it is not a
+                                continuous error bound or watertight
+                                inside/outside test.
                               </p>
                             </>
                           ) : (
@@ -7349,6 +7833,7 @@ export function App() {
                   : undefined,
               sectionAxis: axis.toUpperCase(),
               sectionOffset: number(offset),
+              measurementKind,
             }}
           />
         }

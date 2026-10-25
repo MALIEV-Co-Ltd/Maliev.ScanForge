@@ -163,3 +163,12 @@ it("keeps both canvas roles and readable separators in the landmark hint", () =>
   expect(hint).toContain("Bottom-right: pick moving points");
   expect(hint).not.toContain(String.fromCodePoint(0xfffd));
 });
+
+it("describes three-point measurements and their angle vertex", () => {
+  expect(
+    activeToolGuidance({ mode: "measure", measurementKind: "angle" }),
+  ).toContain("second point is vertex");
+  expect(
+    activeToolGuidance({ mode: "measure", measurementKind: "radius" }),
+  ).toContain("three noncollinear");
+});

@@ -693,3 +693,409 @@ it("preserves the established typed edgePositions JSON object representation", a
     api.dispose();
   }
 });
+
+describe("M6 inspection API", () => {
+  it("exposes all measurement kinds with schema and domain validation", async () => {
+    const { api, state } = setup();
+    try {
+      const base = { first: [1, 0, 0], second: [0, 0, 0], third: [0, 1, 0] };
+      expect(
+        await api.invoke("analysis_measure", { ...base, kind: "angle" }),
+      ).toMatchObject({ ok: true, result: { angle: 90, units: "deg" } });
+      expect(
+        await api.invoke("analysis_measure", {
+          first: [0, 0, 0],
+          second: [3, 4, 0],
+        }),
+      ).toMatchObject({ ok: true, result: { distance: 5, units: "mm" } });
+      for (const kind of ["radius", "diameter"])
+        expect(
+          await api.invoke("analysis_measure", {
+            ...base,
+            kind,
+            second: [0, 1, 0],
+            third: [-1, 0, 0],
+          }),
+        ).toMatchObject({ ok: true, result: { radius: 1, diameter: 2 } });
+      expect(
+        await api.invoke("analysis_measure", {
+          ...base,
+          kind: "angle",
+          third: undefined,
+        }),
+      ).toMatchObject({ ok: false });
+      expect(
+        await api.invoke("analysis_measure", {
+          ...base,
+          kind: "radius",
+          third: [2, 0, 0],
+        }),
+      ).toMatchObject({ ok: false });
+      expect(state.history).toEqual([]);
+    } finally {
+      api.dispose();
+    }
+  });
+  it("publishes reproducible signed reports and visible-face sections without changing geometry or history", async () => {
+    const { api, state } = setup();
+    const positions = new Float32Array([
+      0, 0, -2, 4, 0, -2, 0, 3, -2, 0, 0, 2, 4, 0, 2, 0, 3, 2,
+    ]);
+    state.entities = [
+      {
+        id: "scan",
+        kind: "mesh",
+        name: "scan",
+        positions,
+        color: "#fff",
+        visible: true,
+        opacity: 1,
+        meshSelection: { hidden: [0], saved: [] },
+      },
+    ];
+    async function job(name: string, args: Record<string, unknown>) {
+      const receipt = (await api.invoke(name, args)) as any;
+      expect(receipt.ok).toBe(true);
+      for (let i = 0; i < 100; i++) {
+        const info = (await api.invoke("job_get", {
+          jobId: receipt.result.jobId,
+        })) as any;
+        if (info.result.status !== "running") {
+          expect(info.result.status).toBe("succeeded");
+          return info.result.result;
+        }
+        await new Promise((r) => setTimeout(r, 1));
+      }
+      throw Error("inspection job did not settle");
+    }
+    try {
+      const fit = {
+        kind: "plane",
+        center: [0, 0, 0],
+        axis: [0, 0, 1],
+        rms: 0,
+        maxError: 0,
+      };
+      const result = await job("analysis_deviation", {
+        entityId: "scan",
+        fit,
+        tolerance: 1,
+      });
+      expect(result).toMatchObject({
+        rms: 2,
+        mean: 2,
+        minimum: 2,
+        maximum: 2,
+        samples: 3,
+        excluded: 3,
+        withinTolerance: 0,
+        units: "mm",
+        fit,
+        tolerance: 1,
+      });
+      const section = await job("analysis_section", {
+        entityId: "scan",
+        axis: "x",
+        offset: 2,
+      });
+      expect(section).toMatchObject({
+        length: 1.5,
+        segments: 1,
+        units: "mm",
+        scope: "visible-triangles",
+      });
+      expect(state.entities[0].positions).toBe(positions);
+      expect(api.currentRevision()).toBe(0);
+      expect(state.history).toEqual([]);
+    } finally {
+      api.dispose();
+    }
+  });
+});
+
+describe("inspection heatmap access and lifecycle", () => {
+  it("shows the shared report through MCP, rejects stale geometry, and clears on disposal", async () => {
+    const { api, state, host } = setup();
+    const source = {
+      id: "source",
+      kind: "pointcloud" as const,
+      name: "source",
+      positions: new Float32Array([1, 1, -1, 1, 1, 1]),
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+    };
+    const reference = {
+      ...source,
+      id: "target",
+      kind: "mesh" as const,
+      positions: new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]),
+    };
+    state.entities = [source, reference];
+    state.selectedId = source.id;
+    host.showInspection = vi.fn();
+    try {
+      const receipt = (await api.invoke("analysis_deviation", {
+        entityId: "source",
+        referenceId: "target",
+        maxDistance: 2,
+        signed: true,
+        tolerance: 1,
+      })) as any;
+      expect(receipt.ok).toBe(true);
+      let report: any;
+      for (let i = 0; i < 100; i++) {
+        const response = (await api.invoke("job_get", {
+          jobId: receipt.result.jobId,
+        })) as any;
+        if (response.result.status !== "running") {
+          expect(response.result.status).toBe("succeeded");
+          report = response.result.result;
+          break;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1));
+      }
+      expect(report).toMatchObject({
+        samples: 2,
+        minimum: -1,
+        maximum: 1,
+        rms: 1,
+        coverage: 1,
+      });
+      expect(report.referenceTriangles).toBeUndefined();
+      expect(
+        await api.invoke("inspection_display", {
+          action: "show",
+          inspectionId: report.inspectionId,
+          ...mutation(api, "show-inspection"),
+        }),
+      ).toMatchObject({ ok: true, result: { displayed: true } });
+      expect(host.showInspection).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          source,
+          reference,
+          report: expect.objectContaining({ distances: [-1, 1] }),
+        }),
+      );
+      expect(state.history).toEqual([]);
+      state.entities = [
+        { ...source, positions: new Float32Array([1, 1, 3, 1, 1, 4]) },
+        reference,
+      ];
+      expect(
+        await api.invoke("inspection_display", {
+          action: "show",
+          inspectionId: report.inspectionId,
+          ...mutation(api, "stale-inspection"),
+        }),
+      ).toMatchObject({ ok: false });
+      expect(host.showInspection).toHaveBeenLastCalledWith(null);
+    } finally {
+      api.dispose();
+      expect(host.showInspection).toHaveBeenLastCalledWith(null);
+    }
+  });
+  it("cancels primitive analysis between chunks without publishing artifacts or changing history", async () => {
+    const { api, state } = setup();
+    state.entities = [
+      {
+        id: "source",
+        kind: "pointcloud",
+        name: "source",
+        positions: new Float32Array(30000).fill(1),
+        color: "#fff",
+        visible: true,
+        opacity: 1,
+      },
+    ];
+    try {
+      const receipt = (await api.invoke("analysis_deviation", {
+        entityId: "source",
+        fit: {
+          kind: "plane",
+          center: [0, 0, 0],
+          axis: [0, 0, 1],
+          rms: 0,
+          maxError: 0,
+        },
+      })) as any;
+      await api.invoke("job_cancel", { jobId: receipt.result.jobId });
+      let terminal: any;
+      for (let i = 0; i < 100; i++) {
+        terminal = (await api.invoke("job_get", {
+          jobId: receipt.result.jobId,
+        })) as any;
+        if (terminal.result.status !== "running") break;
+        await new Promise((resolve) => setTimeout(resolve, 1));
+      }
+      expect(terminal.result.status).toBe("cancelled");
+      expect(await api.invoke("session_get", {})).toMatchObject({
+        ok: true,
+        result: { artifacts: [] },
+      });
+      expect(state.history).toEqual([]);
+    } finally {
+      api.dispose();
+    }
+  });
+});
+
+it("saves and replays project-persistent inspection definitions with guarded edits and unchanged model history", async () => {
+  const { api, host, state } = setup();
+  host.setAuthoring = (authoring) => {
+    state.authoring = authoring;
+  };
+  try {
+    const definition = {
+      kind: "measurement",
+      measurement: { kind: "distance", first: [0, 0, 0], second: [3, 4, 0] },
+    };
+    const saved = (await api.invoke("inspection_manage", {
+      action: "save",
+      name: "Five millimetres",
+      definition,
+      ...mutation(api, "save-five"),
+    })) as any;
+    expect(saved.ok).toBe(true);
+    expect(state.authoring.inspections).toHaveLength(1);
+    expect(await api.invoke("inspection_get", {})).toMatchObject({
+      ok: true,
+      result: {
+        inspections: [
+          {
+            id: saved.result.inspectionId,
+            name: "Five millimetres",
+            definition,
+          },
+        ],
+      },
+    });
+    const receipt = (await api.invoke("inspection_run", {
+      inspectionId: saved.result.inspectionId,
+    })) as any;
+    await new Promise((resolve) => setTimeout(resolve, 1));
+    expect(
+      await api.invoke("job_get", { jobId: receipt.result.jobId }),
+    ).toMatchObject({
+      ok: true,
+      result: { status: "succeeded", result: { distance: 5, units: "mm" } },
+    });
+    expect(
+      await api.invoke("inspection_manage", {
+        action: "delete",
+        inspectionId: saved.result.inspectionId,
+        ...mutation(api, "delete-five"),
+      }),
+    ).toMatchObject({ ok: true });
+    expect(state.authoring.inspections).toEqual([]);
+    expect(state.history).toEqual([]);
+  } finally {
+    api.dispose();
+  }
+});
+it("publishes only top-level object schemas accepted by the official MCP SDK", () => {
+  for (const command of catalog)
+    expect(command.inputSchema.type, command.name).toBe("object");
+});
+
+it("releases partially created result artifacts when report publication exceeds the artifact count limit", async () => {
+  const { api, state } = setup();
+  state.entities = [
+    {
+      id: "source",
+      kind: "pointcloud",
+      name: "source",
+      positions: new Float32Array([0, 0, 1]),
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+    },
+  ];
+  try {
+    for (let i = 0; i < 63; i++)
+      expect(
+        await api.invoke("artifact_put", {
+          name: "fixture-" + i,
+          offset: 0,
+          base64: "eA==",
+        }),
+      ).toMatchObject({ ok: true });
+    const receipt = (await api.invoke("analysis_deviation", {
+      entityId: "source",
+      fit: {
+        kind: "plane",
+        center: [0, 0, 0],
+        axis: [0, 0, 1],
+        rms: 0,
+        maxError: 0,
+      },
+    })) as any;
+    let terminal: any;
+    for (let i = 0; i < 100; i++) {
+      terminal = (await api.invoke("job_get", {
+        jobId: receipt.result.jobId,
+      })) as any;
+      if (terminal.result.status !== "running") break;
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    }
+    expect(terminal.result.status).toBe("failed");
+    const session = (await api.invoke("session_get", {})) as any;
+    expect(session.result.artifacts).toHaveLength(63);
+  } finally {
+    api.dispose();
+  }
+});
+
+it("exposes the measurement overlay and visible section plane through guarded MCP display actions", async () => {
+  const { api, host, state } = setup();
+  host.showMeasurement = vi.fn();
+  host.showSection = vi.fn();
+  state.entities = [
+    {
+      id: "source",
+      kind: "mesh",
+      name: "source",
+      positions: new Float32Array([0, 0, 0, 4, 0, 0, 0, 3, 0]),
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+    },
+  ];
+  state.selectedId = "source";
+  try {
+    const measurement = { first: [0, 0, 0], second: [3, 4, 0] };
+    expect(
+      await api.invoke("inspection_display", {
+        action: "measurement",
+        measurement,
+        ...mutation(api, "show-measurement"),
+      }),
+    ).toMatchObject({ ok: true, result: { distance: 5, units: "mm" } });
+    expect(host.showMeasurement).toHaveBeenLastCalledWith(measurement);
+    expect(
+      await api.invoke("inspection_display", {
+        action: "section",
+        entityId: "source",
+        axis: "x",
+        offset: 2,
+        ...mutation(api, "show-section"),
+      }),
+    ).toMatchObject({ ok: true, result: { length: 1.5, segments: 1 } });
+    expect(host.showSection).toHaveBeenLastCalledWith({
+      entityId: "source",
+      axis: "x",
+      offset: 2,
+    });
+    expect(
+      await api.invoke("inspection_display", {
+        action: "clear",
+        ...mutation(api, "clear-inspection"),
+      }),
+    ).toMatchObject({ ok: true });
+    expect(host.showMeasurement).toHaveBeenLastCalledWith(null);
+    expect(host.showSection).toHaveBeenLastCalledWith(null);
+    expect(state.history).toEqual([]);
+  } finally {
+    api.dispose();
+  }
+});

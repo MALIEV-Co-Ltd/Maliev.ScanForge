@@ -1,3 +1,4 @@
+import { reductionDisplayColor } from "./reduction-display";
 import {
   canQueryNavigationSurface,
   prepareViewportPicking,
@@ -3381,7 +3382,7 @@ export class Viewport {
       material.userData.normalsInactive =
         selectedIds.length > 0 && !selectedIds.includes(entity.id);
       updateNormals(
-        this.normalsDisplay && entity.kind === "mesh",
+        this.normalsDisplay && entity.kind === "mesh" && !material.vertexColors,
         material.userData.normalsInactive,
       );
       applyMeshFocus(
@@ -3466,7 +3467,9 @@ export class Viewport {
         this.normalsMaterials?.get(child.material)?.(false);
     for (const { mesh } of this.objects.values())
       this.normalsMaterials?.get(mesh.material)?.(
-        enabled && mesh.material.userData.normalsMesh,
+        enabled &&
+          mesh.material.userData.normalsMesh &&
+          !mesh.material.vertexColors,
         mesh.material.userData.normalsInactive,
       );
     this.invalidate();
@@ -4557,6 +4560,10 @@ export class Viewport {
       if (!item.mesh.material.vertexColors) continue;
       item.mesh.geometry.deleteAttribute("color");
       item.mesh.material.vertexColors = false;
+      this.normalsMaterials?.get(item.mesh.material)?.(
+        this.normalsDisplay && item.mesh.material.userData.normalsMesh,
+        item.mesh.material.userData.normalsInactive,
+      );
       applyMeshFocus(
         item.mesh.material,
         item.color,
@@ -4626,17 +4633,13 @@ export class Viewport {
       }
       const colors = new Float32Array(count * 3);
       const color = new THREE.Color();
-      const negative = new THREE.Color("#2479de");
-      const zero = new THREE.Color("#4bb78c");
-      const positive = new THREE.Color("#e56b47");
       const limit = Math.max(Math.abs(tolerance), 0.000001);
       for (let i = 0; i < count; i++) {
-        const signed = Number.isFinite(displayValues[i])
-          ? Math.max(-1, Math.min(1, displayValues[i] / limit))
-          : 0;
-        color
-          .copy(zero)
-          .lerp(signed < 0 ? negative : positive, Math.abs(signed));
+        if (!Number.isFinite(displayValues[i])) color.set("#808080");
+        else {
+          const [r, g, b] = reductionDisplayColor(displayValues[i], limit);
+          color.setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+        }
         color.toArray(colors, i * 3);
       }
       rendered.geometry.setAttribute(
@@ -4652,6 +4655,12 @@ export class Viewport {
       item.mesh.material,
       item.color,
       !!this.selectedId && entityId !== this.selectedId,
+    );
+    this.normalsMaterials?.get(item.mesh.material)?.(
+      this.normalsDisplay &&
+        item.mesh.material.userData.normalsMesh &&
+        !item.mesh.material.vertexColors,
+      item.mesh.material.userData.normalsInactive,
     );
     rendered.material.needsUpdate = true;
     this.invalidate();

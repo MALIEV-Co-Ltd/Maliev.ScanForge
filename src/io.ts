@@ -1,4 +1,5 @@
 import { validateMeshFacetNormals } from "./mesh-geometry-normals";
+import { validateInspectionDefinitions } from "./inspection-definition";
 import * as THREE from "three";
 import {
   validatePointCloudDisplay,
@@ -488,6 +489,8 @@ export function validateProject(value: unknown): Project {
     (!input.authoring || typeof input.authoring !== "object")
   )
     throw new Error("Invalid authoring metadata.");
+  if (input.authoring?.inspections !== undefined)
+    validateInspectionDefinitions(input.authoring.inspections);
   if (input.authoring?.sketch !== undefined)
     validateSketch(input.authoring.sketch);
   if (input.authoring?.sketches !== undefined) {
@@ -523,6 +526,10 @@ export function validateProject(value: unknown): Project {
     entities,
     authoring: input.authoring
       ? {
+          inspections:
+            input.authoring.inspections === undefined
+              ? undefined
+              : validateInspectionDefinitions(input.authoring.inspections),
           sketch: input.authoring.sketch,
           sketches: input.authoring.sketches,
           activeSketchId: input.authoring.activeSketchId,

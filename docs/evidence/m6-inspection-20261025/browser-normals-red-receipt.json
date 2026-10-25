@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "tests/m6-inspection-browser.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 1,
+  "peakJobBytes": 1600335872,
+  "totalProcesses": 13,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 5.882212799973786
+}
