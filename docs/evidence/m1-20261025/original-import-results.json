@@ -1,0 +1,338 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "scan-1.stl",
+      "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "bytes": 13657034,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": false,
+      "oracle": "retained native topology"
+    },
+    {
+      "name": "scan-2.stl",
+      "sourceSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "bytes": 127370334,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 22926627,
+          "sha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 3897099,
+          "sha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 7642209,
+          "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 3897099,
+          "sha256": "1021e2a8b0a49de390cc404a6c5331054a40eab94579d1e26e84733353103888"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "retained native topology"
+    },
+    {
+      "name": "scan-3.stl",
+      "sourceSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "bytes": 166345584,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 29942190,
+          "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5050815,
+          "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 9980730,
+          "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5050815,
+          "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "retained native topology"
+    },
+    {
+      "name": "ply-1.ply",
+      "sourceSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "bytes": 6926970,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2467386,
+          "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 2467386,
+          "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 420339,
+          "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 822462,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 420339,
+          "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": false,
+      "oracle": "independent complete binary PLY source"
+    },
+    {
+      "name": "ply-2.ply",
+      "sourceSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "bytes": 68084515,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 24280893,
+          "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 24280893,
+          "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 4126482,
+          "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 8093631,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "independent complete binary PLY source"
+    },
+    {
+      "name": "ply-3.ply",
+      "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "bytes": 92765339,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 33220197,
+          "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 33220197,
+          "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5597544,
+          "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 11073399,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "independent complete binary PLY source"
+    },
+    {
+      "name": "asc-1.asc",
+      "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+      "bytes": 7679386,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 420339,
+          "sha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "sha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": false,
+      "oracle": "every sample against corresponding original PLY with recorded ASC text tolerances"
+    },
+    {
+      "name": "asc-2.asc",
+      "sourceSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+      "bytes": 74418231,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 4126482,
+          "sha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "sha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "every sample against corresponding original PLY with recorded ASC text tolerances"
+    },
+    {
+      "name": "asc-3.asc",
+      "sourceSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+      "bytes": 100922768,
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 5597544,
+          "sha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "sha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053"
+        }
+      ],
+      "guiMcpEqual": true,
+      "undoRedoEqual": true,
+      "originalSlotDeleteGuiMcpEqual": true,
+      "mcpInFlightCancelRecovery": true,
+      "guiInFlightCancelRecovery": true,
+      "oracle": "every sample against corresponding original PLY with recorded ASC text tolerances"
+    }
+  ]
+}

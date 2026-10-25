@@ -1,0 +1,9 @@
+2026-10-25T11:30:35.6477341Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-10-25T11:30:35.6481088Z  FAIL  tests/mcp-server.test.ts > opt-in bounded long polling > clears the actual waiter timer on abort, disconnect, expiry and close
+2026-10-25T11:30:35.6490124Z AssertionError: expected "clearTimeout" to be called with arguments: [ …(1) ]
+2026-10-25T11:30:35.6526054Z  ❯ tests/mcp-server.test.ts:323:24
+2026-10-25T11:30:35.6881727Z  Test Files  1 failed | 667 passed | 18 skipped (686)
+2026-10-25T11:30:35.6987820Z       Tests  1 failed | 48963 passed | 64 skipped (49028)
+2026-10-25T11:30:35.7003602Z    Duration  340.36s (tests 77%, import 18%, transform 4%, worker 1%)
+2026-10-25T11:30:35.7296478Z ##[error]AssertionError: expected "clearTimeout" to be called with arguments: [ …(1) ]
+ ❯ tests/mcp-server.test.ts:323:24

@@ -1,0 +1,59 @@
+{
+  "owner": "point-cloud-edit-browser",
+  "pid": 38572,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-10-25T11:39:04.510Z",
+  "expiresAt": "2026-10-25T11:54:04.511Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 56084,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 28720,
+      "port": 56085,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 50116
+    }
+  ],
+  "malformedGuiMcpRecovery": true,
+  "result": {
+    "passed": true,
+    "results": [
+      {
+        "name": "asc-1.asc",
+        "sourceSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "bytes": 7679386,
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 420339,
+            "sha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "sha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+          }
+        ],
+        "guiMcpEqual": true,
+        "undoRedoEqual": true,
+        "originalSlotDeleteGuiMcpEqual": true,
+        "mcpInFlightCancelRecovery": true,
+        "guiInFlightCancelRecovery": false,
+        "oracle": "every sample against corresponding original PLY with recorded ASC text tolerances"
+      }
+    ],
+    "errors": []
+  },
+  "cleanedAt": "2026-10-25T11:39:08.620Z",
+  "passed": true
+}

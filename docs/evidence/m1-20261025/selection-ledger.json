@@ -1,0 +1,282 @@
+{
+  "owner": "point-cloud-edit-browser",
+  "pid": 29520,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-10-25T11:34:01.106Z",
+  "expiresAt": "2026-10-25T11:39:01.106Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 64991,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 47916,
+      "port": 64992,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 34076
+    }
+  ],
+  "result": {
+    "passed": true,
+    "results": [
+      {
+        "kind": "pointcloud",
+        "tool": "rectangle",
+        "through": false,
+        "selected": 132,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "rectangle",
+        "through": true,
+        "selected": 264,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "circle",
+        "through": false,
+        "selected": 102,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "circle",
+        "through": true,
+        "selected": 204,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "brush",
+        "through": false,
+        "selected": 143,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "brush",
+        "through": true,
+        "selected": 286,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "freehand",
+        "through": false,
+        "selected": 44,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "freehand",
+        "through": true,
+        "selected": 88,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "line",
+        "through": false,
+        "selected": 12,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "tool": "line",
+        "through": true,
+        "selected": 24,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "pointcloud",
+        "connectedGuiMcpEqual": true,
+        "connectedCount": 800
+      },
+      {
+        "kind": "pointcloud",
+        "showLastHiddenGuiMcpEqual": true,
+        "earlierHiddenBatchRetained": true
+      },
+      {
+        "kind": "pointcloud",
+        "operation": "copy",
+        "selectedCopyAndClearedSource": true,
+        "geometryGuiMcpEqual": true
+      },
+      {
+        "kind": "pointcloud",
+        "operation": "cut",
+        "selectedCopyAndClearedSource": true,
+        "geometryGuiMcpEqual": true
+      },
+      {
+        "kind": "pointcloud",
+        "hiddenSourceSlots": true,
+        "isolate": true,
+        "clipSourceSlots": true,
+        "occlusion": {
+          "all": 800,
+          "visible": 400
+        }
+      },
+      {
+        "kind": "mesh",
+        "tool": "rectangle",
+        "through": false,
+        "selected": 66,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "rectangle",
+        "through": true,
+        "selected": 132,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "circle",
+        "through": false,
+        "selected": 53,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "circle",
+        "through": true,
+        "selected": 106,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "brush",
+        "through": false,
+        "selected": 110,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "brush",
+        "through": true,
+        "selected": 220,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "freehand",
+        "through": false,
+        "selected": 70,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "freehand",
+        "through": true,
+        "selected": 140,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "line",
+        "through": false,
+        "selected": 21,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "tool": "line",
+        "through": true,
+        "selected": 42,
+        "exactSourceSlots": true,
+        "subtract": true,
+        "selectionUndoRedo": true
+      },
+      {
+        "kind": "mesh",
+        "wandCurvatureThreshold": true,
+        "boundaryGrowShrink": true
+      },
+      {
+        "kind": "mesh",
+        "connectedGuiMcpEqual": true,
+        "connectedCount": 2
+      },
+      {
+        "kind": "mesh",
+        "showLastHiddenGuiMcpEqual": true,
+        "earlierHiddenBatchRetained": true
+      },
+      {
+        "kind": "mesh",
+        "operation": "copy",
+        "selectedCopyAndClearedSource": true,
+        "geometryGuiMcpEqual": true
+      },
+      {
+        "kind": "mesh",
+        "operation": "cut",
+        "selectedCopyAndClearedSource": true,
+        "geometryGuiMcpEqual": true
+      },
+      {
+        "kind": "mesh",
+        "hiddenSourceSlots": true,
+        "isolate": true,
+        "clipSourceSlots": true,
+        "occlusion": {
+          "all": 400,
+          "visible": 200
+        }
+      }
+    ],
+    "errors": []
+  },
+  "cleanedAt": "2026-10-25T11:34:40.110Z",
+  "passed": true
+}

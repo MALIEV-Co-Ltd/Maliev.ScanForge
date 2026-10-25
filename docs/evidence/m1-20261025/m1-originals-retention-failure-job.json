@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "tests/m1-original-import-browser.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 1,
+  "peakJobBytes": 4372418560,
+  "totalProcesses": 97,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 471.59082059998764
+}

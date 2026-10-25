@@ -1,0 +1,21 @@
+{
+  "scenario": "owned process and descendant exceed a shortened diagnostic lease",
+  "driverExitCode": 1,
+  "timeoutObserved": true,
+  "ownedProcesses": [
+    {
+      "pid": 44008,
+      "absent": true
+    },
+    {
+      "pid": 33156,
+      "absent": true
+    }
+  ],
+  "diagnosticLeaseSeconds": 2,
+  "acceptanceDriverLeaseSeconds": 900,
+  "memoryCapBytes": 4294967296,
+  "acceptanceDriverSha256": "fe216b380dcb83d06ee1aa61ed47c08a02c6a1cba3e2d66b90213ec16e18bb63",
+  "diagnosticDriverSha256": "0877e21305679cf85cea13c014a4845477e004b8254834c9cc43528123169c54",
+  "difference": "Only diagnostic lease deadline and recorded lease lowered from 900 to 2 seconds; production acceptance driver unchanged."
+}

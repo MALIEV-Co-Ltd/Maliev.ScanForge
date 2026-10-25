@@ -1,0 +1,83 @@
+{
+  "owner": "point-cloud-edit-browser",
+  "pid": 35776,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-10-25T11:37:35.024Z",
+  "expiresAt": "2026-10-25T11:52:35.024Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 62569,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 23220,
+      "port": 62570,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 45152
+    }
+  ],
+  "malformedGuiMcpRecovery": true,
+  "result": {
+    "passed": true,
+    "results": [
+      {
+        "name": "ply-3.ply",
+        "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "bytes": 92765339,
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+          }
+        ],
+        "guiMcpEqual": true,
+        "undoRedoEqual": true,
+        "originalSlotDeleteGuiMcpEqual": true,
+        "mcpInFlightCancelRecovery": true,
+        "guiInFlightCancelRecovery": true,
+        "oracle": "independent complete binary PLY source"
+      }
+    ],
+    "errors": []
+  },
+  "cleanedAt": "2026-10-25T11:39:04.020Z",
+  "passed": true
+}

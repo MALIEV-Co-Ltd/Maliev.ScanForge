@@ -1,0 +1,71 @@
+{
+  "owner": "point-cloud-edit-browser",
+  "pid": 50612,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-10-25T11:34:10.506Z",
+  "expiresAt": "2026-10-25T11:49:10.506Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 59955,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 32236,
+      "port": 59956,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 30500
+    }
+  ],
+  "malformedGuiMcpRecovery": true,
+  "result": {
+    "passed": true,
+    "results": [
+      {
+        "name": "scan-2.stl",
+        "sourceSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+        "bytes": 127370334,
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "sha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "sha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "sha256": "1021e2a8b0a49de390cc404a6c5331054a40eab94579d1e26e84733353103888"
+          }
+        ],
+        "guiMcpEqual": true,
+        "undoRedoEqual": true,
+        "originalSlotDeleteGuiMcpEqual": true,
+        "mcpInFlightCancelRecovery": true,
+        "guiInFlightCancelRecovery": true,
+        "oracle": "retained native topology"
+      }
+    ],
+    "errors": []
+  },
+  "cleanedAt": "2026-10-25T11:35:14.023Z",
+  "passed": true
+}

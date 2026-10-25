@@ -1,0 +1,11 @@
+{
+  "command": ["node", "tests/point-cloud-browser-smoke.mjs"],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 1042378752,
+  "totalProcesses": 16,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 13.142338500008918
+}

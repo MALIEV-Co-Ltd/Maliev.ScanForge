@@ -1,0 +1,27 @@
+
+> scanforge@0.1.0 typecheck
+> node scripts/typecheck.mjs
+
+Typecheck 1/23: source (554 root files; 1536 MiB heap)
+Typecheck 2/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 3/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 4/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 5/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 6/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 7/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 8/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 9/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 10/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 11/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 12/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 13/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 14/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 15/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 16/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 17/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 18/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 19/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 20/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 21/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 22/23: source and test batch (586 root files; 1536 MiB heap)
+Typecheck 23/23: source and test batch (570 root files; 1536 MiB heap)

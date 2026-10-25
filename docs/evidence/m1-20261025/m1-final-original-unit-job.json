@@ -1,0 +1,24 @@
+{
+  "command": [
+    "cmd",
+    "/d",
+    "/c",
+    "npx",
+    "--no-install",
+    "vitest",
+    "run",
+    "--maxWorkers=1",
+    "tests/asc-owner-examples.test.ts",
+    "tests/point-screen-owner-examples.test.ts",
+    "tests/scan-native-stl-user-examples.test.ts",
+    "tests/ply-binary-file.test.ts"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 1415503872,
+  "totalProcesses": 16,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 43.146799899986945
+}

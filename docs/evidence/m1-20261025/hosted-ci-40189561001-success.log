@@ -1,0 +1,8 @@
+2026-10-25T11:39:34.4431224Z Typecheck 12/12: source and test batch (602 root files; 1536 MiB heap)
+2026-10-25T11:40:02.3490201Z Offline manifest generated: 272 local assets, scanforge-4fbb43e9361fae09
+2026-10-25T11:44:29.8187601Z  Test Files  668 passed | 18 skipped (686)
+2026-10-25T11:44:29.8372320Z       Tests  48964 passed | 64 skipped (49028)
+2026-10-25T11:44:29.8384956Z    Duration  266.59s (tests 76%, import 18%, transform 5%, worker 1%)
+2026-10-25T11:44:32.5351712Z CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+2026-10-25T11:44:41.1478068Z CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.
+2026-10-25T11:45:27.6288672Z All matched files use Prettier code style!

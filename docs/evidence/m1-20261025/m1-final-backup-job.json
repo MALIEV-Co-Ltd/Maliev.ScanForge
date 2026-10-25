@@ -1,0 +1,11 @@
+{
+  "command": ["node", "tests/parallel-import-browser.mjs"],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 982654976,
+  "totalProcesses": 25,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 62.910149100003764
+}
