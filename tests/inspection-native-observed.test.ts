@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
+import circleAngle from "./fixtures/m6-native-circle-angle-observed.json";
 import sparse from "./fixtures/m6-native-sparse-observed.json";
-import { inspectDeviation } from "../src/inspection";
+import { inspectDeviation, inspectSection } from "../src/inspection";
 import distance from "./fixtures/m6-native-measurement-observed.json";
 import offset from "./fixtures/m6-native-offset-observed.json";
 import { measureGeometry } from "../src/inspection";
@@ -78,4 +79,64 @@ it("matches native sparse-cloud extrema against the identical typed-in plane", (
   );
   expect(report.distances).toEqual([-1, 0, 1, 3, -2]);
   expect(report.samples).toBe(5);
+});
+
+it("matches native exported circle radius and displayed diameter on identical geometry", () => {
+  const {
+    center: [x, y, z],
+    radiusMm: r,
+    diameterMm: d,
+    absoluteToleranceMm: t,
+  } = circleAngle.circle;
+  const input = {
+    first: [x + r, y, z] as Vec3,
+    second: [x, y + r, z] as Vec3,
+    third: [x - r, y, z] as Vec3,
+  };
+  expect(
+    Math.abs(measureGeometry({ kind: "radius", ...input }).value - r),
+  ).toBeLessThanOrEqual(t);
+  expect(
+    Math.abs(measureGeometry({ kind: "diameter", ...input }).value - d),
+  ).toBeLessThanOrEqual(t);
+});
+it("matches the native perpendicular-line angle proposal on exported endpoints", () => {
+  const a = circleAngle.angle;
+  expect(
+    Math.abs(
+      measureGeometry({
+        kind: "angle",
+        first: a.first as Vec3,
+        second: a.vertex as Vec3,
+        third: a.third as Vec3,
+      }).value - a.degrees,
+    ),
+  ).toBeLessThanOrEqual(a.absoluteToleranceDegrees);
+});
+
+it("prepares an analytic tetrahedron section for the pending native comparison", () => {
+  const v = [
+      [0, 0, 0],
+      [10, 0, 0],
+      [0, 10, 0],
+      [0, 0, 10],
+    ],
+    f = [
+      [0, 2, 1],
+      [0, 1, 3],
+      [0, 3, 2],
+      [1, 2, 3],
+    ];
+  const source: Entity = {
+    id: "tetra",
+    name: "tetra",
+    kind: "mesh",
+    positions: new Float32Array(f.flatMap((face) => face.flatMap((i) => v[i]))),
+    visible: true,
+    color: "#fff",
+    opacity: 1,
+  };
+  const report = inspectSection(source, "x", 2);
+  expect(report.segments.length / 6).toBe(3);
+  expect(report.length).toBeCloseTo(16 + Math.sqrt(128), 12);
 });

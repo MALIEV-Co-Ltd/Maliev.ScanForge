@@ -813,10 +813,12 @@
       "provenance": "tests/fixtures/noise-octree-trees.json; mapped image and runtime shims differ from installed GUI capture",
       "constructorAndGuiParity": false
     },
-    "sparseGui": "5-point ASC, native constructed plane normal[0,0,1]/offset0, Analysis Compare Discrete(fast) tolerance1 mm: displayed min-2.0000/max3.0000 mm. Per-point cloud scalar export unavailable."
+    "sparseGui": "5-point ASC, native constructed plane normal[0,0,1]/offset0, Analysis Compare Discrete(fast) tolerance1 mm: displayed min-2.0000/max3.0000 mm. Per-point cloud scalar export unavailable.",
+    "circle": "Native IGES circle radius7.57485 mm and GUI diameter15.1497 mm; shared measurement on three points of exported world circle matches at1e-9 mm.",
+    "angle": "Native90degree dimension proposal on exported perpendicular lines; redundant dimension rejected as overdefined, no solver-acceptance parity claimed."
   },
   "remainingClosureGates": [
-    "Full native angle/radius/diameter and section comparison matrix",
+    "Native section comparison and durable angle-label capture",
     "M3 issue #3 acceptance and closure",
     "M5 issue #5 acceptance and closure"
   ],
