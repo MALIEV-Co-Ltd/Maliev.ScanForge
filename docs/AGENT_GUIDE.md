@@ -199,12 +199,16 @@ source is selected again. Preparation never starts a competing foreground geomet
 
 Agents use `mesh_analyze` for diagnostics or `mesh_process` with
 `operation: {kind: "scanEdit", action: "inventory", tolerance: 0.001}` for
-the GUI's inventory. Use `tolerance: 0.001` with `mesh_analyze` to share the GUI's
-millimetre weld tolerance; the existing API default remains `0.000001`.
+the GUI's inventory. Both operations now default to the GUI's `0.001` mm weld
+tolerance. Pass `tolerance: 0.000001` explicitly when reproducing older API
+requests that relied on that former default.
 Reusable operations on the same immutable geometry queue behind one another,
 sharing the prepared topology. Shared diagnostics stop only when their last
 observer leaves; cancellation of queued work starts no worker. Geometry edits,
-replacement, or a different tolerance invalidate reuse. Compact cached counts
+replacement, or a different tolerance invalidate reuse. Defeature also drops
+derived adjacency when preserving raw source corners changes its welded
+representatives; the next topology operation rebuilds once from the published
+coordinates. Compact cached counts
 may be reused on Undo; the worker index belongs to the selected geometry.
 Prepared topology is also cached in the browser's local IndexedDB storage. The
 key includes all ordered mesh coordinates, weld tolerance, and topology/cache
@@ -221,7 +225,10 @@ snapshots use the canonical source-coordinate analysis.
 Edit Scan observes this preparation without starting duplicate work.
 `object_get.meshPreparation` exposes `scheduled`, `pending` (with progress),
 `ready` (with counts), `error`, or `inactive` for raw meshes. Use GUI tolerance
-`0.001` for MCP selected-facet edits to reuse the prepared index.
+`0.001` for MCP selected-facet edits to reuse the prepared index; this is also
+the default when the request omits tolerance. Defeature retains the exact
+Float32 corner coordinates of unselected, unpruned source facets even when
+tolerant adjacency groups nearby source vertices for diagnostics and patching.
 
 The derived cache is separate from project/recovery data and project files.
 It retains at most eight entries, 256 MiB total, 128 MiB per snapshot, with

@@ -53,6 +53,23 @@ The job's existing structured `diagnostics` includes:
 Existing removed/pruned triangle, filled-hole and attempt counts remain available.
 Mixed outcomes are distinguished by the counts and fallback reasons.
 
+GUI and MCP both default to a 0.001 mm topology tolerance. Tolerant adjacency
+does not replace the raw Float32 coordinates of retained, unpruned source
+facets. When those corners differ from the generated indexed expansion, the
+successor drops its derived adjacency and rebuilds it on the next topology
+request, keeping diagnostics consistent after reopening.
+
+The owner-approved real-scan regression is recorded in
+[the replacement evidence](evidence/m2-defeature-replacement-20261026.json).
+To replay a retained external case, set `SCANFORGE_DEFEATURE_CASE_DIR` before
+running `node tests/defeature-curvature-browser.mjs` against a production build.
+The directory contains a legacy project `input.json`, zero-based selected facet
+indices in `selection.json`, and `manifest.json` with their SHA-256 digests,
+the Float32 coordinate digest, triangle/selection counts and the seed center
+and normal. The driver verifies those identities before import. Optional
+`SCANFORGE_QA_DIST` selects a frozen build; `SCANFORGE_DEFEATURE_OUTPUT` selects
+a fresh receipt/screenshot directory. Source scan geometry stays outside Git.
+
 Regression coverage checks known planar, doubly curved, rotated and dense panels,
 unchanged retained geometry, reconstructed height, seam facet slopes, mesh winding,
 closure, fallback and cancellation. The spatial helper still has its independent

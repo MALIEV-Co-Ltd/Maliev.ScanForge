@@ -1,4 +1,5 @@
 import { geometryArtifact } from "./geometry-artifact";
+import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
@@ -998,7 +999,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         {
           kind: "report",
           positions: e.positions,
-          tolerance: a.tolerance ?? 1e-6,
+          tolerance: a.tolerance ?? SCAN_TOPOLOGY_TOLERANCE,
         },
         { signal: c.signal, onProgress: c.progress, reuseTopology: true },
       );

@@ -20,6 +20,7 @@ import {
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
+import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
@@ -184,6 +185,8 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "scanEdit" && request.tolerance === undefined)
+    request = { ...request, tolerance: SCAN_TOPOLOGY_TOLERANCE };
   if (
     request.kind === "scanTools" &&
     request.operation.kind === "averageMesh"

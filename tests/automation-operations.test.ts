@@ -20,6 +20,21 @@ import smoothingInput from "./fixtures/defeature-annular.json";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it.each([undefined, 0.000001])(
+  "uses GUI analysis tolerance by default and preserves explicit tolerance %s",
+  async (tolerance) => {
+    const h = harness();
+    vi.mocked(processMesh).mockResolvedValueOnce({
+      kind: "report",
+      diagnostics: {},
+    });
+    await h.ops.mesh_analyze({ entityId: "mesh", tolerance }, h.context);
+    expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject({
+      kind: "report",
+      tolerance: tolerance ?? 0.001,
+    });
+  },
+);
 it("uses reusable geometry processing for MCP analysis and inventory", async () => {
   const h = harness();
   vi.mocked(processMesh).mockResolvedValueOnce({

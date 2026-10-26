@@ -2,19 +2,24 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const largePatch = process.env.SCANFORGE_DEFEATURE_LARGE === "1";
+const replacementDirectory = process.env.SCANFORGE_DEFEATURE_CASE_DIR;
 const root = new URL("../", import.meta.url),
-  out = new URL(
-    largePatch
-      ? "../.resources/defeature-large-browser/"
-      : "../.resources/defeature-curvature-browser/",
-    import.meta.url,
-  );
+  out = process.env.SCANFORGE_DEFEATURE_OUTPUT
+    ? pathToFileURL(`${process.env.SCANFORGE_DEFEATURE_OUTPUT}/`)
+    : new URL(
+        replacementDirectory
+          ? "../.resources/defeature-real-scan-browser/"
+          : largePatch
+            ? "../.resources/defeature-large-browser/"
+            : "../.resources/defeature-curvature-browser/",
+        import.meta.url,
+      );
 const builtRoot = process.env.SCANFORGE_QA_DIST
   ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
   : new URL("dist/", root);
@@ -240,7 +245,7 @@ try {
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
-  const positions = [],
+  let positions = [],
     selected = [];
   const height = (x, y) =>
     largePatch
@@ -280,15 +285,47 @@ try {
     selected.splice(0, 7);
     assert.equal(selected.length, 18425);
   }
+  let replacementManifest;
+  if (replacementDirectory) {
+    const input = await readFile(`${replacementDirectory}/input.json`);
+    const mask = await readFile(`${replacementDirectory}/selection.json`);
+    replacementManifest = JSON.parse(
+      await readFile(`${replacementDirectory}/manifest.json`, "utf8"),
+    );
+    assert.equal(
+      createHash("sha256").update(input).digest("hex"),
+      replacementManifest.inputJsonSha256,
+    );
+    assert.equal(
+      createHash("sha256").update(mask).digest("hex"),
+      replacementManifest.selectionSha256,
+    );
+    const replacement = JSON.parse(input.toString());
+    assert.equal(replacement.units, "mm");
+    positions = replacement.entities[0].positions;
+    selected = JSON.parse(mask.toString());
+    assert.equal(positions.length / 9, replacementManifest.inputTriangles);
+    assert.equal(selected.length, replacementManifest.selectedFacets);
+    assert.equal(
+      createHash("sha256")
+        .update(Buffer.from(new Float32Array(positions).buffer))
+        .digest("hex"),
+      replacementManifest.sourceCoordinateSha256,
+    );
+  }
   const project = {
     format: "maliev-scanforge",
     version: 1,
-    name: "Defeature curvature parity",
+    name: replacementManifest
+      ? "Available-scan Defeature replacement"
+      : "Defeature curvature parity",
     units: "mm",
     entities: [
       {
         id: "panel",
-        name: "Curved panel with badge",
+        name: replacementManifest
+          ? "Original scan-1.stl"
+          : "Curved panel with badge",
         kind: "mesh",
         positions: Array.from(new Float32Array(positions)),
         visible: true,
@@ -328,8 +365,33 @@ try {
     zoom: 1,
   });
   await mutate("selection_set", { entityId: "panel", triangles: selected });
+  if (replacementManifest) {
+    await mutate("viewport_control", {
+      action: "fit",
+      entityId: "panel",
+      selection: true,
+    });
+    const center = replacementManifest.seedCenter;
+    const normal = replacementManifest.seedNormal;
+    await mutate("viewport_control", {
+      action: "camera",
+      target: center,
+      position: center.map((value, axis) => value + normal[axis] * 10),
+      up: Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0],
+    });
+    await mutate("scan_selection_control", {
+      entityId: "panel",
+      action: "configure",
+      tool: "brush",
+      brushRadiusPx: 2,
+    });
+  }
   const original = await geometry(),
     beforeHistory = await history();
+  const originalTopology = replacementManifest
+    ? (await job(await call("mesh_analyze", { entityId: "panel" }))).result
+        .topology
+    : undefined;
   const beforeViewport = (await call("viewport_get")).result;
   await page.screenshot({ path: fileURLToPath(new URL("before.png", out)) });
   const canvas = page.locator(".viewport canvas").first(),
@@ -387,15 +449,20 @@ try {
     (_, i) => !selected.includes(Math.floor(i / 9)),
   );
   assert.deepEqual(gui.positions.slice(0, retained.length), retained);
-  let worstDeviation = 0;
-  for (let i = retained.length; i < gui.positions.length; i += 3)
+  let worstDeviation = replacementManifest ? null : 0;
+  for (
+    let i = retained.length;
+    !replacementManifest && i < gui.positions.length;
+    i += 3
+  )
     worstDeviation = Math.max(
       worstDeviation,
       Math.abs(
         gui.positions[i + 2] - height(gui.positions[i], gui.positions[i + 1]),
       ),
     );
-  assert(worstDeviation < 0.003, `Surface deviation ${worstDeviation}`);
+  if (!replacementManifest)
+    assert(worstDeviation < 0.003, `Surface deviation ${worstDeviation}`);
   await mutate("history_undo", {});
   assert.deepEqual((await geometry()).positions, original.positions);
   await mutate("history_redo", {});
@@ -420,13 +487,7 @@ try {
   });
   assert.deepEqual((await geometry()).positions, original.positions);
   assert.equal(await history(), beforeHistory);
-  await mutate("selection_set", {
-    entityId: "panel",
-    triangles: Array.from(
-      { length: positions.length / 9 },
-      (_, index) => index,
-    ),
-  });
+  await mutate("selection_modify", { entityId: "panel", operation: "all" });
   const rejected = await job(
     await mutate("mesh_process", {
       entityId: "panel",
@@ -446,9 +507,31 @@ try {
       operation: { kind: "scanEdit", action: "defeature" },
     }),
   );
-  assert.equal(mcp.result.diagnostics.curvaturePatches, 1);
-  assert.equal(mcp.result.diagnostics.curvatureFallback, "");
+  if (!replacementManifest) {
+    assert.equal(mcp.result.diagnostics.curvaturePatches, 1);
+    assert.equal(mcp.result.diagnostics.curvatureFallback, "");
+  }
   assert.deepEqual((await geometry()).positions, gui.positions);
+  let replacementTopology;
+  if (replacementManifest) {
+    replacementTopology = (
+      await job(await call("mesh_analyze", { entityId: "panel" }))
+    ).result.topology;
+    for (const key of [
+      "components",
+      "boundaryLoops",
+      "boundaryEdges",
+      "nonManifoldEdges",
+      "inconsistentEdges",
+    ])
+      assert.equal(
+        replacementTopology[key],
+        originalTopology[key],
+        `Real-input topology changed: ${key}`,
+      );
+    assert.equal(mcp.result.diagnostics.removedTriangles, selected.length);
+    assert.equal(mcp.result.diagnostics.prunedTriangles, 0);
+  }
   assert.equal(await history(), beforeHistory + 1);
   const saved = await job(await call("project_export", { format: "project" }));
   await job(
@@ -458,6 +541,13 @@ try {
     }),
   );
   assert.deepEqual((await geometry()).positions, gui.positions);
+  if (replacementManifest)
+    assert.deepEqual(
+      (await job(await call("mesh_analyze", { entityId: "panel" }))).result
+        .topology,
+      replacementTopology,
+      "Replacement diagnostics changed after reopening",
+    );
   if (largePatch) {
     await mutate("viewport_control", {
       action: "camera",
@@ -476,7 +566,13 @@ try {
     largePatch,
     selectedFacets: selected.length,
     manufacturedFailureClassOnly: largePatch,
+    replacementManifest,
+    originalTopology,
+    replacementTopology,
     guiMcpEqual: true,
+    outputCoordinateSha256: createHash("sha256")
+      .update(Buffer.from(Float32Array.from(gui.positions).buffer))
+      .digest("hex"),
     undoRedo: true,
     sourcePreserved: true,
     cancellationRollback: true,

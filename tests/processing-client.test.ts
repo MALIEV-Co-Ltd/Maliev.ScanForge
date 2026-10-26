@@ -432,6 +432,23 @@ describe("processing worker resource ownership", () => {
     retainProcessingGeometry(positions);
     expect(worker.terminated).toBe(true);
   });
+  it("uses the GUI topology tolerance for scan editing when MCP omits it", async () => {
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+    expect(worker.sent).toMatchObject({ tolerance: 0.001 });
+  });
   it("copies trusted scan indices once per retained source and never transfers authored buffers", async () => {
     const sourceIndexed = nativeStlTopology(positions);
     const input = {

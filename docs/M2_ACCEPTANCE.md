@@ -207,6 +207,24 @@ additional real-input coverage. Preserve input/selection identities and results;
 do not describe replacement inputs as the original report. Other native,
 lifecycle, review and integration gates remain required.
 
+The [retained real-scan replacement record](evidence/m2-defeature-replacement-20261026.json)
+pins the complete 273,139-facet `scan-1.stl` by digest and its exact 64-facet
+selection. It exposed an actual failure: tolerance-welded publication moved
+unselected source corners. Shared Defeature publication now preserves these
+corners exactly, and omitted GUI/MCP topology tolerances agree at 0.001 mm.
+The unchanged case passes GUI/public-MCP equality, retained coordinates,
+history, cancellation/failure rollback and save/reopen on build
+`scanforge-6f95718105a661d8`, with 3,182,702,592 bytes peak owned memory and
+complete cleanup. Follow-up review independently reproduced stale successor
+adjacency after preserving a removed weld representative. Conditional
+invalidation fixes that regression while keeping exact successor reuse; all
+293 affected tests pass. Final build `scanforge-8602b889358c497b` passes all
+thirteen TypeScript batches without warnings. The unchanged real-scan replay
+also passes with the cache correction, including equal diagnostics after
+reopening, complete helper cleanup and the unchanged 4 GiB aggregate limit.
+The 64-facet real-input case complements the separate manufactured
+18,425-facet failure-class control; neither is the missing original selection.
+
 ## Whole-branch review corrections, 2026-10-26
 
 [The review correction record](evidence/m2-review-corrections-20261026.json)

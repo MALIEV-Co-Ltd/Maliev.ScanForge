@@ -543,7 +543,9 @@
         },
         "tolerance": {
           "type": "number",
-          "exclusiveMinimum": 0
+          "exclusiveMinimum": 0,
+          "default": 0.001,
+          "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
         }
       },
       "required": ["entityId"],
@@ -1291,7 +1293,9 @@
                 },
                 "tolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "default": 0.001,
+                  "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
                 },
                 "fitTolerance": {
                   "type": "number",
