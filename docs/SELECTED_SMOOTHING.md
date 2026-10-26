@@ -41,3 +41,18 @@ The native run used the same 96-triangle noisy annular STL and the same 16-facet
 A second native run selects all eight facets of two asymmetric closed tetrahedra sharing one vertex. One Smooth click moves that shared vertex to `(0.8888888955, 1.3333333731, 1.7777777910)`, confirming first-facet fan traversal. The application matches every exported Float32 coordinate exactly and reuses topology without welding or rebuilding. Input SHA-256: `a11aa5209e91deda3bdad0e80cdbd97925240c803a3e780c53ee5d7d13d808fd`; native output SHA-256: `de0f9698f637beaf001ff9f3b8d9f712352eb83f17e49c686649758bd034e73a`.
 
 A fresh native three-click run on the eight-facet disconnected-fan control matches the application six-pass default at every ordered Float32 coordinate. `tests/fixtures/smooth-six-passes-observed.json` pins the observed output (native STL SHA-256 `90f746b5e68ce06dee90293ba29b0011b6bf19579699862a046a5ddaa6d8f357`); `scan-smoothing-defaults.test.ts` verifies this comparison. This is a selected-all fan fixture, not evidence for every nonmanifold edge or winding case.
+
+## Current rendered GUI and public MCP replay, 2026-10-26
+
+The shared browser driver `tests/defeature-curvature-browser.mjs` accepts
+`SCANFORGE_EDIT_ACCEPTANCE=smooth`. This mode uses the retained eight-facet
+three-click native control for the six-pass GUI/default MCP route, checking exact
+coordinates, unchanged camera, cancellation rollback, undo/redo and binary
+save/reopen. It additionally imports the original 96-facet annulus with its exact
+16-facet selection for explicit two-pass public MCP, checks native coordinates
+within 0.000001 mm and unchanged unmarked corners, and captures fitted rendering.
+`SCANFORGE_QA_DIST` can pin the frozen production build and
+`SCANFORGE_DEFEATURE_OUTPUT` keeps each browser receipt in a separate directory.
+See [the current lifecycle evidence](evidence/m2-selected-smoothing-lifecycle-20261026.json).
+This does not establish arbitrary native mesh, nonmanifold/winding or performance
+parity. The default mode of this driver still validates Defeature.

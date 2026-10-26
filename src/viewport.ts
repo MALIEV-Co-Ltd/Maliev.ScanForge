@@ -4442,8 +4442,7 @@ export class Viewport {
             );
         const processingOutline =
           this.selectionProcessing?.install(overlay.material, geometry) ?? [];
-        this.triangleSelection.add(overlay);
-        this.triangleSelection.add(...processingOutline);
+        this.triangleSelection.add(overlay, ...processingOutline);
       }
     }
     this.applyClipPlanes();
