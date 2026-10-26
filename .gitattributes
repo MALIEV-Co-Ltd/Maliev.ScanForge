@@ -11,3 +11,4 @@ tests/fixtures/m6-sparse-cloud.asc -text -whitespace
 # Preserve raw M5 diagnostics referenced by evidence SHA-256 identities.
 docs/evidence/m5-20261025/*.log -text -whitespace
 docs/evidence/m5-20261025/*.brep -text -whitespace
+docs/evidence/m5-20261025/*.step -text -whitespace

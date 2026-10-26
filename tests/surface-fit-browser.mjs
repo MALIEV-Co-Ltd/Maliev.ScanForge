@@ -14,6 +14,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 import http from "node:http";
 import net from "node:net";
 import { chromium } from "playwright";
@@ -607,7 +608,7 @@ try {
     if (!labels[workspace]) {
       assert.equal(command.available, false);
       await mutate("ui_set", { workspace, toolPanelOpen: true });
-      return "ui_set experimental panel; arbitrary edge selection remains open";
+      return `public ui_set experimental panel; command_get ribbon:${workspace} unavailable`;
     }
     assert.equal(command.available, true, workspace);
     await page
@@ -1282,14 +1283,52 @@ try {
         digests = [];
       for (const item of added) {
         reports.push(
-          await job(await call("cad_inspect", { entityId: item.id })),
+          await job(
+            await call("cad_inspect", {
+              entityId: item.id,
+              ...(options.inspectEdges
+                ? { edgeOffset: 0, edgeLimit: 128 }
+                : {}),
+            }),
+          ),
         );
         digests.push(await geometryDigest(item.id));
       }
-      assert(reports.every((r) => r.valid && r.solids === 1));
+      assert(
+        reports.every(
+          (r) => r.valid && r.solids === (options.expectedSolids ?? 1),
+        ),
+      );
       if (options.volume !== undefined)
         assert(Math.abs(reports[0].volumeMm3 - options.volume) < 1e-6);
+      if (options.verify)
+        await options.verify(
+          added.map((item) => item.id),
+          reports,
+          "GUI",
+        );
+      if (options.redo) {
+        await mutate("history_undo", {});
+        const undone = (await call("project_get")).result;
+        assert.equal(undone.undo, before.undo);
+        assert(
+          added.every(
+            (item) => !undone.objects.some((object) => object.id === item.id),
+          ),
+        );
+        await mutate("history_redo", {});
+        assert.equal((await call("project_get")).result.undo, before.undo + 1);
+        for (let i = 0; i < added.length; i++)
+          assert.deepEqual(await geometryDigest(added[i].id), digests[i]);
+        if (options.verify)
+          await options.verify(
+            added.map((item) => item.id),
+            reports,
+            "GUI Redo",
+          );
+      }
       await mutate("history_undo", {});
+      const beforeMcp = (await call("project_get")).result;
       const mcp = await job(
         await mutate("cad_create", {
           recipe: objects[0].parametric.feature.recipe,
@@ -1299,13 +1338,38 @@ try {
         }),
       );
       assert.equal(mcp.entityIds.length, added.length);
+      assert.equal((await call("project_get")).result.undo, beforeMcp.undo + 1);
       for (let i = 0; i < added.length; i++)
         assert.deepEqual(await geometryDigest(mcp.entityIds[i]), digests[i]);
+      if (options.verify) {
+        const mcpReports = [];
+        for (const entityId of mcp.entityIds)
+          mcpReports.push(
+            await job(
+              await call("cad_inspect", {
+                entityId,
+                ...(options.inspectEdges
+                  ? { edgeOffset: 0, edgeLimit: 128 }
+                  : {}),
+              }),
+            ),
+          );
+        assert(
+          mcpReports.every(
+            (report) =>
+              report.valid && report.solids === (options.expectedSolids ?? 1),
+          ),
+        );
+        if (options.volume !== undefined)
+          assert(Math.abs(mcpReports[0].volumeMm3 - options.volume) < 1e-6);
+        await options.verify(mcp.entityIds, mcpReports, "MCP");
+      }
       matrix.push({
         workspace,
         entry,
         sharedGuiJob: jobs[0].jobId,
         guiMcpGeometryEquality: true,
+        guiUndoRedoVerified: options.redo === true,
         reports,
         outputNames: objects.map((x) => x.name),
       });
@@ -1661,10 +1725,215 @@ try {
         },
       });
     }
+    // A curved source exercises the pattern's first-instance mesh ownership;
+    // the earlier box pattern is MCP-only edge-paging setup, not GUI parity.
+    const cylinder = await job(
+      await mutate("cad_create", {
+        name: "Curved GUI pattern source",
+        recipe: {
+          kind: "primitive",
+          input: {
+            kind: "cylinder",
+            center: [0, 0, 4],
+            axis: [0, 0, 1],
+            radius: 3,
+            height: 8,
+          },
+        },
+      }),
+    );
+    const cylinderId = cylinder.entityIds[0];
+    const sourceDigest = await geometryDigest(cylinderId);
+    const sourceReferences = await job(
+      await call("alignment_references", {
+        entityId: cylinderId,
+        offset: 0,
+        limit: 100,
+      }),
+    );
+    assert.equal(sourceReferences.total, 3);
+    assert.equal(sourceReferences.nextOffset, null);
+    assert.equal(
+      sourceReferences.references.filter(
+        (reference) =>
+          reference.surfaceKind === "cylinder" && reference.radiusMm === 3,
+      ).length,
+      1,
+    );
+    const ranges = sourceReferences.references
+      .slice()
+      .sort((a, b) => a.firstTriangle - b.firstTriangle);
+    let nextTriangle = 0;
+    for (const reference of ranges) {
+      assert.equal(reference.firstTriangle, nextTriangle);
+      assert(
+        Number.isInteger(reference.triangleCount) &&
+          reference.triangleCount > 0,
+      );
+      nextTriangle += reference.triangleCount;
+    }
+    assert.equal(
+      nextTriangle,
+      sourceDigest.find((buffer) => buffer.path === "positions").elements / 9,
+    );
+    const projectBrepDigest = async (entityId) => {
+      const artifact = await job(
+        await call("project_export", { format: "project" }),
+      );
+      let operationError;
+      try {
+        const bytes = await artifactBytes(artifact);
+        assert.equal(bytes.subarray(0, 8).toString(), "SCANFRG2");
+        const manifestBytes = bytes.readUInt32LE(8);
+        const manifest = JSON.parse(
+          bytes.subarray(16, 16 + manifestBytes).toString("utf8"),
+        );
+        const record = manifest.current
+          .map((index) => manifest.records[index])
+          .find((item) => item.id === entityId);
+        assert.equal(record?.brep?.type, "text");
+        const chunk = manifest.chunks[record.brep.chunk];
+        const stored = bytes.subarray(
+          16 + manifestBytes + chunk.offset,
+          16 + manifestBytes + chunk.offset + chunk.bytes,
+        );
+        const raw = chunk.codec === "gzip" ? gunzipSync(stored) : stored;
+        const sha256 = createHash("sha256").update(raw).digest("hex");
+        assert.equal(raw.length, chunk.rawBytes);
+        assert.equal(sha256, chunk.sha256);
+        return { bytes: raw.length, sha256 };
+      } catch (error) {
+        operationError = error;
+        throw error;
+      } finally {
+        try {
+          await call("artifact_delete", { artifactId: artifact.artifactId });
+        } catch (cleanupError) {
+          ledger.cleanup.push({
+            kind: "curved-pattern-project-artifact",
+            artifactId: artifact.artifactId,
+            error: cleanupError.message,
+          });
+          if (!operationError) throw cleanupError;
+        }
+      }
+    };
+    const sourceBrepDigest = await projectBrepDigest(cylinderId);
+    const patternRecipe = {
+      kind: "pattern",
+      source: { featureId: cylinder.featureId, output: 0 },
+      pattern: { kind: "linear", count: 3, step: [200, 0, 0] },
+    };
+    let guiPatternBrep;
+    const patternEvidence = [];
+    await mutate("object_select", { entityId: cylinderId });
+    await checkGuiCad("linearPattern", "Create exact body pattern", {
+      expectedSolids: 3,
+      inspectEdges: true,
+      redo: true,
+      volume: 216 * Math.PI,
+      prepare: async () => {
+        await page
+          .getByRole("spinbutton", {
+            name: "Pattern copies including original",
+            exact: true,
+          })
+          .fill("3");
+        for (const [axis, value] of [
+          ["X", "200"],
+          ["Y", "0"],
+          ["Z", "0"],
+        ])
+          await page
+            .getByRole("spinbutton", {
+              name: `Pattern spacing (mm) ${axis}`,
+              exact: true,
+            })
+            .fill(value);
+      },
+      verify: async ([entityId], [report], via) => {
+        assert.deepEqual(
+          (await call("object_get", { entityId })).result.parametric.feature
+            .recipe,
+          patternRecipe,
+        );
+        assert(report.signedVolumeMm3 > 0);
+        assert(Math.abs(report.signedVolumeMm3 - 216 * Math.PI) < 1e-6);
+        assert(Math.abs(report.areaMm2 - 198 * Math.PI) < 1e-6);
+        const edges = report.edgeReferences;
+        assert.equal(edges.nextOffset, null);
+        assert.equal(edges.items.length, edges.total);
+        const bounds = Object.fromEntries(
+          ["min", "max"].map((key) => [
+            key,
+            [0, 1, 2].map((axis) => {
+              const values = edges.items.map((edge) => {
+                assert(edge.boundsMm);
+                return edge.boundsMm[key][axis];
+              });
+              return (key === "min" ? Math.min : Math.max)(...values);
+            }),
+          ]),
+        );
+        for (const [key, expected] of [
+          ["min", [-3, -3, 0]],
+          ["max", [403, 3, 8]],
+        ])
+          assert(
+            bounds[key].every(
+              (value, axis) => Math.abs(value - expected[axis]) <= 1e-6,
+            ),
+            JSON.stringify({ bounds, expected, key }),
+          );
+        const brep = await projectBrepDigest(entityId);
+        if (via === "GUI") guiPatternBrep = brep;
+        else
+          assert.deepEqual(
+            brep,
+            guiPatternBrep,
+            "GUI/MCP pattern saved BREP must match exactly",
+          );
+        assert.deepEqual(await geometryDigest(cylinderId), sourceDigest);
+        assert.deepEqual(await projectBrepDigest(cylinderId), sourceBrepDigest);
+        assert.deepEqual(
+          await job(
+            await call("alignment_references", {
+              entityId: cylinderId,
+              offset: 0,
+              limit: 100,
+            }),
+          ),
+          sourceReferences,
+        );
+        patternEvidence.push({
+          via,
+          brep,
+          bounds,
+          sourcePublishedBuffersAndSavedBrepExact: true,
+          publicAlignmentReferencesAndTriangleSlotsExact: true,
+        });
+      },
+    });
+    ledger.scenarios.push({
+      curvedPatternGuiMcp: {
+        sourceId: cylinderId,
+        recipe: patternRecipe,
+        expectedSolids: 3,
+        independentVolumeMm3: 216 * Math.PI,
+        independentAreaMm2: 198 * Math.PI,
+        sourceBrepDigest,
+        patternEvidence,
+        readerScope:
+          "Public alignment_references metadata and triangle ranges match their initial snapshot; raw D1 reader buffers remain covered by the actual kernel regression, not a new public tool.",
+        entryScope:
+          "Existing public ui_set experimental panel admission; rendered GUI controls submit through shared cad_create. Ribbon remains unverified and unavailable.",
+      },
+    });
     await checkGuiCad("extrude", "Extrude sketch to CAD", { volume: 12000 });
     ledger.scenarios.push({
       guardedCadMatrix: {
-        entry: "actual CAD ribbon with optional exact edge discovery",
+        entry:
+          "verified CAD ribbon entries plus explicit public ui_set experimental panel for gated patterns; optional exact edge discovery",
         matrix,
       },
     });

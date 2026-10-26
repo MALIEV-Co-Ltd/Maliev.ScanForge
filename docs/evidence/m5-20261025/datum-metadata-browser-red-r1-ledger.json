@@ -1,0 +1,47 @@
+{
+  "scope": "Retained failed existing datum browser driver attempt; early Settings/bridge setup only. No CAD GUI Apply or MCP Preview reached; no datum parity conclusion.",
+  "status": "failed-before-CAD",
+  "failedLocator": "textbox Local bridge URL",
+  "timeoutMs": 30000,
+  "observedWrapperTerminalExitCode": 1,
+  "terminalEvidenceScope": "Terminal exit observation supplied by root coordinator; archived Job receipt remains explicitly provisional.",
+  "guard": {
+    "elapsedSecondsBeforeReceipt": 31.426597500045318,
+    "peakJobBytes": 915890176,
+    "totalProcesses": 18,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true
+  },
+  "browserCleanup": {
+    "portsClosed": true,
+    "recordedMcpAndBrowserProcessesExited": true
+  },
+  "diagnosis": "Old private driver omitted current Settings AI agents tab navigation; refreshed r2 driver is separate and unexecuted at archival.",
+  "artifacts": [
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r1-job.json",
+      "sourceSha256": "2d7698614f99cc6f69f9d284a9d989b62dc7ce21689cd63440377fd9ee6b62b4",
+      "archive": "datum-metadata-browser-red-r1-job.json",
+      "archiveSha256": "7e2424728b1226cfb3e932551a787655ceb1886b71d7f12ae3eaa7b272e42e46",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r1/browser-validation.json",
+      "sourceSha256": "1d95c4478c271e019ea1bea953b538bece56ea2e2e2ffd7ff8ae203f172ce26c",
+      "archive": "datum-metadata-browser-red-r1.json",
+      "archiveSha256": "2f81e9133e284e70876962b3d39f39b3eb85dfbd3cf34ea31ba09e4f82c09588",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r1-job.log",
+      "sourceSha256": "08bee7ca774289ba516762b3474f28729334ab16b85eff61dc7f6e824c2ee816",
+      "archive": "datum-metadata-browser-red-r1-job.log",
+      "archiveSha256": "08bee7ca774289ba516762b3474f28729334ab16b85eff61dc7f6e824c2ee816",
+      "format": "Raw bytes preserved; existing .gitattributes -text -whitespace"
+    }
+  ],
+  "originalResourcesPreserved": true
+}

@@ -1,0 +1,25 @@
+{
+  "candidate": "85742636cb3532d45a2224d7c658eac562c510da",
+  "integratedMain": "57c77aa",
+  "buildIdentity": "scanforge-6df43e18c921f0bd",
+  "status": "PASS",
+  "workflowRun": 40370005947,
+  "job": 121737891679,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40370005947/job/121737891679",
+  "secondSuccessfulRun": 40369995444,
+  "secondSuccessfulJob": 121737848191,
+  "typecheckBatches": 13,
+  "testsPassed": 49361,
+  "testsSkipped": 64,
+  "testFilesPassed": 702,
+  "testFilesSkipped": 18,
+  "testDurationSeconds": 321.11,
+  "cadSmokePassed": true,
+  "trailingExactSketchPhasePassed": true,
+  "globalFormattingPassed": true,
+  "observation": "Pinned-head check status and completed job log read through the Codex GitHub check diagnostics tool.",
+  "otherChecks": {
+    "gitGuardian": "neutral: skipped because the pull request exceeds its configured scan size limit"
+  },
+  "scope": "Hosted gates for this exact integrated candidate only. Positive pattern/datum browser coverage, native acceptance and M4 closure remain separate gates."
+}

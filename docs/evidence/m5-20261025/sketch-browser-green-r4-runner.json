@@ -1,0 +1,40 @@
+{
+  "startedAt": "2026-10-26T17:37:19.901Z",
+  "children": [
+    {
+      "label": "build",
+      "pid": 39472,
+      "startedAt": "2026-10-26T17:37:19.912Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T17:37:26.751Z"
+    },
+    {
+      "label": "manifest",
+      "pid": 36436,
+      "startedAt": "2026-10-26T17:37:26.757Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T17:37:27.433Z"
+    },
+    {
+      "label": "preview",
+      "pid": 66340,
+      "startedAt": "2026-10-26T17:37:27.439Z",
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "finishedAt": "2026-10-26T17:38:14.883Z"
+    },
+    {
+      "label": "browser",
+      "pid": 38932,
+      "startedAt": "2026-10-26T17:37:27.684Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T17:38:14.877Z"
+    }
+  ],
+  "passed": true,
+  "previewPortClosed": true,
+  "finishedAt": "2026-10-26T17:38:14.884Z"
+}

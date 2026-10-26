@@ -1,0 +1,53 @@
+{
+  "owner": "scanforge-datum-metadata-validation",
+  "startedAt": "2026-10-26T17:49:55.423Z",
+  "expiresAt": "2026-10-26T17:52:55.423Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 25548,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T17:49:55.423Z",
+      "port": 56269,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 66568,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T17:49:55.627Z",
+      "port": 56270,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 25404,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-26T17:49:55.756Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "cleanup": [
+    {
+      "port": 56269,
+      "closed": true
+    },
+    {
+      "port": 56270,
+      "closed": true
+    },
+    {
+      "pid": 66568,
+      "exited": true
+    },
+    {
+      "pid": 25404,
+      "exited": true
+    }
+  ],
+  "passed": false,
+  "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('textbox', { name: 'Local bridge URL' })\u001b[22m\n"
+}
