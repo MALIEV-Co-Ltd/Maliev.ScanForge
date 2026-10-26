@@ -267,6 +267,12 @@ try {
     .click();
   const controls = page.locator(".scan-tools-panel");
   await controls
+    .getByRole("button", { name: "Reconstruction method", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "Closed voxel envelope", exact: true })
+    .click();
+  await controls
     .getByRole("checkbox", { name: "Aligned reference", exact: true })
     .check();
   await controls.getByRole("spinbutton").fill(String(resolution));
@@ -315,7 +321,7 @@ try {
       targetIds: ["Aligned reference"],
       operation: {
         kind: "scanTools",
-        operation: { kind: "repolygonize", resolution },
+        operation: { kind: "repolygonize", method: "voxel", resolution },
       },
     }),
   );

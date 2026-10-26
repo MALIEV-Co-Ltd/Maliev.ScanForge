@@ -13,6 +13,7 @@ export interface ScanFile {
 /** Published imports may include computed state in addition to file-authored normals. */
 export type ImportedIndexedMesh = ReturnType<typeof parsePlyTopology> & {
   geometryNormals?: Float32Array;
+  facetNormals?: Float32Array;
 };
 export interface ScanImportOptions {
   ascAttributes?: AscAttributes;

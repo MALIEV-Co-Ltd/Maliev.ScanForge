@@ -1,5 +1,6 @@
 import { nativeStlTopology } from "./scan-native-stl-topology";
 import { noiseNormals } from "./scan-native-noise";
+import { meshFacetNormals } from "./mesh-geometry-normals";
 import {
   createNativeTargetStorageBudget,
   nativeTargetStorage,
@@ -16,6 +17,7 @@ export interface GlobalAlignmentPreparedMesh {
   vertices: Float32Array;
   triangles: Uint32Array;
   normals: Float32Array;
+  facetNormals: Float32Array;
   flags: Uint32Array;
 }
 /** Disposable worker job: retain the verified STL vertex order and normal arithmetic. */
@@ -37,6 +39,7 @@ export function executeGlobalAlignmentInputPreparation(
   )
     throw Error("Global alignment requires finite indexed mesh geometry.");
   const normals = noiseNormals(mesh);
+  const facetNormals = meshFacetNormals(mesh);
   if (!normals.every(Number.isFinite))
     throw Error(
       "Global alignment normal preparation produced nonfinite values.",
@@ -47,6 +50,7 @@ export function executeGlobalAlignmentInputPreparation(
       mesh.vertices.byteLength +
         mesh.triangles.byteLength +
         normals.byteLength +
+        facetNormals.byteLength +
         1048576,
   );
   // Native temporary groups return no direct mesh interface in preparation,
@@ -59,7 +63,7 @@ export function executeGlobalAlignmentInputPreparation(
         nativeTargetStorage(mesh.vertices, (mesh.vertices.length / 3) * 4),
       ),
   );
-  return { ...mesh, normals, flags };
+  return { ...mesh, normals, facetNormals, flags };
 }
 export type GlobalAlignmentPreparationResponse =
   { result: GlobalAlignmentPreparedMesh } | { error: string };

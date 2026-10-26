@@ -1,7 +1,7 @@
 import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
 import { transformPositions } from "./geometry";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 
 /** Transform coordinates without changing source vertex IDs or face connectivity. */
 export function transformIndexedMesh(
@@ -26,6 +26,12 @@ export function transformIndexedMesh(
   const indexedMesh: IndexedMesh = {
     vertices: transformPositions(source, translation, rotation, scale),
     triangles: indexed.triangles,
+    facetNormals: transformPositions(
+      meshFacetNormals(indexed),
+      [0, 0, 0],
+      rotation,
+      1,
+    ),
     geometryNormals: transformPositions(
       meshGeometryNormals(indexed),
       [0, 0, 0],
@@ -46,7 +52,7 @@ export function indexedMeshMatches(
   positions: Positions,
 ): value is IndexedMesh {
   if (!value || typeof value !== "object") return false;
-  const { vertices, triangles, normals, geometryNormals } =
+  const { vertices, triangles, normals, geometryNormals, facetNormals } =
     value as IndexedMesh;
   if (
     !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
@@ -66,7 +72,10 @@ export function indexedMeshMatches(
         Array.isArray(geometryNormals) ||
         geometryNormals instanceof Float32Array
       ) ||
-        geometryNormals.length !== vertices.length))
+        geometryNormals.length !== vertices.length)) ||
+    (facetNormals !== undefined &&
+      (!(Array.isArray(facetNormals) || facetNormals instanceof Float32Array) ||
+        facetNormals.length !== triangles.length))
   )
     return false;
   // Indexed iteration also rejects sparse ordinary arrays: Array.every skips holes.
@@ -75,6 +84,13 @@ export function indexedMeshMatches(
       if (
         !Number.isFinite(geometryNormals[i]) ||
         !Number.isFinite(Math.fround(geometryNormals[i]))
+      )
+        return false;
+  if (facetNormals)
+    for (let i = 0; i < facetNormals.length; i++)
+      if (
+        !Number.isFinite(facetNormals[i]) ||
+        !Number.isFinite(Math.fround(facetNormals[i]))
       )
         return false;
   for (let slot = 0; slot < triangles.length; slot++) {

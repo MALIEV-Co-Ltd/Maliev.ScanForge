@@ -98,3 +98,12 @@ it("admits two small imports and falls back for constrained or large inputs", ()
     }),
   ).toBe(1);
 });
+
+it("reserves the added per-facet stream before overlapping borderline import batches", () => {
+  expect(
+    importConcurrency([{ size: 18 * 1048576 }, { size: 18 * 1048576 }], {
+      cores: 8,
+      memoryGiB: 8,
+    }),
+  ).toBe(1);
+});

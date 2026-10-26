@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "milestoneComplete": false,
+  "verifiedSourceCommit": "32ea054586f71046ebf07ba7520f18ada11528f4",
+  "buildId": "scanforge-4795f41cf4da1c9e",
+  "all2057CompilerInputsUnchangedDuringBuildAndMatchCommittedBytes": true,
+  "focused": {
+    "testsPassed": 23,
+    "filesPassed": 4,
+    "behaviorRed": "Cache eviction and history:2failed/2passed. Persistence:3failed/5passed. Separate harness authoring errors are retained but are not behavior RED evidence."
+  },
+  "fullSuiteForThisSource": "pending",
+  "checks": {
+    "normal-pinned-build": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\normal-pinned-build.receipt.json",
+      "sha256": "fe018387b869f21e166448d78c1ed87152ddad6109d02e39ec3ea6b09cdffcdc",
+      "elapsedSeconds": 141.6142364999978,
+      "childPeakJobMemoryBytes": 1680916480,
+      "outerPeakJobMemoryBytes": 1694593024,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-normal-persistence-green-r4": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-normal-persistence-green-r4.receipt.json",
+      "sha256": "243ae1b15df61aff5bf4ea76bc937b8929975c0f6261112c0b7fa1f62f0865a5",
+      "elapsedSeconds": 3.3924141000024974,
+      "childPeakJobMemoryBytes": 385789952,
+      "outerPeakJobMemoryBytes": 399720448,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "original-cloud-placement-r3": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-cloud-placement-r3.receipt.json",
+      "sha256": "6ae64de84750ac3954399223d75ff6fbfaec7231a8d5923fba1a29b3b96bb76e",
+      "elapsedSeconds": 104.72367340000346,
+      "childPeakJobMemoryBytes": 2702327808,
+      "outerPeakJobMemoryBytes": 2716106752,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "originalPlacement": {
+    "scope": "Complete original-three ASC files, production GUI origin/reference preview/cancel/apply and public MCP equality/revision/retry, original-point landmark correspondences against full duplicated original clouds, GUI preview/cancel/OK and public MCP preview/accept equality, all world/local position/normal digests, UndoRedo/timeline/project reopen. Known placement validation, not interscan registration quality, GUI canvas-pick acquisition, native full-controller equivalence or M3 completion.",
+    "pointCounts": [140113, 1375494, 1865848],
+    "knownPointRmsMm": [0, 1.3765103082409519e-7, 0],
+    "originals": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "486056e6-25de-4938-95d0-c9902c1a84ab"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "44c79403-d0e8-42d2-a0cd-d081efb7e244"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "07dc73e7-f547-47ac-9656-8618b1450653"
+      }
+    ],
+    "archive": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-cloud-placement-r3\\summary.json",
+      "sha256": "add40c3b45a0a37cba519c30a8f6f313959f98634535a6f13014c09c69be4505"
+    },
+    "screenshots": [
+      "m3-cloud-placement-20261025/asc-1-origin-reference.png",
+      "m3-cloud-placement-20261025/asc-3-landmark-preview.png"
+    ]
+  },
+  "fix": "World-normal carrier choice survives weak-buffer reclamation independently from immutable local normals. Internal optional metadata preserves it through encoding snapshots and binary project/backup history. Old records retain array fallback; numeric bits/local ownership/pose semantics are unchanged.",
+  "mcpCoverage": "Existing shared alignment/landmark/history/export/import operations and object_geometry_digest; no public schema change. Actual GUI/public stdio MCP equality on every original ASC.",
+  "review": "Independent static review found no actionable defect.",
+  "remainingGates": [
+    "Current-source broad regressions/static checks",
+    "Original STL/PLY lifecycle and full-geometry registration/combined quality",
+    "Native setter-entry observation and native reconstruction comparison",
+    "Full PLY incognito project transfer hit4GiB ceiling; default-profile/DevTools diagnostic and complete workflow still required"
+  ]
+}

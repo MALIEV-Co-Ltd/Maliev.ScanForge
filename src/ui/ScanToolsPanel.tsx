@@ -10,6 +10,11 @@ import { mirrorReference, cylinderReference } from "../scan-tools-reference";
 import { Field, VectorField } from "./controls";
 import "./ScanToolsPanel.css";
 import { NoiseComparisonLegend } from "./NoiseComparisonLegend";
+import {
+  reconstructionMethod,
+  nativeReconstructionReferences,
+  type ReconstructionMethod,
+} from "../scan-reconstruction-targets";
 
 export type ScanToolId =
   | "reducePolygons"
@@ -51,7 +56,12 @@ export type ScanToolParameters =
       scope: "whole" | "selected" | "isolated";
       targetIds?: string[];
     }
-  | { kind: "repolygonize"; resolution: number; targetIds?: string[] }
+  | {
+      kind: "repolygonize";
+      resolution: number;
+      targetIds?: string[];
+      method?: ReconstructionMethod;
+    }
   | { kind: "averageMesh"; targetIds: string[]; tolerance: number }
   | {
       kind: "mirrorMesh";
@@ -165,8 +175,26 @@ export function ScanToolsPanel({
     "whole",
   );
   const [resolution, setResolution] = useState(0.5);
+  const [reconstructionMode, setReconstructionMode] =
+    useState<ReconstructionMethod>(() =>
+      selected ? reconstructionMethod(selected, []) : "native",
+    );
   const [tolerance, setTolerance] = useState(10);
-  const [targetIds, setTargetIds] = useState<string[]>([]);
+  const [targetIds, setTargetIds] = useState<string[]>(() =>
+    tool === "repolygonize" && selected?.kind === "mesh"
+      ? nativeReconstructionReferences(selected, entities).map((e) => e.id)
+      : [],
+  );
+  useEffect(() => {
+    if (tool !== "repolygonize" || !selected) return;
+    const method = reconstructionMethod(selected, []);
+    setReconstructionMode(method);
+    setTargetIds(
+      method === "native"
+        ? nativeReconstructionReferences(selected, entities).map((e) => e.id)
+        : [],
+    );
+  }, [tool, selected?.id]);
   useEffect(() => {
     if (!previewSettings) return;
     setSampleInterval(previewSettings.sampleInterval ?? 0.5);
@@ -199,10 +227,11 @@ export function ScanToolsPanel({
   const targets = entities.filter(
     (e) =>
       e.id !== selected?.id &&
-      e.kind === "mesh" &&
+      (e.kind === "mesh" ||
+        (tool === "repolygonize" && e.kind === "pointcloud")) &&
       !e.kernelId &&
       !e.parametric &&
-      e.positions.length >= 9,
+      e.positions.length >= (e.kind === "pointcloud" ? 3 : 9),
   );
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
@@ -215,14 +244,24 @@ export function ScanToolsPanel({
     }
     if (tool === "unroll") setCylinderId(pickedReferenceId);
   }, [pickedReferenceId, tool]);
-  const count = Math.floor((selected?.positions.length ?? 0) / 9);
+  const pointCloud = selected?.kind === "pointcloud";
+  const count = Math.floor(
+    (selected?.positions.length ?? 0) / (pointCloud ? 3 : 9),
+  );
   const positive = (n: number) => Number.isFinite(n) && n > 0;
   let problem = !selected
-    ? "Select a mesh to use this tool."
-    : selected.kernelId || selected.parametric || selected.kind !== "mesh"
+    ? tool === "repolygonize"
+      ? "Select a mesh or point cloud to reconstruct."
+      : "Select a mesh to use this tool."
+    : selected.kernelId ||
+        selected.parametric ||
+        (selected.kind !== "mesh" && !(tool === "repolygonize" && pointCloud))
       ? "Create an explicit mesh copy of the CAD object before using mesh tools."
       : "";
-  if (!problem && count === 0) problem = "The selected mesh has no triangles.";
+  if (!problem && count === 0)
+    problem = pointCloud
+      ? "The selected cloud has no points."
+      : "The selected mesh has no triangles.";
   if (!problem) {
     if (
       tool === "reducePolygons" &&
@@ -286,6 +325,16 @@ export function ScanToolsPanel({
         "Isolate triangles or hide a subset before using isolated scope.";
     if (tool === "repolygonize" && !positive(resolution))
       problem = "Point resolution must be greater than zero.";
+    if (
+      tool === "repolygonize" &&
+      reconstructionMode === "native" &&
+      (pointCloud ||
+        targets.some(
+          (e) => targetIds.includes(e.id) && e.kind === "pointcloud",
+        ))
+    )
+      problem =
+        "Native reconstruction requires triangle meshes; choose the voxel method for point clouds.";
     if (
       tool === "averageMesh" &&
       (!positive(tolerance) ||
@@ -358,7 +407,12 @@ export function ScanToolsPanel({
         });
         break;
       case "repolygonize":
-        onApply({ kind: tool, resolution, targetIds });
+        onApply({
+          kind: tool,
+          resolution,
+          targetIds,
+          method: reconstructionMode,
+        });
         break;
       case "averageMesh":
         onApply({
@@ -394,7 +448,7 @@ export function ScanToolsPanel({
       <div className="tool-panel-content">
         {selected && (
           <div className="scan-tools-summary">
-            <span>Triangles</span>
+            <span>{pointCloud ? "Points" : "Triangles"}</span>
             <strong>{count.toLocaleString()}</strong>
           </div>
         )}
@@ -638,6 +692,23 @@ export function ScanToolsPanel({
           )}
           {tool === "repolygonize" && (
             <>
+              <label>
+                Reconstruction method
+                <AppSelect
+                  aria-label="Reconstruction method"
+                  value={reconstructionMode}
+                  onChange={(event) =>
+                    setReconstructionMode(
+                      event.target.value as ReconstructionMethod,
+                    )
+                  }
+                >
+                  <option value="native" disabled={pointCloud}>
+                    Native surface reconstruction
+                  </option>
+                  <option value="voxel">Closed voxel envelope</option>
+                </AppSelect>
+              </label>
               <Field
                 label="Point resolution (mm)"
                 value={resolution}
@@ -645,38 +716,58 @@ export function ScanToolsPanel({
                 step={0.1}
                 onChange={setResolution}
               />
-              <p>Additional aligned meshes (optional; retained unchanged)</p>
+              <p>
+                Additional aligned scans (optional; retained unchanged
+                {reconstructionMode === "native" ? "; hidden on success" : ""})
+              </p>
               <div
                 className="scan-tools-references"
-                aria-label="Additional reconstruction meshes"
+                aria-label="Additional reconstruction scans"
               >
                 {targets.map((e) => (
                   <label className="scan-tools-check" key={e.id}>
                     <input
                       type="checkbox"
                       checked={targetIds.includes(e.id)}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        if (event.target.checked && e.kind === "pointcloud")
+                          setReconstructionMode("voxel");
                         setTargetIds((current) =>
                           event.target.checked
                             ? [...current, e.id]
                             : current.filter((id) => id !== e.id),
-                        )
-                      }
+                        );
+                      }}
                     />
                     {e.name}
                   </label>
                 ))}
               </div>
-              <p className="muted">
-                Voxel reconstruction closes small gaps and fills enclosed
-                cavities. Open scans become thick shells; the surface can move
-                by about 0.75 times point resolution. Results are checked for
-                closed, manifold topology; separated regions can remain separate
-                closed components. Self-intersections are not checked. Undo
-                restores the original. Finer spacing retains smaller details; it
-                is not a maximum-deviation tolerance. Reconstruction supports up
-                to one billion grid points and sixteen million output triangles.
-              </p>
+              {reconstructionMode === "native" ? (
+                <p className="muted">
+                  Reconstructs the aligned mesh surfaces and optimizes the
+                  result. Creates a new mesh and hides the unchanged inputs.
+                  Open boundaries, nonmanifold edges and separate components can
+                  remain; inspect the reported topology. Undo restores the
+                  inputs' visibility. Point resolution is sampling spacing, not
+                  a maximum-deviation tolerance.
+                </p>
+              ) : (
+                <p className="muted">
+                  Voxel reconstruction closes small gaps and fills enclosed
+                  cavities. Open scans become thick shells; mesh input surfaces
+                  can move by about 0.75 times point resolution. Results are
+                  checked for closed, manifold topology; separated regions can
+                  remain separate closed components. Self-intersections are not
+                  checked. Undo restores the original. Finer spacing retains
+                  smaller details; it is not a maximum-deviation tolerance.
+                  Reconstruction supports up to one billion grid points and
+                  sixteen million output triangles. Point clouds use every XYZ
+                  point with a 0.866-times-resolution sphere radius; scanner
+                  normals are not used. Sparse clouds can leave gaps or separate
+                  components. Reconstruction produces a mesh.
+                </p>
+              )}
             </>
           )}
           {tool === "averageMesh" && (

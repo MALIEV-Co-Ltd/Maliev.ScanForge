@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "status": "PASS_CURRENT_RENDERED_SUPPORT_FOR_RETAINED_ACTUAL_VOXEL_OUTPUT",
+  "passed": true,
+  "overallM3Passed": false,
+  "sourceCommit": "296925eac314f49c2875bcbdb5ea5245e2cf6fe9",
+  "buildId": "scanforge-bab4f9199590cf11",
+  "compilerInputs": 2095,
+  "scope": "Rendered support for full actual original-three ASC-derived reconstruction only: encoding-preserving binaryPLY import via public MCP, actual current GUI canvas front/top/isometric, unchanged full geometry/history. No new reconstruction, independent-quality, native-equivalence or persistence claim.",
+  "inputCaptureProvenance": "FullactualJSON53.6MB from3e3/b9voxelreconstruction asretainedinputonly; current296925e/bab4GUIrender/importsupport, no nativeRePolyoutputsubstitution or newreconstruction claim.",
+  "sourceActualGeometry": {
+    "input": {
+      "filename": "output-geometry.json",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-geometry.json",
+      "bytes": 53565639,
+      "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+      "artifact": {
+        "artifactId": "40c4bd2e-c8d6-4a12-953b-87eee78ee58e",
+        "name": "geometry.json",
+        "mime": "application/json",
+        "bytes": 53565639
+      }
+    },
+    "positionOracle": {
+      "path": "positions",
+      "encoding": "f32",
+      "elements": 2981412,
+      "rawBytes": 11925648,
+      "sha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409"
+    },
+    "inputEvidence": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+    "inputEvidenceSha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3",
+    "scope": "Full actual331268triangle nonindexed output captured from current3e3/b9GUI/MCP reconstruction; no decimation or largest-component filtering"
+  },
+  "repack": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\generated-ply\\asc-full-output.ply",
+    "bytes": 16232382,
+    "sha256": "bb6d2fdc128efd97ed27fc8f30f5cf04e17f9bf5140236dc9cca52246c3419f4",
+    "vertices": 993804,
+    "faces": 331268,
+    "positionSha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409",
+    "indexSha256": "0018799b35cb3378ad09c3b8c1478667b093e053a972d4f16332b87f1573e8b9",
+    "bounds": {
+      "min": [-33.455101013183594, -38.7489013671875, -331.864990234375],
+      "max": [73.0448989868164, 73.2510986328125, -261.364990234375]
+    },
+    "scope": "Full captured nonindexed Float32 triangle soup repacked with identity indices; original JSON has no canonical indexed carrier. No triangle/point/coordinate omitted or changed."
+  },
+  "fullVertexAndIndexAndExpandedCornerHashEquality": true,
+  "geometryAndHistoryUnchangedAcrossViews": true,
+  "views": [
+    {
+      "name": "front",
+      "file": "front.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [
+          19.794898986816406, -262.41812515440665, -296.614990234375
+        ],
+        "target": [19.794898986816406, 17.2510986328125, -296.614990234375],
+        "up": [0, 0, 1],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956, 0, 0, 0, 0, 0.009977601653260131, 0, 0, 0, 0,
+          -0.0001, 0, 0, 0, 0, 1
+        ],
+        "cameraWorldMatrix": [
+          1, 0, 0, 0, 0, 2.220446049250313e-16, 1, 0, 0, -1,
+          2.220446049250313e-16, 0, 19.794898986816406, -262.41812515440665,
+          -296.614990234375, 1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [-33.455101013183594, -38.7489013671875, -331.864990234375],
+          "max": [73.0448989868164, 73.2510986328125, -261.364990234375]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "dfbea60d9e9e39503f4830ad02d795f44ddf2f30c56a2d1ba9689f0f7bacb618"
+    },
+    {
+      "name": "top",
+      "file": "top.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [19.794898986816406, 17.2510986328125, -16.945766447155847],
+        "target": [19.794898986816406, 17.2510986328125, -296.614990234375],
+        "up": [0, 1, 0],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956, 0, 0, 0, 0, 0.009977601653260131, 0, 0, 0, 0,
+          -0.0001, 0, 0, 0, 0, 1
+        ],
+        "cameraWorldMatrix": [
+          1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 19.794898986816406,
+          17.2510986328125, -16.945766447155847, 1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [-33.455101013183594, -38.7489013671875, -331.864990234375],
+          "max": [73.0448989868164, 73.2510986328125, -261.364990234375]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "25104d0a84989ce2ad3ab5d03576ebb2be0804a40c506c585b51aaf3650f3804"
+    },
+    {
+      "name": "isometric",
+      "file": "isometric.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [
+          181.2620006244211, -144.21600300479219, -135.14788859677031
+        ],
+        "target": [19.794898986816406, 17.2510986328125, -296.614990234375],
+        "up": [0, 0, 1],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956, 0, 0, 0, 0, 0.009977601653260131, 0, 0, 0, 0,
+          -0.0001, 0, 0, 0, 0, 1
+        ],
+        "cameraWorldMatrix": [
+          0.7071067811865475, 0.7071067811865477, 1.1102230246251565e-16, 0,
+          -0.40824829046386296, 0.4082482904638627, 0.8164965809277261, 0,
+          0.577350269189626, -0.5773502691896258, 0.5773502691896255, 0,
+          181.2620006244211, -144.21600300479219, -135.14788859677031, 1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [-33.455101013183594, -38.7489013671875, -331.864990234375],
+          "max": [73.0448989868164, 73.2510986328125, -261.364990234375]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "6be197aab8b046050cd652b8b5aa2a1d69f213143811cb454937ecda716e8429"
+    }
+  ],
+  "visualReview": {
+    "top": "Recognizablefive-armbracketwithcentralopening,armwindowsandboltholes",
+    "front": "Obliqueoverallformvisible",
+    "worldIsometric": "Nearlyedge-onduetopartorientation; explicitlyretainedlimitation, not substitutedgeometry"
+  },
+  "sourceAndInputPinsUnchanged": true,
+  "receipt": {
+    "mode": "cad",
+    "label": "asc-actual-output-three-view-native-repoly-c-r1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=768",
+      "--max-semi-space-size=16",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-local-c-runner.mjs",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-native-repoly-c-r1.config.json"
+    ],
+    "leaseSeconds": 900,
+    "guardMiB": 6144,
+    "heapMiB": 768,
+    "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\asc-actual-output-three-view-native-repoly-c-r1.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\asc-actual-output-three-view-native-repoly-c-r1.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\asc-actual-output-three-view-native-repoly-c-r1.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 9374199808,
+    "immediateChildFreeBytes": 9374109696,
+    "identity": {
+      "pid": 60600,
+      "startFileTime": "134374583157570442",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 1075048448,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 1090699264,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 10.871894699987024,
+    "completed": true
+  },
+  "profile": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\owned-default-profile",
+    "files": 223,
+    "logicalBytes": 23355613,
+    "closedBeforeInventory": true,
+    "preservedAtOriginalCPath": true,
+    "archiveExcludesProfile": true
+  },
+  "rawBindingPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\binding-result.json",
+    "bytes": 418039,
+    "sha256": "0c90d369f9ad0522ad1b46a057eef225d18edb9acaadbe67708d6639757b30a8"
+  },
+  "archiveInventoryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\exact-harness-archive\\inventory.json",
+    "bytes": 2028,
+    "sha256": "741695fab0e2f4d18240eb81c29b4770091ee9b43e7aba8db0f36019db5de6e6"
+  },
+  "artifacts": [
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\evidence.json.raw",
+        "bytes": 10950,
+        "sha256": "cc7e448851792dcd085aa87f2c333dfb13d8b96ac9cd294f863e776fa773cb9a"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\evidence.json",
+        "bytes": 10950,
+        "sha256": "cc7e448851792dcd085aa87f2c333dfb13d8b96ac9cd294f863e776fa773cb9a"
+      }
+    },
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\receipt.json.raw",
+        "bytes": 2252,
+        "sha256": "99283e4f0324a813b50ea6c166a223474afce5b4d2b46102c248a4778f436286"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\asc-actual-output-three-view-native-repoly-c-r1.receipt.json",
+        "bytes": 2252,
+        "sha256": "99283e4f0324a813b50ea6c166a223474afce5b4d2b46102c248a4778f436286"
+      }
+    },
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\config.json.raw",
+        "bytes": 7722,
+        "sha256": "057deb7bb524e84278a7f0128a340ab422c01f1902235f3dbda17f2b7ca52065"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-native-repoly-c-r1.config.json",
+        "bytes": 7722,
+        "sha256": "057deb7bb524e84278a7f0128a340ab422c01f1902235f3dbda17f2b7ca52065"
+      }
+    },
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\front.png",
+        "bytes": 124680,
+        "sha256": "dfbea60d9e9e39503f4830ad02d795f44ddf2f30c56a2d1ba9689f0f7bacb618"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\front.png",
+        "bytes": 124680,
+        "sha256": "dfbea60d9e9e39503f4830ad02d795f44ddf2f30c56a2d1ba9689f0f7bacb618"
+      }
+    },
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\top.png",
+        "bytes": 160906,
+        "sha256": "25104d0a84989ce2ad3ab5d03576ebb2be0804a40c506c585b51aaf3650f3804"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\top.png",
+        "bytes": 160906,
+        "sha256": "25104d0a84989ce2ad3ab5d03576ebb2be0804a40c506c585b51aaf3650f3804"
+      }
+    },
+    {
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-asc-reconstruction-views-final-20261026\\isometric.png",
+        "bytes": 105556,
+        "sha256": "6be197aab8b046050cd652b8b5aa2a1d69f213143811cb454937ecda716e8429"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\isometric.png",
+        "bytes": 105556,
+        "sha256": "6be197aab8b046050cd652b8b5aa2a1d69f213143811cb454937ecda716e8429"
+      }
+    }
+  ],
+  "limitations": [
+    "Fullretainednonindexed331268trianglevoxeloutput, notnewnativeRepolygonizeoutput.",
+    "No freshreconstruction/quality/nativeequivalence/persistenceclaim; camera/importrenderingsupport only.",
+    "All993804trianglecornersrepackedwithidentityindices; originalJSONhadnocanonicalindexedcarrier."
+  ]
+}

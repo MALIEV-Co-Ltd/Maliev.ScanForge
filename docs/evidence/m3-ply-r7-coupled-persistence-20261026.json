@@ -1,0 +1,3417 @@
+{
+  "schema": 1,
+  "status": "PASS_COUPLED_PERSISTENCE_CONTINUATION",
+  "passed": true,
+  "completed": true,
+  "continuousR7Status": "FAIL_WORK_DEADLINE_CONTINUOUS_R7",
+  "overallM3Passed": false,
+  "scope": "Exact retained full original-three PLY source/history combined project opened through GUI in a fresh persistent DEFAULT context; full cold geometry/history cycle, same-session public project export/import retry/revision/token proof, full warm geometry/history cycle, separate output-only display, end snapshot/source/build pins",
+  "candidate": {
+    "sourceCommit": "8c299dac2066ada6fb3ec0cc5624dacf814e778e",
+    "buildId": "scanforge-02f14fce13af5f4c",
+    "compilerInputs": 2064,
+    "allBuiltCanonicalInputsMatchCommit": true,
+    "canonicalCommitProof": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.commit-8c299da.json",
+      "bytes": 479536,
+      "sha256": "6c2e0cc483200c79acab090e2fffa1d7ba8232a6d1f627f721668e7ef2ff6b3e"
+    },
+    "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac",
+    "meaning": "Supporting exact8c299/02f checkpoint. Build-base head/tree identify older8fca301 and are not the implementation commit. This does not validate later merged source."
+  },
+  "coupledParent": {
+    "evidence": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-r7-legacy-token-r1-prefix\\evidence.json",
+      "sha256": "b4421b8571135ea6d2af1c1bce745586d6b65ced7d67f62bcf57e1d629f0e02f"
+    },
+    "snapshot": {
+      "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+      "bytes": 815009960,
+      "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856"
+    },
+    "parentStatus": "FAIL_WORK_DEADLINE_CONTINUOUS_R7",
+    "scope": "Exact saved full source/history; no synthetic geometry or decoded editor-state injection"
+  },
+  "inputSnapshot": {
+    "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+    "bytes": 815009960,
+    "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856"
+  },
+  "outputSnapshot": {
+    "stage": "combined",
+    "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-persistence-20261025T195541Z-14eb4b24\\original-three-combined.scanforge",
+    "bytes": 815009960,
+    "sha256": "85cbec24269b494326fe1dfa107852f2ca152e79b288e1cf025cf9ce7285a2a7",
+    "chunks": 3110,
+    "maxDecodedChunkBytes": 262144,
+    "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+  },
+  "retainedEvidence": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\evidence.json",
+    "bytes": 1365089,
+    "sha256": "ee63ad2728adf84a60670101b1c1c292c9748ea3569746a63e6cc6132d4482fb"
+  },
+  "retainedEvents": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\events.jsonl",
+    "bytes": 183245,
+    "sha256": "feda519bf2ff894407dfa66ab06d12c215f68676f5070c6d689904c94d1c9b22"
+  },
+  "retainedArchiveSummary": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\summary.json",
+    "bytes": 6536,
+    "sha256": "c9b5aacf77dd8a7ece8a7991120c1bdca021bd0153f9e738a49f3fe7279a7cfd"
+  },
+  "ownedJobReceipt": {
+    "mode": "cad",
+    "label": "m3-ply-workflow-persistence-r2",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=768",
+      "--max-semi-space-size=16",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-persistence-r2.prepared.mjs",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-persistence-r2.config.json"
+    ],
+    "leaseSeconds": 900,
+    "guardMiB": 5376,
+    "heapMiB": 768,
+    "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-persistence-r2.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-persistence-r2.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-persistence-r2.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 12379660288,
+    "immediateChildFreeBytes": 12379639808,
+    "identity": {
+      "pid": 30512,
+      "startFileTime": "134374318301370391",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 3422064640,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 3437367296,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 456.479740699986,
+    "completed": true
+  },
+  "ownedJobReceiptPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\original-ply-workflow-persistence-r2.receipt.json",
+    "bytes": 2046,
+    "sha256": "2a7d4750fa0d7ad4ce124c7d9cfabe3af64bb50855ef16ed730b197f12ddc431"
+  },
+  "exactHarness": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\harness.mjs",
+    "bytes": 64552,
+    "sha256": "7c9b138d226344099c551a9a89779333bd276d2f36cdf7f7c96a9c8b8a5b9622"
+  },
+  "configuration": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\config.json",
+    "bytes": 3411,
+    "sha256": "f18fc61cef6fad4dc98bfd90e2d13290cc874724c89005a32963fc23218f9c80"
+  },
+  "publishedFiles": [
+    {
+      "path": "m3-ply-persistence-20261026/owned-job.receipt.json",
+      "bytes": 2004,
+      "sha256": "a771ad1e6df5cdc2f00752596c771bc094aed0808cfa3ec41824c722913a3e57",
+      "publicationEncoding": "Prettier-normalized JSON; exact retained raw capture pins remain in retainedEvidence/ownedJobReceiptPin/retainedArchiveSummary and archive-pins"
+    },
+    {
+      "path": "m3-ply-persistence-20261026/retained-archive-summary.json",
+      "bytes": 6391,
+      "sha256": "fbfed78cb50b2eb88cb7f8df026e05cc9b2c770d8f77fdaa5bd74a31cd6d411f",
+      "publicationEncoding": "Prettier-normalized JSON; exact retained raw capture pins remain in retainedEvidence/ownedJobReceiptPin/retainedArchiveSummary and archive-pins"
+    },
+    {
+      "path": "m3-ply-persistence-20261026/coupled-reopened-timeline.png",
+      "bytes": 125625,
+      "sha256": "f4a8fc9715060bbd13f2aafebbd9038141fd897b1d2338bce628acfe57fe8d02",
+      "publicationEncoding": "Exact PNG bytes"
+    },
+    {
+      "path": "m3-ply-persistence-20261026/reconstruction-output-only.png",
+      "bytes": 124826,
+      "sha256": "02a211401847326edf0f84bd925a7f576b6dacb25f87cedf51539026977936d7",
+      "publicationEncoding": "Exact PNG bytes"
+    },
+    {
+      "path": "m3-ply-persistence-20261026/archive-pins.json",
+      "bytes": 3410,
+      "sha256": "a13fb73bb315c47adc17ee619b13766f610396048387233290a87faba110569e",
+      "publicationEncoding": "Prettier-normalized JSON; exact retained raw capture pins remain in retainedEvidence/ownedJobReceiptPin/retainedArchiveSummary and archive-pins"
+    }
+  ],
+  "checks": {
+    "freshOwnedPersistentDefaultContext": true,
+    "incognitoValidated": false,
+    "coldGuiFileOpen": true,
+    "coldFirstDecodeHadNoReusableCandidates": true,
+    "coldAndWarmFullHistoryGeometry": true,
+    "guiOriginalTimeline": true,
+    "publicAlignedAndFinalTimeline": true,
+    "undoRedo": true,
+    "sameSessionPublicExportImport": true,
+    "identicalRequestRetrySameJob": true,
+    "staleRevisionRejected": true,
+    "sourceAndDistPinsUnchanged": true,
+    "snapshotHashReadbackVerified": true,
+    "originalSourceTokenWrapperIdentity": true,
+    "borrowedDecoderFullLengthAndHashRetained": true,
+    "outputOnlyGeometryAndHistoryUnchanged": true,
+    "nativeComparison": false,
+    "independentQualityMeasuredByThisRun": false,
+    "continuousR7ChangedToPass": false
+  },
+  "originalCarrierCount": 21,
+  "originalCanonicalBytes": 761396124,
+  "reusableCandidateCount": 40,
+  "reusableCandidateBytes": 1454873040,
+  "sourceTokens": [
+    {
+      "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95",
+      "bytes": 12038760,
+      "bufferId": 46,
+      "shared": true
+    },
+    {
+      "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104",
+      "bytes": 97123572,
+      "bufferId": 47,
+      "shared": true
+    },
+    {
+      "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417",
+      "bytes": 97123572,
+      "bufferId": 48,
+      "shared": true
+    },
+    {
+      "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d",
+      "bytes": 16505928,
+      "bufferId": 49,
+      "shared": true
+    },
+    {
+      "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76",
+      "bytes": 32374524,
+      "bufferId": 50,
+      "shared": true
+    },
+    {
+      "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d",
+      "bytes": 16505928,
+      "bufferId": 51,
+      "shared": true
+    },
+    {
+      "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156",
+      "bytes": 32374524,
+      "bufferId": 53,
+      "shared": true
+    },
+    {
+      "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c",
+      "bytes": 16505928,
+      "bufferId": 52,
+      "shared": true
+    },
+    {
+      "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81",
+      "bytes": 132880788,
+      "bufferId": 54,
+      "shared": true
+    },
+    {
+      "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a",
+      "bytes": 132880788,
+      "bufferId": 55,
+      "shared": true
+    },
+    {
+      "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5",
+      "bytes": 22390176,
+      "bufferId": 56,
+      "shared": true
+    },
+    {
+      "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+      "bytes": 44293596,
+      "bufferId": 57,
+      "shared": true
+    },
+    {
+      "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4",
+      "bytes": 22390176,
+      "bufferId": 58,
+      "shared": true
+    },
+    {
+      "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8",
+      "bytes": 44293596,
+      "bufferId": 60,
+      "shared": true
+    },
+    {
+      "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545",
+      "bytes": 22390176,
+      "bufferId": 59,
+      "shared": true
+    },
+    {
+      "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7",
+      "bytes": 9869544,
+      "bufferId": 61,
+      "shared": true
+    },
+    {
+      "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3",
+      "bytes": 9869544,
+      "bufferId": 62,
+      "shared": true
+    },
+    {
+      "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+      "bytes": 1681356,
+      "bufferId": 63,
+      "shared": true
+    },
+    {
+      "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674",
+      "bytes": 3289848,
+      "bufferId": 64,
+      "shared": true
+    },
+    {
+      "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c",
+      "bytes": 1681356,
+      "bufferId": 65,
+      "shared": true
+    },
+    {
+      "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0",
+      "bytes": 3289848,
+      "bufferId": 67,
+      "shared": true
+    },
+    {
+      "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c",
+      "bytes": 1681356,
+      "bufferId": 66,
+      "shared": true
+    },
+    {
+      "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149",
+      "bytes": 97123572,
+      "bufferId": 68,
+      "shared": true
+    },
+    {
+      "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5",
+      "bytes": 97123572,
+      "bufferId": 69,
+      "shared": true
+    },
+    {
+      "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14",
+      "bytes": 16505928,
+      "bufferId": 70,
+      "shared": true
+    },
+    {
+      "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231",
+      "bytes": 16505928,
+      "bufferId": 71,
+      "shared": true
+    },
+    {
+      "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef",
+      "bytes": 32374524,
+      "bufferId": 73,
+      "shared": true
+    },
+    {
+      "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915",
+      "bytes": 16505928,
+      "bufferId": 72,
+      "shared": true
+    },
+    {
+      "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a",
+      "bytes": 132880788,
+      "bufferId": 74,
+      "shared": true
+    },
+    {
+      "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb",
+      "bytes": 132880788,
+      "bufferId": 75,
+      "shared": true
+    },
+    {
+      "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+      "bytes": 22390176,
+      "bufferId": 76,
+      "shared": true
+    },
+    {
+      "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd",
+      "bytes": 22390176,
+      "bufferId": 77,
+      "shared": true
+    },
+    {
+      "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11",
+      "bytes": 44293596,
+      "bufferId": 79,
+      "shared": true
+    },
+    {
+      "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f",
+      "bytes": 22390176,
+      "bufferId": 78,
+      "shared": true
+    },
+    {
+      "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503",
+      "bytes": 9869544,
+      "bufferId": 80,
+      "shared": true
+    },
+    {
+      "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4",
+      "bytes": 9869544,
+      "bufferId": 81,
+      "shared": true
+    },
+    {
+      "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117",
+      "bytes": 1681356,
+      "bufferId": 82,
+      "shared": true
+    },
+    {
+      "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8",
+      "bytes": 1681356,
+      "bufferId": 83,
+      "shared": true
+    },
+    {
+      "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a",
+      "bytes": 3289848,
+      "bufferId": 85,
+      "shared": true
+    },
+    {
+      "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0",
+      "bytes": 1681356,
+      "bufferId": 84,
+      "shared": true
+    }
+  ],
+  "tokenIdentityScope": "Exact ORIGINAL main-thread encoding-request source-token SAB wrapper to decoder-request identity; successful encoder response carries SHA/token metadata only. Structured-clone returned wrappers and public per-digest backingId are not global physical backing identities. Borrowed decode backing identity is separately unit-tested.",
+  "coldGuiImport": {
+    "project": {
+      "name": "Untitled project",
+      "projectId": "3a18a13f-a830-456a-a7aa-dcda887158c0",
+      "units": "mm",
+      "objects": [
+        {
+          "id": "eef08325-1980-4ac2-a8ca-902b14614a64",
+          "name": "ply-1.ply",
+          "kind": "mesh",
+          "color": "#a6a6a6",
+          "visible": true,
+          "opacity": 1,
+          "source": "ply-1.ply",
+          "triangles": 334410,
+          "meshPreparation": {
+            "phase": "inactive"
+          },
+          "exactCad": false,
+          "hasBrep": false
+        },
+        {
+          "id": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+          "name": "ply-2.ply",
+          "kind": "mesh",
+          "color": "#a6a6a6",
+          "visible": true,
+          "opacity": 1,
+          "source": "ply-2.ply",
+          "scanSource": {
+            "bytes": 68084515,
+            "triangles": 2697877,
+            "displayedTriangles": 2697877
+          },
+          "indexedTopology": {
+            "vertices": 1375494,
+            "triangles": 2697877
+          },
+          "triangles": 2697877,
+          "meshPreparation": {
+            "phase": "inactive"
+          },
+          "exactCad": false,
+          "hasBrep": false
+        },
+        {
+          "id": "15deed9c-8088-4d26-92bc-f71e79945455",
+          "name": "ply-3.ply",
+          "kind": "mesh",
+          "color": "#a6a6a6",
+          "visible": true,
+          "opacity": 1,
+          "source": "ply-3.ply",
+          "scanSource": {
+            "bytes": 92765339,
+            "triangles": 3691133,
+            "displayedTriangles": 3691133
+          },
+          "indexedTopology": {
+            "vertices": 1865848,
+            "triangles": 3691133
+          },
+          "triangles": 3691133,
+          "meshPreparation": {
+            "phase": "inactive"
+          },
+          "exactCad": false,
+          "hasBrep": false
+        }
+      ],
+      "selectedId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "selectedIds": ["eef08325-1980-4ac2-a8ca-902b14614a64"],
+      "selectionAnchorId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "undo": 5,
+      "redo": 0,
+      "authoring": {
+        "sketch": {
+          "version": 1,
+          "points": [
+            {
+              "id": "p1",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "p2",
+              "x": 40,
+              "y": 0
+            },
+            {
+              "id": "p3",
+              "x": 40,
+              "y": 30
+            },
+            {
+              "id": "p4",
+              "x": 0,
+              "y": 30
+            }
+          ],
+          "segments": [
+            {
+              "id": "s1",
+              "a": "p1",
+              "b": "p2"
+            },
+            {
+              "id": "s2",
+              "a": "p2",
+              "b": "p3"
+            },
+            {
+              "id": "s3",
+              "a": "p3",
+              "b": "p4"
+            },
+            {
+              "id": "s4",
+              "a": "p4",
+              "b": "p1"
+            }
+          ],
+          "constraints": [
+            {
+              "id": "c1",
+              "kind": "fixed",
+              "point": "p1",
+              "x": 0,
+              "y": 0
+            },
+            {
+              "id": "c2",
+              "kind": "horizontal",
+              "segment": "s1"
+            },
+            {
+              "id": "c3",
+              "kind": "vertical",
+              "segment": "s2"
+            },
+            {
+              "id": "c4",
+              "kind": "horizontal",
+              "segment": "s3"
+            },
+            {
+              "id": "c5",
+              "kind": "vertical",
+              "segment": "s4"
+            },
+            {
+              "id": "c6",
+              "kind": "distance",
+              "a": "p1",
+              "b": "p2",
+              "value": 40
+            },
+            {
+              "id": "c7",
+              "kind": "distance",
+              "a": "p2",
+              "b": "p3",
+              "value": 30
+            }
+          ]
+        },
+        "sketches": []
+      },
+      "settings": {
+        "theme": "system",
+        "wireframe": false,
+        "flatShading": true,
+        "normalsDisplay": true,
+        "floorGrid": true,
+        "gridSpacing": 10,
+        "automaticGrid": true,
+        "effectiveGridSpacing": 10,
+        "scale": {
+          "distanceMm": 20,
+          "widthPx": 79.31876514719403,
+          "reference": "view-center"
+        },
+        "snapGrid": false,
+        "originVisible": true,
+        "importPlaceAtOrigin": false,
+        "importAscAttributes": "xyz-rgb",
+        "scanSelection": {
+          "tool": "brush",
+          "through": false,
+          "clip": null,
+          "angleDegrees": 30,
+          "brushRadiusPx": 8,
+          "allConnected": false
+        }
+      }
+    },
+    "history": {
+      "cursor": 5,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening ply-1.ply",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening ply-2.ply",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening ply-3.ply",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Global Fine Align",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Mesh scanTools",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "snapshot": {
+      "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+      "bytes": 815009960,
+      "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856"
+    },
+    "route": "Exact local-host UNC File via production GUI project input and shared decoder; GUI restoration has no API job receipt. Later warm import uses public project_import."
+  },
+  "finalHistory": {
+    "cursor": 5,
+    "entries": [
+      {
+        "index": 0,
+        "label": "Starting state",
+        "current": false
+      },
+      {
+        "index": 1,
+        "label": "Opening ply-1.ply",
+        "current": false
+      },
+      {
+        "index": 2,
+        "label": "Opening ply-2.ply",
+        "current": false
+      },
+      {
+        "index": 3,
+        "label": "Opening ply-3.ply",
+        "current": false
+      },
+      {
+        "index": 4,
+        "label": "Global Fine Align",
+        "current": false
+      },
+      {
+        "index": 5,
+        "label": "Mesh scanTools",
+        "current": true
+      }
+    ],
+    "note": "Indices address retained history only; use history_seek with a fresh revision."
+  },
+  "outputOnlyDisplay": {
+    "hiddenTargetIds": [
+      "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "15deed9c-8088-4d26-92bc-f71e79945455"
+    ],
+    "retainedIds": [
+      "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "15deed9c-8088-4d26-92bc-f71e79945455"
+    ],
+    "geometryUnchanged": true,
+    "historyUnchanged": true
+  },
+  "allVerifiedPhaseBufferDigests": {
+    "cold-combined": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "cold-undo": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "cold-redo": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "cold-gui-original-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+          }
+        ]
+      }
+    ],
+    "cold-aligned-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "cold-final-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "combined-post-transfer": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "warm-combined": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "warm-undo": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "warm-redo": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "warm-gui-original-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+          }
+        ]
+      }
+    ],
+    "warm-aligned-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "warm-final-timeline": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "output-only-display": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ]
+  },
+  "expectedFullStateBufferDigests": {
+    "original": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+          }
+        ]
+      }
+    ],
+    "aligned": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "84d49b5046d7ef87cb0d438f0a47e4e042913cbe716eea8ab12df26f988f6f9a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "3cabea09382e185ff3b9709aa716c3418b82e6bf518073c721ebcb0c23d9f8c0"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "99aeb483fc4eb8ded4ac57a1b17e4f47e0af2548f1151089d8375119654dcbf8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 822462,
+            "rawBytes": 3289848,
+            "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "f99b56daf28ca2527219aa7fefe1009809440bc58500b60d0ff3244d0ed71117"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "164678affc08effad882759705ec21a29d68b38e372c5bd8899a41aa21e938a4"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2467386,
+            "rawBytes": 9869544,
+            "sha256": "5de0d4c09b5bfdff33b924148727b9636b15a1fa9099b625347cda53ad861503"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ],
+    "combined": [
+      {
+        "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 3009690,
+            "rawBytes": 12038760,
+            "sha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+          }
+        ]
+      },
+      {
+        "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "f84ccb52c66f0b2521278f1f41a7c07e6c72d539307887f96c2d829535806156"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1c5b4d219c57c12ebc6ad2cda35a1d970891b8bff1e5d7307e53c3b005bbee2c"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "428c768c2d54b202df20255b4605ae2163623d2611deb33331f96377da96ac2d"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 8093631,
+            "rawBytes": 32374524,
+            "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "84c409a6077609999c7a3d737510ea3da61b20edb9a77d17cdedf5356b686b0d"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "6121549b776458edfb0aee3c02195c58e1f878a6e6e8773ab6d9ef0bfc142417"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 24280893,
+            "rawBytes": 97123572,
+            "sha256": "1eee84da639c802e804d6abf6d672db7d2d325e1c188c9fc0c95bc07a4554104"
+          }
+        ]
+      },
+      {
+        "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+        "units": "mm",
+        "buffers": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "05d3361fe7d9c1d6c6d9e2dd838feb96eda121d8fe4a8284b3b8686b77e482f8"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "49597b451791ade4bd37d18cfc7bd0730598c5c0abc9cbb12f227a0ace702545"
+          },
+          {
+            "path": "indexedMesh.normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "9bd51b0a8c167c4ea18558df3b255844452eb147d006590802e6d50e19ec4eb4"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 11073399,
+            "rawBytes": 44293596,
+            "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "513e632ec0286102e121d2f307580947f33a237a270a9e8f9d98bb5b8358c9e5"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "47d0a865f5fbe317b8de964e4372143644e3e94193c55bff4e6dddc2c6344c3a"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 33220197,
+            "rawBytes": 132880788,
+            "sha256": "9d855e274a967aa622ca864fae86a677fd1aa87974a93c4ce933c392a2247c81"
+          }
+        ]
+      }
+    ]
+  },
+  "originalFileIds": [
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+      "name": "ply-1.ply",
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "indexedVertices": 140113,
+      "triangles": 274154,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+        }
+      ]
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+      "name": "ply-2.ply",
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "indexedVertices": 1375494,
+      "triangles": 2697877,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+        }
+      ]
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-3.ply",
+      "name": "ply-3.ply",
+      "bytes": 92765339,
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+      "indexedVertices": 1865848,
+      "triangles": 3691133,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+        }
+      ]
+    }
+  ],
+  "sourceNormalChannels": {
+    "indexedMesh.normals": {
+      "meaning": "Scanner-authored vertex normals in original indexed vertex order, including unused vertices. Distinct from computed display/registration normals.",
+      "authority": "src/types.ts IndexedMesh.normals; PLY parser source normal attribute",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "normals": {
+      "meaning": "Scanner-authored vectors expanded into entity triangle-corner order for these original PLY imports; independently serialized/rotated carrier, not the computed indexed geometry-normal cache.",
+      "authority": "src/import-parser.ts sourceNormals expansion/onMeshNormals and src/imported-scan.ts onMeshNormals",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "indexedMesh.geometryNormals": {
+      "meaning": "Stored computed normal per indexed vertex, used by indexed mesh rendering; distinct from scanner-authored normals.",
+      "authority": "src/types.ts and src/scan-render-data.ts prepareStoredScanRenderData",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "indexedMesh.facetNormals": {
+      "meaning": "Stored computed XYZ normal per indexed triangle; native-style staged rigid setters rotate this cached state. Input state is retained independently from vertex normals.",
+      "authority": "src/types.ts IndexedMesh.facetNormals and shared import/setter/history/project lifecycle",
+      "nativeOracleClaimedByThisAssessment": false
+    }
+  },
+  "sourcePins": {
+    "sourceReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.source.json",
+      "sha256": "cdd5b481b84883b6d99ee1049fdf0b7dc71e25d8b5d0a0209e75374584649ea2",
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac"
+    },
+    "buildReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.build.json",
+      "sha256": "4ae53f0f75cffd8ae4e5af99422c1529c57817045b8d4cdfd371669e7790c70b",
+      "command": "npm run build",
+      "exitCode": 0,
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "meaning": "Exact dirty candidate bytes around the build; head/tree identify the unchanged Git base, not uncommitted implementation."
+    },
+    "distReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.dist.json",
+      "sha256": "abd93ae836232989d165bda1aead156fd7eaf0dc0cf8dddc3dcfe99692fe81c1",
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac"
+    }
+  },
+  "renderedEvidenceScope": "Existing output-only view is oblique/nearly edge-on and can show moire; it demonstrates visibility/state preservation, not sufficient surface-usability review. Three standard render-only views are prepared separately, not yet executed.",
+  "remainingGates": [
+    "Current-candidate original STL/ASC matrix and any subsequent merged-source validation",
+    "Owner clarification of native Re-polygonize scope/provenance",
+    "Final registration/usability interpretation of mixed metrics",
+    "Reviewed full M3 merge/closure"
+  ],
+  "geometryCopiedIntoRepository": false,
+  "publicationEncoding": "Published JSON is normalized for repository formatting. Source capture hashes refer to unchanged private raw files; publishedFiles hashes refer to actual normalized repository files."
+}

@@ -178,8 +178,30 @@ try {
   const errors = [];
   page.on("dialog", (dialog) => dialog.accept());
   page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    const NativeWeakRef = globalThis.WeakRef;
+    globalThis.__cloudWorldCacheMiss = { armedLength: 0, misses: 0 };
+    globalThis.WeakRef = class extends NativeWeakRef {
+      deref() {
+        const value = super.deref();
+        const control = globalThis.__cloudWorldCacheMiss;
+        // One deterministic cache miss, with no strong geometry reference,
+        // forced collection, buffer edit, or change to any other weak lookup.
+        if (
+          value instanceof Float32Array &&
+          value.length === control.armedLength
+        ) {
+          control.armedLength = 0;
+          control.misses++;
+          return undefined;
+        }
+        return value;
+      }
+    };
+  });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -253,6 +275,167 @@ try {
       },
     ],
   };
+  // A separate synthetic regression fixture crosses the real digest's one-MiB
+  // yield. Full original-file placement acceptance is measured separately.
+  const regressionPoints = 100000;
+  const local = floats(fixture.positionsBits);
+  const regressionPositions = Array.from(
+    { length: regressionPoints * 3 },
+    (_, i) => local[i % local.length],
+  );
+  const regressionNormals = regressionPositions.map((_, i) =>
+    i % 3 === 2 ? 1 : 0,
+  );
+  const regressionPicks = [0, 3, 7].map((i) => local.slice(i * 3, i * 3 + 3));
+  const offset = [2, 3, 4];
+  const fixedPicks = regressionPicks.map((p) => p.map((v, i) => v + offset[i]));
+  const regressionProject = {
+    ...project,
+    name: "Cloud selection cache regression",
+    entities: [
+      {
+        ...project.entities[0],
+        id: "cache-cloud",
+        positions: regressionPositions,
+        normals: regressionNormals,
+      },
+      {
+        ...project.entities[0],
+        id: "cache-fixed",
+        name: "Fixed cache reference",
+        positions: fixedPicks.flat(),
+        normals: undefined,
+        meshSelection: undefined,
+      },
+    ],
+  };
+  const regressionBytes = Buffer.from(JSON.stringify(regressionProject));
+  let regressionArtifact;
+  for (let offset = 0; offset < regressionBytes.length; offset += 131072) {
+    const chunk = await call("artifact_put", {
+      name: "cloud-cache-regression.json",
+      ...(regressionArtifact ? { artifactId: regressionArtifact } : {}),
+      offset,
+      base64: regressionBytes
+        .subarray(offset, offset + 131072)
+        .toString("base64"),
+    });
+    regressionArtifact = chunk.result.artifactId;
+  }
+  await job(
+    await mutate("project_import", {
+      artifactId: regressionArtifact,
+      replace: true,
+    }),
+  );
+  await mutate("object_select", { entityId: "cache-cloud" });
+  await mutate("selection_set", { entityId: "cache-cloud", points: [1, 3] });
+  const regressionDialog = page.getByRole("complementary", {
+    name: "N-points alignment",
+    exact: true,
+  });
+  await mutate("landmark_edit", {
+    action: "begin",
+    movingId: "cache-cloud",
+    fixedId: "cache-fixed",
+    targetScope: "fixed",
+  });
+  for (let i = 0; i < 3; i++) {
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: "cache-cloud",
+      point: regressionPicks[i],
+    });
+    await mutate("landmark_edit", {
+      action: "pick",
+      entityId: "cache-fixed",
+      point: fixedPicks[i],
+    });
+  }
+  await regressionDialog.getByText(/Preview RMS:/).waitFor();
+  await regressionDialog
+    .getByRole("button", { name: "OK", exact: true })
+    .click();
+  await regressionDialog.waitFor({ state: "hidden" });
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  const regressionBefore = await job(
+    await call("object_geometry_digest", { entityId: "cache-cloud" }),
+  );
+  assert(
+    regressionBefore.buffers.find((b) => b.path === "positions").rawBytes >
+      1048576,
+  );
+  const regressionHistory = (await call("history_get")).result;
+  const selectedPointContent = async () => {
+    const { artifact, ...metadata } = (
+      await call("selection_get", { entityId: "cache-cloud" })
+    ).result;
+    const data = (
+      await call("artifact_read", { artifactId: artifact.artifactId })
+    ).result;
+    const points = JSON.parse(Buffer.from(data.base64, "base64").toString());
+    assert.deepEqual(points, [1, 3]);
+    assert.equal(metadata.elementKind, "points");
+    assert.equal(metadata.count, 2);
+    return {
+      ...metadata,
+      points,
+      artifact: {
+        name: artifact.name,
+        mime: artifact.mime,
+        bytes: artifact.bytes,
+      },
+    };
+  };
+  const regressionSelection = await selectedPointContent();
+  const regressionRevision = (await call("project_get")).revision;
+  await page.evaluate((length) => {
+    globalThis.__cloudWorldCacheMiss.armedLength = length;
+  }, regressionPoints * 3);
+  const regressionReceipt = await call("object_geometry_digest", {
+    entityId: "cache-cloud",
+  });
+  ledger.selectionCacheDigest = {
+    revision: regressionRevision,
+    jobId: regressionReceipt.result.jobId,
+  };
+  const regressionAfter = await job(regressionReceipt);
+  const cacheMisses = await page.evaluate(
+    () => globalThis.__cloudWorldCacheMiss,
+  );
+  assert.equal(cacheMisses.misses, 1);
+  assert.equal(cacheMisses.armedLength, 0);
+  assert.equal((await call("project_get")).revision, regressionRevision);
+  assert.deepEqual((await call("history_get")).result, regressionHistory);
+  assert.deepEqual(await selectedPointContent(), regressionSelection);
+  const digestValues = (digest) =>
+    digest.buffers.map(({ path, encoding, elements, rawBytes, sha256 }) => ({
+      path,
+      encoding,
+      elements,
+      rawBytes,
+      sha256,
+    }));
+  assert.deepEqual(
+    digestValues(regressionAfter),
+    digestValues(regressionBefore),
+  );
+  assert.match(regressionBefore.pointCloudMatrixBits, /^[a-f0-9]{192}$/i);
+  assert.match(regressionAfter.pointCloudMatrixBits, /^[a-f0-9]{192}$/i);
+  assert.equal(
+    regressionAfter.pointCloudMatrixBits,
+    regressionBefore.pointCloudMatrixBits,
+  );
+  ledger.selectionCacheDigest = {
+    ...ledger.selectionCacheDigest,
+    passed: true,
+    cacheMisses,
+  };
   const upload = await call("artifact_put", {
     name: "cloud.json",
     offset: 0,
@@ -278,7 +461,7 @@ try {
     await sourceOnlyDialog
       .getByRole("button", { name: "Fixed alignment target", exact: true })
       .innerText(),
-    /All visible references/,
+    /First visible reference/,
   );
   assert.equal(
     await sourceOnlyDialog
@@ -296,7 +479,7 @@ try {
   const preview = await job(
     await mutate("alignment_preview", { entityIds: ["cloud"], constraints }),
   );
-  assert(preview.targets[0].pointCloudPose);
+  assert.match(preview.targets[0].pointCloudPose, /^[a-f0-9]{192}$/i);
   await mutate("preview_discard", { target: "datum" });
   await mutate("object_select", { entityId: "cloud" });
   await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
@@ -366,6 +549,7 @@ try {
   const second = await job(
     await mutate("alignment_apply", { entityIds: ["cloud"], constraints }),
   );
+  assert.match(second.targets[0].pointCloudPose, /^[a-f0-9]{192}$/i);
   assert.notEqual(
     second.targets[0].pointCloudPose,
     preview.targets[0].pointCloudPose,
@@ -460,7 +644,7 @@ try {
     .getByRole("button", { name: "Fixed alignment target", exact: true })
     .click();
   await page
-    .getByRole("option", { name: "All visible references", exact: true })
+    .getByRole("option", { name: "First visible reference", exact: true })
     .click();
   assert.equal((await call("landmark_get")).result.fixedId, null);
   assert((await call("landmark_get")).result.referenceIds.includes(fixed.id));
@@ -508,35 +692,40 @@ try {
   const guiPaired = (await call("landmark_get")).result;
   assert.equal(guiPaired.fixedId, null);
   assert(guiPaired.picks.some((pick) => pick.entityId === otherReference.id));
-  assert(guiPaired.pointCloudPose);
+  assert.match(guiPaired.pointCloudPose, /^[a-f0-9]{192}$/i);
   assert.equal(guiPaired.diagnostics.localBuffersRetained, true);
   assert.equal(guiPaired.candidateCount, 1);
   assert.equal(guiPaired.candidateIndex, 0);
-  assert.equal(guiPaired.canPreview, false);
+  assert.equal(guiPaired.canPreview, true);
   assert.equal(guiPaired.canReset, true);
-  assert.equal(guiPaired.canRemove, false);
+  assert.equal(guiPaired.canRemove, true);
   assert.equal(
     await landmarkDialog
       .getByRole("button", { name: "Preview", exact: true })
       .isDisabled(),
-    true,
+    false,
   );
   const repeatedPreview = await job(
     await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
-    "failed",
   );
-  assert.match(repeatedPreview.error.message, /Reset/i);
+  assert.deepEqual(repeatedPreview.registration, guiPaired.registration);
+  assert.match(repeatedPreview.pointCloudPose, /^[a-f0-9]{192}$/i);
+  assert.equal(repeatedPreview.pointCloudPose, guiPaired.pointCloudPose);
   assert.equal(
     (await call("object_get", { entityId: "cloud" })).result.pointCloudPose,
     second.targets[0].pointCloudPose,
   );
   assert.deepEqual(await geometry(), beforePaired);
+  const picksBeforeReset = (await call("landmark_get")).result.picks;
   await mutate("landmark_edit", { action: "reset" });
-  assert.equal((await call("landmark_get")).result.canPreview, true);
+  const resetState = (await call("landmark_get")).result;
+  assert.equal(resetState.canPreview, true);
+  assert.deepEqual(resetState.picks, picksBeforeReset);
   const agentPaired = await job(
     await mutate("landmark_preview", { parallel: true, workerCount: 2 }),
   );
   assert.deepEqual(agentPaired.registration, guiPaired.registration);
+  assert.match(agentPaired.pointCloudPose, /^[a-f0-9]{192}$/i);
   assert.equal(agentPaired.pointCloudPose, guiPaired.pointCloudPose);
   await mutate("landmark_accept", {});
   const paired = (await call("object_get", { entityId: "cloud" })).result;
@@ -626,10 +815,11 @@ try {
     "Fixed picks span multiple ASC references without modifying either reference",
     "MCP landmark picks retain native Float32 coordinate precision",
     "Point-pair GUI/MCP preview composes native cloud pose",
-    "Single-result preview locks GUI and MCP until reset",
+    "Single-result preview keeps pairs editable and repeated previews preserve the result",
     "Paired accept and undo preserve point type, normals and selection",
     "mesh_process paired and legacy GUI panel preserve the same native pose",
     "MCP rejects point masks for whole-cloud registration without changing geometry",
+    "GUI landmark Apply plus one world-cache miss preserves selection identity and read-only digest revision",
   ];
   assert.equal(errors.length, 0, errors.join("\n"));
   await page.screenshot({

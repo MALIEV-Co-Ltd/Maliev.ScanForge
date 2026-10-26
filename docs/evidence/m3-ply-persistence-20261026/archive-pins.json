@@ -1,0 +1,96 @@
+{
+  "scope": "Exact retained private archive file pins; raw geometry is external and was not copied",
+  "archive": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2",
+  "summaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\summary.json",
+    "bytes": 6536,
+    "sha256": "c9b5aacf77dd8a7ece8a7991120c1bdca021bd0153f9e738a49f3fe7279a7cfd"
+  },
+  "files": [
+    {
+      "path": "evidence.json",
+      "bytes": 1365089,
+      "sha256": "ee63ad2728adf84a60670101b1c1c292c9748ea3569746a63e6cc6132d4482fb"
+    },
+    {
+      "path": "events.jsonl",
+      "bytes": 183245,
+      "sha256": "feda519bf2ff894407dfa66ab06d12c215f68676f5070c6d689904c94d1c9b22"
+    },
+    {
+      "path": "harness.mjs",
+      "bytes": 64552,
+      "sha256": "7c9b138d226344099c551a9a89779333bd276d2f36cdf7f7c96a9c8b8a5b9622"
+    },
+    {
+      "path": "config.json",
+      "bytes": 3411,
+      "sha256": "f18fc61cef6fad4dc98bfd90e2d13290cc874724c89005a32963fc23218f9c80"
+    },
+    {
+      "path": "direct-browser-stderr.log",
+      "bytes": 6511,
+      "sha256": "1d6e10be4daf7ed746e23596670e078ac178b0f2acf6bb96f85260462e0d6b80"
+    },
+    {
+      "path": "coupled-reopened-timeline.png",
+      "bytes": 125625,
+      "sha256": "f4a8fc9715060bbd13f2aafebbd9038141fd897b1d2338bce628acfe57fe8d02"
+    },
+    {
+      "path": "reconstruction-output-only.png",
+      "bytes": 124826,
+      "sha256": "02a211401847326edf0f84bd925a7f576b6dacb25f87cedf51539026977936d7"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.receipt.json",
+      "bytes": 2046,
+      "sha256": "2a7d4750fa0d7ad4ce124c7d9cfabe3af64bb50855ef16ed730b197f12ddc431"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.stdout.log",
+      "bytes": 339,
+      "sha256": "ccd835d9333098e9b9be545dc03888808fc4d8a00203ac4cfbab0b641d2f68e8"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.disk-admission.json",
+      "bytes": 140,
+      "sha256": "1d32530efec5b1cd511079245625e34dd8096f1ff466c7132fb58b0f842a00ab"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.source.json",
+      "bytes": 546163,
+      "sha256": "cdd5b481b84883b6d99ee1049fdf0b7dc71e25d8b5d0a0209e75374584649ea2"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.build.json",
+      "bytes": 884,
+      "sha256": "4ae53f0f75cffd8ae4e5af99422c1529c57817045b8d4cdfd371669e7790c70b"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.dist.json",
+      "bytes": 49846,
+      "sha256": "abd93ae836232989d165bda1aead156fd7eaf0dc0cf8dddc3dcfe99692fe81c1"
+    },
+    {
+      "path": "private\\original-ply-persistence-r2-run.py",
+      "bytes": 2154,
+      "sha256": "d4035f79b0a9ea02de9f6ce075971185294756124093f75d9781cf92d56884e6"
+    },
+    {
+      "path": "private\\prepare-ply-persistence-harness.py",
+      "bytes": 13677,
+      "sha256": "d8bc13392956f11f6ce9c61bcd124f018371afed50f222b6bf0dedc18392efd8"
+    },
+    {
+      "path": "private\\ply-owned-memory.ps1",
+      "bytes": 2325,
+      "sha256": "e828fe1c15546e43db87cabc0226f566d38be5e26c6f5536c6354e7a976cfe32"
+    }
+  ]
+}

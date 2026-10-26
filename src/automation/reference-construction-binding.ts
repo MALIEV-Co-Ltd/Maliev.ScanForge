@@ -38,6 +38,7 @@ function capture(snapshot: WorkspaceSnapshot): unknown[] {
       entity.indexedMesh?.triangles.length,
       entity.indexedMesh?.normals,
       entity.indexedMesh?.geometryNormals,
+      entity.indexedMesh?.facetNormals,
       entity.pointCloudPlacement,
       entity.pointCloudPlacement?.sourcePositions,
       entity.pointCloudPlacement?.sourceNormals,

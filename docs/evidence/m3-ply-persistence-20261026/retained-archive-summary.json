@@ -1,0 +1,147 @@
+{
+  "status": "PASS_COUPLED_PERSISTENCE_CONTINUATION",
+  "continuousR7Status": "FAIL_WORK_DEADLINE_CONTINUOUS_R7",
+  "coupledParent": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-r7-legacy-token-r1-prefix\\evidence.json",
+    "sha256": "b4421b8571135ea6d2af1c1bce745586d6b65ced7d67f62bcf57e1d629f0e02f"
+  },
+  "inputSnapshot": {
+    "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+    "bytes": 815009960,
+    "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856"
+  },
+  "scope": "Exact retained full original-three PLY source/history combined project opened through GUI in a fresh persistent DEFAULT context; full cold geometry/history cycle, same-session public project export/import retry/revision/token proof, full warm geometry/history cycle, separate output-only display, end snapshot/source/build pins",
+  "originalCarrierCount": 21,
+  "originalCanonicalBytes": 761396124,
+  "reusableCandidateCount": 40,
+  "reusableCandidateBytes": 1454873040,
+  "candidateMeaning": "All39 parent prefix hashes/sizes plus cold-decoded reconstructed output; original main source-token wrapper identity, not JavaScript equality across worker clones",
+  "verifiedColdAndWarmPhases": [
+    "combined current",
+    "Undo aligned21",
+    "Redo combined",
+    "GUI timeline original21",
+    "MCP timeline aligned21",
+    "MCP timeline final combined"
+  ],
+  "outputOnlyDisplay": {
+    "hiddenTargetIds": [
+      "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "15deed9c-8088-4d26-92bc-f71e79945455"
+    ],
+    "retainedIds": [
+      "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "15deed9c-8088-4d26-92bc-f71e79945455"
+    ],
+    "geometryUnchanged": true,
+    "historyUnchanged": true
+  },
+  "outputSnapshot": {
+    "stage": "combined",
+    "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-persistence-20261025T195541Z-14eb4b24\\original-three-combined.scanforge",
+    "bytes": 815009960,
+    "sha256": "85cbec24269b494326fe1dfa107852f2ca152e79b288e1cf025cf9ce7285a2a7",
+    "chunks": 3110,
+    "maxDecodedChunkBytes": 262144,
+    "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+  },
+  "childPeakJobMemoryBytes": 3422064640,
+  "outerPeakJobMemoryBytes": 3437367296,
+  "elapsedSeconds": 456.479740699986,
+  "cleanFinalizedJob": true,
+  "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac",
+  "screenshots": [
+    "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\coupled-reopened-timeline.png",
+    "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-ply-persistence-r2\\reconstruction-output-only.png"
+  ],
+  "visualInspection": "Output-only PNG inspected: all3 object rows remain; ply-2/ply-3 visibility icons are disabled; selected reconstructed ply-1 is rendered at an oblique, nearly edge-on angle. This is display evidence, not an independent reconstruction-quality assessment.",
+  "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-persistence-r2\\disposable-browser-profile-97cb0536-95f6-49ce-b17c-f3c81eeef27a",
+  "files": [
+    {
+      "path": "evidence.json",
+      "bytes": 1365089,
+      "sha256": "ee63ad2728adf84a60670101b1c1c292c9748ea3569746a63e6cc6132d4482fb"
+    },
+    {
+      "path": "events.jsonl",
+      "bytes": 183245,
+      "sha256": "feda519bf2ff894407dfa66ab06d12c215f68676f5070c6d689904c94d1c9b22"
+    },
+    {
+      "path": "harness.mjs",
+      "bytes": 64552,
+      "sha256": "7c9b138d226344099c551a9a89779333bd276d2f36cdf7f7c96a9c8b8a5b9622"
+    },
+    {
+      "path": "config.json",
+      "bytes": 3411,
+      "sha256": "f18fc61cef6fad4dc98bfd90e2d13290cc874724c89005a32963fc23218f9c80"
+    },
+    {
+      "path": "direct-browser-stderr.log",
+      "bytes": 6511,
+      "sha256": "1d6e10be4daf7ed746e23596670e078ac178b0f2acf6bb96f85260462e0d6b80"
+    },
+    {
+      "path": "coupled-reopened-timeline.png",
+      "bytes": 125625,
+      "sha256": "f4a8fc9715060bbd13f2aafebbd9038141fd897b1d2338bce628acfe57fe8d02"
+    },
+    {
+      "path": "reconstruction-output-only.png",
+      "bytes": 124826,
+      "sha256": "02a211401847326edf0f84bd925a7f576b6dacb25f87cedf51539026977936d7"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.receipt.json",
+      "bytes": 2046,
+      "sha256": "2a7d4750fa0d7ad4ce124c7d9cfabe3af64bb50855ef16ed730b197f12ddc431"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.stdout.log",
+      "bytes": 339,
+      "sha256": "ccd835d9333098e9b9be545dc03888808fc4d8a00203ac4cfbab0b641d2f68e8"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-ply-workflow-persistence-r2.disk-admission.json",
+      "bytes": 140,
+      "sha256": "1d32530efec5b1cd511079245625e34dd8096f1ff466c7132fb58b0f842a00ab"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.source.json",
+      "bytes": 546163,
+      "sha256": "cdd5b481b84883b6d99ee1049fdf0b7dc71e25d8b5d0a0209e75374584649ea2"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.build.json",
+      "bytes": 884,
+      "sha256": "4ae53f0f75cffd8ae4e5af99422c1529c57817045b8d4cdfd371669e7790c70b"
+    },
+    {
+      "path": "pins\\m3-legacy-pinned-build-r1.dist.json",
+      "bytes": 49846,
+      "sha256": "abd93ae836232989d165bda1aead156fd7eaf0dc0cf8dddc3dcfe99692fe81c1"
+    },
+    {
+      "path": "private\\original-ply-persistence-r2-run.py",
+      "bytes": 2154,
+      "sha256": "d4035f79b0a9ea02de9f6ce075971185294756124093f75d9781cf92d56884e6"
+    },
+    {
+      "path": "private\\prepare-ply-persistence-harness.py",
+      "bytes": 13677,
+      "sha256": "d8bc13392956f11f6ce9c61bcd124f018371afed50f222b6bf0dedc18392efd8"
+    },
+    {
+      "path": "private\\ply-owned-memory.ps1",
+      "bytes": 2325,
+      "sha256": "e828fe1c15546e43db87cabc0226f566d38be5e26c6f5536c6354e7a976cfe32"
+    }
+  ]
+}

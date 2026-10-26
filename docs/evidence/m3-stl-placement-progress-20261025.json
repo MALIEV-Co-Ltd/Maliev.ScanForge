@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "milestoneComplete": false,
+  "sourceCommit": "32ea054586f71046ebf07ba7520f18ada11528f4",
+  "buildId": "scanforge-4795f41cf4da1c9e",
+  "results": [
+    {
+      "schema": 1,
+      "passed": true,
+      "buildId": "scanforge-4795f41cf4da1c9e",
+      "scope": "Complete original-three STL files in each isolated per-source run, production GUI origin/reference preview/cancel/apply and public MCP equality/revision/retry, actual STL facet-corner landmark correspondences against the complete duplicated current original mesh; native fixed-target surface refinement remains enabled, GUI preview/cancel/OK and public MCP preview/accept equality, all expanded/indexed position, triangle index, computed geometry-normal digests (no separate imported scanner-normal carrier), UndoRedo/timeline/project reopen. Known placement validation, not interscan registration quality, GUI canvas-pick acquisition, native full-controller equivalence or M3 completion.",
+      "completedMovingSource": "scan-1.stl",
+      "remainingMovingSources": ["scan-2.stl", "scan-3.stl"],
+      "allSceneAcceptedTriangles": [273139, 2547403, 3326910],
+      "profileScope": {
+        "persistent": true,
+        "incognito": false,
+        "ownedDisposableProfile": true,
+        "userDataDir": "C:\\Users\\Shoung\\AppData\\Local\\Temp\\scanforge-original-stl-placement-9857b34f-5f07-46e4-acb6-2d19b7f9c892\\owned-default-profile",
+        "previousHarnessScope": "browser.newPage() created an incognito context"
+      },
+      "knownPointRmsMm": 0,
+      "refinement": {
+        "accepted": true,
+        "matrix": [
+          1, 3.6489899990401313e-10, -4.327960213263211e-11,
+          -2.0671558687013203e-8, -3.648989999049945e-10, 1,
+          -2.2676305262176138e-11, 7.466454121640709e-10, 4.327960212435755e-11,
+          2.2676305277968822e-11, 1, -3.661781988739676e-11
+        ],
+        "parameters": [
+          9.999999979328441, 10.000000000746645, 9.999999999963382,
+          1.5707963268175729, 1.570796326751617, 1.5707963264299976
+        ],
+        "initialError": 1.0352829704629585e-14,
+        "best": 7.188694084447889e-15,
+        "iterations": 129
+      },
+      "normalScope": "Baseline and final imported STL entities expose computed indexedMesh.geometryNormals; no separate entity.normals or indexedMesh.normals stream is present. Raw file facet-normal bytes are bound only by complete original-file SHA256, not asserted as imported scanner attributes.",
+      "staticAdmission": {
+        "rawGeometryBytes": 628777104,
+        "duplicateBytes": 27959844,
+        "poseSuccessorsBytes": 49364352,
+        "workerGeometryBytes": 55919688,
+        "targetTreeBudgetBytes": 536870912,
+        "processReserveBytes": 1073741824,
+        "staticEstimateBytes": 2372633724,
+        "limitBytes": 4294967296,
+        "meaning": "Conservative numeric carrier/history/worker allowance plus the existing target-tree cap and a 1 GiB process reserve; not a proof of runtime peak, target-tree completion or GPU memory. Native membership/node growth is still admitted by the production 512 MiB estimator. Every run retains all three original meshes and one full duplicate, with no decimation or target truncation."
+      },
+      "receipt": {
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 115.47706489998382,
+        "childPeakJobMemoryBytes": 2822995968,
+        "outerPeakJobMemoryBytes": 2836795392,
+        "childJobFinalActive": 0,
+        "rootExited": true,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "cleanupErrors": [],
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 900
+      },
+      "visualInspection": {
+        "inspected": ["stl-1-landmark-preview.png"],
+        "scope": "Production mesh geometry, landmark markers and three-view panel render without framework overlay; no interscan quality inference."
+      },
+      "files": [
+        {
+          "path": "harness/original-stl-placement-browser.mjs",
+          "bytes": 21995,
+          "sha256": "e0ee6f9502486cf902f66618b20ecf92ff076e584ec7eac28f971ee9e1d4069e"
+        },
+        {
+          "path": "harness/prepare-original-stl-placement.py",
+          "bytes": 9805,
+          "sha256": "b3970a6fd98b2e7ca4f613882b6aaf3b5f44b642b89904e04ec085bb46edff43"
+        },
+        {
+          "path": "harness/stl-placement-browser.mjs",
+          "bytes": 1775,
+          "sha256": "bc894e72896e9a3f7265da9ef46efba5cb21187c3ce01aeaa37701f50317034a"
+        },
+        {
+          "path": "harness/run.py",
+          "bytes": 773,
+          "sha256": "592f94f56e6c1d38845581b9b5080cd6958f8dbbe089f0d9e285e53b725c20d0"
+        },
+        {
+          "path": "run/original-stl1-placement-persistent-r1.stdout.log",
+          "bytes": 21273,
+          "sha256": "fec027031747cb5a43e2cbd4bb854fe8770baf7a760c2f3f7a333aaba520db48"
+        },
+        {
+          "path": "run/original-stl1-placement-persistent-r1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "run/original-stl1-placement-persistent-r1.receipt.json",
+          "bytes": 1766,
+          "sha256": "c00d7c25c0d0264635e90013e964ae994243f3722e6a7180616a2030db70ecaf"
+        },
+        {
+          "path": "build/normal-pinned-build.source.json",
+          "bytes": 544318,
+          "sha256": "079291ca3377ea816db79be4ce0a5f32df8f86b8c30fe12fab433d0bced13514"
+        },
+        {
+          "path": "build/normal-pinned-build.build.json",
+          "bytes": 878,
+          "sha256": "10ba42bc3dc8034e78466a06879464a1c10121b480597fe2ae88c71368fa4c19"
+        },
+        {
+          "path": "build/normal-pinned-build.dist.json",
+          "bytes": 49840,
+          "sha256": "fdd35f6b3e76d667fe49576029c3e1018e28a081eafc16da69704dd18e27cb7d"
+        },
+        {
+          "path": "build/normal-pinned-build.receipt.json",
+          "bytes": 1735,
+          "sha256": "fe018387b869f21e166448d78c1ed87152ddad6109d02e39ec3ea6b09cdffcdc"
+        },
+        {
+          "path": "browser/evidence.json",
+          "bytes": 31242,
+          "sha256": "7579961b843d75235e019dff393fd4a727dd250de6ee2aabf2440f9feb4a096c"
+        },
+        {
+          "path": "browser/stl-1-landmark-preview.png",
+          "bytes": 260248,
+          "sha256": "5bf8e6090f5cf6c8c578efac525ff8b27fcb5b0a91038e1c851aea9895ff4ab0"
+        },
+        {
+          "path": "browser/stl-1-origin-reference.png",
+          "bytes": 213434,
+          "sha256": "7470c05356e7f6336fae436815cee815c4aa1ef523c15d88ce704e4d48799caa"
+        }
+      ]
+    },
+    {
+      "schema": 1,
+      "passed": true,
+      "buildId": "scanforge-4795f41cf4da1c9e",
+      "scope": "Complete original-three STL files in each isolated per-source run, production GUI origin/reference preview/cancel/apply and public MCP equality/revision/retry, actual STL facet-corner landmark correspondences against the complete duplicated current original mesh; native fixed-target surface refinement remains enabled, GUI preview/cancel/OK and public MCP preview/accept equality, all expanded/indexed position, triangle index, computed geometry-normal digests (no separate imported scanner-normal carrier), UndoRedo/timeline/project reopen. Known placement validation, not interscan registration quality, GUI canvas-pick acquisition, native full-controller equivalence or M3 completion.",
+      "completedMovingSource": "scan-2.stl",
+      "remainingMovingSources": ["scan-3.stl"],
+      "allSceneAcceptedTriangles": [273139, 2547403, 3326910],
+      "profileScope": {
+        "persistent": true,
+        "incognito": false,
+        "ownedDisposableProfile": true,
+        "userDataDir": "C:\\Users\\Shoung\\AppData\\Local\\Temp\\scanforge-original-stl-placement-2ae5ac7c-3803-4427-be9c-7dd86d71a522\\owned-default-profile",
+        "previousHarnessScope": "browser.newPage() created an incognito context"
+      },
+      "knownPointRmsMm": 0,
+      "refinement": {
+        "accepted": true,
+        "matrix": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        "parameters": [
+          10, 10, 10, 1.5707963267948966, 1.5707963267948966, 1.5707963267948966
+        ],
+        "initialError": 0,
+        "best": 0,
+        "iterations": 76
+      },
+      "normalScope": "Imported STL entities expose computed indexedMesh.geometryNormals only; no separate entity.normals/indexedMesh.normals carrier is present. Raw STL facet-normal bytes are bound by full input-file SHA256.",
+      "staticAdmission": {
+        "rawGeometryBytes": 628777104,
+        "duplicateBytes": 260747040,
+        "poseSuccessorsBytes": 460356408,
+        "workerGeometryBytes": 521494080,
+        "targetTreeBudgetBytes": 536870912,
+        "processReserveBytes": 1073741824,
+        "staticEstimateBytes": 3481987368,
+        "limitBytes": 4294967296,
+        "meaning": "Conservative numeric carrier/history/worker allowance plus the existing target-tree cap and a 1 GiB process reserve; not a proof of runtime peak, target-tree completion or GPU memory. Native membership/node growth is still admitted by the production 512 MiB estimator. Every run retains all three original meshes and one full duplicate, with no decimation or target truncation."
+      },
+      "receipt": {
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 225.86058010003762,
+        "childPeakJobMemoryBytes": 3623669760,
+        "outerPeakJobMemoryBytes": 3637186560,
+        "childJobFinalActive": 0,
+        "rootExited": true,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "cleanupErrors": [],
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 900
+      },
+      "files": [
+        {
+          "path": "harness/original-stl-placement-browser.mjs",
+          "bytes": 21995,
+          "sha256": "e0ee6f9502486cf902f66618b20ecf92ff076e584ec7eac28f971ee9e1d4069e"
+        },
+        {
+          "path": "harness/prepare-original-stl-placement.py",
+          "bytes": 9805,
+          "sha256": "b3970a6fd98b2e7ca4f613882b6aaf3b5f44b642b89904e04ec085bb46edff43"
+        },
+        {
+          "path": "harness/stl-placement-browser.mjs",
+          "bytes": 1775,
+          "sha256": "bc894e72896e9a3f7265da9ef46efba5cb21187c3ce01aeaa37701f50317034a"
+        },
+        {
+          "path": "harness/run.py",
+          "bytes": 773,
+          "sha256": "592f94f56e6c1d38845581b9b5080cd6958f8dbbe089f0d9e285e53b725c20d0"
+        },
+        {
+          "path": "run/original-stl2-placement-persistent-r1.stdout.log",
+          "bytes": 20809,
+          "sha256": "d8c8065cf61ff6380c5f4e12e2e4b64ebc89972a414efa1da626b68095e03761"
+        },
+        {
+          "path": "run/original-stl2-placement-persistent-r1.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "run/original-stl2-placement-persistent-r1.receipt.json",
+          "bytes": 1764,
+          "sha256": "a8e6147f6c8ece0610edbe44fe3d611033c73ab93fffdbba2a907ff4fb9bd73d"
+        },
+        {
+          "path": "build/normal-pinned-build.source.json",
+          "bytes": 544318,
+          "sha256": "079291ca3377ea816db79be4ce0a5f32df8f86b8c30fe12fab433d0bced13514"
+        },
+        {
+          "path": "build/normal-pinned-build.build.json",
+          "bytes": 878,
+          "sha256": "10ba42bc3dc8034e78466a06879464a1c10121b480597fe2ae88c71368fa4c19"
+        },
+        {
+          "path": "build/normal-pinned-build.dist.json",
+          "bytes": 49840,
+          "sha256": "fdd35f6b3e76d667fe49576029c3e1018e28a081eafc16da69704dd18e27cb7d"
+        },
+        {
+          "path": "build/normal-pinned-build.receipt.json",
+          "bytes": 1735,
+          "sha256": "fe018387b869f21e166448d78c1ed87152ddad6109d02e39ec3ea6b09cdffcdc"
+        },
+        {
+          "path": "browser/evidence.json",
+          "bytes": 30755,
+          "sha256": "867c55336b098d2ea1e01c26e66acc9ea1be46e7be163e6af46c5d0bba0dd4ff"
+        },
+        {
+          "path": "browser/stl-2-landmark-preview.png",
+          "bytes": 253723,
+          "sha256": "44aa22b5bfaa93729ef65627ce1cdde5dc9bf41ac0f8e6bfa70e9e51986987ae"
+        },
+        {
+          "path": "browser/stl-2-origin-reference.png",
+          "bytes": 213664,
+          "sha256": "8386ae07b88bc73f1c0cbca223d39c49c9f25141345d97f65142129021ce581d"
+        }
+      ]
+    }
+  ],
+  "remaining": [
+    "OriginalSTLmoving-source3",
+    "Visible-scene landmark scope",
+    "Full productionPLYworkflow and quality",
+    "Native setterentry and native reconstruction comparison"
+  ],
+  "normalsScope": "Imported original STL carriers are expandedpositions,indexedvertices,triangleindices,andcomputedindexed/display normals. No authored entity/indexed scanner-normal stream is exposed. Original STL filebytes includingfacetnormalrecords are hash-bound, not claimed as individually preserved attributes."
+}

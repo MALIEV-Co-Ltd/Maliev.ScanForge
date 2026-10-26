@@ -3,7 +3,7 @@ import { transformDatumCoordinates } from "./datum-transform-kernel";
 import { nativeDatumIsIdentity } from "./scan-native-datum-apply";
 import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import { nativeRefineAlignmentMeshesAsync } from "./scan-native-alignment-surface-controller";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import { prepareNativeLandmarkTarget } from "./native-landmark-target";
 
 /** Native indexed source stages. Coarse registration and scene target collection
@@ -67,6 +67,21 @@ export async function refineNativeLandmarkAfterCoarse(
         ? transformDatumCoordinates(vertices, result.matrix)
         : vertices,
       triangles,
+      facetNormals: applied
+        ? transformDatumCoordinates(
+            transformDatumCoordinates(
+              meshFacetNormals(source, options.signal),
+              coarse,
+              true,
+            ),
+            result.matrix,
+            true,
+          )
+        : transformDatumCoordinates(
+            meshFacetNormals(source, options.signal),
+            coarse,
+            true,
+          ),
       geometryNormals: applied
         ? transformDatumCoordinates(normals, result.matrix, true)
         : normals,

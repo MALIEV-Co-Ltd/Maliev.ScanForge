@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "intersections": {
+    "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+    "controls": 8,
+    "pairs": 2195568,
+    "invalidIntersections": 0,
+    "examples": [],
+    "tolerances": {
+      "coplanarDistance": 1e-9,
+      "coplanarArea": 1e-12,
+      "sharedFeatureSquaredDistance": 1e-16
+    },
+    "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+  },
+  "scope": "Independent three-mesh-bvh nearest-surface and full-point-set nearest-point queries on deterministic samples; original placement unchanged, millimetres; not a global distance bound, aligned/native-equivalence result or exact-arithmetic proof",
+  "sourceToMesh": [
+    {
+      "scan": 1,
+      "points": 140113,
+      "sourceToMesh": {
+        "samples": 4096,
+        "rms": 0.783806919000919,
+        "mean": 0.769783103301236,
+        "p50": 0.75771056064955,
+        "p95": 1.0150378740036534,
+        "max": 1.4478272314747898
+      }
+    },
+    {
+      "scan": 2,
+      "points": 1375494,
+      "sourceToMesh": {
+        "samples": 4096,
+        "rms": 0.8165224280389061,
+        "mean": 0.8015564862348883,
+        "p50": 0.7889215691663188,
+        "p95": 1.0644521177379966,
+        "max": 1.685495015011152
+      }
+    },
+    {
+      "scan": 3,
+      "points": 1865848,
+      "sourceToMesh": {
+        "samples": 4096,
+        "rms": 0.8098551773683983,
+        "mean": 0.7941690158401816,
+        "p50": 0.7803573295489051,
+        "p95": 1.0561033401604296,
+        "max": 1.6367881767339563
+      }
+    }
+  ],
+  "areaWeightedMeshToFullPointSet": {
+    "samples": 4096,
+    "rms": 0.8769380426368238,
+    "mean": 0.8608312591200388,
+    "p50": 0.855872604492088,
+    "p95": 1.1436308808904645,
+    "max": 1.4458326882407302
+  },
+  "outputTriangles": 72396,
+  "pointTests": 470484,
+  "selfIntersectionsChecked": true
+}

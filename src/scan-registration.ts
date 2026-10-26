@@ -6,6 +6,7 @@ import {
   type ProcessingResult,
 } from "./processing-client";
 import { createDatumTransformExecutor } from "./datum-transform-pool";
+import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
 
 /** Shared GUI/MCP registration: solve in the processing worker, then compose a
  * cloud's native double pose over immutable local buffers rather than re-rounding
@@ -41,6 +42,20 @@ export async function processScanRegistration(
     options.workerCount ??
     (request.kind === "paired" ? request.workerCount : undefined) ??
     2;
+  const placement = request.kind === "icp" ? cloudPlacement(source) : undefined;
+  const outputPlacement =
+    request.kind === "icp"
+      ? {
+          sourcePositions:
+            placement?.sourcePositions ??
+            (source.positions instanceof Float32Array
+              ? source.positions
+              : new Float32Array(source.positions)),
+          matrix: placement
+            ? cloudPoseMatrix(placement.matrixBits)
+            : [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        }
+      : undefined;
   if (!Number.isInteger(lanes) || lanes < 1 || lanes > 16)
     throw new Error(
       "Point-cloud registration requires one to sixteen logical lanes.",
@@ -48,6 +63,7 @@ export async function processScanRegistration(
   const result = await processMesh(
     {
       ...request,
+      ...(request.kind === "icp" ? { outputPlacement } : {}),
       // Paired registration needs only the picked coordinates, not millions of points.
       positions: request.kind === "paired" ? [] : request.positions,
       deferCloudTransform: true,

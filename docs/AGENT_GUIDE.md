@@ -1,5 +1,45 @@
 # ScanForge MCP agent guide
 
+## Fine alignment accuracy
+
+`mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.
+`sampleSize` controls source fitting samples (3–100000); the full target is used
+for matching. Legacy `targetSampleSize` is accepted without decimating the target.
+Indexed mesh targets use every referenced canonical vertex, omitting repeated
+triangle corners and unused vertices; clouds retain all point slots.
+Set `overlapPercent` (greater than zero through 100, default 85) or legacy
+`trimFraction`, never both. `targetRms` is a positive overlap RMS in millimetres
+(default 0.5), separate from the numerical stopping `tolerance`.
+
+Read `overlapSatisfied` and `targetReached` before accepting an accuracy claim.
+`converged` can also mean a plateau above the requested accuracy; inspect
+`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`).
+`overlapRms`/`overlapPoints` evaluate the closest requested proportion of eligible
+source points within `maxDistance`; `requiredOverlapPoints` prevents a tiny gated
+subset from satisfying the target. `wholeCloudRms` (also legacy `rms`), `maxError`
+and `pairs` evaluate every eligible source point without trimming or rejection.
+`inlierRms`/`inlierPairs` alias overlap metrics. `sampleSize`, `fittingSamples`,
+`overlapPercent`, `overlapFraction`, `rejectedPoints` and `targetRmsBasis:"overlap"`
+make the metric basis explicit.
+`distanceTests` counts direct point-distance evaluations across fitting and
+verification. Exact subtree bounds prune impossible matches without sampling.
+Extra solver workspace is conservatively admitted as 64 bytes per target point,
+8 per source point and 1024 per requested fitting sample, with a 256 MiB limit.
+Input transport and model buffers have separate admission. Exceeding the limit
+fails explicitly rather than silently decimating the target.
+
+Mesh fitting and final evaluation exclude hidden triangles. Set
+`selectionOnly:true` to fit the current selected visible triangles, matching GUI
+selection priority; otherwise all visible triangles drive alignment. The complete
+scan moves. Point-cloud registration
+requires whole-cloud scope and preserves its immutable local buffers and composed
+pose. The worker verifies cloud accuracy against the final Float32 pose output.
+Revision, request retry, lock, cancellation and one-transaction history behavior
+are unchanged. This ICP contract is application behavior; it does not establish
+native solver equivalence or M3 acceptance. Improve coarse placement or search
+distance after insufficient correspondences; use a fresh request ID after fixing
+rejected input.
+
 Scan selection uses original point/triangle slots throughout. `selection_modify`
 and `selection_saved` support point clouds as well as meshes and exclude hidden
 slots when selecting. `selection_set` also excludes hidden slots.
@@ -521,7 +561,16 @@ serialized separately. The last completed file has only a weak cache reference;
 existing consumers own its lifetime, and a collected result is encoded afresh.
 
 GUI opening, MCP `project_import` and `backup_restore` can reuse matching immutable
-shared chunk backing from an earlier restore. The decoder still reads every
+shared chunk backing from an earlier restore or a completed GUI/MCP export or
+backup encoding. First reimport can therefore reuse still-live original imports;
+no preceding restore is required. Export candidates require complete immutable
+SharedArrayBuffer views whose type and little-endian bytes match the encoded
+chunk. Subviews, ordinary buffers and converted numeric representations retain
+independent decoding. Failed, cancelled or expired encoding/storage publishes no
+new candidates. The encoding request assigns at most 128 internal source tokens
+to original live buffers in the same clone graph as the snapshot. Worker hashes
+return with those tokens, so the weak registry references the editor's original
+wrappers rather than collectible worker-returned wrappers. The decoder still reads every
 incoming payload, compares its bytes and verifies its SHA-256 before publication.
 A differing cached chunk receives independent backing without modifying its old
 consumer. The browser keeps at most 128 weak backing references; this cache does
@@ -1524,9 +1573,17 @@ semantics remain enforced; genuinely oversized patches still fail safely.
 Surface estimation, model history, undo/redo and cancellation use the existing
 shared operations.
 
-### Verified watertight reconstruction
+### Re-polygonize methods, inputs and ownership
 
-`mesh_process` with `operation:{kind:"scanTools",operation:{kind:"repolygonize",resolution:0.5}}` accepts optional top-level `targetIds` for up to 32 additional aligned raw meshes, excluding the source. Additional inputs remain unchanged; the source is replaced unless `createNew:true`. GUI and MCP share reference validation, reconstruction and topology verification. Successful jobs report topology counts plus `diagnostics.watertight`, `inputMeshes`, `resolution`, `weldTolerance` and `selfIntersectionsChecked:false`. Closed disconnected components are reported separately. Fine reconstruction uses surface-local sampling, bitsets and streamed frontier topology verification: up to one billion grid points, sixteen million output faces and 500 million sampling candidates. Input admission permits up to 500 million coordinates and 256 MiB of logical private numeric transport payload: ordinary Float32 views cost four bytes per coordinate, numeric arrays eight, and immutable Float32 shared-buffer views are borrowed without transfer by the disposable reconstruction worker. Repeated views are counted separately. This payload limit is not a heap or process memory bound. Global alignment produces shared final streams directly when cross-origin isolation supports them; ordinary-buffer fallbacks remain supported. Reconstruction counts output first and allocates one exact contiguous output buffer. ShrinkWrap retains its separate three-million-face input limit. New diagnostics include `gridPoints`, `distanceTests`, `samplingCandidates` and `verification`. Increase resolution when an explicit resource limit is exceeded; requested resolution is never silently coarsened. Resolution is sampling spacing, not a maximum-deviation tolerance. The exported headlight scan was validated at 0.5 mm; see the linked report for sampled surface-distance comparisons. Use revision/request guards and poll `job_get`; errors and cancellation preserve inputs. See [workflow, limits and native evidence](WATERTIGHT_MESH.md). Existing `scanEdit/fillHoles` with omitted indices fills all valid closed boundaries without reconstructing the whole surface.
+Use `mesh_process` with `operation:{kind:"scanTools",operation:{kind:"repolygonize",resolution:0.5}}`. Optional `method` is `"native"` or `"voxel"`. The shared GUI/MCP binder defaults to native for all-mesh inputs and voxel when the source or selected targets include a point cloud. Explicit native rejects point clouds. Native reconstructs a signed field, repairs the extracted surface and applies the enabled half-count optimization. It reports open/nonmanifold geometry rather than promising a closed solid. Explicit voxel retains the occupancy-envelope workflow and its closed-topology verification.
+
+Top-level `targetIds` has method-specific semantics. Native omission discovers eligible visible raw mesh inputs in workspace order; `targetIds:[]` selects the source alone. Explicit native IDs also compute in workspace order, regardless of request order. Voxel retains its explicit ordered mesh/cloud targets; omit `targetIds` for source alone and do not pass an empty array. IDs must be distinct workspace objects, exclude the source, and number at most 32. Other operations retain their nonempty-list requirements. Caller-supplied `sourceTopology`, `targetTopology`, input-kind records and private geometry arrays are unsupported; the executor resolves and validates immutable source buffers itself.
+
+Native defaults to creating and selecting a new result owner, retaining every input's geometry and hiding the inputs in one history transaction. Supply `createNew:false` to replace the requested source owner instead. A hidden-input transaction rejects locked inputs. Undo/Redo, timeline navigation and GUI/MCP project or backup restoration preserve the transaction's visibility; this is internal trusted history metadata, not an extra agent parameter. Voxel retains source replacement unless `createNew:true`. Results expose topology, reconstruction input IDs and method, plus method-specific diagnostics; inspect them before judging usability.
+
+Both methods retain whole-input coordinate validation (up to 500 million coordinates), 256 MiB logical private numeric transport admission and disposable read-only worker ownership. Native indexed descriptors are included in transport admission. Ordinary Float32 views cost four bytes per value and numeric arrays eight; immutable Float32 shared views are borrowed without transfer. These are admission policies, not process-memory bounds. Native field/finalization/optimization working budgets are separate from voxel's one-billion-grid-point, 500-million-candidate and 16-million-output-face limits; a failure preserves the workspace. See [method-specific limits and retained native observations](WATERTIGHT_MESH.md). Resolution is sampling spacing, never a maximum-deviation promise, and is never silently coarsened. Revision/request guards, `job_get` and `job_cancel` remain required. `scanEdit/fillHoles` remains the separate boundary-repair workflow.
+
+The retained M2 analyst observation records all 50,895 ordered facets of a three-posed-STL-derived-PLY native export at 0.5 mm. Its STL normal records independently equal the Float32-staged mean of the three angle-weighted vertex normals, without renormalization; they are not the stored geometric facet-normal carrier. Native attribute words are 0x2020 export metadata, without an inferred owner-field meaning. The committed observation identifies application/settings/input/output hashes; a separate raw native GUI action receipt has not been located and the owner does not know its provenance. Exact new-candidate GUI/MCP coordinate, normal-carrier and lifecycle validation is pending; these retained observations alone are not a fresh pass.
 
 ### ShrinkWrap
 
@@ -1803,7 +1860,7 @@ To verify an extruded fillet, read `alignment_references` for the CAD body. Exac
 
 ### Shared reconstruction job lifecycle
 
-GUI **Re-polygonize → Apply** submits the existing `mesh_process` reconstruction operation and observes its public job. GUI and MCP use the same source/reference validation, revision checks, disposable processing worker, commit and history path. The GUI does not retain a second canonical reconstruction output in a geometry-session worker or commit the returned geometry again. Public parameters and reconstruction limits remain unchanged. Poll `job_get` for the topology and diagnostics; `job_cancel` requests cancellation. A cancellation request can race with completion, so inspect the terminal job and project state before assuming geometry was preserved. A reported successful terminal result remains authoritative if cancellation arrives afterward.
+GUI **Re-polygonize → Apply** submits the existing `mesh_process` reconstruction operation and observes its public job. GUI and MCP use the same source/reference validation, revision checks, disposable processing worker, commit and history path. The GUI does not retain a second canonical reconstruction output in a geometry-session worker or commit the returned geometry again. The conditional `method`, target discovery and owner rules above are resolved by that same executor. Poll `job_get` for the topology and diagnostics; `job_cancel` requests cancellation. A cancellation request can race with completion, so inspect the terminal job and project state before assuming geometry was preserved. A reported successful terminal result remains authoritative if cancellation arrives afterward.
 
 ### ASC color and normal interpretation
 
@@ -2058,6 +2115,26 @@ right-button pan outside its canvas cannot invoke browser UI. App context-menu
 handlers retain their normal events and actions. Agents continue to use the
 existing semantic tools for those actions; `application_inspect.contextMenuPolicy`
 reports `application-only`. No native browser-menu capability is exposed.
+
+### Point-cloud reconstruction
+
+Voxel Re-polygonize accepts a raw point cloud as its source and raw meshes or point clouds in `targetIds`. Omitting `method` resolves cloud/mixed inputs to voxel; explicit `method:"native"` rejects them. Use the same `mesh_process` operation shown above; record kinds and buffers come from workspace entities, never caller-supplied `inputKind`, `targetInputs` or `targets` arrays. Reconstruction uses whole inputs; omit `selectionOnly`. Positions are current workspace world positions, with no second application of saved cloud placement metadata. Only reconstruction admits clouds through Scan Data tools. ShrinkWrap remains mesh-only.
+
+Every XYZ point contributes to an unsigned occupancy union at radius `sqrt(0.75) * resolution`; mesh inputs retain their `0.75 * resolution` distance radius. Scanner normals are not used. Sparse points can produce disconnected closed components. This is an offset envelope, not a fitted surface or a guarantee of native-equivalent reconstruction, registration quality or absence of self-intersections. Existing grid, candidate, coordinate, transport and output limits apply to mixed inputs together. Resolution is never silently coarsened.
+
+The result is a mesh with cloud colors, point display settings, scanner normals and cloud placement metadata cleared. `createNew:true` retains the cloud and creates a separate mesh; otherwise Undo restores it. Additional targets always remain unchanged. Diagnostics expose `inputPoints`, `inputTriangles`, `inputPointClouds`, `inputMeshes`, `processedPoints`, `representedPoints`, `field`, `pointRadius`, `triangleRadius`, sampling work and topology. A result is rejected if any input point was not represented. Radii are in millimetres (zero when that input kind is absent); all counts are whole records, not sampled estimates.
+
+Cloud pose history and binary project/backup restoration preserve the world-normal buffer carrier independently of immutable local normals. A typed world stream remains Float32 after historical cache reclamation, Undo/Redo, encoding-worker transport and reopen; legacy number-array streams retain their storage and numeric bits. Existing `object_geometry_digest` reports the carrier encoding and complete buffer hashes for verification. This shared correction changes no tool parameters, units or point identities. Older saved records without the optional internal carrier metadata retain their previous number-array fallback.
+
+### Stored computed mesh facet normals
+
+Indexed scan geometry may include `indexedMesh.facetNormals`: immutable Float32 XYZ vectors in triangle order, separate from scanner vertex `normals` and computed vertex `geometryNormals`. Import/render preparation derives missing facets on the original coordinates. Whole-mesh rigid alignment rotates retained facets through each Float32 coordinate stage; it does not recompute them from rounded output triangles. GUI and MCP Global Fine Align use the same carriers, workers and history path. Binary projects preserve their bits and buffer aliases through current, Undo and Redo states; legacy projects derive the missing state when activated. Coordinate/topology edits invalidate stale indexed state.
+
+`object_get(includeGeometry:true)` exposes facets with the other geometry. It measures the full UTF-8 JSON before expanding typed coordinates; a payload over the existing 1 GiB artifact limit fails with `RESOURCE_LIMIT`. Aggregate occupied artifact capacity remains authoritative. Use `object_geometry_digest` for bounded, cancellable byte verification or `project_export` for binary geometry transport. The digest includes `indexedMesh.facetNormals` independently. Query input admission includes the complete facet backing and shared worker transport preserves its aliases.
+
+For a mesh without indexed topology, Global Fine Align retains derived topology and both normal caches only when its expansion exactly matches the source coordinates. Native topology preparation can merge coordinate keys or drop degenerate triangles; nonmatching legacy soups preserve their original geometry and existing uncached fallback. Stored-cache bit parity is not claimed for that fallback. This does not change native quality or milestone acceptance gates.
+
+The shared scan import concurrency heuristic reserves file bytes times 16 (including the additional computed facet stream) against its existing 512 MiB parallel-preparation/headroom policy. Borderline batches parse serially; this heuristic is not a single-file acceptance limit or process-memory bound.
 
 ## Inspection measurements and signed primitive reports
 
