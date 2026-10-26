@@ -838,13 +838,11 @@ function referenceFeatures(oc, input) {
   try {
     if (input.family === "faces") {
       const all = alignmentReferences(oc, input);
-      const rows = all
-        .slice(offset, offset + limit)
-        .map((value) => ({
-          ...value,
-          index: value.faceIndex,
-          eligible: value.triangleCount > 0,
-        }));
+      const rows = all.slice(offset, offset + limit).map((value) => ({
+        ...value,
+        index: value.faceIndex,
+        eligible: value.triangleCount > 0,
+      }));
       return {
         total: all.length,
         nextOffset:
