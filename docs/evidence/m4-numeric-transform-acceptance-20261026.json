@@ -166,6 +166,20 @@
     "skippedTests": 64,
     "build": true,
     "failure": "Preexisting derived-line test still expected numeric semantic source transforms to reject after this supported capability was implemented.",
-    "replacementRegression": "The test now verifies source and linked-line refresh, exact retained hits, one commit/history step and unchanged selection. It passed in the protected112-test focused run; fresh hosted checks are required for the correction."
+    "replacementRegression": "The test now verifies source and linked-line refresh, exact retained hits, one commit/history step and unchanged selection. It passed in the protected112-test focused run; fresh hosted checks are required for the correction.",
+    "correctionHostedChecks": {
+      "commit": "f8c94720de79b9bce6e252b3456f7178040f83e9",
+      "runId": 40269732059,
+      "jobId": 121399735222,
+      "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40269732059",
+      "conclusion": "success",
+      "passedTests": 49743,
+      "skippedTests": 64,
+      "passedFiles": 711,
+      "build": true,
+      "cadSmoke": true,
+      "repositoryFormatting": true,
+      "scope": "Fresh numeric-transform correction checkpoint; later sketch source needs its own hosted checks"
+    }
   }
 }

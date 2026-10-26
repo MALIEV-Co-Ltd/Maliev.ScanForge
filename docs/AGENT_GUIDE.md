@@ -1743,7 +1743,7 @@ tessellation does not certify a closed or valid exact CAD solid.
 
 ### Analytic sketch extrusion
 
-Use `cad_create` with `recipe:{kind:"extrude",profile:{kind:"sketch-curves",sketch:<Sketch v1>},height:10}` and the usual revision/request fields. The sketch must solve into one closed unbranched line/arc cycle; construction geometry is excluded. Height is positive millimetres, at most one billion. The optional sketch frame places the profile and defines its extrusion normal. Circular arcs remain exact CAD curves; no `chordTolerance` is accepted for this profile kind. Invalid topology, inconsistent radii, unsolved constraints and intersecting profiles fail before a body is committed. Inspect the job receipt and `project_get`; use `cad_rebuild` with the same recipe kind to edit the feature. Both the GUI's solved-profile extrusion and MCP call the shared `cad_create` operation, with existing cancellation, revision, retry and model-history behavior.
+Use `cad_create` with `recipe:{kind:"extrude",profile:{kind:"sketch-curves",sketch:<Sketch v1>},height:10}` and the usual revision/request fields. The sketch must solve into one closed unbranched line/arc cycle; construction geometry is excluded. Height is positive millimetres, at most one billion. The optional sketch frame places the profile and defines its extrusion normal. Circular arcs remain exact CAD curves; no `chordTolerance` is accepted for this profile kind. Invalid topology, inconsistent radii, unsolved constraints and intersecting profiles fail before a body is committed. Inspect the job receipt and `project_get`; use `cad_rebuild` with the same recipe kind to edit the feature. The GUI first submits `sketch_edit` with `kind:"solve",forProfile:true`, then passes its returned `profile` to the same `cad_create` operation. Agents can use that sequence too. Sketch solving and CAD creation retain separate sketch/model history scopes, with shared revision, retry and cancellation behavior.
 
 Existing `profile:{kind:"sketch",sketch:...,chordTolerance:...}` recipes retain their sampled polygon geometry on rebuild. Use `sketch-curves` explicitly to migrate a legacy feature to analytic curves. The sketch panel's arc preview tolerance affects drawing only. CAD meshes remain tessellated for display. Exact-cylinder volume and STEP round-trip checks establish kernel correctness; native workflow equivalence remains unverified.
 
@@ -1755,19 +1755,85 @@ Use `sketch_draw` to draw in the active sketch without constructing a Sketch v1 
 
 Current `settings_set` values `snapGrid` (default false) and `gridSpacing` (default 10 mm) apply to raw inputs before construction, including endpoint movement. Spacing must be positive and at most 1e9 mm even when snapping is disabled. Results contain `changed`, created point/curve/constraint IDs, `usedPoints` after grid snapping but before line endpoint/axis decisions, grid settings, units and count/work diagnostics. Inspect final geometry with `sketch_get`. Changed results publish one scoped sketch edit; Sketch Undo/Redo and project save/reopen preserve it independently of model history. A no-op move returns `changed:false` without adding history. CAD changes require the separate rebuild/extrusion operation.
 
-The canvas captures its revision at the first pointer/pick, submits once on release or the third pick, and discards unfinished input on Escape. Agents use the same revision/retry, busy and preview-ownership guards. Degenerate geometry, conflicting constraints, stale revisions and invalid local/world coordinates (outside +/-1e9 mm) leave the prior draft, revision and history unchanged. Per-draw admission limits are 256 points, 512 curves, 512 constraints including a temporary move target, 2,000,000 reference coordinates, 2,000,000 validation work units, 262,144 dense solver cells and 2,000,000 estimated solver work units. `RESOURCE_LIMIT` applies before expensive allocation/solving; use a smaller sketch or split the operation. Solving is synchronous and cannot be interrupted in flight. `sketch_set` remains available for complete graph replacement and explicit relation edits. This contract does not expose native sketch cloning or ordered source-pick provenance.
+The canvas captures its revision at the first pointer/pick, submits once on release or the third pick, and discards unfinished input on Escape. Agents use the same revision/retry, busy and preview-ownership guards. Degenerate geometry, conflicting constraints, stale revisions and invalid local/world coordinates (outside +/-1e9 mm) leave the prior draft, revision and history unchanged. Per-draw admission limits are 256 points, 512 curves, 512 constraints including a temporary move target, 2,000,000 reference coordinates, 2,000,000 validation work units, 262,144 dense solver cells and 2,000,000 estimated solver work units. The shared solver also bounds cumulative iterations and final diagnostics as described below. `RESOURCE_LIMIT` preserves the prior state; use a smaller sketch or split the operation. Solving is synchronous and cannot be interrupted in flight. `sketch_set` remains available for complete graph compatibility replacement. This contract does not expose native sketch cloning or ordered source-pick provenance.
+
+### Shared sketch panel edits
+
+Use `sketch_edit` for the same semantic edits as the sketch panel, with current
+`expectedRevision` and a unique `requestId`. Read IDs and placement through
+`sketch_get`; callers do not construct replacement graphs or generated UUIDs.
+Inputs use local UV millimetres, signed degree dimensions where applicable and
+finite coordinates/dimensions within +/-1e9. Numeric edits do not grid-snap or
+automatically solve existing relations.
+
+GUI numeric coordinates, dimensions and plane offsets keep a local text draft
+while typing. Blur or Enter submits one shared semantic edit; Escape discards
+that draft without publication or history. A new authoritative sketch replaces
+unaccepted numeric text. MCP submits the same accepted intent directly.
+
+| `kind`                     | Parameters and behavior                                                                                                                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `preset`                   | `profile:"rectangle"` or `profile:"circle"`. Rectangle is the existing 40 by 30 mm preset; circle has radius 10 mm. Replace editable curves/relations while retaining placement and scan references.                                        |
+| `plane`, `planeOffset`     | `plane:"OXY"`, `plane:"OYZ"` or `plane:"OXZ"` preserves the current signed normal offset; `offsetMm` changes that offset along the stored normal without changing orientation.                                                              |
+| `pointAdd`, `pointSet`     | Optional `position:[u,v]` defaults to `[0,0]`; editing uses `pointId` and at least one of `x`,`y`.                                                                                                                                          |
+| `segmentAdd`, `segmentSet` | Creation accepts both `a`,`b` or defaults to the first two point IDs. Editing uses `segmentId` plus at least one endpoint field.                                                                                                            |
+| `arcAdd`, `arcSet`         | Creation accepts all three point IDs `a`,`b`,`center` or defaults to the first three points; `clockwise` defaults false. Editing uses `arcId` plus at least one of those fields or `clockwise`.                                             |
+| `construction`             | `curveId` and Boolean `enabled` change the reference-geometry flag on a line/arc.                                                                                                                                                           |
+| `remove`                   | `target:"point"`, `target:"segment"`, `target:"arc"` or `target:"constraint"`, and `id`. Geometry removal also removes dependent curves/relations whose references disappear.                                                               |
+| `dimension`                | `constraintId` and `value` change an existing dimensional relation without implicitly solving it.                                                                                                                                           |
+| `constraintAdd`            | `constraint` contains its kind and meaningful references/dimension, without an ID. A fixed relation supplies only `kind:"fixed",point`; the server captures its current UV position. Adds, solves and rejects conflicts before publication. |
+| `solve`                    | Optional `tolerance` and `maxIterations` retain solver defaults 1e-6 and 100. Optional `forProfile:true` additionally requires convergence and one closed analytic profile, returning `profile` for `cad_create`.                           |
+
+Results contain `changed`, created/removed point, curve and constraint IDs,
+optional `solution`/`profile`, `units:"mm"` and
+`coordinateSystem:"sketch-local-UV"`. Changed results publish once through scoped
+sketch history; no-ops add no history. Source inputs stay immutable. Invalid
+references, bounds, stale revisions, cancellation and resource failures leave the
+draft unchanged. The GUI disables edit controls while its shared request is
+pending. Plain `solve` can publish a changed partial solution and reports
+`solution.converged:false` with conflict diagnostics; `constraintAdd` and
+`solve` with `forProfile:true` reject a nonconverged candidate instead.
+`sketch_set` remains the validated full-graph compatibility route, including
+`solve:true` for atomic solved replacement.
+
+Semantic edits have operation-local limits of 2,000,000 reference coordinates and
+2,000,000 validation work units, with the solver bounds below when solving is
+requested. These do not impose the drawing tool's collection limits on stored
+projects. After `RESOURCE_LIMIT`, reduce or split the requested operation; the
+admitted graph remains available to inspect or export.
+
+### Bounded sketch diagnostics and display
+
+All solver entry points enforce operation-local budgets of 262,144 estimated
+live numeric cells and 2,000,000 cumulative work units, plus 2,000,000 validation
+work units. Estimates include finite-difference vector copies, final Jacobian/rank
+and each actual dense iteration. Dense iteration work is not charged when an
+already-satisfied graph needs only diagnostics. The GUI reports unavailable
+diagnostics explicitly rather than allocating an oversized matrix; invalid
+sketches are distinguished from resource-limited diagnostics. Explicit solve
+requests return typed `RESOURCE_LIMIT` failures without publishing a partial
+result when the budget is exhausted. Solving remains synchronous: cancellation
+checks surround the bounded work and cannot interrupt an iteration in flight.
+These limits do not add a project/import size cap; `sketch_get` and unsolved
+`sketch_set` remain available for large admitted graphs.
+
+`settings_set` accepts Boolean `sketchControlPoints` and `sketchMeshPoints`, both
+defaulting to true. They control defining-point markers and extracted scan-reference
+points through the same setters as the panel checkboxes. Read current values in
+`project_get.settings`. These view preferences change no sketch geometry,
+reference data or model history.
 
 ### Symmetry and atomic sketch solving
 
 Sketch v1 supports `{id,kind:"symmetric",first,second,axis,reverse}`. `first` and `second` identify two distinct lines or two circular arcs. `axis` identifies a separate nondegenerate segment marked `construction:true`; it is editable reference geometry, not a fixed world axis. `reverse` is required: false pairs first.a/first.b with second.a/second.b; true swaps the second endpoints. Arc centers are reflected too. Reflection reverses arc traversal, so arc clockwise flags must differ with reverse:false and match with reverse:true. Invalid axes, missing references, mixed curve kinds and incompatible arc orientation are rejected. Removing an axis or either curve removes dependent symmetry constraints.
 
-Read the active draft with `sketch_get`, add the relation to its `constraints`, then use `sketch_set` with `solve:true` and fresh revision/request fields. The shared operation solves and applies the draft once, returning `{updated:true,solution}` with the solved sketch, residual, convergence, conflict IDs, iteration count and local DOF. A conflict or unsolved result leaves the prior draft/revision unchanged. The GUI Add constraint action uses this same operation. Sketch Undo/Redo traverses the resulting edit without changing model history. Omit solve or use false to retain existing unsolved draft replacement. `sketch_solve` remains read-only; its returned solution can be inspected before applying. Saved sketches and project exports retain symmetry IDs and endpoint correspondence. Mathematical reflection tests and GUI/MCP workflow checks do not establish native solver numerical equivalence.
+Read the active draft with `sketch_get`, then submit `sketch_edit` with `kind:"constraintAdd",constraint:<relation without id>` and fresh revision/request fields. The GUI Add constraint action uses this operation. It solves and applies once, returning `changed`, created relation IDs and `solution` with residual, convergence, conflict IDs, iteration count and local DOF. A conflict or unsolved result leaves the prior draft/revision unchanged. Sketch Undo/Redo traverses the resulting edit without changing model history. Full-graph `sketch_set` with `solve:true` retains atomic replacement compatibility; omitted/false `solve` retains unsolved replacement. `sketch_solve` remains read-only; inspect its returned solution before applying. Saved sketches and project exports retain symmetry IDs and endpoint correspondence. Mathematical reflection tests and GUI/MCP workflow checks do not establish native solver numerical equivalence.
 
 `cad_create` also accepts `selectCreated:true` to select the first result before the job succeeds. The GUI extrusion uses it so a delayed selection change cannot invalidate a following agent operation. Omitted or false retains existing agent selection behavior; model creation still records one history entry.
 
 ### Construction curves in the sketch viewport
 
-Set `construction:true` on a sketch segment or circular arc to use it as reference geometry. The main 3D sketch editor draws these curves dashed; ordinary curves remain solid. `sketch_get` returns the same flags and `sketch_set` updates them through the existing draft/history operation. Display grouping does not change curve coordinates, sketch frames, units, snapping or endpoint picking. Construction curves remain excluded from closed CAD extrusion profiles. Symmetry-related endpoint markers include its axis endpoints and reflected arc centers; blue means a point participates in a relation, not that it has zero degrees of freedom. Read `sketch_solve` for actual local DOF and conflicts.
+Use `sketch_edit` with `kind:"construction",curveId,enabled:true` to use a sketch segment or circular arc as reference geometry. The main 3D sketch editor draws these curves dashed; ordinary curves remain solid. `sketch_get` returns the same flags; full-graph `sketch_set` remains compatible. Display grouping does not change curve coordinates, sketch frames, units, snapping or endpoint picking. Construction curves remain excluded from closed CAD extrusion profiles. Symmetry-related endpoint markers include its axis endpoints and reflected arc centers; blue means a point participates in a relation, not that it has zero degrees of freedom. Read `sketch_solve` for actual local DOF and conflicts.
 
 ### Two-line Corner Trim
 
@@ -1878,8 +1944,10 @@ remain unverified. See [mirror evidence](NATIVE_SKETCH_MIRROR.md).
 
 ### Collinear sketch segments
 
-Add `{id,kind:"collinear",first,second}` to the Sketch v1 constraints and call
-`sketch_set` with `solve:true`, `expectedRevision` and `requestId`. Both references
+Call `sketch_edit` with `kind:"constraintAdd"` and
+`constraint:{kind:"collinear",first,second}`, plus `expectedRevision` and
+`requestId`. The server assigns the relation ID. Full-graph `sketch_set` with
+`solve:true` remains compatible. Both references
 must be distinct straight segments with finite lengths at least 1e-10 mm.
 Construction, disjoint, overlapping and reversed lines are supported; endpoints
 are not welded and lengths are not equated. The two residuals measure the second
@@ -2276,8 +2344,10 @@ coordinates. Missing or unsupported sources reject. Apply publishes the exact
 cached result and refreshes admitted descendants atomically in one history step;
 Cancel leaves geometry, keys and history unchanged. Inspect `outcome`, diagnostics,
 `geometryEncoding` and `definitionEncoding` to distinguish updated, fallback and
-unchanged results. General CAD, scan, fit-only, cone and sketch line-source
-adapters remain separate required release gates.
+unchanged results. Required retained CAD/scan inputs and remaining primitive
+source families are separate release gates. Fit-only sources without an admitted
+recipe/frame and internal sketch line providers remain unsupported; internal
+sketch providers do not independently expand the owner-approved input scope.
 
 Current sphere/cylinder primitive recipes are authoritative analytic sources,
 including solids created by `primitive_fit_create`. The sphere contributes its
@@ -2445,10 +2515,13 @@ this is an application work limit, not a native source-count rule.
 Preview through `reference_construct` with `action:"preview",kind:"point"`,
 the chosen `mode`, `sourceEntityIds:[...]` and usual revision/request fields.
 Do not supply numeric position, the midpoint alias's `sourceEntityId`, raw pick
-records, keys, completion state or provenance. `center` and `pair` use semantic
-reference points/lines and numeric planes with authoritative `planeFrame`
-and no fit, kernel or parametric metadata; `threePlanes` uses those numeric
-planes. These plane inputs are explicit application analytic equations:
+records, keys, completion state or provenance. `center` and `pair` use admitted
+semantic points/lines, current sphere/cylinder recipe sources and nonkernel
+planes with authoritative `planeFrame` and no parametric metadata; `threePlanes`
+uses those stored-frame planes. A fitted plane with a valid frame remains
+eligible while fit diagnostics coexist; the frame supplies the equation, not
+those diagnostics. Fit-only geometry without a valid frame is not a substitute.
+These plane inputs are explicit application analytic equations:
 origin is the stored center, normal is its stored unit normal, and equation
 offset is minus the normal-center dot product. No native plane extent, fitted
 primitive payload, CAD-provider or scan-pick correspondence is inferred.
@@ -2544,7 +2617,10 @@ Finite arithmetic/display overflow rejects rather than publishing an origin or
 constructor sentinel. Accepted midpoint finalization marks staged state dirty
 before specialized evaluation. This follows recovered static native arithmetic
 and state transitions; it does not establish original-native numerical or Apply
-acceptance equivalence. Semantic transformation and duplication remain guarded.
+acceptance equivalence. Detached numeric point/endpoint-line sources with empty
+source/pick sets can transform through shared `mesh_transform`, refreshing their
+admitted descendants. Transforming derived roots or inactive retained picks, and
+semantic duplication, remain guarded.
 `object_delete` accepts unlocked leaf references or a complete source/dependent
 set as one model-history edit. A surviving dependent or any locked target rejects
 the entire deletion; Undo/Redo restores the exact reference objects.

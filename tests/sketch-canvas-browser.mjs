@@ -10,6 +10,7 @@ import { chromium } from "playwright";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { sketchCollinear } from "./helpers/sketch-collinear-browser.mjs";
+import { sketchSemanticEdits } from "./helpers/sketch-edit-intents-browser.mjs";
 
 // Actual pointer gestures and public stdio MCP only. The parent owns the Windows
 // Job, memory/CPU admission and serialized heavy-work slot; this script owns its
@@ -179,6 +180,7 @@ try {
   for (const name of [
     "sketch_get",
     "sketch_draw",
+    "sketch_edit",
     "sketch_set",
     "sketch_manage",
     "history_undo",
@@ -658,6 +660,79 @@ try {
   });
   assert.equal(ledger.sketchCollinear.guiMcpConflictAtomicity, true);
   assert.equal(ledger.sketchCollinear.completedWorkflowPassed, true);
+  await sketchSemanticEdits({
+    page,
+    call,
+    raw,
+    mutate,
+    settled,
+    eventually,
+    canonical,
+    ledger,
+    artifactDir,
+    signal: lease.signal,
+  });
+  await save();
+  await mutate("ui_set", {
+    workspace: "sketch",
+    ribbonTab: "sketch",
+    toolPanelOpen: true,
+  });
+  const displayBefore = (await call("project_get")).result,
+    sketchBeforeDisplay = await readSketch();
+  const controlPoints = panel.getByLabel("Control points", { exact: true });
+  const meshPoints = panel.getByLabel(
+    "Mesh points · extracted scan references",
+    { exact: true },
+  );
+  assert.equal(displayBefore.settings.sketchControlPoints, true);
+  assert.equal(displayBefore.settings.sketchMeshPoints, true);
+  assert.equal(await controlPoints.isChecked(), true);
+  assert.equal(await meshPoints.isChecked(), true);
+  await controlPoints.uncheck();
+  await eventually(async () =>
+    assert.equal(
+      (await call("project_get")).result.settings.sketchControlPoints,
+      false,
+    ),
+  );
+  await meshPoints.uncheck();
+  await eventually(async () =>
+    assert.equal(
+      (await call("project_get")).result.settings.sketchMeshPoints,
+      false,
+    ),
+  );
+  assert.equal(await controlPoints.isChecked(), false);
+  assert.equal(await meshPoints.isChecked(), false);
+  await page.screenshot({
+    path: fileURLToPath(new URL("sketch-display-flags.png", artifactDir)),
+  });
+  await mutate("settings_set", {
+    patch: { sketchControlPoints: true, sketchMeshPoints: true },
+  });
+  await eventually(async () => {
+    assert.equal(await controlPoints.isChecked(), true);
+    assert.equal(await meshPoints.isChecked(), true);
+  });
+  assert.deepEqual(await readSketch(), sketchBeforeDisplay);
+  const displayAfter = (await call("project_get")).result;
+  assert.equal(displayAfter.undo, displayBefore.undo);
+  assert.equal(displayAfter.redo, displayBefore.redo);
+  assert.deepEqual(
+    displayAfter.objects.map(
+      ({ meshPreparation: _preparation, ...object }) => object,
+    ),
+    displayBefore.objects.map(
+      ({ meshPreparation: _preparation, ...object }) => object,
+    ),
+  );
+  ledger.sketchDisplayFlags = {
+    defaultsObserved: true,
+    guiSettingsObserved: true,
+    mcpControlsObserved: true,
+    geometryAndHistoryUnchanged: true,
+  };
   assert.deepEqual(errors, []);
   assert.equal(stderr, "");
   ledger.browserErrors = errors;

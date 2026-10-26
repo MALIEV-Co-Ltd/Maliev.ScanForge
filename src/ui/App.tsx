@@ -280,6 +280,7 @@ import {
 } from "../surface-fit-session";
 import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
+import type { SketchEditReceipt } from "../sketch-edit-intent";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
 import {
@@ -5135,6 +5136,8 @@ export function App() {
         automaticGrid,
         snapGrid,
         originVisible,
+        sketchControlPoints,
+        sketchMeshPoints,
         importPlaceAtOrigin: placeImportAtOrigin,
         importAscAttributes,
         scanSelection: {
@@ -5251,6 +5254,10 @@ export function App() {
       if (patch.snapGrid !== undefined) setSnapGrid(patch.snapGrid as boolean);
       if (patch.originVisible !== undefined)
         setOriginVisible(patch.originVisible as boolean);
+      if (patch.sketchControlPoints !== undefined)
+        setSketchControlPoints(patch.sketchControlPoints as boolean);
+      if (patch.sketchMeshPoints !== undefined)
+        setSketchMeshPoints(patch.sketchMeshPoints as boolean);
     },
     busy: () => busyRef.current,
     activity: (running, label, selectionMode) => {
@@ -7459,10 +7466,22 @@ export function App() {
                       onUndo={() => sketchUndo()}
                       onRedo={() => sketchUndo(true)}
                       showControlPoints={sketchControlPoints}
-                      onShowControlPoints={setSketchControlPoints}
+                      onShowControlPoints={(shown) => {
+                        void uiCommand("settings_set", {
+                          patch: { sketchControlPoints: shown },
+                        });
+                      }}
                       showMeshPoints={sketchMeshPoints}
-                      onShowMeshPoints={setSketchMeshPoints}
-                      onChange={updateSketchDraft}
+                      onShowMeshPoints={(shown) => {
+                        void uiCommand("settings_set", {
+                          patch: { sketchMeshPoints: shown },
+                        });
+                      }}
+                      onEdit={async (intent) => {
+                        const result = await uiCommand("sketch_edit", intent);
+                        if (!result.ok) throw new Error(result.error.message);
+                        return result.result as SketchEditReceipt;
+                      }}
                       onCornerTrim={async (options) => {
                         const result = await uiCommand("sketch_corner_trim", {
                           ...options,
@@ -7478,19 +7497,6 @@ export function App() {
                       onMirror={async (options) => {
                         const result = await uiCommand("sketch_mirror", {
                           ...options,
-                        });
-                        if (!result.ok) throw new Error(result.error.message);
-                      }}
-                      onConstrain={async (constraint) => {
-                        const result = await uiCommand("sketch_set", {
-                          sketch: {
-                            ...sketchDraft,
-                            constraints: [
-                              ...sketchDraft.constraints,
-                              constraint,
-                            ],
-                          },
-                          solve: true,
                         });
                         if (!result.ok) throw new Error(result.error.message);
                       }}

@@ -11,6 +11,7 @@ import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { createReferenceConstructionOperations } from "./reference-construction-operations";
 import { createDatumConstructionOperations } from "./datum-construction-operations";
+import { createSketchEditOperations } from "./sketch-edit-operations";
 import { analyzePrimitiveFit, createFittedPlane } from "../primitive-fitting";
 import { fittedPrimitive } from "../fitted-primitive";
 import { entityDisplayStats } from "../entity-display-stats";
@@ -594,6 +595,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     ...createInteractiveOperations(host),
     ...createReferenceConstructionOperations(host),
     ...createDatumConstructionOperations(host),
+    ...createSketchEditOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {

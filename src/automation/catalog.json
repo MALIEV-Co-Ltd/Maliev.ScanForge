@@ -3464,6 +3464,696 @@
     }
   },
   {
+    "name": "sketch_edit",
+    "description": "Apply one semantic Sketch v1 panel edit to the active draft using the same operation as GUI numeric/topology controls. kind:preset replaces editable geometry with the existing rectangle40x30mm or R10mm two-arc circle, retaining placement and immutable scan references. plane changes origin-plane orientation while preserving signed normal offset; planeOffset moves only origin along its current normal. pointAdd defaults to[0,0]; pointSet changes only supplied axes. segmentAdd defaults to the first two points; arcAdd defaults to the first three and clockwise:false; explicit references must be complete. segmentSet/arcSet change only supplied fields; construction toggles one curve; remove cascades geometry and invalidated constraints; dimension changes a dimensional relation. Numeric/topology/dimension edits do not snap, auto-solve or alter grid settings. constraintAdd constructs a server-owned ID (fixed captures current point coordinates), solves and rejects nonconvergence atomically. Explicit solve returns best-candidate diagnostics and may publish a nonconverged valid result, preserving existing Solve behavior. solve.forProfile:true instead requires convergence and a closed analytic profile before publication, returning a server-built sketch-curves profile for cad_create; failed preparation preserves the draft. Returns changed, created/removed point/curve/constraint IDs, optional solution/profile, units:mm and coordinateSystem:sketch-local-UV. Changed results publish exactly one scoped sketch edit; semantic noops preserve undo/redo. Revision/request guards, competing-preview ownership, cancellation and prospective local/world bounds +/-1e9 apply. Validation/reference work is bounded to2000000; there is no drawing-style256point cap. Solver dense cells262144/work2000000 apply only when solving. RESOURCE_LIMIT leaves state/history unchanged; use a smaller sketch or split the operation. Current saved draft takes precedence over the legacy sketch, unrelated saved sketches/model history remain unchanged. Public callers cannot supply replacement graphs, IDs for created records, source provenance or solver state; inspect accepted geometry through sketch_get.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["preset"]
+            },
+            "profile": {
+              "type": "string",
+              "enum": ["rectangle", "circle"]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "profile", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["plane"]
+            },
+            "plane": {
+              "type": "string",
+              "enum": ["OXY", "OYZ", "OXZ"]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "plane", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["planeOffset"]
+            },
+            "offsetMm": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "offsetMm", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["pointAdd"]
+            },
+            "position": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["pointSet"]
+            },
+            "pointId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "y": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "pointId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["segmentAdd"]
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["segmentAdd"]
+                },
+                "a": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "b": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "a", "b", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["segmentSet"]
+            },
+            "segmentId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "a": {
+              "type": "string",
+              "minLength": 1
+            },
+            "b": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "segmentId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["arcAdd"]
+                },
+                "clockwise": {
+                  "type": "boolean"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["arcAdd"]
+                },
+                "a": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "b": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "center": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "clockwise": {
+                  "type": "boolean"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "kind",
+                "a",
+                "b",
+                "center",
+                "expectedRevision",
+                "requestId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["arcSet"]
+            },
+            "arcId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "a": {
+              "type": "string",
+              "minLength": 1
+            },
+            "b": {
+              "type": "string",
+              "minLength": 1
+            },
+            "center": {
+              "type": "string",
+              "minLength": 1
+            },
+            "clockwise": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "arcId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["construction"]
+            },
+            "curveId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "curveId",
+            "enabled",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["remove"]
+            },
+            "target": {
+              "type": "string",
+              "enum": ["point", "segment", "arc", "constraint"]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "target", "id", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["dimension"]
+            },
+            "constraintId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "constraintId",
+            "value",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["constraintAdd"]
+            },
+            "constraint": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["fixed"]
+                    },
+                    "point": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "point"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["coincident"]
+                    },
+                    "a": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "b": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "a", "b"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["horizontal", "vertical"]
+                    },
+                    "segment": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "segment"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "distance",
+                        "horizontalDistance",
+                        "verticalDistance"
+                      ]
+                    },
+                    "a": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "b": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "a", "b", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["radius"]
+                    },
+                    "arc": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "arc", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "parallel",
+                        "perpendicular",
+                        "equal",
+                        "collinear"
+                      ]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "first", "second"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["angle"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "first", "second", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["tangent"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "point": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "first", "second", "point"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["symmetric"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "axis": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["kind", "first", "second", "axis", "reverse"],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "constraint", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["solve"]
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1000000000
+            },
+            "maxIterations": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "forProfile": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
     "name": "sketch_draw",
     "description": "Append a line, center/radius circle, three-point circle or three-point arc, or move an endpoint in the active Sketch v1 using the same operation as canvas gestures. Coordinates are raw local UV millimetres, not screen pixels. kind:line uses two points and requires explicit autoConstraints and snapToleranceMm; autoConstraints enables existing-endpoint/origin reuse and automatic horizontal/vertical relations within that tolerance. kind:circle uses center then radius point; circle3/arc3 use start, a point on the curve, then end. Circles are stored as two analytic arcs; arc direction follows the three supplied points. kind:move uses pointId and position, solves a temporary fixed target and removes that temporary relation before publication. Current settings_set snapGrid (default false) and gridSpacing (default 10 mm) snap raw inputs before construction. Curves do not gain endpoint snapping or extra automatic constraints. Existing constraints are solved; degeneracy, conflicts, invalid coordinates or work limits reject without changing the draft/revision/history. Prospective local and world coordinates must remain within +/-1e9 mm. One changed result publishes one scoped sketch-history edit, preserving model history, placement, references and unrelated geometry. Exact retry receipts avoid duplicate UUID geometry. GUI captures the revision at the first pointer/pick and submits once on release/third pick; Escape discards unfinished input without a call. Returns changed, created point/curve/constraint IDs, grid-snapped usedPoints (before line endpoint/axis decisions), grid settings and work/count diagnostics; inspect full geometry through sketch_get. No-op movement returns changed:false. Busy, reference-preview ownership and revision/retry guards apply. Limits per draw:256 points,512 curves,512 constraints including a temporary move constraint,2000000 reference coordinates,2000000 validation work,262144 dense solver cells and2000000 solver work. RESOURCE_LIMIT preserves prior state: use a smaller sketch or split the operation. Synchronous solving cannot be interrupted in flight; admission bounds work before allocation/solve. Native sketch cloning and retained ordered source-pick provenance are not exposed.",
     "readOnly": false,
@@ -4202,7 +4892,7 @@
   },
   {
     "name": "settings_set",
-    "description": "Set display, grid and scan-import preferences through the application.",
+    "description": "Set display, grid, sketch-display and scan-import preferences through the shared application operation. sketchControlPoints and sketchMeshPoints control the current sketch's defining-point markers and extracted scan-reference points; both default true. Inspect project_get.settings for current values. These view preferences do not alter sketch geometry or model history.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4245,6 +4935,14 @@
             },
             "normalsDisplay": {
               "type": "boolean"
+            },
+            "sketchControlPoints": {
+              "type": "boolean",
+              "description": "Show defining/control-point markers in the current sketch display. Default true; no geometry or model-history change."
+            },
+            "sketchMeshPoints": {
+              "type": "boolean",
+              "description": "Show extracted scan-reference points in the current sketch display. Default true; no geometry or model-history change."
             },
             "importAscAttributes": {
               "type": "string",
@@ -5873,7 +6571,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face, fitted primitive, stored numeric plane, semantic point/line or named coordinate-frame alignment references without changing geometry or history. Semantic sources return referenceConstruction. Numeric planes expose their stored plane; coordinate frames expose true origin, X/Y/Z directions and XY/YZ/XZ planes independently of display size. Existing point/line sources retain object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. Typed creation and single semantic stored-line midpoint creation use reference_construct and support project import; other source-derived modes and moving these sources remain gated. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
+    "description": "Read exact CAD face, fitted primitive, stored numeric plane, semantic point/line or named coordinate-frame alignment references without changing geometry or history. Semantic sources return referenceConstruction. Numeric planes expose their stored plane; coordinate frames expose true origin, X/Y/Z directions and XY/YZ/XZ planes independently of display size. Existing point/line sources retain object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. reference_construct supports typed creation, stored-line midpoint, center/pair/threePlanes points and located pair/average lines within its documented source matrix. mesh_transform supports numeric coordinate points and numeric endpoint lines, refreshing admitted linked descendants atomically; derived source transforms and duplication remain gated. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -7671,7 +8369,7 @@
   },
   {
     "name": "reference_construct",
-    "description": "Create/edit typed reference points, finite endpoint lines, stored-line midpoint, source-derived points, or located semantic pair/average lines in world XYZ millimetres. For kind:point use mode:center, pair or threePlanes with sourceEntityIds; the server resolves authoritative semantic referencePoint/referenceLine geometry, current validated sphere/cylinder primitive recipes and canonical numeric planeFrame equations (no fit/kernel/parametric). This plane adapter is an application analytic equation, not native direct-plane extent or CAD-provider extraction. Center admits plane selectors and reports the recovered origin fallback when the first canonical source is a plane, retaining all common links. Center consumes the first canonical source, pair the first two, threePlanes evaluates exactly three planes; the full accepted source set is retained independently, sorted by read-only construction-order keys and deduplicated by object identity. Known GUI selector defaults are center one/two, pair two, threePlanes three; no additional native controller count rule is inferred. Fallback/origin/unchanged outcomes are explicit; unchanged edits may retain prior geometry and dirty state. sourceEntityIds excludes numeric coordinates, sourceEntityId, raw records, keys, state and provenance. mode:midpoint keeps the existing one stored semantic endpoints-line sourceEntityId contract. Omitted mode accepts position OR positionPick for a point; each line endpoint independently accepts start OR startPick and end OR endPick. Pick intents contain only {entityId,pointIndex} and use the same visible/unlocked/selectable cloud resolution, native mm/N6 float bake and15significant-digit numeric-control roundtrip as reference_construction_pick, resolved server-side under expectedRevision so JSON cannot lose signed zero. Never supply both forms for one field or use pick fields with derived modes. Preserve the readonly pick response revision for the mutation; changed sources reject rather than quietly re-resolve. Inputs/output world bounds remain +/-1e9 and endpoint lines must be nondegenerate. Numeric picked definitions retain no common dependency or new line-pick records; existing inactive line records are preserved. Preview/get include lossless geometryEncoding and definitionEncoding (F32 retained-record bits). Line mode:pair/average uses sourcePicks; records preserve requested order/repetitions independently of canonical deduplicated common dependencies. Pair admits semantic points/lines plus sphere/cylinder primitive recipes; average admits semantic lines or cylinder recipes. Current primitive recipe/output0 is authoritative; fit-only metadata and stale display kind cannot override it. Cylinder axes follow the application worker midpoint/base/height convention. No general CAD/scan/sketch/cone/plane-extent acquisition is inferred. Each point pick omits parameter; each finite line pick requires a fraction [0,1], consumed once into an F32 world hit without N6 or G15. Omitted sourcePicks reuses exact existing/owned records and common bindings; endpoints with inactive records can restore them only when all sources resolve. Changed source selections require explicit new location intents. New derived lines require an owned typed-endpoint preview as explicit prior, then a same-session mode edit; direct new derived requests cannot invent a constructor/default-average seed. Apply reevaluates the captured actual prior and inputs to verify exact cached geometry; per-version prior is internal, never caller writable. Preview uses an owned60second versioned session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Updates keep destination/name fixed. Apply publishes cached geometry and atomically refreshes admitted derived descendants in one history step, including selected missing source-key assignments; locked source reads and deterministic key-only migration are allowed, locked dependent geometry rejects. Cancel has no history or key migration. Models/source/history changes invalidate previews; camera/selection do not. Source queries and inspection expose read-only identities and structured outcomes. Derived construction/refresh admission is bounded; unrelated numeric operations/imports do not inherit a scene cap. Semantic transforms/duplicate and general CAD/fit-only/scan/sketch/cone derived-line acquisition remain gated. Located line authoring/refresh has an operation-local1000record bound; persistence has no new global scene/record cap. Delete permits leaves or complete dependency sets; cleanupPending retains owner-scoped retry recovery. Existing numeric edits can use initialize:true exclusively with entityId or an owned edit session/version, without retransmitting raw coordinates. It prepares startup-mm/N6 editor defaults server-side, preserves accepted geometry until Apply, and never initializes a new object or detaches a derived recipe. object_get.reference.editorInputs exposes the same detached vectors and lossless vector encodings; project_get object summaries agree. If saved geometry exceeds numeric edit bounds, reference.editorInputsError reports the unavailable preparation while accepted geometry remains inspectable. Point initialization uses the proved N7 sign/pre-round before fixed6 ties-even and G15; line endpoints use direct fixed6 and G15. Explicit typed coordinates and project persistence are not rounded by this intent. Partial native R11 text observations do not establish negative/general tie, line signed-zero or all unit configurations. Numeric pick fields also accept {acquisitionJobId} from a successful owned reference_construction_acquire job. This exact-command binding is checked for revision, source object/BREP/kernel/client generation and existing32-job retention; acquired numbers are detached from public job_get aliases and are not persisted as dependencies. Acquire/features jobs can run while the current reference preview remains owned and unchanged.",
+    "description": "Create/edit typed reference points, finite endpoint lines, stored-line midpoint, source-derived points, or located semantic pair/average lines in world XYZ millimetres. For kind:point use mode:center, pair or threePlanes with sourceEntityIds; the server resolves authoritative semantic referencePoint/referenceLine geometry, current validated sphere/cylinder primitive recipes and validated canonical planeFrame equations, including fitted planes with authoritative frames (no kernel/parametric source). This plane adapter is an application analytic equation, not native direct-plane extent or CAD-provider extraction. Center admits plane selectors and reports the recovered origin fallback when the first canonical source is a plane, retaining all common links. Center consumes the first canonical source, pair the first two, threePlanes evaluates exactly three planes; the full accepted source set is retained independently, sorted by read-only construction-order keys and deduplicated by object identity. Known GUI selector defaults are center one/two, pair two, threePlanes three; no additional native controller count rule is inferred. Fallback/origin/unchanged outcomes are explicit; unchanged edits may retain prior geometry and dirty state. sourceEntityIds excludes numeric coordinates, sourceEntityId, raw records, keys, state and provenance. mode:midpoint keeps the existing one stored semantic endpoints-line sourceEntityId contract. Omitted mode accepts position OR positionPick for a point; each line endpoint independently accepts start OR startPick and end OR endPick. Pick intents contain only {entityId,pointIndex} and use the same visible/unlocked/selectable cloud resolution, native mm/N6 float bake and15significant-digit numeric-control roundtrip as reference_construction_pick, resolved server-side under expectedRevision so JSON cannot lose signed zero. Never supply both forms for one field or use pick fields with derived modes. Preserve the readonly pick response revision for the mutation; changed sources reject rather than quietly re-resolve. Inputs/output world bounds remain +/-1e9 and endpoint lines must be nondegenerate. Numeric picked definitions retain no common dependency or new line-pick records; existing inactive line records are preserved. Preview/get include lossless geometryEncoding and definitionEncoding (F32 retained-record bits). Line mode:pair/average uses sourcePicks; records preserve requested order/repetitions independently of canonical deduplicated common dependencies. Pair admits semantic points/lines plus sphere/cylinder primitive recipes; average admits semantic lines or cylinder recipes. Current primitive recipe/output0 is authoritative; fit-only metadata and stale display kind cannot override it. Cylinder axes follow the application worker midpoint/base/height convention. No general CAD/scan/sketch/cone/plane-extent acquisition is inferred. Each point pick omits parameter; each finite line pick requires a fraction [0,1], consumed once into an F32 world hit without N6 or G15. Omitted sourcePicks reuses exact existing/owned records and common bindings; endpoints with inactive records can restore them only when all sources resolve. Changed source selections require explicit new location intents. New derived lines require an owned typed-endpoint preview as explicit prior, then a same-session mode edit; direct new derived requests cannot invent a constructor/default-average seed. Apply reevaluates the captured actual prior and inputs to verify exact cached geometry; per-version prior is internal, never caller writable. Preview uses an owned60second versioned session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Updates keep destination/name fixed. Apply publishes cached geometry and atomically refreshes admitted derived descendants in one history step, including selected missing source-key assignments; locked source reads and deterministic key-only migration are allowed, locked dependent geometry rejects. Cancel has no history or key migration. Models/source/history changes invalidate previews; camera/selection do not. Source queries and inspection expose read-only identities and structured outcomes. Derived construction/refresh admission is bounded; unrelated numeric operations/imports do not inherit a scene cap. Numeric coordinate-point and endpoint-line transforms use mesh_transform and refresh admitted descendants atomically. Derived transforms, duplication and retained CAD/fit-only/scan/cone derived-line acquisition remain gated. Located line authoring/refresh has an operation-local1000record bound; persistence has no new global scene/record cap. Delete permits leaves or complete dependency sets; cleanupPending retains owner-scoped retry recovery. Existing numeric edits can use initialize:true exclusively with entityId or an owned edit session/version, without retransmitting raw coordinates. It prepares startup-mm/N6 editor defaults server-side, preserves accepted geometry until Apply, and never initializes a new object or detaches a derived recipe. object_get.reference.editorInputs exposes the same detached vectors and lossless vector encodings; project_get object summaries agree. If saved geometry exceeds numeric edit bounds, reference.editorInputsError reports the unavailable preparation while accepted geometry remains inspectable. Point initialization uses the proved N7 sign/pre-round before fixed6 ties-even and G15; line endpoints use direct fixed6 and G15. Explicit typed coordinates and project persistence are not rounded by this intent. Partial native R11 text observations do not establish negative/general tie, line signed-zero or all unit configurations. Numeric pick fields also accept {acquisitionJobId} from a successful owned reference_construction_acquire job. This exact-command binding is checked for revision, source object/BREP/kernel/client generation and existing32-job retention; acquired numbers are detached from public job_get aliases and are not persisted as dependencies. Acquire/features jobs can run while the current reference preview remains owned and unchanged.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

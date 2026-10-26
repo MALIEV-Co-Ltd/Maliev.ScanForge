@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 shared sketch semantic-edit checkpoint; required source families and native acceptance remain open",
+  "baseCommit": "f8c94720de79b9bce6e252b3456f7178040f83e9",
+  "productionBuild": "scanforge-ffc037277fd23aa7",
+  "runtimeSourceSnapshot": {
+    "scope": "production build inputs",
+    "count": 1043,
+    "sha256": "3ec03e76ac09ef5d9cb16ae47690893b9d5eb88fa8367798b1dbd98ae5cfabe3"
+  },
+  "build": {
+    "receipt": {
+      "command": ["C:\\Program Files\\nodejs\\npm.cmd", "run", "build"],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T04:48:16.902289+00:00",
+      "finishedUtc": "2026-10-26T04:50:21.242010+00:00",
+      "elapsedSeconds": 124.33964800002286,
+      "peakJobBytes": 1743237120,
+      "totalProcesses": 36,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T04:48:16.297078+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "typecheckBatches": 13,
+    "warnings": 0,
+    "errors": 0,
+    "agentApiKilobytes": 1080.77,
+    "catalogKilobytes": 195.66,
+    "warningLimitKilobytes": 1200,
+    "warningThresholdUnchanged": true
+  },
+  "finalRegression": {
+    "command": "$m4SketchTests=@(rg --files tests -g '*sketch*.test.ts'); node node_modules/vitest/vitest.mjs run @m4SketchTests tests/automation-api.test.ts tests/automation-operations.test.ts --maxWorkers=1 --reporter=dot",
+    "passedTests": 967,
+    "files": 69,
+    "passed": true,
+    "exitCode": 0,
+    "startedUtc": "2026-10-26T04:55:11.651130+00:00",
+    "finishedUtc": "2026-10-26T04:55:33.562065+00:00",
+    "elapsedSeconds": 21.91092670004582,
+    "peakJobBytes": 430292992,
+    "totalProcesses": 76,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "validationLane": {
+      "name": "Local\\ScanForge.BoundedValidation",
+      "acquiredUtc": "2026-10-26T04:55:10.941083+00:00",
+      "releasedAfterCleanup": true,
+      "zeroWait": true
+    },
+    "scope": "Final frozen runtime after legacy-coordinate repair and local numeric text-draft correction"
+  },
+  "focused": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/sketch-edit-intent.test.ts",
+        "tests/sketch-edit-api.test.ts",
+        "tests/sketch-edit-adapter.test.ts",
+        "tests/sketch-solver-resources.test.ts",
+        "tests/sketch-display-settings-api.test.ts",
+        "tests/reference-derived-line-api.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T04:48:01.721879+00:00",
+      "finishedUtc": "2026-10-26T04:48:05.446507+00:00",
+      "elapsedSeconds": 3.7246183999814093,
+      "peakJobBytes": 401620992,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T04:48:01.113397+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "files": 6,
+    "passedTests": 116
+  },
+  "earlierRegression": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests\\parametric-sketch-curves.test.ts",
+        "tests\\reference-sketch-point.test.ts",
+        "tests\\reference-sketch-pick-acquisition.test.ts",
+        "tests\\scan-boundary-sketch.test.ts",
+        "tests\\sketch-frame.test.ts",
+        "tests\\viewport-sketch-drawing.test.ts",
+        "tests\\viewport-sketch-display.test.ts",
+        "tests\\sketch-fillet.test.ts",
+        "tests\\sketch-fillet-api.test.ts",
+        "tests\\viewport-sketch-construction.test.ts",
+        "tests\\sketch-ellipse-rebuild.test.ts",
+        "tests\\sketch.test.ts",
+        "tests\\sketch-ellipse-edits.test.ts",
+        "tests\\sketch-wire-vertex-separation.test.ts",
+        "tests\\sketch-editing.test.ts",
+        "tests\\sketch-wire-validation.test.ts",
+        "tests\\sketch-edit-intent.test.ts",
+        "tests\\sketch-wire-self-connection.test.ts",
+        "tests\\sketch-edit-api.test.ts",
+        "tests\\sketch-wire-attachment.test.ts",
+        "tests\\sketch-edit-adapter.test.ts",
+        "tests\\sketch-undo.test.ts",
+        "tests\\sketch-drawing.test.ts",
+        "tests\\sketch-trim.test.ts",
+        "tests\\sketch-draw-intent.test.ts",
+        "tests\\sketch-draw-api.test.ts",
+        "tests\\sketch-trim-api.test.ts",
+        "tests\\sketch-display-settings-api.test.ts",
+        "tests\\sketch-curves-drawing.test.ts",
+        "tests\\sketch-symmetry.test.ts",
+        "tests\\sketch-source-records.test.ts",
+        "tests\\sketch-curve-profile.test.ts",
+        "tests\\sketch-solver-resources.test.ts",
+        "tests\\sketch-corner.test.ts",
+        "tests\\sketch-set-solve.test.ts",
+        "tests\\sketch-corner-api.test.ts",
+        "tests\\sketch-section.test.ts",
+        "tests\\sketch-collinear.test.ts",
+        "tests\\sketch-profile-junctions.test.ts",
+        "tests\\sketch-circle-records.test.ts",
+        "tests\\sketch-plane-source.test.ts",
+        "tests\\sketch-circle-rebuild.test.ts",
+        "tests\\sketch-circle-radius.test.ts",
+        "tests\\sketch-plane-source-api.test.ts",
+        "tests\\sketch-circle-placed-replacement.test.ts",
+        "tests\\sketch-circle-edits.test.ts",
+        "tests\\sketch-mirror.test.ts",
+        "tests\\sketch-child-state.test.ts",
+        "tests\\sketch-child-collection.test.ts",
+        "tests\\sketch-mirror-api.test.ts",
+        "tests\\sketch-authoring.test.ts",
+        "tests\\sketch-line-self-connection.test.ts",
+        "tests\\sketch-authoring-host-history.test.ts",
+        "tests\\sketch-line-rebuild.test.ts",
+        "tests\\sketch-arc-rebuild.test.ts",
+        "tests\\sketch-line-projection.test.ts",
+        "tests\\sketch-arc-point-edit.test.ts",
+        "tests\\sketch-line-geometry.test.ts",
+        "tests\\sketch-arc-placed-replacement.test.ts",
+        "tests\\sketch-line-edits.test.ts",
+        "tests\\sketch-arc-local-replacement.test.ts",
+        "tests\\sketch-line-conversion.test.ts",
+        "tests\\sketch-line-collection.test.ts",
+        "tests\\sketch-line-child.test.ts",
+        "tests\\sketch-line-bounds.test.ts",
+        "tests\\sketch-history-scope.test.ts",
+        "tests\\sketch-arc-edit-routes.test.ts",
+        "tests/automation-api.test.ts",
+        "tests/automation-operations.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T04:32:29.106092+00:00",
+      "finishedUtc": "2026-10-26T04:32:50.800565+00:00",
+      "elapsedSeconds": 21.69446460000472,
+      "peakJobBytes": 430321664,
+      "totalProcesses": 76,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T04:32:28.526619+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "files": 69,
+    "passedTests": 963,
+    "scope": "Before final legacy-coordinate repair and local numeric text-draft correction; final focused/browser verification follows those corrections"
+  },
+  "publicMcpBrowser": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-canvas-browser.mjs"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T04:51:17.081596+00:00",
+      "finishedUtc": "2026-10-26T04:51:33.243951+00:00",
+      "elapsedSeconds": 16.162345200020354,
+      "peakJobBytes": 1553424384,
+      "totalProcesses": 26,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T04:51:16.455730+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "reportSha256": "0b4a0641702dd767aba9f87a5a366a85c0c9530dc28e5a91c108535829fb3020",
+    "scenarios": [
+      {
+        "name": "actual-canvas-continuous-lines",
+        "gridSpacingMm": 1,
+        "originFixed": true,
+        "sharedEndpoint": true,
+        "horizontalVertical": true,
+        "modelHistoryUnchanged": true
+      },
+      {
+        "name": "actual-canvas-three-point-arc",
+        "start": [-25, -5],
+        "via": [-20, 0],
+        "end": [-15, -5],
+        "center": [-20, -5],
+        "clockwise": true,
+        "unfinishedPicksEscapePreservesRevision": true
+      },
+      {
+        "name": "actual-canvas-center-radius-circle",
+        "center": [15, -10],
+        "radiusMm": 5,
+        "twoAnalyticArcs": true,
+        "dragEscapePreservesRevision": true,
+        "successfulNextGesture": true
+      },
+      {
+        "name": "public-sketch-equivalence-history-worker-reopen",
+        "guiMcpUndoRedo": true,
+        "independentIntentGeometryEquality": true,
+        "idsPreservedOnReopen": true,
+        "savedSketches": 2,
+        "modelHistoryUnchanged": true
+      }
+    ],
+    "semanticEdits": {
+      "steps": [
+        "rectangle preset",
+        "unsnapped unsolved point axis",
+        "unsolved dimension",
+        "numeric edit followed by one direct Solve click",
+        "normal offset",
+        "origin-plane orientation",
+        "remove dimensional relation",
+        "numeric endpoint coordinate",
+        "server-owned constraint construction",
+        "circular preset",
+        "add numeric point",
+        "new point x",
+        "new point y",
+        "add segment",
+        "segment topology",
+        "segment construction flag",
+        "add analytic arc",
+        "arc direction",
+        "arc construction flag",
+        "remove arc",
+        "remove segment",
+        "remove point",
+        "open profile edit"
+      ],
+      "independentIntents": true,
+      "noGuiGraphReplacement": true,
+      "actualScanSectionReference": true,
+      "sourceId": "semantic-source",
+      "scopedHistory": true,
+      "failedConstraintAtomicity": true,
+      "failedProfileAtomicity": true,
+      "numericTypingFocusAndEscape": true,
+      "guiMcpExtrusion": true,
+      "triangleVolume": 1256.116318649568,
+      "projectWorkerReopen": true,
+      "nativeAcceptance": false
+    },
+    "displayFlags": {
+      "defaultsObserved": true,
+      "guiSettingsObserved": true,
+      "mcpControlsObserved": true,
+      "geometryAndHistoryUnchanged": true
+    },
+    "browserErrors": [],
+    "consoleWarnings": [],
+    "cleanup": {
+      "allOwnedProcessesExited": true,
+      "allOwnedLoopbackPortsClosed": true,
+      "disposableBrowserAndProfile": true
+    },
+    "scope": "CURRENT_APPLICATION_CANVAS_GUI_PUBLIC_MCP_NOT_NATIVE_EQUIVALENCE"
+  },
+  "visualInspection": [
+    {
+      "path": "docs/evidence/m4-sketch-semantic-20261026/semantic-sketch-edits.png",
+      "sha256": "83c16659e4cb43f6563a44db64d53dd298c723a02fa50b71b9002fafe05abd76"
+    },
+    {
+      "path": "docs/evidence/m4-sketch-semantic-20261026/sketch-display-flags.png",
+      "sha256": "6143cda5b8915257e996aba172c7b60bf279b9ef1ae0aa7f767eaa873f2f18c1"
+    }
+  ],
+  "sharedContracts": [
+    "GUI numeric/topology controls call the same sketch_edit operation as MCP; no UI-built replacement graph or relation ID",
+    "14strict semantic intents; revision/retry/cancellation/preview guards and single scoped sketch publication",
+    "Numeric edits remain unsnapped/unsolved; constraintAdd rejects nonconvergence; explicit solve retains valid best-candidate behavior; forProfile requires convergence and closed analytic geometry",
+    "Numeric text remains local until blur/Enter; Escape discards it; authoritative sketch replacement resets the draft",
+    "Prospective bounds permit repair/reset/removal of valid stored out-of-editor-range coordinates",
+    "Solver and validation work budgets apply per operation; large admitted projects remain inspectable and editable without solving",
+    "Both sketch display flags default true, use settings_set and are observable through project_get.settings"
+  ],
+  "priorFailuresRetained": [
+    {
+      "receipt": "sketch-semantic-edit-green-r1.json",
+      "scope": "111pass1fail: missing competing-reference-preview guard on new command; fixed and fresh116pass run retained"
+    },
+    {
+      "receipt": "sketch-semantic-edit-green-r2.json",
+      "scope": "Named validation mutex busy; no child started"
+    },
+    {
+      "receipt": "sketch-legacy-repair-red-r1.json",
+      "scope": "3repair failures reproduced before prospective-only bounds correction"
+    },
+    {
+      "receipt": "sketch-semantic-browser-r1.json",
+      "scope": "Fixture import default-dismissed its replacement confirmation; disposable-fixture acceptance now explicit"
+    },
+    {
+      "receipt": "sketch-semantic-browser-r2.json",
+      "scope": "Actual sequential typing reproduced5instead of51.125; local numeric text-draft fix verified by r4"
+    },
+    {
+      "receipt": "sketch-semantic-browser-r3.json",
+      "scope": "All semantic UI checks reached extrusion; harness incorrectly assumed a one-chunk geometry artifact; bounded paged artifact reader used in passing r4"
+    },
+    {
+      "scope": "Early solver/display GREENr1 overlapped M2 validation; clean named-mutex GREENr2 supersedes that scheduling proof. Original failure/overlap receipts remain private."
+    }
+  ],
+  "priorPushedHostedCheckpoint": {
+    "commit": "f8c94720de79b9bce6e252b3456f7178040f83e9",
+    "runId": 40269732059,
+    "jobId": 121399735222,
+    "conclusion": "success",
+    "passedTests": 49743,
+    "skippedTests": 64,
+    "passedFiles": 711,
+    "build": true,
+    "cadSmoke": true,
+    "repositoryFormatting": true,
+    "scope": "Numeric-transform test correction only; this new sketch source requires its own hosted checks"
+  },
+  "remainingRequiredGates": [
+    "Retained CAD/scan source acquisition and remaining primitive/plane source families",
+    "Derived/inactive-pick transforms and semantic duplication policies",
+    "Original-native construction/lifecycle and remaining frame/fit/curve/constraint acceptance",
+    "Integrate current main, exact-head hosted checks and review, merge, merged-main verification and issue4/milestone5 closure"
+  ],
+  "finalRuntimeSourceHashUnchanged": true,
+  "milestoneComplete": false,
+  "merged": false
+}

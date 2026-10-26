@@ -24,6 +24,8 @@ import {
 import { cloudPlacement } from "../point-cloud-placement";
 import { encodeReferenceFrame } from "../reference-frame";
 import { SketchDrawResourceLimit } from "../sketch-draw-intent";
+import { SketchSolverResourceLimit } from "../sketch-solver-budget";
+import { SketchEditResourceLimit } from "../sketch-edit-intent";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
   inspectGlobalAlignmentPreview,
@@ -615,6 +617,7 @@ export class ApplicationApi {
         [
           "datum_construct",
           "sketch_draw",
+          "sketch_edit",
           "alignment_preview",
           "global_alignment_preview",
           "landmark_preview",
@@ -1143,7 +1146,9 @@ export class ApplicationApi {
       revision: this.currentRevision(),
       error: {
         code:
-          error instanceof SketchDrawResourceLimit
+          error instanceof SketchDrawResourceLimit ||
+          error instanceof SketchSolverResourceLimit ||
+          error instanceof SketchEditResourceLimit
             ? "RESOURCE_LIMIT"
             : error instanceof ApiError || error instanceof VisualCaptureError
               ? error.code
