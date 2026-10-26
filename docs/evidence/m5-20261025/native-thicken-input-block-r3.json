@@ -1,0 +1,40 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro8.0.123",
+  "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "ownedPid": 64776,
+  "ownedWindowId": 134288746,
+  "creationTimeFiletime": "134374492842672185",
+  "startedUtc": "2026-10-26T00:48:04.287807+00:00",
+  "finishedUtc": "2026-10-26T00:50:09.569276+00:00",
+  "plannedInput": "Saved native r2 fit QSF, unchanged; not opened",
+  "nativeModelingInputSent": false,
+  "nativeThickenVerified": false,
+  "newNativeArtifacts": 0,
+  "failure": {
+    "operation": "Raise owned window",
+    "message": "GetCursorPos failed: Access is denied. (0x80070005)",
+    "freshWindowRebind": true,
+    "retryCount": 1,
+    "retrySameFailure": true
+  },
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "authenticated-finish",
+    "watchdogStopped": true,
+    "ownedProcessExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "job": {
+    "limitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "peakBytes": 723509248,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 125.54732720000902
+  },
+  "scope": "Read-only own-window binding and bounded lifecycle passed; native solid verification blocked before input. No bypass or security/system change attempted.",
+  "preservedExistingNativeWindows": [5115682, 11667504, 131075094]
+}

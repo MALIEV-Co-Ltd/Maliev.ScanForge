@@ -9,8 +9,11 @@ failed before execution: GitHub reports recent account payments failed or the
 spending limit needs increasing. The [check annotations](evidence/m5-20261025/hosted-ci-billing-block.json)
 confirm no job started in that attempt. The owner subsequently made the repository
 public; the rerun of evidence head `b6c0477` actually started (job121338654444).
-Final exact-head CI remains required; the billing failure is historical rather
-than evidence that the rerun passed.
+That rerun passed. Updated evidence head `0b409ae` also passed
+[all hosted gates](evidence/m5-20261025/restore-hosted-ci.json): twelve-batch
+typecheck/build,49,050unit tests passed/64skipped (680files passed/18skipped),
+CAD smoke and formatting. Build identity matches the local browser replay.
+Final integrated-candidate CI remains required after future runtime changes.
 Native QuickSurface UI initialization recovered at 19:56 UTC on 2026-10-25
 ([observation](evidence/m5-20261025/native-runtime-recovered.json)). Existing
 windows were preserved. The user subsequently authorized coordination, and the first fresh
@@ -19,6 +22,8 @@ owned session imported/saved the connected scan region with verified cleanup
 failed before acceptance. A second owned session accepted the native fit and
 exported actual QSF/STEP; the measured comparison below shows a fitting gap.
 The native operation matrix and M4 acceptance remain incomplete.
+The next fresh native session was blocked before input by Windows AccessDenied;
+its cleanup passed, but native thickening remains unverified (receipt below).
 Local checks are retained below; M5 is not merged or closed.
 
 ## Operation matrix
@@ -36,6 +41,22 @@ Local checks are retained below; M5 is not merged or closed.
 
 ## Candidate history and validation
 
+### Native solid session r3: desktop input blocked
+
+The next coordinated fresh instance bound exact PID64776/HWND134288746 under
+the unchanged4GiB/25% Job. Its first Raise operation failed
+`GetCursorPos failed: Access is denied. (0x80070005)`; a fresh window rebind and
+one activation retry failed identically. No native modeling/file input was sent,
+and no native artifacts were created. No security/system setting or bypass was
+attempted. The user was asked to check an unlocked, normal Windows desktop.
+
+The [retained receipt](evidence/m5-20261025/native-thicken-input-block-r3.json)
+records authenticated early finish, exited owned process, closed process/thread
+handles, stopped watchdog, no cleanup errors and zero active Job processes.
+Peak allocation was723,509,248bytes. The original three native windows remained
+present. Actual cleanup was relayed before slot release. This is lifecycle
+evidence only; native solid/thickening comparison remains open.
+
 ### Exact CAD restore parity and native-input replay
 
 Native-input [browser r2](evidence/m5-20261025/native-fit-browser-failure-r2.log)
@@ -49,7 +70,9 @@ Both `project_import` and `backup_restore` reproduce the issue in the
 [red regression](evidence/m5-20261025/restore-retessellation-red.log); the
 [green suite](evidence/m5-20261025/restore-retessellation-green.log) passes5/5.
 The affected [Vite build](evidence/m5-20261025/restore-retessellation-build.log)
-passed. Full typecheck/full-suite verification of this delta is still pending.
+passed. The [hosted receipt](evidence/m5-20261025/restore-hosted-ci.json) now
+confirms the full typecheck/build,49,050tests/64skipped, CAD smoke and formatting
+for evidence head `0b409ae`, which includes this runtime delta.
 
 The corrected [numerical comparison r4](evidence/m5-20261025/native-fit-comparison-r4.json)
 passes inverse-XY checks at every sample. Rectangle maximum inverse error is
