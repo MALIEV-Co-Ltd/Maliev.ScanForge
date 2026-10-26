@@ -57,6 +57,13 @@ publication. Panel unmount cancels picking and its owned pending job.
 
 ## Freeform patch edits
 
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace.
+
 `cad_inspect` is a read-only asynchronous operation used by MCP and the GUI
 properties panel. It snapshots saved BREP and opens a dedicated CadClient worker,
 parses the BREP without tessellation or shape registration, and reads unique
