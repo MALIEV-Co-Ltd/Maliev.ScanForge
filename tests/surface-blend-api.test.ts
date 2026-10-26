@@ -240,9 +240,9 @@ for (const mode of ["locked", "pointcloud", "uneditableExact", "missingTarget"])
       delete entities[0].parametric;
     }
     if (mode === "uneditableExact")
-      entities[0].parametric!.feature.recipe = {
-        kind: "importBrep",
-        brep: "target-brep",
+      entities[0].parametric!.feature = {
+        ...entities[0].parametric!.feature,
+        recipe: { kind: "importBrep", brep: "target-brep" },
       };
     const before = structuredClone(entities);
     try {
@@ -267,10 +267,13 @@ for (const mode of ["locked", "pointcloud", "uneditableExact", "missingTarget"])
 
 it("materializes a downstream reference snapshot without changing or depending on either source", async () => {
   const h = setup(true);
-  h.state.entities[1].parametric!.feature.recipe = {
-    kind: "offset",
-    source: { featureId: "target-feature" },
-    distance: 1,
+  h.state.entities[1].parametric!.feature = {
+    ...h.state.entities[1].parametric!.feature,
+    recipe: {
+      kind: "offset",
+      source: { featureId: "target-feature" },
+      distance: 1,
+    },
   };
   const before = structuredClone(h.state.entities);
   try {
