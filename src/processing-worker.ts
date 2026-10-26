@@ -255,6 +255,7 @@ scope.onmessage = async ({ data: incoming }) => {
             })
           : runScanTool(request, options);
       result.positions = outcome.positions;
+      if (outcome.indexedMesh) result.indexedMesh = outcome.indexedMesh;
       if ("noiseComparison" in outcome)
         result.noiseComparison = outcome.noiseComparison;
       result.topology = outcome.topology;
