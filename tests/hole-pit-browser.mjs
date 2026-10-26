@@ -20,9 +20,11 @@ const nativeAlgorithm =
       : undefined);
 const observedNative = nativeAlgorithm !== undefined;
 const nativeFlat = nativeAlgorithm === "flat";
+const nativeCurvature = nativeAlgorithm === "curvature";
 const nativeEdges = Number(process.env.SCANFORGE_HOLE_NATIVE_RIM_EDGES ?? 39);
 assert(
-  !observedNative || ["flat", "tangent", "automatic"].includes(nativeAlgorithm),
+  !observedNative ||
+    ["flat", "tangent", "automatic", "curvature"].includes(nativeAlgorithm),
 );
 const root = new URL("../", import.meta.url),
   out = new URL(
@@ -52,6 +54,9 @@ const token = randomBytes(32).toString("hex"),
     startedAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 360000).toISOString(),
     persistentData: false,
+    harnessSha256: createHash("sha256")
+      .update(await readFile(new URL(import.meta.url)))
+      .digest("hex"),
     resources: [],
   };
 let server, reserve, browserServer, browser, client, transport, failed, page;
@@ -241,32 +246,53 @@ try {
         t = point(i + 1, a, za);
       positions.push(...p, ...q, ...r, ...p, ...r, ...t);
     }
-  const nativeSample = nativeBatch
+  const nativeSample = nativeCurvature
     ? await (async () => {
         const row = JSON.parse(
           await readFile(
             new URL(
-              "fixtures/hole-fill-observed-rectangles.json",
+              "fixtures/hole-fill-observed-curvature-annulus.json",
               import.meta.url,
             ),
             "utf8",
           ),
         );
         return {
-          ...row,
-          output: row.batchCoordinates,
-          outputFacets: row.batchCoordinates.length / 9,
-          nativeSha256: row.batchSha256,
+          ...row.source,
+          output: row.native.faces.map((face) =>
+            face.map((id) => row.native.vertices[id]),
+          ),
+          inputSha256:
+            "d5552bbeead8824441ad7020b9059804702509b0edab2b435cee7d9c9672dcdf",
+          outputFacets: row.nativeFacets,
         };
       })()
-    : observedNative
-      ? JSON.parse(
-          await readFile(
-            new URL("fixtures/hole-fill-observed-cups.json", import.meta.url),
-            "utf8",
-          ),
-        ).cases.find((row) => row.rimEdges === nativeEdges)
-      : undefined;
+    : nativeBatch
+      ? await (async () => {
+          const row = JSON.parse(
+            await readFile(
+              new URL(
+                "fixtures/hole-fill-observed-rectangles.json",
+                import.meta.url,
+              ),
+              "utf8",
+            ),
+          );
+          return {
+            ...row,
+            output: row.batchCoordinates,
+            outputFacets: row.batchCoordinates.length / 9,
+            nativeSha256: row.batchSha256,
+          };
+        })()
+      : observedNative
+        ? JSON.parse(
+            await readFile(
+              new URL("fixtures/hole-fill-observed-cups.json", import.meta.url),
+              "utf8",
+            ),
+          ).cases.find((row) => row.rimEdges === nativeEdges)
+        : undefined;
   const fixture = nativeBatch
     ? {
         positions: nativeSample.positions,
@@ -280,10 +306,12 @@ try {
             face.flatMap((id) => nativeSample.vertices[id]),
           ),
           rim: nativeSample.vertices
-            .filter((p) => p[2] === 0)
+            .filter((p) =>
+              nativeCurvature ? Math.hypot(p[0], p[1]) < 2.01 : p[2] === 0,
+            )
             .reverse()
             .flat(),
-          center: [0, 0, 0],
+          center: nativeCurvature ? [0, 0, Math.fround(0.16)] : [0, 0, 0],
           radius: 2,
         }
       : fixturePath
@@ -448,11 +476,13 @@ try {
   const algorithmLabel =
     nativeBatch || nativeAlgorithm === "flat"
       ? "Flat"
-      : nativeAlgorithm === "tangent"
-        ? "Tangent"
-        : observedNative
-          ? "Automatically decided"
-          : "Recover surface";
+      : nativeCurvature
+        ? "Curvature"
+        : nativeAlgorithm === "tangent"
+          ? "Tangent"
+          : observedNative
+            ? "Automatically decided"
+            : "Recover surface";
   await page.getByRole("option", { name: algorithmLabel, exact: true }).click();
   if (nativeBatch)
     await controls.getByLabel("Maximum hole diameter (mm)").fill("9");
@@ -479,18 +509,20 @@ try {
     )
     .waitFor();
   const gui = await geometry();
-  assert.deepEqual(
-    gui.positions.slice(0, original.positions.length),
-    original.positions,
-  );
+  if (!nativeCurvature)
+    assert.deepEqual(
+      gui.positions.slice(0, original.positions.length),
+      original.positions,
+    );
   let maximumHeight = 0;
   for (let i = original.positions.length; i < gui.positions.length; i += 3) {
     const h = height(gui.positions.slice(i, i + 3));
     maximumHeight = Math.max(maximumHeight, Math.abs(h));
-    assert(
-      h >= supportMin - 0.0001 && h <= supportMax + 0.0001,
-      `Unbounded height ${h}`,
-    );
+    if (!nativeCurvature)
+      assert(
+        h >= supportMin - 0.0001 && h <= supportMax + 0.0001,
+        `Unbounded height ${h}`,
+      );
   }
   assert(gui.positions.length > original.positions.length);
   if (nativeSample) {
@@ -510,10 +542,12 @@ try {
       }
       return keys.sort();
     };
-    if (nativeBatch)
+    if (nativeBatch || nativeCurvature)
       assert.deepEqual(
         triangleKeys(gui.positions),
-        triangleKeys(nativeSample.output),
+        triangleKeys(
+          nativeCurvature ? nativeSample.output.flat(2) : nativeSample.output,
+        ),
       );
     else if (nativeFlat)
       assert.deepEqual(
@@ -634,6 +668,66 @@ try {
     assert.deepEqual((await geometry()).positions, original.positions);
     await mutate("history_redo", {});
     assert.deepEqual((await geometry()).positions, gui.positions);
+    if (nativeCurvature) {
+      await mutate("history_undo", {});
+      assert.deepEqual((await geometry()).positions, original.positions);
+      const cursor = await history();
+      const cdp = await browser.newBrowserCDPSession();
+      const targets = async () =>
+        (await cdp.send("Target.getTargets")).targetInfos
+          .filter(
+            (target) =>
+              target.type === "worker" && target.url.endsWith("/cad-worker.js"),
+          )
+          .map((target) => target.targetId);
+      assert.deepEqual(await targets(), []);
+      const pending = await mutate("mesh_process", {
+        entityId: panelId,
+        operation: {
+          kind: "scanEdit",
+          action: "fillHoles",
+          indices: [hole],
+          algorithm: "curvature",
+          mode: "entire",
+          tolerance: 0.001,
+        },
+      });
+      let observed = [];
+      for (let attempt = 0; attempt < 200; attempt++) {
+        observed = await targets();
+        if (observed.length) break;
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+      assert.equal(
+        observed.length,
+        1,
+        "Cancellation must observe the actual nested CAD worker",
+      );
+      await call("job_cancel", { jobId: pending.result.jobId });
+      await job(pending, "cancelled");
+      let remaining;
+      for (let attempt = 0; attempt < 100; attempt++) {
+        remaining = await targets();
+        if (!remaining.length) break;
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+      assert.deepEqual(
+        remaining,
+        [],
+        "Cancelling the processing owner must retire its nested CAD worker",
+      );
+      assert.equal(await history(), cursor);
+      assert.deepEqual((await geometry()).positions, original.positions);
+      await mutate("history_redo", {});
+      assert.deepEqual((await geometry()).positions, gui.positions);
+      await cdp.detach();
+      ledger.nativeCancellation = {
+        observedNestedCadWorkers: observed.length,
+        remainingNestedCadWorkers: remaining.length,
+        sourcePreserved: true,
+        historyPreserved: true,
+      };
+    }
     if (nativeSample)
       ledger.nativeComparison = {
         algorithm: nativeAlgorithm,

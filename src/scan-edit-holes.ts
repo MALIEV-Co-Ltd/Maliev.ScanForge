@@ -1,4 +1,6 @@
 import { ShapeUtils, Vector2 } from "three";
+import { CadClient } from "./cad/client";
+import { fillNativeCurvaturePatch } from "./scan-hole-curvature-operation";
 import { holeFillTitle, type HoleFillProgress } from "./hole-fill-progress";
 import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
@@ -38,11 +40,16 @@ import {
 } from "./scan-edit";
 
 /** Fill a constrained disk with shared rim vertices and density-matched interior facets. */
-export function runHoleFill(
+function* holeFillSteps(
   r: ScanEditRequest,
   t: MeshTopology,
   o: MeshProcessingOptions,
-): ScanEditResult {
+  nativeWhole: boolean,
+): Generator<
+  { topology: MeshTopology; boundary: number[] },
+  ScanEditResult,
+  Awaited<ReturnType<typeof fillNativeCurvaturePatch>>
+> {
   if (r.batch && (r.mode ?? "entire") !== "entire")
     throw new Error("Batch filling requires entire holes.");
   if (r.batch && r.algorithm !== undefined && r.algorithm !== "tangent")
@@ -85,6 +92,8 @@ export function runHoleFill(
       "Repair nonmanifold edges and inconsistent winding before filling holes.",
     );
   const output: number[] = [];
+  let currentPositions = r.positions,
+    replacedCollar = false;
   const diameters =
     diameter && selected.length
       ? holeBoundaryDiameters(t, o.signal)
@@ -135,7 +144,7 @@ export function runHoleFill(
     if (batch) reportBatch();
   };
   checkProgress(o, 0, "Estimating boundary tangents");
-  const vertexNormals =
+  let vertexNormals =
     bridging || !selected.length
       ? new Float64Array(0)
       : computeAngleWeightedNormals(t);
@@ -156,7 +165,13 @@ export function runHoleFill(
       (requestedAlgorithm === "tangent" ||
         (nativeAutomatic && original.length <= 40)) &&
       (r.mode ?? "entire") === "entire";
-    if (nativeTangent) {
+    if (
+      nativeTangent ||
+      (nativeWhole &&
+        !bridging &&
+        (r.mode ?? "entire") === "entire" &&
+        (requestedAlgorithm === "curvature" || nativeAutomatic))
+    ) {
       const wanted = new Set(original);
       const ordered = nativeHoleBoundaryWalks(t, o.signal).find(
         (walk) =>
@@ -349,6 +364,47 @@ export function runHoleFill(
       if (bridging)
         throw new Error("A flat bridge requires coplanar attachment edges.");
       skipHole();
+      continue;
+    }
+    if (
+      nativeWhole &&
+      method === "curvature" &&
+      !bridging &&
+      (r.mode ?? "entire") === "entire"
+    ) {
+      if (cachedVertices && cachedTriangles)
+        t = analyzeIndexedMesh(
+          Float64Array.from(cachedVertices, Math.fround),
+          Uint32Array.from(cachedTriangles),
+          o,
+        );
+      const patch = yield { topology: t, boundary: original };
+      checkProgress(o, 0.95, "Finalizing Curvature collar");
+      t = analyzeIndexedMesh(
+        Float64Array.from(patch.vertices),
+        patch.triangles,
+        { ...o, onProgress: undefined },
+      );
+      currentPositions = new Float32Array(patch.triangles.length * 3);
+      for (let corner = 0; corner < patch.triangles.length; corner++) {
+        if (corner % 4096 === 0)
+          checkProgress(o, 0.95, "Finalizing Curvature collar");
+        currentPositions.set(
+          patch.vertices.subarray(
+            patch.triangles[corner] * 3,
+            patch.triangles[corner] * 3 + 3,
+          ),
+          corner * 3,
+        );
+      }
+      cachedVertices = Array.from(t.vertices);
+      cachedTriangles = Array.from(t.triangles);
+      vertexNormals = computeAngleWeightedNormals(t);
+      output.length = 0;
+      replacedCollar = true;
+      methods.add("curvature");
+      filledHoles++;
+      if (batch) reportBatch();
       continue;
     }
     let triangles = ShapeUtils.triangulateShape(projected, []);
@@ -636,7 +692,7 @@ export function runHoleFill(
       const [a, b, c] = tri.map((i) => points[i]);
       output.push(...a, ...b, ...c);
     }
-    if (o.topologyCache) {
+    if (o.topologyCache || nativeWhole) {
       cachedVertices ??= Array.from(t.vertices);
       cachedTriangles ??= Array.from(t.triangles);
       const mapping = new Map(loop.map((id, i) => [i, id]));
@@ -667,11 +723,12 @@ export function runHoleFill(
   if (batch) reportBatch("finalizing");
   let positions: Float32Array | undefined;
   if (!output.length)
-    positions = r.positions instanceof Float32Array ? r.positions : undefined;
+    positions =
+      currentPositions instanceof Float32Array ? currentPositions : undefined;
   else {
-    positions = new Float32Array(r.positions.length + output.length);
-    positions.set(r.positions);
-    positions.set(output, r.positions.length);
+    positions = new Float32Array(currentPositions.length + output.length);
+    positions.set(currentPositions);
+    positions.set(output, currentPositions.length);
     if (positions.some((value) => !Number.isFinite(value)))
       throw new Error("Coordinates exceed Float32 output precision.");
   }
@@ -718,7 +775,9 @@ export function runHoleFill(
       changed: filledHoles > 0,
       filledHoles,
       skippedHoles,
-      addedTriangles: output.length / 9,
+      addedTriangles: replacedCollar
+        ? (positions!.length - r.positions.length) / 9
+        : output.length / 9,
       surfaceFitHoles,
       interpolatedSurfaceHoles,
       surfaceBlendFallbackHoles,
@@ -730,4 +789,43 @@ export function runHoleFill(
       mode: r.mode ?? "entire",
     },
   };
+}
+
+/** Synchronous helpers retain non-kernel processing, including shrink-wrap patches. */
+export function runHoleFill(
+  r: ScanEditRequest,
+  t: MeshTopology,
+  o: MeshProcessingOptions,
+): ScanEditResult {
+  const result = holeFillSteps(r, t, o, false).next();
+  if (!result.done)
+    throw new Error("Curvature filling requires an asynchronous CAD owner.");
+  return result.value;
+}
+
+/** Shared GUI/MCP worker driver owns one lazy, isolated CAD worker for this edit. */
+export async function runHoleFillAsync(
+  r: ScanEditRequest,
+  t: MeshTopology,
+  o: MeshProcessingOptions,
+): Promise<ScanEditResult> {
+  const steps = holeFillSteps(r, t, o, true);
+  let kernel: CadClient | undefined;
+  try {
+    let next = steps.next();
+    while (!next.done) {
+      kernel ??= new CadClient();
+      const patch = await fillNativeCurvaturePatch(
+        next.value.topology,
+        next.value.boundary,
+        kernel,
+        o,
+      );
+      next = steps.next(patch);
+    }
+    return next.value;
+  } finally {
+    kernel?.dispose();
+    steps.return(undefined as never);
+  }
 }

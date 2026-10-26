@@ -244,7 +244,7 @@ function ensureDone(oc, status, action) {
   }
 }
 
-function mesh(oc, shape, onProgress = () => {}) {
+function mesh(oc, shape, onProgress = () => {}, curvature = false) {
   // Kernel bodies can share face data. Retessellation may replace those shared
   // triangulations, so prepared alignment records must be acquired again.
   alignmentMeshes.clear();
@@ -257,18 +257,32 @@ function mesh(oc, shape, onProgress = () => {}) {
   try {
     // Display tessellation is disposable; exact curves/surfaces remain in the BRep.
     const bounds = keep(new oc.Bnd_Box_1());
-    oc.BRepBndLib.Add(shape, bounds, false);
+    oc.BRepBndLib.Add(shape, bounds, curvature);
     const minimum = keep(bounds.CornerMin()),
       maximum = keep(bounds.CornerMax());
-    const diagonal = Math.hypot(
-      maximum.X() - minimum.X(),
-      maximum.Y() - minimum.Y(),
-      maximum.Z() - minimum.Z(),
-    );
-    const deflection = Math.max(0.0001, Math.min(0.025, diagonal * 0.00025));
+    const diagonal = curvature
+      ? Math.sqrt(
+          (maximum.Y() - minimum.Y()) ** 2 +
+            (maximum.X() - minimum.X()) ** 2 +
+            (maximum.Z() - minimum.Z()) ** 2,
+        )
+      : Math.hypot(
+          maximum.X() - minimum.X(),
+          maximum.Y() - minimum.Y(),
+          maximum.Z() - minimum.Z(),
+        );
+    const deflection = curvature
+      ? Math.max(diagonal, 1e-7) * 0.001 * 0.1
+      : Math.max(0.0001, Math.min(0.025, diagonal * 0.00025));
     oc.BRepTools.Clean(shape);
     keep(
-      new oc.BRepMesh_IncrementalMesh_2(shape, deflection, false, 0.1, false),
+      new oc.BRepMesh_IncrementalMesh_2(
+        shape,
+        deflection,
+        false,
+        curvature ? 0.4886921905584123 : 0.1,
+        false,
+      ),
     );
     const explorer = keep(
       new oc.TopExp_Explorer_2(
@@ -301,6 +315,12 @@ function mesh(oc, shape, onProgress = () => {}) {
           throw new Error("A CAD face could not be tessellated.");
         // get() returns a borrowed native object; its owner is triangulationHandle.
         const triangulation = triangulationHandle.get();
+        if (
+          curvature &&
+          (triangulation.NbNodes() > 1_000_000 ||
+            triangulation.NbTriangles() > 1_000_000)
+        )
+          throw new Error("Curvature surface exceeds its resource budget.");
         const transform = local(location.Transformation());
         const reverse =
           statusValue(face.Orientation_1()) ===
@@ -1796,7 +1816,7 @@ function surfaceStep(patch) {
   );
 }
 
-function surfaceShape(oc, patch) {
+function surfaceShape(oc, patch, maximumControls = 16) {
   if (!patch || patch.format !== "scanforge-nurbs" || patch.version !== 1)
     throw new Error("Unsupported NURBS patch format.");
   for (const axis of ["U", "V"]) {
@@ -1806,7 +1826,7 @@ function surfaceShape(oc, patch) {
     if (
       !Number.isInteger(count) ||
       count < 2 ||
-      count > 16 ||
+      count > maximumControls ||
       !Number.isInteger(degree) ||
       degree < 1 ||
       degree > Math.min(5, count - 1)
@@ -1849,6 +1869,152 @@ function surfaceShape(oc, patch) {
   // The pinned kernel omits Array2 bindings. Preserve the exact control net
   // through a standards-based rational STEP face, then import its CAD topology.
   return importFile(oc, { data: surfaceStep(patch), extension: "step" });
+}
+
+function curvatureSurface(oc, { patch, matrix }) {
+  if (
+    !Array.isArray(matrix) ||
+    matrix.length !== 12 ||
+    !matrix.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9)
+  )
+    throw new Error("Curvature placement requires a finite rigid frame.");
+  const axes = [0, 1, 2].map((column) => [
+    matrix[column],
+    matrix[column + 4],
+    matrix[column + 8],
+  ]);
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const cross = [
+    axes[0][1] * axes[1][2] - axes[0][2] * axes[1][1],
+    axes[0][2] * axes[1][0] - axes[0][0] * axes[1][2],
+    axes[0][0] * axes[1][1] - axes[0][1] * axes[1][0],
+  ];
+  if (
+    axes.some((axis) => Math.abs(dot(axis, axis) - 1) > 1e-9) ||
+    Math.abs(dot(axes[0], axes[1])) > 1e-9 ||
+    Math.abs(dot(cross, axes[2]) - 1) > 1e-9
+  )
+    throw new Error(
+      "Curvature placement requires a right-handed orthonormal frame.",
+    );
+  if (
+    !patch ||
+    patch.countU !== 23 ||
+    patch.countV !== 23 ||
+    patch.degreeU !== 3 ||
+    patch.degreeV !== 3 ||
+    !Array.isArray(patch.weights) ||
+    patch.weights.some((value) => value !== 1)
+  )
+    throw new Error(
+      "Curvature requires its fixed 23 by 23 cubic interpolation surface.",
+    );
+  const imported = surfaceShape(oc, patch, 23);
+  const handles = [],
+    own = (value) => (handles.push(value), value);
+  let shape, kernelId;
+  try {
+    const explorer = own(
+      new oc.TopExp_Explorer_2(
+        getShape(imported.kernelId),
+        oc.TopAbs_ShapeEnum.TopAbs_FACE,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    if (!explorer.More()) throw new Error("Curvature surface has no CAD face.");
+    const face = own(oc.TopoDS.Face_1(own(explorer.Current())));
+    const surface = own(oc.BRep_Tool.Surface_2(face));
+    const maker = own(new oc.BRepBuilderAPI_MakeFace_8(surface, 0));
+    if (!maker.IsDone())
+      throw new Error("Curvature natural face construction failed.");
+    const local = own(maker.Face()),
+      transform = own(new oc.gp_Trsf_1());
+    const m = matrix;
+    const inverse = [
+      m[0],
+      m[4],
+      m[8],
+      -(m[7] * m[4] + m[3] * m[0] + m[11] * m[8]),
+      m[1],
+      m[5],
+      m[9],
+      -(m[7] * m[5] + m[1] * m[3] + m[11] * m[9]),
+      m[2],
+      m[6],
+      m[10],
+      -(m[2] * m[3] + m[7] * m[6] + m[11] * m[10]),
+    ];
+    const origin = own(new oc.gp_Pnt_3(inverse[3], inverse[7], inverse[11]));
+    const z = own(new oc.gp_Dir_4(inverse[2], inverse[6], inverse[10]));
+    const x = own(new oc.gp_Dir_4(inverse[0], inverse[4], inverse[8]));
+    const placement = own(new oc.gp_Ax3_3(origin, z, x));
+    transform.SetTransformation_2(placement);
+    const placed = own(
+      new oc.BRepBuilderAPI_Transform_2(local, transform, false),
+    );
+    if (!placed.IsDone()) throw new Error("Curvature face placement failed.");
+    shape = placed.Shape();
+    mesh(oc, shape, () => {}, true);
+    kernelId = `cad-${sessionId}-${++nextShape}`;
+    shapes.set(kernelId, shape);
+    shape = undefined;
+    return { ...alignmentMesh(oc, { kernelId, includeUVs: true }), kernelId };
+  } catch (error) {
+    if (kernelId) {
+      shapes.get(kernelId)?.delete();
+      shapes.delete(kernelId);
+      dropAlignmentMesh(kernelId);
+    }
+    throw error;
+  } finally {
+    shape?.delete();
+    cleanup(handles);
+    shapes.get(imported.kernelId)?.delete();
+    shapes.delete(imported.kernelId);
+    dropAlignmentMesh(imported.kernelId);
+  }
+}
+
+function curvatureEvaluate(oc, { kernelId, uvs }) {
+  if (
+    !(uvs instanceof Float64Array) ||
+    uvs.length % 3 ||
+    uvs.length / 3 > 1_001_000 ||
+    uvs.some((value) => !Number.isFinite(value))
+  )
+    throw new Error(
+      "Curvature evaluation requires bounded finite UV coordinates.",
+    );
+  const handles = [],
+    own = (value) => (handles.push(value), value);
+  try {
+    const explorer = own(
+      new oc.TopExp_Explorer_2(
+        getShape(kernelId),
+        oc.TopAbs_ShapeEnum.TopAbs_FACE,
+        oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+      ),
+    );
+    if (!explorer.More())
+      throw new Error("Curvature evaluation has no CAD face.");
+    const face = own(oc.TopoDS.Face_1(own(explorer.Current())));
+    const adaptor = own(new oc.BRepAdaptor_Surface_2(face, true));
+    const point = own(new oc.gp_Pnt_1()),
+      result = new Float32Array(uvs.length);
+    for (let offset = 0; offset < uvs.length; offset += 3) {
+      // D0 supports continuation outside the natural domain for temporary trim records.
+      adaptor.D0(uvs[offset], uvs[offset + 1], point);
+      const p = [point.X(), point.Y(), point.Z()];
+      if (!p.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9))
+        throw new Error(
+          "Curvature evaluation returned invalid world coordinates.",
+        );
+      result.set(p, offset);
+    }
+    return result;
+  } finally {
+    cleanup(handles);
+  }
 }
 
 function polygonWire(oc, points, handles, closed = true) {
@@ -2205,6 +2371,10 @@ self.onmessage = (event) => {
       else if (operation === "closedShell")
         result = closedShellShape(oc, payload);
       else if (operation === "surface") result = surfaceShape(oc, payload);
+      else if (operation === "curvatureSurface")
+        result = curvatureSurface(oc, payload);
+      else if (operation === "curvatureEvaluate")
+        result = curvatureEvaluate(oc, payload);
       else if (operation === "shell")
         result = thicknessShape(oc, payload, true);
       else if (operation === "thicken")

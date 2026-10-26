@@ -1,8 +1,13 @@
 # Native hole-fill comparison
 
+The integrated 64-edge Curvature annulus now matches native geometry exactly in
+shared async, GUI and public-MCP checks. See the latest acceptance section below
+and [its evidence](evidence/m2-curvature-integration-20261026.json). Earlier
+failed stages are retained as investigation history. M2 remains open.
+
 ## Manufactured cup controls, 2026-10-26
 
-QuickSurface Pro 8.0.123 imported binary STL cups with radius 2 mm, bottom
+Native reference build 8.0.123 imported binary STL cups with radius 2 mm, bottom
 Z=-1 mm and an open rim at Z=0 mm. Each comparison started from the original
 input. The entire-hole button filled the one selected boundary. Native exports
 and screenshots remain outside the repository; sanitized input and Tangent
@@ -120,3 +125,249 @@ asset, script and test inputs from the frozen build remained unchanged. The
 owned Job peaked at 956,387,328 bytes and finished with no live descendants or
 cleanup errors. This is a regression checkpoint, not completion of the open
 native or complete-milestone acceptance gates.
+
+## Successful Curvature control under investigation
+
+A fresh installed-native run imported a smooth paraboloid annulus with 512
+facets, a 64-edge inner rim at radius 2 mm and an outer rim at radius 4 mm.
+Explicit Curvature closed the inner rim and exported 1,702 facets with one
+remaining boundary, no nonmanifold edges and consistent winding. Source STL
+SHA-256: `d5552bbeead8824441ad7020b9059804702509b0edab2b435cee7d9c9672dcdf`.
+Native export SHA-256:
+`40b7399e1c31259935ec756ef87d6410365919d322344ed8411a91aad996c298`.
+
+This operation remeshes the surrounding collar: only the 64 outer rim vertices
+remain unchanged, and none of the original complete facets remain identical.
+The shared application currently preserves that collar and produces 1,346
+facets. This is a reproduced mismatch, not an accepted approximation. The
+sanitized original/export geometry is retained in
+`tests/fixtures/hole-fill-observed-curvature-annulus.json`.
+`scan-hole-native-curvature.test.ts` passes the native fixture integrity check
+and currently fails the production comparison (1,346 versus 1,702 facets).
+
+Static selected-hole dispatch reaches `14066ede0` from `140671640`. Curvature
+enters a separate collar repair delegate at `1403226e0`; the Flat/Tangent path
+uses `140ac3cb0`. Function extents and decompiler types remain subject to the
+retained image's missing unwind metadata. No retained image was executed.
+The owned native session and comparison/static jobs all exited with no live
+descendants and no cleanup errors. Curvature implementation and its GUI/public
+MCP acceptance remain open.
+
+The recovered fitting field uses `r² log(r²)` radial terms and an affine
+component, solved with the existing native scaled-pivot LU arithmetic. A
+192-vertex support collar predicts central Z `0.003499632423427601` mm before
+the grid's Float32 publication. Quantizing the height relative to its centroid
+then restoring the frame gives exactly the observed native coordinate,
+`0.0034996371250599623` mm. The current application cap reaches
+`-0.019654259085655212` mm. Counts alone therefore do not explain the mismatch.
+
+The new field helper and dense inverse are independently tested, including
+frame changes, singular input, cancellation, retained sample ownership and
+work-budget admission. The focused/affected run passes 14 tests. This stage is
+not yet connected to the application: the complete native Curvature comparison
+still fails. No new GUI or MCP behavior is claimed from these helper tests.
+Native grid interpolation, tessellation, trimming and collar smoothing remain
+to integrate and verify together.
+
+A separate owned native Fit Surface run used the manufactured 192-vertex collar,
+Simple, U/V 20, 10% expansion and zero smoothness. Its original IGES export is
+SHA-256 `27ee2b342ae4fa562c6bd5535b533b519d9e887daf04ddaa603832e1dfba6b98`.
+The exported surface has 21 by 21 cubic controls and center Z about -0.01618438
+mm. It does **not** reproduce the hole-fill delegate's recovered field, and is
+retained as a diagnostic rather than a Curvature oracle. The whole native
+hole-fill STL remains the acceptance target. The owned session exited with no
+live descendants or cleanup errors, peaking at 705,880,064 bytes.
+
+Static IAT/export offsets independently bind the internal delegate to
+`GeomAPI_PointsToBSplineSurface::Interpolate(Array2OfPnt, ChordLength, false)`:
+constructor, Interpolate, Surface and IsDone all imply the same historical
+TKGeomAlgo base. This is a static binding against the hashed installed DLL,
+not execution of the retained image. The installed DLL reports version 7.7.0;
+the application kernel remains the separately pinned OCCT 7.4.0p1 build.
+
+The collar selection starts with 64 incident boundary faces and two synchronous
+edge-neighbor expansions produce 128 then 192 faces, referencing 192 vertices
+in source order. A nearest-vertex connectivity diagnostic finds 392 of 512
+source facets still connected to the corresponding three original vertices,
+while coordinates move by up to 0.1483 mm. This diagnostic is consistent with
+seam edge optimization and smoothing; coordinate differences alone must not be
+interpreted as wholesale replacement of the original mesh connectivity.
+
+Further static frame inspection binds the internal fitting rectangle to the
+existing global plane solver and sorted three-dimensional eigen solver. Its
+centroid sums source coordinates in order, then multiplies by the reciprocal
+count. Rectangle admission tests rotations from -90 through +90 degrees in
+three-degree steps, retaining the first strict area improvement, and fitting
+adds ten percent to each half extent. The graph frame uses the already recovered
+normal/hint constructor and rigid inverse. These are static reconstruction
+findings. The frame and collar-identity tests were observed red, then the focused
+stage passed 70 tests. The frame, grid and field helpers remain unintegrated.
+
+A private framed-grid probe now uses native binary-STL vertex ordering, the
+two-pass collar, source normals, the recovered automatic rectangle, Float32
+local coordinates and bounding-box midpoint centering. It reproduces central
+Z `0.0034996371250599623` mm exactly after Float32 publication. At 66 native
+vertices within radius 0.75 mm, the maximum inverse-XY error is below
+`4.8e-16` mm and maximum absolute height difference is `2.72e-8` mm (RMS
+`1.06e-8` mm). These are geometric diagnostics on central vertices, not proof
+that every sampled vertex escaped native seam smoothing or that the complete
+facet stream matches. The probe's first attempt hit the existing public
+16-control limit; its corrected private evaluator leaves that limit intact.
+
+The tessellation helper has two branches: a registered-shape branch returns
+bounding diagonal times `0.0001`, while a BRep branch uses diagonal times
+`0.001` times the surface's stored quality value. The Curvature caller loads
+that quality from the surface data before requesting a 28-degree angular limit.
+The existing settings-constructor record at `1404e4800` sets quality to `0.1`,
+and the fresh Curvature factory does not override it. Preserve the separate
+multiplications in the BRep branch rather than assuming bitwise equivalence.
+The earlier private WASM probe declared only the registered-shape profile and
+does not establish which native branch was used. Its convex-only trim produced
+1,896 cap facets and must not be treated as the general native clipping method
+or as an accepted whole-hole comparison.
+
+The recovered general trim inserts polyline endpoints, splits intersected
+triangle edges in facet/corner order, and classifies the resulting face centers.
+The native face-center sum is Float32 before division by three and publication
+to Float32. Outside classification uses a perturbed horizontal ray and winding
+counts. Deletion at `14031fce0` moves the last facet into the removed slot; stable
+filtering would change later source order. A convex polygon clipping shortcut
+cannot substitute for this path.
+
+The general trim stage passed its eight manufactured controls after an observed
+shared-diagonal failure: it retained area 0.375 instead of 0.5. Collinear points
+on an infinite segment extension were being marked as constrained vertices,
+preventing a later required split. Marking now requires membership in the
+finite segment. Concave and clockwise polygons, endpoint insertion, source
+ownership, cancellation and swap-last removal pass. This corrected guard is an
+application validity safeguard, not an additional observed native control.
+
+With the recovered frame, actual application WASM tessellation produces 1,544
+vertices and 3,014 facets. General trimming produces a 1,048-facet cap with 645
+used vertices, one closed boundary, no nonmanifold edges and consistent winding.
+The 240-edge cap boundary requires 176 inserted seam vertices beyond the 64
+original rim identities. Those counts are consistent with the observed whole
+result if the subsequent native seam phase collapses 17 edges; this is a
+prediction to verify, not a completed whole-hole comparison.
+
+The recovered collar smoother accumulates Double neighbor fields in facet and
+corner order, adds each exposed edge twice, pins the exposed source rim and
+publishes only selected vertices through Float32 stores. Its five tests pass,
+bringing the staged focused suite to 83 tests. Whole collar stitching, edge
+collapse, asynchronous worker integration and GUI/public-MCP acceptance remain
+open.
+
+The subsequent shared join stage passed six manufactured controls (89 focused
+tests in total). The private whole reconstruction stitches 176 boundary vertices
+and collapses 17 edges, producing 1,702 facets and 884 used vertices with one
+remaining outer boundary and no nonmanifold or inconsistent edges. These counts
+match the observed native result, but geometry does not: nearest-vertex RMS is
+about 0.02074 mm and maximum distance is about 0.11093 mm, with correspondence
+collisions and differing facet connectivity. These are diagnostic comparisons,
+not acceptance. Seam construction and smoothing require further isolation;
+the application still uses its previous Curvature path.
+
+The private stage observer further isolates this result: the radius-3.5 mm
+source ring agrees within 2.41e-7 mm after smoothing and the outer ring is exact,
+but the unsmoothed central cap already has different vertex locations. Rebuilding
+a natural CAD face from the same imported surface preserves the mismatch:
+54 of 66 native central vertices have a counterpart within 1e-6 mm and the
+remaining central differences reach 0.0778 mm. Changing the collar smoother
+cannot resolve a mismatch already present before that stage.
+
+Static leaf inspection confirms that facet construction initializes selection
+flags to zero, the growth-pass helper clears only facet bit 4, and the smoother's
+vertex-preparation helper only assigns consecutive indices. These findings
+support the current selection bookkeeping but do not establish mesher parity.
+The combined numerical/restore regression run passes 94 tests; whole Curvature,
+worker/browser/public-MCP acceptance and milestone closure remain open.
+
+Captured IAT/export correlation identifies the native construction sequence as
+`BRepBuilderAPI_MakeFace(surface, 0)`, `gp_Trsf::SetTransformation(gp_Ax3)` and
+`BRepBuilderAPI_Transform(shape, transform, false, false)`. The zero tolerance
+also has a direct `XORPS XMM2,XMM2` call-site witness. Module bases in this
+correlation are inferred from retained pointers and hashed installed exports;
+this is not a fresh runtime binding or execution of the retained image.
+
+Building the candidate surface in its local fitting frame and placing the CAD
+face afterward improves central correspondence to 61 of 66 vertices within
+1e-6 mm. Using the identified Ax3 construction and zero tolerance does not
+remove the remaining five central differences. The whole local-placement probe
+still has 1,702 facets and 884 used vertices, with maximum nearest distance
+0.09897 mm and RMS 0.02017 mm; it remains a failed native comparison.
+
+A controlled all-selected smoothing diagnostic worsens that RMS to 0.03223 mm
+and changes center Z from about 0.00350 to 0.00694 mm. It is rejected and does
+not change the production selection policy. Further static inspection identifies
+the temporary bit allocator and unreferenced-vertex compactor; it does not justify
+selecting the entire cap. An independent private 7.7-family CAD comparison is
+prepared to separate interpolation and tessellation differences. Application
+dependencies and the existing Curvature execution path remain unchanged.
+
+The independent interpolation diagnostic isolates the remaining central mismatch
+in endpoint fitting: nine-point Bernstein fits use the original global parameters,
+followed by the constrained cubic normal-equation solve. The rewritten TypeScript
+grid passes the independent control-net comparison. The independent affine-plane
+control reproduces a 3.7992e-7 mm departure from ideal linear UV speed while staying
+on the plane within 1.1e-12 mm; its regression retains the 1e-9 mm tolerance against
+measured kernel samples and independently checks plane membership.
+
+Using the independent correct controls in the existing pinned application WASM
+produces 1,529 vertices and 2,984 facets, with all 66 central reference vertices
+within 1e-6 mm. The independent mesh plus shared trim/join also yields all 884
+reference correspondences and no missing or extra oriented facets (maximum
+nearest distance 6.89e-17 mm). Neither replay establishes integrated application
+acceptance. A fresh replay of the current TypeScript controls and the async
+worker, GUI and public-MCP acceptance remain required.
+
+The unused-cap ownership control was observed failing with one unused temporary
+vertex and collapsed seam records retained. Compaction now preserves every source
+record and removes only unreferenced new cap records; its green run is pending.
+
+The fresh current-TypeScript/pinned-WASM replay remains geometrically failed:
+1,702 facets and 884 compacted records, but only 816 distinct nearest native
+matches, maximum distance 0.10373 mm and 353 missing oriented facets. Its controls
+differ from independent interpolation by only 1.24e-10 mm, demonstrating that the
+previous 1e-8 control-net assertion was insufficient for adaptive meshing.
+The stricter 1e-12 control comparison and the full oriented-connectivity comparison
+must pass. Source inspection identifies a specific hypothesis: the right endpoint
+Bezier derivative is evaluated through the full forward-difference polynomial;
+shortcut endpoint subtraction discards its floating-point evaluation order.
+No integrated acceptance or kernel upgrade is inferred from these diagnostics.
+
+## Integrated Curvature annulus acceptance, 2026-10-26
+
+The right endpoint derivative must retain the complete forward-difference
+polynomial evaluation. Shortcut endpoint subtraction differed by about 1e-14 mm
+before the second direction fit, amplified to a 1.24e-10 mm control difference,
+and changed adaptive meshing. After correction, the TypeScript control net is
+identical to the independent pinned open kernel. The production kernel remains
+unchanged. The regression keeps its 1e-12 control comparison and the whole native
+fixture's strict oriented-coordinate digest; no geometry tolerance was relaxed.
+
+The shared async operation uses a request-owned CAD worker, general UV trim,
+original-rim stitching, selected seam collapse and collar smoothing. It preserves
+source vertex identities and compacts only unused new patch records. The actual
+pinned-kernel driver matches all 884 vertex coordinates and 1,702 oriented facets
+with zero positional difference, unchanged source buffers and zero leaked handles.
+Automatic's greater-than-40-edge dispatch is covered against this same solver.
+
+Frozen build `scanforge-5ac679fa9d720305` passed all 13 TypeScript batches, Vite
+and offline generation with an unchanged 2,845-file input manifest. Rendered GUI
+and public SDK/MCP runs match the native oriented coordinates exactly and match
+each other, including undo/redo, empty-fill history, invalid-selection rollback,
+binary save/reopen and reopened history. A further browser run observes the actual
+nested CAD worker before `job_cancel`, then confirms zero remaining nested CAD
+workers and unchanged source geometry/history. All owned helpers/ports close;
+the 4 GiB aggregate and 25 percent CPU limits remain unchanged.
+
+The affected repair suite passes 202 tests. The first full suite has 49,133 passed,
+three async test-adapter failures and 64 fixture-gated skips. Awaiting the real
+worker response fixes all three failures; the follow-up 80-test worker/native
+batch passes. Exact-head full CI remains required before a full-suite green claim.
+The initial build's fallback type error, forced-fallback RED, initial output-URI
+setup failure and older numerical failures remain separate retained receipts.
+
+This control closes the observed smooth-annulus entire-Curvature mismatch, not
+all Curvature input classes, partial/bridge behavior or M2. Native failed cup
+controls are still failures and must not be treated as successful-cap oracles.

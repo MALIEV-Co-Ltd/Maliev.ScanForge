@@ -1694,6 +1694,32 @@ closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
 describes the interpolant, not a guarantee of final visual continuity or accuracy
 of geometry absent from the scan. Close-up inspection remains necessary.
 
+### Entire-hole Curvature
+
+Use `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles",
+mode: "entire", algorithm: "curvature", indices: [boundaryIndex]}`. Entire-hole
+Automatic selects this operation above 40 rim edges; multiple-hole batch filling
+continues to use Tangent. Curvature fits a local cubic surface, trims it to the
+requested hole, then remeshes and smooths its adjacent collar. The original rim
+can move; inspect the whole result rather than treating it as appended triangles.
+Unrelated source records and components remain outside the selected collar.
+
+GUI and MCP use the same async processing operation. Its temporary CAD worker and
+surface handles are private to the edit and released on success, failure or
+cancellation. No CAD scene object is created. `job_cancel` aborts without publishing
+geometry or a history entry. Existing revision, retry, lock and history guards apply.
+The internal solver rejects singular graph/projection systems and explicit resource
+limits instead of substituting another advertised algorithm. Its dense fitting
+workspace is limited to 64 MiB and 250 million estimated arithmetic operations;
+trim/collar records are limited to one million. Public surface control-count limits
+are unchanged. Poll `job_get` for the shared hole-fill progress and use `mesh_analyze`
+and project geometry resources to inspect the complete remeshed result.
+
+The observed 64-edge smooth-annulus comparison, exact native geometry, GUI/public-MCP
+parity, persistence and cancellation evidence are recorded in
+[the Curvature investigation](NATIVE_HOLE_FILL.md). This control does not close all
+remaining M2 modes, inputs or operations.
+
 ### Hole-filling batch progress
 
 `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles"}`

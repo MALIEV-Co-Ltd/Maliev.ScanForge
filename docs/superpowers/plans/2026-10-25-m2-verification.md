@@ -62,3 +62,126 @@ No milestone closure or complete-domain parity is claimed by this plan.
 - [ ] Complete the remaining inventory/native acceptance gates. The owner no longer remembers a project/mask path for the reported 18,425-facet defeature failure; its exact reproduction is unavailable.
 
 M1 issue #1 is now closed with its own acceptance/integration record. M2 closure remains pending, and no later milestone is advanced here.
+
+## 2026-10-26 Curvature continuation rulings
+
+The staged Curvature build `m2-curvature-stage-build-20261026-r2` passed
+TypeScript, Vite and offline-manifest generation (`scanforge-8ca9c9cc78fcb0ec`).
+The owned Job peaked at 1,581,072,384 bytes, exited zero and released all child
+processes and handles without cleanup errors. Three alignment `Array.map`
+callers now wrap the query factory so the new internal optional triangle
+metadata setting cannot receive the array index. The focused numerical stage
+passed 66 tests before those wrappers; the complete native comparison remains
+red and this build does not close the application integration gate.
+
+Ruling: keep the pinned application CAD kernel and the existing exact STEP
+control-net path for the internal Curvature surface stage. The actual WASM
+probe confirms both point-array constructors and both surface-pole array
+accessors are unbound. The proposed 23 by 23 cubic control net imports and
+meshes under the recovered deflection/angular profile. This is a kernel
+capability check, not native hole-fill acceptance. A kernel-version difference
+remains an explicit comparison risk; no count or geometry tolerance has been
+relaxed on that basis.
+
+Ruling: the visible native Fit Surface export is a separate diagnostic. Its
+recorded 20 by 20 settings produce a different center height and 21 by 21
+controls, so it cannot substitute for the successful whole-hole native STL.
+The original 1,702-facet Curvature fixture remains the failing acceptance gate.
+
+The next shared-worker stage must preserve the existing GUI/public-MCP request,
+locks, revision/retry checks, progress, cancellation, rollback and history. Its
+transient CAD objects must be owned and released by that processing request;
+they must not become scene entities or reusable public kernel handles.
+
+The next frame stage was observed red (missing frame module and missing collar
+source indices), then passed 70 focused tests after implementation. Source IDs
+are retained for original normal lookup; affine residuals now subtract each
+ordered term separately. The private framed-grid probe's first failure at the
+public 16-control limit is retained; the corrected private evaluator passes
+without changing that contract. Its exact central Float32 height and bounded
+66-point central comparison are recorded in the native hole-fill investigation.
+General trim was observed red, then passed eight controls after correcting
+finite-segment boundary marking (the first implemented attempt passed 77 tests
+and failed the shared-diagonal area control). The next smoothing stage was
+observed red, then passed five controls; the staged suite now passes 83 tests.
+Both retain failed receipts separately. The framed actual-WASM/general-trim
+probe produces a valid 1,048-facet cap, but collar stitching/collapse and the
+whole native fixture still remain to integrate.
+
+Ruling: constrain boundary marking to the finite segment, and discard zero-area
+trim facets before publication. The manufactured shared-edge control otherwise
+loses 25 percent of its area. This is a validity safeguard; exact native
+comparison must still verify the observed annulus rather than treating these
+manufactured controls as a substitute. Full application integration, whole-hole
+output, browser/public-MCP acceptance and M2 closure remain open.
+
+The join helper's six controls pass (89 focused tests total). Its private whole
+probe matches 1,702 facets, 884 used vertices, 176 inserted seam vertices and
+17 collapsed edges, but the maximum nearest native vertex difference remains
+0.11093 mm (RMS 0.02074 mm), with correspondence collisions and connectivity
+differences. Matching counts do not close the native gate. A private stage
+observer is prepared to separate seam construction from smoothing without
+changing production behavior. The helper remains outside the application path.
+
+The stage observer localized a mismatch before smoothing. Native construction
+uses a local CAD face followed by a rigid placement; the private correction
+improves central matches from 54/66 to 61/66 within 1e-6 mm, but whole geometry
+still differs (maximum nearest distance 0.09897 mm). The exact Ax3 and zero-face-
+tolerance controls do not resolve the remainder. All-selected smoothing was
+tested privately and rejected because it worsens RMS and moves the observed
+center. Static selection/compaction findings and failed scopes are retained in
+the hole-fill investigation. The independent private CAD diagnostic package is
+hash-pinned and does not change application dependencies. The shared exact CAD
+restore dependency is integrated and pushed; its 94-test focused regression
+batch passes. Exact pushed commit `e0581fc1f8c7bec7a45762aef9d42c3f3aaafa55`
+also passes hosted build, full tests, CAD smoke and formatting; this does not
+cover the uncommitted Curvature helper/integration work.
+
+Integration follow-up from the static compactor: remove newly allocated,
+unreferenced cap vertices before publishing indexed geometry, while preserving
+original source identities and unrelated source records. The private candidate
+currently allocates 2,040 records for 884 referenced vertices; its unused probe
+records must not leak into application bounds, caches or serialized geometry.
+Add an observed failing ownership/bounds regression before that implementation.
+
+The independent interpolation diagnostic isolates the remaining central mismatch
+in endpoint fitting: nine-point Bernstein fits use the original global parameters,
+followed by the constrained cubic normal-equation solve. The rewritten TypeScript
+grid passes the independent control-net comparison. The independent affine-plane
+control reproduces a 3.7992e-7 mm departure from ideal linear UV speed while staying
+on the plane within 1.1e-12 mm; its regression retains the 1e-9 mm tolerance against
+measured kernel samples and independently checks plane membership.
+
+Using the independent correct controls in the existing pinned application WASM
+produces 1,529 vertices and 2,984 facets, with all 66 central reference vertices
+within 1e-6 mm. The independent mesh plus shared trim/join also yields all 884
+reference correspondences and no missing or extra oriented facets (maximum
+nearest distance 6.89e-17 mm). Neither replay establishes integrated application
+acceptance. A fresh replay of the current TypeScript controls and the async
+worker, GUI and public-MCP acceptance remain required.
+
+The unused-cap ownership control was observed failing with one unused temporary
+vertex and collapsed seam records retained. Compaction now preserves every source
+record and removes only unreferenced new cap records; its green run is pending.
+
+The fresh current-TypeScript/pinned-WASM replay remains geometrically failed:
+1,702 facets and 884 compacted records, but only 816 distinct nearest native
+matches, maximum distance 0.10373 mm and 353 missing oriented facets. Its controls
+differ from independent interpolation by only 1.24e-10 mm, demonstrating that the
+previous 1e-8 control-net assertion was insufficient for adaptive meshing.
+The stricter 1e-12 control comparison and the full oriented-connectivity comparison
+must pass. Source inspection identifies a specific hypothesis: the right endpoint
+Bezier derivative is evaluated through the full forward-difference polynomial;
+shortcut endpoint subtraction discards its floating-point evaluation order.
+No integrated acceptance or kernel upgrade is inferred from these diagnostics.
+
+The endpoint forward-difference hypothesis is now verified: the corrected control
+net matches the independent kernel exactly, and actual pinned CAD D0 evaluation
+removes the diagnostic near-zero center difference as well. Shared async native
+geometry passes the original strict oriented-coordinate digest. The integrated
+GUI/public-MCP, history, binary persistence and actual nested-worker cancellation
+checks pass on frozen build `scanforge-5ac679fa9d720305`. The affected suite passes
+202 and the worker/native follow-up passes 80 after correcting three direct-worker
+tests to await async dispatch. Initial full-suite 49,133/3/64 remains a failed
+receipt until exact-head CI reruns. See the dedicated Curvature evidence; the
+broader inventory and final review/merge gates remain open.

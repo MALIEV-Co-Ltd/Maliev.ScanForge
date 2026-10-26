@@ -13,7 +13,7 @@ import {
   reduceScanNoiseAsync,
   type ScanToolResult,
 } from "./scan-tools-reduction";
-import { runScanEdit } from "./scan-edit";
+import { runScanEditAsync } from "./scan-edit";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { SELECTED_SMOOTHING_DEFAULTS } from "./scan-selected-smooth";
 import { morphTriangleSelection } from "./selection-morphology";
@@ -290,7 +290,7 @@ scope.onmessage = async ({ data: incoming }) => {
           { onProgress: progress },
         );
       }
-      result.scanEdit = runScanEdit(request, {
+      result.scanEdit = await runScanEditAsync(request, {
         onProgress: progress,
         topologyCache: request.previewOnly
           ? { ...topologyCache }

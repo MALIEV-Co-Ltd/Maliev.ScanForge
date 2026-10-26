@@ -1214,7 +1214,7 @@
                     "curvature",
                     "surfaceRecovery"
                   ],
-                  "description": "Entire-hole Automatic selects Tangent for at most 40 rim edges and Curvature above 40. surfaceRecovery explicitly continues the retained collar with bounded fallback; it requires mode entire. Partial/bridge Automatic retains its boundary-based choice."
+                  "description": "Entire-hole Automatic selects Tangent for at most 40 rim edges and Curvature above 40. Entire-hole Curvature fits a local surface and remeshes the adjacent collar, including the original rim; it is not an append-only cap. surfaceRecovery explicitly continues the retained collar with bounded fallback; it requires mode entire. Partial/bridge Automatic retains its boundary-based choice."
                 },
                 "mode": {
                   "type": "string",

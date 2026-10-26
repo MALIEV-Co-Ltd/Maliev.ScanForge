@@ -1407,3 +1407,16 @@ entity's display buffers, BREP and metadata across current/history/future states
 matching GUI restore. Fresh import tessellations are temporary, rather than
 substitutes for saved geometry. Failure/cancellation still disposes the unpublished
 client and preserves the open workspace.
+
+## Request-owned Curvature surface
+
+Whole-hole Curvature and the corresponding Automatic dispatch run through the
+same async scan-edit driver in the processing worker for GUI and MCP. The driver
+owns one lazy CAD worker and releases each temporary surface before publishing a
+successor. Its fixed internal 23 by 23 cubic surface and UV evaluation messages
+are private worker protocols, not public scene handles or new public surface limits.
+The resulting collar is validated and newly allocated orphan records are compacted
+before successor topology publication. Failed/cancelled work preserves source,
+revision/history and retry semantics; terminating the processing owner also retires
+its nested CAD worker. Browser cancellation evidence observes the actual nested
+worker before cancelling and confirms that its target disappears afterward.

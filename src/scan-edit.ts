@@ -7,7 +7,7 @@ import {
   type MeshProcessingOptions,
   type MeshTopology,
 } from "./mesh-processing";
-import { runHoleFill } from "./scan-edit-holes";
+import { runHoleFill, runHoleFillAsync } from "./scan-edit-holes";
 import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
@@ -262,10 +262,11 @@ function smoothing(
   }
   return positions;
 }
-export function runScanEdit(
+function scanEdit(
   r: ScanEditRequest,
-  options: ScanEditOptions = {},
-): ScanEditResult {
+  options: ScanEditOptions,
+  fill: typeof runHoleFill | typeof runHoleFillAsync,
+): ScanEditResult | Promise<ScanEditResult> {
   if (
     r.batch !== undefined &&
     (typeof r.batch !== "boolean" || r.action !== "fillHoles")
@@ -332,7 +333,7 @@ export function runScanEdit(
       },
     };
   }
-  if (r.action === "fillHoles") return runHoleFill(r, t, o);
+  if (r.action === "fillHoles") return fill(r, t, o);
   if (r.action === "split") return splitByPlane(r, o);
   if (r.action === "smoothSelected" || r.action === "boundarySmooth")
     return {
@@ -411,4 +412,18 @@ export function runScanEdit(
     positions: finiteOutput(out),
     diagnostics: { triangles: out.length / 9 },
   };
+}
+
+export function runScanEdit(
+  r: ScanEditRequest,
+  options: ScanEditOptions = {},
+): ScanEditResult {
+  return scanEdit(r, options, runHoleFill) as ScanEditResult;
+}
+
+export async function runScanEditAsync(
+  r: ScanEditRequest,
+  options: ScanEditOptions = {},
+): Promise<ScanEditResult> {
+  return scanEdit(r, options, runHoleFillAsync);
 }

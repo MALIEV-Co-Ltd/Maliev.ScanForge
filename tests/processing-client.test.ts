@@ -497,7 +497,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "report",
         positions: positions.slice(),
@@ -506,7 +506,7 @@ describe("processing worker resource ownership", () => {
       },
     });
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "selectionMorphology",
         positions: new Float32Array(0),
@@ -518,7 +518,7 @@ describe("processing worker resource ownership", () => {
     expect(replies.some((r) => r.stage === "Reusing mesh topology")).toBe(true);
     expect(replies.some((r) => r.stage === "Welding vertices")).toBe(false);
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "inventory",
@@ -538,7 +538,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanTools",
         positions: positions.slice(),
@@ -550,7 +550,7 @@ describe("processing worker resource ownership", () => {
     replies.length = 0;
     // Incoming geometry bytes deliberately differ: the adopted worker copy is
     // authoritative for this same geometry key and must survive real transfer.
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "inventory",
@@ -560,7 +560,7 @@ describe("processing worker resource ownership", () => {
     });
     expect(replies.at(-1).result.scanEdit.inventory.components[0].area).toBe(2);
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "defeature",
@@ -571,7 +571,7 @@ describe("processing worker resource ownership", () => {
     });
     expect(replies.at(-1).error).toBeTruthy();
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "inventory",
@@ -632,7 +632,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "inventory",
@@ -642,7 +642,7 @@ describe("processing worker resource ownership", () => {
     });
     const inventory = replies.at(-1).result.scanEdit.inventory;
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "fillHoles",
@@ -655,7 +655,7 @@ describe("processing worker resource ownership", () => {
     expect(replies.at(-1).result.scanEdit.diagnostics.changed).toBe(false);
     expect(replies.at(-1).result.scanEdit.positions).toBeUndefined();
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "inventory",
@@ -787,7 +787,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanTools",
         positions,
@@ -839,7 +839,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "scanEdit",
         action: "componentExtract",
@@ -851,7 +851,7 @@ describe("processing worker resource ownership", () => {
     const result = (final.message as { result: ProcessingResult }).result;
     expect(result.scanEdit?.segments?.[0]).toEqual(positions);
     expect(final.transfers).toEqual([result.scanEdit!.segments![0].buffer]);
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "selectionMorphology",
         positions,
@@ -894,7 +894,7 @@ describe("processing worker resource ownership", () => {
     vi.stubGlobal("self", scope);
     vi.resetModules();
     await import("../src/processing-worker");
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "connectedSelection",
         positions,
@@ -1087,7 +1087,7 @@ describe("processing worker resource ownership", () => {
       1,
       0,
     ]);
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "segment",
         positions: triangles,
@@ -1102,7 +1102,7 @@ describe("processing worker resource ownership", () => {
     expect(final.transfers).toHaveLength(2);
     expect(result.topology).toBeUndefined();
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "paired",
         positions,
@@ -1117,7 +1117,7 @@ describe("processing worker resource ownership", () => {
     expect(aligned.registration?.rms).toBeLessThan(1e-10);
     expect(replies.at(-1)!.transfers).toHaveLength(1);
     replies.length = 0;
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "global",
         positions,
@@ -1140,7 +1140,7 @@ describe("processing worker resource ownership", () => {
       0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0,
       0, 0, 1,
     ]);
-    scope.onmessage?.({
+    await scope.onmessage?.({
       data: {
         kind: "repair",
         positions: junction,

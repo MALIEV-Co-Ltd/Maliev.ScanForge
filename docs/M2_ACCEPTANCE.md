@@ -112,3 +112,19 @@ Native Curvature, partial/bridge and other inventory gates remain open. These
 finite passing controls do not close M2, replace full-candidate verification or
 prove arbitrary-rim native equivalence. Earlier failed probes and the affected
 suite's obsolete contract assumptions remain recorded with their corrections.
+
+## Entire Curvature annulus integration, 2026-10-26
+
+[The integration evidence](evidence/m2-curvature-integration-20261026.json) records
+exact native geometry through the shared async driver, actual pinned CAD protocol,
+rendered GUI and public SDK/MCP. The 64-edge annulus has 1,702 facets and 884 used
+vertices with zero coordinate or oriented-connectivity difference. Source buffers,
+undo/redo, binary persistence, failed-edit rollback and observed nested-worker
+cancellation pass. The kernel version, public surface limits and 4 GiB/25 percent
+validation limits are unchanged.
+
+The 202-test affected suite and 80-test async worker/native follow-up pass. The
+first full run's three synchronous-response test assumptions are retained and
+corrected; exact-head full CI is pending. The source-preserving failed native cup
+classes, other modes/inputs and remaining operation inventory still require their
+own disposition. M2 is not closed by this bounded acceptance record.

@@ -79,7 +79,7 @@ export async function nativeRefineAlignmentSurfaceAsync(
       translationOnly: options.translationOnly,
     };
     const query = nativeAlignmentTargetGroupQuery(
-      surfaces.map(createNativeAlignmentSurfaceQuery),
+      surfaces.map((surface) => createNativeAlignmentSurfaceQuery(surface)),
     );
     const evaluate = createNativeAlignmentObjectiveAsync(
       lanes,

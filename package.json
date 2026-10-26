@@ -22,7 +22,8 @@
     "prepare:kernel": "node scripts/prepare-kernel.mjs",
     "mcp": "node scripts/mcp-server.mjs",
     "test:mcp:browser": "node tests/mcp-browser-smoke.mjs",
-    "test:mcp:visual": "node tests/mcp-visual-smoke.mjs"
+    "test:mcp:visual": "node tests/mcp-visual-smoke.mjs",
+    "test:cad:curvature": "node --max-old-space-size=768 tests/kernel-curvature-smoke.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
