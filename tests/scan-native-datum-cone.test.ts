@@ -63,3 +63,32 @@ it("rejects cylindrical or inverted frusta instead of inventing an apex", () => 
     nativeDatumConeGeometry({ ...fit, topRadius: 1, height: 0 }),
   ).toThrow("height");
 });
+
+it("keeps raw equal/inverted helper inputs rejected while application recipes can canonicalize separately", () => {
+  // Reuse the original probe's input diagnostics; these are geometry inputs,
+  // not a new native fit, residual observation or native controller conversion.
+  const raw = {
+    ...structuredClone(native.cases[0].fit),
+    center: [10, 20, 26] as Vec3,
+    axis: [0, 0, 2] as Vec3,
+    radius: 4,
+    topRadius: 4,
+    height: 8,
+  } as FitResult;
+  expect(() => nativeDatumConeGeometry(raw)).toThrow("base radius");
+  expect(() => nativeDatumConeGeometry({ ...raw, topRadius: 6 })).toThrow(
+    "base radius",
+  );
+  // Explicit application recipe normalization supplies a genuinely positive
+  // canonical cone. No change to nativeDatumConeGeometry's input contract.
+  const canonical = nativeDatumConeGeometry({
+    ...raw,
+    center: [10, 20, 34],
+    axis: [0, 0, -2],
+    radius: 6,
+    topRadius: 4,
+  });
+  expect(nativeDatumConeHandles(canonical).slice(0, 6)).toEqual([
+    10, 20, 26, 10, 20, 34,
+  ]);
+});

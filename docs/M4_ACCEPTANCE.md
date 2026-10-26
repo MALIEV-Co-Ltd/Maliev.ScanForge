@@ -93,6 +93,18 @@ normal buffers and history/visibility behavior are retained. The integration
 requires its own exact-head hosted checks. Required source-family and
 original-native gates remain open.
 
+The [cone-source checkpoint](evidence/m4-cone-source-acceptance-20261026.json)
+adds positive, equal and inverted-radius current cone recipes to shared point
+center/pair and line pair/average construction. Its 146 focused checks and 7,871
+affected regressions pass. All 13 type-check batches and the zero-warning build
+pass; a format-only production refresh preserves `scanforge-b3d5b1cab378d17b`.
+Real-worker GUI/public-MCP acceptance verifies actual cone/cylinder classification,
+end radii and axial bounds within 1e-4 mm, tessellated volume within 3 percent,
+repeated-record averages, radius-order rebuilds, locks, rollback, history and
+binary reopening. This application recipe bridge does not claim native controller,
+owner/provider or whole-construction equivalence. Required plane extents,
+retained general CAD/scan inputs and other original-native gates remain open.
+
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's
 15-significant-digit text roundtrip. The shared operation now models this stage

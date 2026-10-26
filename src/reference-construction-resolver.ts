@@ -12,6 +12,7 @@ import type { NativeReferenceLineRecord } from "./reference-line-evaluation";
 import type { ResolvedReferencePrimitive } from "./reference-point-evaluation";
 import { validatePlaneFrame } from "./plane-frame";
 import { validateParametricModel } from "./parametric";
+import { nativeDatumConeGeometry } from "./scan-native-datum-cone";
 import {
   acquireSketchReferencePick,
   resolveDirectReferencePrimitive,
@@ -28,7 +29,8 @@ export interface LocatedReferenceSourcePick {
 /**
  * Application primitive recipes, not fit diagnostics or native payload layouts.
  * Cylinder midpoint, normalization and finite extent follow the CAD worker's
- * declared input convention. General CAD and cone extraction remain separate.
+ * declared input convention. Cone recipes bridge that midpoint to the verified
+ * canonical cone geometry; general CAD/provider extraction remains separate.
  */
 function resolveStoredRecipeReferenceSource(
   entity: Entity,
@@ -57,9 +59,13 @@ function resolveStoredRecipeReferenceSource(
     features: [binding.feature],
   });
   const input = recipe.input;
-  if (input.kind !== "sphere" && input.kind !== "cylinder")
+  if (
+    input.kind !== "sphere" &&
+    input.kind !== "cylinder" &&
+    input.kind !== "cone"
+  )
     throw new Error(
-      "Only sphere and cylinder primitive recipe sources are supported.",
+      "Only sphere, cylinder and cone primitive recipe sources are supported.",
     );
   const inWorld = (value: readonly number[]) =>
     Array.isArray(value) &&
@@ -70,7 +76,11 @@ function resolveStoredRecipeReferenceSource(
         Number.isFinite(coordinate) &&
         Math.abs(coordinate) <= 1e9,
     );
-  if (!inWorld(input.center) || input.radius > 1e9)
+  if (
+    !inWorld(input.center) ||
+    input.radius > 1e9 ||
+    (input.kind === "cone" && input.topRadius > 1e9)
+  )
     throw new Error(
       "Analytic primitive source exceeds finite world bounds (+/-1e9 mm).",
     );
@@ -83,7 +93,7 @@ function resolveStoredRecipeReferenceSource(
     input.height > 1e9
   )
     throw new Error(
-      "Cylinder source axis and height exceed their finite bounds.",
+      `${input.kind === "cone" ? "Cone" : "Cylinder"} source axis and height exceed their finite bounds.`,
     );
   const direction: ReferenceVector = [
     input.axis[0] / length,
@@ -95,6 +105,44 @@ function resolveStoredRecipeReferenceSource(
     input.center[1] - (direction[1] * input.height) / 2,
     input.center[2] - (direction[2] * input.height) / 2,
   ];
+  if (input.kind === "cone" && input.radius !== input.topRadius) {
+    // This is application recipe normalization, not native controller policy.
+    // The worker's center is a midpoint; the strict native helper takes the
+    // large-end base and a large-to-small axis. Never rewrite the saved recipe.
+    const inverted = input.radius < input.topRadius;
+    const base = inverted
+      ? input.center.map(
+          (value, axis) => value + (direction[axis] * input.height) / 2,
+        )
+      : start;
+    const cone = nativeDatumConeGeometry({
+      kind: "cone",
+      center: [base[0], base[1], base[2]],
+      axis: inverted
+        ? [-input.axis[0], -input.axis[1], -input.axis[2]]
+        : input.axis,
+      radius: inverted ? input.topRadius : input.radius,
+      topRadius: inverted ? input.radius : input.topRadius,
+      height: input.height,
+    });
+    const resolved = resolveDirectReferencePrimitive({
+      kind: "cone",
+      origin: [cone.origin[0], cone.origin[1], cone.origin[2]],
+      direction: [cone.direction[0], cone.direction[1], cone.direction[2]],
+      length: cone.length,
+      offset: cone.start,
+    });
+    if (
+      resolved.kind !== "axis" ||
+      !inWorld(resolved.start) ||
+      !inWorld(resolved.end)
+    )
+      throw new Error(
+        "Cone source segment exceeds finite world bounds (+/-1e9 mm).",
+      );
+    return resolved;
+  }
+  // Equal-radius cone recipes use the worker's actual cylinder fallback.
   const end: ReferenceVector = [
     start[0] + direction[0] * input.height,
     start[1] + direction[1] * input.height,

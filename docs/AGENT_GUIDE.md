@@ -2391,8 +2391,8 @@ the prepared numeric fields under the ordinary editor contract.
 
 Use `reference_construct` with `kind:"line",mode:"pair"|"average"` and
 `sourcePicks:[{entityId,parameter?},...]`. Pair admits semantic reference points
-and lines plus validated sphere/cylinder primitive recipes; average admits
-semantic lines or cylinder recipes. A point forbids `parameter`;
+and lines plus validated sphere/cylinder/cone primitive recipes; average admits
+semantic lines or cylinder/cone recipes. A point forbids `parameter`;
 a line requires an explicit fraction from 0 to 1 along its finite stored extent.
 The application resolves the authoritative geometry and retains each acquired
 world location as Float32. This located-source adapter does not assert an
@@ -2426,14 +2426,24 @@ source families are separate release gates. Fit-only sources without an admitted
 recipe/frame and internal sketch line providers remain unsupported; internal
 sketch providers do not independently expand the owner-approved input scope.
 
-Current sphere/cylinder primitive recipes are authoritative analytic sources,
+Current sphere/cylinder/cone primitive recipes are authoritative analytic sources,
 including solids created by `primitive_fit_create`. The sphere contributes its
 recipe center; a cylinder contributes the finite axis used by the application
 CAD worker, derived from midpoint, normalized axis and height. This is an
 application analytic segment, not a claim about captured native raw fields.
 Saved fit diagnostics or display kind may be stale after a CAD rebuild and never
-override the current recipe/output binding. Cone, unsupported recipes and
-fit-only classified meshes remain ineligible.
+override the current recipe/output binding. Unsupported recipes and fit-only classified meshes remain ineligible.
+
+For a cone recipe with unequal radii, fraction `0` is the smaller-radius end
+and `1` is the larger-radius end. The source resolver converts the worker's
+midpoint convention to a canonical cone without rewriting the saved recipe.
+For equal radii the worker creates a cylinder, so fractions follow its existing
+base-to-top order. Construction `center` uses the finite-axis midpoint, not the
+cone apex used by alignment. Radius-order changes refresh the live source while
+retaining the exact previously acquired Float32 pick suffixes. Existing world
+bounds and finite-conversion checks apply, including nearly cylindrical cones;
+there is no invented taper epsilon or replacement apex. This application mapping
+does not establish native controller conversion or whole-construction parity.
 
 `cad_rebuild` refreshes references from every rebuilt CAD output as one atomic
 history transaction and returns `refreshedEntityIds`/`evaluations` alongside its
@@ -2593,7 +2603,7 @@ Preview through `reference_construct` with `action:"preview",kind:"point"`,
 the chosen `mode`, `sourceEntityIds:[...]` and usual revision/request fields.
 Do not supply numeric position, the midpoint alias's `sourceEntityId`, raw pick
 records, keys, completion state or provenance. `center` and `pair` use admitted
-semantic points/lines, current sphere/cylinder recipe sources and nonkernel
+semantic points/lines, current sphere/cylinder/cone recipe sources and nonkernel
 planes with authoritative `planeFrame` and no parametric metadata; `threePlanes`
 uses those stored-frame planes. A fitted plane with a valid frame remains
 eligible while fit diagnostics coexist; the frame supplies the equation, not

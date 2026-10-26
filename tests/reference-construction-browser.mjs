@@ -9,6 +9,7 @@ import { spawnSync } from "node:child_process";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+import { referenceConeSources } from "./helpers/reference-cone-browser.mjs";
 
 const root = new URL("../", import.meta.url);
 const admission = spawnSync(
@@ -2566,6 +2567,7 @@ try {
   console.log(
     "GUI/public MCP source-mesh surface acquisition and numeric-only worker reopen passed",
   );
+  await referenceConeSources({ page, call, mutate, job, ledger, artifactDir });
 
   await mutate("project_new", { discard: true });
   await page.getByRole("tab", { name: "Construct", exact: true }).click();

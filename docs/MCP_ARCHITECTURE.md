@@ -895,15 +895,27 @@ dependencies independently, preserving repeated records and their weighting.
 refresh. The acquired fraction is not persisted or recalculated on source edits.
 Inactive endpoint records remain data without active dependency links.
 
-The default resolvers also consume validated current sphere/cylinder primitive
+The default resolvers also consume validated current sphere/cylinder/cone primitive
 recipes at output0. Sphere centers and the worker's finite cylinder axial segment
 are application geometry authority; stale fit metadata and display classification
 are not fallbacks. `cad_rebuild` marks every rebuilt CAD output as a refresh root
 before staging reference descendants, including mixed point/line chains. Deep
 locks, cancellation, admission and work limits are checked before the single
 commit. Failure releases newly owned kernel handles while preserving handles
-retained by current/history/future states. No imported/general CAD provider,
-cone endpoint order or finite plane extent is inferred by this adapter.
+retained by current/history/future states. No imported/general CAD provider or finite plane extent is inferred by this adapter.
+Cone endpoint order uses the explicit application mapping below; native controller
+and whole-construction equivalence remain separate acceptance gates.
+
+Cone recipes bridge the worker's midpoint to the canonical geometry converter
+also used by native datum alignment. The converter accepts geometry fields only;
+the adapter does not fabricate fit residuals. For unequal radii it chooses the
+large-end base and a large-to-small input axis locally, then resolves the finite
+small-to-large axis with the existing direct-source arithmetic. Inverted radii
+change only that local normalization. Equal radii reuse the existing cylinder
+path without an apex. The native helper's strict positive-taper contract and
+original geometry oracles remain unchanged. Endpoint bounds and nonfinite
+conversion failures reject before publication. This application recipe bridge
+does not infer native class/owner or controller behavior.
 
 Pair/average creation requires an existing line or an owned endpoint preview,
 so the evaluator always receives real prior geometry. The operation retains
@@ -920,7 +932,7 @@ work and history checks. Omitted `sourcePicks` preserves accepted records;
 explicit replacement resolves a complete acquisition list. Inspection exposes
 lossless definition encoding alongside geometry encoding. Required retained CAD
 and scan adapters and remaining primitive families are still release gates.
-Current sphere/cylinder recipes already provide analytic sources. Fit-only
+Current sphere/cylinder/cone recipes already provide analytic sources. Fit-only
 sources without an admitted recipe/frame and internal sketch line providers
 remain unsupported; internal sketch providers do not independently expand the
 owner-approved input scope.
@@ -1044,7 +1056,7 @@ returns revision-bound saved/provisional identity keys without assigning them;
 edit-target self/dependency-cycle candidates are listed as ineligible. Preview
 and discovery share one eligibility policy over `resolveReferencePointSource`.
 The source-derived point resolver uses authoritative semantic points/lines,
-validated current sphere/cylinder recipe sources and explicit analytic
+validated current sphere/cylinder/cone recipe sources and explicit analytic
 stored-plane-frame equations. Nonkernel, nonparametric planes with a valid frame
 may retain fit diagnostics; those diagnostics are not the plane geometry
 authority. A fit-only mesh without a frame is not a fallback. This adapter does

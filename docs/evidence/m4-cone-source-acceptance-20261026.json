@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 current-recipe cone source admission; retained general CAD/scan and native lifecycle gates remain open",
+  "baseCommit": "db66f24bfb90a4e83cac0dcbccd54b8d9dc3c851",
+  "productionBuild": "scanforge-b3d5b1cab378d17b",
+  "runtimeSource": {
+    "scope": "production build inputs",
+    "count": 1055,
+    "sha256": "b974b3a2c79e0475d234e246d9c29b728040cff2e67ab317e7f00f2cec243dfa"
+  },
+  "fullBuild": {
+    "receipt": {
+      "command": ["C:\\Program Files\\nodejs\\npm.cmd", "run", "build"],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T06:50:13.613151+00:00",
+      "finishedUtc": "2026-10-26T06:52:17.579906+00:00",
+      "elapsedSeconds": 123.9665916999802,
+      "peakJobBytes": 1614893056,
+      "totalProcesses": 36,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T06:50:13.008898+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "sourceSha256BeforeFormatOnlyRefresh": "35f8aaf67fe991ad7cf17fc9ef7d561d0b55df6ae5f881d58271b142ab480464",
+    "typecheckBatches": 13,
+    "warnings": 0,
+    "errors": 0
+  },
+  "formatOnlyProductionRefresh": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vite/bin/vite.js",
+        "build"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T06:53:56.192016+00:00",
+      "finishedUtc": "2026-10-26T06:54:03.193429+00:00",
+      "elapsedSeconds": 7.001403699978255,
+      "peakJobBytes": 1548128256,
+      "totalProcesses": 7,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T06:53:55.601269+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "manifest": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "scripts/offline-manifest.mjs"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T06:54:10.838335+00:00",
+      "finishedUtc": "2026-10-26T06:54:11.500167+00:00",
+      "elapsedSeconds": 0.6618236000067554,
+      "peakJobBytes": 119439360,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T06:54:10.253904+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "sourceSha256": "b974b3a2c79e0475d234e246d9c29b728040cff2e67ab317e7f00f2cec243dfa",
+    "sameProductionAssetIdentity": true,
+    "scope": "Tuple correction was fully typechecked. Subsequent formatting only wrapped that expression; fresh Vite output and offline manifest match the same build identity."
+  },
+  "focused": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/reference-analytic-input-api.test.ts",
+        "tests/scan-native-datum-cone.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T06:49:07.196451+00:00",
+      "finishedUtc": "2026-10-26T06:49:09.338750+00:00",
+      "elapsedSeconds": 2.1422890999820083,
+      "peakJobBytes": 418074624,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T06:49:06.623853+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "passedTests": 146,
+    "files": 2
+  },
+  "affectedRegression": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests\\reference-circumcenter.test.ts",
+        "tests\\reference-circle-inputs.test.ts",
+        "tests\\reference-cad-acquisition-api.test.ts",
+        "tests\\reference-average-empty-sources.test.ts",
+        "tests\\reference-analytic-input-api.test.ts",
+        "tests\\reference-construction-resolver.test.ts",
+        "tests\\reference-construction-preview.test.ts",
+        "tests\\reference-construction-identity.test.ts",
+        "tests\\reference-construction-evaluation.test.ts",
+        "tests\\reference-construction-edit-publication.test.ts",
+        "tests\\reference-construction-binding.test.ts",
+        "tests\\reference-construction-apply.test.ts",
+        "tests\\reference-construction-api.test.ts",
+        "tests\\reference-coordinate-pick-api.test.ts",
+        "tests\\reference-construction.test.ts",
+        "tests\\reference-construction-values.test.ts",
+        "tests\\reference-construction-session.test.ts",
+        "tests\\reference-datum-export.test.ts",
+        "tests\\reference-coordinate-screen.test.ts",
+        "tests\\reference-dependencies.test.ts",
+        "tests\\reference-derived-api.test.ts",
+        "tests\\reference-derived-lifecycle.test.ts",
+        "tests\\reference-provider-axis.test.ts",
+        "tests\\reference-projection-selection.test.ts",
+        "tests\\reference-project.test.ts",
+        "tests\\reference-preview-lifetime.test.ts",
+        "tests\\reference-preview-display.test.ts",
+        "tests\\reference-preview-admission.test.ts",
+        "tests\\reference-point-evaluation.test.ts",
+        "tests\\reference-picked-decimal.test.ts",
+        "tests\\reference-pick-coordinates.test.ts",
+        "tests\\reference-numeric-transform-api.test.ts",
+        "tests\\reference-numeric-initialization.test.ts",
+        "tests\\reference-numeric-edit-fields.test.ts",
+        "tests\\reference-numeric-edit-api.test.ts",
+        "tests\\reference-native-pick-ddx.test.ts",
+        "tests\\reference-midpoint.test.ts",
+        "tests\\reference-midpoint-api.test.ts",
+        "tests\\reference-line-evaluation.test.ts",
+        "tests\\reference-landmark-roots.test.ts",
+        "tests\\reference-geometry-numerics.test.ts",
+        "tests\\reference-frame.test.ts",
+        "tests\\reference-frame-display.test.ts",
+        "tests\\reference-fitted-plane-input-api.test.ts",
+        "tests\\reference-entity-operations.test.ts",
+        "tests\\reference-display-cleanup.test.ts",
+        "tests\\reference-derived-line-lifecycle.test.ts",
+        "tests\\reference-derived-line-api.test.ts",
+        "tests\\scan-native-datum-cone.test.ts",
+        "tests\\scan-native-datum-class.test.ts",
+        "tests\\scan-native-datum-cad-plane.test.ts",
+        "tests\\scan-native-datum-cad-axis.test.ts",
+        "tests\\scan-native-datum-apply.test.ts",
+        "tests\\reference-viewport.test.ts",
+        "tests\\reference-transform.test.ts",
+        "tests\\reference-tool-eligibility.test.ts",
+        "tests\\reference-stored-source-binding.test.ts",
+        "tests\\reference-source-primitives.test.ts",
+        "tests\\reference-sketch-point.test.ts",
+        "tests\\reference-sketch-pick-acquisition.test.ts",
+        "tests\\reference-scene-bounds.test.ts",
+        "tests\\scan-native-datum-origin.test.ts",
+        "tests\\scan-native-datum-frame.test.ts",
+        "tests\\scan-native-datum-fit-anchor.test.ts",
+        "tests\\scan-native-datum-feature.test.ts",
+        "tests\\scan-native-datum-direction.test.ts",
+        "tests\\scan-native-datum-controller.test.ts",
+        "tests\\scan-native-datum-point.test.ts",
+        "tests\\scan-native-datum-plane.test.ts",
+        "tests\\scan-native-datum-picked-translation.test.ts",
+        "tests\\scan-native-datum-scan-controller.test.ts",
+        "tests\\scan-native-datum-reference-options.test.ts",
+        "tests\\scan-native-datum-translation.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T06:55:40.541440+00:00",
+      "finishedUtc": "2026-10-26T06:56:01.692426+00:00",
+      "elapsedSeconds": 21.150961800012738,
+      "peakJobBytes": 479215616,
+      "totalProcesses": 80,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T06:55:39.929726+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "passedTests": 7871,
+    "files": 73
+  },
+  "browser": {
+    "receipt": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/reference-construction-browser.mjs"
+      ],
+      "passed": true,
+      "exitCode": 0,
+      "startedUtc": "2026-10-26T07:18:05.254057+00:00",
+      "finishedUtc": "2026-10-26T07:18:46.117782+00:00",
+      "elapsedSeconds": 40.86366560001625,
+      "peakJobBytes": 1833951232,
+      "totalProcesses": 18,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-10-26T07:18:04.634589+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "reportSha256": "9273b199d42d34fa46a7121eacf8ed93065e714b4f5efb79c9eba8f9b6098b14",
+    "coneSources": {
+      "rows": [
+        {
+          "entityId": "0b4d4595-c973-4f8d-befd-f5ee13ee8aab",
+          "name": "Cone source top 0",
+          "input": {
+            "kind": "cone",
+            "center": [10, 20, 30],
+            "axis": [0, 0, 2],
+            "radius": 4,
+            "topRadius": 0,
+            "height": 8
+          },
+          "centerId": "04015215-32b1-44a9-bd41-05a1f72f1aa2",
+          "pairId": "433baa19-e479-4d78-ae28-2cc15fe86982",
+          "surfaceKind": "cone",
+          "measured": {
+            "triangles": 4203,
+            "axialBounds": [-4, 4],
+            "baseRadius": 4.000000000000002,
+            "topRadius": 0,
+            "tessellatedVolume": 133.89582939343578,
+            "analyticVolume": 134.0412865531645,
+            "endpointToleranceMm": 0.0001,
+            "relativeVolumeTolerance": 0.03
+          },
+          "guiMcpEqual": true
+        },
+        {
+          "entityId": "0eeccf60-da9c-4ced-b763-55caa5947d79",
+          "name": "Cone source top 2",
+          "input": {
+            "kind": "cone",
+            "center": [26, 20, 30],
+            "axis": [0, 0, 2],
+            "radius": 4,
+            "topRadius": 2,
+            "height": 8
+          },
+          "centerId": "994df7b1-d6e7-4154-b1cf-c48e130990bb",
+          "pairId": "7ddeb91a-e14b-4b1a-bb05-df926398db8e",
+          "surfaceKind": "cone",
+          "measured": {
+            "triangles": 4148,
+            "axialBounds": [-4, 4],
+            "baseRadius": 4.000000000000003,
+            "topRadius": 2.000000000000002,
+            "tessellatedVolume": 234.31497391650018,
+            "analyticVolume": 234.57225146803788,
+            "endpointToleranceMm": 0.0001,
+            "relativeVolumeTolerance": 0.03
+          },
+          "guiMcpEqual": true
+        },
+        {
+          "entityId": "8275292f-3f81-4add-af99-4a7e2c040a4b",
+          "name": "Cone source top 4",
+          "input": {
+            "kind": "cone",
+            "center": [42, 20, 30],
+            "axis": [0, 0, 2],
+            "radius": 4,
+            "topRadius": 4,
+            "height": 8
+          },
+          "centerId": "d120b634-1125-4fdb-9212-c48e63a7bcb7",
+          "pairId": "c9d4f47f-3c89-49a4-a9ff-e1ffe19e3504",
+          "surfaceKind": "cylinder",
+          "measured": {
+            "triangles": 500,
+            "axialBounds": [-4, 4],
+            "baseRadius": 4.0000000000000036,
+            "topRadius": 4.0000000000000036,
+            "tessellatedVolume": 401.95722196786204,
+            "analyticVolume": 402.1238596594935,
+            "endpointToleranceMm": 0.0001,
+            "relativeVolumeTolerance": 0.03
+          },
+          "guiMcpEqual": true
+        },
+        {
+          "entityId": "f9deaaa1-24d6-4abc-8feb-f7dd5b7d3f6c",
+          "name": "Cone source top 6",
+          "input": {
+            "kind": "cone",
+            "center": [58, 20, 30],
+            "axis": [0, 0, 2],
+            "radius": 4,
+            "topRadius": 6,
+            "height": 8
+          },
+          "centerId": "7c2230f0-e069-43c6-9fb1-101aa24895b4",
+          "pairId": "7cb3eac8-13ed-4c82-8db6-b20d9cf4acaf",
+          "surfaceKind": "cone",
+          "measured": {
+            "triangles": 3220,
+            "axialBounds": [-4, 4],
+            "baseRadius": 4.0000000000000036,
+            "topRadius": 6.000000000000004,
+            "tessellatedVolume": 636.0726604978737,
+            "analyticVolume": 636.6961111275314,
+            "endpointToleranceMm": 0.0001,
+            "relativeVolumeTolerance": 0.03
+          },
+          "guiMcpEqual": true
+        }
+      ],
+      "radiusOrderRebuilds": [4, 6, 2],
+      "nativeHelperContractUnchanged": true,
+      "actualWorkerClassification": true,
+      "guiMcpPointAndPair": true,
+      "guiMcpWeightedAverage": true,
+      "repeatedAverageRecords": true,
+      "retainedF32Bits": true,
+      "lockedRollback": true,
+      "undoRedo": true,
+      "workerReopenWithFuture": true,
+      "nativeWholeConstructionAcceptance": false
+    },
+    "scope": "Actual application, actual CAD worker shapes and independent GUI/public SDK MCP; not native whole-construction acceptance",
+    "geometryTolerances": {
+      "axialBoundsAndEndRadiiMm": 0.0001,
+      "tessellatedRelativeVolume": 0.03,
+      "exactKernelMassClaim": false
+    },
+    "camera": "Shared fit restores scene scale; each source center is asserted inside camera clip bounds. Final measured-run scene screenshot was visually inspected; all four sources are clearly framed. The average-preview controls were also inspected on the preceding same-runtime framing run."
+  },
+  "visuals": [
+    {
+      "path": "docs/evidence/m4-cone-sources-20261026/cone-average-preview.png",
+      "sha256": "1b761b11a89004f823b1020e1de992abd7dc0f01909d56865a40c5e476d03847"
+    },
+    {
+      "path": "docs/evidence/m4-cone-sources-20261026/cone-radius-source-parity.png",
+      "sha256": "f20835de9e97023e6f37ae7b1a74c5357bd1ea31216c706853c221e344571548"
+    }
+  ],
+  "sharedContracts": [
+    "The current output0 primitive recipe wins over stale fit diagnostics and display kind.",
+    "Sphere/cylinder/cone sources use one resolver for discovery, acquisition, point/line evaluation, admission and refresh.",
+    "Unequal-radius cones normalize locally to large-base geometry; source fractions run small to large. The saved recipe remains unchanged.",
+    "Equal-radius cones use the actual worker cylinder fallback and existing base-to-top segment.",
+    "No fabricated fit residuals or source/provider metadata. The native helper retains its strict positive-cone contract.",
+    "Accepted Float32 world-hit suffixes and raw source keys persist through radius-order rebuilds, locks, rollback, history and binary reopening.",
+    "Finite conversion and endpoint bounds apply without an arbitrary taper epsilon."
+  ],
+  "priorReceipts": [
+    {
+      "receipt": "cone-source-admission-red-r1.json",
+      "scope": "49 failures/93 passes before source admission; genuine new capability failures retained."
+    },
+    {
+      "receipt": "build-cone-source-r1.json",
+      "scope": "TypeScript rejected loose-array/fixed-tuple assignments in source; corrected with explicit3-component vectors."
+    },
+    {
+      "receipt": "cone-source-browser-r1.json",
+      "scope": "Functional/kernel assertions passed but visual inspection found an inherited tiny camera scale. Superseded by explicit fit and projected-center checks."
+    },
+    {
+      "receipt": "cone-source-browser-r2.json",
+      "scope": "Framing and functional checks passed. It occupied another task reservation gap before explicit handback; the mutex prevented simultaneous children. Final r3 used an explicitly granted slot and adds actual end-radius/volume checks."
+    }
+  ],
+  "remainingRequiredGates": [
+    "Authoritative numeric-plane extents and located plane line inputs",
+    "Retained general CAD/scan owner/provider acquisition",
+    "Derived/inactive-pick transforms and semantic duplication policy",
+    "Original-native construction/lifecycle and remaining frame/fit/curve/constraint acceptance",
+    "Fresh exact-head hosted checks/review, merge, merged-main verification and issue4/milestone5 closure"
+  ],
+  "milestoneComplete": false,
+  "merged": false
+}

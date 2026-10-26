@@ -1,5 +1,6 @@
 // Shared recipe-source contract; native fitter numerical equivalence is separate.
 import { afterEach, expect, it, vi } from "vitest";
+import nativeConeOracle from "./fixtures/alignment-datum-cone-native.json";
 import {
   ApplicationApi,
   type WorkspaceHost,
@@ -596,7 +597,7 @@ it("refreshes a recipe cylinder -> repeated average line -> center chain without
   expect(h.state.history).toHaveLength(3);
 });
 
-it.each(["cone", "box", "fit-only", "plane-line"] as const)(
+it.each(["zero-axis-cone", "box", "fit-only", "plane-line"] as const)(
   "keeps unresolved %s authority/extent outside this slice",
   async (family) => {
     const candidate =
@@ -613,11 +614,11 @@ it.each(["cone", "box", "fit-only", "plane-line"] as const)(
         : primitive(
             "candidate",
             4,
-            family === "cone"
+            family === "zero-axis-cone"
               ? {
                   kind: "cone",
                   center: [0, 0, 0],
-                  axis: [0, 0, 1],
+                  axis: [0, 0, 0],
                   radius: 3,
                   topRadius: 1,
                   height: 4,
@@ -815,7 +816,7 @@ it("rolls back source, rebuilt CAD child, references, history and selection on a
   expect(h.commit).not.toHaveBeenCalled();
 });
 
-it.each(["box", "cone"] as const)(
+it.each(["box", "out-of-bounds-cone-radius"] as const)(
   "rejects changing a linked recipe source to unsupported %s and releases the staged handle",
   async (kind) => {
     const c = chain(),
@@ -825,10 +826,10 @@ it.each(["box", "cone"] as const)(
       kind === "box"
         ? { kind, center: [0, 0, 0], size: [1, 2, 3] }
         : {
-            kind,
+            kind: "cone",
             center: [0, 0, 0],
             axis: [0, 0, 1],
-            radius: 3,
+            radius: 1e9 + 1,
             topRadius: 1,
             height: 4,
           };
@@ -843,7 +844,7 @@ it.each(["box", "cone"] as const)(
     );
     expect(job.status).toBe("failed");
     expect(job.error.message).toMatch(
-      /source|unsupported|primitive|cone|recipe/i,
+      /source|unsupported|primitive|cone|recipe|world|bounds|radius/i,
     );
     expect(h.state.entities).toBe(before);
     expect(h.state.history).toHaveLength(0);
@@ -1069,4 +1070,528 @@ it("invalidates an owned recipe-source Preview when a source rebuild commits, ra
   ).toMatchObject({ ok: false });
   expect(h.state.entities).toHaveLength(3);
   expect(h.state.history).toHaveLength(1);
+});
+
+// Positive current-recipe cone admission. Original geometry oracle and whole
+// native construction/GUI lifecycle are separate gates; no native objects here.
+const coneRecipe = (
+  center: Vec3 = [10, 20, 30],
+): Extract<KernelPrimitive, { kind: "cone" }> => ({
+  kind: "cone",
+  center,
+  axis: [0, 0, 2],
+  radius: 4,
+  topRadius: 2,
+  height: 8,
+});
+
+it.each([2, 4, 6])(
+  "resolves oblique nonunit cone axes for top radius %s within application geometry tolerance",
+  (topRadius) => {
+    const input = { ...coneRecipe(), axis: [2, 3, 4] as Vec3, topRadius };
+    const source = primitive("cone", 1, input);
+    const axis = resolveReferenceLineSource(source, "pair");
+    expect(axis.kind).toBe("axis");
+    if (axis.kind !== "axis") throw Error("Missing cone axis");
+    const length = Math.hypot(...input.axis),
+      sign = topRadius < input.radius ? 1 : -1;
+    for (let coordinate = 0; coordinate < 3; coordinate++) {
+      const half = ((input.axis[coordinate] / length) * input.height) / 2;
+      expect(axis.start[coordinate]).toBeCloseTo(
+        input.center[coordinate] + sign * half,
+        12,
+      );
+      expect(axis.end[coordinate]).toBeCloseTo(
+        input.center[coordinate] - sign * half,
+        12,
+      );
+    }
+  },
+);
+
+it("admits nearly cylindrical finite endpoints even when the internal canonical apex exceeds world bounds", () => {
+  const source = primitive("cone", 1, {
+    ...coneRecipe([0, 0, 0]),
+    topRadius: 4 - 2 ** -30,
+  });
+  expect(resolveReferenceLineSource(source, "pair")).toMatchObject({
+    kind: "axis",
+    start: [0, 0, 4],
+    end: [0, 0, -4],
+  });
+});
+
+it.each([0, 2])(
+  "resolves a cone with top radius %s to the native small-to-large finite axis",
+  (topRadius) => {
+    const source = primitive("cone", 1, { ...coneRecipe(), topRadius });
+    const before = structuredClone(source);
+    const axis = { kind: "axis", start: [10, 20, 34], end: [10, 20, 26] };
+    expect(resolveReferencePointSource(source)).toMatchObject(axis);
+    expect(resolveReferenceLineSource(source, "pair")).toMatchObject(axis);
+    expect(resolveReferenceLineSource(source, "average")).toMatchObject(axis);
+    expect(source).toEqual(before);
+  },
+);
+
+it.each([0, 2, 4, 6])(
+  "exposes cone top radius %s consistently in point and line discovery without assigning keys",
+  async (topRadius) => {
+    const source = primitive("cone", 1, { ...coneRecipe(), topRadius });
+    source.constructionOrderKey = undefined;
+    const h = setup([source]),
+      before = h.state.entities,
+      revision = h.api.currentRevision();
+    for (const [kind, mode] of [
+      ["point", "center"],
+      ["point", "pair"],
+      ["line", "pair"],
+      ["line", "average"],
+    ]) {
+      const result = await value(
+        h.api.invoke("reference_construction_sources", { kind, mode }),
+      );
+      expect(result.sources[0]).toMatchObject({
+        entityId: "cone",
+        eligible: true,
+        primitiveKind: "axis",
+        identityStatus: "provisional",
+      });
+    }
+    expect(h.state.entities).toBe(before);
+    expect(source.constructionOrderKey).toBeUndefined();
+    expect(h.api.currentRevision()).toBe(revision);
+    expect(h.commit).not.toHaveBeenCalled();
+  },
+);
+
+it.each([0, 2, 4, 6])(
+  "uses current cone top radius %s over stale display kind and reused oracle input diagnostics",
+  (topRadius) => {
+    const source = primitive("cone", 1, { ...coneRecipe(), topRadius });
+    source.kind = "sphere";
+    // Reuse the existing original-probe's declared input; no residual is invented.
+    // This stale diagnostic record is deliberately unrelated to the current recipe.
+    source.fit = structuredClone(
+      nativeConeOracle.cases[0].fit,
+    ) as Entity["fit"];
+    const before = structuredClone(source);
+    const axis = {
+      kind: "axis",
+      start: [10, 20, topRadius < 4 ? 34 : 26],
+      end: [10, 20, topRadius < 4 ? 26 : 34],
+    };
+    expect(resolveReferencePointSource(source)).toMatchObject(axis);
+    expect(resolveReferenceLineSource(source, "average")).toMatchObject(axis);
+    expect(source).toEqual(before);
+  },
+);
+
+it.each([0, 2, 4, 6])(
+  "constructs cone top radius %s center at its finite-axis midpoint and uses the same axis in a point pair",
+  async (topRadius) => {
+    const source = primitive("cone", 1, { ...coneRecipe(), topRadius }),
+      anchor = point("anchor", 2, [16, 20, 30]);
+    const h = setup([source, anchor]);
+    const center = await preview(h, {
+      kind: "point",
+      mode: "center",
+      sourceEntityIds: [source.id],
+    });
+    // For R4/T2 the apex is [10,20,42]; cylinder classification has no apex.
+    // All application recipe branches expose the finite-axis midpoint here.
+    expect(center.geometry).toEqual({ kind: "point", position: [10, 20, 30] });
+    const made = await accept(h, center);
+    expect(find(h, made.entityId).reference!.definition.sources).toEqual([
+      bind(source),
+    ]);
+    const pair = await preview(h, {
+      kind: "point",
+      mode: "pair",
+      sourceEntityIds: [anchor.id, source.id],
+    });
+    expect(pair.geometry).toEqual({ kind: "point", position: [10, 20, 30] });
+    const joined = await accept(h, pair);
+    expect(find(h, joined.entityId).reference!.definition.sources).toEqual([
+      bind(source),
+      bind(anchor),
+    ]);
+    expect(h.state.history).toHaveLength(2);
+  },
+);
+
+it.each(
+  [0, 2, 4, 6].flatMap((topRadius) =>
+    [false, true].map((reverse) => ({ topRadius, reverse })),
+  ),
+)(
+  "uses cone top radius $topRadius in a public line pair, reversed records=$reverse",
+  async ({ topRadius, reverse }) => {
+    const source = primitive("cone", 1, { ...coneRecipe(), topRadius }),
+      anchor = point("anchor", 2, [16, 20, 30]);
+    const h = setup([source, anchor]);
+    const picks = [
+      { entityId: source.id, parameter: 0.25 },
+      { entityId: anchor.id },
+    ];
+    if (reverse) picks.reverse();
+    const p = await linePreview(h, "pair", picks);
+    expect(p.geometry).toMatchObject({
+      kind: "line",
+      start: [16, 20, 30],
+      direction: [-1, 0, 0],
+      length: 6,
+    });
+    expect(p.definition.records.map((row: any) => row.entityId)).toEqual(
+      picks.map((row) => row.entityId),
+    );
+    expect(
+      p.definition.records.find((row: any) => row.entityId === source.id)
+        .coordinates,
+    ).toEqual([10, 20, topRadius < 4 ? 32 : 28]);
+    expect(p.definition.sources.map((row: any) => row.id)).toEqual([
+      source.id,
+      anchor.id,
+    ]);
+    const made = await accept(h, p);
+    expect(
+      encodeReferenceEntityData(find(h, made.entityId).reference!).geometry,
+    ).toEqual(p.geometryEncoding);
+  },
+);
+
+it.each(
+  [0, 2, 4, 6].flatMap((topRadius) =>
+    [0, 0.25, 0.5, 1].map((parameter) => ({
+      topRadius,
+      parameter,
+      z: topRadius < 4 ? 34 - 8 * parameter : 26 + 8 * parameter,
+    })),
+  ),
+)(
+  "acquires cone top radius $topRadius fraction $parameter once with expected world Z $z",
+  async ({ topRadius, parameter, z }) => {
+    const h = setup([
+      primitive("cone", 1, { ...coneRecipe(), topRadius }),
+      point("anchor", 2, [16, 20, 30]),
+    ]);
+    const p = await linePreview(h, "pair", [
+      { entityId: "cone", parameter },
+      { entityId: "anchor" },
+    ]);
+    expect(p.definition.records[0].coordinates).toEqual([10, 20, z]);
+    expect(p.definition.records[0].storage).toBe("native-pick-record-f32");
+    expect(p.definition.records[0]).not.toHaveProperty("parameter");
+    await value(
+      h.command("reference_construct", {
+        action: "cancel",
+        sessionId: p.sessionId,
+        version: p.version,
+      }),
+    );
+    expect(h.state.entities).toHaveLength(2);
+    expect(h.state.history).toHaveLength(0);
+  },
+);
+
+it.each([0, 2, 4, 6])(
+  "averages cone top radius %s axes with repeated record weighting and an actual owned prior",
+  async (topRadius) => {
+    const h = setup([
+      primitive("a", 1, { ...coneRecipe([0, 2, 0]), topRadius }),
+      primitive("b", 2, { ...coneRecipe([0, 8, 0]), topRadius }),
+    ]);
+    const p = await linePreview(h, "average", [
+      { entityId: "a", parameter: 0.25 },
+      { entityId: "b", parameter: 0.75 },
+      { entityId: "a", parameter: 0.5 },
+    ]);
+    expect(p.geometry).toMatchObject({
+      kind: "line",
+      start: [0, 4, -3],
+      length: 6,
+    });
+    expect(p.diagnostics.contributingRecords).toBe(3);
+    expect(p.definition.records.map((row: any) => row.entityId)).toEqual([
+      "a",
+      "b",
+      "a",
+    ]);
+    expect(p.definition.sources.map((row: any) => row.id)).toEqual(["a", "b"]);
+    const made = await accept(h, p);
+    expect(find(h, made.entityId).reference!.definition).toEqual(p.definition);
+  },
+);
+
+it("uses the existing cylinder segment for equal declared cone radii without constructing an apex", () => {
+  const input = { ...coneRecipe(), topRadius: 4 };
+  const cone = primitive("cone", 1, input);
+  const cylinderSource = primitive("cylinder", 2, {
+    kind: "cylinder",
+    center: input.center,
+    axis: input.axis,
+    radius: input.radius,
+    height: input.height,
+  });
+  const before = structuredClone(cone);
+  expect(resolveReferencePointSource(cone)).toEqual(
+    resolveReferencePointSource(cylinderSource),
+  );
+  for (const mode of ["pair", "average"] as const)
+    expect(resolveReferenceLineSource(cone, mode)).toEqual(
+      resolveReferenceLineSource(cylinderSource, mode),
+    );
+  expect(cone).toEqual(before);
+});
+
+it("normalizes inverted cone geometry locally without rewriting its recipe, identity, axis or radii", () => {
+  const source = primitive("cone", 1, { ...coneRecipe(), topRadius: 6 });
+  const before = structuredClone(source);
+  // Application normalization: large base M+A*H/2, reverse raw axis,
+  // canonical radii 6>4. The native helper itself remains strictly R>T.
+  const expected = { kind: "axis", start: [10, 20, 26], end: [10, 20, 34] };
+  expect(resolveReferencePointSource(source)).toMatchObject(expected);
+  expect(resolveReferenceLineSource(source, "pair")).toMatchObject(expected);
+  expect(resolveReferenceLineSource(source, "average")).toMatchObject(expected);
+  expect(source).toEqual(before);
+});
+
+it.each([
+  "output",
+  "fit-only",
+  "zero-axis",
+  "zero-height",
+  "zero-radius",
+  "negative-radius",
+  "negative-top-radius",
+  "oversize-top-radius",
+  "world-endpoint",
+] as const)(
+  "rejects a cone with invalid %s authority/geometry before mutation",
+  async (failure) => {
+    const input = coneRecipe();
+    if (failure === "zero-axis") input.axis = [0, 0, 0];
+    if (failure === "zero-height") input.height = 0;
+    if (failure === "zero-radius") input.radius = 0;
+    if (failure === "negative-radius") input.radius = -1;
+    if (failure === "negative-top-radius") input.topRadius = -1;
+    if (failure === "oversize-top-radius") input.topRadius = 1e9 + 1;
+    if (failure === "world-endpoint") {
+      input.center = [1e9, 0, 0];
+      input.axis = [1, 0, 0];
+    }
+    const source = primitive("cone", 1, input);
+    if (failure === "output") source.parametric!.output = 1;
+    if (failure === "fit-only") {
+      source.parametric = undefined;
+      source.fit = structuredClone(
+        nativeConeOracle.cases[0].fit,
+      ) as Entity["fit"];
+    }
+    const h = setup([source]),
+      before = h.state.entities;
+    expect(() => resolveReferencePointSource(source)).toThrow();
+    const result = await h.command("reference_construct", {
+      action: "preview",
+      kind: "point",
+      mode: "center",
+      sourceEntityIds: [source.id],
+    });
+    expect(result.ok).toBe(false);
+    expect(h.state.entities).toBe(before);
+    expect(h.commit).not.toHaveBeenCalled();
+  },
+);
+
+async function acceptedConeChain() {
+  const unrelated = point("unrelated", 99, [8, 9, 10]);
+  const h = setup([
+    primitive("a", 1, coneRecipe([0, 2, 0])),
+    primitive("b", 2, coneRecipe([0, 8, 0])),
+    unrelated,
+  ]);
+  const p = await linePreview(h, "average", [
+    { entityId: "a", parameter: 0.25 },
+    { entityId: "b", parameter: 0.75 },
+    { entityId: "a", parameter: 0.5 },
+  ]);
+  const made = await accept(h, p),
+    line = find(h, made.entityId);
+  const center = await accept(
+    h,
+    await preview(h, {
+      kind: "point",
+      mode: "center",
+      sourceEntityIds: [line.id],
+    }),
+  );
+  return {
+    h,
+    line,
+    centerId: center.entityId,
+    unrelated,
+    stored: encodeReferenceEntityData(line.reference!).definition,
+  };
+}
+
+it("rebuilds a cone recipe and the full accepted average/center DAG in one reversible history transaction", async () => {
+  const { h, line, centerId, unrelated, stored } = await acceptedConeChain();
+  const before = h.state.entities,
+    sourceKey = find(h, "a").constructionOrderKey;
+  const job = await finish(
+    h,
+    await value(
+      h.command("cad_rebuild", {
+        entityId: "a",
+        recipe: {
+          kind: "primitive",
+          input: {
+            ...coneRecipe([0, 5, 0]),
+            radius: 5,
+            topRadius: 1,
+            height: 10,
+          },
+        },
+      }),
+    ),
+  );
+  expect(job.status, JSON.stringify(job)).toBe("succeeded");
+  expect(find(h, centerId).reference!.geometry).toEqual({
+    kind: "point",
+    position: [0, 6, 0],
+  });
+  expect(
+    encodeReferenceEntityData(find(h, line.id).reference!).definition,
+  ).toEqual(stored);
+  expect(find(h, unrelated.id)).toBe(unrelated);
+  expect(find(h, "a").constructionOrderKey).toBe(sourceKey);
+  expect(h.state.history).toHaveLength(3);
+  expect(h.state.history[2].entities).toBe(before);
+  expect(h.release.mock.calls.flatMap(([ids]) => ids)).not.toContain("old-a");
+  const after = h.state.entities;
+  await value(h.command("history_undo", {}));
+  expect(h.state.entities).toBe(before);
+  await value(h.command("history_redo", {}));
+  expect(h.state.entities).toBe(after);
+});
+
+it.each(["locked-dependent", "invalid-radius-replacement"] as const)(
+  "rejects cone rebuild %s atomically and releases its staged handle",
+  async (failure) => {
+    const { h, centerId, line, stored } = await acceptedConeChain();
+    if (failure === "locked-dependent") find(h, centerId).locked = true;
+    const before = h.state.entities,
+      history = h.state.history,
+      historyCount = history.length,
+      future = h.state.future;
+    const revision = h.api.currentRevision();
+    const replacement = coneRecipe([0, 5, 0]);
+    if (failure === "invalid-radius-replacement") replacement.radius = 1e9 + 1;
+    const job = await finish(
+      h,
+      await value(
+        h.command("cad_rebuild", {
+          entityId: "a",
+          recipe: { kind: "primitive", input: replacement },
+        }),
+      ),
+    );
+    expect(job.status).toBe("failed");
+    expect(job.error.message).toMatch(
+      failure === "locked-dependent"
+        ? /locked/i
+        : /cone|radius|apex|source|taper|world|bounds/i,
+    );
+    expect(h.state.entities).toBe(before);
+    expect(h.state.history).toBe(history);
+    expect(h.state.history).toHaveLength(historyCount);
+    expect(h.state.future).toBe(future);
+    expect(h.api.currentRevision()).toBe(revision);
+    expect(
+      encodeReferenceEntityData(find(h, line.id).reference!).definition,
+    ).toEqual(stored);
+    expect(h.release).toHaveBeenCalledWith(["new-1"]);
+  },
+);
+
+it("preserves cone authority and accepted retained-record bits through JSON/binary recovery", async () => {
+  const { h, line, stored } = await acceptedConeChain();
+  const recovered = await decodeProjectContents(
+    await encodeProjectFileLocally(session(h.state.entities)),
+  );
+  for (const rows of [
+    recovered.project.entities,
+    recovered.history[0].entities,
+    recovered.future[0].entities,
+  ]) {
+    expect(() =>
+      assertReferenceWorkspaceAdmission({
+        project: project(rows),
+        history: [],
+        future: [],
+      }),
+    ).not.toThrow();
+    expect(
+      encodeReferenceEntityData(
+        rows.find((row) => row.id === line.id)!.reference!,
+      ).definition,
+    ).toEqual(stored);
+    expect(
+      resolveReferenceLineSource(
+        rows.find((row) => row.id === "a")!,
+        "average",
+      ),
+    ).toMatchObject({ kind: "axis", start: [0, 2, 4], end: [0, 2, -4] });
+  }
+  const json = parseProject(
+    serializeProject("Recovered cone sources", h.state.entities),
+  );
+  expect(
+    encodeReferenceEntityData(
+      json.entities.find((row) => row.id === line.id)!.reference!,
+    ).definition,
+  ).toEqual(stored);
+});
+
+it("refreshes radius-order changes without re-acquiring retained F32 suffixes or prescribing average direction", async () => {
+  const { h, line, centerId, stored } = await acceptedConeChain();
+  const sourceKey = find(h, "a").constructionOrderKey;
+  // Positive -> equality/cylinder -> inverted -> positive. Only source a changes;
+  // evaluator owns antiparallel accumulation and the accepted prior extent.
+  for (const [index, topRadius] of [4, 6, 2].entries()) {
+    const before = h.state.entities;
+    const job = await finish(
+      h,
+      await value(
+        h.command("cad_rebuild", {
+          entityId: "a",
+          recipe: {
+            kind: "primitive",
+            input: { ...coneRecipe([0, 5, 0]), topRadius },
+          },
+        }),
+      ),
+    );
+    expect(job.status, JSON.stringify(job)).toBe("succeeded");
+    expect(resolveReferenceLineSource(find(h, "a"), "average")).toMatchObject({
+      kind: "axis",
+      start: [0, 5, topRadius < 4 ? 4 : -4],
+      end: [0, 5, topRadius < 4 ? -4 : 4],
+    });
+    expect(find(h, "a").constructionOrderKey).toBe(sourceKey);
+    expect(
+      encodeReferenceEntityData(find(h, line.id).reference!).definition,
+    ).toEqual(stored);
+    expect(find(h, line.id).reference!.evaluation.completionWord).toBe(256);
+    expect(find(h, centerId).reference!.evaluation.completionWord).toBe(256);
+    expect(h.state.history).toHaveLength(3 + index);
+    const after = h.state.entities;
+    await value(h.command("history_undo", {}));
+    expect(h.state.entities).toBe(before);
+    await value(h.command("history_redo", {}));
+    expect(h.state.entities).toBe(after);
+    expect(
+      encodeReferenceEntityData(find(h, line.id).reference!).definition,
+    ).toEqual(stored);
+  }
 });
