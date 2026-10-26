@@ -243,8 +243,16 @@ function smoothing(
   const expanded = new Float32Array(t.triangles.length * 3);
   for (let corner = 0; corner < t.triangles.length; corner++) {
     const vertex = t.triangles[corner] * 3;
+    const moved =
+      Math.fround(vertices[vertex]) !== Math.fround(t.vertices[vertex]) ||
+      Math.fround(vertices[vertex + 1]) !==
+        Math.fround(t.vertices[vertex + 1]) ||
+      Math.fround(vertices[vertex + 2]) !== Math.fround(t.vertices[vertex + 2]);
+    // Welded adjacency must not normalize raw corners on untouched vertices.
     for (let axis = 0; axis < 3; axis++)
-      expanded[corner * 3 + axis] = vertices[vertex + axis];
+      expanded[corner * 3 + axis] = moved
+        ? vertices[vertex + axis]
+        : r.positions[corner * 3 + axis];
   }
   const positions = finiteOutput(expanded);
   // Moving vertices preserves their indexed connectivity. Refresh geometric

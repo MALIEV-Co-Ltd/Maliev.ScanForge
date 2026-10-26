@@ -309,8 +309,8 @@ try {
     selected.splice(0, 7);
     assert.equal(selected.length, 18425);
   }
-  if (smoothing) {
-    assert(!largePatch && !replacementDirectory);
+  if (smoothing && !replacementDirectory) {
+    assert(!largePatch);
     positions = smoothFixture.positions;
     selected = smoothFixture.selection.flatMap((value, index) =>
       value ? [index] : [],
@@ -482,12 +482,44 @@ try {
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
   assert.notDeepEqual(gui.positions, original.positions);
   let worstDeviation = null;
+  let unchangedFarSlots = null;
   if (smoothing) {
-    assert.deepEqual(
-      gui.positions,
-      smoothFixture.nativeOutput,
-      "GUI default differs from retained three-click native Smooth export",
-    );
+    if (!replacementManifest) {
+      assert.deepEqual(
+        gui.positions,
+        smoothFixture.nativeOutput,
+        "GUI default differs from retained three-click native Smooth export",
+      );
+    } else {
+      assert.equal(gui.positions.length, original.positions.length);
+      const low = [Infinity, Infinity, Infinity],
+        high = [-Infinity, -Infinity, -Infinity];
+      for (const face of selected)
+        for (let corner = 0; corner < 3; corner++)
+          for (let axis = 0; axis < 3; axis++) {
+            const value = original.positions[face * 9 + corner * 3 + axis];
+            low[axis] = Math.min(low[axis], value);
+            high[axis] = Math.max(high[axis], value);
+          }
+      let farSlots = 0;
+      for (let corner = 0; corner < original.positions.length; corner += 3)
+        if (
+          [0, 1, 2].some(
+            (axis) =>
+              original.positions[corner + axis] < low[axis] - 0.001 ||
+              original.positions[corner + axis] > high[axis] + 0.001,
+          )
+        ) {
+          assert.deepEqual(
+            gui.positions.slice(corner, corner + 3),
+            original.positions.slice(corner, corner + 3),
+            `Unrelated source corner ${corner / 3} moved`,
+          );
+          farSlots++;
+        }
+      assert(farSlots > 0);
+      unchangedFarSlots = farSlots;
+    }
   } else {
     const retained = original.positions.filter(
       (_, i) => !selected.includes(Math.floor(i / 9)),
@@ -576,8 +608,10 @@ try {
         originalTopology[key],
         `Real-input topology changed: ${key}`,
       );
-    assert.equal(mcp.result.diagnostics.removedTriangles, selected.length);
-    assert.equal(mcp.result.diagnostics.prunedTriangles, 0);
+    if (!smoothing) {
+      assert.equal(mcp.result.diagnostics.removedTriangles, selected.length);
+      assert.equal(mcp.result.diagnostics.prunedTriangles, 0);
+    }
   }
   assert.equal(await history(), beforeHistory + 1);
   const saved = await job(await call("project_export", { format: "project" }));
@@ -608,7 +642,7 @@ try {
     });
   }
   let annularTwoPass;
-  if (smoothing) {
+  if (smoothing && !replacementManifest) {
     const input = JSON.parse(
       await readFile(
         new URL("fixtures/defeature-annular.json", import.meta.url),
@@ -706,8 +740,10 @@ try {
   assert.deepEqual(errors, []);
   ledger.result = {
     action,
+    unchangedFarSlots,
     annularTwoPass,
-    nativeSixPassCoordinatesEqual: smoothing ? true : undefined,
+    nativeSixPassCoordinatesEqual:
+      smoothing && !replacementManifest ? true : undefined,
     defeatureCanvasOnlyStatus: !smoothing,
     largePatch,
     selectedFacets: selected.length,

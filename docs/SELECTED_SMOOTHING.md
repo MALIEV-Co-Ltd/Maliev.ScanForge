@@ -56,3 +56,19 @@ within 0.000001 mm and unchanged unmarked corners, and captures fitted rendering
 See [the current lifecycle evidence](evidence/m2-selected-smoothing-lifecycle-20261026.json).
 This does not establish arbitrary native mesh, nonmanifold/winding or performance
 parity. The default mode of this driver still validates Defeature.
+
+## Stationary source-corner preservation
+
+Welded adjacency guides smoothing, but stationary vertices keep their original
+raw per-corner coordinates. Vertices that move publish one Float32 target to all
+aliases, including corners on adjacent unselected facets. This applies to both
+selected-area and boundary smoothing. Representatives and connectivity survive,
+so compatible successor adjacency remains reusable. Warm/cold regressions and
+binary-reopened production-scan diagnostics agree.
+
+The browser's optional `SCANFORGE_DEFEATURE_CASE_DIR` can supply a digest-pinned
+available-scan input/selection with `SCANFORGE_EDIT_ACCEPTANCE=smooth`. This route
+checks exact preservation outside the selected-face bounds expanded by 0.001 mm, GUI/MCP
+equality, cancellation/history/reopening, and topology consistency. It makes no
+native-six-pass claim for that production scan. See
+[the source-preservation evidence](evidence/m2-smoothing-source-preservation-20261026.json).

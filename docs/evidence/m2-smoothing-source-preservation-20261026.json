@@ -1,0 +1,276 @@
+{
+  "scope": "Shared selected/boundary smoothing raw stationary-corner preservation; current available production-scan GUI/public-MCP lifecycle and refreshed retained finite native controls. M2 remains open.",
+  "baseCommit": "7d2ed7428b93d1c601d9ea5c5b75b703d0532cf5",
+  "sourceInput": {
+    "scope": "Available original scan as an owner-approved replacement input; not the lost original selection",
+    "sourcePath": "C:\\repo\\alignment-example-files\\scan-1.stl",
+    "sourceStlSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "inputTriangles": 273139,
+    "sourceCoordinateSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    "inputJsonSha256": "addca479f2cea6d1a198181adadf21be29c8e2f86597de50a5e07266c245b9dc",
+    "selectionSha256": "140c387ea891a7c538116f1dcf98fc5de315c098eb15cafee5a0eadb3482c577",
+    "selectedFacets": 64,
+    "seedFace": 38510,
+    "seedCenter": [
+      0.11944771682222684, -6.650937080383301, -314.55519612630206
+    ],
+    "seedNormal": [
+      -0.08310435049864208, 0.22343365149499808, 0.9711699492405079
+    ],
+    "selectionRule": "64 connected interior facets, positive normal dot >=0.995, centroid radius <=3mm; deterministic face-index order",
+    "caseDirectory": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-real-defeature-scan1-20261026-r1"
+  },
+  "settings": {
+    "units": "mm",
+    "action": "smoothSelected",
+    "selectedFacets": 64,
+    "iterations": 6,
+    "strength": 0.5,
+    "topologyTolerance": 0.001
+  },
+  "failure": {
+    "realInput": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-real-selected-smooth-browser-20261026-r1-full.receipt.json",
+      "sha256": "aa6d568221ee5e557db3d20749777a72b2da1231a6f169644eba822f47c5da80",
+      "passed": false,
+      "elapsedSeconds": 23.70460599998478,
+      "peakOwnedJobBytes": 2450243584,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "corner": 89363,
+    "before": [19.66946029663086, 1.1210120916366577, -315.1290283203125],
+    "after": [19.66946029663086, 1.12098228931427, -315.1290283203125],
+    "cause": "Smoothing publication expanded every corner from tolerance-welded representatives, normalizing unrelated raw source coordinates.",
+    "isolatedRed": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-retained-corners-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "4fa606e247758a6041876473cf277f680f782b745e7c3f6e094b1a663c61e1bc",
+      "passed": false,
+      "elapsedSeconds": 1.0684614999918267,
+      "peakOwnedJobBytes": 329355264,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "isolatedFailingCases": [
+      "smoothSelected on unrelated welded quad",
+      "boundarySmooth on unrelated welded quad"
+    ],
+    "failedReceiptsRetained": true
+  },
+  "fix": {
+    "path": "src/scan-edit.ts smoothing publication",
+    "implementation": "Only vertices whose final representative moves at Float32 precision expand the computed target. Stationary vertices retain raw per-corner source coordinates. All aliases of a moved vertex update together.",
+    "cache": "Representatives and indexed connectivity survive; warm/cold regression and real binary-reopen diagnostics agree without blanket invalidation.",
+    "mcpCoverage": "Existing mesh_process scanEdit smoothSelected/boundarySmooth and GUI use this shared publication. No schema/new tool required.",
+    "independentReview": "No actionable findings; source review only."
+  },
+  "focused": {
+    "passed": 94,
+    "failed": 0,
+    "files": 12,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-retained-corners-green-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "5a8283b90ed3574c01bf4aea457b6de5ab38dcc475009b705aac153f550662a9",
+      "passed": true,
+      "elapsedSeconds": 3.140738699992653,
+      "peakOwnedJobBytes": 388034560,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "build": {
+    "id": "scanforge-17d06aa14c7f4518",
+    "inputs": 2997,
+    "inputsUnchanged": true,
+    "manifestSha256": "866637d36dc8f2b032a690537ee07211262b5d3e01f6295e7b29da9679106bf8",
+    "typescriptBatches": 13,
+    "warnings": 0,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-source-preservation-build-20261026-r1-build.receipt.json",
+      "sha256": "56931b1b31dc18b8fdfea12be330c977256ad5090cf45ebdbe8f61bd36c4c889",
+      "passed": true,
+      "elapsedSeconds": 150.80849319999106,
+      "peakOwnedJobBytes": 1616244736,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "realBrowser": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-real-selected-smooth-browser-20261026-r2-full.receipt.json",
+      "sha256": "aba1c40350b0f66d620fcd386443c97dd72ae0e1747c50927e4d19a9062701c4",
+      "passed": true,
+      "elapsedSeconds": 60.038613999960944,
+      "peakOwnedJobBytes": 2717134848,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-real-selected-smooth-browser-20261026-r2-artifacts\\defeature-curvature-browser-ledger.json",
+    "sha256": "1bc6b2886b0fe0c5886b990a50ec3b0cbd44d161bc3fdbc514f387725f1e8f4f",
+    "result": {
+      "action": "smoothSelected",
+      "unchangedFarSlots": 819004,
+      "defeatureCanvasOnlyStatus": false,
+      "largePatch": false,
+      "selectedFacets": 64,
+      "manufacturedFailureClassOnly": false,
+      "replacementManifest": {
+        "scope": "Available original scan as an owner-approved replacement input; not the lost original selection",
+        "sourcePath": "C:\\repo\\alignment-example-files\\scan-1.stl",
+        "sourceStlSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "inputTriangles": 273139,
+        "sourceCoordinateSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "inputJsonSha256": "addca479f2cea6d1a198181adadf21be29c8e2f86597de50a5e07266c245b9dc",
+        "selectionSha256": "140c387ea891a7c538116f1dcf98fc5de315c098eb15cafee5a0eadb3482c577",
+        "selectedFacets": 64,
+        "seedFace": 38510,
+        "seedCenter": [
+          0.11944771682222684, -6.650937080383301, -314.55519612630206
+        ],
+        "seedNormal": [
+          -0.08310435049864208, 0.22343365149499808, 0.9711699492405079
+        ],
+        "selectionRule": "64 connected interior facets, positive normal dot >=0.995, centroid radius <=3mm; deterministic face-index order",
+        "caseDirectory": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-real-defeature-scan1-20261026-r1"
+      },
+      "originalTopology": {
+        "vertices": 139334,
+        "triangles": 273139,
+        "components": 8,
+        "boundaryLoops": 13,
+        "boundaryChains": 0,
+        "boundaryEdges": 5553,
+        "nonManifoldEdges": 0,
+        "nonManifoldVertices": 0,
+        "inconsistentEdges": 0,
+        "degenerateTriangles": 6,
+        "duplicateTriangles": 0
+      },
+      "replacementTopology": {
+        "vertices": 139334,
+        "triangles": 273139,
+        "components": 8,
+        "boundaryLoops": 13,
+        "boundaryChains": 0,
+        "boundaryEdges": 5553,
+        "nonManifoldEdges": 0,
+        "nonManifoldVertices": 0,
+        "inconsistentEdges": 0,
+        "degenerateTriangles": 6,
+        "duplicateTriangles": 0
+      },
+      "guiMcpEqual": true,
+      "outputCoordinateSha256": "b726d07a4ae691973ff5eda1a4103cad91adbce2898fe734eba7e0d5e0a8ace8",
+      "undoRedo": true,
+      "sourcePreserved": true,
+      "cancellationRollback": true,
+      "failureRollback": false,
+      "saveReopen": true,
+      "worstDeviation": null,
+      "diagnostics": {
+        "method": "Selected vertex averaging with concave boundary relaxation",
+        "topologyCache": "persistent-hit",
+        "topologyCacheBytes": 17012044
+      },
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 58334,
+        "closed": true
+      },
+      {
+        "pid": 3708,
+        "exited": true
+      },
+      {
+        "port": 58335,
+        "closed": true
+      },
+      {
+        "pid": 32784,
+        "exited": true
+      }
+    ],
+    "preservationScope": "819004 raw corner slots outside the selected facets AABB expanded by0.001mm; not a claim that shared vertices on unselected facets cannot move.",
+    "screenshotVisuallyInspected": true,
+    "binaryReopenedTopologyEqualsWarm": true
+  },
+  "nativeControlRefresh": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-selected-smooth-browser-20261026-r3-full.receipt.json",
+      "sha256": "8792d402b455b2836d5b3bc49ebe4525811567e7e209c81061760fd74df61ae6",
+      "passed": true,
+      "elapsedSeconds": 5.463180999970064,
+      "peakOwnedJobBytes": 933003264,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-selected-smooth-browser-20261026-r3-artifacts\\defeature-curvature-browser-ledger.json",
+    "sha256": "e32831425d93dbb79e8da320b2ad352cd8515c597bd41f8856463d8eb745a61c",
+    "result": {
+      "action": "smoothSelected",
+      "unchangedFarSlots": null,
+      "annularTwoPass": {
+        "inputTriangles": 96,
+        "selectedFacets": 16,
+        "iterations": 2,
+        "strength": 0.5,
+        "toleranceMm": 0.001,
+        "maxCoordinateErrorMm": 2.384185791015625e-7,
+        "unchangedUnmarkedCornerSlots": 198,
+        "undoRedo": true,
+        "nativeExportSha256": "864a7317c3427e697cf21448f170a8dc1e012127611ef4a3534d70a13403eb4a"
+      },
+      "nativeSixPassCoordinatesEqual": true,
+      "defeatureCanvasOnlyStatus": false,
+      "largePatch": false,
+      "selectedFacets": 8,
+      "manufacturedFailureClassOnly": false,
+      "guiMcpEqual": true,
+      "outputCoordinateSha256": "0d76b06946e74fbc7e2b8f0518aeb9d4255d0327d8d3a60142c3632f1150bf03",
+      "undoRedo": true,
+      "sourcePreserved": true,
+      "cancellationRollback": true,
+      "failureRollback": false,
+      "saveReopen": true,
+      "worstDeviation": null,
+      "diagnostics": {
+        "method": "Selected vertex averaging with concave boundary relaxation",
+        "topologyCache": "persistent-hit",
+        "topologyCacheBytes": 644
+      },
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 51384,
+        "closed": true
+      },
+      {
+        "pid": 14608,
+        "exited": true
+      },
+      {
+        "port": 51385,
+        "closed": true
+      },
+      {
+        "pid": 53064,
+        "exited": true
+      }
+    ]
+  },
+  "limitations": [
+    "No native export of this production scan/selection/settings exists; this real-input record proves source isolation and GUI/MCP/lifecycle behavior, not numerical native equivalence.",
+    "Native controls retain separate eight-facet six-pass and96-facet two-pass scopes.",
+    "BoundarySmooth source preservation has isolated regression coverage here; current full rendered/native boundary workflow remains open.",
+    "Nonmanifold-edge/inconsistent-winding and global performance/native acceptance remain open."
+  ]
+}

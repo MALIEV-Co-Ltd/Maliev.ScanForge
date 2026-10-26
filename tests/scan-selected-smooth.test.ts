@@ -139,3 +139,47 @@ it("matches the native first-facet fan at a shared disconnected vertex exactly",
   );
   expect(Array.from(positions)).toEqual(fans.positions);
 });
+
+for (const action of ["smoothSelected", "boundarySmooth"] as const) {
+  it(`${action} preserves raw corners on an unrelated tolerance-welded component`, () => {
+    const quad = [0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0];
+    const positions = new Float32Array([
+      ...quad,
+      ...quad.map((value, index) => (index % 3 === 0 ? value + 100 : value)),
+    ]);
+    positions[28] = 0.0002;
+    const original = positions.slice();
+    const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+    const input = analyzeMesh(positions, {
+      tolerance: 0.001,
+      topologyCache: cache,
+    });
+    const loop = input.boundaryLoops.findIndex((ids) =>
+      ids.every((id) => input.vertices[id * 3] < 10),
+    );
+    expect(loop).toBeGreaterThanOrEqual(0);
+    const result = runScanEdit(
+      {
+        kind: "scanEdit",
+        action,
+        positions,
+        tolerance: 0.001,
+        selection: new Uint8Array([1, 1, 0, 0]),
+        indices: [loop],
+        iterations: 2,
+        strength: 0.5,
+      },
+      { topologyCache: cache },
+    ).positions!;
+    expect(result.slice(18)).toEqual(original.slice(18));
+    expect(positions).toEqual(original);
+    const warm = analyzeMesh(result, {
+      tolerance: 0.001,
+      topologyCache: cache,
+    });
+    const cold = analyzeMesh(result, { tolerance: 0.001 });
+    expect(warm.vertices).toEqual(cold.vertices);
+    expect(warm.triangles).toEqual(cold.triangles);
+    expect(warm.boundaryLoops).toEqual(cold.boundaryLoops);
+  });
+}
