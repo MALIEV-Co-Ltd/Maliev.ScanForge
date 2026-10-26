@@ -13,6 +13,11 @@ export type UnrollCommandInput =
       instances?: number;
     };
 
+/** Exact bodies are candidates; the shared command validates their analytic faces. */
+export function isUnrollReferenceCandidate(entity: Entity): boolean {
+  return !!entity.kernelId || cylinderReference(entity) !== null;
+}
+
 /** Exact CAD is authoritative; display tessellation must not perturb its radius. */
 export async function bindUnrollReference(
   input: Extract<UnrollCommandInput, { cylinderId: string }>,

@@ -50,7 +50,6 @@ Files: `src/scan-unroll-reference.ts`, new focused roll-frame model/display help
 - [ ] Run affected tests, build, formatting and current-head CI; perform the remaining M2 acceptance gates from the parent verification plan.
 - [ ] Obtain fresh whole-branch review before merging; close M2 only after all gates pass and the PR is merged.
 
-
 Checkpoint: shared owned-sketch deltas, binary persistence, auxiliary objects and
 independent saved-sketch visibility are implemented. Build and GUI/public-MCP
 acceptance pass in [the evidence record](../../evidence/m2-unroll-ownership-20261026.json).
@@ -60,3 +59,15 @@ minus 90 degrees. The generic coordinate-frame model/display foundation is reuse
 from M4 commit `04c7026`, with separate roll mapping data. Manifest 6 and JSON wire
 4 prevent older readers from dropping owned history, mapping or saved visibility.
 Main integration, remaining M2 acceptance and final review/CI/merge remain open.
+
+## Fresh branch review follow-up
+
+The review at `b293da8` found two blocking correctness gaps, each reproduced by
+a failing regression: imported exact capped-cylinder references were missing
+from the GUI chooser/picker, and diagnostic tolerance changes could discard
+authoritative indexed connectivity in a retained worker. Use shared candidate
+eligibility with analytic validation on Apply, and invalidate indexed transport
+reuse across other requests, failures and tolerance changes. Verify the real
+worker interleaving and a capped exact body's GUI/public-MCP result before
+publishing the correction. The 49,311-test hosted run and both CAD smokes passed;
+its remaining failure was formatting in this plan, retained for correction.

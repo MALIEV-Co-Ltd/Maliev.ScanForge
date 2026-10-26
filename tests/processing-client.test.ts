@@ -528,6 +528,69 @@ describe("processing worker resource ownership", () => {
     });
     expect(replies.some((r) => r.stage === "Welding vertices")).toBe(true);
   });
+  it("preserves authored connectivity across intervening diagnostic tolerances in the real worker", async () => {
+    const source = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+    ]);
+    const sourceIndexed = {
+      vertices: source.slice(),
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    let owner: any;
+    const scope = {
+      onmessage: null as ((event: { data: any }) => Promise<void>) | null,
+      postMessage(message: any, transfer: Transferable[] = []) {
+        owner.onmessage?.({ data: structuredClone(message, { transfer }) });
+      },
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    vi.stubGlobal(
+      "Worker",
+      class {
+        onmessage: any;
+        onerror: any;
+        onmessageerror: any;
+        constructor() {
+          owner = this;
+        }
+        postMessage(message: any, transfer: Transferable[]) {
+          void scope.onmessage?.({
+            data: structuredClone(message, { transfer }),
+          });
+        }
+        terminate() {}
+      },
+    );
+    const input = {
+      kind: "scanEdit",
+      action: "inventory",
+      positions: source,
+      sourceIndexed,
+      tolerance: 1e-6,
+    } as const;
+    const first = await processMesh(input, { reuseTopology: true });
+    expect(first.topology?.components).toBe(2);
+    await processMesh(
+      { kind: "report", positions: source, tolerance: 0.01 },
+      { reuseTopology: true },
+    );
+    const again = await processMesh(input, { reuseTopology: true });
+    expect(again.topology).toEqual(first.topology);
+    expect(again.scanEdit?.inventory?.boundaries).toHaveLength(2);
+    for (const tolerance of [0.01, 1e-6]) {
+      const changedTolerance = await processMesh(
+        { ...input, tolerance },
+        { reuseTopology: true },
+      );
+      expect(changedTolerance.topology).toEqual(first.topology);
+    }
+    expect(sourceIndexed.vertices).toEqual(source);
+    expect(sourceIndexed.triangles).toEqual(
+      new Uint32Array([0, 1, 2, 3, 4, 5]),
+    );
+  });
   it("retains successor buffers after transfer and isolates failed edits from cached input geometry", async () => {
     const replies: any[] = [];
     const scope = {

@@ -6,7 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ReductionProgress, ReductionResults } from "./ReductionResults";
 import type { ReductionStatistics } from "../reduction-report";
 import type { Entity, Vec3 } from "../types";
-import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { mirrorReference } from "../scan-tools-reference";
+import { isUnrollReferenceCandidate } from "../scan-unroll-reference";
 import { Field, VectorField } from "./controls";
 import "./ScanToolsPanel.css";
 import { NoiseComparisonLegend } from "./NoiseComparisonLegend";
@@ -243,7 +244,7 @@ export function ScanToolsPanel({
     () =>
       tool === "unroll"
         ? entities.filter(
-            (e) => e.id !== selected?.id && cylinderReference(e) !== null,
+            (e) => e.id !== selected?.id && isUnrollReferenceCandidate(e),
           )
         : [],
     [entities, selected?.id, tool],

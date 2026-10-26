@@ -10,6 +10,7 @@ let retained:
       active: boolean;
       initialized: boolean;
       indexedSource?: IndexedMesh;
+      indexedTolerance?: number;
       retire?: boolean;
     }
   | undefined;
@@ -47,10 +48,12 @@ export function acquireProcessingSession(
     key: entry.key,
     initialized: entry.initialized,
     indexedSource: entry.indexedSource,
+    indexedTolerance: entry.indexedTolerance,
     release(
       usable: boolean,
       successor?: Positions,
       indexedSource?: IndexedMesh,
+      indexedTolerance?: number,
     ) {
       entry.active = false;
       entry.worker.onmessage = null;
@@ -59,7 +62,8 @@ export function acquireProcessingSession(
       if (!usable || entry.retire) releaseProcessingSession();
       else {
         entry.initialized = true;
-        if (indexedSource) entry.indexedSource = indexedSource;
+        entry.indexedSource = indexedSource;
+        entry.indexedTolerance = indexedTolerance;
         if (successor) entry.positions = successor;
       }
     },

@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { randomUUID, randomBytes } from "node:crypto";
+import { gunzipSync } from "node:zlib";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -209,7 +210,7 @@ try {
     throw Error("Geometry job timeout");
   };
 
-  const artifactJson = async (artifact) => {
+  const artifactBytes = async (artifact) => {
     const chunks = [];
     let offset = 0;
     do {
@@ -225,8 +226,10 @@ try {
       chunks.push(bytes);
       offset += bytes.length;
     } while (offset < artifact.bytes);
-    return JSON.parse(Buffer.concat(chunks).toString());
+    return Buffer.concat(chunks);
   };
+  const artifactJson = async (artifact) =>
+    JSON.parse((await artifactBytes(artifact)).toString());
 
   const geometry = async (entityId = "base") =>
     artifactJson(
@@ -580,6 +583,151 @@ try {
       ),
   );
   await page.screenshot({ path: fileURLToPath(new URL("unroll.png", out)) });
+  // Imported exact bodies can retain valid cap tessellations with center vertices.
+  const cappedCreated = await job(
+    await mutate("cad_create", {
+      name: "Capped seed",
+      recipe: {
+        kind: "primitive",
+        input: {
+          kind: "cylinder",
+          center: [0, 0, 0],
+          axis: [0, 0, 1],
+          radius: 2,
+          height: 1,
+        },
+      },
+    }),
+  );
+  const cappedSeedId = cappedCreated.result.entityIds[0];
+  const cappedFile = await artifactBytes(
+    (await job(await call("project_export", { format: "project" }))).result,
+  );
+  assert.equal(cappedFile.subarray(0, 8).toString(), "SCANFRG2");
+  const manifestLength = cappedFile.readUInt32LE(8);
+  const manifest = JSON.parse(
+    cappedFile.subarray(16, 16 + manifestLength).toString(),
+  );
+  const cappedRecord = Object.values(manifest.records).find(
+    (row) => row.id === cappedSeedId,
+  );
+  assert(cappedRecord?.brep);
+  const chunk = manifest.chunks[cappedRecord.brep.chunk];
+  const raw = cappedFile.subarray(
+    16 + manifestLength + chunk.offset,
+    16 + manifestLength + chunk.offset + chunk.bytes,
+  );
+  const brep = (chunk.codec === "gzip" ? gunzipSync(raw) : raw).toString();
+  const display = [...first.positions];
+  for (let i = 0; i < 12; i++) {
+    const a = (i * Math.PI) / 6,
+      b = ((i + 1) * Math.PI) / 6;
+    display.push(
+      0,
+      0,
+      0,
+      2 * Math.cos(b),
+      2 * Math.sin(b),
+      0,
+      2 * Math.cos(a),
+      2 * Math.sin(a),
+      0,
+    );
+    display.push(
+      0,
+      0,
+      1,
+      2 * Math.cos(a),
+      2 * Math.sin(a),
+      1,
+      2 * Math.cos(b),
+      2 * Math.sin(b),
+      1,
+    );
+  }
+  const cappedUpload = (
+    await call("artifact_put", {
+      name: "capped-reference.json",
+      offset: 0,
+      base64: Buffer.from(
+        JSON.stringify({
+          format: "maliev-scanforge",
+          version: 1,
+          name: "Capped reference control",
+          units: "mm",
+          entities: [
+            first,
+            {
+              ...mesh("capped-reference", "Imported capped cylinder", display),
+              kind: "cad",
+              brep,
+            },
+          ],
+        }),
+      ).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: cappedUpload.artifactId,
+      replace: true,
+    }),
+  );
+  const cappedBefore = await geometry("capped-reference");
+  assert(
+    cappedBefore.positions.some(
+      (value, index) =>
+        index % 3 === 0 &&
+        value === 0 &&
+        cappedBefore.positions[index + 1] === 0,
+    ),
+  );
+  await mutate("object_select", { entityId: first.id });
+  await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
+  await page.getByRole("button", { name: "Unroll", exact: true }).click();
+  await panel.waitFor();
+  await panel.locator("button[aria-haspopup='listbox']").click();
+  await page
+    .getByRole("option", { name: "Imported capped cylinder", exact: true })
+    .click();
+  await panel.getByLabel("Instances", { exact: true }).fill("2");
+  await panel.getByLabel("Angular offset (degrees)", { exact: true }).fill("0");
+  await panel.getByRole("button", { name: "Apply", exact: true }).click();
+  let cappedOutput;
+  for (let i = 0; i < 150; i++) {
+    cappedOutput = (await call("project_get")).result.objects.find(
+      (o) => o.kind === "mesh" && o.id !== first.id,
+    );
+    if (cappedOutput) break;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  assert(cappedOutput, "GUI must accept the capped exact reference");
+  const cappedGui = (await geometry(cappedOutput.id)).positions;
+  await mutate("history_undo", {});
+  const cappedMcp = await job(
+    await mutate("mesh_process", {
+      entityId: first.id,
+      operation: {
+        kind: "scanTools",
+        operation: {
+          kind: "unroll",
+          cylinderId: "capped-reference",
+          offsetDegrees: 0,
+          instances: 2,
+        },
+      },
+    }),
+  );
+  assert.deepEqual(
+    (await geometry(cappedMcp.result.entityIds[0])).positions,
+    cappedGui,
+  );
+  assert.deepEqual(await geometry("capped-reference"), cappedBefore);
+  assert.deepEqual((await geometry(first.id)).positions, first.positions);
+  await mutate("viewport_control", { action: "fit" });
+  await page.screenshot({
+    path: fileURLToPath(new URL("unroll-capped.png", out)),
+  });
   assert.deepEqual(errors, []);
   ledger.result = {
     guiMcpEqual: true,
@@ -598,6 +746,7 @@ try {
     guiMcpSketchVisibility: true,
     rerunAfterCadReopen: true,
     importedReferenceSeamTangent: "+Y",
+    cappedExactReferenceGuiMcpEqual: true,
     baseEntityId: base.id,
     referenceEntityIds: [reference.id],
     outputCoordinates: gui,

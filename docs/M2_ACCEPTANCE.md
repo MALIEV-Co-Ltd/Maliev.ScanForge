@@ -12,7 +12,7 @@ GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and
 | Complete, semi and bridge fills; automatic/flat/tangent/curvature | `scan-edit.ts` and hole helpers; `scanEdit/fillHoles`                                                                   | `scan-hole-*`, hole progress tests; [workflow](SCAN_DATA_MVP.md)                                                                                                           | Equivalent native mode/selection outputs, diameter filters, seam/normal and rollback checks across modes                                                                                                                                                                                              |
 | Boundary rendering, smoothing and projection                      | Boundary/sketch helpers; `scanEdit`                                                                                     | `scan-boundary-*`, `selection-boundary-highlight`; [workflow](SCAN_DATA_MVP.md)                                                                                            | Same-input native outputs and current public-MCP/rendered lifecycle                                                                                                                                                                                                                                   |
 | Selected smoothing                                                | Selected smoothing and parallel worker helpers; `scanEdit/smoothSelected`                                               | Native annular/disconnected-fan fixtures; [smoothing record](SELECTED_SMOOTHING.md)                                                                                        | Fresh current boundary integration and original-input acceptance; synthetic thread transport is not a performance result                                                                                                                                                                              |
-| Defeature/repatch                                                 | `scan-defeature*`; `scanEdit/defeature`                                                                                 | Native 96-facet annular spatial-fill comparison; curvature regressions and browser replay; [spatial fill](DEFEATURE_FIX.md), [curvature extension](DEFEATURE_CURVATURE.md) | The reported 18,425-facet selection is unavailable: the owner no longer remembers its project/mask path. Curvature extension remains distinct from native equivalence                                                                                                                                 |
+| Defeature/repatch                                                 | `scan-defeature*`; `scanEdit/defeature`                                                                                 | Native 96-facet annular spatial-fill comparison; curvature regressions and browser replay; [spatial fill](DEFEATURE_FIX.md), [curvature extension](DEFEATURE_CURVATURE.md) | Owner approved replacement files after confirming the original is gone. Retain exact manufactured selection and available-scan coverage; curvature extension remains distinct from native equivalence                                                                                                 |
 | Split                                                             | `scan-edit*` split helpers; `scanEdit/split`                                                                            | General cutter and scan-edit tests                                                                                                                                         | Equivalent native plane/closed/open cutter cases and complete current GUI/MCP lifecycle                                                                                                                                                                                                               |
 | Polygon count/percentage/deviation reduction                      | `scan-tools-reduction.ts`, reduction helpers; `scanTools/reducePolygons`                                                | Retained adapter/collapse/comparison fixtures; [reduction record](NATIVE_POLYGON_REDUCTION.md)                                                                             | Large native input, complete mode/dialog state and rendered/public-MCP acceptance                                                                                                                                                                                                                     |
 | Iterated noise reduction and deviation                            | Noise kernel, index/query and worker helpers; `scanTools/reduceNoise`                                                   | Whole/selected 1–5 iteration fixtures, boundary-off and real thread tests; [noise record](MESH_PARALLELISM.md)                                                             | Current integrated real-input preview/Apply/Cancel, overlay, history and native dialog comparisons                                                                                                                                                                                                    |
@@ -175,7 +175,7 @@ retained aligned poses and native export; it is not a fresh native GUI run.
 [The processing record](evidence/m2-main-processing-20261026.json) retains current
 GUI/public-MCP Average, scale, mirror, flip, million-facet noise and large
 Defeature results, including source preservation, history and reopening. The
-manufactured Defeature selection contains 18,425 facets; it does not replace the
+manufactured Defeature selection contains 18,425 facets; it is distinct from the
 unavailable original selection. The retained 39/40-edge cup controls reject
 unusable Curvature collars without changing source coordinates or cached
 topology. The separate native 41-edge failure still lacks equivalent coverage.
@@ -196,3 +196,25 @@ also passes on `scanforge-83e557f8be96d4a9`: the same 6,147,452 input facets and
 All source buffers, visibility/history rollback and indexed persistence checks
 pass, with no page errors or surviving owned helpers. This verifies the
 normal-preserving transport correction rather than reusing the earlier build.
+
+## Replacement Defeature inputs approved, 2026-10-26
+
+The owner confirmed that the original file no longer exists and requested other
+files for testing. Exact reproduction of that missing selection is therefore no
+longer a closure requirement. Use the retained manufactured 32,768-facet panel
+with its exact 18,425-facet selection, plus recorded available-scan inputs for
+additional real-input coverage. Preserve input/selection identities and results;
+do not describe replacement inputs as the original report. Other native,
+lifecycle, review and integration gates remain required.
+
+## Whole-branch review corrections, 2026-10-26
+
+[The review correction record](evidence/m2-review-corrections-20261026.json)
+retains both observed failures and their fixes: authored indexed connectivity
+survives intervening diagnostics/tolerance changes, and imported exact capped
+cylinders are available through the GUI chooser and canvas picker. Analytic
+validation remains shared with MCP. All 240 affected checks, thirteen TypeScript
+batches and the warning-free build `scanforge-86498b4101777eb5` pass. The actual
+capped-body GUI/public-MCP replay agrees exactly and preserves source geometry.
+The reviewer found no further blocking code defect in the prepared corrections;
+remaining native acceptance and final exact-head CI/merge gates are still open.

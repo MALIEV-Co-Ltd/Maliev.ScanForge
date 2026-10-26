@@ -45,7 +45,7 @@ Checkpoint: Defeature and million-facet noise GUI/public-MCP replays pass on the
 
 ## Task 3: Milestone acceptance
 
-- [ ] Complete all advertised modes and the reported defeature reproduction, topology reuse/invalidation, worker determinism and rollback acceptance.
+- [ ] Complete all advertised modes and the approved replacement-file Defeature coverage, topology reuse/invalidation, worker determinism and rollback acceptance.
 - [ ] Confirm M1 dependency acceptance from its owning task's evidence.
 - [ ] Review the complete candidate and update issue #2; close its milestone only when every acceptance gate passes.
 
@@ -59,7 +59,7 @@ No milestone closure or complete-domain parity is claimed by this plan.
 - [x] Reproduce and fix fresh-owner construction-key collisions and semantic-reference validation regressions.
 - [x] Build an immutable candidate, pass 155 focused tests and both browser lifecycles with exact GUI/MCP output equality, and retain source/build/output/resource identities.
 - [x] Record the 49,018-pass full-suite checkpoint and its 64 fixture-gated skips separately from subsequent focused validation.
-- [ ] Complete the remaining inventory/native acceptance gates. The owner no longer remembers a project/mask path for the reported 18,425-facet defeature failure; its exact reproduction is unavailable.
+- [ ] Complete the remaining inventory/native acceptance gates. The owner confirmed that the original 18,425-facet Defeature file is gone and authorized testing other files; use the exact retained replacement selection and available-scan controls, with separate provenance.
 
 M1 issue #1 is now closed with its own acceptance/integration record. M2 closure remains pending, and no later milestone is advanced here.
 

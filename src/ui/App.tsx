@@ -121,7 +121,8 @@ import {
   type ScanToolId,
   type ScanToolParameters,
 } from "./ScanToolsPanel";
-import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { mirrorReference } from "../scan-tools-reference";
+import { isUnrollReferenceCandidate } from "../scan-unroll-reference";
 import { transformPlaneFrame } from "../plane-frame";
 import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
@@ -2687,7 +2688,7 @@ export function App() {
       !reference ||
       !(kind === "plane"
         ? mirrorReference(reference)
-        : cylinderReference(reference))
+        : isUnrollReferenceCandidate(reference))
     ) {
       setMessage(
         `Pick a ${kind === "plane" ? "planar CAD or construction object" : "cylinder reference"}.`,

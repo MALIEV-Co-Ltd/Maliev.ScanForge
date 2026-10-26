@@ -1564,8 +1564,11 @@ the native 0.1 mm margin. Requested boundary indices remain inventory indices.
 
 Imported indexed topology is bound internally by the application for GUI and
 MCP; agents continue referring to entity IDs rather than supplying index buffers.
-The retained worker receives an isolated index copy once for that source, even
-after generic diagnostic warmup. Empty/all-skipped fills report `changed:false`,
+The retained worker reuses its isolated index copy across consecutive successful
+edits at the same tolerance. Diagnostic requests, failed edits and tolerance
+changes invalidate that transport reuse marker; the next edit restores the
+authoritative indexed carrier rather than rewelding authored connectivity.
+Empty/all-skipped fills report `changed:false`,
 preserve the original entity and add no model revision. Inspect `filledHoles`,
 `skippedHoles`, `addedTriangles`, `batch`, `algorithm` and `method` diagnostics.
 An empty `indices:[]` is an explicit no-op.

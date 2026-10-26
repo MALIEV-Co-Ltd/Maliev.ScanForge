@@ -327,7 +327,11 @@ function runProcessingRequest(
       addEventListener?: (type: string, listener: () => void) => void;
       removeEventListener?: (type: string, listener: () => void) => void;
     };
-    const cleanup = (usable = false, successor?: Positions) => {
+    const cleanup = (
+      usable = false,
+      successor?: Positions,
+      completed = false,
+    ) => {
       job.finish();
       clearTimeout(inactivity);
       clearTimeout(hardLease);
@@ -337,7 +341,12 @@ function runProcessingRequest(
         session.release(
           usable,
           successor,
-          request.kind === "scanEdit" ? request.sourceIndexed : undefined,
+          completed && request.kind === "scanEdit"
+            ? request.sourceIndexed
+            : undefined,
+          completed && request.kind === "scanEdit"
+            ? (request.tolerance ?? 1e-6)
+            : undefined,
         );
       else worker.terminate();
     };
@@ -460,6 +469,7 @@ function runProcessingRequest(
           : (event.data.result.pointCloudEdit?.positions ??
               event.data.result.scanEdit?.positions ??
               event.data.result.positions),
+        true,
       );
       resolve(event.data.result);
     };
@@ -590,7 +600,11 @@ function runProcessingRequest(
         copied.sourceIndexed
       ) {
         const mesh = copied.sourceIndexed;
-        if (copied.kind === "scanEdit" && session?.indexedSource === mesh)
+        if (
+          copied.kind === "scanEdit" &&
+          session?.indexedSource === mesh &&
+          session.indexedTolerance === (copied.tolerance ?? 1e-6)
+        )
           delete copied.sourceIndexed;
         else {
           const sharedConnectivity =
