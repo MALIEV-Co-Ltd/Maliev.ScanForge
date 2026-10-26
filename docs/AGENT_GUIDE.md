@@ -672,6 +672,11 @@ Mutation receipts retain the latest 256 request IDs in the current application i
 
 Use `application_inspect` to read the current panel, ribbon tab, interaction mode, visible dialogs, bounded accessible controls, status/errors, progress and GUI preview presence. Password/token and file-input values are omitted. Request `maxControls` up to 300 when a larger control inventory is useful. Use structured inspection before spending image tokens.
 
+`application_inspect.progress.scan` describes active GUI scan-tool work.
+After completion or cancellation its fraction is absent and its stage is empty;
+the accepted preview and its results remain available independently. Read the
+terminal `job_get` receipt for the completed job's final status and progress.
+
 `application_inspect.dirty` reports unsaved project changes independently of the
 GUI reminder. The Save button pulses while dirty (unless reduced motion is
 preferred); its elapsed-time message appears only on hover or keyboard focus.

@@ -150,6 +150,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -170,12 +171,22 @@ try {
     assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
-  const mutate = async (name, args) =>
-    call(name, {
+  const idle = async () => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const state = (await call("session_get")).result;
+      if (!state.busy && state.activeJobId === null) return;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error("Workspace did not settle before reduction validation");
+  };
+  const mutate = async (name, args) => {
+    await idle();
+    return call(name, {
       ...args,
       expectedRevision: (await call("project_get")).revision,
       requestId: randomUUID(),
     });
+  };
   const job = async (receipt, expected = "succeeded") => {
     for (let i = 0; i < 1800; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
@@ -189,6 +200,7 @@ try {
     throw Error("Geometry job timeout");
   };
   const geometryHash = async () => {
+    await idle();
     const exported = (
       await job(await call("project_export", { format: "stl", visible: true }))
     ).result;
@@ -291,6 +303,22 @@ try {
   await panel
     .getByRole("button", { name: "Accept", exact: true })
     .waitFor({ timeout: 180000 });
+  await idle();
+  const finishedProgress = (await call("application_inspect")).result.progress
+    .scan;
+  assert.equal(
+    finishedProgress.fraction,
+    undefined,
+    "Completed GUI preview retained active MCP progress",
+  );
+  assert.equal(finishedProgress.stage, "");
+  assert.equal(
+    await panel
+      .getByRole("progressbar", { name: "Reduce polygons overall progress" })
+      .count(),
+    0,
+    "Completed preview still renders preparation progress",
+  );
   const previewMs = performance.now() - started;
   assert.equal(
     (await call("project_get")).result.objects.find((o) => o.id === object.id)

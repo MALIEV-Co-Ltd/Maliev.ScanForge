@@ -2,8 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-Current checkpoint `dac81dc` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40300422886):
-49,318 tests, 64 conditional skips, production build, both CAD smoke checks and
+Flat Bridge checkpoint `242ea74` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40318500393):
+49,325 tests, 64 conditional skips, production build, both CAD smoke checks and
 repository formatting. Current rendered Edit Scan GUI/public-MCP reopening
 also passes with unchanged geometry history. The [readiness and navigation record](evidence/m2-input-readiness-and-navigation-20261026.json)
 separates these results from a fresh native session that could read the owned
@@ -26,8 +26,8 @@ quadratic clipping work before allocation. The corrected candidate passes 308
 tests in 32 files, all 13 TypeScript batches and build `scanforge-b5420f04ca0b12b2`.
 All five rendered Bridge scenarios pass; the native Flat control matches all
 84 oriented facets through GUI/public MCP, undo/redo and binary save/reopen.
-Exact-head CI, preview update and broader inventory gates remain open; this is
-not milestone closure.
+That checkpoint passed exact-head CI and is served by the preserved local
+preview. Broader inventory gates remain open; this is not milestone closure.
 
 The [current bridge browser record](evidence/m2-bridge-browser-readiness-20261026.json)
 passes flat, tangent, independent-boundary and fragmented-open cases through
@@ -272,3 +272,17 @@ batches and the warning-free build `scanforge-86498b4101777eb5` pass. The actual
 capped-body GUI/public-MCP replay agrees exactly and preserves source geometry.
 The reviewer found no further blocking code defect in the prepared corrections;
 remaining native acceptance and final exact-head CI/merge gates are still open.
+
+## Resident reduction progress cleanup, 2026-10-26
+
+[The reduction lifecycle record](evidence/m2-reduction-lifecycle-20261026.json)
+retains the actual browser failure: completed preview work left fraction 1 in
+GUI/public-MCP inspection, rendering a stale preparation bar. Shared state cleanup
+now clears both stage and fraction. The same manufactured 115,200-facet input
+passes GUI preview/accept and public MCP with exact output geometry equality;
+the rendered completion bar is absent. All 28 focused tests, thirteen TypeScript
+batches and warning-free build `scanforge-78d899a80c57e2b3` pass. This is current
+percentage-mode lifecycle evidence, not native global reduction equivalence.
+Native R14 input activation again failed with access denied; no native modeling
+or file input was attempted and owned cleanup completed. Remaining native,
+whole-inventory, exact-head CI, review and integration gates stay open.

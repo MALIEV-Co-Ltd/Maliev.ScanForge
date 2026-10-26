@@ -1,0 +1,109 @@
+{
+  "scope": "Completed scan preview progress cleanup and manufactured resident reduction GUI/public-MCP acceptance; not native global reduction parity or M2 closure.",
+  "baseCommit": "242ea744985f94b2d1cec1060314c1e8c74e6460",
+  "failure": {
+    "label": "m2-reduction-progress-red-20261026-r1",
+    "actualFraction": 1,
+    "expectedFraction": "absent",
+    "cause": "GUI preview finally cleared stage but retained terminal shared-job fraction. The panel rendered a preparation progress bar for a completed preview.",
+    "failedReceiptsRetained": true
+  },
+  "fix": {
+    "sharedGuiAndMcpState": "runGuiScanPreview finally clears scanToolFraction with scanToolProgress. application_inspect exposes the same state. Terminal job_get receipts keep their completed progress.",
+    "schemaChange": false,
+    "agentDocumentation": "docs/AGENT_GUIDE.md"
+  },
+  "build": {
+    "id": "scanforge-78d899a80c57e2b3",
+    "inputCount": 2993,
+    "manifestSha256": "783738157a5df1367cbc017890c2423acc4ec1e2afb49c883d0df3b8b812e416",
+    "typescriptBatches": 13,
+    "warnings": 0,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-reduction-progress-build-20261026-r1-build.receipt.json",
+      "sha256": "df1f9cad9cb4021a42e3d1b592318a85d9f034140486be51b9daa24f244ab531",
+      "elapsedSeconds": 150.75705940002808,
+      "peakOwnedJobBytes": 1776889856,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "focused": {
+    "passed": 28,
+    "failed": 0,
+    "files": 2,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-reduction-progress-focused-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "ee4ec54da10455a261f72581bce1fcdf93f905c5c74b170d6385355b42a3b0b2",
+      "elapsedSeconds": 1.9775914000347257,
+      "peakOwnedJobBytes": 365789184,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "browser": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-reduction-progress-green-20261026-r1-full.receipt.json",
+      "sha256": "3922e4c55410e2e18248f811e5176a220bb1fb88c7dd44ffe56c1677c1f71711",
+      "elapsedSeconds": 11.526676399982534,
+      "peakOwnedJobBytes": 1161437184,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "ledgerSha256": "91d2b79c6b0750e540d74e150b874b0d3762c14216cfea62b9bca54b366b77f0",
+    "result": {
+      "passed": true,
+      "inputTriangles": 115200,
+      "inputSha256": "f03c032141131ab0319f061469a1abdc3bbd8b655672f056a18852d1038e85e3",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+      "logicalProcessors": 24,
+      "systemBytes": 34110816256,
+      "renderer": "isolated headless browser, software GPU",
+      "outputTriangles": 57600,
+      "mcpTriangles": 51834,
+      "previewMs": 2466.9072000000006,
+      "mcpMs": 1223.647500000001,
+      "guiPreviewAndAccept": true,
+      "comparisonRequired": true,
+      "previewPreservesSource": true,
+      "mcpDirectComparison": true,
+      "sameInputGeometryParity": true,
+      "guiGeometrySha256": "24387abd3aad1724b86044ea5d46884b438ccde76f281086c75769aafacbaf9f",
+      "mcpGeometrySha256": "24387abd3aad1724b86044ea5d46884b438ccde76f281086c75769aafacbaf9f",
+      "errors": []
+    },
+    "cleanup": [
+      {
+        "port": 65194,
+        "closed": true
+      },
+      {
+        "pid": 52396,
+        "exited": true
+      },
+      {
+        "port": 65195,
+        "closed": true
+      },
+      {
+        "pid": 37100,
+        "exited": true
+      }
+    ],
+    "completedGuiProgressAssertions": {
+      "fractionAbsent": true,
+      "stageEmpty": true,
+      "overallProgressbarAbsent": true
+    },
+    "previewScreenshotVisuallyInspected": true
+  },
+  "limitations": [
+    "Manufactured curved panel; native global collapse ordering, count, percentage and deviation parity remain separate open gates.",
+    "This browser replay checks percentage settings 50 then 90; it does not cover every reduction setting.",
+    "GUI cancellation and binary save/reopen are not exercised by this resident reduction replay.",
+    "Native session R14 input activation failed with access denied; no modeling or file input attempted, authenticated owned cleanup passed."
+  ]
+}

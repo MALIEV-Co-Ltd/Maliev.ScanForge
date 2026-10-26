@@ -2746,6 +2746,7 @@ export function App() {
         scanToolAccepting.current = false;
       }
       setScanToolProgress("");
+      setScanToolFraction(undefined);
     }
   }
   async function applyScanTool(parameters: ScanToolParameters) {
