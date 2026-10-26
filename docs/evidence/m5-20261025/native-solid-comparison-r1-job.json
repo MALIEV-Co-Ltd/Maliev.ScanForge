@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    ".resources/m5/run-native-solid-probe.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 600,
+  "exitCode": 0,
+  "peakJobBytes": 642322432,
+  "totalProcesses": 3,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 1.3474685000255704
+}

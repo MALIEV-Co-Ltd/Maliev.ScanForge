@@ -24,7 +24,8 @@ exported actual QSF/STEP; the measured comparison below shows a fitting gap.
 The native operation matrix and M4 acceptance remain incomplete.
 Session r3 was blocked before input by Windows AccessDenied. After the user's
 current readiness confirmation and a CUA runtime reset, r4 accepted native
-thickening and saved a QSF; STEP export and analytic comparison remain pending.
+thickening and saved a QSF. Session r6 exported the saved solid to STEP; numerical
+comparison confirms valid solid topology but retains an unexplained volume gap.
 Local checks are retained below; M5 is not merged or closed.
 
 The compatible transition-surface candidate adds shared GUI/MCP C0/C1 blending
@@ -88,6 +89,36 @@ errors. The bounded run took61.612s, peaked2,936,479,744bytes under4GiB and
 finished with zero processes, own preview5206closed and the existing application
 preserved. The [rendered C1 result](evidence/m5-20261025/compatible-blend-exact-c1.png)
 was visually inspected. Complete sketch-chain/native/M4 gates remain open.
+
+### Native solid export r6 and measured comparison
+
+The [r6 receipt](evidence/m5-20261025/native-solid-export-r6.json) records actual
+reopen of the saved r4 solid and STEP AP214 export without axis remapping. The
+47,505-byte file has SHA-256
+`6e2a1ded4afd3b644b4cb64675d9b9f6bebfbfb9097eb327c14a70feedfabdbe`.
+The source QSF remained unchanged. Authenticated finish and Job cleanup passed,
+with zero active processes, closed handles/watchdog, and a 668,844,032-byte peak.
+The earlier [r5 reopen](evidence/m5-20261025/native-solid-reopen-r5.json) ended
+before export and records another headless run overlapping its reservation;
+it does not establish isolated workflow resource usage.
+
+The separate [numerical comparison](evidence/m5-20261025/native-solid-comparison-r1.json)
+imports that actual native solid: valid, one solid/shell, six faces, twelve edges,
+eight vertices, area15.060617015013978mm², volume0.6990570748014502mm³.
+ScanForge thickening of the same native fitted surface at -0.1mm produces
+volume0.6985898570432448mm³, a relative difference0.0006683542375106542.
+The +0.1mm direction produces absolute volume0.6909659689179515mm³ and negative
+signed volume. Both directions are retained; the native icon's signed-normal
+convention and native equivalence remain unestablished. An independent adaptive
+mass-integration diagnostic is prepared but has not run. No production accuracy
+change or relaxed parity tolerance follows from this comparison.
+
+The [comparison Job](evidence/m5-20261025/native-solid-comparison-r1-job.json)
+exited0 in1.347s, peaked642,322,432bytes, left zero active processes and zero
+kernel handles, and preserved source hashes. Matching 5×5 fitting counts still
+leave a maximum sampled rectangular height difference0.041302661mm and normal
+angle10.43085589degrees; the 200 scanned-triangle centroid metrics remain
+separately reported. Full native fitting/solid equivalence remains open.
 
 ### Native solid session r4: accepted thickness and saved QSF
 

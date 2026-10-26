@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
 import { webcrypto, createHash } from "node:crypto";
-import { evaluatePatch, validatePatch } from "../../src/surfaces.ts";
+import {
+  evaluatePatch,
+  validatePatch,
+  fitGridSurface,
+} from "../../src/surfaces.ts";
 import { nativeStepPatch } from "./native-step-patch.mjs";
 const root = new URL("../../", import.meta.url);
 const nativeRoot =
@@ -28,6 +32,19 @@ const stl = readFileSync(
   "C:/repo/alignment-example-files/m5-native-validation-20261026-01a1737c-r3/real-region-input.stl",
 );
 const sourceHash = hash(stl);
+const nativeSolidPath = process.env.M5_NATIVE_SOLID_STEP;
+const nativeSolidBytes = nativeSolidPath ? readFileSync(nativeSolidPath) : null;
+if (nativeSolidBytes) {
+  assert(
+    nativeSolidBytes.length <= 2 * 1024 * 1024,
+    "Native solid fixture exceeds bound",
+  );
+  assert.equal(
+    hash(nativeSolidBytes),
+    process.env.M5_NATIVE_SOLID_SHA256,
+    "Native solid hash fence",
+  );
+}
 assert.equal(
   sourceHash,
   "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
@@ -40,6 +57,20 @@ for (let t = 0; t < 200; t++)
     samples.push(
       [0, 1, 2].map((k) => stl.readFloatLE(84 + t * 50 + 12 + v * 12 + k * 4)),
     );
+const matchedFitOptions =
+  process.env.M5_MATCH_NATIVE_CONTROLS === "1"
+    ? {
+        countU: nativePatch.countU,
+        countV: nativePatch.countV,
+        degree: nativePatch.degreeU,
+        projection: "xy",
+        sampleLimit: 10000,
+      }
+    : null;
+const matchedFit = matchedFitOptions
+  ? fitGridSurface(new Float64Array(samples.flat()), matchedFitOptions)
+  : null;
+if (matchedFit) app.patch = matchedFit.patch;
 const inverseXyToleranceMm = 1e-5;
 function xyPoint(patch, x, y) {
   const xs = patch.points.map((p) => p[0]),
@@ -253,7 +284,21 @@ try {
       knotsV: nativePatch.knotsV,
     },
     sourceHash,
-    scanforgeFitSha256: hash(appBytes),
+    cachedScanforgeFitSha256: hash(appBytes),
+    comparedScanforgeFit: matchedFit
+      ? {
+          provenance:
+            "Fresh shared fitter on hash-pinned connected STL; matching serialized control counts, not native UI labels or algorithm identity",
+          options: matchedFitOptions,
+          samples: matchedFit.samples,
+          rmsMm: matchedFit.rms,
+          maxErrorMm: matchedFit.maxError,
+          guiMcpFiveControlFitVerified: false,
+        }
+      : {
+          provenance: "Cached four-control GUI/MCP fit fixture",
+          sha256: hash(appBytes),
+        },
     nativeStepSha256: hash(nativeBytes),
     reports,
     nativeProjectedResidual: residuals(nativePatch),
@@ -278,12 +323,61 @@ try {
       report: thickenedReport,
     },
   };
+  if (nativeSolidBytes) {
+    const nativeSolid = await request("import", {
+      data: new Uint8Array(nativeSolidBytes),
+      extension: "step",
+    });
+    ids.push(nativeSolid.kernelId);
+    const nativeReport = await request("inspectBrep", {
+      brep: nativeSolid.brep,
+    });
+    assert(
+      nativeReport.valid &&
+        nativeReport.solids === 1 &&
+        nativeReport.shells === 1 &&
+        nativeReport.volumeMm3 > 0,
+    );
+    const opposite = await request("thicken", {
+      kernelId: native.kernelId,
+      thickness: 0.1,
+    });
+    ids.push(opposite.kernelId);
+    const oppositeReport = await request("inspectBrep", {
+      brep: opposite.brep,
+    });
+    assert(oppositeReport.valid && oppositeReport.solids === 1);
+    output.capturedNativeSolid = {
+      sha256: hash(nativeSolidBytes),
+      report: nativeReport,
+      scope:
+        "Actual native Thicken default Depth1=0.1mm, middle one-sided icon; compare both signed ScanForge directions rather than infer the icon's normal convention",
+      signedComparisons: [
+        { thicknessMm: -0.1, report: thickenedReport },
+        { thicknessMm: 0.1, report: oppositeReport },
+      ].map(({ thicknessMm, report }) => ({
+        thicknessMm,
+        report,
+        areaDifferenceMm2: report.areaMm2 - nativeReport.areaMm2,
+        volumeDifferenceMm3: report.volumeMm3 - nativeReport.volumeMm3,
+        relativeAreaDifference:
+          Math.abs(report.areaMm2 - nativeReport.areaMm2) /
+          nativeReport.areaMm2,
+        relativeVolumeDifference:
+          Math.abs(report.volumeMm3 - nativeReport.volumeMm3) /
+          nativeReport.volumeMm3,
+      })),
+      nativeEquivalenceEstablished: false,
+    };
+  }
 } finally {
   await request("release", ids);
   clearTimeout(timer);
 }
 assert.equal(vm.runInContext("shapes.size", context), 0);
 assert.equal(hash(stl), sourceHash);
+if (nativeSolidBytes)
+  assert.equal(hash(readFileSync(nativeSolidPath)), hash(nativeSolidBytes));
 output.commonDomain.normalSamples = normalDots.length;
 output.commonDomain.minimumNormalDot = Math.min(...normalDots);
 output.commonDomain.maximumNormalAngleDegrees =
