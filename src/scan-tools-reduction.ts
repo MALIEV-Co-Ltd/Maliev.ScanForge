@@ -7,10 +7,10 @@ import {
 import type { Positions, Vec3 } from "./types";
 import { nativeNoiseVertices } from "./scan-native-noise";
 import {
-  compareNoiseSurface,
-  compareNoiseSurfaceAsync,
+  comparePreparedNoiseSurface,
   type NoiseDeviation,
 } from "./scan-noise-deviation";
+import { prepareReductionSurface } from "./scan-reduction-surface";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { nativeNoiseVerticesAsync } from "./scan-noise-parallel";
 import { reductionPercentageTarget } from "./scan-reduction-target";
@@ -422,7 +422,57 @@ function prepareNoise(positions: Positions, options: NoiseOptions) {
     },
   };
 }
+function noiseOutputPositions(
+  source: Positions,
+  t: MeshTopology,
+  vertices: Float64Array,
+  options: NoiseOptions,
+) {
+  const output = new Float32Array(t.triangles.length * 3);
+  for (let corner = 0; corner < t.triangles.length; corner++) {
+    if (corner % 4096 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const vertex = t.triangles[corner] * 3;
+    const moved =
+      Math.fround(vertices[vertex]) !== Math.fround(t.vertices[vertex]) ||
+      Math.fround(vertices[vertex + 1]) !==
+        Math.fround(t.vertices[vertex + 1]) ||
+      Math.fround(vertices[vertex + 2]) !== Math.fround(t.vertices[vertex + 2]);
+    // Diagnostic welding must not normalize raw corners on stationary vertices.
+    for (let axis = 0; axis < 3; axis++)
+      output[corner * 3 + axis] = moved
+        ? vertices[vertex + axis]
+        : source[corner * 3 + axis];
+  }
+  if (output.some((value) => !Number.isFinite(value)))
+    throw new Error(
+      "Noise reduction produced non-finite coordinates; original mesh retained.",
+    );
+  return output;
+}
+
+/** Compare the published facets, including retained stationary raw aliases. */
+function comparePublishedNoiseSurface(
+  t: MeshTopology,
+  output: Float32Array,
+  threshold: number,
+  options: MeshProcessingOptions,
+) {
+  const indices = new Uint32Array(output.length / 3);
+  for (let index = 0; index < indices.length; index++) {
+    if (index % 4096 === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    indices[index] = index;
+  }
+  const surface = prepareReductionSurface(
+    { coordinates: output, indices },
+    options,
+  );
+  return comparePreparedNoiseSurface(t, surface, threshold, options);
+}
+
 function finishNoise(
+  output: Float32Array,
   t: MeshTopology,
   vertices: Float64Array,
   options: NoiseOptions,
@@ -431,20 +481,12 @@ function finishNoise(
   const iterations = options.iterations ?? 1;
   const deviation = options.deviation ?? 0.05;
   const tolerance = 1e-6;
-  const output = new Float32Array(t.triangles.length * 3);
-  for (let corner = 0; corner < t.triangles.length; corner++)
-    for (let axis = 0; axis < 3; axis++)
-      output[corner * 3 + axis] = vertices[t.triangles[corner] * 3 + axis];
-  if (output.some((value) => !Number.isFinite(value)))
-    throw new Error(
-      "Noise reduction produced non-finite coordinates; original mesh retained.",
-    );
   let comparison = "";
   let noiseComparison: ScanToolResult["noiseComparison"];
   if (options.measureDeviation) {
     const measured =
       measuredPreview ??
-      compareNoiseSurface(t, vertices, deviation, {
+      comparePublishedNoiseSurface(t, output, deviation, {
         ...options,
         onProgress: (fraction, stage) =>
           options.onProgress?.(0.9 + fraction * 0.1, stage),
@@ -510,15 +552,17 @@ export function reduceScanNoise(
   options: NoiseOptions = {},
 ): ScanToolResult {
   const { t, iterations, kernelOptions } = prepareNoise(positions, options);
-  return finishNoise(
+  const vertices = nativeNoiseVertices(
     t,
-    nativeNoiseVertices(
-      t,
-      iterations,
-      options.selectionOnly ? options.selection : undefined,
-      options.applyBoundaryEdges ?? true,
-      kernelOptions,
-    ),
+    iterations,
+    options.selectionOnly ? options.selection : undefined,
+    options.applyBoundaryEdges ?? true,
+    kernelOptions,
+  );
+  return finishNoise(
+    noiseOutputPositions(positions, t, vertices, options),
+    t,
+    vertices,
     options,
   );
 }
@@ -536,12 +580,13 @@ export async function reduceScanNoiseAsync(
     options.applyBoundaryEdges ?? true,
     kernelOptions,
   );
+  const output = noiseOutputPositions(positions, t, vertices, options);
   const measured = options.measureDeviation
-    ? await compareNoiseSurfaceAsync(t, vertices, options.deviation ?? 0.05, {
+    ? await comparePublishedNoiseSurface(t, output, options.deviation ?? 0.05, {
         ...options,
         onProgress: (fraction, stage) =>
           options.onProgress?.(0.9 + fraction * 0.1, stage),
       })
     : undefined;
-  return finishNoise(t, vertices, options, measured);
+  return finishNoise(output, t, vertices, options, measured);
 }

@@ -146,6 +146,17 @@ BVH comparison index instead of failing at the native octree's node budget;
 small surfaces retain the recovered comparison behavior. Comparison never limits
 smoothing.
 
+For selected Reduce noise through `mesh_process`, set top-level
+`selectionOnly: true` and inner `operation.selectionOnly: true`; the outer flag
+binds the current facet mask and the inner flag selects the smoothing scope.
+For `scan_preview`, set `operation.selectionOnly: true`; preview binds the
+current source selection itself. Both paths retain raw corner coordinates for
+stationary vertices, including unrelated tolerance-welded aliases. A moved
+shared vertex updates its aliases on adjacent facets. Preview creation,
+cancellation/discard, history and binary reopening use the same shared operation.
+Deviation measurement compares the published facets, including retained raw
+aliases, in both direct processing and preview comparison.
+
 ## Background mesh preparation
 
 GUI and MCP imports stream the packed little-endian PLY scanner schema (XYZ and
@@ -153,7 +164,10 @@ normal Float32 values, triangular faces) through reads of at most 1 MiB, retaini
 the full geometry and authored normals. Other PLY layouts use the existing loader.
 Cancellation, units, placement, source counts and history semantics are unchanged.
 This bounds raw input reads; final geometry and preparation still scale with scan
-size, and the three-scan 2 GiB diagnostic gate remains unresolved.
+size. The historical three-scan 2 GiB diagnostic is not the current process
+limit: owned validation uses an aggregate 4 GiB limit. Per-operation working
+admission and transfer/artifact quotas remain separate; none guarantees a total
+browser-memory ceiling.
 Packed PLY per-file progress now advances during face preflight, vertex/face
 decoding and position/normal expansion through the existing import progress
 responses. Cancellation and callback failures do not report completion.
