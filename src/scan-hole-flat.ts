@@ -18,7 +18,7 @@ const cross = (a: Vec3, b: Vec3): Vec3 => [
  * the native boundary records do. The caller validates the complete patch.
  */
 export function flatHoleTriangles(
-  topology: MeshTopology,
+  topology: Pick<MeshTopology, "vertices" | "edges">,
   ids: readonly number[],
   normal: Vec3,
   signal?: AbortSignal,

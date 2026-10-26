@@ -15,6 +15,7 @@ import {
   bridgeInsideBoundary,
   bridgeIntersectsMesh,
   refineBridgeStrip,
+  refineFlatBridgeStrip,
   validBridgePatch,
 } from "./scan-bridge-geometry";
 import {
@@ -581,7 +582,24 @@ function* holeFillSteps(
       skipHole();
       continue;
     }
-    if (r.mode === "bridge" && method !== "flat") {
+    let bridgeBoundary: number[] | undefined;
+    if (r.mode === "bridge" && method === "flat" && splitBridgeRails) {
+      const retainedDiagonals = [
+        [0, 2],
+        [1, 3],
+      ]
+        .filter(([a, b]) => t.edges.has(edgeId(loop[a], loop[b])))
+        .map(([a, b]) => edgeId(a, b));
+      const patch = refineFlatBridgeStrip(
+        points,
+        projected,
+        unit,
+        o,
+        retainedDiagonals,
+      );
+      triangles = patch.triangles;
+      bridgeBoundary = patch.boundary;
+    } else if (r.mode === "bridge" && method !== "flat") {
       if (splitBridgeRails)
         triangles = refineBridgeStrip(
           points,
@@ -663,7 +681,7 @@ function* holeFillSteps(
     }
     if (
       !(splitBridgeRails
-        ? validBridgePatch(projected, triangles)
+        ? validBridgePatch(projected, triangles, bridgeBoundary)
         : validHolePatch(projected, triangles, rimCount))
     ) {
       if (bridging)

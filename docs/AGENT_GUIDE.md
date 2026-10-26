@@ -285,6 +285,13 @@ not repeat welding and topology construction. Patch append shares untouched edge
 records and copies affected edge uses; output-precision changes force a full
 refresh instead of retaining stale adjacency.
 
+Flat bridges sample each free rail at the mean length of the two attachment
+edges, with each rail's segment count truncated independently (minimum one).
+The resulting rim uses smallest-corner triangulation. Rails already attached
+to retained mesh edges are not subdivided. The shared GUI/MCP operation rejects
+a flat patch above 2,048 boundary vertices to bound clipping work, rather than reducing its density;
+cancellation and invalid triangulation leave the source and history unchanged.
+
 To commit, repeat the operation with `previewOnly` omitted, a fresh revision and
 request ID. The normal processing response reports the chosen method; one model
 history step is added. `history_undo` / `history_redo` restore/reapply the bridge.

@@ -9,6 +9,28 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
   out = new URL("../.resources/bridge-response-browser/", import.meta.url);
+const nativeFlatFixture = JSON.parse(
+  await readFile(
+    new URL("fixtures/bridge-observed-flat-annulus.json", import.meta.url),
+    "utf8",
+  ),
+);
+function orientedFaces(positions) {
+  const faces = [];
+  for (let i = 0; i < positions.length; i += 9) {
+    const vertices = [0, 3, 6].map((offset) =>
+      [0, 1, 2].map((axis) => positions[i + offset + axis]).join(","),
+    );
+    faces.push(
+      [0, 1, 2]
+        .map((offset) =>
+          [...vertices.slice(offset), ...vertices.slice(0, offset)].join(";"),
+        )
+        .sort()[0],
+    );
+  }
+  return faces.sort();
+}
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -248,17 +270,20 @@ try {
     { curved: true },
     { curved: false, separate: true },
     { curved: false, separate: true, fragmented: true },
+    { curved: false, native: true },
   ].filter(
-    ({ curved, separate, fragmented }) =>
+    ({ curved, separate, fragmented, native }) =>
       !requestedCases ||
       requestedCases.includes(
-        fragmented
-          ? "fragmented-open"
-          : separate
-            ? "independent-boundaries"
-            : curved
-              ? "tangent"
-              : "flat",
+        native
+          ? "native-flat"
+          : fragmented
+            ? "fragmented-open"
+            : separate
+              ? "independent-boundaries"
+              : curved
+                ? "tangent"
+                : "flat",
       ),
   );
   const convergenceCase = process.env.SCANFORGE_HOLE_CONVERGENCE === "1";
@@ -396,14 +421,16 @@ try {
       undoRedo: true,
     });
   }
-  for (const { curved, separate, fragmented } of cases) {
-    const scenario = fragmented
-      ? "fragmented-open"
-      : separate
-        ? "independent-boundaries"
-        : curved
-          ? "tangent"
-          : "flat";
+  for (const { curved, separate, fragmented, native } of cases) {
+    const scenario = native
+      ? "native-flat"
+      : fragmented
+        ? "fragmented-open"
+        : separate
+          ? "independent-boundaries"
+          : curved
+            ? "tangent"
+            : "flat";
     const positions = [];
     const point = (i, r) => {
       const a = (i * Math.PI) / 16,
@@ -480,6 +507,8 @@ try {
           }
       }
     }
+    if (native)
+      positions.splice(0, positions.length, ...nativeFlatFixture.source);
     const project = {
       format: "maliev-scanforge",
       version: 1,
@@ -539,8 +568,12 @@ try {
       }
       throw Error(`Missing facing edge ${x}`);
     };
-    const source = separate ? findEdge(-2) : { boundary: hole, edge: 0 };
-    const destination = separate ? findEdge(2) : { boundary: hole, edge: 16 };
+    const source = separate
+      ? findEdge(-2)
+      : { boundary: hole, edge: native ? nativeFlatFixture.start : 0 };
+    const destination = separate
+      ? findEdge(2)
+      : { boundary: hole, edge: native ? nativeFlatFixture.end : 16 };
     const operation = {
       kind: "scanEdit",
       action: "fillHoles",
@@ -549,7 +582,7 @@ try {
       ...(separate ? { endBoundary: destination.boundary } : {}),
       start: source.edge,
       end: destination.edge,
-      algorithm: "automatic",
+      algorithm: native ? "flat" : "automatic",
       tolerance: 0.001,
     };
     const beforeHistory = await history(),
@@ -567,6 +600,10 @@ try {
     // Leave the default, unrelated hole selected. Bridge must ignore that selection.
     await controls.locator(".app-select > button").first().click();
     await page.getByRole("option", { name: "Bridge", exact: true }).click();
+    if (native) {
+      await controls.locator(".app-select > button").nth(1).click();
+      await page.getByRole("option", { name: "Flat", exact: true }).click();
+    }
     assert.equal(await controls.locator(".scan-topology-list").count(), 0);
     assert.equal(
       await controls.getByRole("spinbutton", { name: "Start vertex" }).count(),
@@ -777,6 +814,11 @@ try {
       "bridge commit and inventory must reuse topology",
     );
     const gui = await geometry();
+    if (native)
+      assert.deepEqual(
+        orientedFaces(gui.positions),
+        orientedFaces(nativeFlatFixture.native),
+      );
     assert.deepEqual(
       gui.positions.slice(original.positions.length),
       patch.positions,
@@ -803,6 +845,20 @@ try {
       cancel: true,
     });
     await controls.getByRole("button", { name: "Back", exact: true }).click();
+    if (native) {
+      const saved = await job(
+        await call("project_export", { format: "project" }),
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: saved.result.artifactId,
+          replace: true,
+        }),
+      );
+      assert.deepEqual((await geometry()).positions, gui.positions);
+      reports.at(-1).nativeOrientedGeometryEqual = true;
+      reports.at(-1).saveReopen = true;
+    }
   }
   assert.deepEqual(errors, []);
   ledger.result = { reports, pageErrors: errors };

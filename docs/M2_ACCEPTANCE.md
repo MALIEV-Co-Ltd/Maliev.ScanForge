@@ -2,7 +2,7 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-Current checkpoint `b250f0f` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40295641582):
+Current checkpoint `dac81dc` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40300422886):
 49,318 tests, 64 conditional skips, production build, both CAD smoke checks and
 repository formatting. Current rendered Edit Scan GUI/public-MCP reopening
 also passes with unchanged geometry history. The [readiness and navigation record](evidence/m2-input-readiness-and-navigation-20261026.json)
@@ -10,9 +10,24 @@ separates these results from a fresh native session that could read the owned
 window but could not activate it (`GetCursorPos`, access denied). The process
 was in the active RDP session with both desktops named Default; the read-only
 probe still failed after the owner kept the desktop visible and moved the mouse.
-No native modeling/file input was attempted. Authenticated cleanup passed.
-The native partial/bridge and broader inventory comparisons remain open, so
-this checkpoint is not a milestone closure or merge acceptance.
+No native modeling/file input was attempted in that R7 session. Authenticated
+cleanup passed. A subsequent [R8 readiness record](evidence/m2-native-partial-bridge-readiness-20261026.json)
+records recovered input and an observed Semi/Flat operation: the original
+8-facet square ring became 9 facets after two opposite boundary-corner clicks.
+Its export was not saved before the scheduled session stop, so this observation
+does not establish geometry equality. Earlier access-denied receipts remain
+retained. The later [native Semi/Flat and Flat Bridge record](evidence/m2-native-flat-bridge-20261026.json)
+binds actual exports: Semi/Flat retains the eight original triangles and matches
+the native ninth triangle; two Flat bridges require 20 and 17 patch triangles,
+where the old application produced two. The shared correction reproduces both
+complete oriented Float32 outputs using attachment-length-based rail sampling.
+Review regressions additionally preserve retained diagonal constraints and bound
+quadratic clipping work before allocation. The corrected candidate passes 308
+tests in 32 files, all 13 TypeScript batches and build `scanforge-b5420f04ca0b12b2`.
+All five rendered Bridge scenarios pass; the native Flat control matches all
+84 oriented facets through GUI/public MCP, undo/redo and binary save/reopen.
+Exact-head CI, preview update and broader inventory gates remain open; this is
+not milestone closure.
 
 The [current bridge browser record](evidence/m2-bridge-browser-readiness-20261026.json)
 passes flat, tangent, independent-boundary and fragmented-open cases through

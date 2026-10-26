@@ -124,7 +124,7 @@ it("automatically keeps coplanar adjacent facets flat and honors the manual flat
       algorithm,
     });
     expect(result.diagnostics.method).toBe("flat");
-    expect(result.diagnostics.addedTriangles).toBe(2);
+    expect(result.diagnostics.addedTriangles).toBe(20);
     const after = analyzeMesh(result.positions!);
     expect(after.nonManifoldEdges + after.inconsistentEdges).toBe(0);
   }
