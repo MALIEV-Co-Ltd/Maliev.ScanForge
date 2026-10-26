@@ -14,6 +14,15 @@ No native modeling/file input was attempted. Authenticated cleanup passed.
 The native partial/bridge and broader inventory comparisons remain open, so
 this checkpoint is not a milestone closure or merge acceptance.
 
+The [current bridge browser record](evidence/m2-bridge-browser-readiness-20261026.json)
+passes flat, tangent, independent-boundary and fragmented-open cases through
+rendered GUI/public MCP: hover/preview, exact output equality, cancellation,
+undo/redo and camera preservation, with no page errors or surviving helpers.
+The existing driver now uses current Settings navigation and public session /
+viewport readiness after history restoration. No application behavior or
+geometry assertion was changed to obtain these passes. Native partial/bridge
+output comparison remains separate and open.
+
 ## Operation and evidence inventory
 
 GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and the shared worker implementation. Agent binding/validation is in `src/automation/operations.ts`; discovery and schemas are in `src/automation/catalog.json`. Existing revision, retry, lock, cancellation, resource and history checks remain required. Read [the agent guide](AGENT_GUIDE.md) for request syntax.

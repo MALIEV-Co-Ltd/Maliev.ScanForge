@@ -151,6 +151,7 @@ try {
   });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -171,12 +172,19 @@ try {
     assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
-  const mutate = async (name, args) =>
-    call(name, {
-      ...args,
-      expectedRevision: (await call("project_get")).revision,
-      requestId: randomUUID(),
-    });
+  const mutate = async (name, args) => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const session = (await call("session_get")).result;
+      if (!session.busy && session.activeJobId === null)
+        return call(name, {
+          ...args,
+          expectedRevision: (await call("project_get")).revision,
+          requestId: randomUUID(),
+        });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error(`Workspace did not settle before ${name}`);
+  };
   const job = async (receipt, expected = "succeeded") => {
     for (let i = 0; i < 120; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
@@ -224,6 +232,14 @@ try {
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
+  const bridgeReady = async (mode) => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const view = (await call("viewport_get")).result;
+      if (view.bridge?.mode === mode) return view;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error(`Bridge interaction did not become ready: ${mode}`);
+  };
   const canvas = page.locator(".viewport canvas").first();
   const reports = [];
   const requestedCases = process.env.SCANFORGE_BRIDGE_CASES?.split(",");
@@ -654,6 +670,7 @@ try {
         );
       }
       if (scenario === "flat") {
+        await bridgeReady("holes");
         const unit = box.height / (2 * 22 * Math.tan((21 * Math.PI) / 180));
         await page.mouse.move(
           box.x + box.width / 2 + 4.5 * unit,
@@ -669,6 +686,7 @@ try {
       await page.getByRole("option", { name: "Bridge", exact: true }).click();
     }
 
+    await bridgeReady("bridge");
     await page.mouse.move(a.x, a.y);
     await page.waitForFunction(
       () =>

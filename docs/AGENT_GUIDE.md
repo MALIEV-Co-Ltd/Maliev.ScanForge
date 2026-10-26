@@ -289,6 +289,11 @@ To commit, repeat the operation with `previewOnly` omitted, a fresh revision and
 request ID. The normal processing response reports the chosen method; one model
 history step is added. `history_undo` / `history_redo` restore/reapply the bridge.
 Reinspect boundaries after each edit, Undo or Redo; their indices may change.
+Geometry publication can precede completion of model-history work. Inspect
+`session_get` and wait for `busy: false` and `activeJobId: null` before the next
+mutation. To verify rendered hole/bridge picking after restoration, also wait
+for `viewport_get.bridge.mode` to report `holes` or `bridge`; derived picking
+state can prepare after the geometry becomes readable.
 Geometry locks, cancellation, revision checks and retry receipts remain active.
 In Entire/Semi hole mode, hovering inside a visible closed boundary highlights
 its full rim; clicking selects that hole in the list. Picking respects clipping
