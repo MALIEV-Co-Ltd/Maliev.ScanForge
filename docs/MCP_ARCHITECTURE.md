@@ -1785,7 +1785,18 @@ world origin, normal and optional X direction. A plane owns its finite display
 triangles and `planeFrame`; a coordinate system is one `referenceFrame` entity
 with empty positions and authoritative
 `coordinateFrame: { version: 1, frame, displaySize }`. Three rendered positive
-axes belong to this one entity. Frame validation rejects sampled geometry,
+axes belong to this one entity. Newly authored numeric/fitted planes additionally
+retain optional `planeFrame.displaySize`, their explicit square side length in
+millimetres. JSON copying, binary metadata, rigid datum placement and uniform
+mesh transforms preserve this field (scale multiplies it). Legacy frames without
+size remain readable; no extent is reverse-derived from their display buffers.
+The shared plane basis projects/normalizes the tangent for both sketch placement
+and located line-pair `planeUV` acquisition. Discovery returns local bounds;
+the resolver uses saved size/2 as both direct-plane half sizes. Existing ordered
+F32 records, identity migration, cached preview binding and atomic dependency
+refresh handle this source family without a second writer or project format.
+This is an application authored-frame bridge, not native provider/controller
+equivalence. Frame validation rejects sampled geometry,
 fitted/CAD metadata, nonrigid bases and out-of-bounds display endpoints.
 
 `copyReferenceFrame` preserves accepted binary64 coordinates without

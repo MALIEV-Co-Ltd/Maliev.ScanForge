@@ -393,6 +393,9 @@ export function validateProject(value: unknown): Project {
               center: [...entity.planeFrame.center],
               normal: [...entity.planeFrame.normal],
               tangent: [...entity.planeFrame.tangent],
+              ...(entity.planeFrame.displaySize === undefined
+                ? {}
+                : { displaySize: entity.planeFrame.displaySize }),
             },
       color: entity.color,
       ...(entity.pointAutoDensity !== undefined

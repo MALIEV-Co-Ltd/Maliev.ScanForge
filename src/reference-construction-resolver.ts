@@ -10,7 +10,7 @@ import { validateReferenceEntity } from "./reference-entity";
 import type { ReferenceVector } from "./reference-construction-values";
 import type { NativeReferenceLineRecord } from "./reference-line-evaluation";
 import type { ResolvedReferencePrimitive } from "./reference-point-evaluation";
-import { validatePlaneFrame } from "./plane-frame";
+import { validatePlaneFrame, planeFrameBasis } from "./plane-frame";
 import { validateParametricModel } from "./parametric";
 import { nativeDatumConeGeometry } from "./scan-native-datum-cone";
 import {
@@ -24,6 +24,7 @@ export type DerivedReferenceLineMode = "pair" | "average";
 export interface LocatedReferenceSourcePick {
   readonly entityId: string;
   readonly parameter?: number;
+  readonly planeUV?: readonly [number, number];
 }
 
 /**
@@ -155,7 +156,7 @@ function resolveStoredRecipeReferenceSource(
   return { kind: "axis", start, end, objectResolved: true };
 }
 
-/** Shared semantic/recipe line sources; numeric plane equations have no line extent. */
+/** Shared semantic/recipe sources and explicitly sized authored planes. */
 export function resolveReferenceLineSource(
   entity: Entity,
   mode: DerivedReferenceLineMode,
@@ -170,6 +171,22 @@ export function resolveReferenceLineSource(
     if (mode === "average" && recipeSource.kind !== "axis")
       throw new Error("Average line sources require a finite analytic axis.");
     return recipeSource;
+  }
+  if (entity.kind === "plane" && entity.planeFrame !== undefined) {
+    if (mode !== "pair")
+      throw new Error("Average line sources require a finite analytic axis.");
+    if (entity.brep !== undefined)
+      throw new Error("Exact CAD plane source acquisition is not supported.");
+    const plane = resolveReferencePointSource(entity);
+    const size = entity.planeFrame.displaySize;
+    if (plane.kind !== "plane" || size === undefined)
+      throw new Error(
+        "Plane line sources require a stored authored display size; edit a numeric plane or create a new fitted plane to define its extent.",
+      );
+    return resolveDirectReferencePrimitive({
+      ...plane,
+      halfSizes: [size / 2, size / 2],
+    });
   }
   if (!data || (mode === "average" && data.geometry.kind !== "line"))
     throw new Error(
@@ -188,7 +205,7 @@ export function resolveReferenceLineSource(
   );
 }
 
-/** Capture one explicit application world location; its fraction is not retained. */
+/** Capture one explicit application world location; acquisition parameters are not retained. */
 export function acquireLocatedReferenceLinePick(
   entity: Entity,
   input: LocatedReferenceSourcePick,
@@ -201,7 +218,11 @@ export function acquireLocatedReferenceLinePick(
     throw new Error("Invalid located reference source pick prototype.");
   const primitive = resolveReferenceLineSource(entity, mode);
   const fields =
-    primitive.kind === "axis" ? ["entityId", "parameter"] : ["entityId"];
+    primitive.kind === "axis"
+      ? ["entityId", "parameter"]
+      : primitive.kind === "plane"
+        ? ["entityId", "planeUV"]
+        : ["entityId"];
   const actual = Reflect.ownKeys(input);
   if (
     actual.length !== fields.length ||
@@ -232,6 +253,28 @@ export function acquireLocatedReferenceLinePick(
       start[0] + (end[0] - start[0]) * parameter,
       start[1] + (end[1] - start[1]) * parameter,
       start[2] + (end[2] - start[2]) * parameter,
+    ];
+  } else if (primitive.kind === "plane") {
+    const uv = input.planeUV;
+    const halfSize = primitive.directPlaneHalfSizes!;
+    if (
+      !Array.isArray(uv) ||
+      uv.length !== 2 ||
+      Array.from(uv).some(
+        (value, axis) =>
+          typeof value !== "number" ||
+          !Number.isFinite(value) ||
+          Math.abs(value) > halfSize[axis],
+      )
+    )
+      throw new Error(
+        "A plane source requires finite planeUV millimetres within its authored extent.",
+      );
+    const { u, v } = planeFrameBasis(entity.planeFrame!);
+    position = [
+      primitive.origin[0] + u[0] * uv[0] + v[0] * uv[1],
+      primitive.origin[1] + u[1] * uv[0] + v[1] * uv[1],
+      primitive.origin[2] + u[2] * uv[0] + v[2] * uv[1],
     ];
   } else throw new Error("Unsupported located reference source family.");
   if (
@@ -278,18 +321,8 @@ export function resolveReferencePointSource(
     entity.parametric === undefined
   ) {
     validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
-    const { center, normal, tangent } = entity.planeFrame;
-    const tangentNormal = tangent.reduce(
-      (sum, value, axis) => sum + value * normal[axis],
-      0,
-    );
-    const tangentLength = Math.hypot(
-      ...tangent.map((value, axis) => value - tangentNormal * normal[axis]),
-    );
-    if (!Number.isFinite(tangentLength) || tangentLength < 1e-9)
-      throw new Error(
-        "Construction plane tangent must not be parallel to its normal.",
-      );
+    const { center, normal } = entity.planeFrame;
+    planeFrameBasis(entity.planeFrame);
     const offset = -normal.reduce(
       (sum, value, axis) => sum + value * center[axis],
       0,

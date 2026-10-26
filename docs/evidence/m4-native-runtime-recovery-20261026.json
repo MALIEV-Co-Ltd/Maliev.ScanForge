@@ -1,0 +1,54 @@
+{
+  "checkpoint": "M4 original native R13 desktop recovery",
+  "date": "2026-10-26",
+  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "nativeExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "observations": [
+    "A fresh owned native process displayed the original application's welcome screen and ribbon.",
+    "An accessibility-index Open attempt failed because the element was unavailable in cached app state.",
+    "Fresh screenshot coordinate Open, focused file-name typing and Return successfully reopened the immutable R2 numeric line QSF.",
+    "The native title identified m4-line-0-to-10.qsf; the viewport displayed the finite line and History listed Ref. Line(1).",
+    "No model edit or new save was attempted before the conservative modal cutoff."
+  ],
+  "inputQsf": {
+    "name": "m4-line-0-to-10.qsf",
+    "bytes": 468,
+    "sha256": "746db06ceb22e2b6f39546acb47096bf0ce036e47d9695396244c9b025645991"
+  },
+  "cleanup": {
+    "stopReason": "authenticated-finish",
+    "elapsedSeconds": 386.01459589996375,
+    "peakJobBytes": 685125632,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "processAndThreadHandlesClosed": true,
+    "watchdogStopped": true,
+    "sourceSha256ReverifiedAfterExit": true,
+    "cleanupErrors": [],
+    "jobLimitBytes": 4294967296,
+    "cpuRatePercent": 25
+  },
+  "subsequentAttempt": {
+    "session": "R14",
+    "startedUtc": "2026-10-26T08:55:36.761327Z",
+    "finishedUtc": "2026-10-26T08:58:53.925680Z",
+    "rootError": "GetCursorPos failed: Access is denied. (0x80070005)",
+    "rootFreshSelectionRetryFailed": true,
+    "separateContextError": "failed to write kernel assets: The system cannot find the path specified. (os error 3)",
+    "separateContextFailedBeforeJavaScript": true,
+    "nativePixelsCaptured": false,
+    "modelingOrSavePerformed": false,
+    "outputFiles": 0,
+    "nativeAcceptancePassed": false,
+    "stopReason": "authenticated-finish",
+    "elapsedSeconds": 197.42188490001718,
+    "peakJobBytes": 721924096,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "processAndThreadHandlesClosed": true,
+    "watchdogStopped": true,
+    "sourceSha256ReverifiedAfterExit": true,
+    "cleanupErrors": []
+  },
+  "scope": "R13 confirmed original-native desktop input and fixture reopening at that time; R14 subsequently failed before modeling. Recovery is not stable. Neither attempt establishes source-edit persistence, midpoint save/reopen, copy/transform policy, native controller parity or complete M4 acceptance."
+}

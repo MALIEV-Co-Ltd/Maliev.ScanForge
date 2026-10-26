@@ -51,12 +51,20 @@ export function ReferenceConstructionDialog({
   const [sourceParameters, setSourceParameters] = useState<
     (number | undefined)[]
   >([]);
+  const [sourcePlaneUV, setSourcePlaneUV] = useState<
+    ([number | undefined, number | undefined] | undefined)[]
+  >([]);
   type SourceOption = {
     entityId: string;
     name: string;
     eligible: boolean;
     reason?: string;
     primitiveKind?: string;
+    planeUVBounds?: {
+      min: [number, number];
+      max: [number, number];
+      units: "mm";
+    };
   };
   const legacySources = entities.filter(isStoredReferenceLine);
   const [pointMode, setPointMode] = useState<PointMode>(() => {
@@ -366,9 +374,13 @@ export function ReferenceConstructionDialog({
                           ? {
                               sourcePicks: sourceIds.map((entityId, index) => ({
                                 entityId,
-                                ...(sourceParameters[index] === undefined
-                                  ? {}
-                                  : { parameter: sourceParameters[index] }),
+                                ...(sourceOptions.find(
+                                  (row) => row.entityId === entityId,
+                                )?.primitiveKind === "plane"
+                                  ? { planeUV: sourcePlaneUV[index] ?? [] }
+                                  : sourceParameters[index] === undefined
+                                    ? {}
+                                    : { parameter: sourceParameters[index] }),
                               })),
                             }
                           : {}),
@@ -555,7 +567,8 @@ export function ReferenceConstructionDialog({
             <>
               {kind === "line" && linePicksChanged && (
                 <p>
-                  Choose a position from 0 to 1 for every selected line.
+                  Choose a position from 0 to 1 for every selected line, or
+                  local U/V millimetres within the authored plane extent.
                   Accepted picks keep their world coordinates when sources
                   change.
                 </p>
@@ -578,6 +591,11 @@ export function ReferenceConstructionDialog({
                         if (kind === "line") {
                           setLinePicksChanged(true);
                           setSourceParameters((previous) => {
+                            const next = [...previous];
+                            next[index] = undefined;
+                            return next;
+                          });
+                          setSourcePlaneUV((previous) => {
                             const next = [...previous];
                             next[index] = undefined;
                             return next;
@@ -641,6 +659,60 @@ export function ReferenceConstructionDialog({
                           }}
                         />
                       </label>
+                    )}
+                  {kind === "line" &&
+                    sourceOptions.find(
+                      (row) => row.entityId === sourceIds[index],
+                    )?.primitiveKind === "plane" && (
+                      <div className="vector-field">
+                        <span>Source {index + 1} plane (mm)</span>
+                        <div
+                          style={{
+                            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                          }}
+                        >
+                          {(["U", "V"] as const).map((axis, component) => {
+                            const bounds = sourceOptions.find(
+                              (row) => row.entityId === sourceIds[index],
+                            )?.planeUVBounds;
+                            return (
+                              <label key={axis}>
+                                <span>{axis}</span>
+                                <input
+                                  aria-label={`Source ${index + 1} plane ${axis}`}
+                                  type="number"
+                                  step="any"
+                                  min={bounds?.min[component]}
+                                  max={bounds?.max[component]}
+                                  value={
+                                    sourcePlaneUV[index]?.[component] ?? ""
+                                  }
+                                  onChange={(event) => {
+                                    const value = event.target.valueAsNumber;
+                                    setSourcePlaneUV((previous) => {
+                                      const next = [...previous];
+                                      const uv: [
+                                        number | undefined,
+                                        number | undefined,
+                                      ] = [
+                                        previous[index]?.[0],
+                                        previous[index]?.[1],
+                                      ];
+                                      uv[component] = Number.isFinite(value)
+                                        ? value
+                                        : undefined;
+                                      next[index] = uv;
+                                      return next;
+                                    });
+                                    setLinePicksChanged(true);
+                                    setDirty(true);
+                                  }}
+                                />
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
                     )}
                   {kind === "line" &&
                     !linePicksChanged &&

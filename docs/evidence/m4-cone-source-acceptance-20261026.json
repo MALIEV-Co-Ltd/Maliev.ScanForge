@@ -398,12 +398,26 @@
       "scope": "Framing and functional checks passed. It occupied another task reservation gap before explicit handback; the mutex prevented simultaneous children. Final r3 used an explicitly granted slot and adds actual end-radius/volume checks."
     }
   ],
+  "hostedCandidateVerification": {
+    "commit": "c07d25a359f81d17516fb103e4bad0a10f9996ce",
+    "run": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40286179049",
+    "jobId": 121450267488,
+    "conclusion": "success",
+    "passedTests": 50047,
+    "skippedTests": 64,
+    "passedTestFiles": 734,
+    "skippedTestFiles": 18,
+    "testDurationSeconds": 320.82,
+    "cadSmokePassed": true,
+    "repositoryFormattingPassed": true,
+    "scope": "Pushed candidate before subsequent plane-source work. Does not close remaining M4 gates."
+  },
   "remainingRequiredGates": [
     "Authoritative numeric-plane extents and located plane line inputs",
     "Retained general CAD/scan owner/provider acquisition",
     "Derived/inactive-pick transforms and semantic duplication policy",
     "Original-native construction/lifecycle and remaining frame/fit/curve/constraint acceptance",
-    "Fresh exact-head hosted checks/review, merge, merged-main verification and issue4/milestone5 closure"
+    "Review and fresh checks after any later source changes, merge, merged-main verification and issue4/milestone5 closure"
   ],
   "milestoneComplete": false,
   "merged": false

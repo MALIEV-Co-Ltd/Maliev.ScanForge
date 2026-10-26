@@ -632,14 +632,31 @@ function sourceEligibility(
   entity: Entity,
   mode: SourceMode,
   kind: "point" | "line" = "point",
-) {
+): {
+  primitiveKind: string;
+  eligible: boolean;
+  reason?: string;
+  planeUVBounds?: { min: number[]; max: number[]; units: "mm" };
+} {
   if (kind === "line") {
     try {
       const primitive = resolveReferenceLineSource(
         entity,
         mode as LineSourceMode,
       );
-      return { primitiveKind: primitive.kind, eligible: true };
+      return {
+        primitiveKind: primitive.kind,
+        eligible: true,
+        ...(primitive.kind === "plane"
+          ? {
+              planeUVBounds: {
+                min: primitive.directPlaneHalfSizes!.map((size) => -size),
+                max: [...primitive.directPlaneHalfSizes!],
+                units: "mm",
+              },
+            }
+          : {}),
+      };
     } catch (error) {
       return {
         primitiveKind: "unsupported",

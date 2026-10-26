@@ -102,8 +102,22 @@ Real-worker GUI/public-MCP acceptance verifies actual cone/cylinder classificati
 end radii and axial bounds within 1e-4 mm, tessellated volume within 3 percent,
 repeated-record averages, radius-order rebuilds, locks, rollback, history and
 binary reopening. This application recipe bridge does not claim native controller,
-owner/provider or whole-construction equivalence. Required plane extents,
-retained general CAD/scan inputs and other original-native gates remain open.
+owner/provider or whole-construction equivalence. That checkpoint predates the
+authored plane line inputs below. Retained general CAD/scan inputs and other
+original-native gates remain open.
+
+The [authored-plane checkpoint](evidence/m4-plane-source-acceptance-20261026.json)
+adds retained `planeFrame.displaySize` and shared local-U/V line-pair inputs.
+The focused suites pass 187 tests, with 73 corrected legacy contract tests also
+passing. The broader failed receipt is retained rather than counted as a pass.
+All 13 type-check batches and the zero-warning functional build pass. A later
+presentation-only refresh produces `scanforge-598e491b941b7328`; actual GUI/public
+MCP comparison verifies negative/decimal keyboard input, stored-size edit Cancel,
+two-plane extent refresh from 20 to 36 mm, source movement, lock rollback and
+binary current/history/future reopening. Final screenshots show aligned U/V
+controls and clear source/derived geometry. This explicit authored-square mapping
+does not establish the original native extent producer/controller. Native R14
+failed before modeling, so native persistence and other required gates remain open.
 
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's
@@ -179,8 +193,15 @@ CPU cap, free-memory admission and finite leases. Each receipt records owned
 process cleanup. Browser checks use private loopback ports and disposable profiles.
 Native scenes belonging to other milestone tasks must be preserved.
 
-The root desktop automation runtime fails before executing JavaScript with
-`failed to write kernel assets`; a separate agent context initializes correctly.
+The root desktop automation runtime initially failed before executing JavaScript
+with `failed to write kernel assets`. The later
+[R13 recovery checkpoint](evidence/m4-native-runtime-recovery-20261026.json)
+confirms fresh owned original-native pixels, restored file-dialog input and
+successful reopening of the immutable numeric-line fixture, followed by clean
+bounded-session shutdown. Source-edit persistence and copy/transform policy
+remain unverified. The later R14 attempt failed with root cursor access denied
+and separate-context kernel-asset initialization errors. Its owned process was
+finished early with complete cleanup; it produced no modeling or saved fixture.
 The [native GUI checkpoint](evidence/m4-native-gui-checkpoint-20261026.json)
 records an accepted point and a line with edit-dialog readback, plus a saved QSF.
 The line displayed 10 mm. A later owned session reopened that QSF and verified the same line fields and

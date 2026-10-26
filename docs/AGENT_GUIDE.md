@@ -2660,8 +2660,37 @@ the plane and dependent points, or explicitly detach/delete the dependent
 construction before replacing its source. Do not treat this rejection as a
 successful conversion. Source writer, GUI/MCP and reopen acceptance must
 be verified on the exact integrated candidate; this contract is not a claim that
-unrun lifecycle checks passed. Line pair/average, other primitive/CAD/scan/sketch
-pick sources and full M4 acceptance remain open.
+unrun lifecycle checks passed. See the shared line-source contracts below for
+admitted semantic/recipe/plane families. Retained general CAD/scan/sketch inputs
+and full M4 acceptance remain open.
+
+### Authored plane inputs for line pairs
+
+`reference_construction_sources` with `kind:"line",mode:"pair"` also admits
+numeric/fitted planes with a saved `planeFrame.displaySize`. These rows report
+`primitiveKind:"plane"` and `planeUVBounds:{min:[uMin,vMin],max:[uMax,vMax],units:"mm"}`.
+Supply `{entityId,planeUV:[u,v]}` in ordered `sourcePicks`, excluding `parameter`.
+U/V are local millimetres in the projected unit tangent and normal-cross-tangent
+basis, matching sketch placement. Both values must lie inside the saved square.
+The server places this location in world binary64 and rounds once to the F32
+record; it does not apply numeric-editor N6/G15 conversion. Existing record order,
+repetitions, common identity keys, revision/preview/Apply and dependency guards
+remain unchanged. An unchanged derived edit omits `sourcePicks` to reuse exact
+saved records. The GUI exposes the same local U/V fields and operation.
+
+New/edited numeric planes and newly fitted planes retain their actual authored
+size. `object_get` and `project_get` expose it in `planeFrame`; JSON and binary
+projects retain it through current/history/future. Rigid placement preserves size;
+positive uniform scale multiplies it and refreshes dependent constructions in one
+history transaction. Two-plane line construction consumes these saved half sizes
+through the existing evaluator. Average line sources remain finite axes only.
+
+Legacy planes without saved size remain valid analytic point sources, but cannot
+supply finite line extents. Explicitly edit a numeric plane with `datum_construct`
+and the intended `displaySize`, or create a newly fitted plane. Never infer missing
+extents from old display triangles or fit diagnostics. This authored-frame mapping
+does not certify the original native extent producer/controller or general CAD,
+scan or sketch retained-input acquisition.
 
 ### Single stored-line midpoint
 

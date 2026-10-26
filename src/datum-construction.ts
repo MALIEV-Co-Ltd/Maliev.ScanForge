@@ -84,6 +84,7 @@ export function createNumericDatumPlane(
     center: [...frame.origin] as Vec3,
     normal: [...frame.normal] as Vec3,
     tangent: [...frame.u] as Vec3,
+    displaySize: size,
   };
   validatePlaneFrame(planeFrame, positions, "plane");
   return {

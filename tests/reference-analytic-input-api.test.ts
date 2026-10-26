@@ -625,6 +625,9 @@ it.each(["zero-axis-cone", "box", "fit-only", "plane-line"] as const)(
                 }
               : { kind: "box", center: [0, 0, 0], size: [1, 2, 3] },
           );
+    if (family === "plane-line")
+      delete (candidate.planeFrame as unknown as Record<string, unknown>)
+        .displaySize;
     if (family === "fit-only") {
       candidate.parametric = undefined;
       candidate.kind = "mesh";
@@ -651,6 +654,109 @@ it.each(["zero-axis-cone", "box", "fit-only", "plane-line"] as const)(
       );
   },
 );
+
+it("admits authored plane locations through shared discovery, cached Apply, source movement and project reopening", async () => {
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([0, 0, 0], [0, 0, 1]),
+    20,
+    "plane",
+    "Plane",
+  );
+  const anchor = point("anchor", 2, [2, 3, 8]);
+  const h = setup([plane, anchor]);
+  const page = await value(
+    h.api.invoke("reference_construction_sources", {
+      kind: "line",
+      mode: "pair",
+    }),
+  );
+  expect(
+    page.sources.find((row: any) => row.entityId === "plane"),
+  ).toMatchObject({
+    eligible: true,
+    primitiveKind: "plane",
+    planeUVBounds: { min: [-10, -10], max: [10, 10], units: "mm" },
+  });
+  expect(plane.constructionOrderKey).toBeUndefined();
+  const p = await linePreview(h, "pair", [
+    { entityId: "anchor" },
+    { entityId: "plane", planeUV: [1.25, -2.5] },
+  ]);
+  expect(p.geometry).toMatchObject({
+    kind: "line",
+    start: [2, 3, 8],
+    direction: [0, 0, -1],
+    length: 8,
+  });
+  expect(h.state.history).toHaveLength(0);
+  const made = await accept(h, p);
+  const original = structuredClone(
+    find(h, made.entityId).reference!.definition,
+  );
+  const moved = await value(
+    h.command("mesh_transform", {
+      entityId: "plane",
+      translation: [0, 0, 2],
+      rotation: [0, 0, 0],
+      scale: 1,
+    }),
+  );
+  expect((await finish(h, moved)).status).toBe("succeeded");
+  expect(find(h, made.entityId).reference!.geometry).toMatchObject({
+    length: 6,
+  });
+  expect(find(h, made.entityId).reference!.definition).toEqual(original);
+  const restored = parseProject(
+    serializeProject("Plane source", h.state.entities),
+  ).entities;
+  expect(restored.find((row) => row.id === "plane")!.planeFrame).toMatchObject({
+    displaySize: 20,
+  });
+  assertReferenceWorkspaceAdmission({
+    project: project(restored),
+    history: [],
+    future: [],
+  });
+  await value(h.command("history_undo", {}));
+  expect(find(h, made.entityId).reference!.geometry).toMatchObject({
+    length: 8,
+  });
+  const contents = await encodeProjectFileLocally({
+    project: project(h.state.entities),
+    history: h.state.history,
+    future: h.state.future,
+  });
+  const reopened = await decodeProjectContents(contents);
+  expect(
+    reopened.project.entities.find((row: Entity) => row.id === made.entityId)!
+      .reference,
+  ).toEqual(find(h, made.entityId).reference);
+  for (const rows of [
+    reopened.project.entities,
+    ...reopened.history.map((r) => r.entities),
+    ...reopened.future.map((r) => r.entities),
+  ]) {
+    const source = rows.find((row) => row.id === "plane")!;
+    expect(source.planeFrame).toMatchObject({ displaySize: 20 });
+    expect(resolveReferenceLineSource(source, "pair")).toMatchObject({
+      kind: "plane",
+      directPlaneHalfSizes: [10, 10],
+    });
+    assertReferenceWorkspaceAdmission({
+      project: project(rows),
+      history: [],
+      future: [],
+    });
+  }
+  expect(
+    reopened.future[0].entities.find((row) => row.id === made.entityId)!
+      .reference!.geometry,
+  ).toMatchObject({ length: 6 });
+  await value(h.command("history_redo", {}));
+  expect(find(h, made.entityId).reference!.geometry).toMatchObject({
+    length: 6,
+  });
+});
 
 it("rebuilds a cylinder through the public API while retaining an unrelated locked sphere unchanged", async () => {
   const h = setup(),

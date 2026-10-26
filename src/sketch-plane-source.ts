@@ -1,6 +1,6 @@
 import { validateReferenceFrameEntity } from "./reference-frame";
 import { datumFrame } from "./origin";
-import { validatePlaneFrame } from "./plane-frame";
+import { validatePlaneFrame, planeFrameBasis } from "./plane-frame";
 import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
 import type { Entity, Vec3 } from "./types";
 
@@ -91,28 +91,12 @@ export function resolveSketchPlaneSource(
   if (entity.planeFrame !== undefined) {
     const stored = entity.planeFrame;
     validatePlaneFrame(stored, entity.positions, entity.kind);
-    const dot = stored.tangent.reduce(
-      (sum, value, i) => sum + value * stored.normal[i],
-      0,
-    );
-    const tangent = stored.tangent.map(
-      (value, i) => value - dot * stored.normal[i],
-    ) as Vec3;
-    const length = Math.hypot(...tangent);
-    if (!Number.isFinite(length) || length < 1e-9)
-      throw new Error(
-        "Sketch plane tangent must not be parallel to its normal.",
-      );
-    const u = tangent.map((value) => value / length) as Vec3;
+    const { u, v } = planeFrameBasis(stored);
     const n = stored.normal;
     frame = {
       origin: [...stored.center],
       u,
-      v: [
-        n[1] * u[2] - n[2] * u[1],
-        n[2] * u[0] - n[0] * u[2],
-        n[0] * u[1] - n[1] * u[0],
-      ],
+      v,
       normal: [...n],
     };
   } else {

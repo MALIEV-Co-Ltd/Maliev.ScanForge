@@ -1,4 +1,4 @@
-// Shared fitted-plane point-source contract; finite line extent remains gated.
+// Shared fitted-plane equation and authored finite-extent source contract.
 import { afterEach, expect, it, vi } from "vitest";
 import {
   ApplicationApi,
@@ -291,7 +291,7 @@ it("resolves an actual fitted plane's authoritative frame equation even when fit
   expect(source).toEqual(before);
 });
 
-it("uses shared fitted-plane point eligibility for query and retains finite line sources as unsupported", async () => {
+it("uses shared fitted-plane point eligibility and admits authored extents only for line pairs", async () => {
   const h = setup(),
     before = h.state.entities,
     revision = h.api.currentRevision();
@@ -309,10 +309,15 @@ it("uses shared fitted-plane point eligibility for query and retains finite line
     );
     expect(
       page.sources.find((row: any) => row.entityId === "plane").eligible,
-    ).toBe(false);
-    expect(() =>
-      resolveReferenceLineSource(find(h, "plane"), mode as "pair" | "average"),
-    ).toThrow(/source|semantic|line|extent/i);
+    ).toBe(mode === "pair");
+    if (mode === "pair")
+      expect(
+        resolveReferenceLineSource(find(h, "plane"), "pair"),
+      ).toMatchObject({ kind: "plane", directPlaneHalfSizes: [10, 10] });
+    else
+      expect(() =>
+        resolveReferenceLineSource(find(h, "plane"), "average"),
+      ).toThrow(/average|axis|line/i);
   }
   expect(h.state.entities).toBe(before);
   expect(h.api.currentRevision()).toBe(revision);

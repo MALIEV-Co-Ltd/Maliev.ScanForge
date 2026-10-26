@@ -19,6 +19,7 @@ it("preserves explicit roll in a right-handed numeric datum", () => {
     center: [2, 3, 4],
     normal: [0, 0, 1],
     tangent: [0, 1, 0],
+    displaySize: 10,
   });
   expect(plane.positions).toHaveLength(18);
   expect(() =>

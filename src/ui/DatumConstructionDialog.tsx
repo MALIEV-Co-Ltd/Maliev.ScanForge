@@ -35,13 +35,15 @@ export function DatumConstructionDialog({
   const [size, setSize] = useState(() =>
     entity?.coordinateFrame
       ? entity.coordinateFrame.displaySize
-      : entity
-        ? Math.hypot(
-            ...[0, 1, 2].map(
-              (i) => entity.positions[i + 3] - entity.positions[i],
-            ),
-          )
-        : 100,
+      : entity?.planeFrame?.displaySize !== undefined
+        ? entity.planeFrame.displaySize
+        : entity
+          ? Math.hypot(
+              ...[0, 1, 2].map(
+                (i) => entity.positions[i + 3] - entity.positions[i],
+              ),
+            )
+          : 100,
   );
   const [name, setName] = useState(
     kind === "frame" ? "Coordinate system" : "Reference plane",

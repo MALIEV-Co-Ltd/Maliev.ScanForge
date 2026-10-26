@@ -886,7 +886,9 @@ it("preserves accepted bindings and geometry in JSON/binary current, Undo and Re
           Object.fromEntries(
             Object.entries(row.planeFrame).map(([key, position]) => [
               key,
-              encodeReferenceGeometry({ kind: "point", position }).bits,
+              typeof position === "number"
+                ? position
+                : encodeReferenceGeometry({ kind: "point", position }).bits,
             ]),
           ),
       }));

@@ -222,7 +222,7 @@ it("discovers a located semantic source intent without accepting caller-authored
   });
   expect(
     Object.keys(schema.properties.sourcePicks.items.properties).sort(),
-  ).toEqual(["entityId", "parameter"]);
+  ).toEqual(["entityId", "parameter", "planeUV"]);
   for (const field of [
     "records",
     "constructionOrderKey",

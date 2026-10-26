@@ -83,7 +83,12 @@ export interface Entity {
   brep?: string;
   fit?: FitResult;
   /** Persistent construction-plane orientation, including rotation about its normal. */
-  planeFrame?: { center: Vec3; normal: Vec3; tangent: Vec3 };
+  planeFrame?: {
+    center: Vec3;
+    normal: Vec3;
+    tangent: Vec3;
+    displaySize?: number;
+  };
   surfacePatch?: NurbsPatch;
   surfaceScanId?: string;
   /** Stable authoring identity and resolved links retained after a recipe is baked. */
