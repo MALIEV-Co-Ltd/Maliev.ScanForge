@@ -735,6 +735,63 @@ describe("shared workspace operation contracts", () => {
       expect(h.host.commit).not.toHaveBeenCalled();
     }
   });
+  it.each([
+    { patch: { locked: true }, error: "Object is locked" },
+    { patch: { kernelId: "cad" }, error: "Create a mesh copy" },
+  ])(
+    "protects $patch from boundary smoothing before starting work",
+    async ({ patch, error }) => {
+      const h = harness([entity(patch)]);
+      vi.mocked(processMesh).mockClear();
+      vi.mocked(processMesh).mockResolvedValue({
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { positions: new Float32Array(triangle), diagnostics: {} },
+      });
+      await expect(
+        h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            operation: {
+              kind: "scanEdit",
+              action: "boundarySmooth",
+              indices: [0],
+              strength: 0.3,
+              iterations: 3,
+            },
+          },
+          h.context,
+        ),
+      ).rejects.toThrow(error);
+      expect(processMesh).not.toHaveBeenCalled();
+      expect(h.host.commit).not.toHaveBeenCalled();
+    },
+  );
+  it.each([{ locked: true }, { kernelId: "cad" }])(
+    "retains read-only boundary inspection on protected sources %s",
+    async (patch) => {
+      const h = harness([entity(patch)]);
+      vi.mocked(processMesh).mockClear();
+      vi.mocked(processMesh).mockResolvedValue({
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: {
+          inventory: { components: [], boundaries: [] },
+          diagnostics: {},
+        },
+      });
+      const result = await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "inventory" },
+        },
+        h.context,
+      );
+      expect(result).toHaveProperty("artifact");
+      expect(processMesh).toHaveBeenCalledOnce();
+      expect(h.host.commit).not.toHaveBeenCalled();
+    },
+  );
   it("creates an independent tessellation while retaining exact CAD on its source", async () => {
     const h = harness([entity({ kernelId: "native", brep: "BREP" })]);
     await h.ops.mesh_copy({ entityId: "mesh" }, h.context);

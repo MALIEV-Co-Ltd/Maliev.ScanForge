@@ -1063,9 +1063,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         (kind === "pointCloudEdit" &&
           ["connectedSelection", "grow", "shrink"].includes(op.action)) ||
         (kind === "scanEdit" &&
-          ["inventory", "boundaryProject", "boundarySmooth"].includes(
-            op.action,
-          ));
+          ["inventory", "boundaryProject"].includes(op.action));
       if (!readonly) editable(e, e.kind !== "pointcloud");
       if (
         "positions" in op ||
