@@ -1,0 +1,127 @@
+{
+  "scope": "Compact whole-input count/percentage reduction integration, bounded source preparation and GUI-preview sample reuse. Not M2 closure or new installed-native imported-scan parity.",
+  "baseCommit": "98fa7e3e14fe4da273c1bd9a71c2bae408bf4925",
+  "sharedOperation": {
+    "gui": "Reduce polygons preview/accept",
+    "mcp": "mesh_process scanTools.reducePolygons and scan_preview",
+    "schemaChange": false,
+    "internalCache": "Exact positions/tolerance-keyed immutable reductionSource, independent of full diagnostic topology. Stale full topology is not relabeled.",
+    "preserved": "Native threshold/arithmetic/tie/face/reference/export ordering; effective1e-6mm first-match weld; source ownership, below4/no-op shortcuts, invalid topology/cancellation and spatial/deviation distinction."
+  },
+  "admission": {
+    "internalWorkingBytes": 1610612736,
+    "validationProcessBytes": 4294967296,
+    "cpuPercent": 25,
+    "description": "Admission before initial weld, simultaneous representative/hash growth and final slice; typed duplicate/edge/winding/degenerate/vertex-fan validation; resident source and retained indexed arrays included; dynamic reference/snapshot leases and export charged. No claim of total browser RAM ceiling.",
+    "fallback": "Only ReductionBudgetError; real dynamic exhaustion verifies memory.usedBytes0, references.length0 and disposed arrays before first spatial stage."
+  },
+  "focused": {
+    "passed": 1802,
+    "failed": 0,
+    "files": 24,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-integration-focused-20261026-r3-mirror-focused.receipt.json",
+      "sha256": "f4d15f690a775b7b89b43f7e74349058df61e4090cb87cd044fbeed5ffc52cad",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 43.30086830002256,
+      "outerPeakJobMemoryBytes": 692944896,
+      "childPeakJobMemoryBytes": 674578432,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "build": {
+    "id": "scanforge-ecb2f00867553feb",
+    "typescriptBatches": 13,
+    "sourceIdentity": {
+      "head": "98fa7e3e14fe4da273c1bd9a71c2bae408bf4925",
+      "files": 3015,
+      "unchanged": true,
+      "manifestSha256": "60c005b6f164d7c3ceaef50af0b6cb5f92638ba1666ba4f1a68e90ecbccc0c58"
+    },
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-integration-build-20261026-r2-build.receipt.json",
+      "sha256": "c457e5a7c57d9d210ddcdfaa566828c2d1e2ffea376c3abf1071fe69b58cf662",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 151.05653859995073,
+      "outerPeakJobMemoryBytes": 1820909568,
+      "childPeakJobMemoryBytes": 1800118272,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "review": {
+    "type": "Independent Astra source review, BASE8542a68 through committed Task1/2 plus uncommitted Task3",
+    "finding": "P2 GUI preview still used unbounded legacy samples before bounded reduction and welded twice.",
+    "fix": "Separate bounded sample acquisition from topology rejection, reuse same original indexed arrays for edit, preserve shortcuts and deviation/spatial gates.",
+    "verification": "ActualRED3pass/1fail before correction; GREEN preview/shared/source tests72/6, then complete affected1802/24. Stale-cache and below4/no-op regressions included.",
+    "otherFindings": "Minor stale native budget description corrected; real failure cleanup assertion added. No additional P1/P2 kernel/validator finding. No second review substituted for fix tests."
+  },
+  "regressions": {
+    "globalControl": "40960face curved source, both count/percentage yield frozen whole-input Float32 digestda6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4 rather than prior spatial110aa6cb62941398b9b394f3470be20dafb6851bb2d32c4504f8d7a3e7cdf24b.",
+    "validator": "1200 deterministic indexed combinations agree with full topology; all5 invalid classes rejected at2048/40960baseface inputs; in-process shared MCP history/source atomicity checked.",
+    "realWorker": "502002facet regression now explicitly requires global collapse stages, actual reduction and valid stored Float32 triangles.",
+    "nativeAndLegacy": "Retained complete Float64 native outputs, validity/update/final fixtures and frozen legacy differential hashes unchanged."
+  },
+  "retainedFailures": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-reduction-source-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "45c39b8fc74f813c14a3336a9a62d013f9bfc2caf8565aaac2b92bee1a3ba35c",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 1.9784110999898985,
+      "outerPeakJobMemoryBytes": 402210816,
+      "childPeakJobMemoryBytes": 384008192,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-weld-admission-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "d0f3a2578c3704e6b59f3435052a9ec145fd1606fdbf6b00373ef87827fb4486",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 1.0176483999821357,
+      "outerPeakJobMemoryBytes": 319266816,
+      "childPeakJobMemoryBytes": 300453888,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-reduction-preview-admission-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "3b5df0f1d5eacda83f08ded2a6d3d2c64477e284e925f6782c0a980e58fc8bb0",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 1.7241552000050433,
+      "outerPeakJobMemoryBytes": 380596224,
+      "childPeakJobMemoryBytes": 361316352,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-integration-focused-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "e6c395aefb6f81d10ac0a2becf2b2eef2bde8a4d2ee3b5133542cd38e0efa974",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 42.89922020002268,
+      "outerPeakJobMemoryBytes": 693526528,
+      "childPeakJobMemoryBytes": 674713600,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "remaining": "Rendered/public transport lifecycle, current original-scan performance and installed-native imported/global/deviation gates remain separate. PR18/M2 still open and unmerged."
+}

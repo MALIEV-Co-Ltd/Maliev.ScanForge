@@ -17,6 +17,9 @@ import { extractSketchSection } from "../src/sketch-section";
 import { createGridPatch } from "../src/surfaces";
 import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
 import smoothingInput from "./fixtures/defeature-annular.json";
+import { runScanTool } from "../src/scan-tools";
+import { reductionGrid } from "./helpers/reduction-grid";
+import { ScanPreviewSession } from "../src/scan-preview";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
@@ -297,6 +300,96 @@ function harness(entities: Entity[] = [entity()]) {
   };
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
+it("shares compact global reduction between GUI preview and MCP above the old admission boundary", async () => {
+  const positions = reductionGrid(160, 128),
+    before = positions.slice();
+  const operation = {
+    kind: "reducePolygons" as const,
+    mode: "percentage" as const,
+    percentage: 50,
+  };
+  const preview = await ScanPreviewSession.create({
+    kind: "scanPreview",
+    phase: "create",
+    previewId: "compact-global",
+    positions,
+    operation,
+  });
+  const h = harness([entity({ positions })]);
+  vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+    if (request.kind !== "scanTools")
+      throw new Error("Expected shared scan tool");
+    const result = runScanTool(request);
+    return {
+      kind: "scanTools",
+      positions: result.positions,
+      diagnostics: { summary: result.summary },
+    };
+  });
+  await h.ops.mesh_process(
+    { entityId: "mesh", operation: { kind: "scanTools", operation } },
+    h.context,
+  );
+  expect(h.state.entities[0].positions).toEqual(preview.output);
+  expect(h.state.entities[0].positions.length / 9).toBe(20480);
+  expect(h.host.commit).toHaveBeenCalledOnce();
+  expect(positions).toEqual(before);
+});
+it.each([8, 160])(
+  "MCP invalid global reduction retains source and history at width %s",
+  async (width) => {
+    const valid = reductionGrid(width, 128);
+    for (const invalid of [
+      [0, 0, 0, 1, 0, 0, 1, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0],
+      [
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 1,
+      ],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0],
+    ]) {
+      const positions = new Float32Array(valid.length + invalid.length);
+      positions.set(valid);
+      positions.set(
+        invalid.map((x, i) => (i % 3 === 2 ? x : x - 20)),
+        valid.length,
+      );
+      const before = positions.slice(),
+        h = harness([entity({ positions })]);
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        if (request.kind !== "scanTools")
+          throw new Error("Expected shared scan tool");
+        const result = runScanTool(request);
+        return {
+          kind: "scanTools",
+          positions: result.positions,
+          diagnostics: { summary: result.summary },
+        };
+      });
+      await expect(
+        h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            operation: {
+              kind: "scanTools",
+              operation: {
+                kind: "reducePolygons",
+                mode: "percentage",
+                percentage: 50,
+              },
+            },
+          },
+          h.context,
+        ),
+      ).rejects.toThrow("Repair invalid");
+      expect(h.host.commit).not.toHaveBeenCalled();
+      expect(h.state.history).toEqual([]);
+      expect(h.state.entities[0].positions).toBe(positions);
+      expect(positions).toEqual(before);
+    }
+  },
+);
 it("retains segmentation classification fits in agent-created regions", async () => {
   const h = harness(),
     fit = {

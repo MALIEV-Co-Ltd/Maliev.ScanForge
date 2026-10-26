@@ -17,7 +17,9 @@ import { reductionPercentageTarget } from "./scan-reduction-target";
 import {
   reduceIndexedScanMesh,
   canAdmitReductionRecords,
+  prepareReductionSource,
 } from "./scan-reduction-adapter";
+import { ReductionBudgetError } from "./scan-reduction-storage";
 import {
   REDUCTION_PATCH_TRIANGLES,
   reduceSpatialMesh,
@@ -153,28 +155,42 @@ export function reduceScanMesh(
       summary: `${original} → ${original} triangles. ${target <= 3 ? "Reduction requires a target of at least four triangles." : "Mesh retained at the requested count."}`,
     };
   }
-  if (
-    options.mode !== "deviation" &&
-    canAdmitReductionRecords(positions.length / 3, original)
-  ) {
-    // Bound working records before constructing the object-rich topology.
-    const t =
-      options.patchTopology ??
-      topology(positions, {
-        ...options,
-        onProgress: (fraction, stage) =>
-          options.onProgress?.(fraction * 0.2, stage),
-      });
-    const output = reduceIndexedScanMesh(t, target, {
-      ...options,
-      onProgress: (fraction, stage) =>
-        options.onProgress?.(0.2 + fraction * 0.8, stage),
-    });
-    const count = output.length / 9;
-    return {
-      positions: output,
-      summary: `${original} → ${count} triangles. Boundary vertices preserved.${count > target ? " Reduction stopped at the native collapse constraints." : ""}`,
-    };
+  if (options.mode !== "deviation") {
+    try {
+      if (!canAdmitReductionRecords(0, original))
+        throw new ReductionBudgetError();
+      const t =
+        options.patchTopology ??
+        prepareReductionSource(positions, {
+          ...options,
+          onProgress: (fraction, stage) =>
+            options.onProgress?.(fraction * 0.2, stage),
+        });
+      const output = reduceIndexedScanMesh(
+        t,
+        target,
+        {
+          ...options,
+          onProgress: (fraction, stage) =>
+            options.onProgress?.(0.2 + fraction * 0.8, stage),
+        },
+        positions.length * (positions instanceof Float32Array ? 4 : 8),
+      );
+      const count = output.length / 9;
+      return {
+        positions: output,
+        summary: `${original} → ${count} triangles. Boundary vertices preserved.${count > target ? " Reduction stopped at the native collapse constraints." : ""}`,
+      };
+    } catch (error) {
+      // Only explicit working-budget exhaustion permits spatial fallback.
+      // Invalid topology and cancellation must retain their original failure.
+      if (
+        !(error instanceof ReductionBudgetError) ||
+        options.patchTopology ||
+        original <= REDUCTION_PATCH_TRIANGLES
+      )
+        throw error;
+    }
   }
   if (!options.patchTopology && original > REDUCTION_PATCH_TRIANGLES) {
     try {

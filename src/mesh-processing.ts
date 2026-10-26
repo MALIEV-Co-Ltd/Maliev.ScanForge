@@ -11,6 +11,8 @@ export interface MeshProcessingOptions {
     positions?: Positions;
     tolerance?: number;
     topology?: MeshTopology;
+    /** Immutable polygon-preview samples; no diagnostic adjacency is implied. */
+    reductionSource?: Pick<MeshTopology, "vertices" | "triangles">;
   };
   tolerance?: number;
   signal?: AbortSignal;
