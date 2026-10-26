@@ -154,5 +154,18 @@
     "Fresh exact-commit hosted checks, final review, merge, merged-main verification and issue4/milestone5 closure"
   ],
   "milestoneComplete": false,
-  "merged": false
+  "merged": false,
+  "hostedNumericCheckpoint": {
+    "commit": "df8e0015a92cfedc42514b8794c7229b6dc6adc3",
+    "runId": 40266232577,
+    "jobId": 121389165609,
+    "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40266232577",
+    "conclusion": "failure",
+    "passedTests": 49742,
+    "failedTests": 1,
+    "skippedTests": 64,
+    "build": true,
+    "failure": "Preexisting derived-line test still expected numeric semantic source transforms to reject after this supported capability was implemented.",
+    "replacementRegression": "The test now verifies source and linked-line refresh, exact retained hits, one commit/history step and unchanged selection. It passed in the protected112-test focused run; fresh hosted checks are required for the correction."
+  }
 }

@@ -1136,9 +1136,9 @@ it("keeps one accepted derived line when display cleanup fails and retries only 
   expect(h.display.mock.calls.filter((row) => row[1] === null)).toHaveLength(3);
 });
 
-it("rejects a linked semantic source mesh transform without publishing model, history or selection", async () => {
+it("transforms a numeric semantic source and refreshes its linked line in one commit without changing selection or retained hits", async () => {
   const h = fixture();
-  await apply(
+  const made = await apply(
     h,
     await located(h, await seed(h), "pair", [
       { entityId: "a" },
@@ -1146,29 +1146,48 @@ it("rejects a linked semantic source mesh transform without publishing model, hi
     ]),
   );
   const before = h.state.entities,
-    history = [...h.state.history];
+    history = [...h.state.history],
+    retained = encodeReferenceEntityData(
+      find(h, made.entityId).reference!,
+    ).definition,
+    commits = h.commit.mock.calls.length;
   const selection = (h.state.selection = new Uint8Array([1]));
   h.state.selectedId = "x1";
   const revision = h.api.currentRevision();
-  expect(
-    await h.api.invoke("mesh_transform", {
+  const result = await value(
+    h.api.invoke("mesh_transform", {
       entityId: "x1",
       translation: [1, 2, 3],
       rotation: [0, 0, 0],
       scale: 1,
       expectedRevision: revision,
-      requestId: "no-retype-semantic-line",
+      requestId: "transform-linked-semantic-source",
     }),
-  ).toMatchObject({
-    ok: false,
-    error: {
-      message: expect.stringMatching(/reference|sampled|geometry|semantic/i),
-    },
+  );
+  expect(result.refreshedEntityIds).toEqual([made.entityId]);
+  expect(lineGeometry(h, "x1")).toEqual({
+    kind: "line",
+    start: [1, 4, 3],
+    direction: [1, 0, 0],
+    length: 10,
   });
-  expect(h.state.entities).toBe(before);
-  expect(h.state.history).toEqual(history);
+  const linked = lineGeometry(h, made.entityId);
+  expect(linked.start).toEqual([1.0000005, 2, -0]);
+  const end = referenceLineEnd(linked);
+  expect(end[0]).toBeCloseTo(1.0000005, 13);
+  expect(end[1]).toBeCloseTo(4, 13);
+  expect(end[2]).toBeCloseTo(3, 13);
+  expect(
+    encodeReferenceEntityData(find(h, made.entityId).reference!).definition,
+  ).toEqual(retained);
+  expect(h.state.entities).not.toBe(before);
+  expect(h.state.history.slice(0, history.length)).toEqual(history);
+  expect(h.state.history.at(-1)?.entities).toBe(before);
+  expect(h.state.history).toHaveLength(history.length + 1);
+  expect(h.commit).toHaveBeenCalledTimes(commits + 1);
   expect(h.state.selection).toBe(selection);
-  expect(h.api.currentRevision()).toBe(revision);
+  expect(h.state.selectedId).toBe("x1");
+  expect(h.api.currentRevision()).toBe(revision + 1);
   expect(h.host.setSelection).not.toHaveBeenCalled();
 });
 
