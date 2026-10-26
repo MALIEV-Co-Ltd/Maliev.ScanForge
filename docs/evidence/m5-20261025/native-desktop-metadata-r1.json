@@ -1,0 +1,155 @@
+{
+  "scope": "Read-only metadata for current exec diagnostic helper; actual CUA backend PID/session/window station/desktop unavailable",
+  "observedUtc": "2026-10-27T01:49:12.885125+07:00",
+  "actualUiController": {
+    "status": "UNAVAILABLE",
+    "reason": "CUA backend PID not exposed; current helper is not asserted to be that controller"
+  },
+  "retainedNative": {
+    "status": "UNAVAILABLE",
+    "nativeSessionId": null,
+    "retiredPidFromReport": 28716,
+    "creationTimeFiletimeFromReport": "134375134695819158",
+    "retainedStatus": "finished",
+    "livePidQueried": false,
+    "reason": "Only explicitly recorded nativeSessionId is reported; absence is not inferred from helper/console session"
+  },
+  "calls": [
+    {
+      "call": "GetCurrentProcessId",
+      "success": true,
+      "result": 52784,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "GetCurrentThreadId",
+      "success": true,
+      "result": 58548,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "ProcessIdToSessionId.currentDiagnosticHelper",
+      "success": true,
+      "result": 1,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "WTSGetActiveConsoleSessionId",
+      "success": true,
+      "result": {
+        "sessionId": 3,
+        "noActiveConsoleSession": false
+      },
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "GetProcessWindowStation",
+      "success": true,
+      "result": null,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "currentWindowStation.GetUserObjectInformationW.size",
+      "success": false,
+      "result": {
+        "requiredBytes": 16
+      },
+      "win32ErrorCode": 122,
+      "win32ErrorMessage": "The data area passed to a system call is too small.",
+      "expectedProbeFailure": true
+    },
+    {
+      "call": "currentWindowStation.GetUserObjectInformationW.name",
+      "success": true,
+      "result": "WinSta0",
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "GetThreadDesktop.currentDiagnosticThread",
+      "success": true,
+      "result": null,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "currentThreadDesktop.GetUserObjectInformationW.size",
+      "success": false,
+      "result": {
+        "requiredBytes": 16
+      },
+      "win32ErrorCode": 122,
+      "win32ErrorMessage": "The data area passed to a system call is too small.",
+      "expectedProbeFailure": true
+    },
+    {
+      "call": "currentThreadDesktop.GetUserObjectInformationW.name",
+      "success": true,
+      "result": "Default",
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "OpenInputDesktop.READOBJECTS",
+      "success": true,
+      "result": null,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "inputDesktop.GetUserObjectInformationW.size",
+      "success": false,
+      "result": {
+        "requiredBytes": 16
+      },
+      "win32ErrorCode": 122,
+      "win32ErrorMessage": "The data area passed to a system call is too small.",
+      "expectedProbeFailure": true
+    },
+    {
+      "call": "inputDesktop.GetUserObjectInformationW.name",
+      "success": true,
+      "result": "Default",
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    },
+    {
+      "call": "CloseDesktop.ownedInputDesktopHandle",
+      "success": true,
+      "result": null,
+      "win32ErrorCode": 0,
+      "win32ErrorMessage": null,
+      "expectedProbeFailure": false
+    }
+  ],
+  "errors": [],
+  "inputPerformed": false,
+  "activationPerformed": false,
+  "capturePerformed": false,
+  "desktopSwitchPerformed": false,
+  "permissionOrSecurityChangePerformed": false,
+  "currentDiagnosticHelper": {
+    "pid": 52784,
+    "threadId": 58548,
+    "sessionId": 1,
+    "windowStationName": "WinSta0",
+    "threadDesktopName": "Default"
+  },
+  "inputDesktopName": "Default",
+  "status": "observed"
+}

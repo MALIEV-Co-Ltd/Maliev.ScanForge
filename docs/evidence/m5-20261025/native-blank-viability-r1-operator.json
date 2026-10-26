@@ -1,0 +1,47 @@
+{
+  "scope": "Owned blank QuickSurface lifecycle only. Operator authorization window expired before CUA app binding or native pixels/input verification. No CAD/file load, menu action or input viability established.",
+  "status": "lifecycle-clean-operator-window-expired",
+  "nativeIdentity": {
+    "pid": 47260,
+    "creationTimeFiletime": "134375128906360017",
+    "toolReturnedWindowId": 36834044,
+    "observedTitle": "QUICKSURFACE Pro 8.0.123",
+    "liveIdentityAuthenticated": false
+  },
+  "observations": {
+    "freshCuaInventoryWindowObserved": true,
+    "routingBinderOutcome": "Session already finished; binding retired",
+    "operatorCutoffSecondsFromNativeLaunch": 24,
+    "appBound": false,
+    "screenshotCaptured": false,
+    "nativePixelsVerified": false,
+    "inputPerformed": false,
+    "menuVerified": false,
+    "cadLoaded": false,
+    "inputViability": "untested",
+    "getCursorPosFailureEstablished": false
+  },
+  "guard": {
+    "observedWrapperTerminalExitCode": 0,
+    "elapsedSecondsBeforeReceipt": 24.425682100001723,
+    "peakJobBytes": 722579456,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true,
+    "terminalObservationSource": "Authorized root coordinator",
+    "receiptStatus": "provisional; evaluate with observed wrapper terminal result"
+  },
+  "artifacts": {
+    "job": "native-blank-viability-r1-job.json",
+    "jobSha256": "3acccb5d8b18252018988fcf8a4c1edca2c00c7483128a23d4a73ca5e6a6c125",
+    "sourceJob": ".resources/m5/native-blank-viability-r1-job.json",
+    "sourceJobSha256": "770fba37d787b8f427b19114b9e92f23775ecba0ec5f2e0728cf24f9681cad78",
+    "privateLauncherArchived": false,
+    "privateReadyArchived": false
+  },
+  "securityScope": "Full launcher and ready/authentication material remain private and unchanged. No security/access change or prompt automation.",
+  "nextAttempt": "Preparation only; fresh review and explicit new resource/operation grant required; no automatic retry"
+}

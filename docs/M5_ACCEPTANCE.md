@@ -12,11 +12,36 @@ CAD. CAD retains all 338 datum goldens and zero live-input BREP mutations across
 136.212 s at 1,553,100,800 peak Job bytes with terminal exit 0, active zero and
 complete handle/mutex cleanup. The final integrated GUI authoring chain, CAD
 guards with positive curved-pattern parity, and scoped datum browser replay
-below also pass. Base `8574263` passes [hosted CI](evidence/m5-20261025/cad-ownership-integrated-hosted-ci.json)
-with 49,361 tests; that receipt is historical to the final uncommitted browser
-test/evidence update. Native M4 acceptance and final-head hosted CI remain
-pending; these results do not close M5. Earlier evidence retains its historical
-scope.
+below also pass. Exact application/evidence head `46046a6b7857d70a28e2edbcdc581f178895ad4c`
+passes both [hosted CI builds](evidence/m5-20261025/cad-final-head-hosted-ci.json):
+all 13 typecheck batches/build, 49,361 tests passed/64 skipped (702 files passed,
+18 skipped), CAD smoke, trailing exact sketch phase and global formatting.
+The parsed pinned job took 317.03 s. Base `8574263`'s earlier CI receipt remains
+historical. This follow-up changes receipts only; the worker and build identity
+are unchanged. Native M4 acceptance is still open, and the PR/milestone remain
+unmerged/unclosed. Earlier evidence retains its historical scope.
+
+Current native viability remains unproven. [R1](evidence/m5-20261025/native-blank-viability-r1-operator.json)
+expired its 24-second operator window before binding or input. [R2](evidence/m5-20261025/native-blank-viability-r2-operator.json)
+authenticated live identity and exposed normal accessibility controls, but its
+capture was black except for the pointer; no input was attempted. It finished
+immediately through the authenticated owner at 56.252 s/722,214,912 peak Job
+bytes. [R3](evidence/m5-20261025/native-blank-viability-r3-operator.json)
+authenticated a fresh identity, then official CUA Raise failed with GetCursorPos
+AccessDenied `0x80070005` before post-Raise accessibility or screenshot reads.
+It finished immediately at 57.140 s/706,125,824 peak Job bytes. All three left
+active zero with handles and mutex released. None establishes CAD/file input or
+native acceptance.
+
+The [read-only desktop metadata](evidence/m5-20261025/native-desktop-metadata-r1-ledger.json)
+places the exec diagnostic helper in session 1 and the active console in session 3. The actual CUA backend and retired native process session IDs are unavailable;
+the difference is not causal proof. The root coordinator separately reports a
+documented ordinary `cua.launch_app` attempt using the exact inventory ID,
+immediate GetCursorPos denial and no observed QuickSurface window. That is a
+coordinator report, not this archiver's own observation or proof of a resource
+cap cause. No permission changes, desktop switches or new native probes are
+part of this checkpoint. [M4 issue #4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4)
+remains open.
 
 Previous restore candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
 `scanforge-c869395b41d3f42a`. Preceding candidate `1594c78` had a
@@ -59,16 +84,16 @@ candidate/CI above is historical.
 
 ## Operation matrix
 
-| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                                        |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.                                |
-| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.                                 |
-| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                                              |
-| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Real scan-derived retained-profile GUI/MCP loft/sweep pass exact display/BREP equality, independent geometry, history, error recovery and STEP in the nine-case browser matrix. Native operation equivalence and final integration remain open.                                                    |
-| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                                             |
-| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Retained real-profile and final integrated authoring chains pass paired GUI/MCP analytic/history/STEP checks. Final CAD guards also pass positive curved-cylinder pattern GUI/Redo/MCP equality through the existing gated experimental panel. Native M4 acceptance and final-head CI remain open. |
-| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Nine real-derived operation cases pass GUI/MCP STEP export/reimport. GUI and MCP project reopen preserve 13 saved BREPs and display buffers bit-exactly, with unchanged sources. Native interoperability and final integration remain open.                                                        |
-| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Nine-case matrix passes in118.806s at3,270,778,880peak Job bytes, terminal0/active0, all handles/mutex/artifacts released and port5206closed. Existing app preserved; console/browser errors empty. Failed receipts retained. Native workflow resource gates remain open.                          |
+| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                      |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.              |
+| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.               |
+| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                            |
+| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Real scan-derived retained-profile GUI/MCP loft/sweep pass exact display/BREP equality, independent geometry, history, error recovery and STEP in the nine-case browser matrix. Native operation equivalence and final integration remain open.                                  |
+| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                           |
+| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Retained real-profile and final integrated authoring chains pass paired GUI/MCP analytic/history/STEP checks. Final CAD guards pass curved-cylinder pattern GUI/Redo/MCP equality through the gated experimental panel. Exact-head CI passes; native M4 acceptance remains open. |
+| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Nine real-derived operation cases pass GUI/MCP STEP export/reimport. GUI and MCP project reopen preserve 13 saved BREPs and display buffers bit-exactly, with unchanged sources. Native interoperability and final integration remain open.                                      |
+| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Nine-case matrix passes in118.806s at3,270,778,880peak Job bytes, terminal0/active0, all handles/mutex/artifacts released and port5206closed. Existing app preserved; console/browser errors empty. Failed receipts retained. Native workflow resource gates remain open.        |
 
 ## Candidate history and validation
 
@@ -159,8 +184,8 @@ coherent unclipped bodies and an open shell. The run took 118.806 s at
 cleanup, port 5206 closed and no browser/console errors. This replay explicitly
 has `fullGuiProfileAuthoringReplayed:false`: it reuses the retained real profile.
 The matrix's retained-profile scope remains distinct from the final fresh GUI
-authoring replay below. Native M4 acceptance and final-head hosted CI remain
-pending; these passes do not close the milestone.
+authoring replay below. Exact-head hosted CI now passes as recorded above;
+native M4 acceptance remains pending and these passes do not close the milestone.
 
 The [final integrated GUI authoring GREEN r4](evidence/m5-20261025/sketch-browser-green-r4-ledger.json)
 uses the actual real STL with SHA256 `6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9`.
@@ -175,7 +200,7 @@ exports reimport correctly; the retained GUI file is 63,386 bytes with SHA256
 The authored-profile PNG, full receipts and both STEP files are retained. The
 run took 55.074 s at 3,101,900,800 peak Job bytes, terminal exit 0, active zero,
 complete handle/mutex cleanup and port 5206 closed, with no console/browser
-errors. Native M4 acceptance and final-head hosted CI remain pending.
+errors. Exact-head hosted CI now passes; native M4 acceptance remains pending.
 
 The [final CAD guards GREEN r2](evidence/m5-20261025/cad-guards-browser-green-r2-ledger.json)
 also passes positive curved-cylinder linear-pattern creation through the actual
@@ -197,8 +222,9 @@ save/reopen. Its raw native UV/D1 scope remains the separate kernel regression.
 It took 8.533 s at 1,805,025,280 peak Job bytes with terminal exit 0 and complete
 owned process/port/mutex cleanup. The runtime worker remains
 `ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5`.
-The added browser test and final evidence are pending formatting/commit; base
-`8574263`'s 49,361-test CI pass must not be presented as final-head CI.
+The added browser test and evidence were committed at `46046a6`; both exact-head
+CI builds pass as recorded above. Base `8574263`'s CI remains historical and is
+not used as a substitute for that final application/evidence-head result.
 
 ### Generic CAD cancellation
 

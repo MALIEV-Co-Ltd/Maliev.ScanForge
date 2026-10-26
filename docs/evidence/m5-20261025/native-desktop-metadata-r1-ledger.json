@@ -1,0 +1,56 @@
+{
+  "scope": "Actual read-only OS metadata observation for an exec diagnostic helper, not the unexposed CUA controller or a running native process. Observed session difference is not causal proof of capture/input failure.",
+  "status": "observed-readonly-no-errors",
+  "observations": {
+    "execDiagnosticHelperPid": 52784,
+    "execDiagnosticHelperSessionId": 1,
+    "execWindowStation": "WinSta0",
+    "execThreadDesktop": "Default",
+    "activeConsoleSessionId": 3,
+    "inputDesktopReadObjectsOpened": true,
+    "inputDesktopName": "Default",
+    "ownedInputDesktopHandleClosed": true,
+    "errors": [],
+    "error122SizeProbeExpected": true,
+    "actualCuaBackendPid": "UNAVAILABLE",
+    "actualCuaBackendSessionId": "UNAVAILABLE",
+    "retiredNativeSessionId": "UNAVAILABLE; not recorded",
+    "retiredNativePidQueried": false,
+    "causalExplanationEstablished": false
+  },
+  "guard": {
+    "observedWrapperTerminalExitCode": 0,
+    "elapsedSecondsBeforeReceipt": 0.17143589997431263,
+    "peakJobBytes": 15749120,
+    "totalProcesses": 2,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true,
+    "terminalObservationSource": "Authorized root coordinator",
+    "jobReceiptAcceptance": "Provisional receipt combined with actual observed wrapper terminal result"
+  },
+  "artifacts": [
+    {
+      "source": ".resources/m5/native-desktop-metadata-r1.json",
+      "sourceSha256": "27de840a900b09f6378bb9133ca1fd88a0dd054b4ed10aa55ffa76b29085a9e2",
+      "archive": "native-desktop-metadata-r1.json",
+      "archiveSha256": "a2a0f90ed76e6e4dd4fb0d239631e6da7d6b59a6c70103828b9f6242f221bd9e",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": ".resources/m5/native-desktop-metadata-r1-job.json",
+      "sourceSha256": "8b8d758482b507f0d35c62e91dbd6c8f2631874f4dfe64c00c6900f62a949174",
+      "archive": "native-desktop-metadata-r1-job.json",
+      "archiveSha256": "684ebeaf2753c5179524ebc69bae1975de8d95ce336c5dc9dde906fee6cdf7de",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    }
+  ],
+  "rawLogArchived": false,
+  "inputPerformed": false,
+  "nativeLaunchOrRetryPerformed": false,
+  "desktopSwitchPerformed": false,
+  "securityOrPermissionChangePerformed": false,
+  "originalResourcesPreserved": true
+}
