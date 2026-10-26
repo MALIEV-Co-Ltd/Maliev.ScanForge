@@ -31,4 +31,11 @@ it("explains selection priority without implying partial mesh movement", () => {
   expect(render(new Uint8Array([0]))).toContain(
     "Visible triangles drive fine alignment; the whole scan moves.",
   );
+  expect(render(new Uint8Array([0]))).toContain("Target overlap RMS (mm)");
+  expect(render(new Uint8Array([0]))).toContain("Expected overlap (%)");
+  expect(render(new Uint8Array([0]))).toContain("Fitting sample count");
+  expect(render(new Uint8Array([0]))).toContain("Fine align with dense ICP");
+  expect(render(new Uint8Array([0]))).toContain(
+    "Whole-cloud RMS includes every eligible source point",
+  );
 });

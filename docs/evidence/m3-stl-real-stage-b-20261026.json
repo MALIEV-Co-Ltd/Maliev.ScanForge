@@ -1,0 +1,3667 @@
+{
+  "schema": 1,
+  "status": "PASS_STL_REAL_STAGE_B_ONLY",
+  "passed": true,
+  "stage": "B",
+  "overallM3Passed": false,
+  "candidate": {
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "buildId": "scanforge-fd58d9b0cd235edc",
+    "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+    "canonicalBuildProof": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+      "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+    },
+    "regressionReceipt": "m3-main-integrated-regression-20261026.json"
+  },
+  "scope": "Exact Stage-A coarse2 checkpoint cold GUI file open with all three full original STL entities retained. Unchanged RAW source3 to fixed RAW source1 six real raw-coordinate pairs, actual production GUI/public stdio MCP full control/output/history parity; source1 and previously placed coarse2 unchanged. No stored matrix placement, native application oracle or full-surface quality claim.",
+  "publicationEncoding": "JSON normalized for repository formatting. Raw archival pin byte lengths/hashes refer to unchanged captures; PNG is byte-exact. No raw geometry copied.",
+  "rawSummaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\summary.json",
+    "bytes": 12105,
+    "sha256": "c7314e1b83891fe7b253d7c3abb5bbbae631700872019439faf6424f664e6313"
+  },
+  "retainedSummary": {
+    "stage": "B",
+    "passed": true,
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "buildId": "fd58d9b0cd235edc",
+    "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+    "originalGeometry": [
+      {
+        "vertices": 139338,
+        "triangles": 273139
+      },
+      {
+        "vertices": 1299033,
+        "triangles": 2547403
+      },
+      {
+        "vertices": 1683605,
+        "triangles": 3326910
+      }
+    ],
+    "originalCarrierCount": 15,
+    "coldCheckpointLoaded": true,
+    "realSixPairControlsPassed": true,
+    "coarseRegistrationRmsMm": 0.12218726834624381,
+    "fullSurfaceQualityAssessed": false,
+    "nativeOracleComparison": false,
+    "checkpoints": [
+      {
+        "key": "coarse-all3",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stl-real-b-r1-20261025T211320Z-ca0bf3a3\\coarse-all3.scanforge",
+        "bytes": 482477744,
+        "sha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3"
+      }
+    ],
+    "elapsedSeconds": 285.3456352999783,
+    "childPeakJobMemoryBytes": 3539488768,
+    "outerPeakJobMemoryBytes": 3554676736,
+    "cleanup": {
+      "exitCode": 0,
+      "childJobFinalActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "closedProfileRetained": true,
+    "files": [
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\config.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\00-config.json",
+        "bytes": 4957,
+        "sha256": "a90fe4b2473b1dac032a0652c33246555de8c7961708a31d94cb33cc02b251da"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\direct-browser-stderr.log",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\01-direct-browser-stderr.log",
+        "bytes": 5284,
+        "sha256": "f5029859becdeeb80621c0e590846898e33ca562096b68919e1b5148f5646e4b"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\events.jsonl",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\02-events.jsonl",
+        "bytes": 153115,
+        "sha256": "a550719728c1f55c7caa0ae1ce1f02bdbfb8d796e76a9acfcc5602f7449ac6f7"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\evidence.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\03-evidence.json",
+        "bytes": 1078180,
+        "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\harness.mjs",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\04-harness.mjs",
+        "bytes": 50656,
+        "sha256": "dd582ea223b1462c532fc09244c404da83a2af84dc81aa7da408249c4cb0d3ae"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\stl-real-source3-preview.png",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\05-stl-real-source3-preview.png",
+        "bytes": 193331,
+        "sha256": "de5564df1c3ae0d6b74ddd1c123e4a7a08008fc9b2695de73ed5354c5b3ebced"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\support-m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\06-support-m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "bytes": 484103,
+        "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\support-stl-real-landmarks-r1.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\07-support-stl-real-landmarks-r1.json",
+        "bytes": 10497,
+        "sha256": "1e6f68c47c3933e2da0cf64a0bddfbde735719bc4b8f114550415e87731c2ad9"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\support-stl-real-recipe-membership-r1.review.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\08-support-stl-real-recipe-membership-r1.review.json",
+        "bytes": 29688,
+        "sha256": "ecb6c67eb5ac8a4685ae2aae3d4fa3ee7d738e3df3d0e6dd025958a82999fec0"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\support-stl-real-stage-steps.mjs",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\09-support-stl-real-stage-steps.mjs",
+        "bytes": 23527,
+        "sha256": "cd7d34887aeda436c751d9f1d2919334252b231498d9210fe7b8b82163793319"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.config.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\10-stl-real-stage-b-r1.config.json",
+        "bytes": 4957,
+        "sha256": "a90fe4b2473b1dac032a0652c33246555de8c7961708a31d94cb33cc02b251da"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.receipt.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\11-stl-real-stage-b-r1.receipt.json",
+        "bytes": 1962,
+        "sha256": "21ea84112fca9187e17f08139eb908b67413e9f90df1c46c726741ace71957ff"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.stdout.log",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\12-stl-real-stage-b-r1.stdout.log",
+        "bytes": 321,
+        "sha256": "6666ce411e1313f666b9dbb2be1802604c9f7f538d21c2351f85d5141924eef4"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.stderr.log",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\13-stl-real-stage-b-r1.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.disk-admission.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\14-stl-real-stage-b-r1.disk-admission.json",
+        "bytes": 86,
+        "sha256": "86862e5edb0d14c61a21a678ebcafdcbd7d39d9f168ea6d86b1b3bc700cd0bd0"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.profile-inventory.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\15-stl-real-stage-b-r1.profile-inventory.json",
+        "bytes": 721,
+        "sha256": "c855e19c11826305922446324d39fc3eda33226907001dd462ce0b55be9bda89"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\inventory-stl-real-a-r1.ps1",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\16-inventory-stl-real-a-r1.ps1",
+        "bytes": 1776,
+        "sha256": "fcfb7b9c3beeb45cfa79a96aea5e47931c8ddb3a31bd09d2ca1829354ef824bd"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-stl-real-stage-host.py",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\17-prepare-stl-real-stage-host.py",
+        "bytes": 5827,
+        "sha256": "acd6c423303696067af4e0de840bd093b203913e4e3deae48aeabd54ae853bb4"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-stl-real-stage-config.py",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\18-prepare-stl-real-stage-config.py",
+        "bytes": 4103,
+        "sha256": "84efc1f2b63feaada5870b1ac254e5ae9d24ef718c3e0c29c0929aff68fe2b89"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stages-run.py",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\19-stl-real-stages-run.py",
+        "bytes": 1599,
+        "sha256": "41e7f0fca5e73cb9f1dacd608ddf669b5f938c8d7017f930508861e99513efb6"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\STL_REAL_STAGES_PREPARED.md",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\20-STL_REAL_STAGES_PREPARED.md",
+        "bytes": 3218,
+        "sha256": "64a252d613395f725e9eac62b47c43ec1aaad527ac962ac5a79d154a5490f626"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.source.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\21-m3-main-integrated-pinned-build-r1.source.json",
+        "bytes": 551430,
+        "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.dist.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\22-m3-main-integrated-pinned-build-r1.dist.json",
+        "bytes": 49855,
+        "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+      },
+      {
+        "original": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.build.json",
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\23-m3-main-integrated-pinned-build-r1.build.json",
+        "bytes": 893,
+        "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+      }
+    ]
+  },
+  "rawEvidencePin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\03-evidence.json",
+    "bytes": 1078180,
+    "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91"
+  },
+  "rawEventsPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\02-events.jsonl",
+    "bytes": 153115,
+    "sha256": "a550719728c1f55c7caa0ae1ce1f02bdbfb8d796e76a9acfcc5602f7449ac6f7"
+  },
+  "ownedJobReceiptPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\11-stl-real-stage-b-r1.receipt.json",
+    "bytes": 1962,
+    "sha256": "21ea84112fca9187e17f08139eb908b67413e9f90df1c46c726741ace71957ff"
+  },
+  "ownedJobReceipt": {
+    "mode": "cad",
+    "label": "m3-stl-real-b-r1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=768",
+      "--max-semi-space-size=16",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-real-stages.prepared.mjs",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.config.json"
+    ],
+    "leaseSeconds": 900,
+    "guardMiB": 5376,
+    "heapMiB": 768,
+    "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 10839486464,
+    "immediateChildFreeBytes": 10839465984,
+    "identity": {
+      "pid": 31520,
+      "startFileTime": "134374365314571422",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 3539488768,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 3554676736,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 285.3456352999783,
+    "completed": true
+  },
+  "inputCheckpoint": {
+    "evidence": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-a-r1\\evidence.json",
+      "sha256": "775e3591e4125836d355663a25478389f7abccda6c1bab2da1aa6d1322a9bd43"
+    },
+    "key": "coarse2",
+    "file": {
+      "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stl-real-a-r1-20261025T210445Z-4ac09d4d\\coarse2.scanforge",
+      "bytes": 356630991,
+      "sha256": "6f642a5be1a2843c0905c98615444904f34d72e426d88c9acca2e1ee0a01987c"
+    }
+  },
+  "coldCheckpointLoaded": true,
+  "originalFiles": [
+    {
+      "path": "C:\\repo\\alignment-example-files\\scan-1.stl",
+      "name": "scan-1.stl",
+      "bytes": 13657034,
+      "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\scan-2.stl",
+      "name": "scan-2.stl",
+      "bytes": 127370334,
+      "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\scan-3.stl",
+      "name": "scan-3.stl",
+      "bytes": 166345584,
+      "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+    }
+  ],
+  "originalGeometry": [
+    {
+      "vertices": 139338,
+      "triangles": 273139
+    },
+    {
+      "vertices": 1299033,
+      "triangles": 2547403
+    },
+    {
+      "vertices": 1683605,
+      "triangles": 3326910
+    }
+  ],
+  "originalReferenceDigests": [
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "units": "mm",
+      "semantic": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "rawBytes": 9833004,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+        }
+      ],
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "rawBytes": 9833004,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+          "storage": "shared-array-buffer",
+          "backingId": 0,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 9833004
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+          "storage": "shared-array-buffer",
+          "backingId": 1,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 1672056
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+          "storage": "shared-array-buffer",
+          "backingId": 2,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 3277668
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8",
+          "storage": "shared-array-buffer",
+          "backingId": 3,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 1672056
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+          "storage": "shared-array-buffer",
+          "backingId": 4,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 3277668
+        }
+      ]
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "units": "mm",
+      "semantic": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 7642209,
+          "rawBytes": 30568836,
+          "sha256": "1b96dc7754b17760c1f11d7d54ba9ca266e9d85a1bb84435b691942d665ef703"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 3897099,
+          "rawBytes": 15588396,
+          "sha256": "1021e2a8b0a49de390cc404a6c5331054a40eab94579d1e26e84733353103888"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 7642209,
+          "rawBytes": 30568836,
+          "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 3897099,
+          "rawBytes": 15588396,
+          "sha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 22926627,
+          "rawBytes": 91706508,
+          "sha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945"
+        }
+      ],
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 22926627,
+          "rawBytes": 91706508,
+          "sha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945",
+          "storage": "shared-array-buffer",
+          "backingId": 0,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 91706508
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 3897099,
+          "rawBytes": 15588396,
+          "sha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9",
+          "storage": "shared-array-buffer",
+          "backingId": 1,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 15588396
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 7642209,
+          "rawBytes": 30568836,
+          "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+          "storage": "shared-array-buffer",
+          "backingId": 2,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 30568836
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 3897099,
+          "rawBytes": 15588396,
+          "sha256": "1021e2a8b0a49de390cc404a6c5331054a40eab94579d1e26e84733353103888",
+          "storage": "shared-array-buffer",
+          "backingId": 3,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 15588396
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 7642209,
+          "rawBytes": 30568836,
+          "sha256": "1b96dc7754b17760c1f11d7d54ba9ca266e9d85a1bb84435b691942d665ef703",
+          "storage": "shared-array-buffer",
+          "backingId": 4,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 30568836
+        }
+      ]
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "units": "mm",
+      "semantic": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 9980730,
+          "rawBytes": 39922920,
+          "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5050815,
+          "rawBytes": 20203260,
+          "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 9980730,
+          "rawBytes": 39922920,
+          "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5050815,
+          "rawBytes": 20203260,
+          "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 29942190,
+          "rawBytes": 119768760,
+          "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+        }
+      ],
+      "buffers": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 29942190,
+          "rawBytes": 119768760,
+          "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c",
+          "storage": "shared-array-buffer",
+          "backingId": 0,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 119768760
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5050815,
+          "rawBytes": 20203260,
+          "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1",
+          "storage": "shared-array-buffer",
+          "backingId": 1,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 20203260
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 9980730,
+          "rawBytes": 39922920,
+          "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+          "storage": "shared-array-buffer",
+          "backingId": 2,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 39922920
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5050815,
+          "rawBytes": 20203260,
+          "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47",
+          "storage": "shared-array-buffer",
+          "backingId": 3,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 20203260
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 9980730,
+          "rawBytes": 39922920,
+          "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118",
+          "storage": "shared-array-buffer",
+          "backingId": 4,
+          "shared": true,
+          "byteOffset": 0,
+          "backingBytes": 39922920
+        }
+      ]
+    }
+  ],
+  "originalReferenceScope": "Full original digests retained from Stage A; this stage cold-loads its actual coarse2 checkpoint, not fresh original-file imports.",
+  "allFullGeometryPhases": {
+    "stage-entry": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-before-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-preview-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-cancel-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-gui-applied-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ],
+    "sixpair-gui-undone-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-mcp-applied-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ],
+    "sixpair-mcp-undone-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-mcp-redone-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ],
+    "sixpair-raw-timeline-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f5e846349a99f4a74cdccc21ce1492a32894043b3df6f75562f24f48c56b1118"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "9c743f45a26bad57055226004503d2a37f23cab349ac20aedaa6655a709c6d47"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "ba3cd6ee84d701a75eae0d6cdbd877b15fd44f30be2f273e35c5e5d650dc299c"
+          }
+        ]
+      }
+    ],
+    "sixpair-final-timeline-2": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ],
+    "coarse-all3-pre-export": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ],
+    "coarse-all3-post-transfer": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ]
+      }
+    ]
+  },
+  "nonMovingSourcesUnchangedInEveryPhase": true,
+  "rawSource3ToFixed1": {
+    "moving": "scan-3.stl",
+    "fixed": "scan-1.stl",
+    "rawPairs": [
+      {
+        "sourceFace": 1708387,
+        "sourcePoint": [
+          -0.0455629788339138, 69.25769805908203, -328.4206237792969
+        ],
+        "targetCorner": 42213,
+        "targetPoint": [
+          -58.52143859863281, -11.61855697631836, -323.06121826171875
+        ],
+        "proposalDistanceMm": 0.2031433664996338
+      },
+      {
+        "sourceFace": 2200601,
+        "sourcePoint": [
+          65.04403686523438, -7.45519495010376, -262.6258850097656
+        ],
+        "targetCorner": 219275,
+        "targetPoint": [
+          60.53944396972656, 3.284318685531616, -321.6190185546875
+        ],
+        "proposalDistanceMm": 0.10904520555428748
+      },
+      {
+        "sourceFace": 2839017,
+        "sourcePoint": [
+          -28.658472061157227, -1.2083802223205566, -315.74725341796875
+        ],
+        "targetCorner": 803201,
+        "targetPoint": [
+          -30.808032989501953, 59.46563720703125, -332.4356384277344
+        ],
+        "proposalDistanceMm": 0.06226070507789964
+      },
+      {
+        "sourceFace": 2315938,
+        "sourcePoint": [
+          66.86458587646484, 62.76527786254883, -289.85760498046875
+        ],
+        "targetCorner": 738641,
+        "targetPoint": [
+          8.131758689880371, -50.42446517944336, -315.3694152832031
+        ],
+        "proposalDistanceMm": 0.02918483523474717
+      },
+      {
+        "sourceFace": 220375,
+        "sourcePoint": [
+          10.47005558013916, -35.442081451416016, -279.4046630859375
+        ],
+        "targetCorner": 354921,
+        "targetPoint": [
+          32.64938735961914, 59.27919387817383, -331.7145080566406
+        ],
+        "proposalDistanceMm": 0.1629115827218665
+      },
+      {
+        "sourceFace": 3214269,
+        "sourcePoint": [
+          26.47110939025879, 36.491451263427734, -306.20928955078125
+        ],
+        "targetCorner": 610253,
+        "targetPoint": [
+          -11.818870544433594, -3.7217459678649902, -318.4942321777344
+        ],
+        "proposalDistanceMm": 0.0836540632814138
+      }
+    ],
+    "cancelledPreview": {
+      "active": true,
+      "layout": {
+        "referenceWidthPercent": 32,
+        "minPercent": 20,
+        "maxPercent": 50,
+        "minReferenceWidthPx": 220,
+        "minResultWidthPx": 360
+      },
+      "movingId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "fixedId": "11628efd-6015-4634-a359-eabd50245a76",
+      "candidateCount": 1,
+      "candidateIndex": 0,
+      "canPreview": true,
+      "canReset": true,
+      "canRemove": true,
+      "pairCount": 6,
+      "previewStatus": "ready",
+      "previewError": null,
+      "views": {
+        "main": {
+          "role": "result"
+        },
+        "moving": {
+          "role": "picking",
+          "position": "bottom-right",
+          "entityIds": ["8a633854-a947-47d3-af61-9be8a27b411a"],
+          "markers": [
+            {
+              "point": [
+                -0.0455629788339138, 69.25769805908203, -328.4206237792969
+              ],
+              "label": "M1"
+            },
+            {
+              "point": [
+                65.04403686523438, -7.45519495010376, -262.6258850097656
+              ],
+              "label": "M2"
+            },
+            {
+              "point": [
+                -28.658472061157227, -1.2083802223205566, -315.74725341796875
+              ],
+              "label": "M3"
+            },
+            {
+              "point": [
+                66.86458587646484, 62.76527786254883, -289.85760498046875
+              ],
+              "label": "M4"
+            },
+            {
+              "point": [
+                10.47005558013916, -35.442081451416016, -279.4046630859375
+              ],
+              "label": "M5"
+            },
+            {
+              "point": [
+                26.47110939025879, 36.491451263427734, -306.20928955078125
+              ],
+              "label": "M6"
+            }
+          ]
+        },
+        "fixed": {
+          "role": "picking",
+          "position": "top-right",
+          "entityIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+          "markers": [
+            {
+              "point": [
+                -58.52143859863281, -11.61855697631836, -323.06121826171875
+              ],
+              "label": "F1"
+            },
+            {
+              "point": [
+                60.53944396972656, 3.284318685531616, -321.6190185546875
+              ],
+              "label": "F2"
+            },
+            {
+              "point": [
+                -30.808032989501953, 59.46563720703125, -332.4356384277344
+              ],
+              "label": "F3"
+            },
+            {
+              "point": [
+                8.131758689880371, -50.42446517944336, -315.3694152832031
+              ],
+              "label": "F4"
+            },
+            {
+              "point": [
+                32.64938735961914, 59.27919387817383, -331.7145080566406
+              ],
+              "label": "F5"
+            },
+            {
+              "point": [
+                -11.818870544433594, -3.7217459678649902, -318.4942321777344
+              ],
+              "label": "F6"
+            }
+          ]
+        }
+      },
+      "referenceIds": [
+        "11628efd-6015-4634-a359-eabd50245a76",
+        "5b565a8c-02ce-4749-8e17-8c30f4cd2b10"
+      ],
+      "targetScope": "fixed",
+      "refinementTargetIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+      "preview": true,
+      "registration": {
+        "transform": {
+          "rotation": [
+            0.6102804604202043, -0.5381521475717181, 0.581334693350785,
+            -0.5671034301513211, -0.8091736224680854, -0.15372621185888274,
+            0.5531287907349509, -0.23586079531330373, -0.7990107797109289
+          ],
+          "translation": [
+            169.60026946670808, -6.281902580121866, -569.1481153947223
+          ]
+        },
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "pairs": 6,
+        "iterations": 1,
+        "converged": true
+      },
+      "refinement": {
+        "accepted": true,
+        "matrix": [
+          0.9999999693215686, -0.00024756108582800804, 8.38871324002094e-6,
+          0.0104144284847969, 0.00024756091864220513, 0.9999999691582919,
+          1.992503164776598e-5, 0.006942081279788681, -8.39364564376857e-6,
+          -1.9922954318941342e-5, 0.9999999997663114, -0.02189805949028667
+        ],
+        "parameters": [
+          10.010414428484797, 10.006942081279789, 9.978101940509713,
+          1.5707764038405756, 1.5708047204405404, 1.5710438877160762
+        ],
+        "initialError": 12.929070623608368,
+        "best": 12.814875830983226,
+        "iterations": 176
+      },
+      "diagnostics": {
+        "algorithm": "native-landmark-registration-and-refinement",
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "converged": true,
+        "iterations": 1,
+        "pairs": 6,
+        "selectedTriangles": 0,
+        "refinementApplied": true,
+        "seededFaces": 3212,
+        "seedGrowthPasses": 10,
+        "seedFaceReferences": 8718,
+        "physicalWorkers": 2,
+        "logicalLanes": 2,
+        "fallbackReason": "",
+        "seedVertices": 6,
+        "initialRadius": 3,
+        "coarseRms": 0.12218726834624381
+      },
+      "selectedTriangles": 0,
+      "picks": [
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [-0.0455629788339138, 69.25769805908203, -328.4206237792969]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-58.52143859863281, -11.61855697631836, -323.06121826171875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [65.04403686523438, -7.45519495010376, -262.6258850097656]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [
+            -28.658472061157227, -1.2083802223205566, -315.74725341796875
+          ]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [66.86458587646484, 62.76527786254883, -289.85760498046875]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [10.47005558013916, -35.442081451416016, -279.4046630859375]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [26.47110939025879, 36.491451263427734, -306.20928955078125]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "point": [
+            -58.621018290172486, -11.810707690882921, -323.096874656845
+          ],
+          "label": "M1"
+        },
+        {
+          "point": [
+            -58.52143859863281, -11.61855697631836, -323.06121826171875
+          ],
+          "label": "F1"
+        },
+        {
+          "point": [60.6338650772456, 3.236430545333782, -321.5710845748628],
+          "label": "M2"
+        },
+        {
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875],
+          "label": "F2"
+        },
+        {
+          "point": [-30.793976388077, 59.48683380326112, -332.4294727248687],
+          "label": "M3"
+        },
+        {
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344],
+          "label": "F3"
+        },
+        {
+          "point": [8.124868739823285, -50.43033424743134, -315.3679052600145],
+          "label": "M4"
+        },
+        {
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031],
+          "label": "F4"
+        },
+        {
+          "point": [
+            32.635547918428955, 59.411110854266056, -331.75009098689793
+          ],
+          "label": "M5"
+        },
+        {
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406],
+          "label": "F5"
+        },
+        {
+          "point": [
+            -11.892966014358677, -3.749285204552514, -318.4485621867052
+          ],
+          "label": "M6"
+        },
+        {
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ],
+          "label": "F6"
+        }
+      ]
+    },
+    "guiPreview": {
+      "active": true,
+      "layout": {
+        "referenceWidthPercent": 32,
+        "minPercent": 20,
+        "maxPercent": 50,
+        "minReferenceWidthPx": 220,
+        "minResultWidthPx": 360
+      },
+      "movingId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "fixedId": "11628efd-6015-4634-a359-eabd50245a76",
+      "candidateCount": 1,
+      "candidateIndex": 0,
+      "canPreview": true,
+      "canReset": true,
+      "canRemove": true,
+      "pairCount": 6,
+      "previewStatus": "ready",
+      "previewError": null,
+      "views": {
+        "main": {
+          "role": "result"
+        },
+        "moving": {
+          "role": "picking",
+          "position": "bottom-right",
+          "entityIds": ["8a633854-a947-47d3-af61-9be8a27b411a"],
+          "markers": [
+            {
+              "point": [
+                -0.0455629788339138, 69.25769805908203, -328.4206237792969
+              ],
+              "label": "M1"
+            },
+            {
+              "point": [
+                65.04403686523438, -7.45519495010376, -262.6258850097656
+              ],
+              "label": "M2"
+            },
+            {
+              "point": [
+                -28.658472061157227, -1.2083802223205566, -315.74725341796875
+              ],
+              "label": "M3"
+            },
+            {
+              "point": [
+                66.86458587646484, 62.76527786254883, -289.85760498046875
+              ],
+              "label": "M4"
+            },
+            {
+              "point": [
+                10.47005558013916, -35.442081451416016, -279.4046630859375
+              ],
+              "label": "M5"
+            },
+            {
+              "point": [
+                26.47110939025879, 36.491451263427734, -306.20928955078125
+              ],
+              "label": "M6"
+            }
+          ]
+        },
+        "fixed": {
+          "role": "picking",
+          "position": "top-right",
+          "entityIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+          "markers": [
+            {
+              "point": [
+                -58.52143859863281, -11.61855697631836, -323.06121826171875
+              ],
+              "label": "F1"
+            },
+            {
+              "point": [
+                60.53944396972656, 3.284318685531616, -321.6190185546875
+              ],
+              "label": "F2"
+            },
+            {
+              "point": [
+                -30.808032989501953, 59.46563720703125, -332.4356384277344
+              ],
+              "label": "F3"
+            },
+            {
+              "point": [
+                8.131758689880371, -50.42446517944336, -315.3694152832031
+              ],
+              "label": "F4"
+            },
+            {
+              "point": [
+                32.64938735961914, 59.27919387817383, -331.7145080566406
+              ],
+              "label": "F5"
+            },
+            {
+              "point": [
+                -11.818870544433594, -3.7217459678649902, -318.4942321777344
+              ],
+              "label": "F6"
+            }
+          ]
+        }
+      },
+      "referenceIds": [
+        "11628efd-6015-4634-a359-eabd50245a76",
+        "5b565a8c-02ce-4749-8e17-8c30f4cd2b10"
+      ],
+      "targetScope": "fixed",
+      "refinementTargetIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+      "preview": true,
+      "registration": {
+        "transform": {
+          "rotation": [
+            0.6102804604202043, -0.5381521475717181, 0.581334693350785,
+            -0.5671034301513211, -0.8091736224680854, -0.15372621185888274,
+            0.5531287907349509, -0.23586079531330373, -0.7990107797109289
+          ],
+          "translation": [
+            169.60026946670808, -6.281902580121866, -569.1481153947223
+          ]
+        },
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "pairs": 6,
+        "iterations": 1,
+        "converged": true
+      },
+      "refinement": {
+        "accepted": true,
+        "matrix": [
+          0.9999999693215686, -0.00024756108582800804, 8.38871324002094e-6,
+          0.0104144284847969, 0.00024756091864220513, 0.9999999691582919,
+          1.992503164776598e-5, 0.006942081279788681, -8.39364564376857e-6,
+          -1.9922954318941342e-5, 0.9999999997663114, -0.02189805949028667
+        ],
+        "parameters": [
+          10.010414428484797, 10.006942081279789, 9.978101940509713,
+          1.5707764038405756, 1.5708047204405404, 1.5710438877160762
+        ],
+        "initialError": 12.929070623608368,
+        "best": 12.814875830983226,
+        "iterations": 176
+      },
+      "diagnostics": {
+        "algorithm": "native-landmark-registration-and-refinement",
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "converged": true,
+        "iterations": 1,
+        "pairs": 6,
+        "selectedTriangles": 0,
+        "refinementApplied": true,
+        "seededFaces": 3212,
+        "seedGrowthPasses": 10,
+        "seedFaceReferences": 8718,
+        "physicalWorkers": 2,
+        "logicalLanes": 2,
+        "fallbackReason": "",
+        "seedVertices": 6,
+        "initialRadius": 3,
+        "coarseRms": 0.12218726834624381
+      },
+      "selectedTriangles": 0,
+      "picks": [
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [-0.0455629788339138, 69.25769805908203, -328.4206237792969]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-58.52143859863281, -11.61855697631836, -323.06121826171875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [65.04403686523438, -7.45519495010376, -262.6258850097656]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [
+            -28.658472061157227, -1.2083802223205566, -315.74725341796875
+          ]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [66.86458587646484, 62.76527786254883, -289.85760498046875]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [10.47005558013916, -35.442081451416016, -279.4046630859375]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [26.47110939025879, 36.491451263427734, -306.20928955078125]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "point": [
+            -58.621018290172486, -11.810707690882921, -323.096874656845
+          ],
+          "label": "M1"
+        },
+        {
+          "point": [
+            -58.52143859863281, -11.61855697631836, -323.06121826171875
+          ],
+          "label": "F1"
+        },
+        {
+          "point": [60.6338650772456, 3.236430545333782, -321.5710845748628],
+          "label": "M2"
+        },
+        {
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875],
+          "label": "F2"
+        },
+        {
+          "point": [-30.793976388077, 59.48683380326112, -332.4294727248687],
+          "label": "M3"
+        },
+        {
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344],
+          "label": "F3"
+        },
+        {
+          "point": [8.124868739823285, -50.43033424743134, -315.3679052600145],
+          "label": "M4"
+        },
+        {
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031],
+          "label": "F4"
+        },
+        {
+          "point": [
+            32.635547918428955, 59.411110854266056, -331.75009098689793
+          ],
+          "label": "M5"
+        },
+        {
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406],
+          "label": "F5"
+        },
+        {
+          "point": [
+            -11.892966014358677, -3.749285204552514, -318.4485621867052
+          ],
+          "label": "M6"
+        },
+        {
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ],
+          "label": "F6"
+        }
+      ]
+    },
+    "mcpPreview": {
+      "active": true,
+      "layout": {
+        "referenceWidthPercent": 32,
+        "minPercent": 20,
+        "maxPercent": 50,
+        "minReferenceWidthPx": 220,
+        "minResultWidthPx": 360
+      },
+      "movingId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "fixedId": "11628efd-6015-4634-a359-eabd50245a76",
+      "candidateCount": 1,
+      "candidateIndex": 0,
+      "canPreview": true,
+      "canReset": true,
+      "canRemove": true,
+      "pairCount": 6,
+      "previewStatus": "ready",
+      "previewError": null,
+      "views": {
+        "main": {
+          "role": "result"
+        },
+        "moving": {
+          "role": "picking",
+          "position": "bottom-right",
+          "entityIds": ["8a633854-a947-47d3-af61-9be8a27b411a"],
+          "markers": [
+            {
+              "point": [
+                -0.0455629788339138, 69.25769805908203, -328.4206237792969
+              ],
+              "label": "M1"
+            },
+            {
+              "point": [
+                65.04403686523438, -7.45519495010376, -262.6258850097656
+              ],
+              "label": "M2"
+            },
+            {
+              "point": [
+                -28.658472061157227, -1.2083802223205566, -315.74725341796875
+              ],
+              "label": "M3"
+            },
+            {
+              "point": [
+                66.86458587646484, 62.76527786254883, -289.85760498046875
+              ],
+              "label": "M4"
+            },
+            {
+              "point": [
+                10.47005558013916, -35.442081451416016, -279.4046630859375
+              ],
+              "label": "M5"
+            },
+            {
+              "point": [
+                26.47110939025879, 36.491451263427734, -306.20928955078125
+              ],
+              "label": "M6"
+            }
+          ]
+        },
+        "fixed": {
+          "role": "picking",
+          "position": "top-right",
+          "entityIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+          "markers": [
+            {
+              "point": [
+                -58.52143859863281, -11.61855697631836, -323.06121826171875
+              ],
+              "label": "F1"
+            },
+            {
+              "point": [
+                60.53944396972656, 3.284318685531616, -321.6190185546875
+              ],
+              "label": "F2"
+            },
+            {
+              "point": [
+                -30.808032989501953, 59.46563720703125, -332.4356384277344
+              ],
+              "label": "F3"
+            },
+            {
+              "point": [
+                8.131758689880371, -50.42446517944336, -315.3694152832031
+              ],
+              "label": "F4"
+            },
+            {
+              "point": [
+                32.64938735961914, 59.27919387817383, -331.7145080566406
+              ],
+              "label": "F5"
+            },
+            {
+              "point": [
+                -11.818870544433594, -3.7217459678649902, -318.4942321777344
+              ],
+              "label": "F6"
+            }
+          ]
+        }
+      },
+      "referenceIds": [
+        "11628efd-6015-4634-a359-eabd50245a76",
+        "5b565a8c-02ce-4749-8e17-8c30f4cd2b10"
+      ],
+      "targetScope": "fixed",
+      "refinementTargetIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+      "preview": true,
+      "registration": {
+        "transform": {
+          "rotation": [
+            0.6102804604202043, -0.5381521475717181, 0.581334693350785,
+            -0.5671034301513211, -0.8091736224680854, -0.15372621185888274,
+            0.5531287907349509, -0.23586079531330373, -0.7990107797109289
+          ],
+          "translation": [
+            169.60026946670808, -6.281902580121866, -569.1481153947223
+          ]
+        },
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "pairs": 6,
+        "iterations": 1,
+        "converged": true
+      },
+      "refinement": {
+        "accepted": true,
+        "matrix": [
+          0.9999999693215686, -0.00024756108582800804, 8.38871324002094e-6,
+          0.0104144284847969, 0.00024756091864220513, 0.9999999691582919,
+          1.992503164776598e-5, 0.006942081279788681, -8.39364564376857e-6,
+          -1.9922954318941342e-5, 0.9999999997663114, -0.02189805949028667
+        ],
+        "parameters": [
+          10.010414428484797, 10.006942081279789, 9.978101940509713,
+          1.5707764038405756, 1.5708047204405404, 1.5710438877160762
+        ],
+        "initialError": 12.929070623608368,
+        "best": 12.814875830983226,
+        "iterations": 176
+      },
+      "diagnostics": {
+        "algorithm": "native-landmark-registration-and-refinement",
+        "rms": 0.12218726834624381,
+        "maxError": 0.21933852964813738,
+        "converged": true,
+        "iterations": 1,
+        "pairs": 6,
+        "selectedTriangles": 0,
+        "refinementApplied": true,
+        "seededFaces": 3212,
+        "seedGrowthPasses": 10,
+        "seedFaceReferences": 8718,
+        "physicalWorkers": 2,
+        "logicalLanes": 2,
+        "fallbackReason": "",
+        "seedVertices": 6,
+        "initialRadius": 3,
+        "coarseRms": 0.12218726834624381
+      },
+      "selectedTriangles": 0,
+      "picks": [
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [-0.0455629788339138, 69.25769805908203, -328.4206237792969]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-58.52143859863281, -11.61855697631836, -323.06121826171875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [65.04403686523438, -7.45519495010376, -262.6258850097656]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [
+            -28.658472061157227, -1.2083802223205566, -315.74725341796875
+          ]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [66.86458587646484, 62.76527786254883, -289.85760498046875]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [10.47005558013916, -35.442081451416016, -279.4046630859375]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406]
+        },
+        {
+          "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+          "point": [26.47110939025879, 36.491451263427734, -306.20928955078125]
+        },
+        {
+          "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "point": [
+            -58.621018290172486, -11.810707690882921, -323.096874656845
+          ],
+          "label": "M1"
+        },
+        {
+          "point": [
+            -58.52143859863281, -11.61855697631836, -323.06121826171875
+          ],
+          "label": "F1"
+        },
+        {
+          "point": [60.6338650772456, 3.236430545333782, -321.5710845748628],
+          "label": "M2"
+        },
+        {
+          "point": [60.53944396972656, 3.284318685531616, -321.6190185546875],
+          "label": "F2"
+        },
+        {
+          "point": [-30.793976388077, 59.48683380326112, -332.4294727248687],
+          "label": "M3"
+        },
+        {
+          "point": [-30.808032989501953, 59.46563720703125, -332.4356384277344],
+          "label": "F3"
+        },
+        {
+          "point": [8.124868739823285, -50.43033424743134, -315.3679052600145],
+          "label": "M4"
+        },
+        {
+          "point": [8.131758689880371, -50.42446517944336, -315.3694152832031],
+          "label": "F4"
+        },
+        {
+          "point": [
+            32.635547918428955, 59.411110854266056, -331.75009098689793
+          ],
+          "label": "M5"
+        },
+        {
+          "point": [32.64938735961914, 59.27919387817383, -331.7145080566406],
+          "label": "F5"
+        },
+        {
+          "point": [
+            -11.892966014358677, -3.749285204552514, -318.4485621867052
+          ],
+          "label": "M6"
+        },
+        {
+          "point": [
+            -11.818870544433594, -3.7217459678649902, -318.4942321777344
+          ],
+          "label": "F6"
+        }
+      ]
+    },
+    "geometry": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "rawBytes": 9833004,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 9833004
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 1672056
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 3277668
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "rawBytes": 1672056,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 1672056
+          },
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 819417,
+            "rawBytes": 3277668,
+            "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 3277668
+          }
+        ]
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 22926627,
+            "rawBytes": 91706508,
+            "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 91706508
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f",
+            "storage": "shared-array-buffer",
+            "backingId": 1,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 15588396
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 30568836
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 3897099,
+            "rawBytes": 15588396,
+            "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e",
+            "storage": "shared-array-buffer",
+            "backingId": 3,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 15588396
+          },
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 7642209,
+            "rawBytes": 30568836,
+            "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd",
+            "storage": "shared-array-buffer",
+            "backingId": 4,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 30568836
+          }
+        ]
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "units": "mm",
+        "semantic": [
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+          },
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+          }
+        ],
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 29942190,
+            "rawBytes": 119768760,
+            "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37",
+            "storage": "shared-array-buffer",
+            "backingId": 0,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 119768760
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3",
+            "storage": "array-buffer",
+            "backingId": 1,
+            "shared": false,
+            "byteOffset": 0,
+            "backingBytes": 20203260
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+            "storage": "shared-array-buffer",
+            "backingId": 2,
+            "shared": true,
+            "byteOffset": 0,
+            "backingBytes": 39922920
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 5050815,
+            "rawBytes": 20203260,
+            "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3",
+            "storage": "array-buffer",
+            "backingId": 3,
+            "shared": false,
+            "byteOffset": 0,
+            "backingBytes": 20203260
+          },
+          {
+            "path": "indexedMesh.facetNormals",
+            "encoding": "f32",
+            "elements": 9980730,
+            "rawBytes": 39922920,
+            "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab",
+            "storage": "array-buffer",
+            "backingId": 4,
+            "shared": false,
+            "byteOffset": 0,
+            "backingBytes": 39922920
+          }
+        ]
+      }
+    ],
+    "history": {
+      "cursor": 5,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening scan-1.stl",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening scan-2.stl",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening scan-3.stl",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Align by corresponding points",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "storedMatrixApplied": false,
+    "nativeOracleClaim": false
+  },
+  "coarseLandmarkPairFit": {
+    "rmsMm": 0.12218726834624381,
+    "maximumMm": 0.21933852964813738,
+    "pairs": 6,
+    "scope": "Six actual authored raw-scan correspondence pairs, not full-surface accuracy, native equality or a release threshold."
+  },
+  "carrierSemantics": {
+    "paths": [
+      "indexedMesh.facetNormals",
+      "indexedMesh.geometryNormals",
+      "indexedMesh.triangles",
+      "indexedMesh.vertices",
+      "positions"
+    ],
+    "count": 15,
+    "computedNormals": "indexedMesh.geometryNormals are computed per indexed vertex; facetNormals are computed per triangle. No authored scanner-normal/native-normal oracle claim."
+  },
+  "checkpoints": [
+    {
+      "key": "coarse-all3",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stl-real-b-r1-20261025T211320Z-ca0bf3a3\\coarse-all3.scanforge",
+      "bytes": 482477744,
+      "sha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3"
+    }
+  ],
+  "checkpointIntegrity": "Complete public streamed export hash/length/readback verification completed in guarded run. No large artifact rehash or copy during this publication.",
+  "closedProfile": {
+    "preMoveInventoryPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\stl-real-stage-b-r1\\15-stl-real-stage-b-r1.profile-inventory.json",
+      "bytes": 721,
+      "sha256": "c855e19c11826305922446324d39fc3eda33226907001dd462ce0b55be9bda89"
+    },
+    "preMoveInventory": {
+      "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\disposable-browser-profile-151f309f-0302-4037-b417-21b1de6d5116",
+      "files": 363,
+      "bytes": 558033082,
+      "currentChromeMatches": [],
+      "jobReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.receipt.json",
+      "finalChildActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "deleted": false,
+      "freeCBytes": 5932568576
+    },
+    "moveResultPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1.profile-move-result.json",
+      "bytes": 598,
+      "sha256": "55cfc8af7e00c08f250b6e765165da2d87e0477e3f3546f8243e8a14352aa4da"
+    },
+    "moveResult": {
+      "operation": "Native Move-Item completed exit0; file retention archive",
+      "source": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/stl-real-stage-b-r1/disposable-browser-profile-151f309f-0302-4037-b417-21b1de6d5116",
+      "destination": "Z:/ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated/closed-profiles/stl-real-stage-b-r1-151f309f-0302-4037-b417-21b1de6d5116",
+      "files": 363,
+      "bytes": 558033082.0,
+      "matchesClosedPreMoveCountAndBytes": true,
+      "cryptographicFileComparison": false,
+      "sourceAbsent": true,
+      "freeCBytes": 6578401280
+    },
+    "scope": "Coordinator moved only closed owned disposable profile, Move-Item exit0 and count/byte retention proof.363 files/558033082 bytes; no cryptographic per-file relocation comparison. Historical evidence retains original C path; destination mapping below identifies retained Z copy. This publisher did not scan/move/delete a profile."
+  },
+  "screenshots": [
+    {
+      "path": "m3-stl-real-stage-b-20261026/raw-source3-to-fixed1-preview.png",
+      "bytes": 193331,
+      "sha256": "de5564df1c3ae0d6b74ddd1c123e4a7a08008fc9b2695de73ed5354c5b3ebced",
+      "scope": "Captured six-pair preview UI; not independent full-surface usability verification."
+    }
+  ],
+  "acceptanceScope": {
+    "originalThreeFullStl": true,
+    "stage": "B",
+    "realRawSixPairs": true,
+    "storedMatrixApplied": false,
+    "independentRegistrationQuality": false,
+    "nativeApplicationOracle": false
+  },
+  "supportPins": [
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-steps.mjs",
+      "sha256": "cd7d34887aeda436c751d9f1d2919334252b231498d9210fe7b8b82163793319"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\stl-real-landmarks-r1.json",
+      "sha256": "1e6f68c47c3933e2da0cf64a0bddfbde735719bc4b8f114550415e87731c2ad9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-recipe-membership-r1.review.json",
+      "sha256": "ecb6c67eb5ac8a4685ae2aae3d4fa3ee7d738e3df3d0e6dd025958a82999fec0"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+      "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+    }
+  ],
+  "sourcePins": {
+    "sourceReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.source.json",
+      "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e",
+      "head": "8c299dac2066ada6fb3ec0cc5624dacf814e778e",
+      "tree": "ef5cb9c741fb71de7fbca76655b0c8b9c7207403",
+      "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb"
+    },
+    "distReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.dist.json",
+      "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8",
+      "head": "8c299dac2066ada6fb3ec0cc5624dacf814e778e",
+      "tree": "ef5cb9c741fb71de7fbca76655b0c8b9c7207403",
+      "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb"
+    },
+    "buildReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.build.json",
+      "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b",
+      "command": "npm run build",
+      "exitCode": 0,
+      "head": "8c299dac2066ada6fb3ec0cc5624dacf814e778e",
+      "tree": "ef5cb9c741fb71de7fbca76655b0c8b9c7207403",
+      "meaning": "Exact dirty candidate bytes around the build; head/tree identify the unchanged Git base, not uncommitted implementation."
+    }
+  },
+  "fullSurfaceQualityStatus": "PENDING",
+  "nativeApplicationComparison": "UNVERIFIED_NOT_CLAIMED",
+  "remainingStages": "Fine/Global/reconstruction, full combined-project persistence and independent full-surface quality/usability remain separate current-format stages. Stage B is not an overall format or M3 pass."
+}

@@ -88,6 +88,7 @@ export async function digestEntityGeometry(
     add("indexedMesh.triangles", entity.indexedMesh.triangles, true);
     add("indexedMesh.normals", entity.indexedMesh.normals);
     add("indexedMesh.geometryNormals", entity.indexedMesh.geometryNormals);
+    add("indexedMesh.facetNormals", entity.indexedMesh.facetNormals);
   }
   add("edgePositions", entity.edgePositions);
   add(

@@ -1,3 +1,4 @@
+import { validateMeshFacetNormals } from "./mesh-geometry-normals";
 import { validateInspectionDefinitions } from "./inspection-definition";
 import {
   copyReferenceFrame,
@@ -562,6 +563,8 @@ export function serializeProject(
 ): string {
   validateConstructionOrderKeys(entities);
   for (const entity of entities) validateReferenceEntity(entity);
+  for (const entity of entities)
+    if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   for (const entity of entities)
@@ -614,6 +617,9 @@ export function serializeProject(
             ...(entity.indexedMesh.normals
               ? { normals: Array.from(entity.indexedMesh.normals) }
               : {}),
+            ...(entity.indexedMesh.facetNormals
+              ? { facetNormals: Array.from(entity.indexedMesh.facetNormals) }
+              : {}),
             ...(entity.indexedMesh.geometryNormals
               ? {
                   geometryNormals: Array.from(
@@ -634,6 +640,8 @@ export async function serializeProjectBlob(
 ): Promise<Blob> {
   validateConstructionOrderKeys(entities);
   for (const entity of entities) validateReferenceEntity(entity);
+  for (const entity of entities)
+    if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   const version = entities.some(
@@ -738,6 +746,7 @@ export async function serializeProjectBlob(
         ["triangles", indexedMesh.triangles],
         ["normals", indexedMesh.normals],
         ["geometryNormals", indexedMesh.geometryNormals],
+        ["facetNormals", indexedMesh.facetNormals],
       ] as const) {
         if (!values) continue;
         parts.push(field === "vertices" ? "" : ",", `"${field}":[`);

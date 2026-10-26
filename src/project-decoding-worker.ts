@@ -3,7 +3,7 @@ import {
   type ProjectSharedChunk,
 } from "./project-file-codec";
 import { projectEncodingSnapshot } from "./project-encoding-snapshot";
-import { prepareRestoredScanDisplays } from "./restored-scan-display";
+import { prepareRestoredProjectDisplays } from "./restored-scan-display";
 import { scanRenderData } from "./scan-render-data";
 import { packProjectTransport } from "./project-transport";
 import { assertReferenceWorkspaceAdmission } from "./reference-entity";
@@ -20,15 +20,13 @@ const lease = setTimeout(() => scope.close(), 120000);
 scope.onmessage = async ({ data }) => {
   try {
     const sharedChunks: ProjectSharedChunk[] = [];
-    const session = await decodeProjectContents(data.file, {
+    let session = await decodeProjectContents(data.file, {
       sharedReadonlyBuffers: true,
       reusableChunks: data.reusableChunks,
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
     });
     assertReferenceWorkspaceAdmission(session);
-    session.project.entities = prepareRestoredScanDisplays(
-      session.project.entities,
-    );
+    session = prepareRestoredProjectDisplays(session);
     const seen = new Set();
     const displays = session.project.entities.flatMap((e) => {
       const result = scanRenderData(e.positions);

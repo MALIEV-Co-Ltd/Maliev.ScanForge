@@ -1424,6 +1424,7 @@ export function App() {
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
   // Publish selection initialization with the shared GUI/MCP snapshot.
+  // Lazy world-view buffers do not change the source point identities below.
   useLayoutEffect(() => {
     if (!selected || !sampledSelected) {
       setTriangleMask(null);
@@ -1432,7 +1433,11 @@ export function App() {
     const session = sessionFor(selected);
     setTriangleMask(new Uint8Array(session.state.mask));
     setSelectionVersion((v) => v + 1);
-  }, [selectedId, selected?.positions, sampledSelected]);
+  }, [
+    selectedId,
+    selected ? cloudSelectionSource(selected) : undefined,
+    sampledSelected,
+  ]);
   useEffect(() => {
     const origin = wandRegion.current;
     if (!origin || selected?.kind === "pointcloud") return;
@@ -2723,7 +2728,16 @@ export function App() {
     }
     const label =
       operationLabel.current?.replace(/…$/, "") ?? changeLabel(entities, next);
-    setHistory((previous) => [...previous, { entities, label }]);
+    setHistory((previous) => [
+      ...previous,
+      {
+        entities,
+        label,
+        ...(policy?.modelVisibilityFor?.length
+          ? { restoreVisibilityFor: [...policy.modelVisibilityFor] }
+          : {}),
+      },
+    ]);
     setFuture([]);
     setEntities(next);
     setDirty(true);
@@ -2748,8 +2762,14 @@ export function App() {
   function undoModel() {
     if (history.length) {
       const next = history[history.length - 1];
-      setFuture((p) => [{ entities, label: next.label }, ...p]);
-      setEntities(restoreModelDisplay(next.entities, entities));
+      setFuture((p) => [{ ...next, entities }, ...p]);
+      setEntities(
+        restoreModelDisplay(
+          next.entities,
+          entities,
+          new Set(next.restoreVisibilityFor),
+        ),
+      );
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -2763,8 +2783,14 @@ export function App() {
   function redoModel() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p, { entities, label: next.label }]);
-      setEntities(restoreModelDisplay(next.entities, entities));
+      setHistory((p) => [...p, { ...next, entities }]);
+      setEntities(
+        restoreModelDisplay(
+          next.entities,
+          entities,
+          new Set(next.restoreVisibilityFor),
+        ),
+      );
       setSelectedId(
         next.entities.some((entity) => entity.id === selectedId)
           ? selectedId
@@ -2847,7 +2873,7 @@ export function App() {
       setError("This tool requires sampled scan geometry.");
       return;
     }
-    if (selected?.kind === "pointcloud") {
+    if (selected?.kind === "pointcloud" && tool !== "repolygonize") {
       if (tool !== "reducePolygons" && tool !== "reduceNoise") {
         setError(
           "This tool requires a triangle mesh. Select a mesh to use it.",
@@ -2958,7 +2984,8 @@ export function App() {
           {
             entityId: sourceId,
             resolution: parameters.resolution,
-            ...(parameters.targetIds?.length
+            method: parameters.method,
+            ...(parameters.targetIds?.length || parameters.method === "native"
               ? { targetIds: parameters.targetIds }
               : {}),
           },
@@ -2977,8 +3004,13 @@ export function App() {
           diagnostics?.summary ?? "Reconstruction complete.",
         );
         // The shared host commit flushes React before its terminal job receipt.
+        const outputId =
+          Array.isArray(result.entityIds) &&
+          typeof result.entityIds[0] === "string"
+            ? result.entityIds[0]
+            : sourceId;
         scanToolOutput.current =
-          entitiesRef.current.find((entity) => entity.id === sourceId)
+          entitiesRef.current.find((entity) => entity.id === outputId)
             ?.positions ?? null;
         setScanToolResult(summary);
         setMessage(summary);
@@ -3829,12 +3861,12 @@ export function App() {
           restoredFuture: Revision[] = [];
         for (const item of session.history)
           restoredHistory.push({
-            label: item.label,
+            ...item,
             entities: await restoreState(item.entities),
           });
         for (const item of session.future)
           restoredFuture.push({
-            label: item.label,
+            ...item,
             entities: await restoreState(item.entities),
           });
         signal?.throwIfAborted();

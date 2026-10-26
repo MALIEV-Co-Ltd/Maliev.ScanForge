@@ -369,5 +369,17 @@
   ],
   "finalRuntimeSourceHashUnchanged": true,
   "milestoneComplete": false,
-  "merged": false
+  "merged": false,
+  "hostedSketchCheckpoint": {
+    "commit": "f3c7cc207e823ebf6c2d5308f5cda80d1b23ba78",
+    "runId": 40271644943,
+    "jobId": 121405538155,
+    "conclusion": "success",
+    "passedTests": 49819,
+    "skippedTests": 64,
+    "passedFiles": 716,
+    "build": true,
+    "cadSmoke": true,
+    "repositoryFormatting": true
+  }
 }

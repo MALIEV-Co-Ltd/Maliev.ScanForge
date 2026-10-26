@@ -59,6 +59,12 @@ interface Preview {
 }
 const previews = new WeakMap<WorkspaceHost, Preview>();
 
+/** Internal environmental replay only; never part of the public tool arguments. */
+export interface GlobalAlignmentEnvironment {
+  sceneClocks?: ReadonlyMap<string, readonly number[]>;
+  clock?: () => number;
+}
+
 /** Drop all staged geometry and abort preparation without modifying model history. */
 export function releaseGlobalAlignmentPreview(
   host: WorkspaceHost,
@@ -153,6 +159,7 @@ function sourceGuard(
     e.indexedMesh?.triangles,
     e.indexedMesh?.normals,
     e.indexedMesh?.geometryNormals,
+    e.indexedMesh?.facetNormals,
     e.pointCloudPlacement,
     e.pointCloudPlacement?.sourcePositions,
     e.pointCloudPlacement?.sourceNormals,
@@ -256,6 +263,7 @@ function write(context: CommandContext, callback: () => void) {
 /** Shared GUI/MCP preview workflow. Lifecycle imports remain independent of geometry workers. */
 export function createGlobalAlignmentOperations(
   host: WorkspaceHost,
+  environment?: GlobalAlignmentEnvironment,
 ): Record<string, Handler> {
   return {
     global_alignment_state: (_args, context) => {
@@ -371,6 +379,27 @@ export function createGlobalAlignmentOperations(
         let result: Registration;
         try {
           check();
+          const sceneClocks = environment?.sceneClocks;
+          if (sceneClocks !== undefined) {
+            const clocks = prepared.input.scans.map(({ id }) => {
+              const stream = sceneClocks.get(id);
+              if (!Array.isArray(stream))
+                throw Error(`Missing global alignment clock stream for ${id}.`);
+              const copy = Array.from(stream);
+              if (
+                copy.some(
+                  (seed) =>
+                    !Number.isInteger(seed) ||
+                    seed < -0x80000000 ||
+                    seed > 0xffffffff,
+                )
+              )
+                throw Error(`Invalid global alignment clock stream for ${id}.`);
+              return copy;
+            });
+            prepared.input.clocks = clocks;
+          }
+          const clock = environment?.clock;
           preview.entityIds = prepared.entities.map((entity) => entity.id);
           const { refineGlobalScanSet } =
             await import("../scan-global-registration");
@@ -386,6 +415,7 @@ export function createGlobalAlignmentOperations(
               onInputConsumed: releaseOnce,
               localTolerance: 0.001,
               coverageTolerance: 0.05,
+              ...(clock === undefined ? {} : { clock }),
             },
           );
           check();

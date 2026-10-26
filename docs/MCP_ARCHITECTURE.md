@@ -1,5 +1,25 @@
 # ScanForge shared application API and MCP
 
+Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
+`mesh_process`. Fitting uses bounded source samples and every target point;
+independent final evaluation measures all eligible source points and separates
+requested-overlap accuracy from whole-cloud error. The shared adapter supplies
+an internal output placement for clouds so diagnostics describe the same composed
+Float32 geometry that the datum executor publishes. Agents cannot supply that
+internal placement. Mesh masks exclude hidden triangles through the same
+`alignmentTriangleMask` helper used by the GUI. Existing job cancellation,
+revision/retry fencing, preview publication and history semantics remain in use.
+This adds accuracy parameters and structured results to the existing operation,
+not a separate GUI or agent implementation.
+
+Fine alignment target binding shares `registrationTargetPoints` between GUI and
+MCP. Raw indexed meshes use referenced canonical vertices, preserving the complete
+target surface point set without allocating repeated triangle corners. Unused
+vertices are excluded and cloud/exact-CAD carriers retain their existing route.
+The exact nearest-point tree stores Float64 subtree bounds to prune unmatched
+regions; conservative workspace admission includes those bounds. Its public
+`distanceTests` result makes direct distance work observable.
+
 Scan screen selection is shared by GUI gestures and MCP `scan_select_region`
 through `Viewport.selectScanRegion` and the existing asynchronous screen-selection
 index. The gateway fences publication by owner/revision/cancellation and routes
@@ -60,11 +80,22 @@ controls and do not add transport commands or bypass revision and request guards
 ## Intent and scope
 
 The shared restore worker accepts optional immutable shared chunk candidates
-from the decoder client's bounded weak cache. It reads and validates the entire
+from a shared bounded weak registry. Successful restore and encoding workers
+seed the same registry; encoder candidates are published only after file storage
+completes, with cancellation, page-generation and lease fencing. Encoding registers
+only complete immutable SAB views with canonical matching binary type and
+little-endian bytes, using the actual encoded chunk hash. Ordinary buffers,
+subviews and converted values are excluded. An operation-local list of at most
+128 original SAB wrappers travels in the same structured-clone graph as the
+encoding snapshot/transport. The worker returns validated hashes and source
+tokens only; successful storage rebinds these to the original live wrappers.
+Thus weak-cache reachability follows editor ownership rather than temporary
+worker-returned wrappers. Malformed or sparse token replies fail before storage
+or cache publication. It reads and validates the entire
 incoming file even on a cache hit: matching streamed bytes borrow the earlier
 backing, mismatches allocate an independent chunk, and the final SHA-256 remains
 mandatory. Worker transport preserves SharedArrayBuffer backing without transfer
-or detachment. Only successfully restored chunks are published to the client's
+or detachment. Successful operations publish backing into the shared
 128-entry weak cache; page exit clears it. GUI opening, MCP `project_import` and
 `backup_restore` share this implementation, including ordinary-buffer fallback,
 leases, cancellation and atomic workspace replacement. Public contracts remain
@@ -1179,7 +1210,11 @@ The kernel alignment-reference reader also retains a cylinder's physical radius.
 
 The GUI reconstruction adapter submits `mesh_process` through the same executor used by MCP and only displays its terminal diagnostics. The executor owns validation, revision checks, the disposable processing worker and the single model commit. This removes the former GUI-only reusable-worker successor copy. A shared UI job observer captures revision/request identity once, forwards progress and requests cancellation on abort, observation failure or its finite lease; it never republishes geometry. Known terminal success takes precedence over a later observer abort. ShrinkWrap retains its existing `scan_preview` lifecycle through that observer.
 
-Reconstruction admission counts up to 500 million input coordinates and 256 MiB of logical private numeric transport payload before cloning or creating its worker. Ordinary Float32 views cost four bytes per coordinate and numeric arrays eight; repeated views are charged separately. Immutable Float32 shared-buffer views are borrowed without transfer only by the disposable read-only reconstruction worker, even when a caller requests reusable topology. Other mutating operations retain private copies. Global alignment allocates final streams directly in private shared buffers when cross-origin isolation supports them, preserving stage order and Float32 rounding; fallback output remains ordinary buffers. Reconstruction counts output facets before allocating one exact contiguous Float32 output. Grid, sampling, output and frontier limits remain independent. These payload and allocation policies do not establish a whole-workflow heap or process memory bound.
+`mesh_process` resolves `scanTools/repolygonize.method` once through shared binding: all-mesh inputs default to `native`; cloud or mixed inputs use `voxel`; explicit native cloud input is rejected. Native omitted `targetIds` discovers eligible visible raw meshes in workspace order, an empty list means source only, and explicit native lists are normalized to workspace order. Voxel preserves the existing explicit target order and rejects an empty explicit list. Other operations keep their target cardinality requirements. The executor constructs private indexed source/target descriptors from workspace objects; discovery never advertises those buffers as public arguments.
+
+Native runs the signed-field/extraction/repair/half-count pipeline and returns method/input-ID diagnostics with computed indexed vertex normals. Creating a result is the default: the requested source remains immutable, a new mesh becomes selected, and eligible inputs are hidden atomically. Explicit `createNew:false` replaces the requested owner even if computation order chooses a different first field source. Hiding inputs requires their lock checks. Visibility is part of the modeling transaction: trusted `restoreVisibilityFor` history metadata survives the shared session snapshot/transport/codec paths, Undo/Redo and GUI or public MCP restoration. It is not a caller-settable visibility bypass. Voxel retains its previous ownership behavior.
+
+Reconstruction admission counts up to 500 million input coordinates and 256 MiB of logical private numeric transport payload before cloning or creating its worker. Ordinary Float32 views cost four bytes per coordinate and numeric arrays eight; repeated views are charged separately. Immutable Float32 shared-buffer views are borrowed without transfer only by the disposable read-only reconstruction worker, even when a caller requests reusable topology. Other mutating operations retain private copies. Global alignment allocates final streams directly in private shared buffers when cross-origin isolation supports them, preserving stage order and Float32 rounding; fallback output remains ordinary buffers. Voxel reconstruction counts output facets before allocating one exact contiguous Float32 output. Native signed-field nodes/corners/candidates and finalization/optimization estimates have independent bounded admissions; field storage is released before reduction allocates mutable records. Grid, sampling, output and frontier limits remain independent. These payload and allocation policies do not establish a whole-workflow heap or process memory bound.
 
 ## ASC attribute carriers
 
@@ -1674,6 +1709,14 @@ It does not stop propagation, so React/custom menu handlers and body portals
 still receive the event. This closes the native-menu leak when right-pan capture
 ends outside a canvas. application_inspect reports contextMenuPolicy as
 application-only; existing semantic MCP menu actions remain unchanged.
+
+Reconstruction binds explicit `points` or `triangles` records from current workspace entity kinds. GUI request binding and the shared executor use the same admission rules; external schemas reject internal geometry records. The processing client preserves those kinds while borrowing immutable shared views or cloning private inputs into a disposable worker. The mixed sampler unions point-distance occupancy into the existing triangle bitset with a combined candidate budget, then reuses filling, extraction and topology verification. Explicit voxel all-mesh calls retain the legacy sampler and output; omitted all-mesh method resolves to the native field pipeline. Publishing a cloud reconstruction creates a clean mesh through the shared commit path and never carries point-cloud metadata into the mesh.
+
+An internal optional global alignment environment can supply retained sampler clock streams by prepared scan ID and the outer clock callback. It is absent from public schemas and ordinary editor construction. It supplies environmental clocks only; captured geometry, queries, matrices and results are never injected into the solve. Supplied-host controller tests remain distinct from production editor/stdio and native setter-entry observation.
+
+Cloud placement caches retain a boolean describing the world-normal carrier alongside weak buffer references; reclaiming historical views does not erase this storage choice or add a strong geometry reference. Project encoding snapshots carry optional `typedNormalClouds` entity references through structured cloning, preserving existing deduplication identities. Binary cloud records use optional `cloudNormalsTyped` independently of local normal storage. Decoding strips that internal flag from entity metadata, validates its type/pose prerequisite and restores the world carrier. Omitted flags retain the legacy array fallback; file versions and public tool schemas remain unchanged. GUI history and public MCP export/restore use these same paths.
+
+Computed scan facets use the shared optional `IndexedMesh.facetNormals` Float32 carrier (XYZ per triangle), distinct from scanner and computed vertex normals. Import/render preparation initializes it, shared rigid transforms rotate it stage by stage, and immutable history/project transport retain its bits and aliases. Global input and query admission count its backing storage; GUI and MCP invoke the same production evaluator path. Geometry inspection exposes the carrier through `object_get` and `object_geometry_digest`. Geometry JSON receives a UTF-8 size preflight against the existing 1 GiB artifact capacity before typed-array expansion; larger payloads use binary project export or bounded digest inspection. Derived triangle-soup topology is published only when it expands exactly to the source; the nonmatching legacy geometry fallback remains uncached.
 
 ## Inspection parity
 

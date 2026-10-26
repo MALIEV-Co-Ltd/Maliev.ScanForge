@@ -1,0 +1,554 @@
+{
+  "schema": 1,
+  "publishedAtUtc": "2026-10-25T19:55:04.459069+00:00",
+  "caseId": "original-ply-workflow-r7-legacy-token-r1",
+  "candidate": {
+    "sourceCommit": "8c299dac2066ada6fb3ec0cc5624dacf814e778e",
+    "buildId": "scanforge-02f14fce13af5f4c",
+    "compilerInputs": 2064,
+    "allBuiltCanonicalInputsMatchCommit": true,
+    "canonicalCommitProof": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.commit-8c299da.json",
+      "bytes": 479536,
+      "sha256": "6c2e0cc483200c79acab090e2fffa1d7ba8232a6d1f627f721668e7ef2ff6b3e"
+    },
+    "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac",
+    "sourceReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.source.json",
+      "sha256": "cdd5b481b84883b6d99ee1049fdf0b7dc71e25d8b5d0a0209e75374584649ea2",
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac"
+    },
+    "buildReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.build.json",
+      "sha256": "4ae53f0f75cffd8ae4e5af99422c1529c57817045b8d4cdfd371669e7790c70b",
+      "command": "npm run build",
+      "exitCode": 0,
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "meaning": "Exact dirty candidate bytes around the build; head/tree identify the unchanged Git base, not uncommitted implementation."
+    },
+    "distReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-legacy-pinned-build-r1.dist.json",
+      "sha256": "abd93ae836232989d165bda1aead156fd7eaf0dc0cf8dddc3dcfe99692fe81c1",
+      "head": "8fca301aebccf06c1780c1a640669fe806b67d48",
+      "tree": "b1cb5c47003b262c34e7be03237374dc1492690f",
+      "sourceManifestSha256": "e646b0c1dfff8bec09a1a3558218ddbc775b484ca1e0f8f4a3c9266c3f1555ac"
+    },
+    "provenanceMeaning": "Pinned build was produced from exact dirty source bytes based on8fca301. The2064-input canonical proof binds those build inputs to committed8c299; the older head/tree fields are build-base identity, not the candidate implementation commit."
+  },
+  "overallR7Status": "FAIL_WORK_DEADLINE",
+  "qualityOnly": true,
+  "coupledPersistenceStatus": "PENDING_AT_PUBLICATION",
+  "acceptanceBoundary": {
+    "overallWorkflowPassed": false,
+    "sourceWorkflowError": "Error: 780-second work budget expired; cleaning within 840-second lease",
+    "sourceWorkflowEvidence": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-r7-legacy-token-r1\\evidence.json",
+      "bytes": 2026003,
+      "sha256": "b4421b8571135ea6d2af1c1bce745586d6b65ced7d67f62bcf57e1d629f0e02f"
+    },
+    "sourceWorkflowReceipt": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-workflow-r7-legacy-token-r1.receipt.json",
+      "bytes": 2072,
+      "sha256": "752a61bfa9aeeafd5614ed20035bdff6b3557ae9e8d854f6dbe6ef0a00884510"
+    },
+    "sourceWorkflowResourceReceipt": {
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 780.3576618999941,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 900,
+      "childPeakJobMemoryBytes": 3786555392,
+      "outerPeakJobMemoryBytes": 3801862144,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "globalAlignmentLifecyclePassed": true,
+    "reconstructionGuiMcpPassed": true,
+    "firstCombinedImportOperationSucceeded": true,
+    "reopenedCurrentUndoRedoAndOriginalTimelinePrefixVerified": true,
+    "completedReopenedEntityDigestsByPhase": {
+      "reopened": 3,
+      "reopened-undo": 3,
+      "reopened-redo": 3,
+      "reopened-original-timeline": 3,
+      "reopened-aligned-timeline": 2
+    },
+    "completeFinalTimelineAndPersistenceMatrixPassed": false,
+    "meaning": "R7 passed the recorded prefix but expired at780seconds during aligned-timeline hashing. Independent completed measurements are valid on the three complete snapshots; neither these measurements nor pending coupled persistence change R7 into an overall PASS."
+  },
+  "allThreeSnapshotPins": [
+    {
+      "stage": "before",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-before.scanforge",
+      "bytes": 424546152,
+      "sha256": "421f435ea1fd198ae4223b26c76434771d11c2a831aa014842f580dad03ec0e6",
+      "chunks": 1620,
+      "maxDecodedChunkBytes": 262144,
+      "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+    },
+    {
+      "stage": "after",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-after.scanforge",
+      "bytes": 813126000,
+      "sha256": "0e580679515ba7f27f5efea602e1814cf16a81ade4c28967bbe5b41bc2a618b8",
+      "chunks": 3102,
+      "maxDecodedChunkBytes": 262144,
+      "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+    },
+    {
+      "stage": "combined",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+      "bytes": 815009960,
+      "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856",
+      "chunks": 3110,
+      "maxDecodedChunkBytes": 262144,
+      "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+    }
+  ],
+  "originalFileIds": [
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+      "name": "ply-1.ply",
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "entityId": "eef08325-1980-4ac2-a8ca-902b14614a64",
+      "indexedVertices": 140113,
+      "triangles": 274154,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "a93773831f4498b189546c49da5ac38bbfa5fa9c94ceed8fb7d8df02c15eb2f3"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7"
+        }
+      ]
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+      "name": "ply-2.ply",
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "entityId": "3f2862d3-2a29-4b1a-81b4-e6aafb5b2de3",
+      "indexedVertices": 1375494,
+      "triangles": 2697877,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "cf5399db2b9c3badf70dc841718cab4d091c9163d2272241aef2aef04098df14"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "347affe9c909dc371eaff615e38225d5c3d8d31d04f7ec4343e9bcb7e63180c5"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "db71bd061f793224d7788a168aa577f2b8cd304307be0a38adc79df38a1c0149"
+        }
+      ]
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-3.ply",
+      "name": "ply-3.ply",
+      "bytes": 92765339,
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "entityId": "15deed9c-8088-4d26-92bc-f71e79945455",
+      "indexedVertices": 1865848,
+      "triangles": 3691133,
+      "units": "mm",
+      "beforeFullBufferDigests": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "65aff71a399462bd00cb6f05d2ad3bd98ae3b4e11765c701a2f0ee3b453342bb"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a"
+        }
+      ]
+    }
+  ],
+  "sourceNormalChannels": {
+    "indexedMesh.normals": {
+      "meaning": "Scanner-authored vertex normals in original indexed vertex order, including unused vertices. Distinct from computed display/registration normals.",
+      "authority": "src/types.ts IndexedMesh.normals; PLY parser source normal attribute",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "normals": {
+      "meaning": "Scanner-authored vectors expanded into entity triangle-corner order for these original PLY imports; independently serialized/rotated carrier, not the computed indexed geometry-normal cache.",
+      "authority": "src/import-parser.ts sourceNormals expansion/onMeshNormals and src/imported-scan.ts onMeshNormals",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "indexedMesh.geometryNormals": {
+      "meaning": "Stored computed normal per indexed vertex, used by indexed mesh rendering; distinct from scanner-authored normals.",
+      "authority": "src/types.ts and src/scan-render-data.ts prepareStoredScanRenderData",
+      "nativeOracleClaimedByThisAssessment": false
+    },
+    "indexedMesh.facetNormals": {
+      "meaning": "Stored computed XYZ normal per indexed triangle; native-style staged rigid setters rotate this cached state. Input state is retained independently from vertex normals.",
+      "authority": "src/types.ts IndexedMesh.facetNormals and shared import/setter/history/project lifecycle",
+      "nativeOracleClaimedByThisAssessment": false
+    }
+  },
+  "measurementPolicy": {
+    "surfaceMetric": "Unsigned nearest full triangle surfaces, vertex-weighted; all original indexed vertices and all output triangle corners, no sampled replacement.",
+    "fixedSupport": "Baseline source vertex IDs below actual0.5mm correspondence search radius, reevaluated after with no post-clipping, normal or boundary filter.",
+    "releaseAccuracyThresholdSpecified": false,
+    "searchRadiusIsNotReleaseAccuracy": true,
+    "nativeNumericalComparisonPerformedByTheseJobs": false,
+    "scannerGroundTruth": false,
+    "continuousHausdorffBound": false,
+    "noComponentRemoval": true,
+    "mixedQualityMustRemainExplicit": true
+  },
+  "assessmentKind": "topology",
+  "assessmentStatus": "COMPLETED_MEASUREMENTS_NOT_RELEASE_QUALITY_VERDICT",
+  "retainedRawAssessment": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-r3.json",
+    "bytes": 8566,
+    "sha256": "90dcafddb1aa337b67eb7b10a6eade89f2e81c1e96fb62cbde636ca469cca8b7"
+  },
+  "analysisCommandReceipt": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-r3.receipt.json",
+    "bytes": 1818,
+    "sha256": "fe27a3f062e78defc39579f0273681644e65cec31a96eab54c971c6bbe1b07a5"
+  },
+  "analysisResources": {
+    "completed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 22.602603400009684,
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "leaseSeconds": 900,
+    "childPeakJobMemoryBytes": 294166528,
+    "outerPeakJobMemoryBytes": 308125696,
+    "rootExited": true,
+    "childJobFinalActive": 0,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "completed": true,
+  "scope": "Independent full actual combined-output topology and all self-BVH candidate triangle-pair predicates. No downsampling, edits, component removal or assumed usability threshold.",
+  "workflowStatus": {
+    "overallWorkflowPassed": false,
+    "reopenVerified": false,
+    "qualityOnlyScope": true,
+    "reopenOperationSucceeded": true,
+    "reopenedCurrentGeometryVerified": true,
+    "sourceWorkflowEvidenceSha256": "b4421b8571135ea6d2af1c1bce745586d6b65ced7d67f62bcf57e1d629f0e02f",
+    "sourceWorkflowReceiptSha256": "752a61bfa9aeeafd5614ed20035bdff6b3557ae9e8d854f6dbe6ef0a00884510",
+    "sourceWorkflowExitCode": 1,
+    "sourceWorkflowError": "Error: 780-second work budget expired; cleaning within 840-second lease",
+    "meaning": "Independent quality measurements of three fully retained current snapshots only. Overall workflow remains failed and complete reopen/timeline acceptance remains unverified; measurements do not change that result."
+  },
+  "qualitySha256": "59c73494e750156467452f31718f76b901936da31175cae304f0797853683bdf",
+  "snapshot": {
+    "stage": "combined",
+    "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r7-legacy-token-20261025T191317Z-73bbe30a\\original-three-combined.scanforge",
+    "bytes": 815009960,
+    "sha256": "825a56a98f9669a9a00d4ee1e1749034e6ba35c459372aa0180827e3a3ea2856",
+    "chunks": 3110,
+    "maxDecodedChunkBytes": 262144,
+    "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+  },
+  "selfTests": {
+    "closedCube": true,
+    "twoDisjointCubes": true,
+    "vertexContactFans": true,
+    "openTriangle": true,
+    "duplicateOrientation": true,
+    "intersectionControls": 8
+  },
+  "intersectionHelper": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+    "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+  },
+  "independentTopology": {
+    "method": "Exact Float32 coordinate welding; face components connected through complete shared edges; independent edge incidence/orientation and vertex fan union; no arbitrary weld/removal",
+    "triangles": 334410,
+    "vertices": 166945,
+    "edges": 501615,
+    "components": [
+      {
+        "id": 4565,
+        "triangles": 333942,
+        "vertices": 166705,
+        "surfaceAreaMm2": 28997.995694712296,
+        "signedVolumeMm3": 10493.344495429357,
+        "min": [-33.45513153076172, -38.787681579589844, -331.8161926269531],
+        "max": [73.04486846923828, 73.21231842041016, -261.8161926269531],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 10493.344495429357,
+        "extent": [106.5, 112, 70],
+        "areaPercent": 99.86286254016464,
+        "closed": true
+      },
+      {
+        "id": 136649,
+        "triangles": 218,
+        "vertices": 111,
+        "surfaceAreaMm2": 18.503235271730922,
+        "signedVolumeMm3": 2.7708333333333357,
+        "min": [22.54486846923828, 41.712318420410156, -304.8161926269531],
+        "max": [29.04486846923828, 42.712318420410156, -300.8161926269531],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.7708333333333357,
+        "extent": [6.5, 1, 4],
+        "areaPercent": 0.06372116403983501,
+        "closed": true
+      },
+      {
+        "id": 272350,
+        "triangles": 198,
+        "vertices": 101,
+        "surfaceAreaMm2": 16.824930258323892,
+        "signedVolumeMm3": 2.8593750000000457,
+        "min": [43.54486846923828, 17.712318420410156, -284.8161926269531],
+        "max": [45.54486846923828, 21.712318420410156, -282.3161926269531],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.8593750000000457,
+        "extent": [2, 4, 2.5],
+        "areaPercent": 0.05794144241290557,
+        "closed": true
+      },
+      {
+        "id": 48839,
+        "triangles": 52,
+        "vertices": 28,
+        "surfaceAreaMm2": 4.493559671141487,
+        "signedVolumeMm3": 0.6770833333333343,
+        "min": [2.0448684692382812, 48.712318420410156, -318.8161926269531],
+        "max": [3.0448684692382812, 50.212318420410156, -317.8161926269531],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 0.6770833333333343,
+        "extent": [1, 1.5, 1],
+        "areaPercent": 0.015474853382265183,
+        "closed": true
+      }
+    ],
+    "boundaryEdges": 0,
+    "boundaryLoops": 0,
+    "boundaryChains": 0,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 0,
+    "inconsistentEdges": 0,
+    "duplicateTriangles": 0,
+    "degenerateTriangles": 0,
+    "totalSurfaceAreaMm2": 29037.81741991359,
+    "watertight": true,
+    "positionsSha256": "d3c2ee7301698d570b44ce77f5851941523038863772ea62dc2f5bdcd103cc95"
+  },
+  "separations": [
+    {
+      "components": [4565, 136649],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [4565, 272350],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [4565, 48839],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [136649, 272350],
+      "aabbSeparationLowerBoundMm": 29.432125305522877,
+      "axisGapsMm": [14.5, 20, 16],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [136649, 48839],
+      "aabbSeparationLowerBoundMm": 24.19194080680589,
+      "axisGapsMm": [19.5, 6, 13],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [272350, 48839],
+      "aabbSeparationLowerBoundMm": 58.80688735173797,
+      "axisGapsMm": [40.5, 27, 33],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    }
+  ],
+  "intersections": {
+    "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+    "controls": 8,
+    "pairs": 14088080,
+    "invalidIntersections": 0,
+    "examples": [],
+    "tolerances": {
+      "coplanarDistance": 1e-9,
+      "coplanarArea": 1e-12,
+      "sharedFeatureSquaredDistance": 1e-16
+    },
+    "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+  },
+  "observedPublicTopology": {
+    "vertices": 166945,
+    "triangles": 334410,
+    "components": 4,
+    "boundaryLoops": 0,
+    "boundaryChains": 0,
+    "boundaryEdges": 0,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 0,
+    "inconsistentEdges": 0,
+    "duplicateTriangles": 0,
+    "degenerateTriangles": 0,
+    "watertight": true
+  },
+  "componentInterpretation": "Areas, volumes and bounds describe all components; intended separate parts versus unwanted islands is not inferred from component count alone.",
+  "selfIntersectionsChecked": true,
+  "geometricPredicateTolerance": "Retained corrected helper uses1e-12 projected overlap area,1e-9 plane and1e-8 endpoint/edge distance tolerances; exact shared coordinates allowed.",
+  "hausdorffBound": false,
+  "productMutated": false,
+  "elapsedMs": 22447
+}

@@ -295,7 +295,7 @@ it.each([false, true])(
     expect(transfers.every((buffer) => buffer instanceof ArrayBuffer)).toBe(
       true,
     );
-    expect(transfers).toHaveLength(isolated ? 0 : 6);
+    expect(transfers).toHaveLength(isolated ? 0 : 7);
     for (const array of Object.values(
       published.indexedMesh,
     ) as ArrayBufferView[])
@@ -304,5 +304,10 @@ it.each([false, true])(
       bits(expandPlyTopology(published.indexedMesh)),
     );
     expect(published.renderData.indexedMesh).toBe(published.indexedMesh);
+    expect(published.indexedMesh.facetNormals).toBeInstanceOf(Float32Array);
+    expect(published.indexedMesh.facetNormals.length).toBe(
+      published.indexedMesh.triangles.length,
+    );
+    expect(Array.from(published.indexedMesh.facetNormals)).toEqual([0, 0, 1]);
   },
 );

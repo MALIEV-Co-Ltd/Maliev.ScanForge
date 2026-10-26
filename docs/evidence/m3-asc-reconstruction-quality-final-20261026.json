@@ -1,0 +1,4792 @@
+{
+  "schema": 1,
+  "status": "PASS_CURRENT_ORIGINAL_ASC_RECONSTRUCTION_GUI_PUBLIC_MCP_AND_INDEPENDENT_FULL_GEOMETRY_ASSESSMENT",
+  "overallM3Passed": false,
+  "candidate": {
+    "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+    "buildId": "scanforge-b9a7e1058f533d0c",
+    "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+    "compilerInputs": 2084
+  },
+  "pinnedBuildInputCountMeaning": "compilerInputs is a legacy field naming all2084 pinned build input files, including assets/documentation/licenses, not solely compiler source roots.",
+  "scope": "Unsigned point-sphere envelope over all3 full originals; no native reconstruction equivalence or independent registration quality claim",
+  "productionSummary": {
+    "passed": true,
+    "scope": "Unsigned point-sphere envelope over all3 full originals; no native reconstruction equivalence or independent registration quality claim",
+    "build": {
+      "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+      "buildId": "scanforge-b9a7e1058f533d0c",
+      "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+      "compilerInputs": 2084
+    },
+    "sourceAndBuiltAssetsUnchanged": true,
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f"
+      }
+    ],
+    "pointCounts": [140113, 1375494, 1865848],
+    "guiPublicMcpFullCarrierAndDiagnosticEquality": true,
+    "targetCarrierInvariance": true,
+    "retryStaleUndoRedoHistorySeekProjectReopen": true,
+    "productionTopology": {
+      "vertices": 165434,
+      "triangles": 331268,
+      "components": 4,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    },
+    "productionDiagnostics": {
+      "watertight": true,
+      "inputMeshes": 0,
+      "inputPointClouds": 3,
+      "inputPoints": 3381455,
+      "inputTriangles": 0,
+      "processedPoints": 3381455,
+      "representedPoints": 3381455,
+      "field": "unsigned-distance-occupancy-union",
+      "triangleRadius": 0,
+      "pointRadius": 0.4330127018922193,
+      "resolution": 0.5,
+      "gridPoints": 7404390,
+      "distanceTests": 17579265,
+      "samplingCandidates": 17579265,
+      "verification": "streamed-edge-pairing-and-vertex-fans",
+      "extraction": "face-consistent-cube-contours",
+      "peakTopologyFrontierEdges": 1432,
+      "weldTolerance": 1e-6,
+      "selfIntersectionsChecked": false,
+      "summary": "Verified watertight voxel surface: 4 closed components at 0.5 mm point resolution; 203 enclosed samples filled. Surface offset approximately 0.4330127018922193 mm. Enclosed regions fused and filled."
+    },
+    "actualCompleteGeometryCaptures": {
+      "output": {
+        "filename": "output-geometry.json",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-geometry.json",
+        "bytes": 53565639,
+        "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+        "artifact": {
+          "artifactId": "40c4bd2e-c8d6-4a12-953b-87eee78ee58e",
+          "name": "geometry.json",
+          "mime": "application/json",
+          "bytes": 53565639
+        }
+      },
+      "reopened": {
+        "filename": "output-reopened-geometry.json",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-reopened-geometry.json",
+        "bytes": 53565639,
+        "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+        "artifact": {
+          "artifactId": "8654ff08-5bb0-406c-b07e-4b6a294ad41b",
+          "name": "geometry.json",
+          "mime": "application/json",
+          "bytes": 53565639
+        }
+      }
+    },
+    "independentQuality": "PENDING: first qualityr2 rejected mandatorydiskadmission before data/controls; preparedfreshqualityr3, no metrics claimed",
+    "receipt": {
+      "mode": "cad",
+      "label": "original-asc-reconstruction-final-cloud-selection-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "--max-semi-space-size=16",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-review-final-runner.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.config.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 6144,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12096745472,
+      "immediateChildFreeBytes": 12096610304,
+      "identity": {
+        "pid": 56176,
+        "startFileTime": "134374461049653686",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 1863540736,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 1877377024,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 83.2908979000058,
+      "completed": true
+    },
+    "profileRetention": {
+      "operation": "Native Move-Item exit0; retention archive",
+      "source": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\owned-default-profile",
+      "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-asc-reconstruction-final-cloud-selection-r2-owned-default-profile",
+      "files": 295,
+      "bytes": 98799692.0,
+      "matchesClosedPreMoveCountAndBytes": true,
+      "cryptographicFileComparison": false,
+      "sourceAbsent": true,
+      "freeCBytes": 6420492288
+    },
+    "profileRetentionMeaning": "Root-owned move verified count/bytes/sourceabsence only; not per-file hash relocation",
+    "harness": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.config.json",
+        "bytes": 5350,
+        "sha256": "093ec2e686f5401433511f41d11268c69a6e457301c10e9e93b2e07ae5367f4e"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.receipt.json",
+        "bytes": 2134,
+        "sha256": "395c0a8588cd1c860698aee2b8217fc58352ed82c53595083d10e90b8b5b980f"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-review-final-run.py",
+        "bytes": 963,
+        "sha256": "fffa0f2fafcfe24dd62cf5f3fe68c8618f5d64a6ffc85c2bb5cd3b698a70a790"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-review-final.mjs",
+        "bytes": 21142,
+        "sha256": "b2c31cec7f6ea6163553bea8ae7bc3ad7c2d3e430a50ab74f7d7f9dfa503bb15"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-review-final-origin.mjs",
+        "bytes": 1756,
+        "sha256": "bb1d7ae1d5a0cc57684cfc7ece75ff63c3b2fea6518adb328f0102865f2397fb"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-review-final-runner.mjs",
+        "bytes": 4437,
+        "sha256": "ff323c027d8ac57a154595b6589c5950537c3e767c68fe87880dd8c4fedf802b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-prepared.mjs",
+        "bytes": 16659,
+        "sha256": "651f398481d98b72792aecdc41c8cd3ce8d220bd06fd36e80213b426f34511ed"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-placement-review-r2.mjs",
+        "bytes": 23663,
+        "sha256": "1ca6ca4763bfb5fc6def9a7e111130ac68799ab75237e9f36a97a5a2d4728a8d"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+        "bytes": 115398,
+        "sha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\binding-result.json",
+        "bytes": 414259,
+        "sha256": "9bee8f0f86f3db6f877bf9842b8df5ccb6c2c31ed38909104404f4ee48c4a6f0"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.receipt.json",
+        "bytes": 2134,
+        "sha256": "395c0a8588cd1c860698aee2b8217fc58352ed82c53595083d10e90b8b5b980f"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\digest-observations.json",
+        "bytes": 9563,
+        "sha256": "fca1d09ee75492da5bbefd50e02819b124db87d8ebcc1cad5f3d9c18089c4f7f"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\readiness-observations.json",
+        "bytes": 89125,
+        "sha256": "bb830165db07631f8370007a4980f1475afa1d78038248c1fe84a17f9c8c47ba"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-preflight.json",
+        "bytes": 756,
+        "sha256": "0460e150621b92ba8eb852424c5c4a3ff659206cd0ba29c28805446b8c56b1fb"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-result.json",
+        "bytes": 623,
+        "sha256": "1f24e0033250eb5f3dc052a2b9010f6627311afcaf3176f15e1a7616a2e7a130"
+      }
+    ]
+  },
+  "productionFullEvidence": {
+    "passed": true,
+    "scope": "Unsigned point-sphere envelope over all3 full originals; no native reconstruction equivalence or independent registration quality claim",
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f"
+      }
+    ],
+    "expectedCounts": [140113, 1375494, 1865848],
+    "browserContextScope": {
+      "persistent": true,
+      "incognito": false,
+      "ownedDisposableProfile": true,
+      "userDataDir": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\owned-default-profile"
+    },
+    "readinessObservations": [
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:24.003Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "selectedIds": ["69a3357d-fa36-4f94-aa30-255796a2c69f"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:24.378Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "selectedIds": ["69a3357d-fa36-4f94-aa30-255796a2c69f"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:55:25.223Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "selectedIds": ["69a3357d-fa36-4f94-aa30-255796a2c69f"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:27.971Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:28.470Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:55:29.314Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-output-capture:output-geometry.json",
+        "observedAt": "2026-10-25T23:55:30.377Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:45.659Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "source",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:46.002Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "source",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:55:46.845Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "source",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:48.033Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 17,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:48.532Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 17,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:55:49.377Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 17,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:51.721Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 21,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:52.220Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 21,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:55:53.064Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 21,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:55:58.847Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 23,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:55:59.346Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 23,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:00.190Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 23,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-output-capture:output-reopened-geometry.json",
+        "observedAt": "2026-10-25T23:56:01.252Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 23,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:56:15.877Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 25,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:56:16.220Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 25,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:17.067Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 25,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:56:18.064Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 27,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:56:18.566Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 27,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:19.407Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 27,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:56:20.471Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 29,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:56:20.815Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 29,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:21.658Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 29,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointColorMode": "source",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:56:22.752Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 31,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:56:23.251Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 31,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:24.096Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 31,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:7a523bf5-686e-463d-927b-c704001511e0",
+        "observedAt": "2026-10-25T23:56:25.158Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 33,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "observedAt": "2026-10-25T23:56:25.658Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 33,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "observedAt": "2026-10-25T23:56:26.532Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 33,
+        "selectedId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "selectedIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.22215712688545,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "7a523bf5-686e-463d-927b-c704001511e0",
+            "name": "asc-1.asc",
+            "kind": "mesh",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "source": "asc-1.asc",
+            "triangles": 331268,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-2.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "ascAttributes": "xyz-normal",
+            "color": "#aaff00",
+            "pointColorMode": "solid",
+            "visible": false,
+            "opacity": 1,
+            "source": "asc-3.asc",
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      }
+    ],
+    "digestObservations": [
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:55:24.006Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "a04a98e8-e0da-4136-b61b-d83f339ae244",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:55:24.381Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "518794d2-0c90-42b7-98fc-78c5e747d60a",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:55:25.226Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "db37a6c0-efc9-4ae0-b792-e6120780de5a",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T23:55:27.974Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "83e0a410-1fba-4578-bb98-ef391984da58",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T23:55:28.473Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "bf3933ea-f10b-40b0-9da1-ecd7faf510f3",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T23:55:29.317Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "5515d185-c331-48cb-9e4d-5bdbbf7e5ced",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T23:55:45.661Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "40f7fe9d-7ea3-4efc-b8fd-1f8d09b84584",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T23:55:46.004Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "d03b5334-4c95-4c46-8a2d-e71264ba714d",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T23:55:46.848Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "9ee4f9d0-5b30-491f-9c26-b9c267210072",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 17,
+        "startedAt": "2026-10-25T23:55:48.036Z",
+        "readOnlyRetry": false,
+        "launchRevision": 17,
+        "jobId": "f1910172-850b-477a-8723-22521091b245",
+        "afterRevision": 17,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 17,
+        "startedAt": "2026-10-25T23:55:48.535Z",
+        "readOnlyRetry": false,
+        "launchRevision": 17,
+        "jobId": "58565d17-a8e7-4723-bd14-057d63bef454",
+        "afterRevision": 17,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 17,
+        "startedAt": "2026-10-25T23:55:49.379Z",
+        "readOnlyRetry": false,
+        "launchRevision": 17,
+        "jobId": "64af03f8-cfa2-4798-8a0b-bc0aa0442b71",
+        "afterRevision": 17,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 21,
+        "startedAt": "2026-10-25T23:55:51.723Z",
+        "readOnlyRetry": false,
+        "launchRevision": 21,
+        "jobId": "e19a8d90-56d4-4745-a198-acbda7e9ad0f",
+        "afterRevision": 21,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 21,
+        "startedAt": "2026-10-25T23:55:52.223Z",
+        "readOnlyRetry": false,
+        "launchRevision": 21,
+        "jobId": "6c2a6433-0b3b-4f0c-bbf2-835bf1db1944",
+        "afterRevision": 21,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 21,
+        "startedAt": "2026-10-25T23:55:53.066Z",
+        "readOnlyRetry": false,
+        "launchRevision": 21,
+        "jobId": "c91ec98e-f8a4-4b72-96be-522634614327",
+        "afterRevision": 21,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 23,
+        "startedAt": "2026-10-25T23:55:58.849Z",
+        "readOnlyRetry": false,
+        "launchRevision": 23,
+        "jobId": "8f7bd6b3-9b4b-40af-9b74-2ac5fc0a2b0b",
+        "afterRevision": 23,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 23,
+        "startedAt": "2026-10-25T23:55:59.348Z",
+        "readOnlyRetry": false,
+        "launchRevision": 23,
+        "jobId": "3e1e81be-e9e8-4602-9794-f5a8d155d6ab",
+        "afterRevision": 23,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 23,
+        "startedAt": "2026-10-25T23:56:00.192Z",
+        "readOnlyRetry": false,
+        "launchRevision": 23,
+        "jobId": "fe350b0d-e7f1-42d9-a8db-0760757233db",
+        "afterRevision": 23,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 25,
+        "startedAt": "2026-10-25T23:56:15.879Z",
+        "readOnlyRetry": false,
+        "launchRevision": 25,
+        "jobId": "6b51ee2b-1a9f-4a35-9220-cf257e9c51f9",
+        "afterRevision": 25,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 25,
+        "startedAt": "2026-10-25T23:56:16.222Z",
+        "readOnlyRetry": false,
+        "launchRevision": 25,
+        "jobId": "1b8047ba-eacb-4b5b-8ed8-ae7da587f10e",
+        "afterRevision": 25,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 25,
+        "startedAt": "2026-10-25T23:56:17.071Z",
+        "readOnlyRetry": false,
+        "launchRevision": 25,
+        "jobId": "1b201d83-4164-44b5-a178-a851dfcdad7d",
+        "afterRevision": 25,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 27,
+        "startedAt": "2026-10-25T23:56:18.067Z",
+        "readOnlyRetry": false,
+        "launchRevision": 27,
+        "jobId": "b049e8ae-7efd-489d-a021-9b8759df94b8",
+        "afterRevision": 27,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 27,
+        "startedAt": "2026-10-25T23:56:18.568Z",
+        "readOnlyRetry": false,
+        "launchRevision": 27,
+        "jobId": "12eb8675-2427-4c74-878e-6f2119bf857b",
+        "afterRevision": 27,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 27,
+        "startedAt": "2026-10-25T23:56:19.410Z",
+        "readOnlyRetry": false,
+        "launchRevision": 27,
+        "jobId": "08c84a93-10ac-48c2-80d9-20dae5e228a0",
+        "afterRevision": 27,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 29,
+        "startedAt": "2026-10-25T23:56:20.473Z",
+        "readOnlyRetry": false,
+        "launchRevision": 29,
+        "jobId": "636ae565-d127-4a41-abe3-8c3c8a999bbf",
+        "afterRevision": 29,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 29,
+        "startedAt": "2026-10-25T23:56:20.817Z",
+        "readOnlyRetry": false,
+        "launchRevision": 29,
+        "jobId": "63bf312c-e8e9-4090-b696-70b7ea1353df",
+        "afterRevision": 29,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 29,
+        "startedAt": "2026-10-25T23:56:21.660Z",
+        "readOnlyRetry": false,
+        "launchRevision": 29,
+        "jobId": "16987ab6-7ae9-4b85-8f60-54a4a7eb676d",
+        "afterRevision": 29,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 31,
+        "startedAt": "2026-10-25T23:56:22.754Z",
+        "readOnlyRetry": false,
+        "launchRevision": 31,
+        "jobId": "f1a962af-c1e7-42f4-9ff9-9e88e818c461",
+        "afterRevision": 31,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 31,
+        "startedAt": "2026-10-25T23:56:23.253Z",
+        "readOnlyRetry": false,
+        "launchRevision": 31,
+        "jobId": "0f7bb664-aedc-4a69-84fd-c2ff3af338b4",
+        "afterRevision": 31,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 31,
+        "startedAt": "2026-10-25T23:56:24.099Z",
+        "readOnlyRetry": false,
+        "launchRevision": 31,
+        "jobId": "7ec7f8ba-5b35-4856-b592-791a5b5193c6",
+        "afterRevision": 31,
+        "completed": true
+      },
+      {
+        "entityId": "7a523bf5-686e-463d-927b-c704001511e0",
+        "beforeRevision": 33,
+        "startedAt": "2026-10-25T23:56:25.161Z",
+        "readOnlyRetry": false,
+        "launchRevision": 33,
+        "jobId": "1a03e5f8-fe14-4ae1-b279-a008da1f63bb",
+        "afterRevision": 33,
+        "completed": true
+      },
+      {
+        "entityId": "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+        "beforeRevision": 33,
+        "startedAt": "2026-10-25T23:56:25.660Z",
+        "readOnlyRetry": false,
+        "launchRevision": 33,
+        "jobId": "c8b2e6be-ea75-40ad-a4b3-9a4d0753694c",
+        "afterRevision": 33,
+        "completed": true
+      },
+      {
+        "entityId": "69a3357d-fa36-4f94-aa30-255796a2c69f",
+        "beforeRevision": 33,
+        "startedAt": "2026-10-25T23:56:26.535Z",
+        "readOnlyRetry": false,
+        "launchRevision": 33,
+        "jobId": "7d85e31c-9605-4e2b-85f6-67952b970207",
+        "afterRevision": 33,
+        "completed": true
+      }
+    ],
+    "before": [
+      {
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 420339,
+            "rawBytes": 1681356,
+            "sha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+          }
+        ]
+      },
+      {
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 4126482,
+            "rawBytes": 16505928,
+            "sha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+          }
+        ]
+      },
+      {
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e"
+          },
+          {
+            "path": "normals",
+            "encoding": "f32",
+            "elements": 5597544,
+            "rawBytes": 22390176,
+            "sha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053"
+          }
+        ]
+      }
+    ],
+    "reconstruction": {
+      "inputPointCounts": [140113, 1375494, 1865848],
+      "scope": "Unsigned point-sphere envelope over all3 full originals; no native reconstruction equivalence or independent registration quality claim",
+      "guiResult": {
+        "entityIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "diagnostics": {
+          "watertight": true,
+          "inputMeshes": 0,
+          "inputPointClouds": 3,
+          "inputPoints": 3381455,
+          "inputTriangles": 0,
+          "processedPoints": 3381455,
+          "representedPoints": 3381455,
+          "field": "unsigned-distance-occupancy-union",
+          "triangleRadius": 0,
+          "pointRadius": 0.4330127018922193,
+          "resolution": 0.5,
+          "gridPoints": 7404390,
+          "distanceTests": 17579265,
+          "samplingCandidates": 17579265,
+          "verification": "streamed-edge-pairing-and-vertex-fans",
+          "extraction": "face-consistent-cube-contours",
+          "peakTopologyFrontierEdges": 1432,
+          "weldTolerance": 1e-6,
+          "selfIntersectionsChecked": false,
+          "summary": "Verified watertight voxel surface: 4 closed components at 0.5 mm point resolution; 203 enclosed samples filled. Surface offset approximately 0.4330127018922193 mm. Enclosed regions fused and filled."
+        },
+        "topology": {
+          "vertices": 165434,
+          "triangles": 331268,
+          "components": 4,
+          "boundaryLoops": 0,
+          "boundaryChains": 0,
+          "boundaryEdges": 0,
+          "nonManifoldEdges": 0,
+          "nonManifoldVertices": 0,
+          "inconsistentEdges": 0,
+          "duplicateTriangles": 0,
+          "degenerateTriangles": 0,
+          "watertight": true
+        }
+      },
+      "gui": [
+        {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 2981412,
+              "rawBytes": 11925648,
+              "sha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409"
+            }
+          ]
+        },
+        {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136"
+            },
+            {
+              "path": "normals",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+            }
+          ]
+        },
+        {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 5597544,
+              "rawBytes": 22390176,
+              "sha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e"
+            },
+            {
+              "path": "normals",
+              "encoding": "f32",
+              "elements": 5597544,
+              "rawBytes": 22390176,
+              "sha256": "0cf6eaf8b1478bbc10bc2f88621ba1fa6bc2077e069214f4e2a7822e201cf053"
+            }
+          ]
+        }
+      ],
+      "outputGeometry": {
+        "filename": "output-geometry.json",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-geometry.json",
+        "bytes": 53565639,
+        "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+        "artifact": {
+          "artifactId": "40c4bd2e-c8d6-4a12-953b-87eee78ee58e",
+          "name": "geometry.json",
+          "mime": "application/json",
+          "bytes": 53565639
+        }
+      },
+      "mcpResult": {
+        "entityIds": ["7a523bf5-686e-463d-927b-c704001511e0"],
+        "diagnostics": {
+          "watertight": true,
+          "inputMeshes": 0,
+          "inputPointClouds": 3,
+          "inputPoints": 3381455,
+          "inputTriangles": 0,
+          "processedPoints": 3381455,
+          "representedPoints": 3381455,
+          "field": "unsigned-distance-occupancy-union",
+          "triangleRadius": 0,
+          "pointRadius": 0.4330127018922193,
+          "resolution": 0.5,
+          "gridPoints": 7404390,
+          "distanceTests": 17579265,
+          "samplingCandidates": 17579265,
+          "verification": "streamed-edge-pairing-and-vertex-fans",
+          "extraction": "face-consistent-cube-contours",
+          "peakTopologyFrontierEdges": 1432,
+          "weldTolerance": 1e-6,
+          "selfIntersectionsChecked": false,
+          "summary": "Verified watertight voxel surface: 4 closed components at 0.5 mm point resolution; 203 enclosed samples filled. Surface offset approximately 0.4330127018922193 mm. Enclosed regions fused and filled."
+        },
+        "topology": {
+          "vertices": 165434,
+          "triangles": 331268,
+          "components": 4,
+          "boundaryLoops": 0,
+          "boundaryChains": 0,
+          "boundaryEdges": 0,
+          "nonManifoldEdges": 0,
+          "nonManifoldVertices": 0,
+          "inconsistentEdges": 0,
+          "duplicateTriangles": 0,
+          "degenerateTriangles": 0,
+          "watertight": true
+        }
+      },
+      "reopenedOutputGeometry": {
+        "filename": "output-reopened-geometry.json",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-reopened-geometry.json",
+        "bytes": 53565639,
+        "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+        "artifact": {
+          "artifactId": "8654ff08-5bb0-406c-b07e-4b6a294ad41b",
+          "name": "geometry.json",
+          "mime": "application/json",
+          "bytes": 53565639
+        }
+      }
+    },
+    "savedHistory": {
+      "cursor": 4,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Import object",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Import object",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Import object",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Mesh scanTools",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "displayOnlyHiddenTargets": [
+      "e5f06f40-3aff-4d76-aea8-cf882133df4b",
+      "69a3357d-fa36-4f94-aa30-255796a2c69f"
+    ],
+    "errors": []
+  },
+  "independentQualitySummary": {
+    "passed": true,
+    "scope": "All 3,381,455 parsed Float32 original XYZ points to full output triangles; all output triangle corners including multiplicity to the complete original XYZ set, exact exhaustive BVH queries in floating point. Directed finite discrete distances, not continuous-surface Hausdorff, scanner truth, independent alignment or native equivalence.",
+    "geometryDefinition": {
+      "resolutionMm": 0.5,
+      "envelope": "Unsigned union of point spheres; point radius sqrt(3)/2 times grid resolution; grid contour/filling can change continuous envelope. Distances describe this reconstruction rather than accuracy to unknown object surface.",
+      "sourcePlacement": "Original imported ASC positions unchanged; raw XYZ digest equality required"
+    },
+    "build": {
+      "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+      "buildId": "scanforge-b9a7e1058f533d0c",
+      "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+      "compilerInputs": 2084
+    },
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "fileSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "points": 140113,
+        "positionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+        "start": 0
+      },
+      {
+        "name": "asc-2.asc",
+        "fileSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "points": 1375494,
+        "positionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+        "start": 420339
+      },
+      {
+        "name": "asc-3.asc",
+        "fileSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "points": 1865848,
+        "positionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+        "start": 4546821
+      }
+    ],
+    "output": {
+      "triangles": 331268,
+      "positionSha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409",
+      "jsonSha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+      "persistedJsonSha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd"
+    },
+    "calibration": {
+      "nearestDistanceControls": 67,
+      "intersectionControls": 8
+    },
+    "sourceToMesh": [
+      {
+        "name": "asc-1.asc",
+        "fileSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "points": 140113,
+        "positionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+        "start": 0,
+        "sourceToMesh": {
+          "evaluations": 140113,
+          "rms": 0.36902335412777687,
+          "mean": 0.3625412089993523,
+          "p50": 0.3551979064941406,
+          "p95": 0.4849853515625,
+          "max": 0.7455024719238281
+        }
+      },
+      {
+        "name": "asc-2.asc",
+        "fileSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "points": 1375494,
+        "positionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+        "start": 420339,
+        "sourceToMesh": {
+          "evaluations": 1375494,
+          "rms": 0.38984662238100487,
+          "mean": 0.38349200898331454,
+          "p50": 0.3766422810596419,
+          "p95": 0.5031114634192239,
+          "max": 0.8033749413580292
+        }
+      },
+      {
+        "name": "asc-3.asc",
+        "fileSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "points": 1865848,
+        "positionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+        "start": 4546821,
+        "sourceToMesh": {
+          "evaluations": 1865848,
+          "rms": 0.38809247787851214,
+          "mean": 0.3817862165252934,
+          "p50": 0.37518469934418164,
+          "p95": 0.5004143602781975,
+          "max": 0.809389842594137
+        }
+      }
+    ],
+    "allOutputCornersToFullXYZ": {
+      "evaluations": 993804,
+      "rms": 0.44356610260747625,
+      "mean": 0.43286644325496343,
+      "p50": 0.4332218987630758,
+      "p95": 0.5963790489624825,
+      "max": 0.7144116264811108
+    },
+    "independentTopology": {
+      "method": "independent-exact-f32-weld-edge-incidence-vertex-link-connectivity",
+      "vertices": 165434,
+      "triangles": 331268,
+      "edges": 496902,
+      "components": 4,
+      "componentTriangleCounts": [330722, 260, 216, 70],
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0
+    },
+    "applicationTopology": {
+      "vertices": 165434,
+      "triangles": 331268,
+      "components": 4,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    },
+    "intersections": {
+      "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+      "controls": 8,
+      "pairs": 10270675,
+      "invalidIntersections": 0,
+      "examples": [],
+      "tolerances": {
+        "coplanarDistance": 1e-9,
+        "coplanarArea": 1e-12,
+        "sharedFeatureSquaredDistance": 1e-16
+      },
+      "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+    },
+    "receipt": {
+      "mode": "cad",
+      "label": "original-asc-reconstruction-full-quality-cloud-selection-r4",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "--max-semi-space-size=16",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.config.json",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 6144,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12512636928,
+      "immediateChildFreeBytes": 12512616448,
+      "identity": {
+        "pid": 54416,
+        "startFileTime": "134374466212788665",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 523231232,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 537075712,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 28.302177599980496,
+      "completed": true
+    },
+    "usableVerdict": "Pass as a0.5mm point-envelope reconstruction: closedconsistent mesh with4components, main330722triand3smallclosedcomponents546tri total. Doesnotmeasureunknownscannertruth orprovealignment/nativeequivalence.",
+    "exactArtifacts": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.config.json",
+        "bytes": 38648,
+        "sha256": "08a09bdb983f13ccac0945c937345ebd80c62debd1eacd3f6fc076245d80b4e6"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.json",
+        "bytes": 5323,
+        "sha256": "adc7541b15c221765de6ebd6426f366e22a6b8af30b1dcac73f4fbbb75a65055"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.receipt.json",
+        "bytes": 2321,
+        "sha256": "c9940055cc9ed4195f68925fe786f970a7c227d57008c4d31d5ca1af15acf468"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality.mjs",
+        "bytes": 10897,
+        "sha256": "77beacda45ca5881fc84ed699e03e2acc040bf85adaa14816a18b9eee95fca43"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality-run.py",
+        "bytes": 960,
+        "sha256": "b0c2e8267f443255418cc81924e46208dbb962c20e833f92707e63fb2eecee6d"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+        "bytes": 6171,
+        "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+      }
+    ],
+    "retainedEvidenceInputMapping": {
+      "proof": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\closed-evidence-retention-r1.json",
+      "proofSha256": "2aa81878acbf3e005c4233ca3f1301e507a1c991706acb7e2402531f1da5105c",
+      "status": "RETAINED_ALL_FILE_HASHES_VERIFIED",
+      "mappings": [
+        {
+          "field": "workflowOutput",
+          "old": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2",
+          "new": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2"
+        },
+        {
+          "field": "browserOutput",
+          "old": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser",
+          "new": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser"
+        },
+        {
+          "old": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+          "new": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+          "bytes": 115398,
+          "sha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3"
+        },
+        {
+          "old": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\binding-result.json",
+          "new": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\binding-result.json",
+          "bytes": 414259,
+          "sha256": "9bee8f0f86f3db6f877bf9842b8df5ccb6c2c31ed38909104404f4ee48c4a6f0"
+        }
+      ],
+      "scope": "Only input metadata paths mapped to parent-verified byte-identical retained archives; captured geometry/oracles/assertions unchanged. Old historical paths in immutable JSON remain as recorded."
+    },
+    "noBrowserProfile": true
+  },
+  "independentQualityFullReport": {
+    "passed": true,
+    "calibration": {
+      "nearestDistanceControls": 67,
+      "intersectionControls": 8
+    },
+    "scope": "All 3,381,455 parsed Float32 original XYZ points to full output triangles; all output triangle corners including multiplicity to the complete original XYZ set, exact exhaustive BVH queries in floating point. Directed finite discrete distances, not continuous-surface Hausdorff, scanner truth, independent alignment or native equivalence.",
+    "geometryDefinition": {
+      "resolutionMm": 0.5,
+      "envelope": "Unsigned union of point spheres; point radius sqrt(3)/2 times grid resolution; grid contour/filling can change continuous envelope. Distances describe this reconstruction rather than accuracy to unknown object surface.",
+      "sourcePlacement": "Original imported ASC positions unchanged; raw XYZ digest equality required"
+    },
+    "build": {
+      "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+      "buildId": "scanforge-b9a7e1058f533d0c",
+      "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+      "compilerInputs": 2084
+    },
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "fileSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "points": 140113,
+        "positionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+        "start": 0
+      },
+      {
+        "name": "asc-2.asc",
+        "fileSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "points": 1375494,
+        "positionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+        "start": 420339
+      },
+      {
+        "name": "asc-3.asc",
+        "fileSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "points": 1865848,
+        "positionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+        "start": 4546821
+      }
+    ],
+    "output": {
+      "triangles": 331268,
+      "positionSha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409",
+      "jsonSha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+      "persistedJsonSha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd"
+    },
+    "sourceToMesh": [
+      {
+        "name": "asc-1.asc",
+        "fileSha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "points": 140113,
+        "positionSha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9",
+        "start": 0,
+        "sourceToMesh": {
+          "evaluations": 140113,
+          "rms": 0.36902335412777687,
+          "mean": 0.3625412089993523,
+          "p50": 0.3551979064941406,
+          "p95": 0.4849853515625,
+          "max": 0.7455024719238281
+        }
+      },
+      {
+        "name": "asc-2.asc",
+        "fileSha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "points": 1375494,
+        "positionSha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136",
+        "start": 420339,
+        "sourceToMesh": {
+          "evaluations": 1375494,
+          "rms": 0.38984662238100487,
+          "mean": 0.38349200898331454,
+          "p50": 0.3766422810596419,
+          "p95": 0.5031114634192239,
+          "max": 0.8033749413580292
+        }
+      },
+      {
+        "name": "asc-3.asc",
+        "fileSha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "points": 1865848,
+        "positionSha256": "7ff8b1f216ab478c0b4c7c0b8614f270ea80cff3349aa2bc07c6ec91d1ca754e",
+        "start": 4546821,
+        "sourceToMesh": {
+          "evaluations": 1865848,
+          "rms": 0.38809247787851214,
+          "mean": 0.3817862165252934,
+          "p50": 0.37518469934418164,
+          "p95": 0.5004143602781975,
+          "max": 0.809389842594137
+        }
+      }
+    ],
+    "allOutputCornersToFullXYZ": {
+      "evaluations": 993804,
+      "rms": 0.44356610260747625,
+      "mean": 0.43286644325496343,
+      "p50": 0.4332218987630758,
+      "p95": 0.5963790489624825,
+      "max": 0.7144116264811108
+    },
+    "pointTests": 65391178,
+    "independentTopology": {
+      "method": "independent-exact-f32-weld-edge-incidence-vertex-link-connectivity",
+      "vertices": 165434,
+      "triangles": 331268,
+      "edges": 496902,
+      "components": 4,
+      "componentTriangleCounts": [330722, 260, 216, 70],
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0
+    },
+    "applicationTopology": {
+      "vertices": 165434,
+      "triangles": 331268,
+      "components": 4,
+      "boundaryLoops": 0,
+      "boundaryChains": 0,
+      "boundaryEdges": 0,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "duplicateTriangles": 0,
+      "degenerateTriangles": 0,
+      "watertight": true
+    },
+    "intersections": {
+      "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+      "controls": 8,
+      "pairs": 10270675,
+      "invalidIntersections": 0,
+      "examples": [],
+      "tolerances": {
+        "coplanarDistance": 1e-9,
+        "coplanarArea": 1e-12,
+        "sharedFeatureSquaredDistance": 1e-16
+      },
+      "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+    }
+  },
+  "productionRawSummaryPin": {
+    "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\summary.json",
+    "bytes": 11357,
+    "sha256": "1f80e9c668987f14cb7614a3f9b8e80fcd2d4f8157a1e574a3ff49028184f2bf"
+  },
+  "productionRawPins": [
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+        "bytes": 115398,
+        "sha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3"
+      },
+      "currentRetainedPin": {
+        "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+        "bytes": 115398,
+        "sha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\binding-result.json",
+        "bytes": 414259,
+        "sha256": "9bee8f0f86f3db6f877bf9842b8df5ccb6c2c31ed38909104404f4ee48c4a6f0"
+      },
+      "currentRetainedPin": {
+        "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\binding-result.json",
+        "bytes": 414259,
+        "sha256": "9bee8f0f86f3db6f877bf9842b8df5ccb6c2c31ed38909104404f4ee48c4a6f0"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.receipt.json",
+        "bytes": 2134,
+        "sha256": "395c0a8588cd1c860698aee2b8217fc58352ed82c53595083d10e90b8b5b980f"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.receipt.json",
+        "bytes": 2134,
+        "sha256": "395c0a8588cd1c860698aee2b8217fc58352ed82c53595083d10e90b8b5b980f"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\digest-observations.json",
+        "bytes": 9563,
+        "sha256": "fca1d09ee75492da5bbefd50e02819b124db87d8ebcc1cad5f3d9c18089c4f7f"
+      },
+      "currentRetainedPin": {
+        "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\digest-observations.json",
+        "bytes": 9563,
+        "sha256": "fca1d09ee75492da5bbefd50e02819b124db87d8ebcc1cad5f3d9c18089c4f7f"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\readiness-observations.json",
+        "bytes": 89125,
+        "sha256": "bb830165db07631f8370007a4980f1475afa1d78038248c1fe84a17f9c8c47ba"
+      },
+      "currentRetainedPin": {
+        "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\readiness-observations.json",
+        "bytes": 89125,
+        "sha256": "bb830165db07631f8370007a4980f1475afa1d78038248c1fe84a17f9c8c47ba"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-preflight.json",
+        "bytes": 756,
+        "sha256": "0460e150621b92ba8eb852424c5c4a3ff659206cd0ba29c28805446b8c56b1fb"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-preflight.json",
+        "bytes": 756,
+        "sha256": "0460e150621b92ba8eb852424c5c4a3ff659206cd0ba29c28805446b8c56b1fb"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-result.json",
+        "bytes": 623,
+        "sha256": "1f24e0033250eb5f3dc052a2b9010f6627311afcaf3176f15e1a7616a2e7a130"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r2.profile-retention-result.json",
+        "bytes": 623,
+        "sha256": "1f24e0033250eb5f3dc052a2b9010f6627311afcaf3176f15e1a7616a2e7a130"
+      }
+    }
+  ],
+  "qualityRawSummaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-reconstruction-full-quality-cloud-selection-r4\\summary.json",
+    "bytes": 12251,
+    "sha256": "3f2fa94804871522fa2c83c07dc7908b46763908b76594086c8c972b64f12756"
+  },
+  "qualityRawPins": [
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.config.json",
+        "bytes": 38648,
+        "sha256": "08a09bdb983f13ccac0945c937345ebd80c62debd1eacd3f6fc076245d80b4e6"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.config.json",
+        "bytes": 38648,
+        "sha256": "08a09bdb983f13ccac0945c937345ebd80c62debd1eacd3f6fc076245d80b4e6"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.json",
+        "bytes": 5323,
+        "sha256": "adc7541b15c221765de6ebd6426f366e22a6b8af30b1dcac73f4fbbb75a65055"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.json",
+        "bytes": 5323,
+        "sha256": "adc7541b15c221765de6ebd6426f366e22a6b8af30b1dcac73f4fbbb75a65055"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.receipt.json",
+        "bytes": 2321,
+        "sha256": "c9940055cc9ed4195f68925fe786f970a7c227d57008c4d31d5ca1af15acf468"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-full-quality-cloud-selection-r4.receipt.json",
+        "bytes": 2321,
+        "sha256": "c9940055cc9ed4195f68925fe786f970a7c227d57008c4d31d5ca1af15acf468"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality.mjs",
+        "bytes": 10897,
+        "sha256": "77beacda45ca5881fc84ed699e03e2acc040bf85adaa14816a18b9eee95fca43"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality.mjs",
+        "bytes": 10897,
+        "sha256": "77beacda45ca5881fc84ed699e03e2acc040bf85adaa14816a18b9eee95fca43"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality-run.py",
+        "bytes": 960,
+        "sha256": "b0c2e8267f443255418cc81924e46208dbb962c20e833f92707e63fb2eecee6d"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-reconstruction-full-quality-run.py",
+        "bytes": 960,
+        "sha256": "b0c2e8267f443255418cc81924e46208dbb962c20e833f92707e63fb2eecee6d"
+      }
+    },
+    {
+      "capturePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+        "bytes": 6171,
+        "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+      },
+      "currentRetainedPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+        "bytes": 6171,
+        "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+      }
+    }
+  ],
+  "closedEvidenceRetention": {
+    "proof": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\closed-evidence-retention-r1.json",
+      "bytes": 400394,
+      "sha256": "2aa81878acbf3e005c4233ca3f1301e507a1c991706acb7e2402531f1da5105c"
+    },
+    "status": "1806 closed artifact files retained with exact SHA256 and sizes; original capture paths preserved above, currentRetainedPin identifies same bytes at Z.",
+    "root": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2"
+  },
+  "limits": [
+    "Original ASC positions unchanged; this is unsigned point-sphere occupancy-union reconstruction, not native cloud Global Fine Align or an independent alignment claim.",
+    "Exact full finite discrete directed distances and all BVH intersection candidates in floating point; not continuous Hausdorff, scanner ground truth or a declared release tolerance.",
+    "Four closed components are retained. Zero enumerated invalid intersections/topology defects does not prove manufacturing intent.",
+    "No new native process/session access or native Re-polygonize equality claimed.",
+    "Profile retention is verified count/bytes and source absence, not cryptographic file comparison."
+  ],
+  "publicationEncoding": "Normalized complete JSON values, with raw immutable capture SHA/length pins distinct from publication bytes; no raw geometry copied or read for this publication."
+}

@@ -8,8 +8,9 @@ const views = new WeakMap<object, Placement>();
 const weakCache = new WeakMap<
   Placement,
   {
-    positions: WeakRef<Float32Array>;
+    positions?: WeakRef<Float32Array>;
     normals?: WeakRef<NonNullable<Entity["normals"]>>;
+    typedNormals: boolean;
   }
 >();
 const latest = new WeakMap<object, World>();
@@ -57,17 +58,20 @@ export function cloudPoseMatrix(bits: string) {
 
 function world(placement: Placement): World {
   const cached = weakCache.get(placement);
-  const positions = cached?.positions.deref(),
+  const positions = cached?.positions?.deref(),
     normals = cached?.normals?.deref();
   if (positions && (!placement.sourceNormals || normals))
     return { positions, normals };
   const matrix = cloudPoseMatrix(placement.matrixBits);
+  const normalValues = placement.sourceNormals
+    ? transformDatumCoordinates(placement.sourceNormals, matrix, true)
+    : undefined;
   const result = {
     positions: transformDatumCoordinates(placement.sourcePositions, matrix),
-    normals: placement.sourceNormals
-      ? Array.from(
-          transformDatumCoordinates(placement.sourceNormals, matrix, true),
-        )
+    normals: normalValues
+      ? cached?.typedNormals
+        ? normalValues
+        : Array.from(normalValues)
       : undefined,
   };
   seedCloudWorld(placement, result);
@@ -80,9 +84,15 @@ export function seedCloudWorld(placement: Placement, result: World) {
   weakCache.set(placement, {
     positions: new WeakRef(result.positions),
     normals: result.normals ? new WeakRef(result.normals) : undefined,
+    typedNormals: result.normals instanceof Float32Array,
   });
   // A single strong derived view per local buffer; historical poses retain only weak views.
   latest.set(placement.sourcePositions, result);
+}
+
+/** Preserve the world carrier independently of immutable local storage. */
+export function cloudWorldNormalsTyped(placement: Placement) {
+  return weakCache.get(placement)?.typedNormals ?? false;
 }
 
 /** Geometry edits producing new buffers invalidate inherited placement metadata. */
@@ -100,6 +110,7 @@ export function placedCloud(
   entity: Entity,
   placement: Placement,
   cached?: World,
+  typedNormals?: boolean,
 ): Entity {
   if (entity.kind !== "pointcloud")
     throw new Error("Only point clouds support a cloud pose.");
@@ -112,6 +123,11 @@ export function placedCloud(
   )
     throw new Error("Invalid local cloud normals.");
   const result: Entity = { ...entity, pointCloudPlacement: placement };
+  if (
+    typedNormals !== undefined &&
+    typedNormals !== cloudWorldNormalsTyped(placement)
+  )
+    weakCache.set(placement, { typedNormals });
   if (cached) seedCloudWorld(placement, cached);
   Object.defineProperties(result, {
     positions: {

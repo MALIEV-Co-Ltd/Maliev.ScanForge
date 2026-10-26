@@ -1,0 +1,357 @@
+{
+  "date": "2026-10-25",
+  "milestone": "M3 / issue #3 / milestone #4",
+  "status": "in_progress",
+  "baseCommit": "9958d8f3d00ce23440acc5efc1a3f8dc5f5249ca",
+  "uncommittedCandidate": true,
+  "baseline": {
+    "buildId": "scanforge-4fbb43e9361fae09",
+    "build": {
+      "exitCode": 0,
+      "completed": true,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 900,
+      "childPeakJobMemoryBytes": 1514020864,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 183.1634148999583
+    },
+    "focused": {
+      "files": 14,
+      "passed": 520,
+      "receipt": {
+        "exitCode": 0,
+        "completed": true,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 900,
+        "childPeakJobMemoryBytes": 324161536,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 10.8647604000289
+      }
+    }
+  },
+  "fine": {
+    "buildId": "scanforge-3987917eece13f41",
+    "build": {
+      "exitCode": 0,
+      "completed": true,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 900,
+      "childPeakJobMemoryBytes": 1656602624,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 187.85505149996607
+    },
+    "newTests": {
+      "files": 3,
+      "passed": 16,
+      "receipt": {
+        "exitCode": 0,
+        "completed": true,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 900,
+        "childPeakJobMemoryBytes": 350789632,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 2.629418700002134
+      }
+    },
+    "affected": {
+      "files": 16,
+      "passed": 550,
+      "receipt": {
+        "exitCode": 0,
+        "completed": true,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 900,
+        "childPeakJobMemoryBytes": 401817600,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 16.202369900012854
+      }
+    },
+    "browser": {
+      "passed": true,
+      "browser": "Browser plugin not available; isolated Playwright Chrome",
+      "guiResult": "Result\n\nTarget accuracy reached · Overlap RMS 1.490e-9 mm · Target 0.02 mm\n\nWhole-cloud RMS 70.71 mm\n\nExpected overlap 50% · Overlap points 400 / 400 required · Within search distance 50.0%\n\nFitting samples 73 / 73 requested\n\nmax Error: 100\n\niterations: 1\n\nrejected Points: 400",
+      "mcp": {
+        "transform": {
+          "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+          "translation": [0, 0, -0.1]
+        },
+        "rms": 70.71067811865476,
+        "wholeCloudRms": 70.71067811865476,
+        "overlapRms": 1.4901161415892226e-9,
+        "overlapPoints": 400,
+        "requiredOverlapPoints": 400,
+        "overlapSatisfied": true,
+        "maxError": 100,
+        "pairs": 800,
+        "evaluatedPoints": 800,
+        "targetPoints": 400,
+        "rejectedPoints": 400,
+        "overlapFraction": 0.5,
+        "inlierPairs": 400,
+        "inlierRms": 1.4901161415892226e-9,
+        "iterations": 1,
+        "converged": true,
+        "targetRms": 0.02,
+        "targetReached": true,
+        "terminationReason": "targetReached",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 50,
+        "sampleSize": 73,
+        "fittingSamples": 73
+      },
+      "plateau": {
+        "transform": {
+          "rotation": [
+            0.9998869545553702, 0, 0.015035894053464055, 0, 1, 0,
+            -0.015035894053464055, 0, 0.9998869545553702
+          ],
+          "translation": [0.0010739317239956137, 0, 0.14284099350790852]
+        },
+        "rms": 0.9962337296955197,
+        "wholeCloudRms": 0.9962337296955197,
+        "overlapRms": 0.9962337296955186,
+        "overlapPoints": 400,
+        "requiredOverlapPoints": 400,
+        "overlapSatisfied": true,
+        "maxError": 1.1278055603267114,
+        "pairs": 400,
+        "evaluatedPoints": 400,
+        "targetPoints": 400,
+        "rejectedPoints": 0,
+        "overlapFraction": 1,
+        "inlierPairs": 400,
+        "inlierRms": 0.9962337296955186,
+        "iterations": 2,
+        "converged": true,
+        "targetRms": 0.02,
+        "targetReached": false,
+        "terminationReason": "stoppedImproving",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 100,
+        "sampleSize": 400,
+        "fittingSamples": 400
+      },
+      "insufficient": {
+        "transform": {
+          "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+          "translation": [0, 0, -0.1]
+        },
+        "rms": 70.71067811865476,
+        "wholeCloudRms": 70.71067811865476,
+        "overlapRms": 1.4901161415892226e-9,
+        "overlapPoints": 400,
+        "requiredOverlapPoints": 640,
+        "overlapSatisfied": false,
+        "maxError": 100,
+        "pairs": 800,
+        "evaluatedPoints": 800,
+        "targetPoints": 400,
+        "rejectedPoints": 400,
+        "overlapFraction": 0.5,
+        "inlierPairs": 400,
+        "inlierRms": 1.4901161415892226e-9,
+        "iterations": 2,
+        "converged": true,
+        "targetRms": 0.02,
+        "targetReached": false,
+        "terminationReason": "stoppedImproving",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 80,
+        "sampleSize": 73,
+        "fittingSamples": 73
+      },
+      "precisionRuns": [
+        {
+          "actualRms": 0.03125,
+          "registration": {
+            "transform": {
+              "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+              "translation": [0, 0, 0.015625005355104804]
+            },
+            "rms": 0.03125,
+            "wholeCloudRms": 0.03125,
+            "overlapRms": 0.03125,
+            "overlapPoints": 400,
+            "requiredOverlapPoints": 400,
+            "overlapSatisfied": true,
+            "maxError": 0.0625,
+            "pairs": 400,
+            "evaluatedPoints": 400,
+            "targetPoints": 400,
+            "rejectedPoints": 0,
+            "overlapFraction": 1,
+            "inlierPairs": 400,
+            "inlierRms": 0.03125,
+            "iterations": 2,
+            "converged": true,
+            "targetRms": 0.03,
+            "targetReached": false,
+            "terminationReason": "stoppedImproving",
+            "matching": "fullTargetPointToPoint",
+            "targetRmsBasis": "overlap",
+            "overlapPercent": 100,
+            "sampleSize": 400,
+            "fittingSamples": 400
+          }
+        },
+        {
+          "actualRms": 0.03125,
+          "registration": {
+            "transform": {
+              "rotation": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+              "translation": [0, 0, 0]
+            },
+            "rms": 0.03125,
+            "wholeCloudRms": 0.03125,
+            "overlapRms": 0.03125,
+            "overlapPoints": 400,
+            "requiredOverlapPoints": 400,
+            "overlapSatisfied": true,
+            "maxError": 0.0625,
+            "pairs": 400,
+            "evaluatedPoints": 400,
+            "targetPoints": 400,
+            "rejectedPoints": 0,
+            "overlapFraction": 1,
+            "inlierPairs": 400,
+            "inlierRms": 0.03125,
+            "iterations": 2,
+            "converged": true,
+            "targetRms": 0.03,
+            "targetReached": false,
+            "terminationReason": "stoppedImproving",
+            "matching": "fullTargetPointToPoint",
+            "targetRmsBasis": "overlap",
+            "overlapPercent": 100,
+            "sampleSize": 400,
+            "fittingSamples": 400
+          }
+        }
+      ],
+      "errors": [],
+      "checks": [
+        "GUI target editing",
+        "real worker",
+        "full target despite targetSampleSize:3",
+        "all-source RMS",
+        "GUI/MCP identical geometry",
+        "target and plateau status",
+        "Undo/Redo"
+      ]
+    },
+    "browserReceipt": {
+      "exitCode": 0,
+      "completed": true,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 900,
+      "childPeakJobMemoryBytes": 998305792,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 12.552737699996214
+    }
+  },
+  "nativeNumericalReplay": {
+    "passed": true,
+    "queries": 45,
+    "matchingQueries": 45,
+    "finalFloat32Values": 40278222,
+    "generatedNumericalStagesExact": true,
+    "sameRunFinalGeometryExact": true,
+    "pinsSha256": "1ed543bf6d695aadafa46a7f429e56d5c4c57387169f763f5bbba3689ce811bc",
+    "compiledCoreSha256": "0ebe793c65b1f65606a8bcb1cd00653916d05cf4bb345417bd7bd414a1371e9f",
+    "elapsedMs": 27262,
+    "receipt": {
+      "exitCode": 0,
+      "completed": true,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 900,
+      "childPeakJobMemoryBytes": 664563712,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 27.532155699969735
+    },
+    "scope": "Retained complete numerical cores using captured geometry and environmental clocks. Public coordinator, fresh import, GUI/MCP, rendering, history and registration-quality acceptance are excluded."
+  },
+  "failuresRetained": [
+    "fine-red: missing new module and rejected MCP accuracy contract",
+    "fine-green: partial integration after CRLF patch mismatch; MCP contract still rejected",
+    "native-full: private validator Windows path separator assertion before input execution"
+  ],
+  "sourceFiles": [
+    {
+      "path": "src/fine-registration.ts",
+      "sha256": "9dbb3fa7dcd4b0533af7f209bee11ea083bf7a5aef0b4bd08f134e6d581ac79b"
+    },
+    {
+      "path": "src/registration.ts",
+      "sha256": "f529bb72693f298cb42b4e2f275388fb2c7c75cb6f0b77e8e83d02e10fa418e0"
+    },
+    {
+      "path": "src/scan-registration.ts",
+      "sha256": "525ad711acb6a62a6d1c5bcb058b0db33f288d47f915acd19782e3d62ea2a66f"
+    },
+    {
+      "path": "src/processing-worker.ts",
+      "sha256": "f888d2db40cf8108aa4483c79bb9c32f404ca695d31d96e91da7654e6bce5c05"
+    },
+    {
+      "path": "src/processing-client.ts",
+      "sha256": "36936d8f6e5d6d3f7b7c64428f276f265b69d48aaf926ee4a44c3aa132587519"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "75670e477a1b21a2c9691f0102043aa8d2a6d91522c60bbedfcd63e95b417773"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "323ec02e6de324f279f72184afbc91b73b0e1f4eb86f7dfeefc39ad02216093f"
+    },
+    {
+      "path": "src/ui/MeshTools.tsx",
+      "sha256": "674a7cf97686d365295710c371949f6f4b1dfaaf102808704d4498203e6a849e"
+    },
+    {
+      "path": "tests/fine-registration.test.ts",
+      "sha256": "6b836f6104e93e29666b1f81858d5adcc3fc6e2fa2e1ebd8e97da20f73367557"
+    },
+    {
+      "path": "tests/fine-alignment-contract.test.ts",
+      "sha256": "1de31e110131d99a0feb1de5943290bf5aeb50505f6eeb71507e0a07dc8ffefa"
+    },
+    {
+      "path": "tests/fine-alignment-operations.test.ts",
+      "sha256": "e57e3d1574d5eeaf1bd771aafe8b01fffdbe47e1374b0ee30894aba4339fdf2f"
+    },
+    {
+      "path": "tests/fine-alignment-browser.mjs",
+      "sha256": "43e8b17ba27e5ba74bb11731f97f6eed3cd1ffb62edd60aeca505ae26153a3f2"
+    },
+    {
+      "path": "tests/mesh-tools-region.test.tsx",
+      "sha256": "4bc0ff3de635a01e26ede9e0a13e01606ba84bb7a920819a2857385a947ccb35"
+    }
+  ],
+  "remaining": [
+    "Full suite and CAD/static checks",
+    "Full original-three public controller/setter comparison",
+    "Registration quality and usable combined output",
+    "Complete STL/PLY/ASC GUI/public-MCP lifecycle and point-cloud reconstruction",
+    "Pinned final candidate review, hosted checks, merge and milestone closure"
+  ],
+  "checkpoint": "Initial Fine Align integration; superseded by m3-fine-verified-20261025.json. Original source hashes remain unchanged."
+}

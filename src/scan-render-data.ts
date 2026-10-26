@@ -2,7 +2,7 @@ import { meshStats } from "./geometry";
 import { indexedMeshMatches } from "./indexed-mesh";
 import type { IndexedMesh, MeshStats, Positions } from "./types";
 import { smoothDisplayNormals } from "./viewport-display";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 
 /** Disposable display data stays outside authored entities and project files. */
 export interface ScanRenderData {
@@ -95,13 +95,18 @@ export function prepareStoredScanRenderData(
   signal?: AbortSignal,
 ): ScanRenderData {
   const result = prepareScanRenderData(positions, indexedMesh, false, signal);
+  const facets = result.indexedMesh
+    ? meshFacetNormals(result.indexedMesh, signal)
+    : undefined;
   if (
     result.indexedMesh &&
-    result.indexedMesh.geometryNormals !== result.normals
+    (result.indexedMesh.geometryNormals !== result.normals ||
+      result.indexedMesh.facetNormals !== facets)
   )
     result.indexedMesh = {
       ...result.indexedMesh,
       geometryNormals: result.normals,
+      facetNormals: facets,
     };
   return result;
 }

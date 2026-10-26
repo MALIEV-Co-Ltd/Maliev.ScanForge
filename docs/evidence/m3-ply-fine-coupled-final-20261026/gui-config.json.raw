@@ -1,0 +1,133 @@
+{
+  "label": "original-ply-fine-gui-native-repoly-c-r1",
+  "buildLabel": "m3-native-repoly-pinned-build-r3",
+  "canonicalProof": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.commit-296925e.json",
+  "buildId": "scanforge-bab4f9199590cf11",
+  "sourceCommit": "296925eac314f49c2875bcbdb5ea5245e2cf6fe9",
+  "sourceManifestSha256": "629378cdea560728b97062186fb65ec7e87698ec48cf4f4d2dec05d57ededb95",
+  "compilerInputs": 2095,
+  "output": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output",
+  "examples": "C:/repo/alignment-example-files",
+  "pins": [
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-original-fine-browser.mjs",
+      "bytes": 10116,
+      "sha256": "d2d85c55efbe9565560ea62b414c1bf99fbdb88fd0a82553caeba03f73ae90a8"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.build.json",
+      "bytes": 891,
+      "sha256": "52eb23a2dcd06d1e587b99415efb1693a40a182f0dbfc43e5ac36dc2c60e5b14"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.source.json",
+      "bytes": 554351,
+      "sha256": "a6d2cef5c9b5600185d2f38240c9da540844bcc77c7558705f06043a10878d1c"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.dist.json",
+      "bytes": 49853,
+      "sha256": "4a28a2a47e4af68fa3c11de10300e44f16862249a05ba65e2b8aa5f2ea9327a9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.commit-296925e.json",
+      "bytes": 486665,
+      "sha256": "c828c3717642f58184f6f41a6574dedcbc18d319a96c8bd6a0d3999754c16510"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-mesh-fine-checkpoint.py",
+      "bytes": 2139,
+      "sha256": "be043097b753c34d773403372a964b5eadc9b67b397a2fa968341466e945a5ef"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\fine-private-worker-result-observer.mjs",
+      "bytes": 1174,
+      "sha256": "53786c551972ff2fdd989486c167c453b38bba7f16ba370f6f7358315572f7c2"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-saved-history-reference-count.mjs",
+      "bytes": 3044,
+      "sha256": "da19c4a140939216ab0c0f88255083f4ab024ae7be75d1e44e2790fa4020999e"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-final-cloud-selection-r1.case.json",
+      "bytes": 18930,
+      "sha256": "7fc89345ceba6884afa4c0aa71a110c898e3b48ed973df85dc429d4ec0a45af6"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1\\evidence.json",
+      "bytes": 1407459,
+      "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+    },
+    {
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+      "bytes": 815010863,
+      "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+      "bytes": 484103,
+      "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\closed-evidence-retention-r1.json",
+      "bytes": 400394,
+      "sha256": "2aa81878acbf3e005c4233ca3f1301e507a1c991706acb7e2402531f1da5105c"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-browser.mjs",
+      "bytes": 18828,
+      "sha256": "fd0546294f4185fab52dd22d37e81c6d3b821acc36efd860d61f7c86fe336cb8"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-origin.mjs",
+      "bytes": 1748,
+      "sha256": "eca528fed84dc1d828dcefde3f4878a05fb7fe35a6ae5c81b73d47a5efaf4595"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-runner.mjs",
+      "bytes": 4914,
+      "sha256": "63d3ec2fdee0f74fe04ec4a8b68ec2d87263877c3df0cd551595e3fcc20ea1b7"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-run.py",
+      "bytes": 1755,
+      "sha256": "9348b6f761033532dad085b3fa24f141bc0429eedad473b463b4077dc1da4ffd"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-ply-fine-local-c-mcp.py",
+      "bytes": 2226,
+      "sha256": "f104c1bae53a14ad28559d51ad0d680e66cab9a5f55f61abb9337078cc8abf94"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\OWNER.json",
+      "bytes": 281,
+      "sha256": "85e535e4901a5d1dddf570190aea1c34050ea75d6f540ec39b93e6948b5e5ed7"
+    }
+  ],
+  "caseConfig": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-final-cloud-selection-r1.case.json",
+  "observerScope": "PRIVATE read-only processing-worker terminal registration/scalar-diagnostics copies only; no request/input/clock/oracle/result substitution; exact observer/harness pins retained",
+  "retainedEvidenceInputAudit": {
+    "proof": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\closed-evidence-retention-r1.json",
+    "sha256": "2aa81878acbf3e005c4233ca3f1301e507a1c991706acb7e2402531f1da5105c",
+    "mapped": [],
+    "scope": "Everyinputpincheckedagainstarchivedroot; currentcase baselineA evidence liesoutsidearchivedroot andddeecombinedalreadyZ, so zero mappings isexpected. Originalhistory4andall21oraclesunchanged."
+  },
+  "phase": "gui",
+  "writeOwner": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\OWNER.json",
+    "bytes": 281,
+    "sha256": "85e535e4901a5d1dddf570190aea1c34050ea75d6f540ec39b93e6948b5e5ed7"
+  },
+  "writeRoot": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a",
+  "downloads": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\downloads",
+  "traces": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\traces",
+  "filesystemScope": "FreshLOCAL C actualwritevolume; persistentDEFAULT ownedprofile/TEMP/TMP/downloads/traces/outputs; same6GiBC+RAM/4GiB25percent840context900outer. ExistingC180incompletecases andZvariantsunchanged. No userprofiles orlive/nativeapplication interaction.",
+  "couplingScope": "Singleoriginalsolve each; exact200iterations/20000fit/.5distance/.5target/85percent; full21baseline/history4; GUIcomparison metadata read only after independentMCPsolve.",
+  "previousUnlaunchedVariant": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-gui-native-repoly-z-r1.config.json",
+    "sha256": "eaebc9750dec1ec90625f1d2c90bb0931453e1ac6554c84ae7564e91874cb940",
+    "scope": "Zfilesystem variant retainedunchanged; thisfreshCmodeisnot a rerun/relabel offailedoldcases"
+  },
+  "pathScope": "ShortfreshownedCsubdirectory avoids unnecessaryWindowsprofilepathlength growth; all oldwriteRoot candidateswere uncreated."
+}

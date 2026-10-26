@@ -12,6 +12,7 @@ function carriers(input: GlobalQueryWorkerInit): Carrier[] {
     ...(g.targetMeshes ?? []).flatMap((mesh) => [
       mesh.vertices,
       mesh.triangles,
+      ...(mesh.facetNormals ? [mesh.facetNormals] : []),
       ...(mesh.flags ? [mesh.flags] : []),
     ]),
   ]);
@@ -85,6 +86,9 @@ export function shareGlobalQueryInput(
                   ...mesh,
                   vertices: share(mesh.vertices),
                   triangles: share(mesh.triangles),
+                  ...(mesh.facetNormals
+                    ? { facetNormals: share(mesh.facetNormals) }
+                    : {}),
                   ...(mesh.flags ? { flags: share(mesh.flags) } : {}),
                 })),
               }

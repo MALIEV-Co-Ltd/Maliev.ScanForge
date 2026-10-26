@@ -150,3 +150,32 @@ it("rejects an obsolete snapshot instead of returning a digest for changed geome
     api.dispose();
   }
 });
+
+it("still rejects a genuine selection change while a read-only digest yields", async () => {
+  const { api, entity, state, host } = fixture(new Float32Array(600003));
+  const positions = entity.positions;
+  state.selectedId = entity.id;
+  state.selection = new Uint8Array(66667);
+  try {
+    const receipt = await api.invoke("object_geometry_digest", {
+      entityId: entity.id,
+    });
+    expect(receipt.ok).toBe(true);
+    if (!receipt.ok) return;
+    const changed = new Uint8Array(state.selection);
+    changed[0] = 1;
+    state.selection = changed;
+    const result = await terminal(
+      api,
+      (receipt.result as { jobId: string }).jobId,
+    );
+    expect(result.status).toBe("failed");
+    expect(result.error?.code).toBe("REVISION_CONFLICT");
+    expect(result.result).toBeUndefined();
+    expect(entity.positions).toBe(positions);
+    expect(state.selection[0]).toBe(1);
+    expect(host.commit).not.toHaveBeenCalled();
+  } finally {
+    api.dispose();
+  }
+});

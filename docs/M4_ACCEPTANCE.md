@@ -82,8 +82,16 @@ Real sequential decimal/negative typing, Escape without publication and a direct
 Solve click pass after fixing per-keystroke focus loss. Legacy coordinate repair
 is tested while all published candidates retain prospective bounds. Solver
 diagnostics have operation-local resource guards without a project-size cap.
-The new source still requires exact-commit hosted checks and final main integration;
-required source-family and original-native gates remain open.
+Hosted checkpoint `f3c7cc2` passes build, 49,819 tests (64 skips), CAD smoke and
+repository formatting ([run 40271644943](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40271644943)).
+The [main-integration checkpoint](evidence/m4-main-integration-20261026.json)
+combines it with M3 main `57c77aa`: 5,969 regression checks across 135 files,
+all 13 type-check batches, a zero-warning build and fresh sketch/construction
+GUI/public-MCP browser acceptance pass on `scanforge-cccb59cddb128b66`.
+Reference identity, acquisition ownership, quota-aware geometry inspection,
+normal buffers and history/visibility behavior are retained. The integration
+requires its own exact-head hosted checks. Required source-family and
+original-native gates remain open.
 
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's

@@ -7,7 +7,12 @@ import {
 /** Reconstruction geometry, validation and commit belong to mesh_process. */
 export function runReconstructionCommand(
   api: Pick<ApplicationApi, "invoke" | "currentRevision">,
-  args: { entityId: string; targetIds?: string[]; resolution?: number },
+  args: {
+    entityId: string;
+    targetIds?: string[];
+    resolution?: number;
+    method?: "native" | "voxel";
+  },
   options: ApplicationJobOptions = {},
 ) {
   return runApplicationJobCommand(
@@ -20,6 +25,7 @@ export function runReconstructionCommand(
         kind: "scanTools",
         operation: {
           kind: "repolygonize",
+          ...(args.method !== undefined ? { method: args.method } : {}),
           ...(args.resolution !== undefined
             ? { resolution: args.resolution }
             : {}),

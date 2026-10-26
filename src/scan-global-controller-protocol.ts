@@ -315,6 +315,7 @@ export function sharedControllerPacket(
           !allowed(m, [
             "vertices",
             "triangles",
+            "facetNormals",
             "flags",
             "cachedBounds",
             "minimumExtent",
@@ -326,6 +327,10 @@ export function sharedControllerPacket(
           ]) ||
           !carrier(m.vertices) ||
           !carrier(m.triangles) ||
+          (m.facetNormals !== undefined &&
+            (!(m.facetNormals instanceof Float32Array) ||
+              !carrier(m.facetNormals) ||
+              m.facetNormals.length !== m.triangles.length)) ||
           (m.flags !== undefined && !carrier(m.flags)) ||
           (m.cachedBounds !== undefined &&
             (!Array.isArray(m.cachedBounds) || m.cachedBounds.length !== 6)),

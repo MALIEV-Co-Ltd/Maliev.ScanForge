@@ -32,15 +32,20 @@ import {
 import {
   applyRigidTransform,
   transformPoint,
-  registerIcp,
   registerGlobal,
+  type RegistrationResult,
 } from "./registration";
+import {
+  registerFineAlignment,
+  isFineAlignmentResult,
+  type FineAlignmentResult,
+} from "./fine-registration";
 import { registerNativeLandmarks } from "./native-landmark-registration";
 import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
 import { prepareScanRenderData } from "./scan-render-data";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -250,6 +255,7 @@ scope.onmessage = async ({ data: incoming }) => {
             })
           : runScanTool(request, options);
       result.positions = outcome.positions;
+      if (outcome.indexedMesh) result.indexedMesh = outcome.indexedMesh;
       if ("noiseComparison" in outcome)
         result.noiseComparison = outcome.noiseComparison;
       result.topology = outcome.topology;
@@ -462,7 +468,7 @@ scope.onmessage = async ({ data: incoming }) => {
         throw new Error(
           "Alignment indexed topology does not match its render geometry.",
         );
-      const registration =
+      const registration: RegistrationResult | FineAlignmentResult =
         request.kind === "paired"
           ? registerNativeLandmarks(
               request.sourceLandmarks,
@@ -475,15 +481,13 @@ scope.onmessage = async ({ data: incoming }) => {
                   ),
               },
             )
-          : (request.kind === "global" ? registerGlobal : registerIcp)(
-              request.positions,
-              request.target,
-              {
-                ...request,
-                onProgress: (fraction, rms) =>
-                  progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
-              },
-            );
+          : (request.kind === "global"
+              ? registerGlobal
+              : registerFineAlignment)(request.positions, request.target, {
+              ...request,
+              onProgress: (fraction, rms) =>
+                progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
+            });
       if (
         !request.deferCloudTransform &&
         !(request.kind === "paired" && request.refinementTargets)
@@ -518,6 +522,10 @@ scope.onmessage = async ({ data: incoming }) => {
         result.indexedMesh = {
           vertices,
           triangles: Uint32Array.from(request.sourceIndexed.triangles),
+          facetNormals: rotateIndexedNormals(
+            meshFacetNormals(request.sourceIndexed),
+            registration.transform.rotation,
+          ),
           geometryNormals: rotateIndexedNormals(
             meshGeometryNormals(request.sourceIndexed),
             registration.transform.rotation,
@@ -541,6 +549,30 @@ scope.onmessage = async ({ data: incoming }) => {
         converged: registration.converged,
         iterations: registration.iterations,
         pairs: registration.pairs,
+        ...(isFineAlignmentResult(registration)
+          ? {
+              algorithm: registration.matching,
+              targetRms: registration.targetRms,
+              targetReached: registration.targetReached,
+              terminationReason: registration.terminationReason,
+              evaluatedPoints: registration.evaluatedPoints,
+              targetPoints: registration.targetPoints,
+              distanceTests: registration.distanceTests,
+              rejectedPoints: registration.rejectedPoints,
+              overlapFraction: registration.overlapFraction,
+              inlierRms: registration.inlierRms,
+              inlierPairs: registration.inlierPairs,
+              targetRmsBasis: registration.targetRmsBasis,
+              overlapRms: registration.overlapRms,
+              wholeCloudRms: registration.wholeCloudRms,
+              overlapPercent: registration.overlapPercent,
+              sampleSize: registration.sampleSize,
+              fittingSamples: registration.fittingSamples,
+              overlapPoints: registration.overlapPoints,
+              requiredOverlapPoints: registration.requiredOverlapPoints,
+              overlapSatisfied: registration.overlapSatisfied,
+            }
+          : {}),
       };
       if (request.kind === "paired" && request.refinementTargets) {
         if (
@@ -679,6 +711,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.indexedMesh.normals.buffer);
     if (result.indexedMesh?.geometryNormals instanceof Float32Array)
       transfers.push(result.indexedMesh.geometryNormals.buffer);
+    if (result.indexedMesh?.facetNormals instanceof Float32Array)
+      transfers.push(result.indexedMesh.facetNormals.buffer);
     if (result.indexedMesh?.triangles instanceof Uint32Array)
       transfers.push(result.indexedMesh.triangles.buffer);
     if (result.noiseComparison)

@@ -48,25 +48,37 @@ it("binds additional reconstruction meshes from workspace IDs and rejects invali
     b = mesh("b", 1);
   const request = scanToolRequest(
     a,
-    { kind: "repolygonize", resolution: 0.5, targetIds: ["b"] },
+    {
+      kind: "repolygonize",
+      method: "voxel",
+      resolution: 0.5,
+      targetIds: ["b"],
+    },
     [a, b],
   );
   expect(request.operation).toEqual({
     kind: "repolygonize",
+    method: "voxel",
     resolution: 0.5,
     targets: [b.positions],
   });
   for (const targetIds of [["a"], ["missing"], ["b", "b"]])
     expect(() =>
-      scanToolRequest(a, { kind: "repolygonize", resolution: 0.5, targetIds }, [
+      scanToolRequest(
         a,
-        b,
-      ]),
+        { kind: "repolygonize", method: "voxel", resolution: 0.5, targetIds },
+        [a, b],
+      ),
     ).toThrow(/reconstruction/i);
   expect(() =>
     scanToolRequest(
       a,
-      { kind: "repolygonize", resolution: 0.5, targetIds: ["b"] },
+      {
+        kind: "repolygonize",
+        method: "voxel",
+        resolution: 0.5,
+        targetIds: ["b"],
+      },
       [a, { ...b, kernelId: "exact" }],
     ),
   ).toThrow(/reconstruction/i);

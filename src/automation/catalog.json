@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact. Semantic reference objects also expose reference.editorInputs with detached startup-mm/N6 point or endpoint vectors and lossless encodings, separate from accepted geometry; editorInputsError reports a numeric-edit preparation bound without hiding saved geometry. This read does not open a preview, mutate a recipe, assign keys or change history.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Computed facetNormals are separate XYZ vectors in triangle order. Geometry JSON is measured before coordinate expansion and must fit the existing 1 GiB artifact capacity; use object_geometry_digest or project_export for larger geometry. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact. Semantic reference objects also expose reference.editorInputs with detached startup-mm/N6 point or endpoint vectors and lossless encodings, separate from accepted geometry; editorInputsError reports a numeric-edit preparation bound without hiding saved geometry. This read does not open a preview, mutate a recipe, assign keys or change history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -145,7 +145,7 @@
   },
   {
     "name": "object_geometry_digest",
-    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Includes indexedMesh.geometryNormals separately from indexedMesh.normals when present. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
+    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Includes indexedMesh.geometryNormals separately from indexedMesh.normals and computed indexedMesh.facetNormals in triangle order when present. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -552,7 +552,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -725,10 +725,15 @@
                           "type": "string",
                           "enum": ["repolygonize"]
                         },
+                        "method": {
+                          "type": "string",
+                          "enum": ["native", "voxel"],
+                          "description": "Defaults to native for all-mesh inputs and voxel when the source or selected targets include a point cloud. Explicit native rejects point-cloud inputs. Native uses the signed field, ordered repair and enabled half-count optimization; its output may remain open or nonmanifold. Voxel retains the closed occupancy-shell workflow. Method selection, input binding and ownership are shared by GUI and MCP."
+                        },
                         "resolution": {
                           "type": "number",
                           "exclusiveMinimum": 0,
-                          "description": "Sampling spacing in mm, default 0.5. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload; immutable Float32 shared buffers are borrowed by a disposable worker. This payload limit is not a process memory bound. Surface-local sampling retains one billion grid points, 500 million sampling candidates and sixteen million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
+                          "description": "Sampling spacing in mm, default 0.5; not a maximum-deviation tolerance. Native accepts raw meshes with independent signed-field/finalization/optimization working budgets and reports open or nonmanifold topology without claiming watertightness. Voxel accepts raw meshes and XYZ point clouds, including mixed inputs; every XYZ point uses radius sqrt(0.75) times spacing and scanner normals are not used. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload including native indexed descriptors; immutable Float32 shared buffers are borrowed by a disposable worker. Payload admission is not a process memory bound. Voxel retains one billion grid points, 500 million sampling candidates and sixteen million output triangles. Oversized work fails without changing geometry or silently coarsening resolution."
                         }
                       },
                       "required": ["kind"],
@@ -968,6 +973,19 @@
                   "type": "string",
                   "enum": ["icp"]
                 },
+                "overlapPercent": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100,
+                  "default": 85,
+                  "description": "Expected portion of eligible source points to match (percent). Must have this many points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
+                },
+                "targetRms": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Desired overlap RMS in mm against the full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
+                },
                 "maxDistance": {
                   "type": "number",
                   "exclusiveMinimum": 0
@@ -980,7 +998,8 @@
                 "sampleSize": {
                   "type": "integer",
                   "minimum": 3,
-                  "maximum": 100000
+                  "maximum": 100000,
+                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point."
                 },
                 "targetSampleSize": {
                   "type": "integer",
@@ -1003,8 +1022,7 @@
                 "maxIterations",
                 "sampleSize",
                 "targetSampleSize",
-                "tolerance",
-                "trimFraction"
+                "tolerance"
               ],
               "additionalProperties": false
             },
@@ -1345,16 +1363,17 @@
             "minLength": 1,
             "maxLength": 200
           },
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize or whole-scope shrinkwrap: optional additional aligned visible raw mesh IDs, retained unchanged. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
+          "description": "For nativeRefine: nonempty ordered fixed indexed mesh targets, ties retain the first. For native scanTools/repolygonize: omission discovers eligible visible raw meshes in workspace order; [] means the source alone; explicit IDs compute in workspace order. Native input geometry remains unchanged and is hidden when creating a new owner; locked inputs cannot be hidden. Voxel reconstruction retains explicit ordered mesh/cloud IDs; omit for source alone and do not supply []. Other operations retain their existing nonempty-list requirements. Whole-scope shrinkwrap accepts raw meshes only. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"
         },
         "createNew": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Native Re-polygonize defaults to a selected new mesh owner and hides unchanged input objects; false replaces the requested source owner instead. Voxel and other operations retain their existing ownership defaults. Revision, lock and history checks apply to both GUI and MCP."
         },
         "previewOnly": {
           "type": "boolean",

@@ -235,4 +235,8 @@ it("accepts compact indexed display state across the actual decoding worker tran
   expect(cached.indexedMesh).toBe(output.indexedMesh);
   expect(cached.normals).toBe(output.indexedMesh!.geometryNormals);
   expect(cached.normals![0]).toBe(0.25);
+  expect(restored.history[0].entities[0].indexedMesh).toBe(output.indexedMesh);
+  expect(restored.history[0].entities[0].indexedMesh!.facetNormals).toBe(
+    output.indexedMesh!.facetNormals,
+  );
 });

@@ -34,7 +34,7 @@ it("releases prior adjacency before reconstruction and preserves the canonical s
       data: {
         kind: "scanTools",
         positions: new Float32Array(0),
-        operation: { kind: "repolygonize", resolution: 0.5 },
+        operation: { kind: "repolygonize", method: "voxel", resolution: 0.5 },
         geometryKey: 42,
       } as ProcessingRequest,
     });
