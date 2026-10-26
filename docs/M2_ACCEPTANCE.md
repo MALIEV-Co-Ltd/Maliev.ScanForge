@@ -2,6 +2,18 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+Current checkpoint `b250f0f` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40295641582):
+49,318 tests, 64 conditional skips, production build, both CAD smoke checks and
+repository formatting. Current rendered Edit Scan GUI/public-MCP reopening
+also passes with unchanged geometry history. The [readiness and navigation record](evidence/m2-input-readiness-and-navigation-20261026.json)
+separates these results from a fresh native session that could read the owned
+window but could not activate it (`GetCursorPos`, access denied). The process
+was in the active RDP session with both desktops named Default; the read-only
+probe still failed after the owner kept the desktop visible and moved the mouse.
+No native modeling/file input was attempted. Authenticated cleanup passed.
+The native partial/bridge and broader inventory comparisons remain open, so
+this checkpoint is not a milestone closure or merge acceptance.
+
 ## Operation and evidence inventory
 
 GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and the shared worker implementation. Agent binding/validation is in `src/automation/operations.ts`; discovery and schemas are in `src/automation/catalog.json`. Existing revision, retry, lock, cancellation, resource and history checks remain required. Read [the agent guide](AGENT_GUIDE.md) for request syntax.
