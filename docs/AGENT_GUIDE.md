@@ -1068,6 +1068,17 @@ submit the same `cad_create`/`cad_rebuild` jobs used by agents. Inspect them wit
 validation, late-result cleanup and one-commit history are shared. `hideInputs`
 hides only referenced feature outputs, preserving unused siblings from a split.
 A split's ordered output 0 is named `<name> inside` and output 1 `<name> outside`.
+Boolean union/subtract/intersection and both split makers use private deep copies
+of exact inputs. Repeated operations preserve live source and earlier-result
+BREP, including native p-curve and triangulation metadata. Split's two outputs
+have separate maker inputs, and a failed split publishes neither output. These
+ownership guarantees use the same worker for GUI and MCP recipes; no extra
+binding, parameter or command is required.
+Fillet/chamfer and hollow shell likewise use private input copies before edge or
+face enumeration. Successful and rejected native operations preserve live source
+and previous-result BREP. Public indices and validity errors retain their
+existing meaning; source preservation does not imply that an otherwise rejected
+edge treatment is supported.
 Several CAD ribbon commands remain gated pending full workflow verification;
 experimental panel access is not evidence that their ordinary ribbon entry or
 native-reference behavior is accepted.
@@ -1202,6 +1213,16 @@ Alignment `parallel` defaults to true. Large scan streams (at least 1,048,576 ve
 Identity frames take the native early no-op path: no coordinate buffers or CPU workers are created, the model and history remain unchanged, and bounds reporting stays cancellable. The shared result identifies this as `identity transform`.
 
 Coordinate alignment results also return `cadMatrix`, the recovered exact-CAD placement matrix. It can differ slightly from the scan `matrix` because the original CAD path normalizes and orthogonalizes its axis frame. Exact CAD targets use OpenCascade axis-frame placement through the same GUI/MCP Preview and Apply operations, with a byte-exact matrix check before presentation. Scan targets continue to use `matrix`. CAD results retain exact BRep topology and rebuild display geometry; fitted centers/directions and scalar parameters are preserved through verified native primitive handlers; stale authoring recipes and display-facet selections are cleared. Each CAD target reports `execution.backend: "OpenCascade"` and `copyGeometry: false`. Preview replacement, discard, failure and cancellation release temporary CAD handles; Apply preserves both committed source and result for Undo/Redo. Identity alignment produces no new shape or history entry. The broad ribbon Align workflow remains gated independently.
+
+Exact CAD placement keeps its native shared-topology identity while reading
+already prepared face triangulations through each face's world placement. It
+validates an owned geometry copy so native analyzer flags do not change shared
+source faces. It does not remesh shared source or retained-result caches. A missing prepared
+triangulation fails safely; recreate or reimport that body before retrying.
+Body patterns own their first instance's geometry and mesh, preserving live
+source buffers and alignment-reader triangle slots during compound meshing.
+Existing alignment/CAD operations expose this behavior without new parameters;
+command availability and the remaining native controller gates are unchanged.
 
 The coordinate-alignment panel exposes an explicit **Objects to move** list when several eligible objects exist. It calls the same `alignment_preview` / `alignment_apply` contract with the checked `entityIds` (maximum 32). Meshes, point clouds and exact CAD bodies can share one frame and one history transaction; locked and unsupported targets are excluded. Changing targets invalidates the preview. An empty or unavailable target set disables Preview/Apply. If a later target fails, previously prepared CAD handles are released and every committed object remains unchanged. Explicit targeting is distinct from the original automatic model-selection policy, which remains under investigation.
 
@@ -2019,6 +2040,14 @@ closed solid. A result that cannot enclose a finite orientable volume fails
 before publication; reduce thickness or repair the source face and retry with
 fresh revision/request fields. Curved faces use their local surface orientation
 and do not acquire a global sketch-plane normal.
+
+For a single exact FACE with analytic Plane support, thickening constructs the
+equivalent canonical prism along that signed face normal. A reversed FACE flips
+the direction, and inner wires remain holes. This preserves usable exact
+supports for subsequent fillet/chamfer; requested edge indices, treatment amounts
+and native validity checks are unchanged. Curved thickening and hollow shell
+retain their existing algorithms. The same `thicken` recipe through GUI or MCP
+uses this shared worker path; existing saved BREP is retained until rebuilding.
 
 ### Symmetry and atomic sketch solving
 

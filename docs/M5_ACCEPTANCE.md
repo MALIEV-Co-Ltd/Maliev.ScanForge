@@ -42,18 +42,107 @@ integration remains required; the restore candidate/CI above is historical.
 
 ## Operation matrix
 
-| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                                        |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.                                |
-| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.                                 |
-| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                                              |
-| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Exact kernel smoke passes analytic volumes, straight/bent sweeps and invalid inputs. Real-input GUI/MCP/native operation-matrix replay remains open.                                                                                                                                               |
-| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                                             |
-| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Kernel smoke passes these operations and exchange. Real scan-section to editable profile, exact face, solid and STEP GUI/MCP replay passes at43f6637. Generic GUI create/rebuild cancellation passes the focused replay. Remaining real-input families and native boundary acceptance remain open. |
-| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Exact surface recipe and BREP survive project save/reopen in browser; STEP export header verified. Kernel smoke covers STEP round-trips. Real scan-derived body STEP/BREP GUI/MCP roundtrips pass; native interoperability and broader matrix acceptance remain open.                              |
-| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. The sketch chain passes at2.80GB peak; generic GUI create/rebuild cancellation passes at2.55GB with full cleanup. Broader native workflow resource gates remain open.   |
+| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.                                                                           |
+| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.                                                                            |
+| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                                                                                         |
+| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Real scan-derived retained-profile GUI/MCP loft/sweep pass exact display/BREP equality, independent geometry, history, error recovery and STEP in the nine-case browser matrix. Native operation equivalence and final integration remain open.                                                                                               |
+| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                                                                                        |
+| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Retained real-profile revolve, all three Booleans, fillet, chamfer and shell pass paired GUI/MCP analytic/history/STEP checks. Earlier fresh GUI sketch-to-face/thicken chain and generic cancellation pass separately. This matrix reuses the profile; final combined fresh-authoring chain, native equivalence and integration remain open. |
+| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Nine real-derived operation cases pass GUI/MCP STEP export/reimport. GUI and MCP project reopen preserve 13 saved BREPs and display buffers bit-exactly, with unchanged sources. Native interoperability and final integration remain open.                                                                                                   |
+| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Nine-case matrix passes in118.806s at3,270,778,880peak Job bytes, terminal0/active0, all handles/mutex/artifacts released and port5206closed. Existing app preserved; console/browser errors empty. Failed receipts retained. Native workflow resource gates remain open.                                                                     |
 
 ## Candidate history and validation
+
+### CAD maker ownership and the real-input matrix
+
+The first [real-input matrix attempt](evidence/m5-20261025/real-cad-matrix-first-failure.json)
+completed loft, sweep and revolve through GUI/public MCP, independent geometry,
+history and STEP checks. It stopped at Boolean subtraction when equal display
+geometry produced different saved BREP hashes. This is a partial matrix, not a
+passing complete replay. Its46.041-second Job left zero active processes and
+closed owned preview5206.
+
+The [focused RED](evidence/m5-20261025/boolean-source-mutation-red.json)
+then proved live-source mutation: the first subtraction added pcurves to both
+operands, and the second also changed the first result. Repeated serialization
+of an unchanged live object was stable. Boolean construction now deep-copies
+both inputs; split uses separate copy pairs for its common and cut makers.
+The [actual-worker GREEN](evidence/m5-20261025/boolean-ownership-kernel-green-job.json)
+passes all three Boolean modes, repeated geometry, exact live source/prior-result
+BREP fences, split siblings, injected second-output rollback and handle recovery.
+It took2.739s, peaked at471,969,792bytes and released every handle/process.
+
+The [edge/shell RED](evidence/m5-20261025/edge-shell-source-mutation-red.json)
+also caught input metadata mutation after a rejected fillet, plus source and
+earlier-result mutation during successful shell creation. Those makers now
+enumerate and operate on private copies. Their [ownership GREEN](evidence/m5-20261025/edge-shell-ownership-kernel-green-job.json)
+passes failure preservation, repeated valid shell mass, exact live BREP fences,
+recovery and cleanup in1.707s, peak487,555,072bytes. Both new regression phases
+are wired into ordinary CAD smoke. Independent source reviews found no P1/P2
+ownership defect; broader smoke, browser integration and exact-head CI remain
+pending for these uncommitted changes.
+
+The [matched construction-route diagnostic](evidence/m5-20261025/planar-thicken-edge-red.json)
+proved that direct extrusion accepts the fixed0.05mm fillet/chamfer twice at the
+same real-profile corner, while the previous face-thickening route rejects all
+four attempts. Both report Plane supports; an OffsetSurface-type explanation
+is not established. Ordinary single planar-face thickening now uses a prism
+along the signed face normal. The [focused production replay](evidence/m5-20261025/planar-thickening-kernel-green-job.json)
+passes20 authored-frame cases covering both windings, reversed faces, both
+thickness signs and holes, two curved legacy cases, and the real-profile edge
+treatments with independent geometry and source-preservation checks. It took
+4.419s, peaked at655,036,416bytes and left zero active processes. The complete
+browser matrix remains pending; no tolerance or matrix assertion was relaxed.
+
+The next [full CAD attempt](evidence/m5-20261025/cad-all-input-ownership-red.json)
+passed its core geometry checks but failed the new raw live-BREP fence:
+243 datum-transform and two pattern operations changed earlier inputs. All11
+source-operation families were exercised; the trailing sketch phase did not
+run after that failure. A [focused consumer diagnostic](evidence/m5-20261025/datum-pattern-cache-consumer-red.json)
+also proved that large-pattern construction changes a curved source's alignment
+triangles. Equal reconstructed geometry alone does not accept this mutation.
+The first prepared-triangulation fix still failed its [focused raw-BREP fence](evidence/m5-20261025/cad-cache-ownership-red-r1-ledger.json).
+A [stage-isolated RED](evidence/m5-20261025/cad-cache-stage-isolation-red-r1-ledger.json)
+then located source face-flag changes between registration entry and mesh entry;
+repeated observer serialization was stable. Prepared datum partners now retain
+native shared topology and existing triangulations while mandatory geometric
+validation uses an owned copy. The first pattern instance owns its geometry and
+mesh. The [focused actual-worker GREEN r2](evidence/m5-20261025/cad-cache-ownership-green-r2-ledger.json)
+passes exact live source BREP/published-buffer fences, IsPartner identity,
+pattern ownership, unchanged alignment-reader buffers/face ranges, independent
+exact properties, persisted BREP reconstruction, missing-triangulation recovery
+and complete handle cleanup. It took 1.024 s at 481,775,616 peak Job bytes;
+the coordinator observed wrapper exit 0 at 1.169 s, active zero and all handles
+and mutex released. The initially different display Nodes and alignment D1
+reader remain distinct baselines; post-operation readers match the initial
+reader exactly. All RED evidence is retained.
+
+The subsequent [full standard GREEN r2](evidence/m5-20261025/cad-maker-standard-green-r2-ledger.json)
+passes all 338 native datum matrices with shared topology, display bounds and
+handle release. Its strict raw live-BREP fence reports zero mutations across
+all 11 source-operation families: thicken 25, transform 8, Boolean 18, split 11,
+edge treatments 11, shell 4, datum 341, pattern 5, offset 1, sew 1 and mirror 3.
+Standard CAD smoke, the trailing exact sketch-surface geometry/direction/
+validation/ownership phase, scoped formatting and diff check all pass. It took
+15.845 s at 841,142,272 peak Job bytes; the coordinator observed terminal exit 0,
+active zero and complete handle/mutex cleanup with no errors. The post-format
+worker SHA256 is `ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5`.
+The subsequent [real-input browser GREEN r3](evidence/m5-20261025/real-cad-matrix-green-r3-ledger.json)
+passes all nine retained-profile cases: loft, sweep, revolve, subtract,
+intersection, union, fillet, chamfer and shell. Each has exact paired GUI/MCP
+display/BREP equality, independent geometry, history/Undo/Redo, error recovery
+and STEP checks. GUI/MCP project reopen preserves 13 BREPs and display buffers
+bit-exactly, with source preservation and released artifact ownership. All nine
+result PNGs and their hashes are retained; the coordinator visually observed
+coherent unclipped bodies and an open shell. The run took 118.806 s at
+3,270,778,880 peak Job bytes with terminal exit 0, active zero, all handle/mutex
+cleanup, port 5206 closed and no browser/console errors. This replay explicitly
+has `fullGuiProfileAuthoringReplayed:false`: it reuses the retained real profile.
+The final combined fresh GUI-authoring chain, native operation equivalence and
+integrated-candidate checks remain separate pending gates; these passes do not
+close the milestone.
 
 ### Generic CAD cancellation
 
@@ -85,8 +174,14 @@ Fresh Vite build and offline manifest pass. The [browser Job receipt](evidence/m
 records18.313s, peak2,551,500,800bytes under4GiB, zero active processes, closed
 owned preview5206 and released mutex. Console/page errors and warnings are empty.
 Independent source review found no actionable P1/P2 cancellation defect.
-This is focused verification of the uncommitted cancellation change; exact-head
-hosted CI, the real-input operation matrix and final integration remain required.
+Implementation commit `88a9c1a6d0c191198aeff9cf750e354854e41d01` and its
+receipt-only correction `b106d465cb36ff98f4a6d21a6fdd12c4c8199c1c` pass
+[exact-head hosted CI](evidence/m5-20261025/cad-cancellation-hosted-ci.json):
+all12 typecheck batches/build,49,196tests passed/64skipped, CAD smoke and global
+formatting. The first hosted run failed only because the formatter receipt was
+copied afterward without its final newline; its failure remains recorded.
+The real-input operation matrix, later Boolean ownership fix and final
+integration remain required.
 
 ### Exact sketch surfaces and real scan section chain
 

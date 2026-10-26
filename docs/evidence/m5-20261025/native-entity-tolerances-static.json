@@ -1,0 +1,29 @@
+{
+  "method": "Read retained CASCADE Topology V1 text records; no new kernel or native UI execution.",
+  "recordLayout": {
+    "Ve": "Tolerance is the scalar on the following line.",
+    "Ed": "Tolerance is the first scalar on the following line.",
+    "Fa": "Following record is naturalRestriction, tolerance, surfaceIndex, locationIndex."
+  },
+  "native": {
+    "path": ".resources/m5/native-integral-breps-r1/native-r6-solid-before.brep",
+    "bytes": 112165,
+    "sha256": "963c3ebd195460bc4c036c8ee1e21f839441b397141e9d7e386dffff4fc0ff2e",
+    "provenance": "Retained OCCT BREP after importing actual native r6 STEP; not original QuickSurface kernel data.",
+    "recordCounts": { "vertices": 8, "edges": 12, "faces": 6 },
+    "vertexToleranceRangeMm": [0.00000391415, 0.000740623],
+    "edgeToleranceRangeMm": [0.0000001, 0.000740623],
+    "faceToleranceMm": 0.0000001
+  },
+  "appMinus": {
+    "path": ".resources/m5/native-integral-breps-r1/app-minus-before.brep",
+    "bytes": 117224,
+    "sha256": "e71deb7f72b8b60c02d8121e5c1931ab4f629899b261085a1bf8a28aa1b3179d",
+    "provenance": "Previously retained app-minus curved-solid construction.",
+    "recordCounts": { "vertices": 8, "edges": 12, "faces": 6 },
+    "vertexToleranceRangeMm": [0.0000001, 0.0000001001],
+    "edgeToleranceMm": 0.0000001,
+    "faceToleranceMm": 0.0000001
+  },
+  "interpretation": "Entity tolerances support an import/healing hypothesis. They do not prove physical accuracy, original native tolerances, a whole-body distance bound, or an accepted mismatch allowance. Parametric pcurve deviations require surface-metric conversion and exact ownership tracing."
+}

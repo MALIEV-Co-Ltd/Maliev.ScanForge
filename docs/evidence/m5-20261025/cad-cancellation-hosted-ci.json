@@ -1,0 +1,27 @@
+{
+  "headRevision": "b106d465cb36ff98f4a6d21a6fdd12c4c8199c1c",
+  "runtimeImplementationRevision": "88a9c1a6d0c191198aeff9cf750e354854e41d01",
+  "runId": 40320012933,
+  "jobId": 121562248483,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40320012933/job/121562248483",
+  "conclusion": "success",
+  "typecheckBatches": 12,
+  "build": "passed",
+  "tests": {
+    "passed": 49196,
+    "skipped": 64,
+    "filesPassed": 684,
+    "filesSkipped": 18,
+    "durationSeconds": 318.88
+  },
+  "cadSmoke": "passed, including exact sketch surface phase",
+  "formatting": "passed",
+  "previousAttempt": {
+    "headRevision": "88a9c1a6d0c191198aeff9cf750e354854e41d01",
+    "jobId": 121557965422,
+    "conclusion": "failure",
+    "reason": "The copied cad-cancellation-format-job.json lacked its final newline. Build, tests and CAD smoke passed; formatting failed.",
+    "correction": "One final newline; no runtime changes."
+  },
+  "scope": "Exact committed cancellation candidate. Subsequent Boolean ownership fix and complete milestone/native acceptance are separate."
+}

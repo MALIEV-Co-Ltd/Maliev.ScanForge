@@ -1,0 +1,1393 @@
+{
+  "scope": "Private oldSimple-versus-oriented-prism orientation probe; no production geometry change.",
+  "workerSha256": "e0d60c516c90d96f57e37712acfdebb8ada877e8cb9b5bd860afd351001faf83",
+  "cases": [
+    {
+      "label": "OXY-CCW-forward",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CCW-forward-source.brep",
+        "bytes": 13483,
+        "sha256": "0098e11394bba45eed479b39e3bd88ba1453ade8b1966656207912606a927c4b"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 5],
+        "max": [3, 3, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "OXY-CCW-forward-1.8-simple.brep",
+        "bytes": 53168,
+        "sha256": "daf9ee3c1542a445cdac5e1a8522cb744e973663e5843441d615a741456131d7"
+      },
+      "prismFile": {
+        "file": "OXY-CCW-forward-1.8-prism.brep",
+        "bytes": 51046,
+        "sha256": "84c4e0d6753192f303a933b09a7f42f1757b7d117b7b22da90e1474c1e8b5639"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380103070361,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001000000003, -3.0000001, 4.9999999],
+          "max": [3.0000001000000003, 3.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001000000003, 3.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CCW-forward",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CCW-forward-source.brep",
+        "bytes": 13483,
+        "sha256": "0098e11394bba45eed479b39e3bd88ba1453ade8b1966656207912606a927c4b"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 3.2],
+        "max": [3, 3, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "OXY-CCW-forward--1.8-simple.brep",
+        "bytes": 53163,
+        "sha256": "3f0ddf4ad769f03b80a9787e784a856937ffad235d4bc1f718ec965cfdf58800"
+      },
+      "prismFile": {
+        "file": "OXY-CCW-forward--1.8-prism.brep",
+        "bytes": 51046,
+        "sha256": "acd6bd443195ef72de6e587d8c0ac016e26809dbccf829bf917850cd238fb87a"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.8938010307036,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001000000003, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001000000003, 3.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999],
+          "max": [3.0000001000000003, 3.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CCW-reversed",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CCW-reversed-source.brep",
+        "bytes": 13639,
+        "sha256": "25d0ca13dfcb9f16cde1b9c605d8f1a0cc40479fbb576d569dd3aa75b4db8f92"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 3.2],
+        "max": [3, 3, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "OXY-CCW-reversed-1.8-simple.brep",
+        "bytes": 53163,
+        "sha256": "1fb7f7b730a6824734a6012d9093f878e7f0d48730e68cdd40e7d63961ee774b"
+      },
+      "prismFile": {
+        "file": "OXY-CCW-reversed-1.8-prism.brep",
+        "bytes": 51046,
+        "sha256": "acd6bd443195ef72de6e587d8c0ac016e26809dbccf829bf917850cd238fb87a"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.8938010307036,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001000000003, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001000000003, 3.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999],
+          "max": [3.0000001000000003, 3.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CCW-reversed",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CCW-reversed-source.brep",
+        "bytes": 13639,
+        "sha256": "25d0ca13dfcb9f16cde1b9c605d8f1a0cc40479fbb576d569dd3aa75b4db8f92"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 5],
+        "max": [3, 3, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "OXY-CCW-reversed--1.8-simple.brep",
+        "bytes": 53168,
+        "sha256": "8f6ee2bf10c665b5ab3921cc590490ea168f7bd97be50ae7e9846efede9c5a82"
+      },
+      "prismFile": {
+        "file": "OXY-CCW-reversed--1.8-prism.brep",
+        "bytes": 51046,
+        "sha256": "84c4e0d6753192f303a933b09a7f42f1757b7d117b7b22da90e1474c1e8b5639"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380103070361,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001000000003, -3.0000001, 4.9999999],
+          "max": [3.0000001000000003, 3.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001000000003, 3.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CW-forward",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CW-forward-source.brep",
+        "bytes": 13528,
+        "sha256": "c55604e377565934ee18385dc00904ce2d02f1eb1786e140522062af7ba93690"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 5],
+        "max": [3, 3, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "OXY-CW-forward-1.8-simple.brep",
+        "bytes": 53266,
+        "sha256": "5972cd4ec1c3127528a971976f84d8fa912cba156200980950c6cf146ca62637"
+      },
+      "prismFile": {
+        "file": "OXY-CW-forward-1.8-prism.brep",
+        "bytes": 51251,
+        "sha256": "08bfbd8b177a5a2385bdfc6444e5a3d6e0201bfef06100f967d0870f744749fe"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001, 3.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001, 3.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CW-forward",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CW-forward-source.brep",
+        "bytes": 13528,
+        "sha256": "c55604e377565934ee18385dc00904ce2d02f1eb1786e140522062af7ba93690"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 3.2],
+        "max": [3, 3, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "OXY-CW-forward--1.8-simple.brep",
+        "bytes": 53260,
+        "sha256": "1bfb4e78dbdcb6dbb77e822e904a1b5b7343a61388bf5bd3b1a962fc455d91a5"
+      },
+      "prismFile": {
+        "file": "OXY-CW-forward--1.8-prism.brep",
+        "bytes": 51257,
+        "sha256": "6c44504fef5c9c4222d04f934bf74817cf7467d640c807b8a175e7e93341b5a5"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001, 3.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001, 3.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CW-reversed",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CW-reversed-source.brep",
+        "bytes": 13747,
+        "sha256": "379745329811c0dbf52f525e6d03ad3e21e2ca57a0fb8eeb7b71fc68fc44690e"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 3.2],
+        "max": [3, 3, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "OXY-CW-reversed-1.8-simple.brep",
+        "bytes": 53260,
+        "sha256": "3a336ad98017d6bedbed3518403a8ea3c52386f555fea4d4198fc0ad774f5709"
+      },
+      "prismFile": {
+        "file": "OXY-CW-reversed-1.8-prism.brep",
+        "bytes": 51257,
+        "sha256": "6c44504fef5c9c4222d04f934bf74817cf7467d640c807b8a175e7e93341b5a5"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001, 3.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 3.1999999000000003],
+          "max": [3.0000001, 3.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "OXY-CW-reversed",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "OXY-CW-reversed-source.brep",
+        "bytes": 13747,
+        "sha256": "379745329811c0dbf52f525e6d03ad3e21e2ca57a0fb8eeb7b71fc68fc44690e"
+      },
+      "expectedWorldBounds": {
+        "min": [-3, -3, 5],
+        "max": [3, 3, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "OXY-CW-reversed--1.8-simple.brep",
+        "bytes": 53266,
+        "sha256": "92950d2e449779b593d5f971d3a90ca9b0a03e582d0b89bd4ef5192972d86638"
+      },
+      "prismFile": {
+        "file": "OXY-CW-reversed--1.8-prism.brep",
+        "bytes": 51251,
+        "sha256": "08bfbd8b177a5a2385bdfc6444e5a3d6e0201bfef06100f967d0870f744749fe"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001, 3.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815461,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-3.0000001, -3.0000001, 4.9999999],
+          "max": [3.0000001, 3.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CCW-forward",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0.8, -0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [0.8, -0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CCW-forward-source.brep",
+        "bytes": 15179,
+        "sha256": "51bd6c592ef527ea821746b64aa706cdc34c16ca129fe516976a96b9cb627078"
+      },
+      "expectedWorldBounds": {
+        "min": [8.2, 16.520000000000003, 27],
+        "max": [13.24, 22.4, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "rotated-CCW-forward-1.8-simple.brep",
+        "bytes": 59230,
+        "sha256": "c737fef5942c3cde4a8babcfa19d3f769306eeccbcf3f9cefa34009052dccb32"
+      },
+      "prismFile": {
+        "file": "rotated-CCW-forward-1.8-prism.brep",
+        "bytes": 57196,
+        "sha256": "726b61c40758605b0d70368dc4467ddc17fa3ad24e9e25f11b174f015c941ca9"
+      },
+      "candidateNormal": [0.8, -0.6, 0],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.240000099999998, 22.4000001, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.2400001, 22.4000001, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CCW-forward",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0.8, -0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [0.8, -0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CCW-forward-source.brep",
+        "bytes": 15179,
+        "sha256": "51bd6c592ef527ea821746b64aa706cdc34c16ca129fe516976a96b9cb627078"
+      },
+      "expectedWorldBounds": {
+        "min": [6.759999999999999, 17.6, 27],
+        "max": [11.8, 23.479999999999997, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "rotated-CCW-forward--1.8-simple.brep",
+        "bytes": 59264,
+        "sha256": "5701214186635b092e16117dede2221aaa502987558861e84e2f3c5f365433c8"
+      },
+      "prismFile": {
+        "file": "rotated-CCW-forward--1.8-prism.brep",
+        "bytes": 57228,
+        "sha256": "b6d7d5d16088d5543fb8be4997f4eff39229a1dd5302c77bd4dbf4419dc2f441"
+      },
+      "candidateNormal": [0.8, -0.6, 0],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.8938010307035,
+        "normalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999900000001, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999899999999, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CCW-reversed",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [-0.8, 0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [-0.8, 0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CCW-reversed-source.brep",
+        "bytes": 15305,
+        "sha256": "43468dda2b124bff9a755e750de12d2128123454e016677a79c190e74cdc5693"
+      },
+      "expectedWorldBounds": {
+        "min": [6.759999999999999, 17.6, 27],
+        "max": [11.8, 23.479999999999997, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "rotated-CCW-reversed-1.8-simple.brep",
+        "bytes": 59264,
+        "sha256": "1ee827a9ad60786ce0de6a6eed0e5ff822fb10d77a3b43a781b52c8b58b21b88"
+      },
+      "prismFile": {
+        "file": "rotated-CCW-reversed-1.8-prism.brep",
+        "bytes": 57228,
+        "sha256": "b6d7d5d16088d5543fb8be4997f4eff39229a1dd5302c77bd4dbf4419dc2f441"
+      },
+      "candidateNormal": [-0.8, 0.6, 0],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.8938010307035,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "authoredNormalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999900000001, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.8000000000000007],
+        "authoredNormalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999899999999, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CCW-reversed",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [-0.8, 0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [-0.8, 0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CCW-reversed-source.brep",
+        "bytes": 15305,
+        "sha256": "43468dda2b124bff9a755e750de12d2128123454e016677a79c190e74cdc5693"
+      },
+      "expectedWorldBounds": {
+        "min": [8.2, 16.520000000000003, 27],
+        "max": [13.24, 22.4, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "rotated-CCW-reversed--1.8-simple.brep",
+        "bytes": 59230,
+        "sha256": "a4660cf4ff4ddb7739f4f0720be41324d1170a0f181c65914f2d0c8187f06898"
+      },
+      "prismFile": {
+        "file": "rotated-CCW-reversed--1.8-prism.brep",
+        "bytes": 57196,
+        "sha256": "726b61c40758605b0d70368dc4467ddc17fa3ad24e9e25f11b174f015c941ca9"
+      },
+      "candidateNormal": [-0.8, 0.6, 0],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703614,
+        "normalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.240000099999998, 22.4000001, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.8000000000000003, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.2400001, 22.4000001, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CW-forward",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0.8, -0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [0.8, -0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CW-forward-source.brep",
+        "bytes": 15167,
+        "sha256": "fc64ca1b618e9b33f020c6c6ac9da2b556866ba3a4f836f9a583e8efe99b62ad"
+      },
+      "expectedWorldBounds": {
+        "min": [8.2, 16.520000000000003, 27],
+        "max": [13.24, 22.4, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "rotated-CW-forward-1.8-simple.brep",
+        "bytes": 59207,
+        "sha256": "a6d11ee00552ea2113f0f8c60a4e18031866a1385cd4a3e93f88ad3e0b2eae6d"
+      },
+      "prismFile": {
+        "file": "rotated-CW-forward-1.8-prism.brep",
+        "bytes": 57167,
+        "sha256": "0709a375dcb2a710a3dc5a4ac383bacf0609975e8dc9ebe2bfb7e8097146fee1"
+      },
+      "candidateNormal": [0.8, -0.6, 0],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380103070361,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.240000099999998, 22.4000001, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.2400001, 22.4000001, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CW-forward",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0.8, -0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [0.8, -0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CW-forward-source.brep",
+        "bytes": 15167,
+        "sha256": "fc64ca1b618e9b33f020c6c6ac9da2b556866ba3a4f836f9a583e8efe99b62ad"
+      },
+      "expectedWorldBounds": {
+        "min": [6.759999999999999, 17.6, 27],
+        "max": [11.8, 23.479999999999997, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "rotated-CW-forward--1.8-simple.brep",
+        "bytes": 59240,
+        "sha256": "2c3ebf40a4e9f38f7a4c73c82e6bd7503bb792cdce4af510a9c2653c0a303bf2"
+      },
+      "prismFile": {
+        "file": "rotated-CW-forward--1.8-prism.brep",
+        "bytes": 57203,
+        "sha256": "fdeda9ca1d09e9444b88e2c7f981b8ae3118411f0ce61715507d1b5f6c1da4cb"
+      },
+      "candidateNormal": [0.8, -0.6, 0],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703514,
+        "normalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999900000001, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815458,
+        "normalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999899999999, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CW-reversed",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [-0.8, 0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [-0.8, 0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CW-reversed-source.brep",
+        "bytes": 15291,
+        "sha256": "f21303307177cb518ac30a9d0a50efe122f582bddb69dac90e94503ed0e42b14"
+      },
+      "expectedWorldBounds": {
+        "min": [6.759999999999999, 17.6, 27],
+        "max": [11.8, 23.479999999999997, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "rotated-CW-reversed-1.8-simple.brep",
+        "bytes": 59240,
+        "sha256": "1d5c5d266cb16870a8746a925d7f6aeba5bcdfc7de30168d24f9071e4c66f5c3"
+      },
+      "prismFile": {
+        "file": "rotated-CW-reversed-1.8-prism.brep",
+        "bytes": 57203,
+        "sha256": "fdeda9ca1d09e9444b88e2c7f981b8ae3118411f0ce61715507d1b5f6c1da4cb"
+      },
+      "candidateNormal": [-0.8, 0.6, 0],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.893801030703514,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "authoredNormalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999900000001, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815458,
+        "normalSpanMm": [-1.5543122344752192e-15, 1.8000000000000007],
+        "authoredNormalSpanMm": [-1.8000000000000007, 1.5543122344752192e-15],
+        "bounds": {
+          "min": [6.759999899999999, 17.5999999, 26.9999999],
+          "max": [11.8000001, 23.480000099999998, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "rotated-CW-reversed",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [10, 20, 30],
+        "u": [0.6, 0.8, 0],
+        "v": [0, 0, 1],
+        "normal": [0.8, -0.6, 0]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [-0.8, 0.6, 0],
+      "sourcePlaneFrame": {
+        "center": [10, 20, 30],
+        "normal": [-0.8, 0.6, 0],
+        "tangent": [0.6, 0.8, 0]
+      },
+      "sourceFile": {
+        "file": "rotated-CW-reversed-source.brep",
+        "bytes": 15291,
+        "sha256": "f21303307177cb518ac30a9d0a50efe122f582bddb69dac90e94503ed0e42b14"
+      },
+      "expectedWorldBounds": {
+        "min": [8.2, 16.520000000000003, 27],
+        "max": [13.24, 22.4, 33]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "rotated-CW-reversed--1.8-simple.brep",
+        "bytes": 59207,
+        "sha256": "f3ede97e848d78e080a5f54ecd282fad2910177b17502d6f02b84bb4d8427532"
+      },
+      "prismFile": {
+        "file": "rotated-CW-reversed--1.8-prism.brep",
+        "bytes": 57167,
+        "sha256": "0709a375dcb2a710a3dc5a4ac383bacf0609975e8dc9ebe2bfb7e8097146fee1"
+      },
+      "candidateNormal": [-0.8, 0.6, 0],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380103070361,
+        "normalSpanMm": [-1.7999999999999985, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.7999999999999985],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.240000099999998, 22.4000001, 33.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 50.89380098815457,
+        "normalSpanMm": [-1.8000000000000003, 1.5543122344752192e-15],
+        "authoredNormalSpanMm": [-1.5543122344752192e-15, 1.8000000000000003],
+        "bounds": {
+          "min": [8.1999999, 16.519999900000002, 26.9999999],
+          "max": [13.2400001, 22.4000001, 33.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "hole-forward",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "hole-forward-source.brep",
+        "bytes": 1613,
+        "sha256": "143fd7e2f5d9e287eaf111b70a12f723b69c688a43edef0ea5042944008d2f86"
+      },
+      "expectedWorldBounds": {
+        "min": [-2, -1, 5],
+        "max": [2, 2, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "hole-forward-1.8-simple.brep",
+        "bytes": 7989,
+        "sha256": "1758fb510282280422735821469a1cd216ae492efa2b010304a03fd1d11ee773"
+      },
+      "prismFile": {
+        "file": "hole-forward-1.8-prism.brep",
+        "bytes": 7487,
+        "sha256": "93d59165faaeeabde2c9d183c3cb063ab571205a66190891ca81ca6ac2318ab5"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999994,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 4.9999999],
+          "max": [2.0000001, 2.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999997,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 4.9999999],
+          "max": [2.0000001, 2.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "hole-forward",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": false,
+      "expectedNormal": [0, 0, 1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, 1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "hole-forward-source.brep",
+        "bytes": 1613,
+        "sha256": "143fd7e2f5d9e287eaf111b70a12f723b69c688a43edef0ea5042944008d2f86"
+      },
+      "expectedWorldBounds": {
+        "min": [-2, -1, 3.2],
+        "max": [2, 2, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "hole-forward--1.8-simple.brep",
+        "bytes": 7997,
+        "sha256": "58119f1df6e41eb91940cf383b94e1bc7575961aed3664680f38594f23392f03"
+      },
+      "prismFile": {
+        "file": "hole-forward--1.8-prism.brep",
+        "bytes": 7503,
+        "sha256": "e3a3674b06b6b291bbb1a29401199663e5acb384b257b6b97d6164275c782570"
+      },
+      "candidateNormal": [0, 0, 1],
+      "faceReversed": false,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.79999999999999,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 3.1999999000000003],
+          "max": [2.0000001, 2.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999997,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 3.1999999000000003],
+          "max": [2.0000001, 2.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "hole-reversed",
+      "thickness": 1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "hole-reversed-source.brep",
+        "bytes": 1823,
+        "sha256": "4674de447414e5a658c0fa31c567ce2c62bcc36f41dc426c896b23549ba87d9d"
+      },
+      "expectedWorldBounds": {
+        "min": [-2, -1, 3.2],
+        "max": [2, 2, 5]
+      },
+      "expectedAuthoredNormalSpanMm": [-1.8, 0],
+      "oldSimpleFile": {
+        "file": "hole-reversed-1.8-simple.brep",
+        "bytes": 7997,
+        "sha256": "16cc160b9075f9468a1673d36ac4aeb80a125da0ab0a086791a129148adbd888"
+      },
+      "prismFile": {
+        "file": "hole-reversed-1.8-prism.brep",
+        "bytes": 7503,
+        "sha256": "e3a3674b06b6b291bbb1a29401199663e5acb384b257b6b97d6164275c782570"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.79999999999999,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 3.1999999000000003],
+          "max": [2.0000001, 2.0000001, 5.0000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999997,
+        "normalSpanMm": [0, 1.7999999999999998],
+        "authoredNormalSpanMm": [-1.7999999999999998, 0],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 3.1999999000000003],
+          "max": [2.0000001, 2.0000001, 5.0000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [0, 1.8],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    },
+    {
+      "label": "hole-reversed",
+      "thickness": -1.8,
+      "authoredFrame": {
+        "origin": [0, 0, 5],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "expectedReversed": true,
+      "expectedNormal": [0, 0, -1],
+      "sourcePlaneFrame": {
+        "center": [0, 0, 5],
+        "normal": [0, 0, -1],
+        "tangent": [1, 0, 0]
+      },
+      "sourceFile": {
+        "file": "hole-reversed-source.brep",
+        "bytes": 1823,
+        "sha256": "4674de447414e5a658c0fa31c567ce2c62bcc36f41dc426c896b23549ba87d9d"
+      },
+      "expectedWorldBounds": {
+        "min": [-2, -1, 5],
+        "max": [2, 2, 6.8]
+      },
+      "expectedAuthoredNormalSpanMm": [0, 1.8],
+      "oldSimpleFile": {
+        "file": "hole-reversed--1.8-simple.brep",
+        "bytes": 7989,
+        "sha256": "a55c6d6a0c87d07e566d3d8a422e2cfe146e651bdca149677a96933b5d024dfe"
+      },
+      "prismFile": {
+        "file": "hole-reversed--1.8-prism.brep",
+        "bytes": 7487,
+        "sha256": "93d59165faaeeabde2c9d183c3cb063ab571205a66190891ca81ca6ac2318ab5"
+      },
+      "candidateNormal": [0, 0, -1],
+      "faceReversed": true,
+      "oldSimple": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999994,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 4.9999999],
+          "max": [2.0000001, 2.0000001, 6.8000001]
+        }
+      },
+      "prism": {
+        "valid": true,
+        "solids": 1,
+        "signedVolumeMm3": 19.799999999999997,
+        "normalSpanMm": [-1.7999999999999998, 0],
+        "authoredNormalSpanMm": [0, 1.7999999999999998],
+        "bounds": {
+          "min": [-2.0000001, -1.0000001, 4.9999999],
+          "max": [2.0000001, 2.0000001, 6.8000001]
+        }
+      },
+      "sourcePreserved": true,
+      "normalMatchesAuthoredReversal": true,
+      "expectedNormalSpanMm": [-1.8, 0],
+      "oldSimpleMatchesSignedContract": true,
+      "prismMatchesSignedContract": true,
+      "oldSimpleMatchesAuthoredWorldBounds": true,
+      "prismMatchesAuthoredWorldBounds": true,
+      "routesEquivalent": true
+    }
+  ],
+  "failures": [],
+  "completed": true,
+  "holeBindingAvailable": true,
+  "holeFixtureSupported": true,
+  "holeCaseCount": 4,
+  "orientationEquivalent": true,
+  "releasedAllHandles": true
+}

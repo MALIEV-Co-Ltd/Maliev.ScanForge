@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    ".resources/m5/run-edge-shell-ownership-diagnostic.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 1,
+  "peakJobBytes": 501866496,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 1.9174020999926142
+}

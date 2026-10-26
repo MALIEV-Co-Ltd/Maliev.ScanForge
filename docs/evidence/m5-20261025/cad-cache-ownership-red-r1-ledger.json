@@ -1,0 +1,29 @@
+{
+  "status": "RED",
+  "passed": false,
+  "scope": "Actual focused CAD worker cache ownership regression, attempted by coordinator. This failed receipt does not validate the proposed datum/pattern production fix.",
+  "originalReceipt": ".resources/m5/cad-cache-ownership-green-r1-job.json",
+  "originalLog": ".resources/m5/cad-cache-ownership-green-r1-job.log",
+  "originalNamingCaveat": "The original green-r1 filename is an attempt label only; the observed result is failure. Original files are preserved.",
+  "retainedReceipt": "docs/evidence/m5-20261025/cad-cache-ownership-red-r1-job.json",
+  "retainedReceiptSha256": "27386731bfa255ea8b8ac6fe9833d794055f8dd5b2a0c6a32c5f048dc31f1481",
+  "retainedLog": "docs/evidence/m5-20261025/cad-cache-ownership-red-r1.log",
+  "retainedLogSha256": "003e78746e54a07129885594fca4c5076e90c2e06c461eaff00b4a0e5434dc89",
+  "observedFailure": "first datum registration: raw live BREP source changed",
+  "mutationBoundary": "UNISOLATED: the original assertion follows native datum creation, result inspection, result alignment readers and source alignment reader refresh. Its label does not prove registration alone caused the change.",
+  "exitCode": 1,
+  "elapsedSecondsBeforeReceipt": 0.7662925999611616,
+  "peakJobBytes": 479764480,
+  "activeAfter": 0,
+  "activeZeroObserved": true,
+  "ownedProcessExitObserved": true,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "closedHandles": {
+    "thread": true,
+    "process": true,
+    "job": true,
+    "mutex": true
+  },
+  "nextStep": "Admitted focused stage-isolation diagnostic before any further production change. Preserve IsPartner, all 338 placement goldens and strict raw input fences. No raw cache-only exception is established."
+}

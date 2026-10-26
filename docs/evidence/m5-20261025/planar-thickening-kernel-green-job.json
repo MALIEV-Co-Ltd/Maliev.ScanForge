@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "tests/planar-thickening-kernel.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 655036416,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 4.4193071000045165
+}

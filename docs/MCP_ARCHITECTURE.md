@@ -43,6 +43,43 @@ feature ID and output index, so deriving from a split output preserves siblings.
 The GUI consumes shared cleanup diagnostics after rebuilding. This dispatch does
 not widen the deliberate ribbon verification allowlist.
 
+Exact datum placement retains its native Transform(copy=false) partner topology.
+Its registration supplies an internal preparedPartner; only an IsPartner result
+can reuse existing face triangulations. Mandatory BRepCheck geometric validation
+runs on an owned Copy_2(true,false) for that partner because the analyzer writes
+native face flags. The original result keeps its shared-topology identity.
+Location-aware vertex/normal extraction, edge/frame output reads and BREP
+serialization still run. The mesh
+reader skips Clean/remeshing for that partner and rejects a missing triangulation
+before dereferencing it, preserving source and retained-result UV/triangle slots.
+Other registrations retain ordinary meshing. These are private register/mesh
+arguments, not public schema flags or a source-preservation exception.
+
+Body patterns deep-copy both geometry and mesh for their first instance before
+adding it to the compound. Compound meshing therefore cannot replace source or
+prior datum-result caches. Remaining transformed copies, count, spacing and
+angles are unchanged. Copy_2(true,true) provides this ownership; copyGeom=false
+would not establish independent triangulation ownership. GUI and MCP continue
+through the existing shared alignment and CAD recipe operations.
+
+Boolean union/subtract/intersection makers operate on private deep copies of
+both exact inputs. Split gives its common and cut makers separate private copy
+pairs, preserving sources and independence between the two outputs. Native
+construction and result meshing can add p-curves and triangulation metadata;
+these writes must not reach live source or prior-result BREP. Temporary copy
+wrappers are disposed on every exit, and a failed split still retires any first
+registered output before rejecting the shared atomic transaction. GUI and MCP
+reach this same worker through their existing cad_create/cad_rebuild recipes;
+public schemas, output ordering and history semantics are unchanged.
+
+Fillet/chamfer also enumerate edges and build their maker on a private deep
+copy, including paths whose result is rejected by native validity checks. Hollow
+shell enumerates removable faces and its closing list on its private body before
+offset construction. These copies preserve public edge/face encounter order
+while preventing native flags or meshing metadata from changing source/prior
+result BREP. This ownership boundary does not widen accepted geometry or replace
+the existing BRepCheck validity gate.
+
 App owns one abort controller for GUI generic CAD creation/rebuilding, polygon
 or sketch extrusion, and revolve. Its **Cancel CAD operation** portal remains
 outside the inert inspector. The controller forwards to the same `job_cancel`
@@ -1026,8 +1063,14 @@ Sketch surfaces opt into an explicit plane constructed from the authored frame
 origin and normal, with the finite boundary oriented on that plane independently
 of curve winding. Curve extrusion retains its existing inferred-plane builder
 and explicit prism direction. Ordinary `thicken` deep-copies native topology and
-geometry before offset construction so generated pcurves and display meshing
-cannot mutate the source BREP. It requires one closed solid, applies the shared
+geometry before construction so generated pcurves and display meshing cannot
+mutate the source BREP. A true single FACE with analytic Plane support uses a
+canonical exact prism along its world plane normal, reversed for a REVERSED
+face and scaled by signed thickness. This retains inner wires and produces
+supports compatible with later fillet/chamfer operations. Other surface/body
+types keep the existing Simple offset algorithm; hollow shell keeps its Join
+algorithm. No planarity is inferred from display facets or published frames.
+Thickening requires one closed solid, applies the shared
 finite-volume orientation check and transfers that typed, oriented solid wrapper
 to registration. The shell operation retains its existing join/closing-face path.
 
