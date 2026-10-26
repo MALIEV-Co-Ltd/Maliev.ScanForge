@@ -1,0 +1,12 @@
+{
+  "scope": "Current TypeScript recovered global loop versus production routing; not a new native UI export",
+  "nx": 160,
+  "ny": 128,
+  "inputFaces": 40960,
+  "sourceSha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+  "target": 20480,
+  "globalFaces": 20480,
+  "globalFloat32Sha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+  "globalFloat64Sha256": "96841cb8f0d3e5cf9ff02dbe8577a78e944b52fcc707490d95e441a213cdac18",
+  "globalTriangleSha256": "4e0775fc434767b6258c72b3b6ec67e8add6eefbb0cd273b294a3f03d13779cf"
+}

@@ -1,0 +1,55 @@
+{
+  "scope": "R15 native readiness retry after a fresh human visibility update; activation/capture failed, no native operation acceptance.",
+  "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "ownedProcess": {
+    "pid": 36856,
+    "creationTimeFiletime": "134374944743602894",
+    "hwnd": 24381114,
+    "freshProcess": true,
+    "existingUserProcessAttached": false
+  },
+  "readiness": {
+    "ownedWindowVisible": true,
+    "ownedWindowMinimized": false,
+    "foregroundWindowId": 0,
+    "capture": "black",
+    "activationError": "GetCursorPos failed: Access is denied. (0x80070005)",
+    "refreshedWindowRetrySameError": true,
+    "modelingInputPerformed": false,
+    "fileInputPerformed": false,
+    "nativeExportProduced": false,
+    "nativeAcceptancePassed": false
+  },
+  "cleanup": {
+    "status": "finished",
+    "reason": "authenticated-finish",
+    "elapsedSeconds": 62.06640760001028,
+    "sourceHashReverified": true,
+    "ownedProcessExited": true,
+    "watchdogStopped": true,
+    "errors": [],
+    "monitorPassed": true,
+    "monitorPassDoesNotMeanNativeValidationPass": true
+  },
+  "resources": {
+    "nativeLeaseSeconds": 480,
+    "scheduledFinishSeconds": 450,
+    "inputStopSeconds": 420,
+    "jobLimitBytes": 4294967296,
+    "nestedPeakJobBytes": 721997824,
+    "nestedActiveAfter": 0,
+    "outerPeakJobBytes": 767528960,
+    "outerChildJobFinalActive": 0
+  },
+  "retainedReceipts": {
+    "sessionReport": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-native-ui-tools\\owned-partial-bridge-r15\\session-report.json",
+      "sha256": "8bffb5fc986d30120b4ca7b9fadec8ba149cac0a4304db189684a97ff195168d"
+    },
+    "outer": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-native-partial-bridge-20261026-r15-full.receipt.json",
+      "sha256": "60a8bed39d4b51cfea2b9c3d3dd8d30ab23b98e2e5a94c8b6d04d23a5955be82"
+    }
+  },
+  "nextGate": "Dense Semi/Flat native orientation/chord control remains open; no repeated launch without a fresh readiness change."
+}
