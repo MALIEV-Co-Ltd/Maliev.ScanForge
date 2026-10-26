@@ -5,11 +5,7 @@
   "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40260277191",
   "conclusion": "failure",
   "reached": "Standard build/typecheck batch12 of12; source batch and preceding batches passed",
-  "unrun": [
-    "full unit suite",
-    "CAD smoke",
-    "format check"
-  ],
+  "unrun": ["full unit suite", "CAD smoke", "format check"],
   "diagnostics": [
     "2026-10-26T02:42:56.7638711Z ##[error]tests/surface-blend-api.test.ts(243,39): error TS2540: Cannot assign to 'recipe' because it is a read-only property.",
     "2026-10-26T02:42:56.7646013Z ##[error]tests/surface-blend-api.test.ts(270,43): error TS2540: Cannot assign to 'recipe' because it is a read-only property."
