@@ -33,7 +33,9 @@
 
 ## Task 2: Rendered lifecycle and milestone ledger
 
-- [ ] Reproduce actual component visibility and split-plane failures through old rendered GUI/publicMCP before application changes.
-- [ ] Build immutable candidate; pass13TypeScript batches/zero warnings and retain source identities.
-- [ ] Pass plane, finite/open and convex/concave closed cutter GUI/MCP geometry/state/area/cancel/history/binary lifecycle; refresh component visibility/selection/oracle checks.
-- [ ] Record failure/success/source/build/driver/output/cleanup receipts, commit/push, update PR18/issue2 and clean live preview. Keep M2 native/final review/CI/merge gates open.
+- [x] Reproduce actual component visibility and split-plane failures through old rendered GUI/publicMCP before application changes.
+- [x] Build immutable candidate; pass13TypeScript batches/zero warnings and retain source identities.
+- [x] Pass plane, finite/open and convex/concave closed cutter GUI/MCP geometry/state/area/cancel/history/binary lifecycle; refresh component visibility/selection/oracle checks.
+- [x] Record failure/success/source/build/driver/output/cleanup receipts, commit/push, update PR18/issue2 and clean live preview. Keep M2 native/final review/CI/merge gates open.
+
+Checkpoint: application commit `69a13807decbcb0e8b5be9970c16c969bc67e3e9`, frozen build `scanforge-2fc7a9818f5df3e7`, 208 affected tests and all 13 TypeScript batches pass. Final component/split drivers include source provenance and visibility/selection assertions. The immutable evidence verifier checks retained receipts, output screenshots, driver hashes and all 820 compiled application source hashes; it is not a new runtime replay. PR18/issue2 and live5174 are updated, preserving the current scene. Exact-head hosted CI and a fresh whole-branch source review are in progress. Native comparisons and milestone closure/main merge remain open.
