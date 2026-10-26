@@ -1,0 +1,43 @@
+{
+  "headRevision": "7a0bedc3856ac071d96876e1512420710ef67a56",
+  "runtimeCommit": "82f65f45f47db75674b8b3be949c7e1da0956c1c",
+  "workflowRun": 40272061235,
+  "job": 121406801351,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40272061235/job/121406801351",
+  "conclusion": "success",
+  "build": "scanforge-88f56117136cbb52",
+  "gates": {
+    "npmCi": "passed",
+    "standardBuildAnd12TypecheckBatches": "passed",
+    "unit": {
+      "passed": 49145,
+      "skipped": 64,
+      "filesPassed": 682,
+      "filesSkipped": 18,
+      "durationSeconds": 362.86
+    },
+    "surfaceBlendApi": { "passed": 18, "durationMs": 1118 },
+    "surfaceBlendMath": { "passed": 77, "durationMs": 118 },
+    "cadSmoke": "passed",
+    "formatCheck": "passed"
+  },
+  "fixtureFix": {
+    "commit": "c370b9d60947b9fc5437f0a1d4d07084b6910a49",
+    "change": "Replace whole feature objects in two fixtures, preserving fields and supplying recipe instead of assigning readonly recipe",
+    "productionChanged": false,
+    "independentScopedReReview": "ADDRESSED; no new breakage"
+  },
+  "annotations": [
+    {
+      "level": "warning",
+      "scope": "GitHub action runtime",
+      "message": "Pinned checkout/setup-node actions target deprecated Node20; GitHub forced Node24"
+    },
+    {
+      "level": "notice",
+      "scope": "GitHub hosted runner image",
+      "message": "ubuntu-latest migration to Ubuntu26"
+    }
+  ],
+  "scope": "Exact-head standard hosted gates for the coherent compatible blend runtime and fixture correction. Native matrix, complete sketch chain, M4 acceptance and final main integration remain open."
+}

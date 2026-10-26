@@ -52,5 +52,5 @@
 - [x] Add an owned async onBlend callback/button reusing reference/options and existing edit/cancel lifecycle. Keep the target selected until settlement.
 - [x] Verify actual exact face validity and rational boundary geometry in the kernel.
 - [x] Build before browser replay; compare GUI and public-MCP new output geometry, history, source preservation, cancellation/errors and project/STEP persistence.
-- [ ] Review the complete change, run focused/affected/full checks through reserved local work or exact-head hosted CI, and commit only the coherent parity-complete feature.
+- [x] Review the complete change, run focused/affected/full checks through reserved local work or exact-head hosted CI, and commit only the coherent parity-complete feature.
 - [x] Keep real scan/native seam/normal/solid and complete sketch-chain gates open until their actual evidence passes.

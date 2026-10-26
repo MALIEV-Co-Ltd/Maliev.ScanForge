@@ -2,7 +2,7 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
-Latest code candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
+Previous restore candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
 `scanforge-c869395b41d3f42a`. Preceding candidate `1594c78` had a
 [hosted run](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807)
 failed before execution: GitHub reports recent account payments failed or the
@@ -32,8 +32,12 @@ with build `scanforge-88f56117136cbb52`; its source hashes and actual receipts a
 retained in [validation](evidence/m5-20261025/compatible-blend-validation.json).
 This is a new independently editable exact face between compatible NURBS
 boundaries. General CAD-edge/G2 blending, persistent seams and native blend
-equivalence are not established. Final standard checks and integration remain
-required; the preceding candidate/CI above is historical for this new runtime.
+equivalence are not established. Exact-head `7a0bedc` now passes the full
+[hosted gates](evidence/m5-20261025/compatible-blend-hosted-ci.json): all12
+typecheck batches/build,49,145tests passed/64skipped, CAD smoke and formatting.
+The two test-fixture readonly assignments from the first hosted attempt were
+corrected without production changes and independently re-reviewed. Final main
+integration remains required; the restore candidate/CI above is historical.
 
 ## Operation matrix
 
