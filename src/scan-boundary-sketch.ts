@@ -73,3 +73,17 @@ export function boundarySketches(
       return { id: id(), name: `${label} ${index + 1}`, sketch };
     });
 }
+
+/** One validated publication path for the GUI and public boundary projection. */
+export function projectedBoundarySketches(
+  curves: number[][],
+  plane: { origin: Vec3; normal: Vec3 },
+  id: () => string = () => crypto.randomUUID(),
+): SavedSketch[] {
+  if (
+    !curves.length ||
+    curves.some((curve) => !Array.isArray(curve) || curve.length < 6)
+  )
+    throw new Error("No complete boundary curves were produced.");
+  return boundarySketches(curves, plane, "Projected boundary", id);
+}

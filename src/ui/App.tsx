@@ -159,7 +159,7 @@ import {
   type ScanSelectionControl,
 } from "../automation/scan-selection-operations";
 import type { ScanEditRequest } from "../scan-edit";
-import { boundarySketches } from "../scan-boundary-sketch";
+import { projectedBoundarySketches } from "../scan-boundary-sketch";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { ScanTopologyPanels } from "./ScanTopologyPanels";
 import type { ScanBridgeSession } from "../scan-bridge-gesture";
@@ -1918,10 +1918,13 @@ export function App() {
     plane: { origin: Vec3; normal: Vec3 },
     label: string,
   ) {
-    const created = boundarySketches(curves, plane, label);
-    if (!created.length) throw new Error("No boundary curves were produced.");
-    setSavedSketches((previous) => [...previous, ...created]);
-    setDirty(true);
+    const created = projectedBoundarySketches(curves, plane);
+    operationLabel.current = label;
+    try {
+      commit(entities, undefined, { newModelSketches: created });
+    } finally {
+      operationLabel.current = null;
+    }
     setMessage(`${created.length} projected boundary sketch(es) created`);
   }
   function selectionUndo(redo = false, owned = false) {
@@ -2498,11 +2501,7 @@ export function App() {
           policy.newModelSketches,
         )
       : undefined;
-    if (!modelChanged(entities, next)) {
-      if (sketchPublication)
-        throw Error(
-          "Model sketch publication requires an owning geometry change.",
-        );
+    if (!modelChanged(entities, next) && !sketchPublication) {
       setEntities(next);
       setDirty(true);
       return;

@@ -1,3 +1,4 @@
+import { projectedBoundarySketches } from "../scan-boundary-sketch";
 import { geometryArtifact } from "./geometry-artifact";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { createInspectionOperations } from "./inspection-operations";
@@ -1016,6 +1017,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      if (
+        op.createSketches !== undefined &&
+        (kind !== "scanEdit" ||
+          op.action !== "boundaryProject" ||
+          typeof op.createSketches !== "boolean")
+      )
+        throw Error(
+          "createSketches is boolean and supported only for boundary projection (boundaryProject).",
+        );
+      const publishBoundarySketches = op.createSketches === true;
+      delete op.createSketches;
+      if (publishBoundarySketches) editable(e);
       let unroll: Awaited<ReturnType<typeof bindUnrollReference>> | undefined;
       let average: ReturnType<typeof bindAverageMeshes> | undefined;
       const reconstruction =
@@ -1367,6 +1380,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       });
       c.check();
       const edit = result.scanEdit;
+      const boundarySketches = publishBoundarySketches
+        ? projectedBoundarySketches(edit?.curves ?? [], op.plane)
+        : undefined;
       if (bridgePreview) return bridgePreviewResponse(e.positions, result, c);
       const pointEdit = result.pointCloudEdit;
       const positions =
@@ -1485,6 +1501,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         next = [...next, unrollAuxiliary.frame];
       }
       const response = {
+        ...(boundarySketches
+          ? { sketchIds: boundarySketches.map((sketch) => sketch.id) }
+          : {}),
         ...(unrollAuxiliary
           ? {
               unroll: {
@@ -1542,20 +1561,23 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       c.check();
       if (
         (positions && edit?.diagnostics.changed !== false) ||
-        segments?.length
+        segments?.length ||
+        boundarySketches?.length
       )
         host.commit(
           next.map(retainIndexedMesh),
           `Mesh ${kind}`,
-          unrollAuxiliary
-            ? { newModelSketches: [unrollAuxiliary.sketch] }
-            : nativeReconstruction && created.length
-              ? {
-                  modelVisibilityFor: nativeReconstruction.inputs.map(
-                    (e) => e.id,
-                  ),
-                }
-              : undefined,
+          boundarySketches
+            ? { newModelSketches: boundarySketches }
+            : unrollAuxiliary
+              ? { newModelSketches: [unrollAuxiliary.sketch] }
+              : nativeReconstruction && created.length
+                ? {
+                    modelVisibilityFor: nativeReconstruction.inputs.map(
+                      (e) => e.id,
+                    ),
+                  }
+                : undefined,
         );
       if ((average || nativeReconstruction) && created.length)
         host.select(created[0].id);
