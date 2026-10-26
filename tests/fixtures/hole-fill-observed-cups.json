@@ -1,6 +1,6 @@
 {
   "units": "mm",
-  "nativeVersion": "QuickSurface Pro8.0.123",
+  "nativeVersion": "native reference build 8.0.123",
   "scope": "Manufactured same-input native GUI exports; one complete circular opening, radius2mm, bottom-1mm, rim0mm. Original source reloaded between algorithms.",
   "cases": [
     {

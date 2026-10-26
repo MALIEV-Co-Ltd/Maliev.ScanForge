@@ -417,5 +417,5 @@
   "nativeTriangles": 136,
   "nativeSha256": "24c6783e94b750340fc706719eb3c8959a553de2a555c1c497d0b4139550fb04",
   "nativeExpandedSha256": "9d47de99166be40ef14bfc0ce984971bcf859a91403e7831a35f694af3e9c51f",
-  "observation": "QUICKSURFACE Pro 8.0.123 native GUI import indexed PLY, millimetres, Re-polygonize 0.500; default topology optimization enabled; output-only binary STL export."
+  "observation": "native reference build 8.0.123 native GUI import indexed PLY, millimetres, Re-polygonize 0.500; default topology optimization enabled; output-only binary STL export."
 }

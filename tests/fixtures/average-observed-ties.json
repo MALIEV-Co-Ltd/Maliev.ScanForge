@@ -1,6 +1,6 @@
 {
   "scope": "Observed installed native GUI Average exports with equal-distance projections, opposite reference face orders and strict-radius exclusion.",
-  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "nativeVersion": "native reference build 8.0.123",
   "units": "mm",
   "tolerance": 10,
   "base": [

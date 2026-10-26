@@ -1,6 +1,6 @@
 {
   "status": "native-core-and-integrated-gui-mcp-compared-final-m2-gates-open",
-  "nativeApplication": "QUICKSURFACE Pro 8.0.123",
+  "nativeApplication": "native reference build 8.0.123",
   "units": "mm",
   "nativeResolution": 0.5,
   "targetExecutedForAnalysis": false,
