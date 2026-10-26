@@ -1,3 +1,5 @@
+import { scanSplitCutter, isScanSplitCutter } from "../scan-split-cutter";
+import { scanSegmentPublication } from "../scan-segment-publication";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
@@ -4237,29 +4239,22 @@ export function App() {
     label: string,
     classifications?: RegionClassification[],
   ) {
-    const created = parts
-      .filter((positions) => positions.length)
-      .map((positions, index): Entity => ({
-        id: crypto.randomUUID(),
-        name: `${label} ${index + 1}${classifications?.[index] ? ` · ${classifications[index].kind === "freeform" ? "unclassified" : classifications[index].kind}` : ""}`,
-        kind: "mesh",
-        positions,
-        fit: classifications?.[index]?.fit,
-        color: DEFAULT_PART_COLOR,
-        opacity: 1,
-        visible: true,
-      }));
-    if (!created.length) throw new Error("Segmentation produced no meshes.");
-    operationLabel.current = `${label} (${created.length} meshes)`;
-    commit([
-      ...entities.map((entity) =>
-        entity.id === selected?.id ? { ...entity, visible: false } : entity,
-      ),
-      ...created,
-    ]);
-    operationLabel.current = null;
-    setSelectedId(created[0].id);
-    setMessage(`Created ${created.length} segmented meshes`);
+    if (!selected)
+      throw Error("Choose the source object before publishing mesh segments.");
+    const publication = scanSegmentPublication(
+      entities,
+      selected.id,
+      parts,
+      classifications,
+    );
+    operationLabel.current = `${label} (${publication.created.length} meshes)`;
+    try {
+      commit(publication.entities, undefined, publication.policy);
+    } finally {
+      operationLabel.current = null;
+    }
+    setSelectedId(publication.created[0].id);
+    setMessage(`Created ${publication.created.length} segmented meshes`);
   }
   function cadOperation(
     label: string,
@@ -6054,7 +6049,10 @@ export function App() {
               splitMeshOpen ? (
               <SplitMeshPanel
                 key={selected.id}
-                cutters={entities.filter((entity) => entity.id !== selected.id)}
+                cutters={entities.filter(
+                  (entity) =>
+                    entity.id !== selected.id && isScanSplitCutter(entity),
+                )}
                 busy={busy}
                 onSplit={(targetId) => {
                   const target = entities.find(
@@ -6064,14 +6062,7 @@ export function App() {
                     void runScanEdit(
                       {
                         action: "split",
-                        target: target.positions,
-                        plane:
-                          target.kind === "plane" && target.fit
-                            ? {
-                                origin: target.fit.center,
-                                normal: target.fit.axis,
-                              }
-                            : undefined,
+                        ...scanSplitCutter(target),
                       },
                       "Split mesh",
                     );

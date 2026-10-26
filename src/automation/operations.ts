@@ -1,3 +1,5 @@
+import { scanSplitCutter } from "../scan-split-cutter";
+import { scanSegmentPublication } from "../scan-segment-publication";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
 import { geometryArtifact } from "./geometry-artifact";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
@@ -1258,16 +1260,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           ),
         );
       }
-      if (kind === "scanEdit")
+      if (kind === "scanEdit") {
+        const target = a.targetId ? sampledObject(s, a.targetId) : undefined;
         Object.assign(request, {
           selection,
           ...(indexedMeshMatches(e.indexedMesh, e.positions)
             ? { sourceIndexed: e.indexedMesh }
             : {}),
-          ...(a.targetId
-            ? { target: sampledObject(s, a.targetId).positions }
+          ...(target
+            ? op.action === "split" && op.plane === undefined
+              ? scanSplitCutter(target)
+              : { target: target.positions }
             : {}),
         });
+      }
       if (kind === "connectedSelection")
         Object.assign(request, { seeds: mask(s, e) });
       if (kind === "selectionMorphology")
@@ -1476,16 +1482,19 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           }
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
-      if (segments?.length) {
-        for (const [index, p] of segments.entries()) {
-          if (!p.length) continue;
-          const copy = meshEdited(scanMeshCopy(e, id()), p);
-          const classification = result.segmentClassifications?.[index];
-          copy.fit = classification?.fit;
-          copy.name = `${e.name} segment ${index + 1}${classification ? ` · ${classification.kind === "freeform" ? "unclassified" : classification.kind}` : ""}`;
-          created.push(copy);
-        }
-        next = [...next, ...created.filter((x) => !next.includes(x))];
+      const segmentPublication =
+        segments === undefined
+          ? undefined
+          : scanSegmentPublication(
+              next,
+              e.id,
+              segments,
+              result.segmentClassifications,
+              id,
+            );
+      if (segmentPublication) {
+        next = segmentPublication.entities;
+        created.push(...segmentPublication.created);
       }
       if (
         kind === "scanTools" &&
@@ -1561,7 +1570,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       c.check();
       if (
         (positions && edit?.diagnostics.changed !== false) ||
-        segments?.length ||
+        segmentPublication ||
         boundarySketches?.length
       )
         host.commit(
@@ -1571,15 +1580,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? { newModelSketches: boundarySketches }
             : unrollAuxiliary
               ? { newModelSketches: [unrollAuxiliary.sketch] }
-              : nativeReconstruction && created.length
-                ? {
-                    modelVisibilityFor: nativeReconstruction.inputs.map(
-                      (e) => e.id,
-                    ),
-                  }
-                : undefined,
+              : segmentPublication
+                ? segmentPublication.policy
+                : nativeReconstruction && created.length
+                  ? {
+                      modelVisibilityFor: nativeReconstruction.inputs.map(
+                        (e) => e.id,
+                      ),
+                    }
+                  : undefined,
         );
-      if ((average || nativeReconstruction) && created.length)
+      if (
+        (segmentPublication || average || nativeReconstruction) &&
+        created.length
+      )
         host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;

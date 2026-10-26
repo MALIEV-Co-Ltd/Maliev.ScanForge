@@ -279,6 +279,7 @@ try {
       {
         id: "scan",
         name: "Three components",
+        source: "manufactured-components-control.stl",
         kind: "mesh",
         positions,
         visible: true,
@@ -362,7 +363,13 @@ try {
     await mutate("history_seek", { index: baseline });
     await mutate("object_select", { entityId: "scan" });
     rawEqual(await geometry(), positions, "History reset changed source");
-    assert.equal((await call("project_get")).result.objects.length, 1);
+    const restored = (await call("project_get")).result;
+    assert.equal(restored.objects.length, 1);
+    assert.equal(
+      restored.objects.find((o) => o.id === "scan").visible,
+      true,
+      "History did not restore extracted source visibility",
+    );
   };
   const waitHistory = async (index) => {
     for (let i = 0; i < 120; i++) {
@@ -473,6 +480,18 @@ try {
     let guiGeometry;
     if (c.extract) {
       assert.equal(guiProject.objects.length, 2);
+      const created = guiProject.objects.find((o) => o.id !== "scan");
+      assert.equal(
+        guiProject.objects.find((o) => o.id === "scan").visible,
+        false,
+      );
+      assert.equal(created.visible, true);
+      assert.equal(created.source, "manufactured-components-control.stl");
+      assert.equal(
+        (await call("application_inspect")).result.selectedId,
+        created.id,
+        "GUI did not select extracted owner",
+      );
       rawEqual(await geometry(), positions, "GUI extraction altered source");
       guiGeometry = await geometry(
         guiProject.objects.find((o) => o.id !== "scan").id,
@@ -492,6 +511,23 @@ try {
     let mcpGeometry;
     if (c.extract) {
       assert.equal(mcpProject.objects.length, 2);
+      const created = mcpProject.objects.find((o) => o.id !== "scan");
+      assert.equal(
+        mcpProject.objects.find((o) => o.id === "scan").visible,
+        false,
+      );
+      assert.equal(created.visible, true);
+      assert.equal(created.source, "manufactured-components-control.stl");
+      assert.equal(
+        (await call("application_inspect")).result.selectedId,
+        created.id,
+        "MCP did not select extracted owner",
+      );
+      assert.equal(
+        created.name,
+        guiProject.objects.find((o) => o.id !== "scan").name,
+        "GUI/MCP extracted names differ",
+      );
       rawEqual(await geometry(), positions, "MCP extraction altered source");
       mcpGeometry = await geometry(
         mcpProject.objects.find((o) => o.id !== "scan").id,
@@ -501,6 +537,12 @@ try {
     rawEqual(mcpGeometry, guiGeometry, `GUI/MCP ${c.name} mismatch`);
     await mutate("history_undo", {});
     rawEqual(await geometry(), positions, "Undo changed source");
+    assert.equal(
+      (await call("project_get")).result.objects.find((o) => o.id === "scan")
+        .visible,
+      true,
+      "Undo did not restore original visibility",
+    );
     await mutate("history_redo", {});
     if (c.extract)
       rawEqual(
@@ -542,6 +584,7 @@ try {
       rawCornerOracle: true,
       undoRedo: true,
       binarySaveReopen: true,
+      sourceVisibilityAndSelection: c.extract ? true : null,
     });
     // Binary import starts a new history; reimport the immutable original for the next case.
     const source = (
