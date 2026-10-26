@@ -1,0 +1,2304 @@
+{
+  "schema": 1,
+  "status": "PASS_CURRENT_ORIGINAL_ASC_FINE_GUI_MCP_SCOPE",
+  "workflowPassed": true,
+  "overallM3Passed": false,
+  "scope": "Original-three ASC import and two whole-cloud GUI/public-MCP Fine Align replays; not global/native/controller or reconstruction acceptance",
+  "candidate": {
+    "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+    "buildId": "scanforge-b9a7e1058f533d0c",
+    "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+    "compilerInputs": 2084
+  },
+  "rawSummaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\summary.json",
+    "bytes": 12232,
+    "sha256": "765eabdb5a3b9057f3297cc52c6d6f3f07b4f5582be8b02acb92b5502384a6ac"
+  },
+  "retainedSummary": {
+    "passed": true,
+    "scope": "Original-three ASC import and two whole-cloud GUI/public-MCP Fine Align replays; not global/native/controller or reconstruction acceptance",
+    "targetAccuracyReached": false,
+    "build": {
+      "sourceCommit": "3e3bbcdb221fc86b42d0c3db050ea23075fef595",
+      "buildId": "scanforge-b9a7e1058f533d0c",
+      "sourceManifestSha256": "ac9d0ed534029bdc2b2c7a77d77d6cd297edd81b35f353fe7bbd599042d5edc6",
+      "compilerInputs": 2084
+    },
+    "sourceAndBuiltAssetsUnchanged": true,
+    "observer": null,
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893"
+      }
+    ],
+    "pointCounts": [140113, 1375494, 1865848],
+    "registration": [
+      {
+        "transform": {
+          "rotation": [
+            0.9999976876839751, -0.00020780736143213494, -0.0021404305181708565,
+            0.00021026270871790932, 0.9999993201283429, 0.0011469666281794628,
+            0.0021401907148441606, -0.001147414028748722, 0.9999970515080282
+          ],
+          "translation": [
+            -0.595640916990254, 0.31349276897532724, -0.06775678084800296
+          ]
+        },
+        "rms": 1.8684108188219153,
+        "wholeCloudRms": 1.8684108188219153,
+        "overlapRms": 0.17591868054819407,
+        "overlapPoints": 45801,
+        "requiredOverlapPoints": 119097,
+        "overlapSatisfied": false,
+        "maxError": 6.10985269096224,
+        "pairs": 140113,
+        "evaluatedPoints": 140113,
+        "targetPoints": 1865848,
+        "rejectedPoints": 94312,
+        "overlapFraction": 0.32688615617394534,
+        "inlierPairs": 45801,
+        "inlierRms": 0.17591868054819407,
+        "iterations": 66,
+        "converged": true,
+        "targetRms": 0.5,
+        "targetReached": false,
+        "terminationReason": "stoppedImproving",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 85,
+        "sampleSize": 20000,
+        "fittingSamples": 20000,
+        "distanceTests": 1395191492
+      },
+      {
+        "transform": {
+          "rotation": [
+            0.9999999999992504, -9.42310244411503e-7, 7.818332766384452e-7,
+            9.423063477650983e-7, 0.9999999999871361, 4.983971782111668e-6,
+            -7.81837973076056e-7, -4.983971045381472e-6, 0.9999999999872744
+          ],
+          "translation": [
+            -0.00032955934852552105, 0.0014561571827194086,
+            0.00014132025046365015
+          ]
+        },
+        "rms": 0.48646375468038894,
+        "wholeCloudRms": 0.48646375468038894,
+        "overlapRms": 0.03207439767680574,
+        "overlapPoints": 1169170,
+        "requiredOverlapPoints": 1169170,
+        "overlapSatisfied": true,
+        "maxError": 5.994482784553879,
+        "pairs": 1375494,
+        "evaluatedPoints": 1375494,
+        "targetPoints": 1865848,
+        "rejectedPoints": 72193,
+        "overlapFraction": 0.9475148564806535,
+        "inlierPairs": 1169170,
+        "inlierRms": 0.03207439767680574,
+        "iterations": 1,
+        "converged": true,
+        "targetRms": 0.5,
+        "targetReached": true,
+        "terminationReason": "targetReached",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 85,
+        "sampleSize": 20000,
+        "fittingSamples": 20000,
+        "distanceTests": 69625783
+      }
+    ],
+    "guiPublicMcpCompleteCarrierEquality": true,
+    "fixedTargetInvariance": true,
+    "undoRedo": true,
+    "readOnlyDigestRetry": false,
+    "receipt": {
+      "mode": "cad",
+      "label": "original-asc-fine-final-cloud-selection-r1",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "--max-semi-space-size=16",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-fine-review-final-runner.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.config.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 6144,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12028043264,
+      "immediateChildFreeBytes": 12027555840,
+      "identity": {
+        "pid": 52636,
+        "startFileTime": "134374454837006701",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 1454755840,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 1468502016,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 164.65581840003142,
+      "completed": true
+    },
+    "profile": {
+      "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\owned-default-profile",
+      "files": 270,
+      "logicalBytes": 28174446,
+      "retained": true,
+      "closedBeforeInventory": true,
+      "profileRetainedAt": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-asc-fine-final-cloud-selection-r1-owned-default-profile",
+      "sourceAbsent": true
+    },
+    "harness": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.config.json",
+        "bytes": 3738,
+        "sha256": "e62c93b891480ad122c7be60ed13234e9573ce93ac502cc1852fbc8668d1d11c"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.receipt.json",
+        "bytes": 2076,
+        "sha256": "36e056a21eb82006c7f471b7fa571626d3a30b430d3d31312556f26359da3401"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-fine-review-final-run.py",
+        "bytes": 953,
+        "sha256": "fd7ceee2670ed3bc86a4099c1254efa3dcb98eddb47a92670a14ecfdf2825acd"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-review-final.mjs",
+        "bytes": 15248,
+        "sha256": "7f2a0eb2ee159b6d18d5ae7541bd9d2cf4a0038d0b32860b1e5001b929a563bb"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-fine-review-final-origin.mjs",
+        "bytes": 1746,
+        "sha256": "4b59f6c136931a1eabbbd912a6fcddb8d83b70d55478c3a2ff2ef1a2e432ec34"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-fine-review-final-runner.mjs",
+        "bytes": 3806,
+        "sha256": "da9d796c0b074ea49f8a12f8ddd3556a5276c98b4c8d57f2671fbaf04947c341"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-original-fine-browser.mjs",
+        "bytes": 10116,
+        "sha256": "d2d85c55efbe9565560ea62b414c1bf99fbdb88fd0a82553caeba03f73ae90a8"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-placement-review-r2.mjs",
+        "bytes": 23663,
+        "sha256": "1ca6ca4763bfb5fc6def9a7e111130ac68799ab75237e9f36a97a5a2d4728a8d"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\evidence.json",
+        "bytes": 58780,
+        "sha256": "1cb0353fb61903b217ee4e7d4daade3d379161953ea303b9ee3a3cd55d14bc12"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\binding-result.json",
+        "bytes": 412640,
+        "sha256": "c07379ea1e523c33572ac9e5200c37e3176c760325cf8bd4ee6646773884700e"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.receipt.json",
+        "bytes": 2076,
+        "sha256": "36e056a21eb82006c7f471b7fa571626d3a30b430d3d31312556f26359da3401"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\digest-observations.json",
+        "bytes": 4343,
+        "sha256": "004befeed68defc47c864fcb63c802a75ac3af0e6e7343715aa49f181326db7b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\readiness-observations.json",
+        "bytes": 42227,
+        "sha256": "1d4f7cacd06084c78e35b4241e1a48fcc35bd033046b47d3d1fb77953c2f5338"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.profile-retention-preflight.json",
+        "bytes": 726,
+        "sha256": "e558848395da0dd08641a7c58d5c5756f83c6d018694ada2eded7aa6abd2da97"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.profile-retention-result.json",
+        "bytes": 603,
+        "sha256": "d2ee76a9fafa4be342e66c192f1e9537944221ad4c1b9f1cb4dfcde27f85623a"
+      }
+    ],
+    "limitations": [
+      "Partial overlap on original scan1 correctly misses target accuracy; workflow pass does not imply overall accuracy pass",
+      "GUI result text retained; no private worker observer in ASC Fine case",
+      "No native/fullglobalcontroller/reconstruction or M3completion claim"
+    ],
+    "profileRetention": {
+      "operation": "Native Move-Item exit0; retention archive",
+      "source": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\owned-default-profile",
+      "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-asc-fine-final-cloud-selection-r1-owned-default-profile",
+      "files": 270,
+      "bytes": 28174446.0,
+      "matchesClosedPreMoveCountAndBytes": true,
+      "cryptographicFileComparison": false,
+      "sourceAbsent": true,
+      "freeCBytes": 6438416384
+    },
+    "profileRetentionMeaning": "Root-owned reversible move verified inventory count/bytes and source absence; no per-file content-hash relocation claim"
+  },
+  "rawBrowserEvidencePin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\evidence.json",
+    "bytes": 58780,
+    "sha256": "1cb0353fb61903b217ee4e7d4daade3d379161953ea303b9ee3a3cd55d14bc12"
+  },
+  "browserEvidence": {
+    "passed": true,
+    "targetAccuracyReached": false,
+    "scope": "Original-three ASC import and two whole-cloud GUI/public-MCP Fine Align replays; not global/native/controller or reconstruction acceptance",
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893"
+      }
+    ],
+    "expectedCounts": [140113, 1375494, 1865848],
+    "browserContextScope": {
+      "persistent": true,
+      "incognito": false,
+      "ownedDisposableProfile": true,
+      "userDataDir": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\owned-default-profile"
+    },
+    "readinessObservations": [
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:45:01.720Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "selectedIds": ["fc584e19-bc5b-4e93-b20b-a994644e6893"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:45:02.189Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "selectedIds": ["fc584e19-bc5b-4e93-b20b-a994644e6893"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "observedAt": "2026-10-25T23:45:03.033Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "selectedIds": ["fc584e19-bc5b-4e93-b20b-a994644e6893"],
+        "undo": 3,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:46:02.752Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 12,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:46:03.347Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:47:03.161Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 14,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "observedAt": "2026-10-25T23:47:03.658Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 14,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:47:04.720Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 3,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8718cb9c-b346-4176-b577-8d35934e57e3",
+        "observedAt": "2026-10-25T23:47:05.063Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 16,
+        "selectedId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "selectedIds": ["8718cb9c-b346-4176-b577-8d35934e57e3"],
+        "undo": 4,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:47:13.002Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 19,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "a0e5ffffffffef3f622b3324629eafbe52b6aa8ee53baa3e0000bf9f169935bf703d9592599eaf3e643bfeffffffef3f03f952bb7fe7d43e004091de90db573fa6b386e2ef3baabeab387b877fe7d4be4240feffffffef3f000040b5eb85223f",
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:47:14.783Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 20,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 4,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:47:22.628Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 21,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "a0e5ffffffffef3f622b3324629eafbe52b6aa8ee53baa3e0000bf9f169935bf703d9592599eaf3e643bfeffffffef3f03f952bb7fe7d43e004091de90db573fa6b386e2ef3baabeab387b877fe7d4be4240feffffffef3f000040b5eb85223f",
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "observedAt": "2026-10-25T23:47:24.191Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 21,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "a0e5ffffffffef3f622b3324629eafbe52b6aa8ee53baa3e0000bf9f169935bf703d9592599eaf3e643bfeffffffef3f03f952bb7fe7d43e004091de90db573fa6b386e2ef3baabeab387b877fe7d4be4240feffffffef3f000040b5eb85223f",
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:47:25.221Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 22,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 4,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:be704070-755b-45b9-8cbf-a611c80917e5",
+        "observedAt": "2026-10-25T23:47:26.066Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 23,
+        "selectedId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "selectedIds": ["be704070-755b-45b9-8cbf-a611c80917e5"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 10,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.70006477987378,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "8718cb9c-b346-4176-b577-8d35934e57e3",
+            "name": "asc-1.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-1.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+            "points": 140113,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "be704070-755b-45b9-8cbf-a611c80917e5",
+            "name": "asc-2.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-2.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "pointCloudPose": "a0e5ffffffffef3f622b3324629eafbe52b6aa8ee53baa3e0000bf9f169935bf703d9592599eaf3e643bfeffffffef3f03f952bb7fe7d43e004091de90db573fa6b386e2ef3baabeab387b877fe7d4be4240feffffffef3f000040b5eb85223f",
+            "points": 1375494,
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+            "name": "asc-3.asc",
+            "kind": "pointcloud",
+            "pointColorMode": "solid",
+            "ascAttributes": "xyz-normal",
+            "source": "asc-3.asc",
+            "color": "#aaff00",
+            "visible": true,
+            "opacity": 1,
+            "pointSize": 1,
+            "pointAutoDensity": true,
+            "pointDensity": 100,
+            "points": 1865848,
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      }
+    ],
+    "digestObservations": [
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:45:01.723Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "fceb87c2-488e-43bb-b54c-4b0fef92a88b",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:45:02.192Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "c53cefdc-ddf4-4068-ab23-8a18240032bc",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T23:45:03.036Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "2791019e-4877-4cb0-aaaa-9be3eb6ca90d",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 12,
+        "startedAt": "2026-10-25T23:46:02.755Z",
+        "readOnlyRetry": false,
+        "launchRevision": 12,
+        "jobId": "214c720c-b357-444c-8d50-42d9b981c7db",
+        "afterRevision": 12,
+        "completed": true
+      },
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T23:46:03.350Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "00370b8f-a32b-4c85-ab5b-ab31ede9ebe8",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 14,
+        "startedAt": "2026-10-25T23:47:03.163Z",
+        "readOnlyRetry": false,
+        "launchRevision": 14,
+        "jobId": "e5c25e52-50f1-4686-8eea-c7d6c8913e77",
+        "afterRevision": 14,
+        "completed": true
+      },
+      {
+        "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "beforeRevision": 14,
+        "startedAt": "2026-10-25T23:47:03.661Z",
+        "readOnlyRetry": false,
+        "launchRevision": 14,
+        "jobId": "de34e943-2e1b-4b86-abc6-7cfd861ee3b0",
+        "afterRevision": 14,
+        "completed": true
+      },
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T23:47:04.723Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "55fd24b6-5ccf-45e1-9a6f-ae2302966a1a",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "beforeRevision": 16,
+        "startedAt": "2026-10-25T23:47:05.065Z",
+        "readOnlyRetry": false,
+        "launchRevision": 16,
+        "jobId": "35d5cdc3-1f22-44f6-a693-b0926160c104",
+        "afterRevision": 16,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 19,
+        "startedAt": "2026-10-25T23:47:13.004Z",
+        "readOnlyRetry": false,
+        "launchRevision": 19,
+        "jobId": "8df49ba2-76a1-4187-8e78-6e4736fe31d4",
+        "afterRevision": 19,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 20,
+        "startedAt": "2026-10-25T23:47:14.785Z",
+        "readOnlyRetry": false,
+        "launchRevision": 20,
+        "jobId": "231ae52d-f907-4be5-ba7d-d6fe8f0b06ba",
+        "afterRevision": 20,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 21,
+        "startedAt": "2026-10-25T23:47:22.631Z",
+        "readOnlyRetry": false,
+        "launchRevision": 21,
+        "jobId": "639ef378-a107-4e12-b50e-2e07885b0278",
+        "afterRevision": 21,
+        "completed": true
+      },
+      {
+        "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "beforeRevision": 21,
+        "startedAt": "2026-10-25T23:47:24.193Z",
+        "readOnlyRetry": false,
+        "launchRevision": 21,
+        "jobId": "910b6002-74db-44df-a541-9b08a6e82d01",
+        "afterRevision": 21,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 22,
+        "startedAt": "2026-10-25T23:47:25.224Z",
+        "readOnlyRetry": false,
+        "launchRevision": 22,
+        "jobId": "d18d7461-47a6-46a2-8fd0-0a368f6b1bf3",
+        "afterRevision": 22,
+        "completed": true
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "beforeRevision": 23,
+        "startedAt": "2026-10-25T23:47:26.070Z",
+        "readOnlyRetry": false,
+        "launchRevision": 23,
+        "jobId": "df8e40f2-2874-4e36-93ab-f6bf9ac46fa7",
+        "afterRevision": 23,
+        "completed": true
+      }
+    ],
+    "runs": [
+      {
+        "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3",
+        "targetId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "guiText": "Result\n\nStopped improving; target accuracy not reached \u00b7 Overlap RMS 0.1759 mm \u00b7 Target 0.5 mm\n\nWhole-cloud RMS 1.868 mm\n\nExpected overlap 85% \u00b7 Overlap points 45801 / 119097 required \u00b7 Within search distance 32.7%\n\nFitting samples 20000 / 20000 requested\n\nInsufficient overlap within the search distance; target accuracy not reached.\n\nmax Error: 6.10985269096224\n\niterations: 66\n\nrejected Points: 94312",
+        "registration": {
+          "transform": {
+            "rotation": [
+              0.9999976876839751, -0.00020780736143213494,
+              -0.0021404305181708565, 0.00021026270871790932,
+              0.9999993201283429, 0.0011469666281794628, 0.0021401907148441606,
+              -0.001147414028748722, 0.9999970515080282
+            ],
+            "translation": [
+              -0.595640916990254, 0.31349276897532724, -0.06775678084800296
+            ]
+          },
+          "rms": 1.8684108188219153,
+          "wholeCloudRms": 1.8684108188219153,
+          "overlapRms": 0.17591868054819407,
+          "overlapPoints": 45801,
+          "requiredOverlapPoints": 119097,
+          "overlapSatisfied": false,
+          "maxError": 6.10985269096224,
+          "pairs": 140113,
+          "evaluatedPoints": 140113,
+          "targetPoints": 1865848,
+          "rejectedPoints": 94312,
+          "overlapFraction": 0.32688615617394534,
+          "inlierPairs": 45801,
+          "inlierRms": 0.17591868054819407,
+          "iterations": 66,
+          "converged": true,
+          "targetRms": 0.5,
+          "targetReached": false,
+          "terminationReason": "stoppedImproving",
+          "matching": "fullTargetPointToPoint",
+          "targetRmsBasis": "overlap",
+          "overlapPercent": 85,
+          "sampleSize": 20000,
+          "fittingSamples": 20000,
+          "distanceTests": 1395191492
+        },
+        "before": {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 420339,
+              "rawBytes": 1681356,
+              "sha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9"
+            },
+            {
+              "path": "normals",
+              "encoding": "f32",
+              "elements": 420339,
+              "rawBytes": 1681356,
+              "sha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+            }
+          ]
+        },
+        "after": {
+          "matrixBits": "98b49526fbffef3f7cd376a4db3c2bbf6a9d65e2ce8861bf313e548a7d0fe3bf67fc3eea3e8f2b3fa526ff92feffef3fb1ad160abaca523f530492f94310d43fea2314244e88613fb2e19e6e9acc52bf5d590ad1f9ffef3fa80cd3258258b1bf",
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 420339,
+              "rawBytes": 1681356,
+              "sha256": "13b282357902a1dfe6bb814b1754a37d003f192725a1133995f7f19b6148c499"
+            },
+            {
+              "path": "normals",
+              "encoding": "f64",
+              "elements": 420339,
+              "rawBytes": 3362712,
+              "sha256": "c0cae0e61e78edae2933fbaae81e90058b666a976aa7f1df05dc760c09cdfe2a"
+            },
+            {
+              "path": "pointCloudPlacement.sourcePositions",
+              "encoding": "f32",
+              "elements": 420339,
+              "rawBytes": 1681356,
+              "sha256": "8495d96cebfb263f990d62fdf8f30f6b457d5df72c98ee532a5af74fd27eaea9"
+            },
+            {
+              "path": "pointCloudPlacement.sourceNormals",
+              "encoding": "f32",
+              "elements": 420339,
+              "rawBytes": 1681356,
+              "sha256": "ba89043611af53a2ef22ad3086a13093cc443e51406d192fcd48a122b8b25825"
+            }
+          ]
+        }
+      },
+      {
+        "entityId": "be704070-755b-45b9-8cbf-a611c80917e5",
+        "targetId": "fc584e19-bc5b-4e93-b20b-a994644e6893",
+        "guiText": "Result\n\nTarget accuracy reached \u00b7 Overlap RMS 0.03207 mm \u00b7 Target 0.5 mm\n\nWhole-cloud RMS 0.4865 mm\n\nExpected overlap 85% \u00b7 Overlap points 1169170 / 1169170 required \u00b7 Within search distance 94.8%\n\nFitting samples 20000 / 20000 requested\n\nmax Error: 5.994482784553879\n\niterations: 1\n\nrejected Points: 72193",
+        "registration": {
+          "transform": {
+            "rotation": [
+              0.9999999999992504, -9.42310244411503e-7, 7.818332766384452e-7,
+              9.423063477650983e-7, 0.9999999999871361, 4.983971782111668e-6,
+              -7.81837973076056e-7, -4.983971045381472e-6, 0.9999999999872744
+            ],
+            "translation": [
+              -0.00032955934852552105, 0.0014561571827194086,
+              0.00014132025046365015
+            ]
+          },
+          "rms": 0.48646375468038894,
+          "wholeCloudRms": 0.48646375468038894,
+          "overlapRms": 0.03207439767680574,
+          "overlapPoints": 1169170,
+          "requiredOverlapPoints": 1169170,
+          "overlapSatisfied": true,
+          "maxError": 5.994482784553879,
+          "pairs": 1375494,
+          "evaluatedPoints": 1375494,
+          "targetPoints": 1865848,
+          "rejectedPoints": 72193,
+          "overlapFraction": 0.9475148564806535,
+          "inlierPairs": 1169170,
+          "inlierRms": 0.03207439767680574,
+          "iterations": 1,
+          "converged": true,
+          "targetRms": 0.5,
+          "targetReached": true,
+          "terminationReason": "targetReached",
+          "matching": "fullTargetPointToPoint",
+          "targetRmsBasis": "overlap",
+          "overlapPercent": 85,
+          "sampleSize": 20000,
+          "fittingSamples": 20000,
+          "distanceTests": 69625783
+        },
+        "before": {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136"
+            },
+            {
+              "path": "normals",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+            }
+          ]
+        },
+        "after": {
+          "matrixBits": "a0e5ffffffffef3f622b3324629eafbe52b6aa8ee53baa3e0000bf9f169935bf703d9592599eaf3e643bfeffffffef3f03f952bb7fe7d43e004091de90db573fa6b386e2ef3baabeab387b877fe7d4be4240feffffffef3f000040b5eb85223f",
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "cf2ac624a0822a49ee0931642400de613bdc9fbbfacbf813c7ceb7c4ca92398f"
+            },
+            {
+              "path": "normals",
+              "encoding": "f64",
+              "elements": 4126482,
+              "rawBytes": 33011856,
+              "sha256": "646e72321e5f560019bef815b6220c95f52df81bafd43c6f148c82617d25a3cd"
+            },
+            {
+              "path": "pointCloudPlacement.sourcePositions",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "1391262f386a91347eea7402b6a367e4d7f8c1095151e21a335d1da3877c1136"
+            },
+            {
+              "path": "pointCloudPlacement.sourceNormals",
+              "encoding": "f32",
+              "elements": 4126482,
+              "rawBytes": 16505928,
+              "sha256": "c34af4d812c76fcdea494e9306659e6f661c4697563aa2f5896cf25a190eb07c"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": []
+  },
+  "ownedReceipt": {
+    "mode": "cad",
+    "label": "original-asc-fine-final-cloud-selection-r1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=768",
+      "--max-semi-space-size=16",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-fine-review-final-runner.mjs",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.config.json"
+    ],
+    "leaseSeconds": 900,
+    "guardMiB": 6144,
+    "heapMiB": 768,
+    "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-fine-final-cloud-selection-r1.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 12028043264,
+    "immediateChildFreeBytes": 12027555840,
+    "identity": {
+      "pid": 52636,
+      "startFileTime": "134374454837006701",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 1454755840,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 1468502016,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 164.65581840003142,
+    "completed": true
+  },
+  "inputs": [
+    {
+      "name": "asc-1.asc",
+      "bytes": 7679386,
+      "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+      "entityId": "8718cb9c-b346-4176-b577-8d35934e57e3"
+    },
+    {
+      "name": "asc-2.asc",
+      "bytes": 74418231,
+      "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+      "entityId": "be704070-755b-45b9-8cbf-a611c80917e5"
+    },
+    {
+      "name": "asc-3.asc",
+      "bytes": 100922768,
+      "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+      "entityId": "fc584e19-bc5b-4e93-b20b-a994644e6893"
+    }
+  ],
+  "pointCounts": [140113, 1375494, 1865848],
+  "observer": null,
+  "readOnlyDigestRetry": false,
+  "normalAndPoseScope": "Complete actual world/local position/normal digests and retained native cloud pose encoding are checked by GUI/public MCP workflows; no unsupported native cloud-global/full native-controller admission is claimed.",
+  "profileRetention": {
+    "operation": "Native Move-Item exit0; retention archive",
+    "source": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-asc-fine-final-cloud-selection-r1\\browser\\owned-default-profile",
+    "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-asc-fine-final-cloud-selection-r1-owned-default-profile",
+    "files": 270,
+    "bytes": 28174446.0,
+    "matchesClosedPreMoveCountAndBytes": true,
+    "cryptographicFileComparison": false,
+    "sourceAbsent": true,
+    "freeCBytes": 6438416384
+  },
+  "profileRelocationLimit": "Later closed owned profile move retained all files with matching count/bytes/source absence; no cryptographic per-file relocation comparison. Raw historical C paths are preserved.",
+  "screenshots": [
+    {
+      "path": "m3-asc-fine-final-20261026/original-asc-1-fine.png",
+      "bytes": 121246,
+      "sha256": "65226be0351b4a006a75b075f1e29ec98d812441d823d6e79ffc2bcc13418197"
+    },
+    {
+      "path": "m3-asc-fine-final-20261026/original-asc-2-fine.png",
+      "bytes": 121711,
+      "sha256": "4b35a8891f249df0cfc7120fdaddc375d09ac591a94db40d50f8013d468d5cdf"
+    }
+  ],
+  "publicationEncoding": "Repository-normalized JSON preserves actual raw report values; raw pins refer to unchanged private capture bytes. No full cloud geometry/profile read or copy.",
+  "targetAccuracyReached": false,
+  "registration": [
+    {
+      "transform": {
+        "rotation": [
+          0.9999976876839751, -0.00020780736143213494, -0.0021404305181708565,
+          0.00021026270871790932, 0.9999993201283429, 0.0011469666281794628,
+          0.0021401907148441606, -0.001147414028748722, 0.9999970515080282
+        ],
+        "translation": [
+          -0.595640916990254, 0.31349276897532724, -0.06775678084800296
+        ]
+      },
+      "rms": 1.8684108188219153,
+      "wholeCloudRms": 1.8684108188219153,
+      "overlapRms": 0.17591868054819407,
+      "overlapPoints": 45801,
+      "requiredOverlapPoints": 119097,
+      "overlapSatisfied": false,
+      "maxError": 6.10985269096224,
+      "pairs": 140113,
+      "evaluatedPoints": 140113,
+      "targetPoints": 1865848,
+      "rejectedPoints": 94312,
+      "overlapFraction": 0.32688615617394534,
+      "inlierPairs": 45801,
+      "inlierRms": 0.17591868054819407,
+      "iterations": 66,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": false,
+      "terminationReason": "stoppedImproving",
+      "matching": "fullTargetPointToPoint",
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 85,
+      "sampleSize": 20000,
+      "fittingSamples": 20000,
+      "distanceTests": 1395191492
+    },
+    {
+      "transform": {
+        "rotation": [
+          0.9999999999992504, -9.42310244411503e-7, 7.818332766384452e-7,
+          9.423063477650983e-7, 0.9999999999871361, 4.983971782111668e-6,
+          -7.81837973076056e-7, -4.983971045381472e-6, 0.9999999999872744
+        ],
+        "translation": [
+          -0.00032955934852552105, 0.0014561571827194086, 0.00014132025046365015
+        ]
+      },
+      "rms": 0.48646375468038894,
+      "wholeCloudRms": 0.48646375468038894,
+      "overlapRms": 0.03207439767680574,
+      "overlapPoints": 1169170,
+      "requiredOverlapPoints": 1169170,
+      "overlapSatisfied": true,
+      "maxError": 5.994482784553879,
+      "pairs": 1375494,
+      "evaluatedPoints": 1375494,
+      "targetPoints": 1865848,
+      "rejectedPoints": 72193,
+      "overlapFraction": 0.9475148564806535,
+      "inlierPairs": 1169170,
+      "inlierRms": 0.03207439767680574,
+      "iterations": 1,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": true,
+      "terminationReason": "targetReached",
+      "matching": "fullTargetPointToPoint",
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 85,
+      "sampleSize": 20000,
+      "fittingSamples": 20000,
+      "distanceTests": 69625783
+    }
+  ],
+  "meaning": "Two full-original whole-cloud GUI/public-MCP Fine replays: scan1 correctly misses85percent overlap/target; scan2 reaches the requested overlap-based target. Both full metrics/iterations/fittingSamples/rejections preserved; converged is not uniform release quality. No private worker observer or read-only digest retry used."
+}

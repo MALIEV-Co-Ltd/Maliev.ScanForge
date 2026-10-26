@@ -1,0 +1,233 @@
+{
+  "scope": "Completed temporary fixture restoration and owner-authorized stale-validation retention; no application behavior change",
+  "fixtureRestores": [
+    {
+      "restore": {
+        "path": ".resources\\m3\\temporary-asc-compression-restore.json",
+        "sha256": "3a0f3488da60ffec45e7e1f9732fa569c115e9625c521a6676db19a7f6be913e",
+        "value": {
+          "completed": true,
+          "mode": "restore",
+          "operation": "Temporary plain NTFS compression of the three explicitly provided ASC fixtures; bytes, length and modification times verified unchanged",
+          "entries": [
+            {
+              "path": "C:\\repo\\alignment-example-files\\asc-1.asc",
+              "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+              "bytes": 7679386,
+              "mtimeMs": 1791881628787.5671
+            },
+            {
+              "path": "C:\\repo\\alignment-example-files\\asc-2.asc",
+              "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+              "bytes": 74418231,
+              "mtimeMs": 1791881619876.4248
+            },
+            {
+              "path": "C:\\repo\\alignment-example-files\\asc-3.asc",
+              "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+              "bytes": 100922768,
+              "mtimeMs": 1791881601759.044
+            }
+          ],
+          "command": {
+            "exe": "compact.exe",
+            "args": [
+              "/U",
+              "/I",
+              "/Q",
+              "C:\\repo\\alignment-example-files\\asc-1.asc",
+              "C:\\repo\\alignment-example-files\\asc-2.asc",
+              "C:\\repo\\alignment-example-files\\asc-3.asc"
+            ],
+            "output": "\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n3 files within 3 directories were uncompressed.\r\n\r\n"
+          },
+          "freeBefore": 8030846976,
+          "freeAfter": 7973609472,
+          "restoreRequired": false,
+          "priorReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-asc-compression-compress.json"
+        }
+      },
+      "ownedReceipt": {
+        "path": ".resources\\m3\\temporary-asc-fixture-restore-r1.receipt.json",
+        "sha256": "211265bfff89df62214878d073831e16e91c0c676156067c606a58e3de2b3b92",
+        "value": {
+          "mode": "cad",
+          "label": "m3-temporary-asc-fixture-restore-r1",
+          "argv": [
+            "C:\\Program Files\\nodejs\\node.exe",
+            "--max-old-space-size=256",
+            ".resources/m3/temporary-asc-compression.mjs",
+            "restore"
+          ],
+          "leaseSeconds": 900,
+          "guardMiB": 3072,
+          "heapMiB": 1024,
+          "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-asc-fixture-restore-r1.stdout.log",
+          "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-asc-fixture-restore-r1.stderr.log",
+          "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-asc-fixture-restore-r1.receipt.json",
+          "scope": "Owned validation helper plus descendants only; no native/user application handles",
+          "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+          "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+          "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+          "jobMemoryBytes": 4294967296,
+          "cpuRate": 2500,
+          "outerJobClosed": true,
+          "childJobClosed": true,
+          "processHandleClosed": true,
+          "threadHandleClosed": true,
+          "cleanupErrors": [],
+          "rootExited": true,
+          "childJobActive": 0,
+          "admittedFreeBytes": 11162427392,
+          "immediateChildFreeBytes": 11162337280,
+          "identity": {
+            "pid": 64944,
+            "startFileTime": "134374571087642008",
+            "executable": "C:\\Program Files\\nodejs\\node.exe"
+          },
+          "exitCode": 0,
+          "childPeakJobMemoryBytes": 78413824,
+          "childJobFinalActive": 0,
+          "outerPeakJobMemoryBytes": 92459008,
+          "outerJobFinalActive": 1,
+          "elapsedSeconds": 0.6644285999936983,
+          "completed": true
+        }
+      },
+      "allOriginalAttributes": 32
+    },
+    {
+      "restore": {
+        "path": ".resources\\m3\\temporary-ply-compression-restore.json",
+        "sha256": "a25ae7ba698c43353a2049243bcfb7b35f43553a1d722996f738f7a2a665ecef",
+        "value": {
+          "completed": true,
+          "mode": "restore",
+          "operation": "Temporary plain NTFS compression of the three explicitly provided PLY fixtures; bytes, length and modification times verified unchanged",
+          "entries": [
+            {
+              "path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+              "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+              "bytes": 6926970,
+              "mtimeMs": 1791881567009.8508
+            },
+            {
+              "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+              "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+              "bytes": 68084515,
+              "mtimeMs": 1791881579967.149
+            },
+            {
+              "path": "C:\\repo\\alignment-example-files\\ply-3.ply",
+              "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+              "bytes": 92765339,
+              "mtimeMs": 1791881589008.8352
+            }
+          ],
+          "command": {
+            "exe": "compact.exe",
+            "args": [
+              "/U",
+              "/I",
+              "/Q",
+              "C:\\repo\\alignment-example-files\\ply-1.ply",
+              "C:\\repo\\alignment-example-files\\ply-2.ply",
+              "C:\\repo\\alignment-example-files\\ply-3.ply"
+            ],
+            "output": "\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n Uncompressing files in C:\\repo\\alignment-example-files\\\r\n\r\n\r\n3 files within 3 directories were uncompressed.\r\n\r\n"
+          },
+          "freeBefore": 7973548032,
+          "freeAfter": 7943884800,
+          "restoreRequired": false,
+          "priorReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-ply-compression-compress.json"
+        }
+      },
+      "ownedReceipt": {
+        "path": ".resources\\m3\\temporary-ply-fixture-restore-r1.receipt.json",
+        "sha256": "498aa8609338fe522e7cb2bd125a9a34e348ba7f379cc30ae110b92e4da73788",
+        "value": {
+          "mode": "cad",
+          "label": "m3-temporary-ply-fixture-restore-r1",
+          "argv": [
+            "C:\\Program Files\\nodejs\\node.exe",
+            "--max-old-space-size=256",
+            ".resources/m3/temporary-ply-compression.mjs",
+            "restore"
+          ],
+          "leaseSeconds": 900,
+          "guardMiB": 3072,
+          "heapMiB": 1024,
+          "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-ply-fixture-restore-r1.stdout.log",
+          "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-ply-fixture-restore-r1.stderr.log",
+          "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\temporary-ply-fixture-restore-r1.receipt.json",
+          "scope": "Owned validation helper plus descendants only; no native/user application handles",
+          "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+          "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+          "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+          "jobMemoryBytes": 4294967296,
+          "cpuRate": 2500,
+          "outerJobClosed": true,
+          "childJobClosed": true,
+          "processHandleClosed": true,
+          "threadHandleClosed": true,
+          "cleanupErrors": [],
+          "rootExited": true,
+          "childJobActive": 0,
+          "admittedFreeBytes": 11173261312,
+          "immediateChildFreeBytes": 11173240832,
+          "identity": {
+            "pid": 40164,
+            "startFileTime": "134374571138083201",
+            "executable": "C:\\Program Files\\nodejs\\node.exe"
+          },
+          "exitCode": 0,
+          "childPeakJobMemoryBytes": 78368768,
+          "childJobFinalActive": 0,
+          "outerPeakJobMemoryBytes": 92561408,
+          "outerJobFinalActive": 1,
+          "elapsedSeconds": 0.5621108000050299,
+          "completed": true
+        }
+      },
+      "allOriginalAttributes": 32
+    }
+  ],
+  "staleValidationRetention": {
+    "path": ".resources\\m3\\stale-validation-retention-20261026.json",
+    "sha256": "0da2a8d5cef34e8e739e232b114124cf8265f0211912852503533905b5449690",
+    "value": [
+      {
+        "bytes": 1488834364.0,
+        "source": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T072139366736Z-browser",
+        "sourceAbsent": true,
+        "freeCBytes": 5371596800,
+        "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stale-validation-20261026\\global-after-coarse-three-stl-evidence-20261024T072139366736Z-browser",
+        "files": 133,
+        "fullSha256Verified": true
+      },
+      {
+        "bytes": 1488787492.0,
+        "source": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T071603574890Z-browser",
+        "sourceAbsent": true,
+        "freeCBytes": 6856908800,
+        "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stale-validation-20261026\\global-after-coarse-three-stl-evidence-20261024T071603574890Z-browser",
+        "files": 133,
+        "fullSha256Verified": true
+      },
+      {
+        "bytes": 1488639022.0,
+        "source": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\global-after-coarse-three-stl-evidence-20261024T072655174588Z-browser",
+        "sourceAbsent": true,
+        "freeCBytes": 8341180416,
+        "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stale-validation-20261026\\global-after-coarse-three-stl-evidence-20261024T072655174588Z-browser",
+        "files": 135,
+        "fullSha256Verified": true
+      }
+    ]
+  },
+  "cleanupImplementation": {
+    "scriptPath": ".resources\\m3\\retain-stale-validation-20261026.ps1",
+    "sha256": "784c7e882578962d71deb6a49b1c5e72ac110a572ab1f014782fa2f10c6539c5"
+  },
+  "limits": "Restored fixture hashes, byte lengths, modification times and Archive-only attributes independently rechecked. Stale validation data retained on Z with every SHA verified by the exact cleanup script before C removal; no whole-worktree deletion."
+}
