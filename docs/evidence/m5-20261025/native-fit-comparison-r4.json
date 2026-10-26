@@ -13,28 +13,8 @@
     "countV": 5,
     "degreeU": 3,
     "degreeV": 3,
-    "knotsU": [
-      0,
-      0,
-      0,
-      0,
-      0.500025251021,
-      1,
-      1,
-      1,
-      1
-    ],
-    "knotsV": [
-      0,
-      0,
-      0,
-      0,
-      0.50043632345,
-      1,
-      1,
-      1,
-      1
-    ]
+    "knotsU": [0, 0, 0, 0, 0.500025251021, 1, 1, 1, 1],
+    "knotsV": [0, 0, 0, 0, 0.50043632345, 1, 1, 1, 1]
   },
   "sourceHash": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
   "scanforgeFitSha256": "a52b9d9b3691281e6084bd07f07a7d1916044dab3c1b325937ad5660f71f0a65",
@@ -98,14 +78,8 @@
     "scope": "Intersection of control-net XY bounds, with projected inverse residual checked at every sample; includes extrapolation outside the scanned region",
     "inverseXyToleranceMm": 0.00001,
     "maxInverseXyResidualMm": 9.120106647678277e-12,
-    "min": [
-      -3.405958652496,
-      -37.81879615783
-    ],
-    "max": [
-      -0.04079938307404518,
-      -35.772239685058594
-    ],
+    "min": [-3.405958652496, -37.81879615783],
+    "max": [-0.04079938307404518, -35.772239685058594],
     "samples": 289,
     "maxAbsZDifferenceMm": 0.04350237034515203,
     "rmsZDifferenceMm": 0.007512013768687687,
