@@ -15,7 +15,7 @@ import { nativeDatumTranslation } from "./scan-native-datum-translation";
 import { nativeDatumTranslationFromPoint } from "./scan-native-datum-picked-translation";
 import { nativeDatumReferenceOptions } from "./scan-native-datum-reference-options";
 import { retainIndexedMesh } from "./indexed-mesh";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import type { Entity } from "./types";
 import {
   transformDatumCoordinates,
@@ -147,6 +147,13 @@ export function datumScanTransformPlan(
         ? {
             vertices: vertices!,
             triangles: indexed.triangles,
+            facetNormals: matrix
+              ? transformDatumCoordinateStages(
+                  meshFacetNormals(indexed),
+                  [matrix],
+                  true,
+                )
+              : meshFacetNormals(indexed),
             geometryNormals: matrix
               ? transformDatumCoordinateStages(
                   meshGeometryNormals(indexed),

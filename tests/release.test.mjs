@@ -124,4 +124,5 @@ it("plans from real Git history, skips docs, aggregates patch changes and is ide
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
-});
+  // The real Git subprocess sequence exceeds Vitest's 5s default on Windows.
+}, 30_000);

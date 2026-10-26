@@ -1,0 +1,5197 @@
+{
+  "schema": 1,
+  "status": "PASS_STL_FINE_GUI_MCP_PARITY_WITH_TARGET_NOT_REACHED",
+  "parityPassed": true,
+  "targetAccuracyReached": false,
+  "registrationQualityPassed": null,
+  "nativeEquivalencePassed": null,
+  "overallM3Passed": false,
+  "candidate": {
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "buildId": "scanforge-fd58d9b0cd235edc",
+    "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+    "buildInputFiles": 2084,
+    "builtAssetFiles": 273,
+    "sourceAndAssetBytesUnchanged": true,
+    "regressionReceipt": "m3-main-integrated-regression-20261026.json"
+  },
+  "scope": "Full original mesh checkpoint opened by GUI; actual source1-to-target3 Fine Align GUI/public MCP replay from retained real coarse placement. Complete indexed target and all carriers/history checked. Accuracy/overlap diagnostics recorded without native-equivalence or reconstruction claim.",
+  "observerScope": {
+    "description": "Private read-only processing Worker constructor/listener observer; copies terminal registration and scalar diagnostics only. No postMessage/input/clock/solver/result override; built assets unchanged. Full geometry equality is independently checked through public MCP digests.",
+    "exactObserverPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\fine-private-worker-result-observer.mjs",
+      "bytes": 1174,
+      "sha256": "53786c551972ff2fdd989486c167c453b38bba7f16ba370f6f7358315572f7c2"
+    },
+    "copies": "Terminal registration object plus scalar diagnostics only. No geometry payload retained by observer; complete GUI/MCP geometry equality is checked independently by public digest jobs.",
+    "modifiedInputsOrOraclesClocksGeometryResults": false,
+    "builtApplicationSourceOrAssetsChanged": false,
+    "limitation": "Observer-instrumented actual GUI solver; not a wholly uninstrumented black-box observation and not a live native application comparison."
+  },
+  "rawBindingScopeErratum": {
+    "rawValue": "Final built React GUI and real stdio MCP original-three ASC fine; persistent DEFAULT disposable profile. No native-equivalence claim; explicit evidence scope governs.",
+    "authority": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\binding-result.json",
+      "bytes": 414771,
+      "sha256": "b32df8a3f40406058507aee12d42583fcb2184fbf39b7e6ff75e25e107986169"
+    },
+    "correction": "Raw generic binding top-level ASC label is incorrect inherited wording. Actual caseConfig, checkpoint, original mesh owners and browser evidence demonstrate STL source1\u2192target3. Raw bytes are preserved; publication corrects the scope explicitly."
+  },
+  "publicationEncoding": "Repository-normalized JSON preserves raw capture contents; raw hash/length pins identify unchanged private artifacts. Exact PNG copied; no raw geometry/profile copied or rehashed.",
+  "rawSummaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\summary.json",
+    "bytes": 9849,
+    "sha256": "5cd4682defbb9e7ce98ba8c459e531f50be562d1c2fa361c528e08fcdaab5069"
+  },
+  "retainedSummary": {
+    "passed": true,
+    "scope": "Full original mesh checkpoint opened by GUI; actual source1-to-target3 Fine Align GUI/public MCP replay from retained real coarse placement. Complete indexed target and all carriers/history checked. Accuracy/overlap diagnostics recorded without native-equivalence or reconstruction claim.",
+    "observerScope": "Private read-only processing Worker constructor/listener observer; copies terminal registration and scalar diagnostics only. No postMessage/input/clock/solver/result override; built assets unchanged. Full geometry equality is independently checked through public MCP digests.",
+    "build": {
+      "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+      "buildId": "scanforge-fd58d9b0cd235edc",
+      "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+      "compilerInputs": 2084
+    },
+    "sourceInputsAndBuiltAssetsUnchanged": true,
+    "initialFullCarriers": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.case.json",
+    "targetReferenceCount": {
+      "method": "independent-saved-binary-project-full-u32-triangle-reference-membership",
+      "targetOwner": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "canonicalVertices": 1683605,
+      "referencedVertices": 1683605,
+      "unusedVertices": 0,
+      "triangles": 3326910,
+      "triangleSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+      "projectSha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3"
+    },
+    "registration": {
+      "transform": {
+        "rotation": [
+          0.9999964095549113, 0.00016018321660325887, 0.0026749240407491046,
+          -0.00015776082775859572, 0.9999995773387017, -0.0009057780841985061,
+          -0.0026750680006092957, 0.0009053528338211718, 0.999996012165768
+        ],
+        "translation": [
+          0.8786956758700876, -0.3147854771751541, 0.00031297353843519473
+        ]
+      },
+      "rms": 1.8734409685908973,
+      "wholeCloudRms": 1.8734409685908973,
+      "overlapRms": 0.17178947544975876,
+      "overlapPoints": 262923,
+      "requiredOverlapPoints": 696505,
+      "overlapSatisfied": false,
+      "maxError": 6.113418976670675,
+      "pairs": 819417,
+      "evaluatedPoints": 819417,
+      "targetPoints": 1683605,
+      "rejectedPoints": 556494,
+      "overlapFraction": 0.3208659327302216,
+      "inlierPairs": 262923,
+      "inlierRms": 0.17178947544975876,
+      "iterations": 49,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": false,
+      "terminationReason": "stoppedImproving",
+      "matching": "fullTargetPointToPoint",
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 85,
+      "sampleSize": 20000,
+      "fittingSamples": 20000,
+      "distanceTests": 2955605688
+    },
+    "guiWorkerFullRegistrationAndScalarDiagnosticsMatchMcp": true,
+    "history": {
+      "baseline": {
+        "cursor": 5,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening scan-1.stl",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening scan-2.stl",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening scan-3.stl",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Align by corresponding points",
+            "current": false
+          },
+          {
+            "index": 5,
+            "label": "Align by corresponding points",
+            "current": true
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "final": {
+        "cursor": 6,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening scan-1.stl",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening scan-2.stl",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening scan-3.stl",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Align by corresponding points",
+            "current": false
+          },
+          {
+            "index": 5,
+            "label": "Align by corresponding points",
+            "current": false
+          },
+          {
+            "index": 6,
+            "label": "Mesh icp",
+            "current": true
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "undoRedoAndTimelineSeek": true,
+      "identicalRequestRetry": true
+    },
+    "receipt": {
+      "mode": "cad",
+      "label": "original-stl-fine-final-r3",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "--max-semi-space-size=16",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-runner.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.config.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 6144,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12265512960,
+      "immediateChildFreeBytes": 12265492480,
+      "identity": {
+        "pid": 32556,
+        "startFileTime": "134374410218024992",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 2448531456,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 2462412800,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 292.3610580000095,
+      "completed": true
+    },
+    "profile": {
+      "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\owned-default-profile",
+      "files": 268,
+      "logicalBytes": 28238546,
+      "retained": true,
+      "closedBeforeInventory": true
+    },
+    "evidence": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\evidence.json",
+        "bytes": 118958,
+        "sha256": "358c733cf91dc5f41e91167b3b6cc87f418d20ce4c8ee468d6ff51dd513f5ec1"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\binding-result.json",
+        "bytes": 414771,
+        "sha256": "b32df8a3f40406058507aee12d42583fcb2184fbf39b7e6ff75e25e107986169"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.receipt.json",
+        "bytes": 1997,
+        "sha256": "06197510217a702d033dfc03d92e40e2a5a62cb831c83227debcff6dfd28b6ca"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\worker-observations.json",
+        "bytes": 2349,
+        "sha256": "af505fcb58f512dc67f1dde05df24f3024e9229c65f3d10a1a49b9ed8c3e4eb3"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\digest-observations.json",
+        "bytes": 6920,
+        "sha256": "db4f2b732d630815ecf07d36621af01c6d4626503f64fcba8a4845a8ba0a6891"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\readiness-observations.json",
+        "bytes": 76957,
+        "sha256": "0f414f73a1832e4e225064c964ead5fc023234b965fa1dd8e921d4d0d0494f7b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\original-mesh-1-fine.png",
+        "bytes": 178126,
+        "sha256": "d9710d3c861faf4e925363e6d778eae0ec256b58ad703bf63bc3673f9228c7e0"
+      }
+    ],
+    "limitations": [
+      "Known real six-pair coarse checkpoint initial placement; no raw interscan global/native comparison",
+      "Target accuracy not reached: insufficient85percentoverlap",
+      "Observer-instrumented GUI worker metadata copies; no native equivalence claim",
+      "Screenshot renders actual full mesh and controls; exact result DOM text and formatting assertions retained in evidence"
+    ],
+    "guiMcpAll15CarrierEqualityAndFixedOriginals2And3Invariance": true
+  },
+  "rawBrowserEvidencePin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\evidence.json",
+    "bytes": 118958,
+    "sha256": "358c733cf91dc5f41e91167b3b6cc87f418d20ce4c8ee468d6ff51dd513f5ec1"
+  },
+  "browserEvidence": {
+    "passed": true,
+    "targetAccuracyReached": false,
+    "scope": "Full original mesh checkpoint opened by GUI; actual source1-to-target3 Fine Align GUI/public MCP replay from retained real coarse placement. Complete indexed target and all carriers/history checked. Accuracy/overlap diagnostics recorded without native-equivalence or reconstruction claim.",
+    "inputs": [
+      {
+        "path": "C:\\repo\\alignment-example-files\\scan-1.stl",
+        "name": "scan-1.stl",
+        "bytes": 13657034,
+        "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+      },
+      {
+        "path": "C:\\repo\\alignment-example-files\\scan-2.stl",
+        "name": "scan-2.stl",
+        "bytes": 127370334,
+        "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+      },
+      {
+        "path": "C:\\repo\\alignment-example-files\\scan-3.stl",
+        "name": "scan-3.stl",
+        "bytes": 166345584,
+        "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+      }
+    ],
+    "observerScope": "Private read-only processing Worker constructor/listener observer; copies terminal registration and scalar diagnostics only. No postMessage/input/clock/solver/result override; built assets unchanged. Full geometry equality is independently checked through public MCP digests.",
+    "caseConfig": {
+      "checkpoint": {
+        "key": "coarse-all3",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stl-real-b-r1-20261025T211320Z-ca0bf3a3\\coarse-all3.scanforge",
+        "bytes": 482477744,
+        "sha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3",
+        "geometry": [
+          {
+            "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+            "units": "mm",
+            "semantic": [
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+              },
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 2458251,
+                "rawBytes": 9833004,
+                "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+              }
+            ],
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 2458251,
+                "rawBytes": 9833004,
+                "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+                "storage": "shared-array-buffer",
+                "backingId": 0,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 9833004
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+                "storage": "shared-array-buffer",
+                "backingId": 1,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 1672056
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+                "storage": "shared-array-buffer",
+                "backingId": 2,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 3277668
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8",
+                "storage": "shared-array-buffer",
+                "backingId": 3,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 1672056
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f",
+                "storage": "shared-array-buffer",
+                "backingId": 4,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 3277668
+              }
+            ]
+          },
+          {
+            "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "units": "mm",
+            "semantic": [
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+              },
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 22926627,
+                "rawBytes": 91706508,
+                "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+              }
+            ],
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 22926627,
+                "rawBytes": 91706508,
+                "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532",
+                "storage": "shared-array-buffer",
+                "backingId": 0,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 91706508
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f",
+                "storage": "shared-array-buffer",
+                "backingId": 1,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 15588396
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+                "storage": "shared-array-buffer",
+                "backingId": 2,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 30568836
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e",
+                "storage": "shared-array-buffer",
+                "backingId": 3,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 15588396
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd",
+                "storage": "shared-array-buffer",
+                "backingId": 4,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 30568836
+              }
+            ]
+          },
+          {
+            "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "units": "mm",
+            "semantic": [
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+              },
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 29942190,
+                "rawBytes": 119768760,
+                "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+              }
+            ],
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 29942190,
+                "rawBytes": 119768760,
+                "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37",
+                "storage": "shared-array-buffer",
+                "backingId": 0,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 119768760
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3",
+                "storage": "array-buffer",
+                "backingId": 1,
+                "shared": false,
+                "byteOffset": 0,
+                "backingBytes": 20203260
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+                "storage": "shared-array-buffer",
+                "backingId": 2,
+                "shared": true,
+                "byteOffset": 0,
+                "backingBytes": 39922920
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3",
+                "storage": "array-buffer",
+                "backingId": 3,
+                "shared": false,
+                "byteOffset": 0,
+                "backingBytes": 20203260
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab",
+                "storage": "array-buffer",
+                "backingId": 4,
+                "shared": false,
+                "byteOffset": 0,
+                "backingBytes": 39922920
+              }
+            ]
+          }
+        ],
+        "history": {
+          "cursor": 5,
+          "entries": [
+            {
+              "index": 0,
+              "label": "Starting state",
+              "current": false
+            },
+            {
+              "index": 1,
+              "label": "Opening scan-1.stl",
+              "current": false
+            },
+            {
+              "index": 2,
+              "label": "Opening scan-2.stl",
+              "current": false
+            },
+            {
+              "index": 3,
+              "label": "Opening scan-3.stl",
+              "current": false
+            },
+            {
+              "index": 4,
+              "label": "Align by corresponding points",
+              "current": false
+            },
+            {
+              "index": 5,
+              "label": "Align by corresponding points",
+              "current": true
+            }
+          ],
+          "note": "Indices address retained history only; use history_seek with a fresh revision."
+        }
+      },
+      "expectedCarriers": 15,
+      "expectedTargetPoints": 1683605,
+      "originals": [
+        {
+          "path": "C:\\repo\\alignment-example-files\\scan-1.stl",
+          "name": "scan-1.stl",
+          "bytes": 13657034,
+          "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+        },
+        {
+          "path": "C:\\repo\\alignment-example-files\\scan-2.stl",
+          "name": "scan-2.stl",
+          "bytes": 127370334,
+          "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+        },
+        {
+          "path": "C:\\repo\\alignment-example-files\\scan-3.stl",
+          "name": "scan-3.stl",
+          "bytes": 166345584,
+          "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+        }
+      ],
+      "provenance": {
+        "evidence": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\evidence.json",
+        "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91",
+        "scope": "Full original STL meshes after actual six-pair coarse alignment source2/source3 to source1; no saved matrix or posed substitution"
+      }
+    },
+    "baselineHistory": {
+      "cursor": 5,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening scan-1.stl",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening scan-2.stl",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening scan-3.stl",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Align by corresponding points",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "finalHistory": {
+      "cursor": 6,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening scan-1.stl",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening scan-2.stl",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening scan-3.stl",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 6,
+          "label": "Mesh icp",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "expectedCounts": [819417, 7642209, 9980730],
+    "browserContextScope": {
+      "persistent": true,
+      "incognito": false,
+      "ownedDisposableProfile": true,
+      "userDataDir": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\owned-default-profile"
+    },
+    "readinessObservations": [
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:30:47.159Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 2,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:30:47.940Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 2,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:30:51.567Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 2,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "after-gui-fine-result",
+        "observedAt": "2026-10-25T22:32:36.282Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 3,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:32:36.566Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 3,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:32:37.189Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 3,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:32:37.817Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 3,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:32:41.066Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 3,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:32:45.220Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 5,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:27.345Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 7,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:34:27.972Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 7,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:34:31.157Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 7,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:35.314Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 7,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:34:36.033Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 7,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:40.126Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 9,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:40.754Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 11,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:41.376Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 11,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:34:42.002Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 11,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:34:45.157Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 11,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:49.251Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:34:49.877Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:34:53.032Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 13,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 5,
+        "redo": 1,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "scanSource": {
+              "bytes": 13657034,
+              "triangles": 273139,
+              "displayedTriangles": 273139,
+              "acceptedTriangles": 273139
+            },
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:11628efd-6015-4634-a359-eabd50245a76",
+        "observedAt": "2026-10-25T22:34:57.032Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "observedAt": "2026-10-25T22:34:57.657Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      },
+      {
+        "reason": "before-digest:8a633854-a947-47d3-af61-9be8a27b411a",
+        "observedAt": "2026-10-25T22:35:00.784Z",
+        "stableSamples": 3,
+        "renderFrames": 2,
+        "revision": 15,
+        "selectedId": "11628efd-6015-4634-a359-eabd50245a76",
+        "selectedIds": ["11628efd-6015-4634-a359-eabd50245a76"],
+        "undo": 6,
+        "redo": 0,
+        "settings": {
+          "theme": "system",
+          "wireframe": false,
+          "flatShading": true,
+          "normalsDisplay": true,
+          "floorGrid": true,
+          "gridSpacing": 10,
+          "automaticGrid": true,
+          "effectiveGridSpacing": 20,
+          "scale": {
+            "distanceMm": 20,
+            "widthPx": 79.30355857815843,
+            "reference": "view-center"
+          },
+          "snapGrid": false,
+          "originVisible": true,
+          "importPlaceAtOrigin": false,
+          "importAscAttributes": "xyz-rgb",
+          "scanSelection": {
+            "tool": "brush",
+            "through": false,
+            "clip": null,
+            "angleDegrees": 30,
+            "brushRadiusPx": 8,
+            "allConnected": false
+          }
+        },
+        "objects": [
+          {
+            "id": "11628efd-6015-4634-a359-eabd50245a76",
+            "name": "scan-1.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-1.stl",
+            "indexedTopology": {
+              "vertices": 139338,
+              "triangles": 273139
+            },
+            "triangles": 273139,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+            "name": "scan-2.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-2.stl",
+            "scanSource": {
+              "bytes": 127370334,
+              "triangles": 2547405,
+              "displayedTriangles": 2547403,
+              "acceptedTriangles": 2547403
+            },
+            "indexedTopology": {
+              "vertices": 1299033,
+              "triangles": 2547403
+            },
+            "triangles": 2547403,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          },
+          {
+            "id": "8a633854-a947-47d3-af61-9be8a27b411a",
+            "name": "scan-3.stl",
+            "kind": "mesh",
+            "color": "#a6a6a6",
+            "visible": true,
+            "opacity": 1,
+            "source": "scan-3.stl",
+            "scanSource": {
+              "bytes": 166345584,
+              "triangles": 3326910,
+              "displayedTriangles": 3326910,
+              "acceptedTriangles": 3326910
+            },
+            "indexedTopology": {
+              "vertices": 1683605,
+              "triangles": 3326910
+            },
+            "triangles": 3326910,
+            "meshPreparation": {
+              "phase": "inactive"
+            },
+            "exactCad": false,
+            "hasBrep": false
+          }
+        ],
+        "busy": false,
+        "activeJobId": null,
+        "runningJobs": [],
+        "landmarks": {
+          "active": false
+        }
+      }
+    ],
+    "digestObservations": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 2,
+        "startedAt": "2026-10-25T22:30:47.162Z",
+        "readOnlyRetry": false,
+        "launchRevision": 2,
+        "jobId": "a7b9d5e4-e3b7-472f-9c32-a11e7c50ab6d",
+        "afterRevision": 2,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 2,
+        "startedAt": "2026-10-25T22:30:47.943Z",
+        "readOnlyRetry": false,
+        "launchRevision": 2,
+        "jobId": "bb75698f-0189-44a4-9e28-5b9b4e855495",
+        "afterRevision": 2,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 2,
+        "startedAt": "2026-10-25T22:30:51.572Z",
+        "readOnlyRetry": false,
+        "launchRevision": 2,
+        "jobId": "64d8f4c6-df31-4748-9dbb-2d2f930a2f86",
+        "afterRevision": 2,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 3,
+        "startedAt": "2026-10-25T22:32:36.569Z",
+        "readOnlyRetry": false,
+        "launchRevision": 3,
+        "jobId": "71afca09-4fc8-4399-892c-7cad6eea5467",
+        "afterRevision": 3,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 3,
+        "startedAt": "2026-10-25T22:32:37.192Z",
+        "readOnlyRetry": false,
+        "launchRevision": 3,
+        "jobId": "61382570-8f79-4e07-af35-bbabc46c138c",
+        "afterRevision": 3,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 3,
+        "startedAt": "2026-10-25T22:32:37.822Z",
+        "readOnlyRetry": false,
+        "launchRevision": 3,
+        "jobId": "182cefb6-07e7-4430-82f3-8ad1a4129b57",
+        "afterRevision": 3,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 3,
+        "startedAt": "2026-10-25T22:32:41.069Z",
+        "readOnlyRetry": false,
+        "launchRevision": 3,
+        "jobId": "4312bbb8-0fd8-43fb-ba7b-10f0c1ac89d8",
+        "afterRevision": 3,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 5,
+        "startedAt": "2026-10-25T22:32:45.222Z",
+        "readOnlyRetry": false,
+        "launchRevision": 5,
+        "jobId": "2edf0431-1670-4c1c-bee9-cb0d1a47c948",
+        "afterRevision": 5,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 7,
+        "startedAt": "2026-10-25T22:34:27.348Z",
+        "readOnlyRetry": false,
+        "launchRevision": 7,
+        "jobId": "5b30bb60-32e1-41a7-9398-0ac603e6b1e1",
+        "afterRevision": 7,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 7,
+        "startedAt": "2026-10-25T22:34:27.976Z",
+        "readOnlyRetry": false,
+        "launchRevision": 7,
+        "jobId": "e024bc70-d695-43e1-8eaa-915557245b71",
+        "afterRevision": 7,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 7,
+        "startedAt": "2026-10-25T22:34:31.160Z",
+        "readOnlyRetry": false,
+        "launchRevision": 7,
+        "jobId": "ff680bb4-ff30-4a9f-af61-b4fea1e79981",
+        "afterRevision": 7,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 7,
+        "startedAt": "2026-10-25T22:34:35.317Z",
+        "readOnlyRetry": false,
+        "launchRevision": 7,
+        "jobId": "4b4e06be-a906-42ea-be4a-48fe0d3d208e",
+        "afterRevision": 7,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 7,
+        "startedAt": "2026-10-25T22:34:36.036Z",
+        "readOnlyRetry": false,
+        "launchRevision": 7,
+        "jobId": "416eb0e8-643a-42ef-9060-3a3fccb3cf94",
+        "afterRevision": 7,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 9,
+        "startedAt": "2026-10-25T22:34:40.129Z",
+        "readOnlyRetry": false,
+        "launchRevision": 9,
+        "jobId": "d5cb4263-c74b-46f1-beb6-124cf2cba57a",
+        "afterRevision": 9,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 11,
+        "startedAt": "2026-10-25T22:34:40.756Z",
+        "readOnlyRetry": false,
+        "launchRevision": 11,
+        "jobId": "a6105edb-31ac-4019-bf6b-75e08d32f763",
+        "afterRevision": 11,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 11,
+        "startedAt": "2026-10-25T22:34:41.379Z",
+        "readOnlyRetry": false,
+        "launchRevision": 11,
+        "jobId": "8d512a80-b06e-48e6-801d-20a751949cb4",
+        "afterRevision": 11,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 11,
+        "startedAt": "2026-10-25T22:34:42.005Z",
+        "readOnlyRetry": false,
+        "launchRevision": 11,
+        "jobId": "19779e06-a841-4ce1-aebf-b0e3e1142090",
+        "afterRevision": 11,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 11,
+        "startedAt": "2026-10-25T22:34:45.160Z",
+        "readOnlyRetry": false,
+        "launchRevision": 11,
+        "jobId": "688dfa71-94b4-429d-b50a-1fde2459a7f3",
+        "afterRevision": 11,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T22:34:49.253Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "760a6533-7f83-42e9-8262-9ce0af537854",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T22:34:49.880Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "fff8bba0-0ea4-4fee-a2a6-7c1ba8c62978",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 13,
+        "startedAt": "2026-10-25T22:34:53.034Z",
+        "readOnlyRetry": false,
+        "launchRevision": 13,
+        "jobId": "58dc21b0-03cb-4596-8697-23f4d03b5a69",
+        "afterRevision": 13,
+        "completed": true
+      },
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T22:34:57.034Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "acb47f6a-355b-40d0-a826-c827a8587c7a",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T22:34:57.660Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "4255a32a-49fa-4699-9ddd-f65688f481a2",
+        "afterRevision": 15,
+        "completed": true
+      },
+      {
+        "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "beforeRevision": 15,
+        "startedAt": "2026-10-25T22:35:00.787Z",
+        "readOnlyRetry": false,
+        "launchRevision": 15,
+        "jobId": "13e0955b-e867-478e-86e1-14c21145a564",
+        "afterRevision": 15,
+        "completed": true
+      }
+    ],
+    "runs": [
+      {
+        "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+        "targetId": "8a633854-a947-47d3-af61-9be8a27b411a",
+        "guiText": "Result\n\nStopped improving; target accuracy not reached \u00b7 Overlap RMS 0.1718 mm \u00b7 Target 0.5 mm\n\nWhole-cloud RMS 1.873 mm\n\nExpected overlap 85% \u00b7 Overlap points 262923 / 696505 required \u00b7 Within search distance 32.1%\n\nFitting samples 20000 / 20000 requested\n\nInsufficient overlap within the search distance; target accuracy not reached.\n\nmax Error: 6.113418976670675\n\niterations: 49\n\nrejected Points: 556494",
+        "guiResult": {
+          "registration": {
+            "transform": {
+              "rotation": [
+                0.9999964095549113, 0.00016018321660325887,
+                0.0026749240407491046, -0.00015776082775859572,
+                0.9999995773387017, -0.0009057780841985061,
+                -0.0026750680006092957, 0.0009053528338211718, 0.999996012165768
+              ],
+              "translation": [
+                0.8786956758700876, -0.3147854771751541, 0.00031297353843519473
+              ]
+            },
+            "rms": 1.8734409685908973,
+            "wholeCloudRms": 1.8734409685908973,
+            "overlapRms": 0.17178947544975876,
+            "overlapPoints": 262923,
+            "requiredOverlapPoints": 696505,
+            "overlapSatisfied": false,
+            "maxError": 6.113418976670675,
+            "pairs": 819417,
+            "evaluatedPoints": 819417,
+            "targetPoints": 1683605,
+            "rejectedPoints": 556494,
+            "overlapFraction": 0.3208659327302216,
+            "inlierPairs": 262923,
+            "inlierRms": 0.17178947544975876,
+            "iterations": 49,
+            "converged": true,
+            "targetRms": 0.5,
+            "targetReached": false,
+            "terminationReason": "stoppedImproving",
+            "matching": "fullTargetPointToPoint",
+            "targetRmsBasis": "overlap",
+            "overlapPercent": 85,
+            "sampleSize": 20000,
+            "fittingSamples": 20000,
+            "distanceTests": 2955605688
+          },
+          "diagnostics": {
+            "rms": 1.8734409685908973,
+            "maxError": 6.113418976670675,
+            "converged": true,
+            "iterations": 49,
+            "pairs": 819417,
+            "algorithm": "fullTargetPointToPoint",
+            "targetRms": 0.5,
+            "targetReached": false,
+            "terminationReason": "stoppedImproving",
+            "evaluatedPoints": 819417,
+            "targetPoints": 1683605,
+            "distanceTests": 2955605688,
+            "rejectedPoints": 556494,
+            "overlapFraction": 0.3208659327302216,
+            "inlierRms": 0.17178947544975876,
+            "inlierPairs": 262923,
+            "targetRmsBasis": "overlap",
+            "overlapRms": 0.17178947544975876,
+            "wholeCloudRms": 1.8734409685908973,
+            "overlapPercent": 85,
+            "sampleSize": 20000,
+            "fittingSamples": 20000,
+            "overlapPoints": 262923,
+            "requiredOverlapPoints": 696505,
+            "overlapSatisfied": false
+          }
+        },
+        "guiAll": [
+          {
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 2458251,
+                "rawBytes": 9833004,
+                "sha256": "563a67bd5957112d919137b7ab0d5ff93061aec97706d0d949bd91ea88df64d3"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "47163d5e564a85371d9458bd0e983d20c64727e51b395d6044363f84976caf29"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 418014,
+                "rawBytes": 1672056,
+                "sha256": "b2c0aedc78411f1fc359e8ca28be8519fa04f5ddaab0cfd8519b710eb533535d"
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 819417,
+                "rawBytes": 3277668,
+                "sha256": "4b43282cd93f4871abb3f5b49dc6a1915186f467a61367542774754a23dea166"
+              }
+            ]
+          },
+          {
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 22926627,
+                "rawBytes": 91706508,
+                "sha256": "5422018a986de17abb1f14d0ef4cfd831a04078b876a74033e1a86ade6381532"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "7828559e8fe1f35e4062acbde385cd628d239f65496e55036f719dab0e798d3f"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 3897099,
+                "rawBytes": 15588396,
+                "sha256": "661540bd879921039a159340201e8a8d17f65a48d28d7e6c3662a0f902cf810e"
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 7642209,
+                "rawBytes": 30568836,
+                "sha256": "d5faabffa802a36f764306a8f96613df90d23c6fff0209bbf3b222a0a67506dd"
+              }
+            ]
+          },
+          {
+            "buffers": [
+              {
+                "path": "positions",
+                "encoding": "f32",
+                "elements": 29942190,
+                "rawBytes": 119768760,
+                "sha256": "42ee0ded13975c54725a09d24f630140316f7f410134fa0b098b18063c4a7c37"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "54a2f55340264b0070173f25bd5ded472bb7e82668fd2e1c2c304c714319ccc3"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+              },
+              {
+                "path": "indexedMesh.geometryNormals",
+                "encoding": "f32",
+                "elements": 5050815,
+                "rawBytes": 20203260,
+                "sha256": "45c288e0bc5a3073fddb917af0991f23f889e70e2d01ca0aee29eeee2819a2e3"
+              },
+              {
+                "path": "indexedMesh.facetNormals",
+                "encoding": "f32",
+                "elements": 9980730,
+                "rawBytes": 39922920,
+                "sha256": "f0d3132e9f1f0e9ddf81c471c73f69cf9595af2d04a794bfedd2ab9ebc62cfab"
+              }
+            ]
+          }
+        ],
+        "registration": {
+          "transform": {
+            "rotation": [
+              0.9999964095549113, 0.00016018321660325887, 0.0026749240407491046,
+              -0.00015776082775859572, 0.9999995773387017,
+              -0.0009057780841985061, -0.0026750680006092957,
+              0.0009053528338211718, 0.999996012165768
+            ],
+            "translation": [
+              0.8786956758700876, -0.3147854771751541, 0.00031297353843519473
+            ]
+          },
+          "rms": 1.8734409685908973,
+          "wholeCloudRms": 1.8734409685908973,
+          "overlapRms": 0.17178947544975876,
+          "overlapPoints": 262923,
+          "requiredOverlapPoints": 696505,
+          "overlapSatisfied": false,
+          "maxError": 6.113418976670675,
+          "pairs": 819417,
+          "evaluatedPoints": 819417,
+          "targetPoints": 1683605,
+          "rejectedPoints": 556494,
+          "overlapFraction": 0.3208659327302216,
+          "inlierPairs": 262923,
+          "inlierRms": 0.17178947544975876,
+          "iterations": 49,
+          "converged": true,
+          "targetRms": 0.5,
+          "targetReached": false,
+          "terminationReason": "stoppedImproving",
+          "matching": "fullTargetPointToPoint",
+          "targetRmsBasis": "overlap",
+          "overlapPercent": 85,
+          "sampleSize": 20000,
+          "fittingSamples": 20000,
+          "distanceTests": 2955605688
+        },
+        "before": {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 2458251,
+              "rawBytes": 9833004,
+              "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f32",
+              "elements": 418014,
+              "rawBytes": 1672056,
+              "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 819417,
+              "rawBytes": 3277668,
+              "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+            },
+            {
+              "path": "indexedMesh.geometryNormals",
+              "encoding": "f32",
+              "elements": 418014,
+              "rawBytes": 1672056,
+              "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+            },
+            {
+              "path": "indexedMesh.facetNormals",
+              "encoding": "f32",
+              "elements": 819417,
+              "rawBytes": 3277668,
+              "sha256": "61151e1de04d1d8b2b1c2f90df40fdf2858dc0b42e4cc1b02e8375a7634e3d6f"
+            }
+          ]
+        },
+        "after": {
+          "buffers": [
+            {
+              "path": "positions",
+              "encoding": "f32",
+              "elements": 2458251,
+              "rawBytes": 9833004,
+              "sha256": "563a67bd5957112d919137b7ab0d5ff93061aec97706d0d949bd91ea88df64d3"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f32",
+              "elements": 418014,
+              "rawBytes": 1672056,
+              "sha256": "47163d5e564a85371d9458bd0e983d20c64727e51b395d6044363f84976caf29"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 819417,
+              "rawBytes": 3277668,
+              "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+            },
+            {
+              "path": "indexedMesh.geometryNormals",
+              "encoding": "f32",
+              "elements": 418014,
+              "rawBytes": 1672056,
+              "sha256": "b2c0aedc78411f1fc359e8ca28be8519fa04f5ddaab0cfd8519b710eb533535d"
+            },
+            {
+              "path": "indexedMesh.facetNormals",
+              "encoding": "f32",
+              "elements": 819417,
+              "rawBytes": 3277668,
+              "sha256": "4b43282cd93f4871abb3f5b49dc6a1915186f467a61367542774754a23dea166"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": []
+  },
+  "rawBindingPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\binding-result.json",
+    "bytes": 414771,
+    "sha256": "b32df8a3f40406058507aee12d42583fcb2184fbf39b7e6ff75e25e107986169"
+  },
+  "bindingConfiguration": {
+    "label": "original-stl-fine-final-r3",
+    "buildLabel": "m3-main-integrated-pinned-build-r1",
+    "canonicalProof": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+    "buildId": "scanforge-fd58d9b0cd235edc",
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+    "compilerInputs": 2084,
+    "output": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3",
+    "examples": "C:/repo/alignment-example-files",
+    "pins": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-original-fine-browser.mjs",
+        "bytes": 10116,
+        "sha256": "d2d85c55efbe9565560ea62b414c1bf99fbdb88fd0a82553caeba03f73ae90a8"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.build.json",
+        "bytes": 893,
+        "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.source.json",
+        "bytes": 551430,
+        "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.dist.json",
+        "bytes": 49855,
+        "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "bytes": 484103,
+        "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-mesh-fine-checkpoint-review-r3.mjs",
+        "bytes": 17486,
+        "sha256": "daffcb9e1b9f5170fc4d359d68242c4cade7a006954d3e7e0a46588c7010009b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-origin.mjs",
+        "bytes": 1755,
+        "sha256": "a380e590c15569d08f5c74d9939968a9309e2049475b094e2124934dfbe5ca86"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-runner.mjs",
+        "bytes": 4499,
+        "sha256": "6bbb5520b57815e5bf2053034b2e3bbeb8558faf382fa569649c5b03553fc68e"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-run.py",
+        "bytes": 955,
+        "sha256": "7622010adcda22921c8b44646e2d1911b83c69c4d5265d7d0e31a002a5eba864"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.case.json",
+        "bytes": 13335,
+        "sha256": "cbbe595d9c4ef1bd061b83f3bbb767091d6198ec3583645c262735530c501bba"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\evidence.json",
+        "bytes": 1078180,
+        "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91"
+      },
+      {
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\stl-real-b-r1-20261025T211320Z-ca0bf3a3\\coarse-all3.scanforge",
+        "bytes": 482477744,
+        "sha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-mesh-fine-checkpoint.py",
+        "bytes": 2139,
+        "sha256": "be043097b753c34d773403372a964b5eadc9b67b397a2fa968341466e945a5ef"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\fine-private-worker-result-observer.mjs",
+        "bytes": 1174,
+        "sha256": "53786c551972ff2fdd989486c167c453b38bba7f16ba370f6f7358315572f7c2"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-saved-reference-count.mjs",
+        "bytes": 2837,
+        "sha256": "57e58ef570b674ac12ef806c541fe7274c615cc1f750bfd674e205a9f8c6203c"
+      }
+    ],
+    "caseConfig": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.case.json",
+    "observerScope": "PRIVATE read-only processing-worker terminal registration/scalar-diagnostics copies only; no request/input/clock/oracle/result substitution; exact observer/harness pins retained"
+  },
+  "sourceAndAssetPinCounts": {
+    "sourceInputs": 2084,
+    "distInputs": 273,
+    "inputsUnchanged": true
+  },
+  "ownedJobReceiptPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.receipt.json",
+    "bytes": 1997,
+    "sha256": "06197510217a702d033dfc03d92e40e2a5a62cb831c83227debcff6dfd28b6ca"
+  },
+  "ownedJobReceipt": {
+    "mode": "cad",
+    "label": "original-stl-fine-final-r3",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=768",
+      "--max-semi-space-size=16",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-runner.mjs",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.config.json"
+    ],
+    "leaseSeconds": 900,
+    "guardMiB": 6144,
+    "heapMiB": 768,
+    "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 12265512960,
+    "immediateChildFreeBytes": 12265492480,
+    "identity": {
+      "pid": 32556,
+      "startFileTime": "134374410218024992",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 2448531456,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 2462412800,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 292.3610580000095,
+    "completed": true
+  },
+  "independentFullTargetReferenceMembership": {
+    "method": "independent-saved-binary-project-full-u32-triangle-reference-membership",
+    "targetOwner": "8a633854-a947-47d3-af61-9be8a27b411a",
+    "canonicalVertices": 1683605,
+    "referencedVertices": 1683605,
+    "unusedVertices": 0,
+    "triangles": 3326910,
+    "triangleSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+    "projectSha256": "7d575cf504244b4e0789ff350ffe694f45551142c88bf8aac8b37fa13e8e96b3"
+  },
+  "registration": {
+    "transform": {
+      "rotation": [
+        0.9999964095549113, 0.00016018321660325887, 0.0026749240407491046,
+        -0.00015776082775859572, 0.9999995773387017, -0.0009057780841985061,
+        -0.0026750680006092957, 0.0009053528338211718, 0.999996012165768
+      ],
+      "translation": [
+        0.8786956758700876, -0.3147854771751541, 0.00031297353843519473
+      ]
+    },
+    "rms": 1.8734409685908973,
+    "wholeCloudRms": 1.8734409685908973,
+    "overlapRms": 0.17178947544975876,
+    "overlapPoints": 262923,
+    "requiredOverlapPoints": 696505,
+    "overlapSatisfied": false,
+    "maxError": 6.113418976670675,
+    "pairs": 819417,
+    "evaluatedPoints": 819417,
+    "targetPoints": 1683605,
+    "rejectedPoints": 556494,
+    "overlapFraction": 0.3208659327302216,
+    "inlierPairs": 262923,
+    "inlierRms": 0.17178947544975876,
+    "iterations": 49,
+    "converged": true,
+    "targetRms": 0.5,
+    "targetReached": false,
+    "terminationReason": "stoppedImproving",
+    "matching": "fullTargetPointToPoint",
+    "targetRmsBasis": "overlap",
+    "overlapPercent": 85,
+    "sampleSize": 20000,
+    "fittingSamples": 20000,
+    "distanceTests": 2955605688
+  },
+  "registrationInterpretation": {
+    "sourceRepresentation": "819417 evaluated expanded source triangle corners; solver uses reported fittingSamples20000/sampleSize20000. Do not claim every source point was used in every fitted SVD step.",
+    "targetRepresentation": "All1683605 canonical target vertices are referenced by all3326910 indexed target triangles, unused0; fullTargetPointToPoint matching. Target reference membership helper is independently pinned.",
+    "overlapMeaning": "262923 accepted versus696505 required at85percent overlap. Overlap RMS0.17178947544975876mm is below requested0.5mm but overlap support is insufficient, so targetReached=false. Whole-cloud RMS1.8734409685908973mm/max6.113418976670675mm and rejected556494 remain explicit.",
+    "convergenceMeaning": "converged=true/stoppedImproving after49 iterations is an optimizer stop condition; it is not target accuracy/required overlap attainment, native equality or a usable-registration verdict."
+  },
+  "guiMcpAll15CarriersAndFixedTargets2And3Invariant": true,
+  "fullGuiWorkerRegistrationAndScalarDiagnosticsMatchMcp": true,
+  "history": {
+    "baseline": {
+      "cursor": 5,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening scan-1.stl",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening scan-2.stl",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening scan-3.stl",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Align by corresponding points",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "final": {
+      "cursor": 6,
+      "entries": [
+        {
+          "index": 0,
+          "label": "Starting state",
+          "current": false
+        },
+        {
+          "index": 1,
+          "label": "Opening scan-1.stl",
+          "current": false
+        },
+        {
+          "index": 2,
+          "label": "Opening scan-2.stl",
+          "current": false
+        },
+        {
+          "index": 3,
+          "label": "Opening scan-3.stl",
+          "current": false
+        },
+        {
+          "index": 4,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 5,
+          "label": "Align by corresponding points",
+          "current": false
+        },
+        {
+          "index": 6,
+          "label": "Mesh icp",
+          "current": true
+        }
+      ],
+      "note": "Indices address retained history only; use history_seek with a fresh revision."
+    },
+    "undoRedoAndTimelineSeek": true,
+    "identicalRequestRetry": true
+  },
+  "workerObservations": [
+    {
+      "workerUrl": "http://127.0.0.1:58359/assets/processing-worker-BDviA6oY.js",
+      "receivedAtEpochMs": 1792967555707,
+      "registration": {
+        "transform": {
+          "rotation": [
+            0.9999964095549113, 0.00016018321660325887, 0.0026749240407491046,
+            -0.00015776082775859572, 0.9999995773387017, -0.0009057780841985061,
+            -0.0026750680006092957, 0.0009053528338211718, 0.999996012165768
+          ],
+          "translation": [
+            0.8786956758700876, -0.3147854771751541, 0.00031297353843519473
+          ]
+        },
+        "rms": 1.8734409685908973,
+        "wholeCloudRms": 1.8734409685908973,
+        "overlapRms": 0.17178947544975876,
+        "overlapPoints": 262923,
+        "requiredOverlapPoints": 696505,
+        "overlapSatisfied": false,
+        "maxError": 6.113418976670675,
+        "pairs": 819417,
+        "evaluatedPoints": 819417,
+        "targetPoints": 1683605,
+        "rejectedPoints": 556494,
+        "overlapFraction": 0.3208659327302216,
+        "inlierPairs": 262923,
+        "inlierRms": 0.17178947544975876,
+        "iterations": 49,
+        "converged": true,
+        "targetRms": 0.5,
+        "targetReached": false,
+        "terminationReason": "stoppedImproving",
+        "matching": "fullTargetPointToPoint",
+        "targetRmsBasis": "overlap",
+        "overlapPercent": 85,
+        "sampleSize": 20000,
+        "fittingSamples": 20000,
+        "distanceTests": 2955605688
+      },
+      "diagnostics": {
+        "rms": 1.8734409685908973,
+        "maxError": 6.113418976670675,
+        "converged": true,
+        "iterations": 49,
+        "pairs": 819417,
+        "algorithm": "fullTargetPointToPoint",
+        "targetRms": 0.5,
+        "targetReached": false,
+        "terminationReason": "stoppedImproving",
+        "evaluatedPoints": 819417,
+        "targetPoints": 1683605,
+        "distanceTests": 2955605688,
+        "rejectedPoints": 556494,
+        "overlapFraction": 0.3208659327302216,
+        "inlierRms": 0.17178947544975876,
+        "inlierPairs": 262923,
+        "targetRmsBasis": "overlap",
+        "overlapRms": 0.17178947544975876,
+        "wholeCloudRms": 1.8734409685908973,
+        "overlapPercent": 85,
+        "sampleSize": 20000,
+        "fittingSamples": 20000,
+        "overlapPoints": 262923,
+        "requiredOverlapPoints": 696505,
+        "overlapSatisfied": false
+      }
+    }
+  ],
+  "digestObservations": [
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 2,
+      "startedAt": "2026-10-25T22:30:47.162Z",
+      "readOnlyRetry": false,
+      "launchRevision": 2,
+      "jobId": "a7b9d5e4-e3b7-472f-9c32-a11e7c50ab6d",
+      "afterRevision": 2,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 2,
+      "startedAt": "2026-10-25T22:30:47.943Z",
+      "readOnlyRetry": false,
+      "launchRevision": 2,
+      "jobId": "bb75698f-0189-44a4-9e28-5b9b4e855495",
+      "afterRevision": 2,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 2,
+      "startedAt": "2026-10-25T22:30:51.572Z",
+      "readOnlyRetry": false,
+      "launchRevision": 2,
+      "jobId": "64d8f4c6-df31-4748-9dbb-2d2f930a2f86",
+      "afterRevision": 2,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 3,
+      "startedAt": "2026-10-25T22:32:36.569Z",
+      "readOnlyRetry": false,
+      "launchRevision": 3,
+      "jobId": "71afca09-4fc8-4399-892c-7cad6eea5467",
+      "afterRevision": 3,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 3,
+      "startedAt": "2026-10-25T22:32:37.192Z",
+      "readOnlyRetry": false,
+      "launchRevision": 3,
+      "jobId": "61382570-8f79-4e07-af35-bbabc46c138c",
+      "afterRevision": 3,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 3,
+      "startedAt": "2026-10-25T22:32:37.822Z",
+      "readOnlyRetry": false,
+      "launchRevision": 3,
+      "jobId": "182cefb6-07e7-4430-82f3-8ad1a4129b57",
+      "afterRevision": 3,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 3,
+      "startedAt": "2026-10-25T22:32:41.069Z",
+      "readOnlyRetry": false,
+      "launchRevision": 3,
+      "jobId": "4312bbb8-0fd8-43fb-ba7b-10f0c1ac89d8",
+      "afterRevision": 3,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 5,
+      "startedAt": "2026-10-25T22:32:45.222Z",
+      "readOnlyRetry": false,
+      "launchRevision": 5,
+      "jobId": "2edf0431-1670-4c1c-bee9-cb0d1a47c948",
+      "afterRevision": 5,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 7,
+      "startedAt": "2026-10-25T22:34:27.348Z",
+      "readOnlyRetry": false,
+      "launchRevision": 7,
+      "jobId": "5b30bb60-32e1-41a7-9398-0ac603e6b1e1",
+      "afterRevision": 7,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 7,
+      "startedAt": "2026-10-25T22:34:27.976Z",
+      "readOnlyRetry": false,
+      "launchRevision": 7,
+      "jobId": "e024bc70-d695-43e1-8eaa-915557245b71",
+      "afterRevision": 7,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 7,
+      "startedAt": "2026-10-25T22:34:31.160Z",
+      "readOnlyRetry": false,
+      "launchRevision": 7,
+      "jobId": "ff680bb4-ff30-4a9f-af61-b4fea1e79981",
+      "afterRevision": 7,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 7,
+      "startedAt": "2026-10-25T22:34:35.317Z",
+      "readOnlyRetry": false,
+      "launchRevision": 7,
+      "jobId": "4b4e06be-a906-42ea-be4a-48fe0d3d208e",
+      "afterRevision": 7,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 7,
+      "startedAt": "2026-10-25T22:34:36.036Z",
+      "readOnlyRetry": false,
+      "launchRevision": 7,
+      "jobId": "416eb0e8-643a-42ef-9060-3a3fccb3cf94",
+      "afterRevision": 7,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 9,
+      "startedAt": "2026-10-25T22:34:40.129Z",
+      "readOnlyRetry": false,
+      "launchRevision": 9,
+      "jobId": "d5cb4263-c74b-46f1-beb6-124cf2cba57a",
+      "afterRevision": 9,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 11,
+      "startedAt": "2026-10-25T22:34:40.756Z",
+      "readOnlyRetry": false,
+      "launchRevision": 11,
+      "jobId": "a6105edb-31ac-4019-bf6b-75e08d32f763",
+      "afterRevision": 11,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 11,
+      "startedAt": "2026-10-25T22:34:41.379Z",
+      "readOnlyRetry": false,
+      "launchRevision": 11,
+      "jobId": "8d512a80-b06e-48e6-801d-20a751949cb4",
+      "afterRevision": 11,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 11,
+      "startedAt": "2026-10-25T22:34:42.005Z",
+      "readOnlyRetry": false,
+      "launchRevision": 11,
+      "jobId": "19779e06-a841-4ce1-aebf-b0e3e1142090",
+      "afterRevision": 11,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 11,
+      "startedAt": "2026-10-25T22:34:45.160Z",
+      "readOnlyRetry": false,
+      "launchRevision": 11,
+      "jobId": "688dfa71-94b4-429d-b50a-1fde2459a7f3",
+      "afterRevision": 11,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 13,
+      "startedAt": "2026-10-25T22:34:49.253Z",
+      "readOnlyRetry": false,
+      "launchRevision": 13,
+      "jobId": "760a6533-7f83-42e9-8262-9ce0af537854",
+      "afterRevision": 13,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 13,
+      "startedAt": "2026-10-25T22:34:49.880Z",
+      "readOnlyRetry": false,
+      "launchRevision": 13,
+      "jobId": "fff8bba0-0ea4-4fee-a2a6-7c1ba8c62978",
+      "afterRevision": 13,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 13,
+      "startedAt": "2026-10-25T22:34:53.034Z",
+      "readOnlyRetry": false,
+      "launchRevision": 13,
+      "jobId": "58dc21b0-03cb-4596-8697-23f4d03b5a69",
+      "afterRevision": 13,
+      "completed": true
+    },
+    {
+      "entityId": "11628efd-6015-4634-a359-eabd50245a76",
+      "beforeRevision": 15,
+      "startedAt": "2026-10-25T22:34:57.034Z",
+      "readOnlyRetry": false,
+      "launchRevision": 15,
+      "jobId": "acb47f6a-355b-40d0-a826-c827a8587c7a",
+      "afterRevision": 15,
+      "completed": true
+    },
+    {
+      "entityId": "5b565a8c-02ce-4749-8e17-8c30f4cd2b10",
+      "beforeRevision": 15,
+      "startedAt": "2026-10-25T22:34:57.660Z",
+      "readOnlyRetry": false,
+      "launchRevision": 15,
+      "jobId": "4255a32a-49fa-4699-9ddd-f65688f481a2",
+      "afterRevision": 15,
+      "completed": true
+    },
+    {
+      "entityId": "8a633854-a947-47d3-af61-9be8a27b411a",
+      "beforeRevision": 15,
+      "startedAt": "2026-10-25T22:35:00.787Z",
+      "readOnlyRetry": false,
+      "launchRevision": 15,
+      "jobId": "13e0955b-e867-478e-86e1-14c21145a564",
+      "afterRevision": 15,
+      "completed": true
+    }
+  ],
+  "executedSupportArchive": {
+    "archivePins": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\archive-pins.json",
+      "bytes": 8847,
+      "sha256": "a5b4cfde1a8435d50f9e63ef238943c13eaf7d99cf79d6c77b1883bd41f06054"
+    },
+    "files": [
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-original-fine-browser.mjs",
+          "bytes": 10116,
+          "sha256": "d2d85c55efbe9565560ea62b414c1bf99fbdb88fd0a82553caeba03f73ae90a8"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\00-m3-original-fine-browser.mjs",
+        "bytes": 10116,
+        "sha256": "d2d85c55efbe9565560ea62b414c1bf99fbdb88fd0a82553caeba03f73ae90a8"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.build.json",
+          "bytes": 893,
+          "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\01-m3-main-integrated-pinned-build-r1.build.json",
+        "bytes": 893,
+        "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.source.json",
+          "bytes": 551430,
+          "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\02-m3-main-integrated-pinned-build-r1.source.json",
+        "bytes": 551430,
+        "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.dist.json",
+          "bytes": 49855,
+          "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\03-m3-main-integrated-pinned-build-r1.dist.json",
+        "bytes": 49855,
+        "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+          "bytes": 484103,
+          "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\04-m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "bytes": 484103,
+        "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-mesh-fine-checkpoint-review-r3.mjs",
+          "bytes": 17486,
+          "sha256": "daffcb9e1b9f5170fc4d359d68242c4cade7a006954d3e7e0a46588c7010009b"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\05-original-mesh-fine-checkpoint-review-r3.mjs",
+        "bytes": 17486,
+        "sha256": "daffcb9e1b9f5170fc4d359d68242c4cade7a006954d3e7e0a46588c7010009b"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-origin.mjs",
+          "bytes": 1755,
+          "sha256": "a380e590c15569d08f5c74d9939968a9309e2049475b094e2124934dfbe5ca86"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\06-mesh-fine-checkpoint-r3-origin.mjs",
+        "bytes": 1755,
+        "sha256": "a380e590c15569d08f5c74d9939968a9309e2049475b094e2124934dfbe5ca86"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-runner.mjs",
+          "bytes": 4499,
+          "sha256": "6bbb5520b57815e5bf2053034b2e3bbeb8558faf382fa569649c5b03553fc68e"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\07-mesh-fine-checkpoint-r3-runner.mjs",
+        "bytes": 4499,
+        "sha256": "6bbb5520b57815e5bf2053034b2e3bbeb8558faf382fa569649c5b03553fc68e"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r3-run.py",
+          "bytes": 955,
+          "sha256": "7622010adcda22921c8b44646e2d1911b83c69c4d5265d7d0e31a002a5eba864"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\08-mesh-fine-checkpoint-r3-run.py",
+        "bytes": 955,
+        "sha256": "7622010adcda22921c8b44646e2d1911b83c69c4d5265d7d0e31a002a5eba864"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.case.json",
+          "bytes": 13335,
+          "sha256": "cbbe595d9c4ef1bd061b83f3bbb767091d6198ec3583645c262735530c501bba"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\09-original-stl-fine-final-r1.case.json",
+        "bytes": 13335,
+        "sha256": "cbbe595d9c4ef1bd061b83f3bbb767091d6198ec3583645c262735530c501bba"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\stl-real-stage-b-r1\\evidence.json",
+          "bytes": 1078180,
+          "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\10-evidence.json",
+        "bytes": 1078180,
+        "sha256": "3d0a07ae13f4874c0ddb8e148ce8489faa5e4c9517482b9e9a043fa628adcd91"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\prepare-mesh-fine-checkpoint.py",
+          "bytes": 2139,
+          "sha256": "be043097b753c34d773403372a964b5eadc9b67b397a2fa968341466e945a5ef"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\12-prepare-mesh-fine-checkpoint.py",
+        "bytes": 2139,
+        "sha256": "be043097b753c34d773403372a964b5eadc9b67b397a2fa968341466e945a5ef"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\fine-private-worker-result-observer.mjs",
+          "bytes": 1174,
+          "sha256": "53786c551972ff2fdd989486c167c453b38bba7f16ba370f6f7358315572f7c2"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\13-fine-private-worker-result-observer.mjs",
+        "bytes": 1174,
+        "sha256": "53786c551972ff2fdd989486c167c453b38bba7f16ba370f6f7358315572f7c2"
+      },
+      {
+        "original": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-saved-reference-count.mjs",
+          "bytes": 2837,
+          "sha256": "57e58ef570b674ac12ef806c541fe7274c615cc1f750bfd674e205a9f8c6203c"
+        },
+        "archived": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\published-support-archive\\14-mesh-fine-saved-reference-count.mjs",
+        "bytes": 2837,
+        "sha256": "57e58ef570b674ac12ef806c541fe7274c615cc1f750bfd674e205a9f8c6203c"
+      }
+    ]
+  },
+  "priorFailedHarnessReceipts": [
+    {
+      "label": "r1",
+      "rawReceiptPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.receipt.json",
+        "bytes": 1992,
+        "sha256": "446858d26ad3c2c73cb630e1d6edc0731f3c061acf787dc58912f50f055687eb"
+      },
+      "receipt": {
+        "mode": "cad",
+        "label": "original-stl-fine-final-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=768",
+          "--max-semi-space-size=16",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-runner.mjs",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.config.json"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 6144,
+        "heapMiB": 768,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11699556352,
+        "immediateChildFreeBytes": 11699552256,
+        "identity": {
+          "pid": 45804,
+          "startFileTime": "134374398214448995",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 728727552,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 742744064,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 43.7915102999541,
+        "completed": false
+      },
+      "classification": "Private harness mojibake selector failed; not an application geometry result.",
+      "changedApplicationSource": false,
+      "relabelledPassed": false
+    },
+    {
+      "label": "r2",
+      "rawReceiptPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r2.receipt.json",
+        "bytes": 1999,
+        "sha256": "34be699c8ae179943d3ee909ee703f28bc9c386b0ac24439c68a10ae53f0faf4"
+      },
+      "receipt": {
+        "mode": "cad",
+        "label": "original-stl-fine-final-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=768",
+          "--max-semi-space-size=16",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\mesh-fine-checkpoint-r2-runner.mjs",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r2.config.json"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 6144,
+        "heapMiB": 768,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r2.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r2.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r2.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11833929728,
+        "immediateChildFreeBytes": 11833909248,
+        "identity": {
+          "pid": 28564,
+          "startFileTime": "134374399992057797",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 2347708416,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 2361704448,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 136.39483519998612,
+        "completed": false
+      },
+      "classification": "Private harness incorrectly assumed a GUI-launched solver had a public API job receipt; actual GUI solver ran. Corrected by readonly terminal-metadata observation only.",
+      "changedApplicationSource": false,
+      "relabelledPassed": false
+    }
+  ],
+  "laterClosedProfileRetention": {
+    "originalRecordedProfile": {
+      "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\owned-default-profile",
+      "files": 268,
+      "logicalBytes": 28238546,
+      "retained": true,
+      "closedBeforeInventory": true
+    },
+    "preflight": {
+      "rawPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.profile-retention-preflight.json",
+        "bytes": 678,
+        "sha256": "a8cb5c119f7f83d8ef07d7b339e7e2bd34462516a3868b6837a21c11e74abbc1"
+      },
+      "value": {
+        "source": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\owned-default-profile",
+        "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-stl-fine-final-r3-owned-default-profile",
+        "files": 268,
+        "bytes": 28238546.0,
+        "closedReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.receipt.json",
+        "closedReceiptSha256": "06197510217a702d033dfc03d92e40e2a5a62cb831c83227debcff6dfd28b6ca",
+        "operation": "Pending reversible Move-Item retention archive"
+      }
+    },
+    "result": {
+      "rawPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-stl-fine-final-r3.profile-retention-result.json",
+        "bytes": 571,
+        "sha256": "3d8464d7d636b60f468bb1167b66ed85f8f209b59f1ede02a9eb58cfa6b4b328"
+      },
+      "value": {
+        "operation": "Native Move-Item exit0; retention archive",
+        "source": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\original-stl-fine-final-r3\\browser\\owned-default-profile",
+        "destination": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-profiles\\original-stl-fine-final-r3-owned-default-profile",
+        "files": 268,
+        "bytes": 28238546.0,
+        "matchesClosedPreMoveCountAndBytes": true,
+        "cryptographicFileComparison": false,
+        "sourceAbsent": true,
+        "freeCBytes": 6476992512
+      }
+    },
+    "chronology": "Completed R3 Job/profile inventory precede separate coordinator-owned retention Move-Item. Original raw paths remain unchanged; later mapping records retained Z destination.",
+    "limitation": "268 files/28238546 bytes retained, source absent, matching counts/bytes only; no cryptographic per-file relocation comparison. No profile scan/move/delete by publisher."
+  },
+  "screenshot": {
+    "path": "m3-stl-fine-final-20261026/source1-target3-fine-partial-overlap.png",
+    "bytes": 178126,
+    "sha256": "d9710d3c861faf4e925363e6d778eae0ec256b58ad703bf63bc3673f9228c7e0",
+    "scope": "Actual full rendered mesh and Fine controls/diagnostics, precision assertions preserved in browser evidence; no visual accuracy/native-equivalence claim."
+  },
+  "remainingScope": "Standalone STL Fine route GUI/MCP parity now verified, including meaningful target-not-reached partial-overlap result. Final overall geometry/usability interpretation and remaining current-source PLY/ASC/milestone gates stay separate."
+}

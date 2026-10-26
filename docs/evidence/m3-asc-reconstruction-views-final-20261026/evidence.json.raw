@@ -1,0 +1,385 @@
+{
+  "passed": true,
+  "filesystemScope": {
+    "writeRoot": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f",
+    "temp": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\tmp",
+    "tmp": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\tmp",
+    "profile": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\owned-default-profile",
+    "capacityBytes": 6442450944,
+    "meaning": "Task-owned LOCAL C persistentDEFAULT profile/temp/output; no userexistingprofile interaction or zero incidentalOSwrite claim"
+  },
+  "scope": "Rendered support for full actual original-three ASC-derived reconstruction only: encoding-preserving binaryPLY import via public MCP, actual current GUI canvas front/top/isometric, unchanged full geometry/history. No new reconstruction, independent-quality, native-equivalence or persistence claim.",
+  "renderCase": {
+    "input": {
+      "filename": "output-geometry.json",
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-geometry.json",
+      "bytes": 53565639,
+      "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd",
+      "artifact": {
+        "artifactId": "40c4bd2e-c8d6-4a12-953b-87eee78ee58e",
+        "name": "geometry.json",
+        "mime": "application/json",
+        "bytes": 53565639
+      }
+    },
+    "positionOracle": {
+      "path": "positions",
+      "encoding": "f32",
+      "elements": 2981412,
+      "rawBytes": 11925648,
+      "sha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409"
+    },
+    "inputEvidence": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+    "inputEvidenceSha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3",
+    "scope": "Full actual331268triangle nonindexed output captured from current3e3/b9GUI/MCP reconstruction; no decimation or largest-component filtering"
+  },
+  "repacked": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\generated-ply\\asc-full-output.ply",
+    "bytes": 16232382,
+    "sha256": "bb6d2fdc128efd97ed27fc8f30f5cf04e17f9bf5140236dc9cca52246c3419f4",
+    "vertices": 993804,
+    "faces": 331268,
+    "positionSha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409",
+    "indexSha256": "0018799b35cb3378ad09c3b8c1478667b093e053a972d4f16332b87f1573e8b9",
+    "bounds": {
+      "min": [
+        -33.455101013183594,
+        -38.7489013671875,
+        -331.864990234375
+      ],
+      "max": [
+        73.0448989868164,
+        73.2510986328125,
+        -261.364990234375
+      ]
+    },
+    "scope": "Full captured nonindexed Float32 triangle soup repacked with identity indices; original JSON has no canonical indexed carrier. No triangle/point/coordinate omitted or changed."
+  },
+  "browserContextScope": {
+    "persistent": true,
+    "incognito": false,
+    "ownedDisposableProfile": true,
+    "userDataDir": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output\\browser\\owned-default-profile"
+  },
+  "baseline": [
+    {
+      "path": "positions",
+      "encoding": "f32",
+      "elements": 2981412,
+      "rawBytes": 11925648,
+      "sha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409"
+    },
+    {
+      "path": "indexedMesh.vertices",
+      "encoding": "f32",
+      "elements": 2981412,
+      "rawBytes": 11925648,
+      "sha256": "f31fbac51ef9dc48dca280000b053a410baeffc705ee3ed46a832939eec97409"
+    },
+    {
+      "path": "indexedMesh.triangles",
+      "encoding": "u32",
+      "elements": 993804,
+      "rawBytes": 3975216,
+      "sha256": "0018799b35cb3378ad09c3b8c1478667b093e053a972d4f16332b87f1573e8b9"
+    },
+    {
+      "path": "indexedMesh.geometryNormals",
+      "encoding": "f32",
+      "elements": 2981412,
+      "rawBytes": 11925648,
+      "sha256": "f551a034b38d51f9fced56090225b44c7079cace44f535215e7a0a490282451e"
+    },
+    {
+      "path": "indexedMesh.facetNormals",
+      "encoding": "f32",
+      "elements": 993804,
+      "rawBytes": 3975216,
+      "sha256": "e1b7462a324f6e6c1c286ab7e1a4fae9ce2350f1176a9506e08b16810fe7ddd5"
+    }
+  ],
+  "history": {
+    "cursor": 0,
+    "entries": [
+      {
+        "index": 0,
+        "label": "Starting state",
+        "current": true
+      }
+    ],
+    "note": "Indices address retained history only; use history_seek with a fresh revision."
+  },
+  "views": [
+    {
+      "name": "front",
+      "file": "front.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [
+          19.794898986816406,
+          -262.41812515440665,
+          -296.614990234375
+        ],
+        "target": [
+          19.794898986816406,
+          17.2510986328125,
+          -296.614990234375
+        ],
+        "up": [
+          0,
+          0,
+          1
+        ],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956,
+          0,
+          0,
+          0,
+          0,
+          0.009977601653260131,
+          0,
+          0,
+          0,
+          0,
+          -0.0001,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "cameraWorldMatrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          2.220446049250313e-16,
+          1,
+          0,
+          0,
+          -1,
+          2.220446049250313e-16,
+          0,
+          19.794898986816406,
+          -262.41812515440665,
+          -296.614990234375,
+          1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [
+            -33.455101013183594,
+            -38.7489013671875,
+            -331.864990234375
+          ],
+          "max": [
+            73.0448989868164,
+            73.2510986328125,
+            -261.364990234375
+          ]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "dfbea60d9e9e39503f4830ad02d795f44ddf2f30c56a2d1ba9689f0f7bacb618"
+    },
+    {
+      "name": "top",
+      "file": "top.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [
+          19.794898986816406,
+          17.2510986328125,
+          -16.945766447155847
+        ],
+        "target": [
+          19.794898986816406,
+          17.2510986328125,
+          -296.614990234375
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956,
+          0,
+          0,
+          0,
+          0,
+          0.009977601653260131,
+          0,
+          0,
+          0,
+          0,
+          -0.0001,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "cameraWorldMatrix": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          19.794898986816406,
+          17.2510986328125,
+          -16.945766447155847,
+          1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [
+            -33.455101013183594,
+            -38.7489013671875,
+            -331.864990234375
+          ],
+          "max": [
+            73.0448989868164,
+            73.2510986328125,
+            -261.364990234375
+          ]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "25104d0a84989ce2ad3ab5d03576ebb2be0804a40c506c585b51aaf3650f3804"
+    },
+    {
+      "name": "isometric",
+      "file": "isometric.png",
+      "viewport": {
+        "projection": "orthographic",
+        "position": [
+          181.2620006244211,
+          -144.21600300479219,
+          -135.14788859677031
+        ],
+        "target": [
+          19.794898986816406,
+          17.2510986328125,
+          -296.614990234375
+        ],
+        "up": [
+          0,
+          0,
+          1
+        ],
+        "zoom": 1,
+        "near": -10000,
+        "far": 10000,
+        "cameraMatrixFormat": "column-major-4x4",
+        "projectionMatrix": [
+          0.006388883639264956,
+          0,
+          0,
+          0,
+          0,
+          0.009977601653260131,
+          0,
+          0,
+          0,
+          0,
+          -0.0001,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "cameraWorldMatrix": [
+          0.7071067811865475,
+          0.7071067811865477,
+          1.1102230246251565e-16,
+          0,
+          -0.40824829046386296,
+          0.4082482904638627,
+          0.8164965809277261,
+          0,
+          0.577350269189626,
+          -0.5773502691896258,
+          0.5773502691896255,
+          0,
+          181.2620006244211,
+          -144.21600300479219,
+          -135.14788859677031,
+          1
+        ],
+        "viewport": {
+          "width": 1240,
+          "height": 794,
+          "coordinates": "normalized top-left x/y in [0,1]"
+        },
+        "bounds": {
+          "min": [
+            -33.455101013183594,
+            -38.7489013671875,
+            -331.864990234375
+          ],
+          "max": [
+            73.0448989868164,
+            73.2510986328125,
+            -261.364990234375
+          ]
+        },
+        "pointCloudDisplay": [],
+        "navigation": {
+          "orbitMode": "free",
+          "zoomWindowActive": false
+        },
+        "orbitCenter": {
+          "source": null,
+          "point": null,
+          "markerVisible": false
+        }
+      },
+      "sha256": "6be197aab8b046050cd652b8b5aa2a1d69f213143811cb454937ecda716e8429"
+    }
+  ],
+  "errors": []
+}

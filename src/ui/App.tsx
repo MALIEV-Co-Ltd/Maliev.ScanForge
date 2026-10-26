@@ -1211,6 +1211,7 @@ export function App() {
       view.onMeshClipChange = undefined;
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
+  // Lazy world-view buffers can change without changing selected point identities.
   useEffect(() => {
     if (!selected || !sampledSelected) {
       setTriangleMask(null);
@@ -1219,7 +1220,11 @@ export function App() {
     const session = sessionFor(selected);
     setTriangleMask(new Uint8Array(session.state.mask));
     setSelectionVersion((v) => v + 1);
-  }, [selectedId, selected?.positions, sampledSelected]);
+  }, [
+    selectedId,
+    selected ? cloudSelectionSource(selected) : undefined,
+    sampledSelected,
+  ]);
   useEffect(() => {
     const origin = wandRegion.current;
     if (!origin || selected?.kind === "pointcloud") return;
@@ -2647,7 +2652,7 @@ export function App() {
       setError("This tool requires sampled scan geometry.");
       return;
     }
-    if (selected?.kind === "pointcloud") {
+    if (selected?.kind === "pointcloud" && tool !== "repolygonize") {
       if (tool !== "reducePolygons" && tool !== "reduceNoise") {
         setError(
           "This tool requires a triangle mesh. Select a mesh to use it.",
@@ -2776,7 +2781,8 @@ export function App() {
                 entityId: sourceId,
                 resolution: parameters.resolution,
                 method: parameters.method,
-                ...(parameters.targetIds !== undefined
+                ...(parameters.targetIds?.length ||
+                parameters.method === "native"
                   ? { targetIds: parameters.targetIds }
                   : {}),
               },
@@ -2812,14 +2818,14 @@ export function App() {
             `${scanToolTitles[parameters.kind]} complete.`,
         );
         // The shared host commit flushes React before its terminal job receipt.
+        const outputId =
+          Array.isArray(result.entityIds) &&
+          typeof result.entityIds[0] === "string"
+            ? result.entityIds[0]
+            : sourceId;
         scanToolOutput.current =
-          entitiesRef.current.find(
-            (entity) =>
-              entity.id ===
-              (Array.isArray(result.entityIds)
-                ? result.entityIds[0]
-                : sourceId),
-          )?.positions ?? null;
+          entitiesRef.current.find((entity) => entity.id === outputId)
+            ?.positions ?? null;
         setScanToolResult(summary);
         setMessage(summary);
       } catch (error) {
@@ -3491,12 +3497,12 @@ export function App() {
           restoredFuture: Revision[] = [];
         for (const item of session.history)
           restoredHistory.push({
-            label: item.label,
+            ...item,
             entities: await restoreState(item.entities),
           });
         for (const item of session.future)
           restoredFuture.push({
-            label: item.label,
+            ...item,
             entities: await restoreState(item.entities),
           });
         signal?.throwIfAborted();

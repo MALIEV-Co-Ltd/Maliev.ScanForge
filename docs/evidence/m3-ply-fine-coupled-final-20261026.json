@@ -1,0 +1,878 @@
+{
+  "schema": 1,
+  "status": "PASS_EXPLICIT_COUPLED_GUI_MCP_WORKFLOW",
+  "passed": true,
+  "overallM3Passed": false,
+  "sourceCommit": "296925eac314f49c2875bcbdb5ea5245e2cf6fe9",
+  "buildId": "scanforge-bab4f9199590cf11",
+  "compilerInputs": 2095,
+  "sourceManifestSha256": "629378cdea560728b97062186fb65ec7e87698ec48cf4f4d2dec05d57ededb95",
+  "scope": "Two independent fulloriginalPLYFine solves in fresh LOCALC persistentDEFAULT profiles. Same saved originalglobalaligned history4; strictGUIterminalobservermetadata andall21outputcarriers equal independentMCPresult. No reconstructedsubstitute, nativeICP-equivalence or accuracytargetpass claim.",
+  "operation": {
+    "kind": "icp",
+    "targetRms": 0.5,
+    "overlapPercent": 85,
+    "maxDistance": 0.5,
+    "maxIterations": 200,
+    "sampleSize": 20000,
+    "targetSampleSize": 3,
+    "tolerance": 1e-5
+  },
+  "observationPolicy": {
+    "formerGuiStageMs": 180000,
+    "contextMs": 840000,
+    "outerJobMs": 900000,
+    "singleSolve": true,
+    "deadline": "Remaining unchangedcontext budget; generic180sGUIstage and600sjobpoll are not extra product limits",
+    "noNumericalSettingsChange": true
+  },
+  "inputCapture": {
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "buildId": "scanforge-fd58d9b0cd235edc",
+    "projectSha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+    "scope": "Retained complete project captured on earlier445 build, used as old-source input only; original global-aligned state recovered viahistory4, numerical replay executesnew3e3/b9a7build."
+  },
+  "originalSource": {
+    "vertices": 140113,
+    "triangles": 274154
+  },
+  "sourceEligibleTriangleCorners": 822462,
+  "targetReferencedVertices": 1865848,
+  "originalCarrierCount": 21,
+  "targetAccuracyReached": false,
+  "registration": {
+    "transform": {
+      "rotation": [
+        0.9999855301643663, -0.0010269438012018423, -0.005280610601031543,
+        0.0010381777779324094, 0.9999972030640607, 0.0021251002228030525,
+        0.005278413473001232, -0.0021305516855320275, 0.9999837994191322
+      ],
+      "translation": [
+        -1.5581856888638057, 0.6160757734223328, -0.04513992814953883
+      ]
+    },
+    "rms": 1.8626354018230098,
+    "wholeCloudRms": 1.8626354018230098,
+    "overlapRms": 0.17365358764251612,
+    "overlapPoints": 264708,
+    "requiredOverlapPoints": 699093,
+    "overlapSatisfied": false,
+    "maxError": 6.109952999044512,
+    "pairs": 822462,
+    "evaluatedPoints": 822462,
+    "targetPoints": 1865848,
+    "rejectedPoints": 557754,
+    "overlapFraction": 0.32184830423776417,
+    "inlierPairs": 264708,
+    "inlierRms": 0.17365358764251612,
+    "iterations": 56,
+    "converged": true,
+    "targetRms": 0.5,
+    "targetReached": false,
+    "terminationReason": "stoppedImproving",
+    "matching": "fullTargetPointToPoint",
+    "targetRmsBasis": "overlap",
+    "overlapPercent": 85,
+    "sampleSize": 20000,
+    "fittingSamples": 20000,
+    "distanceTests": 5728871565
+  },
+  "diagnostics": {
+    "rms": 1.8626354018230098,
+    "maxError": 6.109952999044512,
+    "converged": true,
+    "iterations": 56,
+    "pairs": 822462,
+    "algorithm": "fullTargetPointToPoint",
+    "targetRms": 0.5,
+    "targetReached": false,
+    "terminationReason": "stoppedImproving",
+    "evaluatedPoints": 822462,
+    "targetPoints": 1865848,
+    "distanceTests": 5728871565,
+    "rejectedPoints": 557754,
+    "overlapFraction": 0.32184830423776417,
+    "inlierRms": 0.17365358764251612,
+    "inlierPairs": 264708,
+    "targetRmsBasis": "overlap",
+    "overlapRms": 0.17365358764251612,
+    "wholeCloudRms": 1.8626354018230098,
+    "overlapPercent": 85,
+    "sampleSize": 20000,
+    "fittingSamples": 20000,
+    "overlapPoints": 264708,
+    "requiredOverlapPoints": 699093,
+    "overlapSatisfied": false
+  },
+  "completeRegistrationAndScalarDiagnosticsEqual": true,
+  "completeAll21CarrierCanonicalsEqual": true,
+  "target2And3CarriersUnchanged": true,
+  "independentComparisonAfterMcpSolve": {
+    "guiEvidence": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\evidence.json",
+    "passed": true,
+    "oracleUse": "Comparison only after independent solve; no geometry/transform/clock/result passed tosolver"
+  },
+  "ownUndoRedoAndTimeline4To5Passed": true,
+  "requestRetryAndStaleRevisionPassed": true,
+  "phases": {
+    "gui": {
+      "passed": true,
+      "receipt": {
+        "mode": "cad",
+        "label": "original-ply-fine-gui-native-repoly-c-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=768",
+          "--max-semi-space-size=16",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-runner.mjs",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-gui-native-repoly-c-r1.config.json"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 6144,
+        "heapMiB": 768,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\original-ply-fine-gui-native-repoly-c-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\original-ply-fine-gui-native-repoly-c-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\original-ply-fine-gui-native-repoly-c-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11483250688,
+        "immediateChildFreeBytes": 11483160576,
+        "identity": {
+          "pid": 49244,
+          "startFileTime": "134374573445483869",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 3158310912,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 3173724160,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 330.5405299999984,
+        "completed": true
+      },
+      "profile": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\owned-default-profile",
+        "files": 268,
+        "logicalBytes": 28289462,
+        "closedBeforeInventory": true,
+        "preservedAtOriginalCPath": true,
+        "archiveExcludesProfile": true
+      },
+      "rawEvidencePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\evidence.json",
+        "bytes": 104524,
+        "sha256": "92b05bbcb1bf6c740baad9801e227a0869c1ea565a7e5d7b5300314c4ffeee87"
+      },
+      "rawBindingPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\binding-result.json",
+        "bytes": 420084,
+        "sha256": "c5060fb7fa63b26d466fca7491ddff6d057bddba121dabdadc1257110b5b9de9"
+      },
+      "archiveInventoryPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\exact-harness-archive\\inventory.json",
+        "bytes": 2781,
+        "sha256": "c5b730de06c24abbed0a3e75a49effe435b198929e22dccabe8f097fed09d58e"
+      },
+      "baselineHistory": {
+        "cursor": 4,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening ply-1.ply",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening ply-2.ply",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening ply-3.ply",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Global Fine Align",
+            "current": true
+          },
+          {
+            "index": 5,
+            "label": "Mesh scanTools",
+            "current": false
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "finalHistory": {
+        "cursor": 5,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening ply-1.ply",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening ply-2.ply",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening ply-3.ply",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Global Fine Align",
+            "current": false
+          },
+          {
+            "index": 5,
+            "label": "Fine align scans with dense ICP",
+            "current": true
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "initialCarrierCount": 21,
+      "outputCarrierCount": 21,
+      "sourceAndInputPinsUnchanged": true,
+      "targetReferenceCount": {
+        "method": "independent-saved-binary-project-full-u32-triangle-reference-membership",
+        "targetOwner": "29401053-dc7b-48c7-9bee-bd581b8bd734",
+        "savedHistoryCursor": 4,
+        "canonicalVertices": 1865848,
+        "referencedVertices": 1865848,
+        "unusedVertices": 0,
+        "triangles": 3691133,
+        "triangleSha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+        "projectSha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc"
+      }
+    },
+    "mcp": {
+      "passed": true,
+      "receipt": {
+        "mode": "cad",
+        "label": "original-ply-fine-mcp-native-repoly-c-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=768",
+          "--max-semi-space-size=16",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-fine-coupled-local-c-runner.mjs",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-mcp-native-repoly-c-r1.config.json"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 6144,
+        "heapMiB": 768,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\original-ply-fine-mcp-native-repoly-c-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\original-ply-fine-mcp-native-repoly-c-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\original-ply-fine-mcp-native-repoly-c-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 8739184640,
+        "immediateChildFreeBytes": 8739086336,
+        "identity": {
+          "pid": 63260,
+          "startFileTime": "134374578090134771",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 3145179136,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 3160264704,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 323.9104490999598,
+        "completed": true
+      },
+      "profile": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\output\\browser\\owned-default-profile",
+        "files": 268,
+        "logicalBytes": 28283726,
+        "closedBeforeInventory": true,
+        "preservedAtOriginalCPath": true,
+        "archiveExcludesProfile": true
+      },
+      "rawEvidencePin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\output\\browser\\evidence.json",
+        "bytes": 99925,
+        "sha256": "d5e346942b880b5ceb1b15ecd0f5dc59ae6a18f84c2cd62ff90ea34d37e54ef3"
+      },
+      "rawBindingPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\output\\binding-result.json",
+        "bytes": 421692,
+        "sha256": "68da27ac626bc591593fcb5ff609662c3623162c37184b0578dbd288ccbba3e9"
+      },
+      "archiveInventoryPin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\exact-harness-archive\\inventory.json",
+        "bytes": 2781,
+        "sha256": "feaf2480eb5e79d4426ae3ded8416ba8d75b6a2c356b051c13cb6a86abefecc1"
+      },
+      "baselineHistory": {
+        "cursor": 4,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening ply-1.ply",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening ply-2.ply",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening ply-3.ply",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Global Fine Align",
+            "current": true
+          },
+          {
+            "index": 5,
+            "label": "Mesh scanTools",
+            "current": false
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "finalHistory": {
+        "cursor": 5,
+        "entries": [
+          {
+            "index": 0,
+            "label": "Starting state",
+            "current": false
+          },
+          {
+            "index": 1,
+            "label": "Opening ply-1.ply",
+            "current": false
+          },
+          {
+            "index": 2,
+            "label": "Opening ply-2.ply",
+            "current": false
+          },
+          {
+            "index": 3,
+            "label": "Opening ply-3.ply",
+            "current": false
+          },
+          {
+            "index": 4,
+            "label": "Global Fine Align",
+            "current": false
+          },
+          {
+            "index": 5,
+            "label": "Mesh icp",
+            "current": true
+          }
+        ],
+        "note": "Indices address retained history only; use history_seek with a fresh revision."
+      },
+      "initialCarrierCount": 21,
+      "outputCarrierCount": 21,
+      "sourceAndInputPinsUnchanged": true,
+      "targetReferenceCount": {
+        "method": "independent-saved-binary-project-full-u32-triangle-reference-membership",
+        "targetOwner": "29401053-dc7b-48c7-9bee-bd581b8bd734",
+        "savedHistoryCursor": 4,
+        "canonicalVertices": 1865848,
+        "referencedVertices": 1865848,
+        "unusedVertices": 0,
+        "triangles": 3691133,
+        "triangleSha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+        "projectSha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc"
+      }
+    }
+  },
+  "actualInitial21Carriers": [
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "3b3ab4f24f1fb6d02c21658f8e2f2a5cf88cb15046cc9417b2e45c743b8a585f"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "1e4a00fbc8744fc70aea7bb93283e723ff2d706354cb898b607b89eb84fbbb2d"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "09f325981f10d8b0d2abb84a01e9f298f834f6070fc3c00d85053bc6f8a80792"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "33c4080f8489b49039936f6a5d1afb2f301ccd4c334a3ccf5198917c444da8a6"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "723103da19224fbc8b284834977c6ee3c330e41603a86fc5ffe3bceae7f03855"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "6d4f6c8739f750121b91ec8537a4a3283ee1ae612770f6ab048f9e70c4d230ab"
+        }
+      ]
+    },
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "ff90af70a7d14d94fe3feabd10daf532900cfcd2823c893fac3d886898c3f6f1"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "dba05b50b97e2c9439cc1e73eba7a659fd7e3180ea96dcb73f23a3cd422df99a"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "b1a6d0b88a8b7dc2863590ed2692ae1e0bac8e39a77b9a2f885326aa90b0bee0"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "cafba84d26bca0585473b4efffaa8d2b48b407ccb78fcdebea797e5af2b03fe0"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "5ec1511075f32b3931332d089e6dbb018777417fcaf50d851844d229cb5fa7aa"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "68a9715b74309b33fa2e06b5a920c94918017e1b7f7fdd295c18f788db5c5fa6"
+        }
+      ]
+    },
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "f6f64c2608a12263ba83f2b5ba8cade9380b9410538145094cef6e0113bc8e8d"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "eab960028991983674a1e21f54852ecd26a8cc076fc69a7adcc5695904af4e96"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "16cfd5a533f69248404c6285b2bfc48e8005923faf1de03bd6079a727d8ab20d"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "9d3da873d7b6f68e9d7ab0f2f047e0a164ca45bdff363307783b77da0d4b556d"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "ce6a851f7094376c9ab1f1c1d8ca5a9972013a9a5d377ae5659694ad86a73805"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "7c02a226948b6138264914c70543d0dc6980e3e15a47f154dfe54a587b4130fd"
+        }
+      ]
+    }
+  ],
+  "actualOutput21Carriers": [
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "d3ff6c97a8069847855f8fafa90f9a8c0043606c30f052814282c3c7a08fed63"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "e81bd8b332ed9bd5731e2492a2dc1174d6e84c29dd73bec8bf9e4fdea869b69d"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "12f324893d05b5c6c72e5f8052db120184ec6f7f28de61e63275bb850413b491"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 822462,
+          "rawBytes": 3289848,
+          "sha256": "545fc533dcb4c6c366c48342a8d255397a6112b423907a6e7861421dc800a674"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 420339,
+          "rawBytes": 1681356,
+          "sha256": "d17523ac4eae8c5718ad3fc324f9a035ea94837201b81ddf4b2afda4a8cc6062"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "1aa8600a748a25112250adc32abc96731d2d133b33a6a18d996f46516b741713"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2467386,
+          "rawBytes": 9869544,
+          "sha256": "73c2be8c8294174b2be3f0db3152dcb1cd342afca12594e0c4f7df7e4de53bf3"
+        }
+      ]
+    },
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "ff90af70a7d14d94fe3feabd10daf532900cfcd2823c893fac3d886898c3f6f1"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "dba05b50b97e2c9439cc1e73eba7a659fd7e3180ea96dcb73f23a3cd422df99a"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "b1a6d0b88a8b7dc2863590ed2692ae1e0bac8e39a77b9a2f885326aa90b0bee0"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 8093631,
+          "rawBytes": 32374524,
+          "sha256": "fe9483897b71eca0a550492f8154d0c5701aee1ba5b7f93a4427e7adb5767f76"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 4126482,
+          "rawBytes": 16505928,
+          "sha256": "cafba84d26bca0585473b4efffaa8d2b48b407ccb78fcdebea797e5af2b03fe0"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "5ec1511075f32b3931332d089e6dbb018777417fcaf50d851844d229cb5fa7aa"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 24280893,
+          "rawBytes": 97123572,
+          "sha256": "68a9715b74309b33fa2e06b5a920c94918017e1b7f7fdd295c18f788db5c5fa6"
+        }
+      ]
+    },
+    {
+      "buffers": [
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "f6f64c2608a12263ba83f2b5ba8cade9380b9410538145094cef6e0113bc8e8d"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "eab960028991983674a1e21f54852ecd26a8cc076fc69a7adcc5695904af4e96"
+        },
+        {
+          "path": "indexedMesh.normals",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "16cfd5a533f69248404c6285b2bfc48e8005923faf1de03bd6079a727d8ab20d"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 11073399,
+          "rawBytes": 44293596,
+          "sha256": "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 5597544,
+          "rawBytes": 22390176,
+          "sha256": "9d3da873d7b6f68e9d7ab0f2f047e0a164ca45bdff363307783b77da0d4b556d"
+        },
+        {
+          "path": "normals",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "ce6a851f7094376c9ab1f1c1d8ca5a9972013a9a5d377ae5659694ad86a73805"
+        },
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 33220197,
+          "rawBytes": 132880788,
+          "sha256": "7c02a226948b6138264914c70543d0dc6980e3e15a47f154dfe54a587b4130fd"
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "phase": "gui",
+      "kind": "evidence",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\gui-evidence.json.raw",
+        "bytes": 104524,
+        "sha256": "92b05bbcb1bf6c740baad9801e227a0869c1ea565a7e5d7b5300314c4ffeee87"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\evidence.json",
+        "bytes": 104524,
+        "sha256": "92b05bbcb1bf6c740baad9801e227a0869c1ea565a7e5d7b5300314c4ffeee87"
+      }
+    },
+    {
+      "phase": "gui",
+      "kind": "receipt",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\gui-receipt.json.raw",
+        "bytes": 2200,
+        "sha256": "6cb0972b0a46f42da30a81cab7c706b5489a9490c351357f9e570d30a25a0936"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\original-ply-fine-gui-native-repoly-c-r1.receipt.json",
+        "bytes": 2200,
+        "sha256": "6cb0972b0a46f42da30a81cab7c706b5489a9490c351357f9e570d30a25a0936"
+      }
+    },
+    {
+      "phase": "gui",
+      "kind": "config",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\gui-config.json.raw",
+        "bytes": 8368,
+        "sha256": "cf407baa5f0b882fbf0fe324a4ac06d20cd668716f9ac827a51139b4c76ee728"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-gui-native-repoly-c-r1.config.json",
+        "bytes": 8368,
+        "sha256": "cf407baa5f0b882fbf0fe324a4ac06d20cd668716f9ac827a51139b4c76ee728"
+      }
+    },
+    {
+      "phase": "gui",
+      "kind": "worker-observations.json",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\gui-worker-observations.json.raw",
+        "bytes": 2346,
+        "sha256": "0c9989c24fb1036d9eb8b5bde045318d7e7dd576854c7cbe2d97a619be80dd3c"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\worker-observations.json",
+        "bytes": 2346,
+        "sha256": "0c9989c24fb1036d9eb8b5bde045318d7e7dd576854c7cbe2d97a619be80dd3c"
+      }
+    },
+    {
+      "phase": "gui",
+      "kind": "original-ply-GUI-Fine.png",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\gui-original-ply-GUI-Fine.png",
+        "bytes": 152121,
+        "sha256": "9677ba2ce2a33d341ce274dd3fb5643335132f686d1d0537c04d0f5a0abfe9fb"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\gui-4a29b9195a\\output\\browser\\original-ply-GUI-Fine.png",
+        "bytes": 152121,
+        "sha256": "9677ba2ce2a33d341ce274dd3fb5643335132f686d1d0537c04d0f5a0abfe9fb"
+      }
+    },
+    {
+      "phase": "mcp",
+      "kind": "evidence",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\mcp-evidence.json.raw",
+        "bytes": 99925,
+        "sha256": "d5e346942b880b5ceb1b15ecd0f5dc59ae6a18f84c2cd62ff90ea34d37e54ef3"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\output\\browser\\evidence.json",
+        "bytes": 99925,
+        "sha256": "d5e346942b880b5ceb1b15ecd0f5dc59ae6a18f84c2cd62ff90ea34d37e54ef3"
+      }
+    },
+    {
+      "phase": "mcp",
+      "kind": "receipt",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\mcp-receipt.json.raw",
+        "bytes": 2198,
+        "sha256": "50ad4553a8a6c4effceeb8fc4837f2612a9e2cdebe04a7ddce3b06927f1deac8"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\mcp-6dd6901ad5\\original-ply-fine-mcp-native-repoly-c-r1.receipt.json",
+        "bytes": 2198,
+        "sha256": "50ad4553a8a6c4effceeb8fc4837f2612a9e2cdebe04a7ddce3b06927f1deac8"
+      }
+    },
+    {
+      "phase": "mcp",
+      "kind": "config",
+      "durable": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\docs\\evidence\\m3-ply-fine-coupled-final-20261026\\mcp-config.json.raw",
+        "bytes": 9955,
+        "sha256": "3fde20f62794489388e162752316d5b2e6d9159ea08d9a383d11744d18dc6b72"
+      },
+      "raw": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-fine-mcp-native-repoly-c-r1.config.json",
+        "bytes": 9955,
+        "sha256": "3fde20f62794489388e162752316d5b2e6d9159ea08d9a383d11744d18dc6b72"
+      }
+    }
+  ],
+  "previous180sObservationFailure": {
+    "label": "original-ply-fine-final-cloud-selection-retained-r1",
+    "status": "INCOMPLETE_TERMINAL_OBSERVATION_TIMEOUT_NOT_RELABELLED",
+    "scope": "Private180sGUIstageendedwhileICPstillrunning; these arefreshsingle-solvephases underunchanged840context900outer, same200iterations/20k/.5distance/85percent."
+  },
+  "limitations": [
+    "Partialoverlap32.1848percentdoesnotmeet85percentrequirement;targetReached=false retained.",
+    "NativeGlobalandnativeRepolygonize proofs are separate; thisdoesnotclaimnativeICPgeometryequivalence.",
+    "PrivateprocessingWorkerobservercopiesregistration/scalardiagnostics only; no geometry/transform/clock/result injected.",
+    "Legacy445capturedcombinedfileisinputonly; new296925ecandidateexecutesactualfulloriginalhistory4."
+  ]
+}

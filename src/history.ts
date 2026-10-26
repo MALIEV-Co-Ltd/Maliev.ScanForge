@@ -6,7 +6,7 @@ import {
 } from "./model-sketch-history";
 import { canonicalCloud, cloudPlacement } from "./point-cloud-placement";
 import { indexedMeshMatches } from "./indexed-mesh";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 export interface Revision {
   entities: Entity[];
   label: string;
@@ -112,7 +112,8 @@ export function restoreModelDisplay(
       entity.kind === "mesh" &&
       !entity.kernelId &&
       entity.indexedMesh &&
-      !(entity.indexedMesh.geometryNormals instanceof Float32Array) &&
+      (!(entity.indexedMesh.geometryNormals instanceof Float32Array) ||
+        !(entity.indexedMesh.facetNormals instanceof Float32Array)) &&
       indexedMeshMatches(entity.indexedMesh, entity.positions)
     )
       entity = {
@@ -120,6 +121,7 @@ export function restoreModelDisplay(
         indexedMesh: {
           ...entity.indexedMesh,
           geometryNormals: meshGeometryNormals(entity.indexedMesh),
+          facetNormals: meshFacetNormals(entity.indexedMesh),
         },
       };
     const live = current.find((e) => e.id === entity.id);

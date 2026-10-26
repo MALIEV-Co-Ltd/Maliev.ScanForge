@@ -7,7 +7,7 @@ import {
 import type { ScanToolResult } from "./scan-tools-reduction";
 import { admitReconstructionInputs } from "./scan-reconstruction-input";
 import { indexedMeshMatches } from "./indexed-mesh";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshFacetNormals, meshGeometryNormals } from "./mesh-geometry-normals";
 import { nativeStlTopology } from "./scan-native-stl-topology";
 import { nativeReductionMesh } from "./scan-native-reduction";
 import {
@@ -219,6 +219,7 @@ export function nativeRepolygonizeScanMesh(
     indexedMesh: {
       ...indexedMesh,
       geometryNormals: meshGeometryNormals(indexedMesh),
+      facetNormals: meshFacetNormals(indexedMesh, o.signal),
     },
     topology: summary,
     diagnostics: {

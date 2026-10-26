@@ -1,0 +1,189 @@
+{
+  "completed": true,
+  "scope": "Independent full actual combined-output topology and all self-BVH candidate triangle-pair predicates. No downsampling, edits, component removal or assumed usability threshold.",
+  "workflowStatus": {
+    "overallWorkflowPassed": false,
+    "reopenVerified": false,
+    "qualityOnlyScope": true,
+    "sourceWorkflowEvidenceSha256": "81a65cc6704201dbd0dec780b772c203a05e24423b8cca077f04c12e7c26cca5",
+    "sourceWorkflowReceiptSha256": "cf6307681c3ced180494ba1e7d8af71fc687e0970ef0b8163e19952c19c3bf17",
+    "sourceWorkflowExitCode": 3221226505,
+    "meaning": "Independent quality measurements of three fully retained current snapshots only. Overall workflow and reopen failed/unverified; measurements do not change that result."
+  },
+  "qualitySha256": "f4b73f144fc4776834887b966540544c0121ca8fd1583d637fe9e59d52f7ede8",
+  "snapshot": {
+    "stage": "combined",
+    "path": "\\\\maliev\\temporary\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\r6\\original-three-combined.scanforge",
+    "bytes": 668859148,
+    "sha256": "e8e0d78952c011f893af7254e3ed73993943d0eb38bfd56e4f010c811c827c0c",
+    "chunks": 2552,
+    "maxDecodedChunkBytes": 262144,
+    "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation"
+  },
+  "selfTests": {
+    "closedCube": true,
+    "twoDisjointCubes": true,
+    "vertexContactFans": true,
+    "openTriangle": true,
+    "duplicateOrientation": true,
+    "intersectionControls": 8
+  },
+  "intersectionHelper": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+    "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+  },
+  "independentTopology": {
+    "method": "Exact Float32 coordinate welding; face components connected through complete shared edges; independent edge incidence/orientation and vertex fan union; no arbitrary weld/removal",
+    "triangles": 334292,
+    "vertices": 166896,
+    "edges": 501438,
+    "components": [
+      {
+        "id": 4575,
+        "triangles": 333820,
+        "vertices": 166654,
+        "surfaceAreaMm2": 28984.57222715229,
+        "signedVolumeMm3": 10487.408854300327,
+        "min": [-33.45513153076172, -38.778724670410156, -331.81671142578125],
+        "max": [73.04486846923828, 73.22127532958984, -261.81671142578125],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 10487.408854300327,
+        "extent": [106.5, 112, 70],
+        "areaPercent": 99.86166557405862,
+        "closed": true
+      },
+      {
+        "id": 136637,
+        "triangles": 222,
+        "vertices": 113,
+        "surfaceAreaMm2": 18.83269458302987,
+        "signedVolumeMm3": 2.8958333333333357,
+        "min": [22.54486846923828, 41.721275329589844, -304.81671142578125],
+        "max": [29.04486846923828, 42.721275329589844, -300.81671142578125],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.8958333333333357,
+        "extent": [6.5, 1, 4],
+        "areaPercent": 0.06488500963789066,
+        "closed": true
+      },
+      {
+        "id": 272212,
+        "triangles": 198,
+        "vertices": 101,
+        "surfaceAreaMm2": 16.824930258323892,
+        "signedVolumeMm3": 2.8593750000000457,
+        "min": [43.54486846923828, 17.721275329589844, -284.81671142578125],
+        "max": [45.54486846923828, 21.721275329589844, -282.31671142578125],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.8593750000000457,
+        "extent": [2, 4, 2.5],
+        "areaPercent": 0.057967581705057836,
+        "closed": true
+      },
+      {
+        "id": 48845,
+        "triangles": 52,
+        "vertices": 28,
+        "surfaceAreaMm2": 4.493559671141487,
+        "signedVolumeMm3": 0.6770833333333343,
+        "min": [2.0448684692382812, 48.721275329589844, -318.81671142578125],
+        "max": [3.0448684692382812, 50.221275329589844, -317.81671142578125],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 0.6770833333333343,
+        "extent": [1, 1.5, 1],
+        "areaPercent": 0.015481834598070789,
+        "closed": true
+      }
+    ],
+    "boundaryEdges": 0,
+    "boundaryLoops": 0,
+    "boundaryChains": 0,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 0,
+    "inconsistentEdges": 0,
+    "duplicateTriangles": 0,
+    "degenerateTriangles": 0,
+    "totalSurfaceAreaMm2": 29024.723411664887,
+    "watertight": true,
+    "positionsSha256": "487ae0c299f018903fa023dfd30f0b763dbe2ccb91d2a3f169c7f9da2a7a3eb6"
+  },
+  "separations": [
+    {
+      "components": [4575, 136637],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [4575, 272212],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [4575, 48845],
+      "aabbSeparationLowerBoundMm": 0,
+      "axisGapsMm": [0, 0, 0],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [136637, 272212],
+      "aabbSeparationLowerBoundMm": 29.432125305522877,
+      "axisGapsMm": [14.5, 20, 16],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [136637, 48845],
+      "aabbSeparationLowerBoundMm": 24.19194080680589,
+      "axisGapsMm": [19.5, 6, 13],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    },
+    {
+      "components": [272212, 48845],
+      "aabbSeparationLowerBoundMm": 58.80688735173797,
+      "axisGapsMm": [40.5, 27, 33],
+      "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+    }
+  ],
+  "intersections": {
+    "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+    "controls": 8,
+    "pairs": 14095961,
+    "invalidIntersections": 0,
+    "examples": [],
+    "tolerances": {
+      "coplanarDistance": 1e-9,
+      "coplanarArea": 1e-12,
+      "sharedFeatureSquaredDistance": 1e-16
+    },
+    "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+  },
+  "observedPublicTopology": {
+    "vertices": 166896,
+    "triangles": 334292,
+    "components": 4,
+    "boundaryLoops": 0,
+    "boundaryChains": 0,
+    "boundaryEdges": 0,
+    "nonManifoldEdges": 0,
+    "nonManifoldVertices": 0,
+    "inconsistentEdges": 0,
+    "duplicateTriangles": 0,
+    "degenerateTriangles": 0,
+    "watertight": true
+  },
+  "componentInterpretation": "Areas, volumes and bounds describe all components; intended separate parts versus unwanted islands is not inferred from component count alone.",
+  "selfIntersectionsChecked": true,
+  "geometricPredicateTolerance": "Retained corrected helper uses1e-12 projected overlap area,1e-9 plane and1e-8 endpoint/edge distance tolerances; exact shared coordinates allowed.",
+  "hausdorffBound": false,
+  "productMutated": false,
+  "elapsedMs": 19044
+}

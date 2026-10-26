@@ -1,3 +1,4 @@
+import { validateMeshFacetNormals } from "./mesh-geometry-normals";
 import {
   parseProject,
   validateProject,
@@ -21,7 +22,11 @@ import {
   DISK_BLOB_BLOCK_BYTES,
   diskBackedBlob,
 } from "./transient-blob-storage";
-import { cloudPlacement, placedCloud } from "./point-cloud-placement";
+import {
+  cloudPlacement,
+  cloudWorldNormalsTyped,
+  placedCloud,
+} from "./point-cloud-placement";
 import {
   encodeReferenceEntityData,
   decodeReferenceEntityData,
@@ -34,6 +39,7 @@ import {
   projectValueBlob,
   type ProjectValue,
 } from "./project-value-stream";
+import { encodedProjectSharedChunk } from "./project-shared-chunks";
 
 export interface ProjectSession {
   projectId?: string;
@@ -72,6 +78,7 @@ type RecordData = Omit<
   coordinateFrame?: EncodedCoordinateFrame;
   positions: Ref;
   cloudPoseBits?: string;
+  cloudNormalsTyped?: boolean;
   edgePositions?: Ref;
   brep?: Ref;
   normals?: Ref;
@@ -81,6 +88,7 @@ type RecordData = Omit<
     triangles: Ref;
     normals?: Ref;
     geometryNormals?: Ref;
+    facetNormals?: Ref;
   };
   meshSelection?: {
     hidden: Ref;
@@ -107,6 +115,7 @@ async function digest(bytes: Uint8Array): Promise<string> {
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
 export async function encodeProjectFileLocally(
   session: ProjectSession,
+  options: { onSharedChunk?: (chunk: ProjectSharedChunk) => void } = {},
 ): Promise<Blob> {
   const chunks: Chunk[] = [],
     payloads: Blob[] = [],
@@ -144,6 +153,13 @@ export async function encodeProjectFileLocally(
       if (cached?.type === type) return cached;
     }
     const { sha256, rawBytes } = projectValueHash(value, type);
+    if (options.onSharedChunk) {
+      const candidate = encodedProjectSharedChunk(value, type, {
+        sha256,
+        rawBytes,
+      });
+      if (candidate) options.onSharedChunk(candidate);
+    }
     let chunk = chunkIds.get(sha256);
     if (chunk === undefined) {
       const zipped = await projectValueBlob(value, type, true),
@@ -175,6 +191,7 @@ export async function encodeProjectFileLocally(
   async function state(entities: Entity[]): Promise<number[]> {
     for (const entity of entities) {
       validateReferenceEntity(entity);
+      if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
       if (validateRollMappingEntity(entity)) ownedModelMetadata = true;
     }
     entities = entities.map(retainIndexedMesh);
@@ -232,6 +249,9 @@ export async function encodeProjectFileLocally(
             : {}),
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
+          ...(placement && cloudWorldNormalsTyped(placement)
+            ? { cloudNormalsTyped: true }
+            : {}),
           ...(pointColors !== undefined
             ? {
                 pointColors: await store(validatePointCloudAttributes(entity)!),
@@ -256,6 +276,9 @@ export async function encodeProjectFileLocally(
                   triangles: await store(indexedMesh.triangles, true),
                   ...(indexedMesh.normals
                     ? { normals: await store(indexedMesh.normals) }
+                    : {}),
+                  ...(indexedMesh.facetNormals
+                    ? { facetNormals: await store(indexedMesh.facetNormals) }
                     : {}),
                   ...(indexedMesh.geometryNormals
                     ? {
@@ -548,6 +571,12 @@ export async function decodeProjectContents(
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
+    if (
+      record.cloudNormalsTyped !== undefined &&
+      (typeof record.cloudNormalsTyped !== "boolean" ||
+        record.cloudPoseBits === undefined)
+    )
+      return invalid();
     assertReferenceCompatibleMetadata(record);
     if (
       (record.pointColors !== undefined ||
@@ -565,8 +594,9 @@ export async function decodeProjectContents(
     )
       return invalid();
     if (record.rollMapping !== undefined && m.version !== 6) return invalid();
+    const { cloudNormalsTyped: _normalCarrier, ...metadata } = record;
     const entity = {
-      ...record,
+      ...metadata,
       ...(record.reference !== undefined
         ? { reference: decodeReferenceEntityData(record.reference) }
         : {}),
@@ -580,6 +610,9 @@ export async function decodeProjectContents(
             triangles: read(record.indexedMesh.triangles, true),
             ...(record.indexedMesh.normals
               ? { normals: read(record.indexedMesh.normals) }
+              : {}),
+            ...(record.indexedMesh.facetNormals
+              ? { facetNormals: read(record.indexedMesh.facetNormals) }
               : {}),
             ...(record.indexedMesh.geometryNormals
               ? { geometryNormals: read(record.indexedMesh.geometryNormals) }
@@ -608,11 +641,16 @@ export async function decodeProjectContents(
     if (record.cloudPoseBits !== undefined) {
       if (![3, 4, 5, 6].includes(m.version) || entity.kind !== "pointcloud")
         return invalid();
-      return placedCloud(entity, {
-        matrixBits: record.cloudPoseBits,
-        sourcePositions: entity.positions,
-        sourceNormals: entity.normals,
-      });
+      return placedCloud(
+        entity,
+        {
+          matrixBits: record.cloudPoseBits,
+          sourcePositions: entity.positions,
+          sourceNormals: entity.normals,
+        },
+        undefined,
+        record.cloudNormalsTyped ?? false,
+      );
     }
     return entity;
   });

@@ -1,3 +1,4 @@
+import { geometryArtifact } from "./geometry-artifact";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
@@ -9,6 +10,8 @@ import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
+  reconstructionScanInputs,
+  reconstructionMethod,
   bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
@@ -71,6 +74,8 @@ import {
 } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
+import { alignmentTriangleMask } from "../registration-selection";
+import { registrationTargetPoints } from "../registration-target";
 import { editPointCloud } from "../point-cloud-processing";
 import { validateSketch, solveSketch } from "../sketch";
 import { cornerTrimSketch } from "../sketch-corner";
@@ -656,7 +661,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         ...details,
         ...(a.includeGeometry
           ? {
-              geometry: json(
+              geometry: geometryArtifact(
                 c,
                 "coordinateFrame" in details && details.coordinateFrame
                   ? {
@@ -672,30 +677,29 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                         encoding: details.reference.geometryEncoding,
                       }
                     : {
-                        positions: Array.from(e.positions),
+                        positions: e.positions,
                         indexedMesh: e.indexedMesh
                           ? {
-                              vertices: Array.from(e.indexedMesh.vertices),
-                              triangles: Array.from(e.indexedMesh.triangles),
+                              vertices: e.indexedMesh.vertices,
+                              triangles: e.indexedMesh.triangles,
+                              ...(e.indexedMesh.facetNormals
+                                ? { facetNormals: e.indexedMesh.facetNormals }
+                                : {}),
                               ...(e.indexedMesh.normals
-                                ? { normals: Array.from(e.indexedMesh.normals) }
+                                ? { normals: e.indexedMesh.normals }
                                 : {}),
                               ...(e.indexedMesh.geometryNormals
                                 ? {
-                                    geometryNormals: Array.from(
+                                    geometryNormals:
                                       e.indexedMesh.geometryNormals,
-                                    ),
                                   }
                                 : {}),
                             }
                           : undefined,
-                        normals: e.normals ? Array.from(e.normals) : undefined,
-                        pointColors: e.pointColors
-                          ? Array.from(e.pointColors)
-                          : undefined,
+                        normals: e.normals ? e.normals : undefined,
+                        pointColors: e.pointColors ? e.pointColors : undefined,
                         edgePositions: e.edgePositions,
                       },
-                "geometry.json",
               ),
             }
           : {}),
@@ -1013,7 +1017,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const kind = op.kind as ProcessingRequest["kind"];
       let unroll: Awaited<ReturnType<typeof bindUnrollReference>> | undefined;
       let average: ReturnType<typeof bindAverageMeshes> | undefined;
-      let reconstruction:
+      const reconstruction =
+        kind === "scanTools" && op.operation?.kind === "repolygonize";
+      let nativeReconstruction:
         ReturnType<typeof bindNativeReconstruction> | undefined;
       if (kind === "scanTools" && op.operation.kind === "averageMesh") {
         if (a.selectionOnly)
@@ -1031,13 +1037,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         average = bindAverageMeshes(e, targetIds, s.entities);
         e = average.source;
       }
+      if (!reconstruction && Array.isArray(a.targetIds) && !a.targetIds.length)
+        throw Error(
+          "targetIds requires at least one reference for this operation.",
+        );
       if (
         e.kind === "pointcloud" &&
-        !["paired", "global", "icp", "pointCloudEdit"].includes(kind)
+        !["paired", "global", "icp", "pointCloudEdit"].includes(kind) &&
+        !reconstruction
       )
         throw new Error("This operation requires triangle mesh geometry.");
       if (kind === "pointCloudEdit" && e.kind !== "pointcloud")
         throw new Error("Point-cloud editing requires a point cloud.");
+      if (reconstruction && a.selectionOnly)
+        throw Error("Reconstruction uses whole inputs; omit selectionOnly.");
       const readonly =
         [
           "report",
@@ -1064,6 +1077,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "additionalTargets" in op ||
         "refinementTargets" in op ||
         "deferCloudTransform" in op ||
+        "outputPlacement" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -1173,8 +1187,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
         Object.assign(request, {
-          target: sampledObject(s, a.targetId).positions,
-          sourceTriangleMask: selection,
+          target:
+            kind === "icp"
+              ? registrationTargetPoints(sampledObject(s, a.targetId))
+              : sampledObject(s, a.targetId).positions,
+          sourceTriangleMask:
+            kind === "icp" && e.kind !== "pointcloud"
+              ? alignmentTriangleMask(
+                  e.positions.length / 9,
+                  selection,
+                  e.meshSelection?.hidden,
+                )
+              : selection,
         });
       }
       if (kind === "paired" && op.refineSurface) {
@@ -1249,9 +1273,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanTools") {
         if (
           "targets" in op.operation ||
-          "targetTopology" in op.operation ||
+          "selection" in op.operation ||
+          "targetInputs" in op.operation ||
+          "inputKind" in op.operation ||
           "sourceTopology" in op.operation ||
-          "selection" in op.operation
+          "targetTopology" in op.operation
         )
           throw new Error("Inner geometry must refer to workspace objects.");
         if (op.operation.kind === "shrinkwrap") {
@@ -1273,32 +1299,52 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           if (
             a.targetIds !== undefined &&
             (!Array.isArray(a.targetIds) ||
-              (a.targetIds.length < 1 && op.operation.method === "voxel") ||
               a.targetIds.length > 32 ||
               a.targetIds.some((id: unknown) => typeof id !== "string"))
           )
             throw new Error(
               "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
             );
-          if (op.operation.method !== "voxel") {
-            reconstruction = bindNativeReconstruction(
+          const targets = (a.targetIds ?? []).map((id: string) =>
+            sampledObject(s, id),
+          );
+          op.operation.method = reconstructionMethod(
+            e,
+            targets,
+            op.operation.method,
+          );
+          if (op.operation.method === "voxel" && a.targetIds?.length === 0)
+            throw Error(
+              "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
+            );
+          if (op.operation.method === "native") {
+            nativeReconstruction = bindNativeReconstruction(
               e,
               a.targetIds,
               s.entities,
             );
-            request.positions = reconstruction.source.positions;
-            op.operation.sourceTopology = reconstruction.source.indexedMesh;
-            op.operation.targetTopology = reconstruction.references.map(
-              (e) => e.indexedMesh,
+            if (a.createNew ?? true)
+              nativeReconstruction.inputs.forEach((input) =>
+                editable(input, true),
+              );
+            request.positions = nativeReconstruction.source.positions;
+            op.operation.sourceTopology =
+              nativeReconstruction.source.indexedMesh;
+            op.operation.targetTopology = nativeReconstruction.references.map(
+              (input) => input.indexedMesh,
             );
-            op.operation.targets = reconstruction.references.map(
-              (e) => e.positions,
+            op.operation.targets = nativeReconstruction.references.map(
+              (input) => input.positions,
             );
-          } else
-            op.operation.targets = reconstructionTargets(
-              e,
-              (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
-            );
+          } else if (
+            [e, ...targets].some(
+              (entity: Entity) => entity.kind === "pointcloud",
+            )
+          ) {
+            op.operation.inputKind =
+              e.kind === "pointcloud" ? "points" : "triangles";
+            op.operation.targetInputs = reconstructionScanInputs(e, targets);
+          } else op.operation.targets = reconstructionTargets(e, targets);
         }
         if (op.operation.kind === "averageMesh") {
           op.operation.targets = average!.references.map(
@@ -1344,41 +1390,50 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
-          (e.kind === "pointcloud"
+          (reconstruction && e.kind === "pointcloud"
             ? {
-                ...e,
-                positions,
-                pointColors: pointEdit ? pointEdit.pointColors : e.pointColors,
-                pointCloudPlacement: pointEdit
-                  ? undefined
-                  : e.pointCloudPlacement,
-                meshSelection: pointEdit ? undefined : e.meshSelection,
-                normals: pointEdit
-                  ? pointEdit.normals
-                    ? Array.from(pointEdit.normals)
-                    : undefined
-                  : e.normals && result.registration
-                    ? rotatePointNormals(
-                        e.normals,
-                        result.registration.transform.rotation,
-                      )
-                    : e.normals,
+                ...scanMeshCopy(e, e.id, positions),
+                name: e.name,
+                visible: e.visible,
+                constructionOrderKey: e.constructionOrderKey,
               }
-            : {
-                ...meshEdited(e, positions),
-                ...(result.indexedMesh
-                  ? {
-                      indexedMesh: result.indexedMesh,
-                      normals: indexedRenderNormals(result.indexedMesh),
-                    }
-                  : {}),
-              });
+            : e.kind === "pointcloud"
+              ? {
+                  ...e,
+                  positions,
+                  pointColors: pointEdit
+                    ? pointEdit.pointColors
+                    : e.pointColors,
+                  pointCloudPlacement: pointEdit
+                    ? undefined
+                    : e.pointCloudPlacement,
+                  meshSelection: pointEdit ? undefined : e.meshSelection,
+                  normals: pointEdit
+                    ? pointEdit.normals
+                      ? Array.from(pointEdit.normals)
+                      : undefined
+                    : e.normals && result.registration
+                      ? rotatePointNormals(
+                          e.normals,
+                          result.registration.transform.rotation,
+                        )
+                      : e.normals,
+                }
+              : {
+                  ...meshEdited(e, positions),
+                  ...(result.indexedMesh
+                    ? {
+                        indexedMesh: result.indexedMesh,
+                        normals: indexedRenderNormals(result.indexedMesh),
+                      }
+                    : {}),
+                });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (
           a.createNew ??
           (!!average ||
-            !!reconstruction ||
+            !!nativeReconstruction ||
             (kind === "scanTools" && op.operation.kind === "unroll"))
         ) {
           updated.id = id();
@@ -1387,7 +1442,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               [...s.entities, { id: updated.id }],
               [updated.id],
             ).orderedSources[0].constructionOrderKey;
-          updated.name = reconstruction
+          updated.name = nativeReconstruction
             ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
             : average
               ? "Average mesh"
@@ -1396,8 +1451,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 : `${e.name} ${kind}`;
           created.push(updated);
           next = [...next, updated];
-          if (reconstruction) {
-            const inputIds = new Set(reconstruction.inputs.map((e) => e.id));
+          if (nativeReconstruction) {
+            const inputIds = new Set(
+              nativeReconstruction.inputs.map((e) => e.id),
+            );
             next = next.map((e) =>
               inputIds.has(e.id) ? { ...e, visible: false } : e,
             );
@@ -1441,10 +1498,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               },
             }
           : {}),
-        ...(reconstruction
+        ...(nativeReconstruction
           ? {
               reconstruction: {
-                inputEntityIds: reconstruction.inputs.map((e) => e.id),
+                inputEntityIds: nativeReconstruction.inputs.map((e) => e.id),
                 method: "native",
               },
             }
@@ -1493,11 +1550,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           `Mesh ${kind}`,
           unrollAuxiliary
             ? { newModelSketches: [unrollAuxiliary.sketch] }
-            : reconstruction && created.length
-              ? { modelVisibilityFor: reconstruction.inputs.map((e) => e.id) }
+            : nativeReconstruction && created.length
+              ? {
+                  modelVisibilityFor: nativeReconstruction.inputs.map(
+                    (e) => e.id,
+                  ),
+                }
               : undefined,
         );
-      if ((average || reconstruction) && created.length)
+      if ((average || nativeReconstruction) && created.length)
         host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;

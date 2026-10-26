@@ -1,6 +1,8 @@
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import {
   reconstructionTargets,
+  reconstructionScanInputs,
+  reconstructionMethod,
   bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
 import { bindAverageMeshes } from "../scan-average-request";
@@ -16,54 +18,63 @@ export function scanToolRequest(
   entities: Entity[],
   selection?: Uint8Array | null,
 ): ScanToolsRequest {
-  if (source.kind !== "mesh" || source.kernelId || source.parametric)
+  if (
+    (source.kind !== "mesh" &&
+      !(source.kind === "pointcloud" && parameters.kind === "repolygonize")) ||
+    source.kernelId ||
+    source.parametric
+  )
     throw new Error(
       "Create a separate mesh copy before using Scan Data tools on CAD.",
     );
   let operation: ScanToolOperation;
+  let positions = source.positions;
   switch (parameters.kind) {
     case "shrinkwrap": {
       operation = bindShrinkwrap(source, parameters, entities, selection);
       break;
     }
     case "repolygonize": {
-      if (parameters.method !== "voxel") {
-        const bound = bindNativeReconstruction(
-          source,
-          parameters.targetIds,
-          entities,
-        );
-        return {
-          kind: "scanTools",
-          positions: bound.source.positions,
-          operation: {
-            kind: "repolygonize",
-            resolution: parameters.resolution,
-            ...(parameters.method !== undefined
-              ? { method: parameters.method }
-              : {}),
-            targets: bound.references.map((e) => e.positions),
-            ...(bound.source.indexedMesh
-              ? { sourceTopology: bound.source.indexedMesh }
-              : {}),
-            ...(bound.references.some((e) => e.indexedMesh)
-              ? { targetTopology: bound.references.map((e) => e.indexedMesh) }
-              : {}),
-          },
-        };
-      }
       const targets = (parameters.targetIds ?? []).map((id) => {
         const entity = entities.find((e) => e.id === id);
         if (!entity)
           throw new Error("Reconstruction reference no longer exists.");
         return entity;
       });
-      operation = {
-        kind: parameters.kind,
-        resolution: parameters.resolution,
-        method: "voxel",
-        targets: reconstructionTargets(source, targets),
-      };
+      const method = reconstructionMethod(source, targets, parameters.method);
+      if (method === "native") {
+        const bound = bindNativeReconstruction(
+          source,
+          parameters.targetIds,
+          entities,
+        );
+        positions = bound.source.positions;
+        operation = {
+          kind: parameters.kind,
+          resolution: parameters.resolution,
+          method,
+          sourceTopology: bound.source.indexedMesh,
+          targetTopology: bound.references.map((e) => e.indexedMesh),
+          targets: bound.references.map((e) => e.positions),
+        };
+      } else
+        operation =
+          source.kind === "pointcloud" ||
+          targets.some((e) => e.kind === "pointcloud")
+            ? {
+                kind: parameters.kind,
+                resolution: parameters.resolution,
+                method,
+                inputKind:
+                  source.kind === "pointcloud" ? "points" : "triangles",
+                targetInputs: reconstructionScanInputs(source, targets),
+              }
+            : {
+                kind: parameters.kind,
+                resolution: parameters.resolution,
+                method,
+                targets: reconstructionTargets(source, targets),
+              };
       break;
     }
     case "averageMesh": {
@@ -137,5 +148,5 @@ export function scanToolRequest(
     default:
       operation = parameters;
   }
-  return { kind: "scanTools", positions: source.positions, operation };
+  return { kind: "scanTools", positions, operation };
 }

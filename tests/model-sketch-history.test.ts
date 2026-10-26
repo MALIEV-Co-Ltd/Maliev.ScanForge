@@ -6,7 +6,7 @@ import {
   prepareModelSketchPublication,
 } from "../src/model-sketch-history";
 import { encodeProjectFile, decodeProjectFile } from "../src/project-file";
-import type { Project, SavedSketch } from "../src/types";
+import type { Entity, Project, SavedSketch } from "../src/types";
 
 const saved = (id: string, x = 0): SavedSketch => ({
   id,
@@ -21,6 +21,63 @@ const saved = (id: string, x = 0): SavedSketch => ({
 const original = saved("original"),
   generated = { ...saved("generated"), visible: true },
   other = saved("other");
+
+it("retains signed facet-normal bytes with owned history in manifest 6 and rejects older feature versions", async () => {
+  const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const facetNormals = new Float32Array([-0, 0.6, 0.8]);
+  const mesh: Entity = {
+    id: "scan",
+    name: "Scan",
+    kind: "mesh",
+    positions,
+    indexedMesh: {
+      vertices: positions,
+      triangles: new Uint32Array([0, 1, 2]),
+      facetNormals,
+    },
+    visible: true,
+    color: "#ffffff",
+    opacity: 1,
+  };
+  const file = await encodeProjectFile({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      units: "mm",
+      name: "Combined",
+      entities: [mesh],
+      authoring: { sketches: [generated] },
+    },
+    history: [
+      {
+        entities: [mesh],
+        label: "Unroll",
+        sketchChanges: [{ id: generated.id }],
+      },
+    ],
+    future: [],
+  });
+  const reopened = await decodeProjectFile(file);
+  const bits = (values: ArrayLike<number>) =>
+    Buffer.from(Float32Array.from(values).buffer).toString("hex");
+  expect(bits(reopened.project.entities[0].indexedMesh!.facetNormals!)).toBe(
+    bits(facetNormals),
+  );
+  expect(bits(reopened.history[0].entities[0].indexedMesh!.facetNormals!)).toBe(
+    bits(facetNormals),
+  );
+  const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const headerView = new DataView(header.buffer),
+    length = headerView.getUint32(8, true);
+  const manifest = JSON.parse(await file.slice(16, 16 + length).text());
+  expect(manifest.version).toBe(6);
+  manifest.version = 5;
+  const bytes = new TextEncoder().encode(JSON.stringify(manifest));
+  headerView.setUint32(8, bytes.length, true);
+  await expect(
+    decodeProjectFile(new Blob([header, bytes, file.slice(16 + length)])),
+  ).rejects.toThrow();
+});
 
 it("publishes only fresh owned sketch identities without replacing unrelated authoring", () => {
   const authoring = { sketches: [original], activeSketchId: original.id };

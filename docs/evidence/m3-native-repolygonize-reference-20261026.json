@@ -1,0 +1,1402 @@
+{
+  "schema": 1,
+  "status": "RETAINED_NATIVE_REFERENCE_CONTENT_AND_NORMAL_ENCODING_CORROBORATED",
+  "overallNativeRepolygonizeAcceptance": false,
+  "newCandidateValidation": "PENDING_NOT_RUN",
+  "scope": "Retained reference evidence only. Committed native analyst observation plus independent complete savedQSF/inputPLY/outputSTL byte corroboration and complete normal-field derivation. These read-only jobs execute comparison helpers, never native application code/process/windows. No new candidate output is injected or accepted by this publication.",
+  "retainedObservation": {
+    "immutableCommit": "6217bea",
+    "rawPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-capture-observation-6217bea.json",
+      "bytes": 5689,
+      "sha256": "5ca63311b2aef3dfe4868dbac289f20cb1b92d029bc7c3146cc80ab7782f7370"
+    },
+    "nativeApplication": "Native reference application 8.0.123",
+    "unitsRecorded": "mm",
+    "resolutionRecordedMm": 0.5,
+    "nativeGuiExecutedRecorded": true,
+    "inProcessInstrumentationRecorded": false,
+    "callerFindingRecorded": "The retained GUI command reads Preferences / Simplify Polygonized Mesh, defaults enabled, and passes faceCount >> 1 to the existing reduction wrapper after field extraction. This explains the prior half-count discrepancy.",
+    "nativeThreeScan": {
+      "inputProjectSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+      "inputMeshes": 3,
+      "inputVertices": 3121976,
+      "inputTriangles": 6147452,
+      "exportSha256": "2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d",
+      "exportTriangles": 50895,
+      "expandedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+      "everyOrderedCoordinateByteMatches": true,
+      "sourceBuffersUnchanged": true,
+      "coreInputManifestSha256": "ffd2460784a844b18c4ea31ae89caaef1ce018624c068e8adae11cf33124c3b7",
+      "coreReceiptSha256": "f22f5f388da25ee71a2df72d966449f8cb890deb7d1cac417c1faec4377aae7a",
+      "coreResultsSha256": "7300072de4afedfd9f395734951d45f8a5fcff018acbdfe749ce7b89d23baa7c",
+      "peakOwnedJobBytes": 1091997696,
+      "seconds": 76.35932970000431,
+      "topology": {
+        "vertices": 27170,
+        "triangles": 50895,
+        "components": 140,
+        "boundaryLoops": 211,
+        "boundaryChains": 484,
+        "boundaryEdges": 4189,
+        "nonManifoldEdges": 166,
+        "nonManifoldVertices": 441,
+        "inconsistentEdges": 0,
+        "degenerateTriangles": 0,
+        "duplicateTriangles": 4,
+        "watertight": false
+      }
+    },
+    "nativeTiltedBox": {
+      "inputVertices": 8,
+      "inputTriangles": 12,
+      "outputTriangles": 136,
+      "nativeExportSha256": "24c6783e94b750340fc706719eb3c8959a553de2a555c1c497d0b4139550fb04",
+      "expandedCoordinateSha256": "9d47de99166be40ef14bfc0ce984971bcf859a91403e7831a35f694af3e9c51f",
+      "everyOrderedCoordinateByteMatches": true,
+      "fixture": "tests/fixtures/repolygonize-observed-tilted-box.json"
+    },
+    "authorityMeaning": "Values are the committed analyst observation, not an independently recovered raw native GUI action/process receipt. Owner does not know provenance; no owner attestation is used."
+  },
+  "baseline": "The complete three original STL meshes in an earlier saved aligned pose, exported as indexed posedPLY:3,121,976vertices/6,147,452triangles. Not pristine originalPLY, current ordinary-clock alignment output or a newly launched native scene.",
+  "qsfContentCorroboration": {
+    "rawPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.json",
+      "bytes": 7237,
+      "sha256": "452af7d996687940aa1079f6e2b6dbcf9a72f11637ae6f04226960187784ce23"
+    },
+    "value": {
+      "schema": 1,
+      "status": "PASS_FULL_RETAINED_QSF_INPUT_OUTPUT_GEOMETRY_CORROBORATION_NOT_ACTION_RECEIPT",
+      "passed": true,
+      "scope": "Read-only originalQSF/actualpreparedPLY/nativeSTL comparison. No native executable/process/window accessed. All sourcevertexXYZ and ordereduint32triangle ranges streamcompared byteforbyte; all50895outputfacets expanded comparison-side only. Referenceoutput never fed into reconstruction.",
+      "qsf": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\m2-native-three-posed-repolygonize-20261025-r1.qsf",
+        "bytes": 112172032,
+        "sha256": "bf7c844f179165a628f97b132c70890675cd0e645e81772612893ee2b225ae0a"
+      },
+      "qsfUnchangedBeforeAfter": true,
+      "preparation": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-preparation-r2.json",
+        "bytes": 2583,
+        "sha256": "19ca4a1fee91b8e684ef5a5224309013115abdd7841ce2a725355242b3b69159"
+      },
+      "inputManifest": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\manifest.json",
+        "bytes": 2673,
+        "sha256": "cfe41ecc40558439ddb2588167be2d79482e88a3756d4faef9c6d4002fdaa793"
+      },
+      "inputs": [
+        {
+          "input": "scan-1.posed.ply",
+          "actualPlyFile": {
+            "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\scan-1.posed.ply",
+            "bytes": 5223110,
+            "sha256": "d43ea51367880cc315e215b7e8a3e833cfeacb32e143cc7d0cb4e8bd4619a59a"
+          },
+          "plyHeaderBytes": 247,
+          "vertices": 139338,
+          "triangles": 273139,
+          "finiteCoordinateValues": 418014,
+          "checkedFaces": 273139,
+          "allPositionBytesEqual": true,
+          "allOrderedIndexBytesEqual": true,
+          "positionsSha256": "d44434fbaa1bdc542b9616f0de246f788c92062c7a0af0b2bf837d613c60a84b",
+          "indicesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a",
+          "layout": {
+            "input": "scan-1.posed.ply",
+            "nameOffset": 560,
+            "vertexCountOffset": 612,
+            "vertices": 139338,
+            "vertexStart": 616,
+            "vertexBytes": 1672056,
+            "triangleCountOffset": 1672672,
+            "triangles": 273139,
+            "indexStart": 1672676,
+            "indexBytes": 3277668,
+            "endExclusive": 4950344,
+            "bytesUntilNextName": 356
+          },
+          "sourceFileUnchangedBeforeAfter": true
+        },
+        {
+          "input": "scan-2.posed.ply",
+          "actualPlyFile": {
+            "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\scan-2.posed.ply",
+            "bytes": 48704884,
+            "sha256": "1ff4c8a524067d3442c8d50fe60826e68c2ec1255d8af6ba18eddc486870b9cf"
+          },
+          "plyHeaderBytes": 249,
+          "vertices": 1299033,
+          "triangles": 2547403,
+          "finiteCoordinateValues": 3897099,
+          "checkedFaces": 2547403,
+          "allPositionBytesEqual": true,
+          "allOrderedIndexBytesEqual": true,
+          "positionsSha256": "a3784d0ace6da55f6afa9cf3a896bfeca5f5ffc7256f071484223479421b74e8",
+          "indicesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979",
+          "layout": {
+            "input": "scan-2.posed.ply",
+            "nameOffset": 4950700,
+            "vertexCountOffset": 4950752,
+            "vertices": 1299033,
+            "vertexStart": 4950756,
+            "vertexBytes": 15588396,
+            "triangleCountOffset": 20539152,
+            "triangles": 2547403,
+            "indexStart": 20539156,
+            "indexBytes": 30568836,
+            "endExclusive": 51107992,
+            "bytesUntilNextName": 356
+          },
+          "sourceFileUnchangedBeforeAfter": true
+        },
+        {
+          "input": "scan-3.posed.ply",
+          "actualPlyFile": {
+            "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\scan-3.posed.ply",
+            "bytes": 63453339,
+            "sha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f"
+          },
+          "plyHeaderBytes": 249,
+          "vertices": 1683605,
+          "triangles": 3326910,
+          "finiteCoordinateValues": 5050815,
+          "checkedFaces": 3326910,
+          "allPositionBytesEqual": true,
+          "allOrderedIndexBytesEqual": true,
+          "positionsSha256": "5b68e0e6c90598190e1c8355083af45244584702977d5d6a10b342a85fbb1a2d",
+          "indicesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265",
+          "layout": {
+            "input": "scan-3.posed.ply",
+            "nameOffset": 51108348,
+            "vertexCountOffset": 51108400,
+            "vertices": 1683605,
+            "vertexStart": 51108404,
+            "vertexBytes": 20203260,
+            "triangleCountOffset": 71311664,
+            "triangles": 3326910,
+            "indexStart": 71311668,
+            "indexBytes": 39922920,
+            "endExclusive": 111234588,
+            "bytesUntilNextName": 356
+          },
+          "sourceFileUnchangedBeforeAfter": true
+        }
+      ],
+      "output": {
+        "vertices": 27170,
+        "triangles": 50895,
+        "finiteCoordinateValues": 81510,
+        "comparedOrderedExpandedCoordinateValues": 458055,
+        "all50895OrderedFacetCornerBytesEqual": true,
+        "vertexSha256": "dfee2334da3a06094228ebfa3effa6d027636e0c0ae3d2b56b4bc7ee7bbee068",
+        "indexSha256": "f3b732818fd2c3e42ec1e88e724cdc5db4e8f115d4e66105ed667cfb2a76ff70",
+        "expandedCornerSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+        "nativeStl": {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\native-three-posed-repolygonize-0p5-20261025-r1.stl",
+          "bytes": 2544834,
+          "sha256": "2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d"
+        },
+        "nativeStlUnchangedBeforeAfter": true,
+        "layout": {
+          "nameOffset": 111234944,
+          "vertexCountOffset": 111235012,
+          "vertices": 27170,
+          "vertexStart": 111235016,
+          "vertexBytes": 326040,
+          "triangleCountOffset": 111561056,
+          "triangles": 50895,
+          "indexStart": 111561060,
+          "indexBytes": 610740,
+          "endExclusive": 112171800,
+          "bytesUntilFileEnd": 232,
+          "firstTriangleIndices": [0, 18623, 2],
+          "firstTriangleExpandedBytesMatchSTL": true
+        }
+      },
+      "rangeValidation": "Allcountersmatch,payloadboundschecked,XYZ/indexrangescontiguousapartfrom4Btrianglecount,allrangesnonoverlappingandinfile. Nameprefix/tailmetadata deliberatelyunclaimed.",
+      "corroboration": "SameQSFcontainsall3exactpreparedposedmeshesandthecompleteorderednative-labelledSTLoutput. Thisstronglycorroboratescommittedanalystobservationcontent,butdoesnotestablishwhichGUIactions/settings/units/flagsorapplicationprocesscreatedit.",
+      "unclaimed": [
+        "UnknownQSFfields/classflags/version/units or opaqueallocationmetadata",
+        "NoQSFnormalcacheobserved/inferred",
+        "NativeGUIexecution/actionsequence/processidentity stillrequires its own retainedauthority",
+        "No newcandidateGUI/MCP parity or usability claim"
+      ],
+      "memory": {
+        "rss": 150925312,
+        "heapTotal": 15564800,
+        "heapUsed": 5366304,
+        "external": 40149972,
+        "arrayBuffers": 38075641
+      },
+      "elapsedSeconds": 0.7256158
+    },
+    "nameAndHeaderPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-content-corroboration-r1.json",
+      "bytes": 7161,
+      "sha256": "70d0abfcbbe47e18cd5beab61691fff592132e6d8ed314ae8bf38fc39381999f"
+    },
+    "nameAndHeaderValue": {
+      "schema": 1,
+      "scope": "Read-only bounded file streaming only; no image load/native execution/process state. Two complete opaqueQSFhashpasses with1MiBmaximumread; firstpasssearchesliteralASCII/UTF16LEnames. No geometry parse or parameter inference.",
+      "qsf": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\m2-native-three-posed-repolygonize-20261025-r1.qsf",
+        "bytes": 112172032,
+        "sha256": "bf7c844f179165a628f97b132c70890675cd0e645e81772612893ee2b225ae0a",
+        "sha256VerifiedBeforeAfter": true,
+        "captureTimeFullFileHashAvailable": false,
+        "mtimeUnchanged": true,
+        "headerFirst64Hex": "f74edc37010000000400000008007b00010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "headerU32LittleEndian": ["0x37dc4ef7", "0x1", "0x4", "0x7b0008"]
+      },
+      "patterns": {
+        "scan-1.posed|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "scan-1.posed|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [560]
+        },
+        "scan-2.posed|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "scan-2.posed|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [4950700]
+        },
+        "scan-3.posed|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "scan-3.posed|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [51108348]
+        },
+        "Polygonized0.500mm|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "Polygonized0.500mm|utf-16le": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "Polygonized 0.500 mm|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "Polygonized 0.500 mm|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [111234944]
+        },
+        "Polygonized|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "Polygonized|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [111234944]
+        },
+        "mm|ascii": {
+          "occurrences": 513,
+          "retainedOffsets": [
+            433632, 566817, 648009, 818820, 863909, 1093700, 1230196, 1603932,
+            1918968, 1918980, 2564108, 2564124, 2564380, 2564384, 2618272,
+            2618276, 3045884, 3045924, 3047476, 3047480, 3047512, 5055961,
+            5148664, 5325677, 5332873, 5425424, 5431096, 5639069, 5702952,
+            6057605, 6081233, 6141532
+          ]
+        },
+        "mm|utf-16le": {
+          "occurrences": 1,
+          "retainedOffsets": [111234980]
+        },
+        "millimetres|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "millimetres|utf-16le": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "millimeters|ascii": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        },
+        "millimeters|utf-16le": {
+          "occurrences": 0,
+          "retainedOffsets": []
+        }
+      },
+      "contexts": [
+        {
+          "pattern": "scan-1.posed|utf-16le",
+          "offset": 560,
+          "offsetHex": "0x230",
+          "matchedBytesHex": "7300630061006e002d0031002e0070006f00730065006400",
+          "contextStart": 548,
+          "contextHex": "00000000000000000c0000007300630061006e002d0031002e0070006f007300650064009447f97920807c4b8b4cff03ef2f37a40000000000000000000000004a200200e8e0fbc1701edc41746fa1c3822b0cc2bd791f415716a0c397a31cc2df81f7405687a1c3"
+        },
+        {
+          "pattern": "scan-2.posed|utf-16le",
+          "offset": 4950700,
+          "offsetHex": "0x4b8aac",
+          "matchedBytesHex": "7300630061006e002d0032002e0070006f00730065006400",
+          "contextStart": 4950688,
+          "contextHex": "00000000000000000c0000007300630061006e002d0032002e0070006f007300650064002898a4290dea7b488da3caea73899e4100000000000000000000000059d2130002b039c2b30f92c16a15a1c3bf6256c2fa72a2c10bb5a0c3592a30c2e1c599c12de7a0c3"
+        },
+        {
+          "pattern": "scan-3.posed|utf-16le",
+          "offset": 51108348,
+          "offsetHex": "0x30bd9fc",
+          "matchedBytesHex": "7300630061006e002d0033002e0070006f00730065006400",
+          "contextStart": 51108336,
+          "contextHex": "00000000000000000c0000007300630061006e002d0033002e0070006f0073006500640088b7985091053c4db980b15847d4327e00000000000000000000000095b01900aa01d94068ac4cc158479ec357c24a41e3cbe7c00abe9dc3b2c88b41feeb70c089a89ec3"
+        },
+        {
+          "pattern": "Polygonized 0.500 mm|utf-16le",
+          "offset": 111234944,
+          "offsetHex": "0x6a14f80",
+          "matchedBytesHex": "50006f006c00790067006f006e0069007a0065006400200030002e0035003000300020006d006d00",
+          "contextStart": 111234932,
+          "contextHex": "00000000000000001400000050006f006c00790067006f006e0069007a0065006400200030002e0035003000300020006d006d00a803ddf298bad549b39b208e5141d5bc000000000000000000000000226a00003101f041b3012a420a7fa1c3de21f041650a28428578a1c35bfeeb4133f92742b269a1c3"
+        },
+        {
+          "pattern": "Polygonized|utf-16le",
+          "offset": 111234944,
+          "offsetHex": "0x6a14f80",
+          "matchedBytesHex": "50006f006c00790067006f006e0069007a0065006400",
+          "contextStart": 111234932,
+          "contextHex": "00000000000000001400000050006f006c00790067006f006e0069007a0065006400200030002e0035003000300020006d006d00a803ddf298bad549b39b208e5141d5bc000000000000000000000000226a00003101f041b3012a420a7fa1c3de21f041650a"
+        }
+      ],
+      "stl": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\native-three-posed-repolygonize-0p5-20261025-r1.stl",
+        "bytes": 2544834,
+        "sha256": "2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d",
+        "headerFirst80Hex": "53544c5f46696c65000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "headerFirst80Ascii": "STL_File\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+      },
+      "limits": [
+        "Names/outputlabel corroborate contained scene content only; not import actions/geometrybindings/units/settings/executionreceipt.",
+        "Unitabbreviation matches can be coincidental opaque binary bytes; no unit field proven.",
+        "FreshSHAstablebeforeafter establishescurrentartifactidentity, not a missingcapture-timehash.",
+        "QSF header words are retained raw; vendorformat/version/unitssemantics not independentlydecoded."
+      ]
+    },
+    "meaning": "Allthree sourceXYZ/u32triangle byte streams match actualpreparedPLYanditsmanifest; sameQSFcontainscompleteorderednativeSTLoutput. Bounds/counters/nonoverlap checked. Unknownfields/flags/units/actionsequence not inferred."
+  },
+  "orderedNativeOutputOracles": {
+    "indexedVertexCount": 27170,
+    "facetCount": 50895,
+    "indexedVertexF32Sha256": "dfee2334da3a06094228ebfa3effa6d027636e0c0ae3d2b56b4bc7ee7bbee068",
+    "triangleU32Sha256": "f3b732818fd2c3e42ec1e88e724cdc5db4e8f115d4e66105ed667cfb2a76ff70",
+    "expandedCoordinateValues": 458055,
+    "expandedCornerF32Sha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+    "nativeStlOpaquePin": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\native-three-posed-repolygonize-0p5-20261025-r1.stl",
+      "bytes": 2544834,
+      "sha256": "2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d"
+    },
+    "qsfOpaquePin": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\outputs\\native-reconstruction-comparison-20261024-r1\\m2-native-three-posed-repolygonize-20261025-r1.qsf",
+      "bytes": 112172032,
+      "sha256": "bf7c844f179165a628f97b132c70890675cd0e645e81772612893ee2b225ae0a"
+    },
+    "nativeFacetNormalStream": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1\\native-facet-normals.f32.bin",
+      "bytes": 610740,
+      "sha256": "b12c143e5cef8776a1944676f92f0f32150432132992de8ce9c63e3adf81e8d5"
+    },
+    "nativeAttributeStream": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1\\native-facet-attributes.u16.bin",
+      "bytes": 101790,
+      "sha256": "eb92a50796053063685716733de635024c9e71cb6cb57075849bd6a35c8c9535"
+    }
+  },
+  "normalFieldAssessment": {
+    "rawOraclePin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1\\evidence.json",
+      "bytes": 5877,
+      "sha256": "db61d534be34fc5b3b4a7eebfd806fb92e6578c7535ec1815b4bafc386a70420"
+    },
+    "rawDerivationPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1\\evidence.json",
+      "bytes": 26241,
+      "sha256": "a27c3c0742025444fc638cbba31c75b575cd6d0b2e18fc0723a0e5afc5d91fd0"
+    },
+    "formula": "f32(f32(f32(n0+n1)+n2)/3), using angleweightedcomputedvertexnoiseNormalsatorderedtrianglecorners; no final normalization.",
+    "allMatchingFullVariants": [
+      {
+        "topology": "exact_bit_weld",
+        "vertices": 27170,
+        "coordinateChangedCorners": 0,
+        "kernel": "existing_angle_weighted_noiseNormals",
+        "reduction": "average_f32_staged",
+        "exactFacets": 50895,
+        "exactComponents": 152685,
+        "numericEqualComponents": 152685,
+        "maxULP": 0,
+        "maxAbsDifference": 0,
+        "firstMismatch": null,
+        "normalSha256": "b12c143e5cef8776a1944676f92f0f32150432132992de8ce9c63e3adf81e8d5",
+        "mismatchedFacets": 0,
+        "mismatchedComponents": 0
+      },
+      {
+        "topology": "native_optimized_STL",
+        "vertices": 27170,
+        "coordinateChangedCorners": 0,
+        "kernel": "existing_angle_weighted_noiseNormals",
+        "reduction": "average_f32_staged",
+        "exactFacets": 50895,
+        "exactComponents": 152685,
+        "numericEqualComponents": 152685,
+        "maxULP": 0,
+        "maxAbsDifference": 0,
+        "firstMismatch": null,
+        "normalSha256": "b12c143e5cef8776a1944676f92f0f32150432132992de8ce9c63e3adf81e8d5",
+        "mismatchedFacets": 0,
+        "mismatchedComponents": 0
+      }
+    ],
+    "completeNativeStats": {
+      "finiteFacets": 50895,
+      "nonfiniteFacets": 0,
+      "zeroNormalFacets": 0,
+      "negativeZeroComponents": 0,
+      "minNormalLength": 0.17292039218983032,
+      "maxNormalLength": 0.9999999603147043,
+      "maxNonzeroUnitLengthError": 0.8270796078101696,
+      "nonzeroAttributeFacets": 50895,
+      "attributeHistogram": {
+        "8224": 50895
+      }
+    },
+    "facetCrossControls": {
+      "analyticPassed": 3,
+      "variants": 4
+    },
+    "geometricFacetCrossVariantResults": {
+      "double_cross_double_normalize_f32": {
+        "exactFacets": 0,
+        "exactComponents": 0,
+        "numericEqualComponents": 0,
+        "signedZeroOnlyMismatches": 0,
+        "maxULP": 2126570512,
+        "maxAbsDifference": 1.7534799575805664,
+        "firstMismatch": {
+          "facet": 0,
+          "component": 0,
+          "native": 0.1707717776298523,
+          "derived": 0.13243676722049713,
+          "nativeBits": "3e2edecc",
+          "derivedBits": "3e079d81"
+        },
+        "derivedNormalSha256": "376767582be6f87a4b781f6403b7cd572f242c35c59ef3b3ff6ed69d74fd5960",
+        "mismatchedFacets": 50895,
+        "mismatchedComponents": 152685
+      },
+      "double_cross_rounded_then_double_normalize": {
+        "exactFacets": 0,
+        "exactComponents": 0,
+        "numericEqualComponents": 0,
+        "signedZeroOnlyMismatches": 0,
+        "maxULP": 2126570512,
+        "maxAbsDifference": 1.7534799575805664,
+        "firstMismatch": {
+          "facet": 0,
+          "component": 0,
+          "native": 0.1707717776298523,
+          "derived": 0.13243678212165833,
+          "nativeBits": "3e2edecc",
+          "derivedBits": "3e079d82"
+        },
+        "derivedNormalSha256": "8cfeb024cedb36e5318c2d85545998b2e96c9428e2a1acc943bf7aae1b3be1f5",
+        "mismatchedFacets": 50895,
+        "mismatchedComponents": 152685
+      },
+      "f32_edges_cross_double_normalize": {
+        "exactFacets": 0,
+        "exactComponents": 0,
+        "numericEqualComponents": 0,
+        "signedZeroOnlyMismatches": 0,
+        "maxULP": 2126570512,
+        "maxAbsDifference": 1.7534799575805664,
+        "firstMismatch": {
+          "facet": 0,
+          "component": 0,
+          "native": 0.1707717776298523,
+          "derived": 0.13243678212165833,
+          "nativeBits": "3e2edecc",
+          "derivedBits": "3e079d82"
+        },
+        "derivedNormalSha256": "df0786bf65d6fc159a277ad3b67173deeb0ba4acfa19553bd89f915ae5e8ba6d",
+        "mismatchedFacets": 50895,
+        "mismatchedComponents": 152685
+      },
+      "f32_all_normalization_stages": {
+        "exactFacets": 0,
+        "exactComponents": 0,
+        "numericEqualComponents": 0,
+        "signedZeroOnlyMismatches": 0,
+        "maxULP": 2126570512,
+        "maxAbsDifference": 1.7534799575805664,
+        "firstMismatch": {
+          "facet": 0,
+          "component": 0,
+          "native": 0.1707717776298523,
+          "derived": 0.13243676722049713,
+          "nativeBits": "3e2edecc",
+          "derivedBits": "3e079d81"
+        },
+        "derivedNormalSha256": "fac7e467f2a9acd8fee3e8a56bf6cd77413405d6a80f1f9c062fd4d63352970a",
+        "mismatchedFacets": 50895,
+        "mismatchedComponents": 152685
+      }
+    },
+    "allTargetedVertexNormalVariants": [
+      {
+        "topology": "exact_bit_weld",
+        "vertices": 27170,
+        "faces": 50895,
+        "coordinateChangedCorners": 0,
+        "vertexPositionsSha256": "452c3d054ffce2cb8f2280a25b38e055c40929af8d7a9b44214dfcf633e70076",
+        "indexSha256": "c22cfaf8578ed80a021fe0c03fc006716d66f298e99471d8523bb34b72511c1d",
+        "kernels": {
+          "existing_angle_weighted_noiseNormals": {
+            "normalSha256": "1334cc42624a2e5c3ad5f76aa6de39be73d8f2edce421446cf15e4fda3b55025",
+            "values": 81510
+          },
+          "area_weighted_double": {
+            "normalSha256": "0d0457d1471e2e35a82b60db45cc68b694f816f43cb0ab1450f3f7293ee1d0c2",
+            "values": 81510
+          },
+          "unit_facet_weighted_double": {
+            "normalSha256": "de6fa7c563dbc80339491d3f89110cb52cfc31aa0625694f06afc444d76679f1",
+            "values": 81510
+          }
+        },
+        "results": [
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2115907984,
+            "maxAbsDifference": 1.3057462871074677,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.28873157501220703,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e93d4a0"
+            },
+            "normalSha256": "df8a6cee7e92d6422139fef15a30f243b0d4556f811fdbb7f5787bf0258eeb61",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "average_double_f32",
+            "exactFacets": 14170,
+            "exactComponents": 99399,
+            "numericEqualComponents": 99399,
+            "maxULP": 10923,
+            "maxAbsDifference": 5.960464477539063e-8,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 1,
+              "native": 0.14955385029315948,
+              "derived": 0.14955386519432068,
+              "nativeBits": "3e1924a5",
+              "derivedBits": "3e1924a6"
+            },
+            "normalSha256": "5312b15c593db2fd809a67f1aef077eb030ba284a85f35659e739d043e2cc98d",
+            "mismatchedFacets": 36725,
+            "mismatchedComponents": 53286
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "average_f32_staged",
+            "exactFacets": 50895,
+            "exactComponents": 152685,
+            "numericEqualComponents": 152685,
+            "maxULP": 0,
+            "maxAbsDifference": 0,
+            "firstMismatch": null,
+            "normalSha256": "b12c143e5cef8776a1944676f92f0f32150432132992de8ce9c63e3adf81e8d5",
+            "mismatchedFacets": 0,
+            "mismatchedComponents": 0
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 21749367,
+            "maxAbsDifference": 0.7717785984277725,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.17149955034255981,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e2f9d94"
+            },
+            "normalSha256": "68c9a4c3773f6e9b7da86a673cd285c3e131fcff5632d0d1e7e50e39c2eef11a",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 21749367,
+            "maxAbsDifference": 0.7717785984277725,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.17149955034255981,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e2f9d94"
+            },
+            "normalSha256": "85925778a0c2b22d95887841b439913c25921fadf5ef0031797b19e42f02def3",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2118098959,
+            "maxAbsDifference": 1.366542011499405,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.33867591619491577,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3ead66ee"
+            },
+            "normalSha256": "09b1ea55778206c1cac84fdc98bec23750a3db87d4f2a2a72446822543d13429",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2091552328,
+            "maxAbsDifference": 0.5833153128623962,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16200630366802216,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e25e4fb"
+            },
+            "normalSha256": "655c4b02666a3510bb6526de7db6f003a3c92eda16b0f3bb9c24ea3cb1151892",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2091552328,
+            "maxAbsDifference": 0.5833153128623962,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16200630366802216,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e25e4fb"
+            },
+            "normalSha256": "c08dd6ffdaac7fab349a0fd78e88fbd1ce7d29a38e57cbea083435b28156063c",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2097678004,
+            "maxAbsDifference": 0.849661335349083,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16352578997612,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e27734e"
+            },
+            "normalSha256": "50704f0cf9f52082c5139e2611344f6628cb18637e3507acf1c74128a522c2f0",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2097678003,
+            "maxAbsDifference": 0.849661335349083,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16352578997612,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e27734e"
+            },
+            "normalSha256": "d983a3030405860e962c777717db7217f28a41aa167c901b5c169e670ddeeb45",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2119253418,
+            "maxAbsDifference": 1.3927411437034607,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.3292040228843689,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3ea88d6e"
+            },
+            "normalSha256": "3bc19baab75d33da05aa746301ef55a255802917d5bae2d022a991adb780e8e2",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2092819395,
+            "maxAbsDifference": 0.6036480665206909,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19546696543693542,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e48287e"
+            },
+            "normalSha256": "4c55f545c83383c64519e389e8774fc6e82624eb9c714944bc50bac615da621d",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2092819395,
+            "maxAbsDifference": 0.6036481261253357,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19546698033809662,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e48287f"
+            },
+            "normalSha256": "59146b5afff9e150335a9534f37a8da23a864ccad5a579f96023d3fd35cd9081",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2101070522,
+            "maxAbsDifference": 0.7881489470601082,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19651314616203308,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e493abe"
+            },
+            "normalSha256": "a649e238a6639da9d1bd5ea4e71840bf55dd6288fa4f9ccf6ee58872485b81c4",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2101070522,
+            "maxAbsDifference": 0.788149006664753,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19651316106319427,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e493abf"
+            },
+            "normalSha256": "50d5ee9e97391ed3d33fb81c7991ea1c08627b9cb3507d93f966949d26be563c",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          }
+        ]
+      },
+      {
+        "topology": "native_optimized_STL",
+        "vertices": 27170,
+        "faces": 50895,
+        "coordinateChangedCorners": 0,
+        "vertexPositionsSha256": "7ef358b88651020dc936afd755bb5f0aeab14b57887215426aaad79db3bff076",
+        "indexSha256": "6ceefbaba77738870fc60eea7400479aca4b3ed4b32249ee80a7b4ac87fcf92d",
+        "kernels": {
+          "existing_angle_weighted_noiseNormals": {
+            "normalSha256": "1f9d05bc2f7031a6ba905cdbf4abbf62e38f9427dace9bc58fb6d9a0e918f934",
+            "values": 81510
+          },
+          "area_weighted_double": {
+            "normalSha256": "08923213b5a3f980fcbb47b6bcb87f6a215ca6f9fb7b494fb7e27be831973654",
+            "values": 81510
+          },
+          "unit_facet_weighted_double": {
+            "normalSha256": "21eaff29d028a8f6e4ba16af073a34309bb5c780a3b6a50f1528c2055a9b0ac1",
+            "values": 81510
+          }
+        },
+        "results": [
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2115907984,
+            "maxAbsDifference": 1.3057462871074677,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.28873157501220703,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e93d4a0"
+            },
+            "normalSha256": "df8a6cee7e92d6422139fef15a30f243b0d4556f811fdbb7f5787bf0258eeb61",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "average_double_f32",
+            "exactFacets": 14170,
+            "exactComponents": 99399,
+            "numericEqualComponents": 99399,
+            "maxULP": 10923,
+            "maxAbsDifference": 5.960464477539063e-8,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 1,
+              "native": 0.14955385029315948,
+              "derived": 0.14955386519432068,
+              "nativeBits": "3e1924a5",
+              "derivedBits": "3e1924a6"
+            },
+            "normalSha256": "5312b15c593db2fd809a67f1aef077eb030ba284a85f35659e739d043e2cc98d",
+            "mismatchedFacets": 36725,
+            "mismatchedComponents": 53286
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "average_f32_staged",
+            "exactFacets": 50895,
+            "exactComponents": 152685,
+            "numericEqualComponents": 152685,
+            "maxULP": 0,
+            "maxAbsDifference": 0,
+            "firstMismatch": null,
+            "normalSha256": "b12c143e5cef8776a1944676f92f0f32150432132992de8ce9c63e3adf81e8d5",
+            "mismatchedFacets": 0,
+            "mismatchedComponents": 0
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 21749367,
+            "maxAbsDifference": 0.7717785984277725,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.17149955034255981,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e2f9d94"
+            },
+            "normalSha256": "68c9a4c3773f6e9b7da86a673cd285c3e131fcff5632d0d1e7e50e39c2eef11a",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "existing_angle_weighted_noiseNormals",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 21749367,
+            "maxAbsDifference": 0.7717785984277725,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.17149955034255981,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e2f9d94"
+            },
+            "normalSha256": "85925778a0c2b22d95887841b439913c25921fadf5ef0031797b19e42f02def3",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2118098959,
+            "maxAbsDifference": 1.366542011499405,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.33867591619491577,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3ead66ee"
+            },
+            "normalSha256": "09b1ea55778206c1cac84fdc98bec23750a3db87d4f2a2a72446822543d13429",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2091552328,
+            "maxAbsDifference": 0.5833153128623962,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16200630366802216,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e25e4fb"
+            },
+            "normalSha256": "655c4b02666a3510bb6526de7db6f003a3c92eda16b0f3bb9c24ea3cb1151892",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2091552328,
+            "maxAbsDifference": 0.5833153128623962,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16200630366802216,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e25e4fb"
+            },
+            "normalSha256": "c08dd6ffdaac7fab349a0fd78e88fbd1ce7d29a38e57cbea083435b28156063c",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2097678004,
+            "maxAbsDifference": 0.849661335349083,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16352578997612,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e27734e"
+            },
+            "normalSha256": "50704f0cf9f52082c5139e2611344f6628cb18637e3507acf1c74128a522c2f0",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "area_weighted_double",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2097678003,
+            "maxAbsDifference": 0.849661335349083,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.16352578997612,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e27734e"
+            },
+            "normalSha256": "d983a3030405860e962c777717db7217f28a41aa167c901b5c169e670ddeeb45",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "first_vertex",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2119253418,
+            "maxAbsDifference": 1.3927411437034607,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.3292040228843689,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3ea88d6e"
+            },
+            "normalSha256": "3bc19baab75d33da05aa746301ef55a255802917d5bae2d022a991adb780e8e2",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2092819395,
+            "maxAbsDifference": 0.6036480665206909,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19546696543693542,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e48287e"
+            },
+            "normalSha256": "4c55f545c83383c64519e389e8774fc6e82624eb9c714944bc50bac615da621d",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 0,
+            "numericEqualComponents": 0,
+            "maxULP": 2092819395,
+            "maxAbsDifference": 0.6036481261253357,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19546698033809662,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e48287f"
+            },
+            "normalSha256": "59146b5afff9e150335a9534f37a8da23a864ccad5a579f96023d3fd35cd9081",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152685
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "normalized_average_double_f32",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2101070522,
+            "maxAbsDifference": 0.7881489470601082,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19651314616203308,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e493abe"
+            },
+            "normalSha256": "a649e238a6639da9d1bd5ea4e71840bf55dd6288fa4f9ccf6ee58872485b81c4",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          },
+          {
+            "kernel": "unit_facet_weighted_double",
+            "reduction": "normalized_average_f32_staged",
+            "exactFacets": 0,
+            "exactComponents": 1,
+            "numericEqualComponents": 1,
+            "maxULP": 2101070522,
+            "maxAbsDifference": 0.788149006664753,
+            "firstMismatch": {
+              "facet": 0,
+              "component": 0,
+              "native": 0.1707717776298523,
+              "derived": 0.19651316106319427,
+              "nativeBits": "3e2edecc",
+              "derivedBits": "3e493abf"
+            },
+            "normalSha256": "50d5ee9e97391ed3d33fb81c7991ea1c08627b9cb3507d93f966949d26be563c",
+            "mismatchedFacets": 50895,
+            "mismatchedComponents": 152684
+          }
+        ]
+      }
+    ],
+    "independentKernelPins": [
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\src\\scan-native-noise.ts",
+        "bytes": 12109,
+        "sha256": "d72995f0feedc6eb717a0dee94c563bf24073b3239a19c193d40a3bf6cc64e6b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\src\\scan-native-stl-topology.ts",
+        "bytes": 6173,
+        "sha256": "2b7fcaed2c4a954b4951ed0d74167942dbcab6f2ee4e2d687024df2dfdd3148b"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\src\\scan-native-stl-vertices.ts",
+        "bytes": 4175,
+        "sha256": "b2cb5e00a2223cefdddd485d21defb8ff416aff5bb1fe51f2c22851ffa0603dc"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\src\\import-readonly-buffer.ts",
+        "bytes": 365,
+        "sha256": "286446ae36750c3bdb32d4491acb4222511fb8bbd024191ed058c5a2c1cacc79"
+      }
+    ],
+    "meaning": "All50,895encodednormalvectors/152,685Float32components match on both exactbit-weld andoptimizedSTLtopology. All30targetedvariants retained, including failures. This is an observed derivation equality, not proof of the native internal implementation.",
+    "channelDistinction": "NativeSTLnormalrecords are unnormalized means of computedvertexnormals, distinct from geometric unitfacetNormals and fileauthored scannerattributes. No QSFnormalcachefield was decoded or claimed. Candidate indexed vertexnormalcache and supportedfacet cache must be verified separately.",
+    "attributeMeaning": "Every16bitattribute word is8224/0x2020. Retained as exportmetadata; no opaqueownerfield/color/flag semantics inferred."
+  },
+  "nativeGeometryLimits": {
+    "watertight": false,
+    "components": 140,
+    "boundaryEdges": 4189,
+    "nonManifoldEdges": 166,
+    "nonManifoldVertices": 441,
+    "duplicateTriangles": 4,
+    "meaning": "Recorded native output is open/nonmanifold. Exact numerical parity does not establish a closed solid or manufacturing fitness; voxel usability evidence remains separately scoped."
+  },
+  "actualOwnedAnalysisReceipts": [
+    {
+      "pin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1.receipt.json",
+        "bytes": 1742,
+        "sha256": "1687bfa42e505fcbc471679131080c19533b5193ba252922ea499f0402155729"
+      },
+      "value": {
+        "mode": "cad",
+        "label": "m3-native-repoly-normal-oracle-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          ".resources/m3/native-repoly-normal-oracle-r1.mjs"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 6145818624,
+        "immediateChildFreeBytes": 6145798144,
+        "identity": {
+          "pid": 65276,
+          "startFileTime": "134374487542039562",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 29822976,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 44023808,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 0.25947539997287095,
+        "completed": true
+      }
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1.receipt.json",
+        "bytes": 1762,
+        "sha256": "e2fc75ef60c38fd1b5994b05a56fd14bb92d7e902b4c7b49e962fdebe63e9b97"
+      },
+      "value": {
+        "mode": "cad",
+        "label": "m3-native-repoly-normal-hypothesis-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          ".resources/m3/native-repoly-normal-hypothesis-r1.mjs"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 6068137984,
+        "immediateChildFreeBytes": 6067978240,
+        "identity": {
+          "pid": 65092,
+          "startFileTime": "134374489643723662",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 136126464,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 150147072,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 1.630340600037016,
+        "completed": true
+      }
+    },
+    {
+      "pin": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.receipt.json",
+        "bytes": 1767,
+        "sha256": "e2375820fd05db7db16830e70b22af4fc3a47c549b6a17bfead9eeaab60dcb8e"
+      },
+      "value": {
+        "mode": "cad",
+        "label": "m3-native-repoly-qsf-layout-compare-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          ".resources/m3/native-repoly-qsf-layout-compare-r1.mjs"
+        ],
+        "leaseSeconds": 900,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 9710129152,
+        "immediateChildFreeBytes": 9710039040,
+        "identity": {
+          "pid": 5704,
+          "startFileTime": "134374521573657663",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 126312448,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 140480512,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 0.8657440000097267,
+        "completed": true
+      }
+    }
+  ],
+  "executedHelperPins": [
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-oracle-r1.mjs",
+      "bytes": 6724,
+      "sha256": "9ab59da4269dab4935ce66893a7866572cd70464a888854046293764c2a8d9e9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-normal-hypothesis-r1.mjs",
+      "bytes": 7421,
+      "sha256": "db59b59da07b99089f724329be431500d46dbc0e35741c3f991244e705fbab75"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-repoly-qsf-layout-compare-r1.mjs",
+      "bytes": 8355,
+      "sha256": "46ec0dc7da9c4144ec9a748fce23f19e5ef8f1bcd772f7c11bdf9d1385256cec"
+    }
+  ],
+  "fullOracleReadback": "Native normal/attribute streams freshly extracted and re-read; complete STL source hash verified before/after. Complete QSF, three PLY files and STL output hashes verified before/after in the actual bounded comparison.",
+  "missingAuthority": [
+    "No independently linked raw native GUI action sequence/process capture/settings receipt located in the bounded retainedartifactaudit.",
+    "QSFunknownmetadata/units/flags and nativeowner normalcache are unobserved; outputlabel/capturedanalystsettings do not decode these fields.",
+    "Small136facetcoordinatefixture is retained; originalbinary136facetSTL was not found among six externalcloSTLfiles, so no invented smallnormaloracle."
+  ],
+  "nextCandidateGate": "Strict current GUI/publicMCP orderedindexedvertices,indices,expandedcoordinates,normalcache/nativeSTLmean,sourceimmutability,ownership,history,cancel/retry/revision andpersistence remain pending. A mismatch must retain actual order/bits; do not reorder/normalize reference buffers to hide it.",
+  "publicationEncoding": "Normalized complete measurement values and exact raw/helper/ownedJob pins; raw geometry payloads are not copied into this durable JSON. Raw byte hashes and publication hash are distinct."
+}

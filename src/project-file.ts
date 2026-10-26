@@ -5,7 +5,7 @@ import {
 } from "./project-file-codec";
 import { encodeProjectInBackground } from "./project-encoding-client";
 import { decodeProjectInBackground } from "./project-decoding-client";
-import { prepareRestoredScanDisplays } from "./restored-scan-display";
+import { prepareRestoredProjectDisplays } from "./restored-scan-display";
 import { assertReferenceWorkspaceAdmission } from "./reference-entity";
 export {
   encodeProjectFileLocally,
@@ -37,10 +37,7 @@ export async function decodeProjectFile(
   const session = await decodeProjectContents(file);
   signal?.throwIfAborted();
   assertReferenceWorkspaceAdmission(session);
-  session.project.entities = prepareRestoredScanDisplays(
-    session.project.entities,
-    signal,
-  );
+  const prepared = prepareRestoredProjectDisplays(session, signal);
   signal?.throwIfAborted();
-  return session;
+  return prepared;
 }

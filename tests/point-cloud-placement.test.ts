@@ -14,6 +14,7 @@ import type { Entity, Project } from "../src/types";
 import { Viewport } from "../src/viewport";
 import * as THREE from "three";
 import { vi } from "vitest";
+import { seekModelRevision } from "../src/history";
 
 function values(hex: string) {
   const b = Buffer.from(hex, "hex");
@@ -134,6 +135,67 @@ it("preserves point identities when the first alignment normalizes legacy JSON s
   expect(cloudSelectionSource(edited)).toBe(edited.positions);
   expect(cloudSelectionSource(edited)).not.toBe(original.positions);
 });
+
+it.each([true, false])(
+  "keeps point selection identity across a world-cache miss and history restore (typed=%s)",
+  (typed) => {
+    const NativeWeakRef = globalThis.WeakRef;
+    let expireWorld = false;
+    vi.stubGlobal(
+      "WeakRef",
+      class<T extends object> extends NativeWeakRef<T> {
+        deref() {
+          const value = super.deref();
+          if (expireWorld && value instanceof Float32Array) {
+            expireWorld = false;
+            return undefined;
+          }
+          return value;
+        }
+      },
+    );
+    try {
+      const original = source(native.cases[0]);
+      if (!typed) original.positions = Array.from(original.positions);
+      const pointIds = original.positions;
+      const moved = transformDatumScan(
+        original,
+        nativeDatumInverseFrame(native.cases[0].steps[0].frame),
+      );
+      const firstWorld = moved.positions;
+      expireWorld = true;
+      const rebuiltWorld = moved.positions;
+      expect(expireWorld).toBe(false);
+      expect(rebuiltWorld).not.toBe(firstWorld);
+      expect(rebuiltWorld).toEqual(firstWorld);
+      expect(cloudSelectionSource(moved)).toBe(pointIds);
+      const renamed = canonicalCloud({ ...moved, name: "Renamed" });
+      expect(cloudSelectionSource(renamed)).toBe(pointIds);
+      const undone = seekModelRevision(
+        [{ entities: [original], label: "Pose" }],
+        [renamed],
+        [],
+        0,
+      );
+      const redone = seekModelRevision(
+        undone.history,
+        undone.entities,
+        undone.future,
+        1,
+      ).entities[0];
+      expect(cloudSelectionSource(redone)).toBe(pointIds);
+      const edited = canonicalCloud({
+        ...redone,
+        positions: redone.positions.slice(),
+      });
+      expect(cloudPlacement(edited)).toBeUndefined();
+      expect(cloudSelectionSource(edited)).toBe(edited.positions);
+      expect(cloudSelectionSource(edited)).not.toBe(pointIds);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  },
+);
 
 it("retains the actual GPU geometry and local attributes while updating the object frame", () => {
   const view = Object.create(Viewport.prototype) as any;

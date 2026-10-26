@@ -13,8 +13,10 @@ import type { ScanPreviewRequest } from "./scan-preview";
 import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
 import {
+  admitReconstructionRecords,
   admitReconstructionTransport,
   isBorrowableReconstructionInput,
+  type ReconstructionInput,
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
@@ -109,8 +111,12 @@ export type ProcessingRequest =
       maxIterations: number;
       sampleSize: number;
       targetSampleSize: number;
+      targetRms?: number;
+      overlapPercent?: number;
+      /** Internal native cloud output model used for final verification. */
+      outputPlacement?: import("./fine-registration").FineAlignmentOptions["outputPlacement"];
       tolerance: number;
-      trimFraction: number;
+      trimFraction?: number;
     };
 export interface TopologySummary {
   vertices: number;
@@ -152,7 +158,8 @@ export interface ProcessingResult {
   segmentClassifications?: RegionClassification[];
   repairSheets?: MeshSheetDiagnostics[];
   topology?: TopologySummary;
-  registration?: RegistrationResult;
+  registration?:
+    RegistrationResult | import("./fine-registration").FineAlignmentResult;
   diagnostics: Record<string, number | string | boolean>;
 }
 export type ProcessingResponse =
@@ -205,24 +212,56 @@ export function processMesh(
   ) {
     try {
       if (
+        request.operation.targets !== undefined &&
+        request.operation.targetInputs !== undefined
+      )
+        throw Error("Use only one reconstruction target representation.");
+      const records: ReconstructionInput[] = [
+        {
+          kind: request.operation.inputKind ?? "triangles",
+          positions: request.positions,
+        },
+        ...(request.operation.targetInputs ??
+          (request.operation.targets ?? []).map((positions) => ({
+            kind: "triangles" as const,
+            positions,
+          }))),
+      ];
+      // Keep typed-kind validation before reducing native records to positions.
+      admitReconstructionRecords(records);
+      const topology = [
+        request.operation.sourceTopology,
+        ...(
+          request.operation.targetInputs ??
+          request.operation.targets ??
+          []
+        ).map((_, i) =>
+          request.operation.kind === "repolygonize"
+            ? request.operation.targetTopology?.[i]
+            : undefined,
+        ),
+      ];
+      if (
         request.operation.targetTopology &&
-        request.operation.targetTopology.length !==
-          (request.operation.targets?.length ?? 0)
+        request.operation.targetTopology.length !== records.length - 1
       )
         throw Error(
           "Reconstruction topology references must match its inputs.",
         );
-      admitReconstructionTransport(
-        [request.positions, ...(request.operation.targets ?? [])],
-        [
-          request.operation.sourceTopology,
-          ...(request.operation.targets ?? []).map((_, i) =>
-            request.operation.kind === "repolygonize"
-              ? request.operation.targetTopology?.[i]
-              : undefined,
-          ),
-        ],
-      );
+      if (records.some((record) => record.kind === "points")) {
+        if (request.operation.method === "native")
+          throw Error(
+            "Native reconstruction requires triangle meshes; use voxel for point inputs.",
+          );
+        if (topology.some(Boolean))
+          throw Error(
+            "Reconstruction indexed topology requires triangle inputs.",
+          );
+      } else if (topology.some(Boolean))
+        admitReconstructionTransport(
+          records.map((record) => record.positions),
+          topology,
+        );
     } catch (error) {
       return Promise.reject(error);
     }
@@ -474,6 +513,15 @@ function runProcessingRequest(
               target: clone(request.target),
             }
           : { ...request, positions: source };
+      if (copied.kind === "icp" && copied.outputPlacement) {
+        copied.outputPlacement = {
+          matrix: copied.outputPlacement.matrix.slice(),
+          sourcePositions:
+            copied.outputPlacement.sourcePositions === request.positions
+              ? source
+              : clone(copied.outputPlacement.sourcePositions),
+        };
+      }
       if (copied.kind === "nativeRefine") {
         copied.additionalTargets = copied.additionalTargets?.map((target) => {
           const triangles = Uint32Array.from(target.indexedMesh.triangles);
@@ -489,6 +537,9 @@ function runProcessingRequest(
               ...(target.indexedMesh.geometryNormals
                 ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
                 : {}),
+              ...(target.indexedMesh.facetNormals
+                ? { facetNormals: clone(target.indexedMesh.facetNormals) }
+                : {}),
             },
           };
         });
@@ -502,6 +553,9 @@ function runProcessingRequest(
             ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
             ...(mesh.geometryNormals
               ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
+            ...(mesh.facetNormals
+              ? { facetNormals: clone(mesh.facetNormals) }
               : {}),
           };
         }
@@ -520,6 +574,9 @@ function runProcessingRequest(
                 : {}),
               ...(target.indexedMesh.geometryNormals
                 ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
+                : {}),
+              ...(target.indexedMesh.facetNormals
+                ? { facetNormals: clone(target.indexedMesh.facetNormals) }
                 : {}),
             },
           };
@@ -553,6 +610,9 @@ function runProcessingRequest(
             ...(mesh.geometryNormals
               ? { geometryNormals: clone(mesh.geometryNormals) }
               : {}),
+            ...(mesh.facetNormals
+              ? { facetNormals: clone(mesh.facetNormals) }
+              : {}),
           };
         }
       }
@@ -581,6 +641,32 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "repolygonize") {
+          const cloneTopology = (
+            mesh: import("./types").IndexedMesh | undefined,
+          ) => {
+            if (!mesh) return undefined;
+            const triangles = Uint32Array.from(mesh.triangles);
+            transfers.push(triangles.buffer);
+            return {
+              ...mesh,
+              vertices: clone(mesh.vertices),
+              triangles,
+              ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+              ...(mesh.geometryNormals
+                ? { geometryNormals: clone(mesh.geometryNormals) }
+                : {}),
+              ...(mesh.facetNormals
+                ? { facetNormals: clone(mesh.facetNormals) }
+                : {}),
+            };
+          };
+          copied.operation.sourceTopology = cloneTopology(
+            copied.operation.sourceTopology,
+          );
+          copied.operation.targetTopology =
+            copied.operation.targetTopology?.map(cloneTopology);
+        }
         if (
           copied.operation.kind === "averageMesh" ||
           copied.operation.kind === "repolygonize"
@@ -608,6 +694,10 @@ function runProcessingRequest(
           copied.operation.kind === "shrinkwrap"
         )
           copied.operation.targets = copied.operation.targets?.map(clone);
+        if (copied.operation.kind === "repolygonize")
+          copied.operation.targetInputs = copied.operation.targetInputs?.map(
+            (r) => ({ ...r, positions: clone(r.positions) }),
+          );
         if (
           (copied.operation.kind === "reduceNoise" ||
             copied.operation.kind === "shrinkwrap") &&

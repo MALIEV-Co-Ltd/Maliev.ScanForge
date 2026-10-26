@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "milestoneComplete": false,
+  "verifiedSourceCommit": "d6ada724a9dafc0f06f67a6e11c4061b0f56eb0d",
+  "buildIdentity": "scanforge-6755a4faacd79727",
+  "all2056CompilerInputsMatchCommittedCanonicalBytes": true,
+  "sourceManifest": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-pinned-build.source.json",
+    "sha256": "c55c0702c541c7b87fd89b8111866cbaf5b38b978faf5d4d91722ea0bb3b961b",
+    "sourceInputsUnchangedDuringBuild": true,
+    "postBuildRawChange": "src/scan-tools-remesh.ts CRLF to LF only; canonical hash and committed blob verified"
+  },
+  "checks": {
+    "cloud-pinned-build": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-pinned-build.receipt.json",
+      "sha256": "578091b46e0a30fc925d5da9cfa6125e246149ec9e0d909044abf39d20f5e572",
+      "elapsedSeconds": 166.86976690002484,
+      "childPeakJobMemoryBytes": 1533112320,
+      "outerPeakJobMemoryBytes": 1546637312,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-core-transport": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-core-transport.receipt.json",
+      "sha256": "701fd73931201142e5dba5d91a3267e3ddf17a7e664cec3f9b49e5c6c806e76c",
+      "elapsedSeconds": 4.353281100047752,
+      "childPeakJobMemoryBytes": 371363840,
+      "outerPeakJobMemoryBytes": 385277952,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-checkpoint-suite": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-checkpoint-suite.receipt.json",
+      "sha256": "134d8be7cbe08f05ac637c9a11aa6d655082d21d9f5e2c47ab61971c257965ca",
+      "elapsedSeconds": 302.22733409999637,
+      "childPeakJobMemoryBytes": 983023616,
+      "outerPeakJobMemoryBytes": 996765696,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-checkpoint-cad": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-checkpoint-cad.receipt.json",
+      "sha256": "219d864c1ede3dfa606be22a954a77b41e3e6214c5d0f5861938c5593b2fb677",
+      "elapsedSeconds": 9.91186170000583,
+      "childPeakJobMemoryBytes": 743108608,
+      "outerPeakJobMemoryBytes": 756981760,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-format-final-check": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-format-final-check.receipt.json",
+      "sha256": "d54d4f018228756408b14276c69c66552ce0228c9a88c02f1838d9c0d889532b",
+      "elapsedSeconds": 39.42679060000228,
+      "childPeakJobMemoryBytes": 472981504,
+      "outerPeakJobMemoryBytes": 486842368,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-intersection-tjunction-green": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-intersection-tjunction-green.receipt.json",
+      "sha256": "a55a1cb699f3399cfe18478277596518cdd31d3b2ca6361ffe7565d54c749bb5",
+      "elapsedSeconds": 0.7152279000147246,
+      "childPeakJobMemoryBytes": 264015872,
+      "outerPeakJobMemoryBytes": 277938176,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "cloud-browser-r1": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\cloud-browser-r1.receipt.json",
+      "sha256": "8c470488886d7020fb8daf08240c3bf7cb01f398c59a2a4f6a42a6e8cf7acc01",
+      "elapsedSeconds": 4.503954399959184,
+      "childPeakJobMemoryBytes": 1039843328,
+      "outerPeakJobMemoryBytes": 1053564928,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "original-cloud-reconstruction-r2": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-cloud-reconstruction-r2.receipt.json",
+      "sha256": "37f56bc9c98bae1fe1ac2488f781f3b37bca450f98162069c7e6c093a5eb91f8",
+      "elapsedSeconds": 70.45585790002951,
+      "childPeakJobMemoryBytes": 1864916992,
+      "outerPeakJobMemoryBytes": 1878691840,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "original-cloud-quality-r3": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-cloud-quality-r3.receipt.json",
+      "sha256": "9b1085f5f80fca8d814fa7c93e754d598140d18f795d4135845af8088c68d9a3",
+      "elapsedSeconds": 5.828039699990768,
+      "childPeakJobMemoryBytes": 427634688,
+      "outerPeakJobMemoryBytes": 441159680,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "native-public-r1": {
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-public-r1.receipt.json",
+      "sha256": "46ee8de9a02f432a3171f864ff27a20c224fe751f4e184dc94a6bfc1faf157e1",
+      "elapsedSeconds": 25.572922700026538,
+      "childPeakJobMemoryBytes": 2797092864,
+      "outerPeakJobMemoryBytes": 2810970112,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "fullSuite": {
+    "passed": 49031,
+    "skipped": 64,
+    "failed": 0,
+    "passedFiles": 677,
+    "skippedFiles": 18,
+    "scope": "Application code unchanged afterward; intersection test utility then gained one test and correction, final focused four tests passed."
+  },
+  "originalCloud": {
+    "receipt": "C:\\Users\\Shoung\\AppData\\Local\\Temp\\scanforge-original-cloud-reconstruction-1ea6b266-3472-4471-95d9-216b6c4c22d7\\evidence.json",
+    "sha256": "04b6be5ff8284d27bd0181eeee810d5b0d8943f1bf92e38a00f17773550f7386",
+    "scope": "Full original-three ASC import and unmodified-placement XYZ reconstruction through production GUI/public stdio MCP; timeline/project export-reopen/browser backup restore verified; not aligned combination quality, native reconstruction equivalence, self-intersection or full M3 lifecycle acceptance",
+    "inputs": [
+      {
+        "name": "asc-1.asc",
+        "bytes": 7679386,
+        "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c",
+        "entityId": "d767abdb-d301-4b19-9a49-efa7023bb2f5"
+      },
+      {
+        "name": "asc-2.asc",
+        "bytes": 74418231,
+        "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243",
+        "entityId": "c039ac93-7dcc-4519-b395-ca78a56d6fdd"
+      },
+      {
+        "name": "asc-3.asc",
+        "bytes": 100922768,
+        "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898",
+        "entityId": "7cdf66f9-f8d2-4f9c-84a7-eaa3173e94cf"
+      }
+    ],
+    "pointCounts": [140113, 1375494, 1865848],
+    "result": {
+      "entityIds": ["d767abdb-d301-4b19-9a49-efa7023bb2f5"],
+      "diagnostics": {
+        "watertight": true,
+        "inputMeshes": 0,
+        "inputPointClouds": 3,
+        "inputPoints": 3381455,
+        "inputTriangles": 0,
+        "processedPoints": 3381455,
+        "representedPoints": 3381455,
+        "field": "unsigned-distance-occupancy-union",
+        "triangleRadius": 0,
+        "pointRadius": 0.8660254037844386,
+        "resolution": 1,
+        "gridPoints": 1035419,
+        "distanceTests": 17581915,
+        "samplingCandidates": 17581915,
+        "verification": "streamed-edge-pairing-and-vertex-fans",
+        "extraction": "face-consistent-cube-contours",
+        "peakTopologyFrontierEdges": 652,
+        "weldTolerance": 1e-6,
+        "selfIntersectionsChecked": false,
+        "summary": "Verified watertight voxel surface: 2 closed components at 1 mm point resolution; 424 enclosed samples filled. Surface offset approximately 0.8660254037844386 mm. Enclosed regions fused and filled."
+      },
+      "topology": {
+        "vertices": 36056,
+        "triangles": 72396,
+        "components": 2,
+        "boundaryLoops": 0,
+        "boundaryChains": 0,
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "nonManifoldVertices": 0,
+        "inconsistentEdges": 0,
+        "duplicateTriangles": 0,
+        "degenerateTriangles": 0,
+        "watertight": true
+      }
+    },
+    "outputBuffers": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 651564,
+        "sha256": "7d1a26c1c61abad73feca10f2b688690f2e479872634fad11611962ab6e17d3e"
+      }
+    ]
+  },
+  "retainedNativeController": {
+    "evidence": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\native-public-r1\\evidence.json",
+    "sha256": "9412638bd23f081029e39447b5ab95448a6c20d1450b38e8568647d26855e891",
+    "scope": {
+      "testWorkspaceHost": true,
+      "actualReactEditor": false,
+      "stdioMcp": false,
+      "rendering": false,
+      "nativeSetterEntryObserved": false,
+      "nativeFacetNormalField": false,
+      "completeNativeParity": false
+    },
+    "checks": {
+      "originalImportedFullGeometry": true,
+      "publicApplicationApi": true,
+      "isolatedController": true,
+      "realQueryAndSetterWorkers": true,
+      "nativeFinalStatesAndSupportedBuffers": true,
+      "immutableOriginalStreams": true,
+      "exactCachedApply": true,
+      "retryCommittedOnce": true,
+      "historyEntries": 1,
+      "outerClockCalls": 1,
+      "unresolvedOwnedWorkers": 0
+    },
+    "geometry": [
+      {
+        "file": "ply-1.ply",
+        "descriptor": "0x5ca4e650",
+        "entityId": "af7c1453-3d9d-4c5f-af68-6533acdc7270",
+        "indexedPositions": {
+          "values": 420339,
+          "mismatchedWords": 0
+        },
+        "geometryNormals": {
+          "values": 420339,
+          "mismatchedWords": 0
+        },
+        "expandedPositionValues": 2467386,
+        "expandedMismatches": 0,
+        "authoredCornerMismatches": 0,
+        "topologyCarrierPreserved": true,
+        "originalStreamsUnchanged": true,
+        "computedDisplayNormalsBorrowStoredCarrier": true
+      },
+      {
+        "file": "ply-2.ply",
+        "descriptor": "0x5ca4e2f0",
+        "entityId": "41275e20-5e38-4323-a23d-8465178e41e5",
+        "indexedPositions": {
+          "values": 4126482,
+          "mismatchedWords": 0
+        },
+        "geometryNormals": {
+          "values": 4126482,
+          "mismatchedWords": 0
+        },
+        "expandedPositionValues": 24280893,
+        "expandedMismatches": 0,
+        "authoredCornerMismatches": 0,
+        "topologyCarrierPreserved": true,
+        "originalStreamsUnchanged": true,
+        "computedDisplayNormalsBorrowStoredCarrier": true
+      },
+      {
+        "file": "ply-3.ply",
+        "descriptor": "0x5ca4d690",
+        "entityId": "06540d83-903b-404e-9e5a-de6a247e7c0a",
+        "indexedPositions": {
+          "values": 5597544,
+          "mismatchedWords": 0
+        },
+        "geometryNormals": {
+          "values": 5597544,
+          "mismatchedWords": 0
+        },
+        "expandedPositionValues": 33220197,
+        "expandedMismatches": 0,
+        "authoredCornerMismatches": 0,
+        "topologyCarrierPreserved": true,
+        "originalStreamsUnchanged": true,
+        "computedDisplayNormalsBorrowStoredCarrier": true
+      }
+    ],
+    "converged": false,
+    "inputAndSourcePinsPreserved": true,
+    "nativeSessionAccessed": false,
+    "crossChatAccessed": false
+  },
+  "quality": "m3-cloud-20261025/original-cloud-quality.json",
+  "remainingGates": [
+    "Original-cloud lifecycle exposed world-normal carrier drift on Undo; shared cache/persistence fix and rebuilt acceptance remain required",
+    "Original STL/PLY/ASC complete production lifecycle matrix",
+    "Successful registration and usable aligned combination quality",
+    "Observed native setter-entry comparison and unsupported native normal fields",
+    "Native reconstruction equivalence"
+  ],
+  "limits": {
+    "jobBytes": 4294967296,
+    "cpuPercent": 25,
+    "leaseSeconds": 900
+  },
+  "reviews": [
+    "Cloud implementation: no actionable findings",
+    "Independent geometry utility: coplanar T-junction finding corrected, RED/GREEN and reviewed"
+  ]
+}

@@ -13,6 +13,8 @@ export interface IndexedMesh {
   normals?: Positions;
   /** Stored computed geometry normals, distinct from scanner-authored vectors. */
   geometryNormals?: Positions;
+  /** Stored computed XYZ normal per triangle; rigid setters rotate this state. */
+  facetNormals?: Positions;
 }
 /** Triangle slots refer to the current triangulation and must be sorted and unique. */
 export interface MeshSelectionState {

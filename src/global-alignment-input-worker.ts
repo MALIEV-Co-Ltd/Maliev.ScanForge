@@ -27,6 +27,7 @@ if (
           result.vertices.buffer,
           result.triangles.buffer,
           result.normals.buffer,
+          result.facetNormals.buffer,
           result.flags.buffer,
         ].filter(
           (buffer): buffer is ArrayBuffer => buffer instanceof ArrayBuffer,

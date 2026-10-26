@@ -131,7 +131,6 @@ own disposition. M2 is not closed by this bounded acceptance record.
 
 Current checkpoint `5ada756b6439eb1705a6842f84884a0e9765308e` passed [GitHub Actions run 40265236808](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40265236808): 49,136 tests passed, 64 conditional skips, all 13 TypeScript batches, Vite/offline build, both CAD smoke checks and whole-repository formatting. The earlier failed full-run receipt remains retained. This verifies that checkpoint; later Unroll changes require their own validation.
 
-
 ## Unroll auxiliary ownership, 2026-10-26
 
 [The auxiliary evidence](evidence/m2-unroll-ownership-20261026.json) records
@@ -151,3 +150,14 @@ comparison tolerance. Native image execution was not used. The evidence records
 and corrects an earlier validation scheduling overlap using a shared named mutex.
 Main advanced during this build, so integration and fresh candidate acceptance
 remain required. This bounded Unroll slice does not close M2.
+
+## Main integration, 2026-10-26
+
+[Integration evidence](evidence/m2-main-integration-20261026.json) records the
+combined M2 candidate and main `57c77aa`: 236 affected tests across 27 suites,
+all thirteen TypeScript batches and a warning-free production build
+`scanforge-2ab3fc2854ef56ae`. Fresh rendered GUI/public-MCP Unroll and Curvature
+checks pass on that frozen build. Owned sketches, facet normals, history and
+binary reopening coexist. Earlier failed test/build receipts remain recorded.
+Full hosted CI, the original three-scan replay and remaining native acceptance
+gates are still required before M2 can close.

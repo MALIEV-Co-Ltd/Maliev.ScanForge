@@ -1,5 +1,9 @@
+import { samplePointReconstructionGrid } from "./scan-reconstruction-point-grid";
 import type { MeshProcessingOptions } from "./mesh-processing";
-import { admitReconstructionInputs } from "./scan-reconstruction-input";
+import {
+  admitReconstructionRecords,
+  type ReconstructionInput,
+} from "./scan-reconstruction-input";
 import {
   sampleReconstructionGrid,
   closeReconstructionGrid,
@@ -16,6 +20,8 @@ import type { Positions } from "./types";
 type Options = Pick<MeshProcessingOptions, "signal" | "onProgress"> & {
   resolution?: number;
   targets?: Positions[];
+  inputKind?: ReconstructionInput["kind"];
+  targetInputs?: ReconstructionInput[];
 };
 const MAX_CELLS = 1_000_000_000;
 const MAX_OUTPUT = 16_000_000 * 9;
@@ -34,8 +40,24 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   const resolution = o.resolution ?? 0.5;
   if (!Number.isFinite(resolution) || resolution <= 0)
     throw new Error("Point resolution must be positive and finite.");
-  const inputs = [positions, ...(o.targets ?? [])];
-  admitReconstructionInputs(inputs);
+  if (o.targets !== undefined && o.targetInputs !== undefined)
+    throw Error("Use only one reconstruction target representation.");
+  const records: ReconstructionInput[] = [
+    { kind: o.inputKind ?? "triangles", positions },
+    ...(o.targetInputs ??
+      (o.targets ?? []).map((positions) => ({
+        kind: "triangles" as const,
+        positions,
+      }))),
+  ];
+  const admission = admitReconstructionRecords(records);
+  const inputs = records.map((r) => r.positions);
+  const triangles = records
+    .filter((r) => r.kind === "triangles")
+    .map((r) => r.positions);
+  const points = records
+    .filter((r) => r.kind === "points")
+    .map((r) => r.positions);
   const min = [Infinity, Infinity, Infinity],
     max = [-Infinity, -Infinity, -Infinity];
   for (const input of inputs)
@@ -74,8 +96,29 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
   const [nx, ny, nz] = dimensions,
     slice = nx * ny;
   const progress = (f: number, stage: string) => checkpoint(o, f, stage);
-  const { occupancy, shellPoints, distanceTests, candidates } =
-    sampleReconstructionGrid(inputs, start, dimensions, resolution, progress);
+  const triangleGrid = triangles.length
+    ? sampleReconstructionGrid(
+        triangles,
+        start,
+        dimensions,
+        resolution,
+        points.length ? (f, stage) => progress(f * 0.5, stage) : progress,
+      )
+    : undefined;
+  const pointGrid = points.length
+    ? samplePointReconstructionGrid(
+        points,
+        start,
+        dimensions,
+        resolution,
+        triangleGrid ? (f, stage) => progress(0.3 + f * 0.5, stage) : progress,
+        triangleGrid,
+      )
+    : undefined;
+  const { occupancy, shellPoints, distanceTests, candidates } = (pointGrid ??
+    triangleGrid)!;
+  if (pointGrid && pointGrid.representedPoints !== pointGrid.processedPoints)
+    throw Error("Reconstruction did not represent every input point.");
   if (!shellPoints)
     throw new Error("No surface samples found at this point resolution.");
   const filled = closeReconstructionGrid(occupancy, dimensions, progress),
@@ -218,7 +261,15 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
     topology,
     diagnostics: {
       watertight: topology.watertight,
-      inputMeshes: inputs.length,
+      inputMeshes: triangles.length,
+      inputPointClouds: points.length,
+      inputPoints: admission.points,
+      inputTriangles: admission.triangles,
+      processedPoints: pointGrid?.processedPoints ?? 0,
+      representedPoints: pointGrid?.representedPoints ?? 0,
+      field: "unsigned-distance-occupancy-union",
+      triangleRadius: triangles.length ? shellRadius : 0,
+      pointRadius: points.length ? Math.sqrt(0.75) * resolution : 0,
       resolution,
       gridPoints: total,
       distanceTests,
@@ -229,6 +280,6 @@ export function repolygonizeScanMesh(positions: Positions, o: Options = {}) {
       weldTolerance: tolerance,
       selfIntersectionsChecked: false,
     },
-    summary: `Verified watertight voxel surface: ${topology.components} closed component${topology.components === 1 ? "" : "s"} at ${resolution} mm point resolution; ${filled} enclosed samples filled. Surface offset approximately ${shellRadius} mm. ${filled ? "Enclosed regions fused and filled." : "Open regions reconstructed as closed thick shells."}`,
+    summary: `Verified watertight voxel surface: ${topology.components} closed component${topology.components === 1 ? "" : "s"} at ${resolution} mm point resolution; ${filled} enclosed samples filled. Surface offset approximately ${points.length ? Math.sqrt(0.75) * resolution : shellRadius} mm. ${filled ? "Enclosed regions fused and filled." : "Open regions reconstructed as closed thick shells."}`,
   };
 }

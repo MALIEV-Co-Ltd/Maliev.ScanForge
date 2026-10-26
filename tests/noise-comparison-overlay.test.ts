@@ -174,14 +174,38 @@ it("dispose releases original comparison geometry and restores underlying mesh",
     bridgePreview,
     sketchGeometry: new THREE.Group(),
     sketchPreview: new THREE.Group(),
+    savedSketchObjects: new Map(),
     originGeometry: new THREE.Group(),
   });
+  view.setSavedSketchDisplays([
+    {
+      id: "saved-line",
+      name: "Saved model line",
+      visible: true,
+      sketch: {
+        version: 1,
+        points: [
+          { id: "a", x: 0, y: 0 },
+          { id: "b", x: 1, y: 0 },
+        ],
+        segments: [{ id: "line", a: "a", b: "b" }],
+        constraints: [],
+      },
+    },
+  ]);
+  const savedDisplay = scene.getObjectByName(
+    "Saved model line",
+  ) as THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
+  const savedGeometryDisposed = vi.spyOn(savedDisplay.geometry, "dispose");
+  const savedMaterialDisposed = vi.spyOn(savedDisplay.material, "dispose");
   vi.stubGlobal("window", { removeEventListener: vi.fn() });
   view.dispose();
   expect(zoomWindowOverlay.remove).toHaveBeenCalledOnce();
   expect(zoomWindowHint.remove).toHaveBeenCalledOnce();
   expect(disposed).toHaveBeenCalledOnce();
   expect(bridgeDisposed).toHaveBeenCalledOnce();
+  expect(savedGeometryDisposed).toHaveBeenCalledOnce();
+  expect(savedMaterialDisposed).toHaveBeenCalledOnce();
   expect(mesh.visible).toBe(true);
   expect(scene.children).toHaveLength(0);
 });
