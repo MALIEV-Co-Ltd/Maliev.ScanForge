@@ -3,6 +3,7 @@ import { replaySurfaceJoins } from "./helpers/surface-join-browser.mjs";
 import { replayStepExport } from "./helpers/step-export-browser.mjs";
 import { replayExactFreeform } from "./helpers/exact-freeform-browser.mjs";
 import { replayCadTimeout } from "./helpers/cad-timeout-browser.mjs";
+import { replayNativeFit } from "./helpers/native-fit-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -716,6 +717,19 @@ try {
     unchangedRevision: true,
     report: faceReport,
   });
+  if (process.env.SCANFORGE_TEST_NATIVE_STEP)
+    await replayNativeFit({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      sourceId,
+      path: process.env.SCANFORGE_TEST_NATIVE_STEP,
+    });
   if (process.env.SCANFORGE_TEST_EXACT_FREEFORM === "1")
     await replayExactFreeform({
       page,

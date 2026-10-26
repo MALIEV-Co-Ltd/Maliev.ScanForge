@@ -2,20 +2,23 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
-Latest code candidate: `1594c78a98937911b90bd001f95f51b3fd94dfab`, build
-`scanforge-853c3b899398f72d`. Its
+Latest code candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
+`scanforge-c869395b41d3f42a`. Preceding candidate `1594c78` had a
 [hosted run](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807)
 failed before execution: GitHub reports recent account payments failed or the
 spending limit needs increasing. The [check annotations](evidence/m5-20261025/hosted-ci-billing-block.json)
-confirm no job started. This is not a source/test failure or a passing hosted
-validation. Account-owner action is required before exact-head CI can run.
+confirm no job started in that attempt. The owner subsequently made the repository
+public; the rerun of evidence head `b6c0477` actually started (job121338654444).
+Final exact-head CI remains required; the billing failure is historical rather
+than evidence that the rerun passed.
 Native QuickSurface UI initialization recovered at 19:56 UTC on 2026-10-25
-([observation](evidence/m5-20261025/native-runtime-recovered.json)). No native
-input was sent: existing windows are owned by other work or have unknown
-ownership. The user subsequently authorized coordination, and the first fresh
+([observation](evidence/m5-20261025/native-runtime-recovered.json)). Existing
+windows were preserved. The user subsequently authorized coordination, and the first fresh
 owned session imported/saved the connected scan region with verified cleanup
 ([receipt](evidence/m5-20261025/native-import-r1.json)). Fitting control routing
-failed before acceptance; native geometry and M4 acceptance remain incomplete.
+failed before acceptance. A second owned session accepted the native fit and
+exported actual QSF/STEP; the measured comparison below shows a fitting gap.
+The native operation matrix and M4 acceptance remain incomplete.
 Local checks are retained below; M5 is not merged or closed.
 
 ## Operation matrix
@@ -32,6 +35,85 @@ Local checks are retained below; M5 is not merged or closed.
 | Resources                                               | Existing admission guards, owned browser/MCP process leases                           | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
 
 ## Candidate history and validation
+
+### Exact CAD restore parity and native-input replay
+
+Native-input [browser r2](evidence/m5-20261025/native-fit-browser-failure-r2.log)
+passed GUI/MCP import/thickening equality and history, then exposed position
+buffer drift after public-MCP project reopen. Shared restoration was replacing
+saved buffers/BREP with freshly imported kernel output; GUI restore already
+retained saved fields. Commit `e1a4a9a` now refreshes only the kernel handle and
+caches kernel-ID strings, avoiding retained duplicate remesh buffers. Current,
+undo and redo states preserve saved positions, normals, edge data and BREP.
+Both `project_import` and `backup_restore` reproduce the issue in the
+[red regression](evidence/m5-20261025/restore-retessellation-red.log); the
+[green suite](evidence/m5-20261025/restore-retessellation-green.log) passes5/5.
+The affected [Vite build](evidence/m5-20261025/restore-retessellation-build.log)
+passed. Full typecheck/full-suite verification of this delta is still pending.
+
+The corrected [numerical comparison r4](evidence/m5-20261025/native-fit-comparison-r4.json)
+passes inverse-XY checks at every sample. Rectangle maximum inverse error is
+9.12e-12mm; centroid maximum is8.69e-12mm (limit1e-5mm). The earlier rectangle
+height/normal differences are reproduced. Additionally,200 scanned-triangle
+centroids show maximum height difference0.01355066324344989mm, RMS difference
+0.004344839309236202mm and maximum normal angle3.519653197362887degrees. These
+scanned-region metrics accompany, rather than replace, the full-rectangle result.
+Different method/control-count conventions still prevent a native-equivalence claim.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/native-fit-browser-r4.json)
+passes actual native STEP import/inspection, identical GUI/MCP thickening
+buffers, one history step for each operation, Undo/Redo, both GUI and MCP project
+reopen with exact display geometry, source preservation and solid STEP exchange.
+The solid is valid, with1solid/1shell/6faces/12edges/8vertices; area is
+15.059736029491646mm² and volume0.6985898570432448mm³. Reimport matches analytic
+properties within1e-8 relative/1e-6 absolute tolerance. This thickening is
+ScanForge's modeling of native-fitted input, not native QuickSurface thickening.
+
+[Runner](evidence/m5-20261025/native-fit-comparison-runner-r4.json) and
+[Job](evidence/m5-20261025/native-fit-comparison-job-r4.json) confirm actual
+cleanup: exit0, zero active processes, no cleanup errors, port5206 closed,
+peak2,704,715,776bytes under4GiB and13seconds elapsed. Browser console and page
+error lists are empty. [Intermediate r3](evidence/m5-20261025/native-fit-browser-failure-r3.log)
+passed geometry/persistence but failed the console gate because the validation
+build omitted normal postbuild service-worker generation. That failure is
+retained; normal postbuild generation preceded passing r4.
+
+### Captured native fit and numerical comparison
+
+The [second native session](evidence/m5-20261025/native-fit-r2.json) accepted
+Simple fitting on the connected 200-triangle scan: explicit degree3, OXY,
+expansion0 and smoothness0. Native UI U4/V4 serialized a **5×5 cubic control
+net**. These labels cannot be equated with ScanForge's 4×4 control counts.
+The native GUI saved a fresh QSF and exported STEP AP214 in millimetres without
+axis remapping. The owned process exited after authenticated finish, all handles
+closed, zero Job processes remained, and peak allocation was706,473,984 bytes
+under the unchanged4GiB/25% CPU limits. Other native windows were preserved.
+
+The [first numerical comparison](evidence/m5-20261025/native-fit-comparison-r1.json)
+imported actual native STEP and reconstructed its serialized control net.
+Both exact faces were valid and their areas agreed within1e-8 relative/1e-6
+absolute tolerance (6.947693035595898 vs6.947693035595955mm²). Projected Z
+residuals at600 source vertices were RMS0.006061076916250271mm for native and
+0.006583489565586009mm for ScanForge. This is a projected metric, not native
+UI RMS or a closest-point distance. Maximum inverse-XY residual was1.91e-6mm.
+Across289 samples of the shared rectangular domain, maximum height difference
+was0.04350237034515203mm and maximum normal angle13.311760256620706degrees.
+That rectangle includes extrapolation outside the irregular scanned region;
+the complete measured result remains retained. Run r1 did not assert inverse XY
+coverage at those rectangle samples, so these metrics are preliminary. The
+prepared retry rejects any sample exceeding1e-5mm inverse residual and records
+the observed maximum. No native equivalence is claimed.
+
+ScanForge's kernel thickened the native-generated face by-0.1mm into a valid
+one-solid/six-face BREP. This checks our modeling of native input; it is not a
+native QuickSurface thickening result. Kernel cleanup left zero handles and
+source bytes unchanged. The [browser retry predecessor](evidence/m5-20261025/native-fit-browser-failure-r1.log)
+failed because its harness requested a geometry digest before the GUI import job
+settled (BUSY). The [runner](evidence/m5-20261025/native-fit-comparison-runner-r1.json)
+and [Job receipt](evidence/m5-20261025/native-fit-comparison-job-r1.json) retain
+that failure and actual cleanup: port5206 closed, zero active processes.
+The harness now waits for idle after GUI import/thickening; passing r4 above
+supersedes this failed browser attempt without discarding its receipt.
 
 ### First owned native session: import and retained fitting-control failure
 
