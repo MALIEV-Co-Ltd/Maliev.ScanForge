@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
 import fixture from "./fixtures/bridge-observed-flat-annulus.json";
+import semiFixture from "./fixtures/hole-observed-semi-flat-square.json";
 import shortFixture from "./fixtures/bridge-observed-flat-short-annulus.json";
 import { runScanEdit } from "../src/scan-edit";
 import { analyzeMesh } from "../src/mesh-processing";
@@ -161,4 +162,31 @@ it("does not reuse a retained diagonal as a new Flat bridge interior edge", () =
   const after = analyzeMesh(source);
   expect(after.nonManifoldEdges).toBe(topology.nonManifoldEdges);
   expect(after.inconsistentEdges).toBe(topology.inconsistentEdges);
+});
+
+it("matches the observed native Semi Flat oriented arc and preserves its original triangles", () => {
+  const positions = new Float32Array(semiFixture.source);
+  const original = positions.slice();
+  const request = {
+    kind: "scanEdit",
+    action: "fillHoles",
+    positions,
+    mode: "partial",
+    algorithm: "flat",
+    indices: [semiFixture.boundary],
+    start: semiFixture.start,
+    end: semiFixture.end,
+    tolerance: semiFixture.tolerance,
+  } satisfies Parameters<typeof runScanEdit>[0];
+  const output = runScanEdit(request).positions!;
+  expect(output.length / 9).toBe(9);
+  expect(orientedFaces(output)).toEqual(orientedFaces(semiFixture.native));
+  expect(output.slice(0, original.length)).toEqual(original);
+  expect(positions).toEqual(original);
+  expect(
+    orientedFaces(
+      runScanEdit({ ...request, start: request.end, end: request.start })
+        .positions!,
+    ),
+  ).not.toEqual(orientedFaces(semiFixture.native));
 });

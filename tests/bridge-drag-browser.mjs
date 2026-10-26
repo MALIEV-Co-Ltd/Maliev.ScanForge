@@ -3,12 +3,21 @@ import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { randomUUID, randomBytes } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
   out = new URL("../.resources/bridge-response-browser/", import.meta.url);
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/`)
+  : new URL("dist/", root);
+const semiFlatFixture = JSON.parse(
+  await readFile(
+    new URL("fixtures/hole-observed-semi-flat-square.json", import.meta.url),
+    "utf8",
+  ),
+);
 const nativeFlatFixture = JSON.parse(
   await readFile(
     new URL("fixtures/bridge-observed-flat-annulus.json", import.meta.url),
@@ -73,10 +82,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -236,7 +244,9 @@ try {
       chunks.push(bytes);
       offset += bytes.length;
     } while (offset < artifact.bytes);
-    return JSON.parse(Buffer.concat(chunks).toString());
+    const result = JSON.parse(Buffer.concat(chunks).toString());
+    await call("artifact_delete", { artifactId: artifact.artifactId });
+    return result;
   };
   const runEdit = async (operation, previewOnly) =>
     (
@@ -286,9 +296,10 @@ try {
                 : "flat",
       ),
   );
+  const semiCase = requestedCases?.includes("native-semi-flat");
   const convergenceCase = process.env.SCANFORGE_HOLE_CONVERGENCE === "1";
   assert(
-    cases.length > 0 || convergenceCase,
+    cases.length > 0 || convergenceCase || semiCase,
     "No requested browser cases matched",
   );
   if (convergenceCase) {
@@ -419,6 +430,155 @@ try {
       guiMcpEqual: true,
       sourceUnchanged: true,
       undoRedo: true,
+    });
+  }
+  if (semiCase) {
+    const project = {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Native Semi Flat square",
+      units: "mm",
+      entities: [
+        {
+          id: "rim",
+          name: "Native square annulus",
+          kind: "mesh",
+          positions: semiFlatFixture.source,
+          visible: true,
+          color: "#b4bec4",
+          opacity: 1,
+        },
+      ],
+    };
+    const upload = (
+      await call("artifact_put", {
+        name: "semi-flat.json",
+        offset: 0,
+        base64: Buffer.from(JSON.stringify(project)).toString("base64"),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: upload.artifactId,
+        replace: true,
+      }),
+    );
+    await mutate("object_select", { entityId: "rim" });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    const original = await geometry(),
+      beforeHistory = await history();
+    assert.deepEqual(original.positions, semiFlatFixture.source);
+    const inventory = await artifactJson(
+      (await runEdit({ kind: "scanEdit", action: "inventory" })).artifact,
+    );
+    const hole = inventory.inventory.boundaries.findIndex(
+      (b) =>
+        b.closed && b.points.every((v, i) => i % 3 === 2 || Math.abs(v) <= 3),
+    );
+    assert.equal(hole, semiFlatFixture.boundary);
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: "flat",
+      indices: [hole],
+      start: semiFlatFixture.start,
+      end: semiFlatFixture.end,
+      tolerance: semiFlatFixture.tolerance,
+    };
+    const expectedResult = await runEdit(operation);
+    const expectedGeometry = await geometry();
+    const patch = {
+      positions: expectedGeometry.positions.slice(original.positions.length),
+    };
+    assert.equal(patch.positions.length, 9);
+    await mutate("history_undo", {});
+    assert.equal(await history(), beforeHistory);
+    assert.deepEqual((await geometry()).positions, original.positions);
+    const openSemi = async () => {
+      await page
+        .getByRole("button", { name: "Edit holes", exact: true })
+        .click();
+      const controls = page.locator(".scan-topology-panel");
+      await controls.locator(".app-select > button").first().click();
+      await page
+        .getByRole("option", { name: "Semi hole", exact: true })
+        .click();
+      await controls.locator(".app-select > button").nth(1).click();
+      await page.getByRole("option", { name: "Flat", exact: true }).click();
+      await controls.locator(".scan-topology-list button").nth(hole).click();
+      await controls
+        .getByRole("spinbutton", { name: "Start vertex", exact: true })
+        .fill(String(operation.start));
+      await controls
+        .getByRole("spinbutton", { name: "End vertex", exact: true })
+        .fill(String(operation.end));
+      return controls;
+    };
+    let controls = await openSemi();
+    await controls.getByRole("button", { name: "Back", exact: true }).click();
+    assert.deepEqual((await geometry()).positions, original.positions);
+    assert.equal(await history(), beforeHistory);
+    controls = await openSemi();
+    await page.screenshot({
+      path: fileURLToPath(new URL("native-semi-flat-settings.png", out)),
+    });
+    await controls
+      .getByRole("button", { name: "Fill selected hole", exact: true })
+      .click();
+    for (let i = 0; i < 120 && (await history()) === beforeHistory; i++)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    assert.equal(await history(), beforeHistory + 1);
+    await mutate("viewport_control", { action: "fit", entityId: "rim" });
+    const gui = await geometry();
+    assert.deepEqual(
+      orientedFaces(gui.positions),
+      orientedFaces(semiFlatFixture.native),
+    );
+    assert.deepEqual(
+      gui.positions.slice(0, original.positions.length),
+      original.positions,
+    );
+    assert.deepEqual(
+      gui.positions.slice(original.positions.length),
+      patch.positions,
+    );
+    await mutate("viewport_control", { action: "fit", entityId: "rim" });
+    await page.screenshot({
+      path: fileURLToPath(new URL("native-semi-flat-filled.png", out)),
+    });
+    await page.keyboard.press("Control+z");
+    assert.deepEqual((await geometry()).positions, original.positions);
+    await mutate("history_redo", {});
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    await mutate("history_undo", {});
+    await runEdit(operation);
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    assert.equal(await history(), beforeHistory + 1);
+    await controls.getByRole("button", { name: "Back", exact: true }).click();
+    const saved = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: saved.result.artifactId,
+        replace: true,
+      }),
+    );
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    reports.push({
+      scenario: "native-semi-flat",
+      sourceTriangles: original.positions.length / 9,
+      outputTriangles: gui.positions.length / 9,
+      patchTriangles: patch.positions.length / 9,
+      method: expectedResult.diagnostics.method,
+      guiMcpEqual: true,
+      nativeOrientedGeometryEqual: true,
+      retainedSourceCornersExact: true,
+      mcpCommitUndoRestoresSourceAndHistory: true,
+      guiBackBeforeApplyPreservesSourceAndHistory: true,
+      undoRedo: true,
+      saveReopen: true,
     });
   }
   for (const { curved, separate, fragmented, native } of cases) {

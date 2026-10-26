@@ -1,0 +1,220 @@
+{
+  "scope": "Semi/Flat native finite-control rendered GUI/public-MCP lifecycle plus the five existing Bridge regressions. Production source unchanged from 4ce0c95; M2 remains open.",
+  "baseCommit": "4ce0c95f42b1d7abcbfc90eec8183401f9de222d",
+  "productionBuild": "scanforge-371efeb2c74e6b42",
+  "native": {
+    "sourceSha256": "ec54d4c2d2b06e1c836bb7d53b700176dd89970919ffd7b5948a3a56c7d39b9b",
+    "nativeSha256": "21b7db9591b1d4c55a79a6d75c4748dbb303014aa99a1ce4a62c637d286b3d17",
+    "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+    "units": "mm",
+    "mode": "partial",
+    "algorithm": "flat",
+    "boundary": 1,
+    "start": 1,
+    "end": 3,
+    "tolerance": 0.001
+  },
+  "fixture": {
+    "path": "tests\\fixtures\\hole-observed-semi-flat-square.json",
+    "sha256": "2c4de54b50de706b9adbacc76a34a6ffde8b2df8e93fea4797a7128bea7448a8",
+    "sourceTriangles": 8,
+    "nativeTriangles": 9
+  },
+  "focused": {
+    "passed": 19,
+    "failed": 0,
+    "files": 3,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-focused-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "39f5d2c59df3c3ec283f6dc2c247ee671225b5e8e1aeced13c1b853390cf05be",
+      "passed": true,
+      "elapsedSeconds": 1.8761324000079185,
+      "peakOwnedJobBytes": 371380224,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "targetedTypecheck": {
+    "diagnostics": 0,
+    "checkedFiles": 813,
+    "roots": [
+      "tests/scan-bridge-native-flat.test.ts",
+      "tests/viewport-selection-overlay.test.ts"
+    ],
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-typecheck-20261026-r2-mirror-focused.receipt.json",
+      "sha256": "01b85f3b67cf2e8fdbecb86fad91a80c0fb814bf9f2e8f2e823d32b727d6b3a8",
+      "passed": true,
+      "elapsedSeconds": 5.513196100015193,
+      "peakOwnedJobBytes": 469123072,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "browser": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-six-browser-20261026-r3-full.receipt.json",
+      "sha256": "2fc51a962ce9c67560c8d4dff9956c705aca56e996744ec6b6602af86a41b445",
+      "passed": true,
+      "elapsedSeconds": 20.770756200014148,
+      "peakOwnedJobBytes": 1062871040,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "ledgerSha256": "2ed5dfa7338ba9981b7e248e41fea52e4ce394f00af438c4062231c7576a141b",
+    "result": {
+      "reports": [
+        {
+          "scenario": "native-semi-flat",
+          "sourceTriangles": 8,
+          "outputTriangles": 9,
+          "patchTriangles": 1,
+          "method": "flat",
+          "guiMcpEqual": true,
+          "nativeOrientedGeometryEqual": true,
+          "retainedSourceCornersExact": true,
+          "mcpCommitUndoRestoresSourceAndHistory": true,
+          "guiBackBeforeApplyPreservesSourceAndHistory": true,
+          "undoRedo": true,
+          "saveReopen": true
+        },
+        {
+          "method": "flat",
+          "scenario": "flat",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 20,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "tangent",
+          "scenario": "tangent",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 22,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "independent-boundaries",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 4,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "fragmented-open",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 4,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "native-flat",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 20,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true,
+          "nativeOrientedGeometryEqual": true,
+          "saveReopen": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 56711,
+        "closed": true
+      },
+      {
+        "pid": 64276,
+        "exited": true
+      },
+      {
+        "port": 56712,
+        "closed": true
+      },
+      {
+        "pid": 58240,
+        "exited": true
+      }
+    ],
+    "settingsAndFilledScreenshotsVisuallyInspected": true
+  },
+  "retainedFailedAttempts": [
+    {
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-browser-20261026-r1-full.receipt.json",
+        "sha256": "887da36b15c9a84b8f1b400f26f9fdb051e729b52acc2c435f2fa56155f890cb",
+        "passed": false,
+        "elapsedSeconds": 3.946137399994768,
+        "peakOwnedJobBytes": 927682560,
+        "jobLimitBytes": 4294967296,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "cause": "Driver incorrectly requested bridge-only previewOnly for a partial fill. Corrected driver uses supported MCP commit/undo; no application contract changed."
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-six-browser-20261026-r1-full.receipt.json",
+        "sha256": "184eb516bdf931829eaf53c010f94a3f2bb39ca8aef238f78c769b6e334656d1",
+        "passed": false,
+        "elapsedSeconds": 21.2792454000446,
+        "peakOwnedJobBytes": 941117440,
+        "jobLimitBytes": 4294967296,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "cause": "Driver left Semi hole panel open across case import. It now returns through Back before the next case."
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-six-browser-20261026-r2-full.receipt.json",
+        "sha256": "062f62c3311b86252f8b8a2e1b9c0f0211ee9613fa055ca966d940917a176b3c",
+        "passed": false,
+        "elapsedSeconds": 20.725760600005742,
+        "peakOwnedJobBytes": 1074151424,
+        "jobLimitBytes": 4294967296,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "cause": "Driver retained every JSON geometry readback and exhausted the unchanged 64-artifact quota. It now deletes each artifact after decoding."
+    },
+    {
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-semi-flat-typecheck-20261026-r1-mirror-focused.receipt.json",
+        "sha256": "b3f5b60686f2175096c4d662d5e54b724089f4df3548a8fee3634678af848e7b",
+        "passed": false,
+        "elapsedSeconds": 5.109256100025959,
+        "peakOwnedJobBytes": 468156416,
+        "jobLimitBytes": 4294967296,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "cause": "Readonly test literal indices were incompatible with mutable request indices. satisfies ScanEditRequest preserves the intended runtime literal and typechecks."
+    }
+  ],
+  "independentSourceReview": "No actionable findings; final inter-case runtime isolation passed the six-case replay.",
+  "limitations": [
+    "Single native square-annulus Semi/Flat arc, not dense/chord or arbitrary partial algorithms.",
+    "Semi GUI has no preview contract here. MCP commit/undo and Back-before-Apply are tested; running-job cancellation is not claimed by this Semi control.",
+    "Other partial/bridge algorithms and separate failed 41-edge cup remain open.",
+    "Read-only desktop capture remained black even after a fresh official automation session; no native modeling/file input was attempted for this slice."
+  ]
+}
