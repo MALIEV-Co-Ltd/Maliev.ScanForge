@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { Buffer } from "node:buffer";
 import {
   createOperations,
   createCadFeature,
@@ -386,7 +387,9 @@ it.each([8, 160])(
       expect(h.host.commit).not.toHaveBeenCalled();
       expect(h.state.history).toEqual([]);
       expect(h.state.entities[0].positions).toBe(positions);
-      expect(positions).toEqual(before);
+      expect(
+        Buffer.from(positions.buffer).equals(Buffer.from(before.buffer)),
+      ).toBe(true);
     }
   },
 );

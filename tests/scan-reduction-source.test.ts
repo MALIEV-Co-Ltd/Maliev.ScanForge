@@ -1,4 +1,5 @@
 import { expect, it } from "vitest";
+import { Buffer } from "node:buffer";
 import { analyzeIndexedMesh, analyzeMesh } from "../src/mesh-processing";
 import { validateReductionSource } from "../src/scan-reduction-source";
 import { reductionGrid } from "./helpers/reduction-grid";
@@ -108,7 +109,9 @@ it.each([8, 160])(
           }),
         name,
       ).toThrow("Repair invalid");
-      expect(source).toEqual(before);
+      expect(
+        Buffer.from(source.buffer).equals(Buffer.from(before.buffer)),
+      ).toBe(true);
       expect(stages).not.toContain("Reducing spatial patches");
     }
   },
