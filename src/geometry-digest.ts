@@ -2,6 +2,8 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { projectValueBytes } from "./project-value-stream";
 import type { Entity, Positions } from "./types";
 import { validateReferenceEntity } from "./reference-entity";
+import { validateReferenceFrameEntity } from "./reference-frame";
+import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 
 export interface GeometryDigestBuffer {
   path: string;
@@ -64,7 +66,18 @@ export async function digestEntityGeometry(
     });
   };
   const reference = validateReferenceEntity(entity);
-  if (reference) {
+  const coordinateFrame = validateReferenceFrameEntity(entity);
+  if (coordinateFrame) {
+    for (const name of ["origin", "u", "v", "normal"] as const)
+      add(`coordinateFrame.frame.${name}`, [...coordinateFrame.frame[name]]);
+    add("coordinateFrame.displaySize", [coordinateFrame.displaySize]);
+    const mapping = validateRollMappingEntity(entity);
+    if (mapping) {
+      add("rollMapping.radius", [mapping.radius]);
+      add("rollMapping.offsetDegrees", [mapping.offsetDegrees]);
+      add("rollMapping.instances", [mapping.instances]);
+    }
+  } else if (reference) {
     const geometry = reference.geometry;
     if (geometry.kind === "point")
       add("reference.geometry.position", [...geometry.position]);

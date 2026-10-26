@@ -371,3 +371,5 @@ setup failure and older numerical failures remain separate retained receipts.
 This control closes the observed smooth-annulus entire-Curvature mismatch, not
 all Curvature input classes, partial/bridge behavior or M2. Native failed cup
 controls are still failures and must not be treated as successful-cap oracles.
+
+Current checkpoint `5ada756b6439eb1705a6842f84884a0e9765308e` passed [GitHub Actions run 40265236808](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40265236808): 49,136 tests passed, 64 conditional skips, all 13 TypeScript batches, Vite/offline build, both CAD smoke checks and whole-repository formatting. The earlier failed full-run receipt remains retained. This verifies that checkpoint; later Unroll changes require their own validation.

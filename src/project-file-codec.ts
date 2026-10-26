@@ -4,7 +4,17 @@ import {
   validatePointCloudAttributes,
 } from "./io";
 import type { Entity, Project } from "./types";
+import {
+  encodeReferenceFrame,
+  decodeReferenceFrame,
+  type EncodedCoordinateFrame,
+} from "./reference-frame";
+import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import type { Revision } from "./history";
+import {
+  validateModelSketchChanges,
+  type ModelSketchChange,
+} from "./model-sketch-history";
 import { retainIndexedMesh } from "./indexed-mesh";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import {
@@ -56,8 +66,10 @@ type RecordData = Omit<
   | "pointCloudPlacement"
   | "pointColors"
   | "reference"
+  | "coordinateFrame"
 > & {
   reference?: EncodedReferenceEntityData;
+  coordinateFrame?: EncodedCoordinateFrame;
   positions: Ref;
   cloudPoseBits?: string;
   edgePositions?: Ref;
@@ -109,6 +121,13 @@ export async function encodeProjectFileLocally(
   let deferredClouds = false;
   let cloudAttributes = false;
   let constructionMetadata = false;
+  let ownedModelMetadata =
+    [...session.history, ...session.future].some(
+      (row) => row.sketchChanges !== undefined,
+    ) ||
+    !!session.project.authoring?.sketches?.some(
+      (row) => row.visible !== undefined,
+    );
   async function store(value: ProjectValue, integer = false): Promise<Ref> {
     const type =
       typeof value === "string"
@@ -154,7 +173,10 @@ export async function encodeProjectFileLocally(
     return ref;
   }
   async function state(entities: Entity[]): Promise<number[]> {
-    for (const entity of entities) validateReferenceEntity(entity);
+    for (const entity of entities) {
+      validateReferenceEntity(entity);
+      if (validateRollMappingEntity(entity)) ownedModelMetadata = true;
+    }
     entities = entities.map(retainIndexedMesh);
     validateProject({ ...session.project, entities });
     const ids: number[] = [];
@@ -173,6 +195,7 @@ export async function encodeProjectFileLocally(
           indexedMesh,
           pointCloudPlacement: _placement,
           reference,
+          coordinateFrame,
           ...metadata
         } = entity;
         const selection: RecordData["meshSelection"] = meshSelection
@@ -195,6 +218,7 @@ export async function encodeProjectFileLocally(
           cloudAttributes = true;
         if (
           reference !== undefined ||
+          coordinateFrame !== undefined ||
           entity.constructionOrderKey !== undefined
         )
           constructionMetadata = true;
@@ -202,6 +226,9 @@ export async function encodeProjectFileLocally(
           ...metadata,
           ...(reference !== undefined
             ? { reference: encodeReferenceEntityData(reference) }
+            : {}),
+          ...(coordinateFrame !== undefined
+            ? { coordinateFrame: encodeReferenceFrame(coordinateFrame) }
             : {}),
           positions: await store(placement?.sourcePositions ?? positions),
           ...(placement ? { cloudPoseBits: placement.matrixBits } : {}),
@@ -258,6 +285,10 @@ export async function encodeProjectFileLocally(
     return Promise.all(
       items.map(async (item) => ({
         label: item.label,
+        ...(item.sketchChanges !== undefined
+          ? (validateModelSketchChanges(item.sketchChanges),
+            { sketchChanges: item.sketchChanges })
+          : {}),
         ...(item.restoreVisibilityFor?.length
           ? { restoreVisibilityFor: item.restoreVisibilityFor }
           : {}),
@@ -276,13 +307,15 @@ export async function encodeProjectFileLocally(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: constructionMetadata
-          ? 5
-          : cloudAttributes
-            ? 4
-            : deferredClouds
-              ? 3
-              : 2,
+        version: ownedModelMetadata
+          ? 6
+          : constructionMetadata
+            ? 5
+            : cloudAttributes
+              ? 4
+              : deferredClouds
+                ? 3
+                : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -335,7 +368,7 @@ export async function decodeProjectContents(
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    ![2, 3, 4, 5].includes(m.version) ||
+    ![2, 3, 4, 5, 6].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -446,7 +479,7 @@ export async function decodeProjectContents(
         "f64",
         "u32",
         "text",
-        ...([4, 5].includes(m.version) ? ["u8"] : []),
+        ...([4, 5, 6].includes(m.version) ? ["u8"] : []),
       ].includes(ref.type)
     )
       return invalid();
@@ -519,21 +552,26 @@ export async function decodeProjectContents(
     if (
       (record.pointColors !== undefined ||
         record.ascAttributes !== undefined) &&
-      ![4, 5].includes(m.version)
+      ![4, 5, 6].includes(m.version)
     )
       return invalid();
     if (record.pointColors !== undefined && record.pointColors.type !== "u8")
       return invalid();
     if (
       (record.reference !== undefined ||
+        record.coordinateFrame !== undefined ||
         record.constructionOrderKey !== undefined) &&
-      m.version !== 5
+      ![5, 6].includes(m.version)
     )
       return invalid();
+    if (record.rollMapping !== undefined && m.version !== 6) return invalid();
     const entity = {
       ...record,
       ...(record.reference !== undefined
         ? { reference: decodeReferenceEntityData(record.reference) }
+        : {}),
+      ...(record.coordinateFrame !== undefined
+        ? { coordinateFrame: decodeReferenceFrame(record.coordinateFrame) }
         : {}),
       positions: read(record.positions),
       indexedMesh: record.indexedMesh
@@ -568,7 +606,7 @@ export async function decodeProjectContents(
         : undefined,
     } as Entity;
     if (record.cloudPoseBits !== undefined) {
-      if (![3, 4, 5].includes(m.version) || entity.kind !== "pointcloud")
+      if (![3, 4, 5, 6].includes(m.version) || entity.kind !== "pointcloud")
         return invalid();
       return placedCloud(entity, {
         matrixBits: record.cloudPoseBits,
@@ -597,10 +635,15 @@ export async function decodeProjectContents(
       label: string;
       entities: number[];
       restoreVisibilityFor?: string[];
+      sketchChanges?: ModelSketchChange[];
     }[],
   ): Revision[] {
     return items.map((item) => {
       if (!item || typeof item.label !== "string") return invalid();
+      if (item.sketchChanges !== undefined) {
+        if (m.version !== 6) return invalid();
+        validateModelSketchChanges(item.sketchChanges);
+      }
       const ids = item.restoreVisibilityFor;
       if (
         ids !== undefined &&
@@ -615,6 +658,9 @@ export async function decodeProjectContents(
       return {
         label: item.label,
         entities: state(item.entities),
+        ...(item.sketchChanges !== undefined
+          ? { sketchChanges: structuredClone(item.sketchChanges) }
+          : {}),
         ...(ids?.length ? { restoreVisibilityFor: [...ids] } : {}),
       };
     });
@@ -627,6 +673,11 @@ export async function decodeProjectContents(
     authoring: m.authoring,
     entities: state(m.current),
   });
+  if (
+    m.version !== 6 &&
+    project.authoring?.sketches?.some((row) => row.visible !== undefined)
+  )
+    return invalid();
   return {
     ...(typeof m.projectId === "string" &&
     /^[a-zA-Z0-9-]{1,128}$/.test(m.projectId)

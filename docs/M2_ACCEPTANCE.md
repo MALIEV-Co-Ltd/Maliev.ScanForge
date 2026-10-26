@@ -128,3 +128,26 @@ first full run's three synchronous-response test assumptions are retained and
 corrected; exact-head full CI is pending. The source-preserving failed native cup
 classes, other modes/inputs and remaining operation inventory still require their
 own disposition. M2 is not closed by this bounded acceptance record.
+
+Current checkpoint `5ada756b6439eb1705a6842f84884a0e9765308e` passed [GitHub Actions run 40265236808](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40265236808): 49,136 tests passed, 64 conditional skips, all 13 TypeScript batches, Vite/offline build, both CAD smoke checks and whole-repository formatting. The earlier failed full-run receipt remains retained. This verifies that checkpoint; later Unroll changes require their own validation.
+
+
+## Unroll auxiliary ownership, 2026-10-26
+
+[The auxiliary evidence](evidence/m2-unroll-ownership-20261026.json) records
+shared GUI/public-MCP publication of the mesh, visible saved Sketch and hidden
+tangent Roll frame with separate retained radius. The source remains unchanged.
+Undo/Redo/Seek and binary reopening restore only the operation-owned sketch;
+unrelated sketch edits and the active draft survive. GUI and MCP visibility,
+retry protection, cancellation and failure rollback pass on production build
+`scanforge-662952da8b8d36cc`, with 77 affected regressions and all thirteen
+TypeScript batches. The viewed screenshot shows the saved seam line while the
+other draft remains active. Owned helpers and ports close without page errors.
+
+The tangent-frame convention derives from recovered static conversion helpers;
+there is no runtime capture proving bitwise equality of the native frame payload.
+The existing observed mesh coordinates retain their stated 1e-12 mm axial
+comparison tolerance. Native image execution was not used. The evidence records
+and corrects an earlier validation scheduling overlap using a shared named mutex.
+Main advanced during this build, so integration and fresh candidate acceptance
+remain required. This bounded Unroll slice does not close M2.

@@ -1,4 +1,9 @@
-import type { Entity } from "./types";
+import type { Entity, Project } from "./types";
+import {
+  applyModelSketchChanges,
+  captureModelSketchChanges,
+  type ModelSketchChange,
+} from "./model-sketch-history";
 import { canonicalCloud, cloudPlacement } from "./point-cloud-placement";
 import { indexedMeshMatches } from "./indexed-mesh";
 import { meshGeometryNormals } from "./mesh-geometry-normals";
@@ -7,6 +12,7 @@ export interface Revision {
   label: string;
   /** Visibility changed by the modeling operation itself, rather than a display toggle. */
   restoreVisibilityFor?: string[];
+  sketchChanges?: ModelSketchChange[];
 }
 /** Seek atomically across both undo and redo snapshots, without replaying edits. */
 export function seekModelRevision(
@@ -14,12 +20,44 @@ export function seekModelRevision(
   entities: Entity[],
   future: Revision[],
   index: number,
-): { history: Revision[]; entities: Entity[]; future: Revision[] } {
+  authoring?: NonNullable<Project["authoring"]>,
+): {
+  history: Revision[];
+  entities: Entity[];
+  future: Revision[];
+  authoring?: NonNullable<Project["authoring"]>;
+} {
   const count = history.length + future.length;
   if (!Number.isInteger(index) || index < 0 || index > count)
     throw new RangeError("Model revision is outside the retained timeline");
-  if (index === history.length) return { history, entities, future };
+  if (index === history.length)
+    return { history, entities, future, ...(authoring ? { authoring } : {}) };
   const revisions = [...history, ...future];
+  const crossed = revisions.slice(
+    Math.min(index, history.length),
+    Math.max(index, history.length),
+  );
+  if (!authoring && crossed.some((row) => row.sketchChanges?.length))
+    throw Error(
+      "Saved sketch authoring is required to traverse this model revision.",
+    );
+  if (authoring) {
+    const direction = index < history.length ? -1 : 1;
+    for (
+      let i = direction < 0 ? history.length - 1 : history.length;
+      direction < 0 ? i >= index : i < index;
+      i += direction
+    ) {
+      const revision = revisions[i];
+      if (!revision.sketchChanges?.length) continue;
+      const reverse = captureModelSketchChanges(
+        authoring,
+        revision.sketchChanges,
+      );
+      authoring = applyModelSketchChanges(authoring, revision.sketchChanges);
+      revisions[i] = { ...revision, sketchChanges: reverse };
+    }
+  }
   const visibility = new Set(
     revisions
       .slice(Math.min(index, history.length), Math.max(index, history.length))
@@ -31,6 +69,7 @@ export function seekModelRevision(
     ...future.map((revision) => revision.entities),
   ];
   return {
+    ...(authoring ? { authoring } : {}),
     history: revisions
       .slice(0, index)
       .map((revision, i) => ({ ...revision, entities: states[i] })),
@@ -50,6 +89,8 @@ export function modelChanged(before: Entity[], after: Entity[]): boolean {
       old.kind !== next.kind ||
       old.constructionOrderKey !== next.constructionOrderKey ||
       old.reference !== next.reference ||
+      old.coordinateFrame !== next.coordinateFrame ||
+      old.rollMapping !== next.rollMapping ||
       cloudPlacement(old)?.matrixBits !== cloudPlacement(next)?.matrixBits ||
       old.positions !== next.positions ||
       old.kernelId !== next.kernelId ||
@@ -121,6 +162,8 @@ export function changeLabel(before: Entity[], after: Entity[]): string {
     if (
       old.positions !== next.positions ||
       old.reference !== next.reference ||
+      old.coordinateFrame !== next.coordinateFrame ||
+      old.rollMapping !== next.rollMapping ||
       old.constructionOrderKey !== next.constructionOrderKey
     )
       return `Modify ${next.name}`;

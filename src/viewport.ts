@@ -29,6 +29,8 @@ import { modelGridSpacing, viewportScale } from "./viewport-scale";
 import { ViewportScaleOverlay } from "./viewport-scale-overlay";
 import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
+import { createSavedSketchDisplay } from "./saved-sketch-display";
+import type { SavedSketch } from "./types";
 import { AdaptivePointDisplay } from "./adaptive-point-display";
 import { DEFAULT_POINT_SIZE } from "./appearance";
 import { SelectionProcessingHighlight } from "./selection-processing-highlight";
@@ -254,6 +256,10 @@ export class Viewport {
   };
   private deviationCallouts?: DeviationCallouts;
   private readonly sketchGeometry = new THREE.Group();
+  private readonly savedSketchObjects = new Map<
+    string,
+    { saved: SavedSketch; object: ReturnType<typeof createSavedSketchDisplay> }
+  >();
   private readonly sketchPreview = new THREE.Group();
   private sketchEditor?: {
     sketch: Sketch;
@@ -2003,6 +2009,27 @@ export class Viewport {
     );
     return Uint8Array.from(mask, (value, i) => (value && visible[i] ? 1 : 0));
   }
+  setSavedSketchDisplays(sketches: SavedSketch[], editingId?: string): void {
+    const visible = new Map(
+      sketches
+        .filter((row) => row.visible && row.id !== editingId)
+        .map((row) => [row.id, row]),
+    );
+    for (const [id, display] of this.savedSketchObjects) {
+      if (visible.get(id) === display.saved) continue;
+      display.object.removeFromParent();
+      display.object.geometry.dispose();
+      display.object.material.dispose();
+      this.savedSketchObjects.delete(id);
+    }
+    for (const [id, saved] of visible) {
+      if (this.savedSketchObjects.has(id)) continue;
+      const object = createSavedSketchDisplay(saved);
+      this.scene.add(object);
+      this.savedSketchObjects.set(id, { saved, object });
+    }
+    this.invalidate();
+  }
   setSketchEditor(editor?: typeof this.sketchEditor): void {
     this.cancelSketchDrag();
     this.sketchEditor = editor;
@@ -3101,7 +3128,12 @@ export class Viewport {
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
     const referenceIds = new Set(
-      entities.filter(isReferenceEntity).map((entity) => entity.id),
+      entities
+        .filter(
+          (entity) =>
+            isReferenceEntity(entity) || entity.kind === "referenceFrame",
+        )
+        .map((entity) => entity.id),
     );
     this.referenceObjects ??= new Map();
     for (const [id, display] of this.referenceObjects) {
@@ -3126,9 +3158,12 @@ export class Viewport {
     }
     this.bounds.makeEmpty();
     for (const entity of entities) {
-      if (isReferenceEntity(entity)) {
+      if (isReferenceEntity(entity) || entity.kind === "referenceFrame") {
         let display = this.referenceObjects.get(entity.id);
-        if (!display || display.data !== entity.reference) {
+        if (
+          !display ||
+          display.data !== (entity.coordinateFrame ?? entity.reference)
+        ) {
           const next = createReferenceDisplay(entity);
           try {
             if (display) this.retireReferenceDisplay(display);
@@ -4771,6 +4806,7 @@ export class Viewport {
     this.clearGroup(this.boundaryEdges);
     this.clearGroup(this.sketchGeometry);
     this.clearGroup(this.sketchPreview);
+    this.setSavedSketchDisplays([]);
     this.grid.geometry.dispose();
     this.clearGroup(this.originGeometry);
     this.gridScene.clear();

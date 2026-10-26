@@ -105,7 +105,17 @@
         "strictWholeNativeGeometry": true,
         "remainingHandles": 0
       },
-      "exactHeadFullCI": "pending after checkpoint push"
+      "exactHeadFullCI": {
+        "head": "5ada756b6439eb1705a6842f84884a0e9765308e",
+        "runId": 40265236808,
+        "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40265236808",
+        "passed": 49136,
+        "skipped": 64,
+        "failed": 0,
+        "buildAndAll13TypeBatches": true,
+        "cadProtocolAndStrictNativeCurvature": true,
+        "formatting": true
+      }
     }
   },
   "retainedFailures": [

@@ -1,4 +1,11 @@
 import { validateInspectionDefinitions } from "./inspection-definition";
+import { validateSavedSketchDisplay } from "./saved-sketch-display";
+import {
+  encodeReferenceFrame,
+  decodeReferenceFrame,
+  validateReferenceFrameEntity,
+} from "./reference-frame";
+import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import * as THREE from "three";
 import {
   validatePointCloudDisplay,
@@ -14,7 +21,13 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
-import type { Entity, Project, Positions, MeshSelectionState } from "./types";
+import type {
+  Entity,
+  Project,
+  Positions,
+  MeshSelectionState,
+  SavedSketch,
+} from "./types";
 import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
@@ -197,11 +210,14 @@ export function parseProject(text: string): Project {
   const input = JSON.parse(text);
   if (Array.isArray(input?.entities))
     input.entities = input.entities.map((entity: Entity) => {
+      if (entity?.rollMapping !== undefined && input.version !== 4)
+        throw Error("Unroll mapping requires project JSON version 4.");
       if (
         entity?.reference !== undefined ||
+        entity?.coordinateFrame !== undefined ||
         entity?.constructionOrderKey !== undefined
       ) {
-        if (input.version !== 3)
+        if (![3, 4].includes(input.version))
           throw new Error(
             "Construction metadata requires project JSON version 3.",
           );
@@ -210,10 +226,20 @@ export function parseProject(text: string): Project {
           ...(entity.reference !== undefined
             ? { reference: decodeReferenceEntityData(entity.reference) }
             : {}),
+          ...(entity.coordinateFrame !== undefined
+            ? { coordinateFrame: decodeReferenceFrame(entity.coordinateFrame) }
+            : {}),
         };
       }
       return entity;
     });
+  if (
+    input.authoring?.sketches?.some(
+      (row: SavedSketch) => row.visible !== undefined,
+    ) &&
+    input.version !== 4
+  )
+    throw Error("Saved sketch visibility requires project JSON version 4.");
   return validateProject(input);
 }
 /** Validate decoded project data without expanding binary geometry into JSON. */
@@ -223,7 +249,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    ![1, 2, 3].includes(input.version as number) ||
+    ![1, 2, 3, 4].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -235,7 +261,9 @@ export function validateProject(value: unknown): Project {
   validateConstructionOrderKeys(input.entities);
   const entities: Entity[] = input.entities.map((entity) => {
     const reference = validateReferenceEntity(entity);
-    if (!isReferenceEntity(entity))
+    const coordinateFrame = validateReferenceFrameEntity(entity);
+    const rollMapping = validateRollMappingEntity(entity);
+    if (!isReferenceEntity(entity) && entity.kind !== "referenceFrame")
       validatePositions(entity.positions, entity.kind === "pointcloud");
     const pointColors = validatePointCloudAttributes(entity);
     if (
@@ -260,6 +288,7 @@ export function validateProject(value: unknown): Project {
         "box",
         "referencePoint",
         "referenceLine",
+        "referenceFrame",
       ].includes(entity.kind) ||
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
@@ -359,6 +388,8 @@ export function validateProject(value: unknown): Project {
         ? { constructionOrderKey: entity.constructionOrderKey }
         : {}),
       ...(reference !== undefined ? { reference } : {}),
+      ...(coordinateFrame !== undefined ? { coordinateFrame } : {}),
+      ...(rollMapping !== undefined ? { rollMapping } : {}),
       indexedMesh: entity.indexedMesh,
       normals: entity.normals,
       ...(pointColors !== undefined ? { pointColors } : {}),
@@ -503,11 +534,13 @@ export function validateProject(value: unknown): Project {
         !item.id ||
         sketchIds.has(item.id) ||
         typeof item.name !== "string" ||
+        (item.visible !== undefined && typeof item.visible !== "boolean") ||
         item.name.length > 200
       )
         throw new Error("Invalid saved sketch identity.");
       sketchIds.add(item.id);
       validateSketch(item.sketch);
+      if (item.visible) validateSavedSketchDisplay(item);
     }
   }
   if (
@@ -542,7 +575,10 @@ export function serializeProject(
   authoring?: Project["authoring"],
 ): string {
   validateConstructionOrderKeys(entities);
-  for (const entity of entities) validateReferenceEntity(entity);
+  for (const entity of entities) {
+    validateReferenceEntity(entity);
+    validateRollMappingEntity(entity);
+  }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   for (const entity of entities)
@@ -556,15 +592,23 @@ export function serializeProject(
       );
   return JSON.stringify({
     format: "maliev-scanforge",
-    version: entities.some(
-      (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
-    )
-      ? 3
-      : entities.some(
-            (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
-          )
-        ? 2
-        : 1,
+    version:
+      entities.some((e) => e.rollMapping !== undefined) ||
+      authoring?.sketches?.some((row) => row.visible !== undefined)
+        ? 4
+        : entities.some(
+              (e) =>
+                e.reference !== undefined ||
+                e.coordinateFrame !== undefined ||
+                e.constructionOrderKey !== undefined,
+            )
+          ? 3
+          : entities.some(
+                (e) =>
+                  e.pointColors !== undefined || e.ascAttributes !== undefined,
+              )
+            ? 2
+            : 1,
     name,
     units: "mm",
     authoring,
@@ -572,6 +616,9 @@ export function serializeProject(
       ...entity,
       ...(entity.reference !== undefined
         ? { reference: encodeReferenceEntityData(entity.reference) }
+        : {}),
+      ...(entity.coordinateFrame !== undefined
+        ? { coordinateFrame: encodeReferenceFrame(entity.coordinateFrame) }
         : {}),
       positions: Array.from(entity.positions),
       ...(entity.pointColors !== undefined
@@ -607,18 +654,29 @@ export async function serializeProjectBlob(
   authoring?: Project["authoring"],
 ): Promise<Blob> {
   validateConstructionOrderKeys(entities);
-  for (const entity of entities) validateReferenceEntity(entity);
+  for (const entity of entities) {
+    validateReferenceEntity(entity);
+    validateRollMappingEntity(entity);
+  }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
-  const version = entities.some(
-    (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
-  )
-    ? 3
-    : entities.some(
-          (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
-        )
-      ? 2
-      : 1;
+  const version =
+    entities.some((e) => e.rollMapping !== undefined) ||
+    authoring?.sketches?.some((row) => row.visible !== undefined)
+      ? 4
+      : entities.some(
+            (e) =>
+              e.reference !== undefined ||
+              e.coordinateFrame !== undefined ||
+              e.constructionOrderKey !== undefined,
+          )
+        ? 3
+        : entities.some(
+              (e) =>
+                e.pointColors !== undefined || e.ascAttributes !== undefined,
+            )
+          ? 2
+          : 1;
   const parts: BlobPart[] = [
     `{"format":"maliev-scanforge","version":${version},"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
@@ -633,7 +691,7 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
-    if (!isReferenceEntity(metadata))
+    if (!isReferenceEntity(metadata) && metadata.kind !== "referenceFrame")
       validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
@@ -648,6 +706,9 @@ export async function serializeProjectBlob(
         ...metadata,
         ...(metadata.reference !== undefined
           ? { reference: encodeReferenceEntityData(metadata.reference) }
+          : {}),
+        ...(metadata.coordinateFrame !== undefined
+          ? { coordinateFrame: encodeReferenceFrame(metadata.coordinateFrame) }
           : {}),
         pointCloudPlacement: cloudPlacementJson(entities[index]),
       }).slice(0, -1),
@@ -732,7 +793,8 @@ export async function serializeProjectBlob(
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();
   for (const entity of entities) {
-    if (entity.kind === "pointcloud") continue;
+    if (entity.kind === "pointcloud" || entity.kind === "referenceFrame")
+      continue;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(
       "position",

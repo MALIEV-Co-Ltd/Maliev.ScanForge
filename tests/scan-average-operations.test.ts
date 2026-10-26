@@ -12,6 +12,7 @@ import { processMesh } from "../src/processing-client";
 import { runScanTool } from "../src/scan-tools";
 import { runAverageCommand } from "../src/ui/average-command";
 import unrollObserved from "./fixtures/unroll-observed-cylinder.json";
+import { prepareModelSketchPublication } from "../src/model-sketch-history";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 const triangle = [0, 0, 1, 1, 0, 1, 0, 1, 1];
 function entity(patch: Partial<Entity> = {}): Entity {
@@ -50,8 +51,19 @@ function harness(entities: Entity[] = [entity()]) {
   const host: WorkspaceHost = {
     snapshot: () => state,
     cad: () => cad,
-    commit: vi.fn((next, label) => {
-      state.history.push({ entities: state.entities, label });
+    commit: vi.fn((next, label, policy) => {
+      const publication = policy?.newModelSketches?.length
+        ? prepareModelSketchPublication(
+            state.authoring,
+            policy.newModelSketches,
+          )
+        : undefined;
+      state.history.push({
+        entities: state.entities,
+        label,
+        ...(publication ? { sketchChanges: publication.changes } : {}),
+      });
+      if (publication) state.authoring = publication.authoring;
       state.entities = next;
     }),
     replace: vi.fn(),
@@ -149,7 +161,9 @@ it("binds Unroll to exact imported CAD parameters through GUI and MCP", async ()
     faceIndex: 0,
     radius: 2,
   });
-  const output = h.state.entities.at(-1)!;
+  const output = h.state.entities.find(
+    (row) => row.id === (result.entityIds as string[])[0],
+  )!;
   const expected = unrollObserved.cases.find(
     (sample) => sample.instances === 1 && sample.offsetDegrees === 0,
   )!;
@@ -316,12 +330,27 @@ it("Unroll GUI command and MCP create the same separate owner with instances", a
     source.id,
     operation,
   );
-  expect(h.state.entities).toHaveLength(2);
+  expect(h.state.entities).toHaveLength(3);
   expect(h.state.entities[0]).toBe(source);
   expect(h.state.entities[1].positions.length).toBe(18);
   expect(h.state.entities[1].name).toBe("Scan - Unrolled");
   expect(h.state.history).toHaveLength(1);
   expect(result.entityIds).toEqual([h.state.entities[1].id]);
+  expect(result.unroll).toMatchObject({
+    meshEntityId: h.state.entities[1].id,
+    frameEntityId: h.state.entities[2].id,
+    sketchId: h.state.authoring.sketches![0].id,
+  });
+  expect(h.state.entities[2]).toMatchObject({
+    kind: "referenceFrame",
+    name: "Roll frame",
+    visible: false,
+    rollMapping: { radius: 2, sourceEntityId: source.id },
+  });
+  expect(h.state.authoring.sketches).toHaveLength(1);
+  expect(h.state.history[0].sketchChanges).toEqual([
+    { id: h.state.authoring.sketches![0].id },
+  ]);
   const m = harness([source]);
   await m.ops.mesh_process(
     { entityId: source.id, operation: { kind: "scanTools", operation } },
@@ -354,7 +383,7 @@ it.each(["averageMesh", "unroll"] as const)(
       },
       h.context,
     );
-    expect(h.state.entities).toHaveLength(3);
+    expect(h.state.entities).toHaveLength(kind === "unroll" ? 4 : 3);
     expect(h.state.entities[0].constructionOrderKey).toBe(
       source.constructionOrderKey,
     );
@@ -366,6 +395,6 @@ it.each(["averageMesh", "unroll"] as const)(
     ).not.toThrow();
     expect(
       parseProject(serializeProject("Saveable", h.state.entities)).entities,
-    ).toHaveLength(3);
+    ).toHaveLength(kind === "unroll" ? 4 : 3);
   },
 );

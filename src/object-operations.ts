@@ -10,6 +10,8 @@ export interface ModelCommitPolicy {
   /** Trusted noise preview: same facet IDs, selection follows the new coordinates. */
   readonly preserveFacetSelectionFor?: string;
   readonly constructionIdentityMigration?: readonly ConstructionIdentityAssignment[];
+  /** New saved sketches published atomically with their owning model operation. */
+  readonly newModelSketches?: readonly import("./types").SavedSketch[];
 }
 
 function migratedSourceIds(

@@ -3,6 +3,9 @@ import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import { bindAverageMeshes } from "../scan-average-request";
 import { bindUnrollReference } from "../scan-unroll-reference";
+import { createUnrollAuxiliaries } from "../scan-unroll-auxiliary";
+import { inspectReferenceFrame } from "../reference-frame";
+import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
@@ -274,7 +277,8 @@ function editable(entity: Entity, meshOnly = false) {
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
 function summary(e: Entity, scene: readonly Entity[]) {
-  const reference = inspectReferenceEntity(e, scene);
+  const reference =
+    inspectReferenceFrame(e) ?? inspectReferenceEntity(e, scene);
   const {
     positions,
     normals: _normals,
@@ -286,6 +290,7 @@ function summary(e: Entity, scene: readonly Entity[]) {
     pointCloudPlacement: _placement,
     pointColors: _pointColors,
     reference: _reference,
+    coordinateFrame: _coordinateFrame,
     ...metadata
   } = e;
   return {
@@ -653,36 +658,43 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           ? {
               geometry: json(
                 c,
-                "reference" in details
+                "coordinateFrame" in details && details.coordinateFrame
                   ? {
                       units: "mm",
-                      semantic: details.reference.geometry,
-                      encoding: details.reference.geometryEncoding,
+                      coordinateFrame: details.coordinateFrame,
+                      coordinateFrameEncoding: details.coordinateFrameEncoding,
+                      rollMapping: e.rollMapping,
                     }
-                  : {
-                      positions: Array.from(e.positions),
-                      indexedMesh: e.indexedMesh
-                        ? {
-                            vertices: Array.from(e.indexedMesh.vertices),
-                            triangles: Array.from(e.indexedMesh.triangles),
-                            ...(e.indexedMesh.normals
-                              ? { normals: Array.from(e.indexedMesh.normals) }
-                              : {}),
-                            ...(e.indexedMesh.geometryNormals
-                              ? {
-                                  geometryNormals: Array.from(
-                                    e.indexedMesh.geometryNormals,
-                                  ),
-                                }
-                              : {}),
-                          }
-                        : undefined,
-                      normals: e.normals ? Array.from(e.normals) : undefined,
-                      pointColors: e.pointColors
-                        ? Array.from(e.pointColors)
-                        : undefined,
-                      edgePositions: e.edgePositions,
-                    },
+                  : "reference" in details
+                    ? {
+                        units: "mm",
+                        semantic: details.reference.geometry,
+                        encoding: details.reference.geometryEncoding,
+                      }
+                    : {
+                        positions: Array.from(e.positions),
+                        indexedMesh: e.indexedMesh
+                          ? {
+                              vertices: Array.from(e.indexedMesh.vertices),
+                              triangles: Array.from(e.indexedMesh.triangles),
+                              ...(e.indexedMesh.normals
+                                ? { normals: Array.from(e.indexedMesh.normals) }
+                                : {}),
+                              ...(e.indexedMesh.geometryNormals
+                                ? {
+                                    geometryNormals: Array.from(
+                                      e.indexedMesh.geometryNormals,
+                                    ),
+                                  }
+                                : {}),
+                            }
+                          : undefined,
+                        normals: e.normals ? Array.from(e.normals) : undefined,
+                        pointColors: e.pointColors
+                          ? Array.from(e.pointColors)
+                          : undefined,
+                        edgePositions: e.edgePositions,
+                      },
                 "geometry.json",
               ),
             }
@@ -1319,6 +1331,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         pointEdit?.selection ?? edit?.selection ?? result.selection;
       let next = s.entities;
       const created: Entity[] = [];
+      let unrollAuxiliary:
+        ReturnType<typeof createUnrollAuxiliaries> | undefined;
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        !positions?.length
+      )
+        throw Error(
+          "Unroll produced no complete facets; no objects were published.",
+        );
       if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
@@ -1393,8 +1415,32 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         }
         next = [...next, ...created.filter((x) => !next.includes(x))];
       }
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        positions?.length
+      ) {
+        unrollAuxiliary = createUnrollAuxiliaries(op.operation, positions, {
+          frameId: id(),
+          sketchId: id(),
+          sourceEntityId: e.id,
+          meshEntityId: created[0]?.id ?? e.id,
+        });
+        next = [...next, unrollAuxiliary.frame];
+      }
       const response = {
-        ...(unroll ? { unroll: unroll.reference } : {}),
+        ...(unrollAuxiliary
+          ? {
+              unroll: {
+                ...unroll?.reference,
+                meshEntityId: created[0]?.id ?? e.id,
+                frameEntityId: unrollAuxiliary.frame.id,
+                sketchId: unrollAuxiliary.sketch.id,
+                coordinateFrame: unrollAuxiliary.frame.coordinateFrame,
+                mapping: unrollAuxiliary.frame.rollMapping,
+              },
+            }
+          : {}),
         ...(reconstruction
           ? {
               reconstruction: {
@@ -1445,9 +1491,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         host.commit(
           next.map(retainIndexedMesh),
           `Mesh ${kind}`,
-          reconstruction && created.length
-            ? { modelVisibilityFor: reconstruction.inputs.map((e) => e.id) }
-            : undefined,
+          unrollAuxiliary
+            ? { newModelSketches: [unrollAuxiliary.sketch] }
+            : reconstruction && created.length
+              ? { modelVisibilityFor: reconstruction.inputs.map((e) => e.id) }
+              : undefined,
         );
       if ((average || reconstruction) && created.length)
         host.select(created[0].id);
@@ -1588,6 +1636,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         throw new Error(
           `Conflicting or unsolved constraints: ${solution.conflictingConstraintIds.join(", ")}`,
         );
+      const state = host.snapshot();
+      const saved = state.authoring.sketches?.find(
+        (row) => row.id === state.authoring.activeSketchId,
+      );
+      if (saved?.visible)
+        validateSavedSketchDisplay({
+          ...saved,
+          sketch: solution?.sketch ?? a.sketch,
+        });
       c.check();
       host.setSketch(structuredClone(solution?.sketch ?? a.sketch));
       return { updated: true, ...(solution ? { solution } : {}) };

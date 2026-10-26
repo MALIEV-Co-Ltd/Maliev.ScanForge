@@ -8,7 +8,9 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/scan-unroll-browser/", import.meta.url);
+  out = process.env.SCANFORGE_UNROLL_OUTPUT
+    ? new URL(process.env.SCANFORGE_UNROLL_OUTPUT)
+    : new URL("../.resources/scan-unroll-browser/", import.meta.url);
 const builtRoot = process.env.SCANFORGE_QA_DIST
   ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
   : new URL("dist/", root);
@@ -301,6 +303,17 @@ try {
     (await geometry(cylinderId)).positions,
   );
   inputs.push(reference);
+  const unrelated = await mutate("sketch_manage", {
+    action: "create",
+    name: "Keep unrelated",
+    sketch: {
+      version: 1,
+      points: [{ id: "keep", x: 7, y: 9 }],
+      segments: [],
+      constraints: [],
+    },
+  });
+  const unrelatedId = unrelated.result.sketchId;
   await mutate("object_select", { entityId: first.id });
   const beforeHistory = await history();
   await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
@@ -319,15 +332,51 @@ try {
   await panel.getByRole("button", { name: "Apply", exact: true }).click();
   for (
     let i = 0;
-    i < 150 && (await call("project_get")).result.objects.length !== 3;
+    i < 150 && (await call("project_get")).result.objects.length !== 4;
     i++
   )
     await new Promise((r) => setTimeout(r, 100));
   const guiProject = (await call("project_get")).result;
-  assert.equal(guiProject.objects.length, 3);
+  assert.equal(guiProject.objects.length, 4);
   const guiId = guiProject.objects.find(
-    (o) => !inputs.some((input) => input.id === o.id),
+    (o) => o.kind === "mesh" && !inputs.some((input) => input.id === o.id),
   ).id;
+  const guiFrame = guiProject.objects.find(
+    (row) => row.kind === "referenceFrame",
+  );
+  assert.equal(guiFrame.visible, false);
+  assert.equal(guiFrame.rollMapping.radius, 2);
+  assert.equal(guiFrame.rollMapping.meshEntityId, guiId);
+  const guiSketchId = guiFrame.rollMapping.sketchId;
+  const savedSketches = async () => (await call("sketch_get")).result;
+  const guiSketch = (await savedSketches()).sketches.find(
+    (row) => row.id === guiSketchId,
+  );
+  assert.equal(guiSketch.visible, true);
+  assert.equal((await savedSketches()).activeSketchId, unrelatedId);
+  assert.deepEqual(
+    guiSketch.sketch.points.map((row) => row.x),
+    [4 * Math.PI, 4 * Math.PI],
+  );
+  await page.getByRole("button", { name: "Hide Sketch", exact: true }).click();
+  assert.equal(
+    (await savedSketches()).sketches.find((row) => row.id === guiSketchId)
+      .visible,
+    false,
+  );
+  await mutate("sketch_manage", {
+    action: "visibility",
+    sketchId: guiSketchId,
+    visible: true,
+  });
+  await mutate("sketch_set", {
+    sketch: {
+      version: 1,
+      points: [{ id: "keep", x: 17, y: 29 }],
+      segments: [],
+      constraints: [],
+    },
+  });
   const guiGeometry = await geometry(guiId),
     gui = guiGeometry.positions;
   const expected = observed.cases.find((c) => c.instances === 2).positions;
@@ -341,8 +390,18 @@ try {
   assert.equal(await history(), beforeHistory + 1);
   await mutate("history_undo", {});
   assert.equal((await call("project_get")).result.objects.length, 2);
+  assert.deepEqual(
+    (await savedSketches()).sketches.map((row) => row.id),
+    [unrelatedId],
+  );
+  assert.equal((await savedSketches()).sketches[0].sketch.points[0].x, 17);
   await mutate("history_redo", {});
   assert.deepEqual((await geometry(guiId)).positions, gui);
+  assert.equal(
+    (await savedSketches()).sketches.find((row) => row.id === guiSketchId)
+      .visible,
+    true,
+  );
   await mutate("history_undo", {});
   const request = {
     entityId: first.id,
@@ -376,6 +435,16 @@ try {
   );
   const resultId = replay.result.entityIds[0];
   assert.deepEqual((await geometry(resultId)).positions, gui);
+  assert.deepEqual(
+    replay.result.unroll.coordinateFrame,
+    guiFrame.coordinateFrame,
+  );
+  assert.equal(
+    (await savedSketches()).sketches.find(
+      (row) => row.id === replay.result.unroll.sketchId,
+    ).visible,
+    true,
+  );
   assert.equal(await history(), beforeHistory + 1);
   for (const input of inputs)
     assert.deepEqual((await geometry(input.id)).positions, input.positions);
@@ -393,6 +462,10 @@ try {
     window.__holdResult = false;
   });
   assert.equal((await call("project_get")).result.objects.length, 2);
+  assert.deepEqual(
+    (await savedSketches()).sketches.map((row) => row.id),
+    [unrelatedId],
+  );
   assert.equal(await history(), beforeHistory);
   const failed = await job(
     await mutate("mesh_process", {
@@ -434,6 +507,26 @@ try {
   ).result;
   assert.equal(reopenedReference.exactCad, true);
   assert.equal(reopenedReference.hasBrep, true);
+  const finalFrameId = final.result.unroll.frameEntityId,
+    finalSketchId = final.result.unroll.sketchId;
+  assert.deepEqual(
+    (await call("object_get", { entityId: finalFrameId })).result.rollMapping,
+    final.result.unroll.mapping,
+  );
+  await mutate("history_seek", { index: beforeHistory });
+  assert.equal((await call("project_get")).result.objects.length, 2);
+  assert.deepEqual(
+    (await savedSketches()).sketches.map((row) => row.id),
+    [unrelatedId],
+  );
+  assert.equal((await savedSketches()).sketches[0].sketch.points[0].x, 17);
+  await mutate("history_seek", { index: beforeHistory + 1 });
+  assert.equal(
+    (await savedSketches()).sketches.find((row) => row.id === finalSketchId)
+      .visible,
+    true,
+  );
+  assert.deepEqual((await geometry(finalId)).positions, gui);
   // Rebind the cylinder through the GUI after exact CAD restoration, then rerun.
   const restoredIds = new Set(
     (await call("project_get")).result.objects.map((o) => o.id),
@@ -452,7 +545,7 @@ try {
   let restoredOutput;
   for (let i = 0; i < 150; i++) {
     restoredOutput = (await call("project_get")).result.objects.find(
-      (o) => !restoredIds.has(o.id),
+      (o) => o.kind === "mesh" && !restoredIds.has(o.id),
     );
     if (restoredOutput) break;
     await new Promise((r) => setTimeout(r, 100));
@@ -498,6 +591,11 @@ try {
     cancellationRollback: true,
     failureRollback: true,
     saveReopen: true,
+    visibleSavedSketch: true,
+    hiddenTangentRollFrame: true,
+    auxiliaryUndoRedoAndSeek: true,
+    unrelatedSketchEditsPreserved: true,
+    guiMcpSketchVisibility: true,
     rerunAfterCadReopen: true,
     importedReferenceSeamTangent: "+Y",
     baseEntityId: base.id,

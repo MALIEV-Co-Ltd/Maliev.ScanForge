@@ -14,6 +14,8 @@ import {
 import { runReconstructionCommand } from "./reconstruction-command";
 import { runAverageCommand } from "./average-command";
 import { runUnrollCommand } from "./unroll-command";
+import { prepareModelSketchPublication } from "../model-sketch-history";
+import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { prepareMeshInBackground } from "../scan-background-preparation";
 import { primitiveFitSamples } from "../primitive-fit-samples";
 import { getWorkingJobStatus } from "../working-job-status";
@@ -208,7 +210,6 @@ import {
 import {
   changeLabel,
   modelChanged,
-  restoreModelDisplay,
   seekModelRevision,
   type Revision,
 } from "../history";
@@ -1380,6 +1381,7 @@ export function App() {
   ]);
   useEffect(() => {
     viewport.current?.setSketchEditor(
+      // The saved display remains independent of this temporary edit session.
       workspace === "sketch" && toolPanelOpen && !createSketch
         ? {
             sketch: sketchDraft,
@@ -1421,6 +1423,14 @@ export function App() {
         createPlaneSketch(coordinateSketchFrame(plane, 0));
       };
   }, [originVisible, planePicking, savedSketches.length]);
+  useEffect(() => {
+    viewport.current?.setSavedSketchDisplays(
+      savedSketches,
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? (activeSketchId ?? undefined)
+        : undefined,
+    );
+  }, [savedSketches, activeSketchId, workspace, toolPanelOpen, createSketch]);
   useEffect(() => {
     if (!planePicking) return;
     const cancel = (event: KeyboardEvent) => {
@@ -2476,7 +2486,17 @@ export function App() {
     });
     entityFeatureModel(next);
     next = next.map(canonicalCloud);
+    const sketchPublication = policy?.newModelSketches?.length
+      ? prepareModelSketchPublication(
+          { sketches: savedSketches },
+          policy.newModelSketches,
+        )
+      : undefined;
     if (!modelChanged(entities, next)) {
+      if (sketchPublication)
+        throw Error(
+          "Model sketch publication requires an owning geometry change.",
+        );
       setEntities(next);
       setDirty(true);
       return;
@@ -2488,12 +2508,17 @@ export function App() {
       {
         entities,
         label,
+        ...(sketchPublication
+          ? { sketchChanges: sketchPublication.changes }
+          : {}),
         ...(policy?.modelVisibilityFor?.length
           ? { restoreVisibilityFor: [...policy.modelVisibilityFor] }
           : {}),
       },
     ]);
     setFuture([]);
+    if (sketchPublication)
+      setSavedSketches(sketchPublication.authoring.sketches!);
     setEntities(next);
     setDirty(true);
   }
@@ -2517,48 +2542,46 @@ export function App() {
   function undoModel() {
     if (history.length) {
       const next = history[history.length - 1];
-      setFuture((p) => [{ ...next, entities }, ...p]);
-      setEntities(
-        restoreModelDisplay(
-          next.entities,
-          entities,
-          new Set(next.restoreVisibilityFor),
-        ),
-      );
-      setSelectedId(
-        next.entities.some((entity) => entity.id === selectedId)
-          ? selectedId
-          : (next.entities[0]?.id ?? null),
-      );
-      setHistory((p) => p.slice(0, -1));
-      setDirty(true);
+      applyModelRevision(history.length - 1);
       setMessage(`Undid ${next.label}`);
     }
   }
   function redoModel() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p, { ...next, entities }]);
-      setEntities(
-        restoreModelDisplay(
-          next.entities,
-          entities,
-          new Set(next.restoreVisibilityFor),
-        ),
-      );
-      setSelectedId(
-        next.entities.some((entity) => entity.id === selectedId)
-          ? selectedId
-          : (next.entities[0]?.id ?? null),
-      );
-      setFuture((p) => p.slice(1));
-      setDirty(true);
+      applyModelRevision(history.length + 1);
       setMessage(`Redid ${next.label}`);
     }
   }
   function restoreRevision(index: number) {
     if (busy || index === history.length) return;
-    const next = seekModelRevision(history, entities, future, index);
+    const next = applyModelRevision(index);
+    setMessage(
+      index === 0
+        ? "Restored starting state"
+        : `Restored model after ${next.history[index - 1].label}`,
+    );
+  }
+  function applyModelRevision(index: number) {
+    const next = seekModelRevision(history, entities, future, index, {
+      sketches: savedSketches,
+      ...(activeSketchId ? { activeSketchId } : {}),
+    });
+    const crossed = [...history, ...future].slice(
+      Math.min(index, history.length),
+      Math.max(index, history.length),
+    );
+    if (crossed.some((row) => row.sketchChanges?.length)) {
+      setSavedSketches(next.authoring!.sketches ?? []);
+      if (activeSketchId && !next.authoring!.activeSketchId) {
+        setActiveSketchId(null);
+        setSketchDraft(legacySketch.current);
+      }
+      pruneSketchUndoSessions(
+        sketchUndoSessions.current,
+        next.authoring!.sketches ?? [],
+      );
+    }
     setEntities(next.entities);
     setSelectedId(
       next.entities.some((entity) => entity.id === selectedId)
@@ -2568,11 +2591,7 @@ export function App() {
     setHistory(next.history);
     setFuture(next.future);
     setDirty(true);
-    setMessage(
-      index === 0
-        ? "Restored starting state"
-        : `Restored model after ${next.history[index - 1].label}`,
-    );
+    return next;
   }
   function showTools(nextWorkspace: string) {
     nextWorkspace =
@@ -4097,6 +4116,8 @@ export function App() {
     );
   }
   function updateSketchDraft(sketch: Sketch) {
+    const saved = savedSketches.find((row) => row.id === activeSketchId);
+    if (saved?.visible) validateSavedSketchDisplay({ ...saved, sketch });
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     let session = sketchUndoSessions.current.get(key);
     if (!session) {
@@ -5549,6 +5570,18 @@ export function App() {
                       <span>{item.name}</span>
                     </button>
                     <button
+                      aria-label={`${item.visible ? "Hide" : "Show"} ${item.name}`}
+                      onClick={() => {
+                        void uiCommand("sketch_manage", {
+                          action: "visibility",
+                          sketchId: item.id,
+                          visible: !item.visible,
+                        });
+                      }}
+                    >
+                      {item.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                    <button
                       aria-label={`Delete ${item.name}`}
                       onClick={() => {
                         sketchUndoSessions.current.delete(`saved:${item.id}`);
@@ -6206,19 +6239,34 @@ export function App() {
                               ? "Reference point"
                               : selected.kind === "referenceLine"
                                 ? "Reference line"
-                                : selected.kind === "pointcloud"
-                                  ? "Point cloud"
-                                  : selected.kernelId
-                                    ? "Exact CAD + display mesh"
-                                    : selected.kind === "plane"
-                                      ? "Reference surface"
-                                      : "Triangle mesh"}{" "}
+                                : selected.kind === "referenceFrame"
+                                  ? selected.rollMapping
+                                    ? "Cylindrical roll frame"
+                                    : "Coordinate system"
+                                  : selected.kind === "pointcloud"
+                                    ? "Point cloud"
+                                    : selected.kernelId
+                                      ? "Exact CAD + display mesh"
+                                      : selected.kind === "plane"
+                                        ? "Reference surface"
+                                        : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
                       </div>
                       <ToolSection tools={["properties", "measure"]}>
                         <Panel title="Geometry" className="geometry-panel">
+                          {selected.coordinateFrame && (
+                            <p className="muted">
+                              Origin (
+                              {selected.coordinateFrame.frame.origin
+                                .map((value) => number(value))
+                                .join(", ")}
+                              ) mm
+                              {selected.rollMapping &&
+                                ` · Roll radius ${number(selected.rollMapping.radius)} mm · ${selected.rollMapping.instances} instance(s) · ${number(selected.rollMapping.offsetDegrees)}°`}
+                            </p>
+                          )}
                           {selected.fit && (
                             <p className="muted">
                               {selected.fit.kind} fit · RMS{" "}

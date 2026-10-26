@@ -552,7 +552,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4706,7 +4706,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "description": "Create/activate/rename/delete a saved sketch, or set its independent saved visibility with action:visibility and visible:boolean. Uses the same authoring state and display as the editor. Unset visibility is hidden; Unroll creates its auxiliary sketch visible without replacing the active edit session.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4714,7 +4714,7 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["create", "activate", "rename", "delete"]
+          "enum": ["create", "activate", "rename", "delete", "visibility"]
         },
         "sketchId": {
           "type": "string",
@@ -4730,6 +4730,10 @@
         },
         "sketch": {
           "type": "object"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Required for action:visibility; independent of active sketch editing."
         },
         "expectedRevision": {
           "type": "integer",
