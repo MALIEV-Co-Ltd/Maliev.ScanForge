@@ -54,7 +54,7 @@ it("offers the same midpoint source mode and retained source in the point editor
   };
   const html = renderToStaticMarkup(
     <ReferenceConstructionDialog
-      api={{} as ApplicationApi}
+      api={{ currentRevision: () => 7 } as ApplicationApi}
       kind="point"
       entity={midpoint}
       entities={[

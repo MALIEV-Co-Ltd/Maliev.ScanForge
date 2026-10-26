@@ -2187,6 +2187,217 @@ fresh mutation metadata until cleanup succeeds. A failed Cancel is also retained
 by request ID; use a fresh ID for another cleanup attempt. Other preview families
 stay blocked until the owned display resources are retired.
 
+### Prepare an existing numeric reference for editing
+
+`object_get.reference.editorInputs` exposes detached numeric editor fields with
+`units:"mm"`, `coordinateSpace:"world"` and lossless coordinate encodings.
+Points expose `position`/`positionEncoding`; lines expose `start`, `end`,
+`startEncoding` and `endEncoding`. Geometry and definitions remain unchanged.
+An `editorInputsError` means the saved object is inspectable but its coordinates
+cannot be prepared within the editor's bounds.
+
+For an existing numeric point or endpoint line, preview with
+`{action:"preview",kind,entityId,initialize:true}` and the current revision/request
+ID. The server prepares the same fields as the GUI, including the point-specific
+pre-rounding and fixed-six formatting. An owned edit preview can be initialized
+again with its session/version; this resets from the accepted numeric object,
+including its inactive line records. Do not combine `initialize` with coordinates,
+picks, modes or source replacements. New objects and derived definitions reject
+this intent. Explicit typed creation and updates retain their exact supplied
+coordinates.
+
+Opening the GUI reads these shared fields. Previewing unchanged numeric fields
+uses `initialize:true`; editing a field or acquiring a new pick uses the normal
+explicit intent. Cancel preserves the original accepted bits; Apply publishes
+only the cached initialized preview in one history step. A native editor's
+displayed values are therefore distinct from saved geometry until acceptance.
+Startup millimetre/N6 behavior is the admitted scope; other native unit settings
+and unobserved negative-zero formatting remain separate evidence limits.
+
+### Pair and average reference lines
+
+Use `reference_construct` with `kind:"line",mode:"pair"|"average"` and
+`sourcePicks:[{entityId,parameter?},...]`. Pair admits semantic reference points
+and lines plus validated sphere/cylinder primitive recipes; average admits
+semantic lines or cylinder recipes. A point forbids `parameter`;
+a line requires an explicit fraction from 0 to 1 along its finite stored extent.
+The application resolves the authoritative geometry and retains each acquired
+world location as Float32. This located-source adapter does not assert an
+unverified native viewport hit predicate. Numeric cloud picks use a different
+conversion and do not supply these retained records.
+
+An existing line supplies its actual prior geometry through `entityId`. For a
+new derived line, first preview explicit numeric endpoints, then update that
+owned preview using its `sessionId` and `version`. The GUI follows this same
+sequence. No entity or history entry is created by either preview. A direct new
+derived request fails because no native whole-scene default seed is assumed.
+
+Record order and repetitions are preserved independently of the canonical,
+deduplicated dependency set. Repeated average records retain their weighting.
+Source edits recompute primitives while keeping the accepted world pick suffixes;
+the acquisition fraction is not a persistent constraint. Query eligibility and
+read-only keys through `reference_construction_sources` with the same kind/mode.
+The operation permits at most 1,000 acquired records and retains the existing
+scene/work limits, revision, cancellation and lock checks.
+
+Omit `sourcePicks` when editing an existing or owned derived preview to preserve
+its exact records. Returning from endpoints to a derived mode can reuse retained
+inactive records only while their sources remain valid. Explicit replacements
+must supply complete acquisition intents; do not invent fractions from old pick
+coordinates. Missing or unsupported sources reject. Apply publishes the exact
+cached result and refreshes admitted descendants atomically in one history step;
+Cancel leaves geometry, keys and history unchanged. Inspect `outcome`, diagnostics,
+`geometryEncoding` and `definitionEncoding` to distinguish updated, fallback and
+unchanged results. General CAD, scan, fit-only, cone and sketch line-source
+adapters remain separate required release gates.
+
+Current sphere/cylinder primitive recipes are authoritative analytic sources,
+including solids created by `primitive_fit_create`. The sphere contributes its
+recipe center; a cylinder contributes the finite axis used by the application
+CAD worker, derived from midpoint, normalized axis and height. This is an
+application analytic segment, not a claim about captured native raw fields.
+Saved fit diagnostics or display kind may be stale after a CAD rebuild and never
+override the current recipe/output binding. Cone, unsupported recipes and
+fit-only classified meshes remain ineligible.
+
+`cad_rebuild` refreshes references from every rebuilt CAD output as one atomic
+history transaction and returns `refreshedEntityIds`/`evaluations` alongside its
+existing rebuild receipt. Locked descendants, cancellation, unsupported source
+replacement or publication failure preserve the old model and release newly
+created handles. Current/history/future handles remain retained. Locked sources
+can be read; selected key-only identity migration is part of accepted Apply.
+
+### Pick a cloud coordinate for numeric construction
+
+Call read-only `reference_construction_pick` with
+`{"entityId":"<cloud ID>","pointIndex":0}`. The zero-based index identifies the
+current original source point, independently of display sampling. The source
+must be a visible, unlocked, selectable point cloud, matching the admitted GUI
+pick route. The result is
+`{entityId,pointIndex,position,positionEncoding,units:"mm",coordinateSpace:"world",acquisition:"point-cloud-vertex",numericOnly:true,sourceDependencyRetained:false}`;
+the ordinary outer response revision binds the read. No revision/request ID is
+required for this read-only call. Repeating it reads the current source again.
+Caller-written position, keys, raw bits and provenance fields are rejected.
+
+The server resolves the selected original point into world coordinates. A placed
+cloud transforms only that local XYZ triple through its stored pose; it does not
+materialize the full world-position or normal buffers. The coordinate then uses
+the recovered startup millimetres/N6 float-controller conversion: initial
+Float32 rounding, binary64 magnitude scaling by 1e6 plus 0.5 and integer
+truncation/division with the recovered sign threshold, then final Float32
+rounding promoted to double, followed by the native numeric-field exchange's
+15-significant-digit decimal formatting and parsing. The latter uses the observed
+positive-half-up rule and preserves explicit signed zero. These are separate
+stages from the fixed-six formatting used when reopening a native editor.
+`positionEncoding` uses the existing lossless point-geometry
+codec. JSON numeric arrays turn negative zero into positive zero; use the encoding
+to verify exact values and the source intent below to publish them losslessly.
+Nonfinite/out-of-range points and invalid indices fail without changing
+geometry, selection, history, preview ownership or ordering keys.
+
+For publication call `reference_construct` with
+`action:"preview",kind:"point",positionPick:{entityId:"<cloud ID>",pointIndex:0}`
+and the read response's revision as `expectedRevision`, plus a fresh request ID.
+The server resolves and bakes the point again inside that guarded operation.
+For a line, independently choose `start` or `startPick`, and `end` or `endPick`;
+typed and picked endpoints can be mixed. Never supply both forms for one field,
+use `positionPick` for a line, or combine pick intents with derived source modes.
+Pick intents accept only entity ID and index, never caller-authored encoded bits.
+Preview and `reference_construction_get` return `geometryEncoding` for exact
+JSON-safe verification; accepted definition/geometry encodings remain available
+through `object_get`. Apply still consumes the cached result.
+
+The GUI cloud picker calls the same read operation, retains its intent and
+receipt revision, and fills the numeric fields. Editing a numeric field clears
+that field's pick intent. Preview submits retained intents with their captured
+revision; if the workspace changed, inspect/pick again rather than silently
+using a newer source vertex. No pick lease or hidden handle cache is involved.
+Accepted objects remain stored
+`coordinates`/`endpoints` constructions with empty source dependencies and no
+new retained line-pick records. Source edits or deletion therefore do not move
+the accepted object; model Undo/Redo and project save/reopen retain its baked
+numeric geometry. Picking alone publishes nothing, and Cancel discards the
+draft. This slice does not provide mesh/CAD/sketch acquisition, the native
+cached precise-double point route, alternate native unit/precision settings or
+the retained hits needed by derived line pair/average construction.
+
+### Semantic-source point construction
+
+Use `reference_construction_sources` with `kind:"point"` and `mode:"center"`,
+`"pair"` or `"threePlanes"` to inspect eligible source objects before preview.
+The shared GUI source selectors call the same read-only operation. `offset`
+defaults to zero and `limit` to 50 (maximum 100); follow `nextOffset` until null.
+The normal outer API `revision` binds each page. Results include world-millimetre
+units, `total`, and source rows with `entityId`, `name`, entity `kind`,
+`primitiveKind`, `eligible`, an unavailable `reason`, read-only
+`constructionOrderKey` and `identityStatus:"saved"|"provisional"`. Discovery
+does not assign provisional keys, change geometry or create history. Optional
+`entityId` is the edit target; its own identity and descendants are ineligible
+to prevent cycles. Locked sources remain readable. The bounded identity scan
+currently admits at most 10,000 scene objects for this source-query operation;
+this is an application work limit, not a native source-count rule.
+
+Preview through `reference_construct` with `action:"preview",kind:"point"`,
+the chosen `mode`, `sourceEntityIds:[...]` and usual revision/request fields.
+Do not supply numeric position, the midpoint alias's `sourceEntityId`, raw pick
+records, keys, completion state or provenance. `center` and `pair` use semantic
+reference points/lines and numeric planes with authoritative `planeFrame`
+and no fit, kernel or parametric metadata; `threePlanes` uses those numeric
+planes. These plane inputs are explicit application analytic equations:
+origin is the stored center, normal is its stored unit normal, and equation
+offset is minus the normal-center dot product. No native plane extent, fitted
+primitive payload, CAD-provider or scan-pick correspondence is inferred.
+When the first canonical source in center mode is a plane, the recovered
+evaluator reports the origin fallback and retains the full accepted common set;
+source eligibility does not discard the plane merely because that evaluator
+does not extract a point or axis from it.
+
+Known GUI selector defaults are one/two for center, two for pair and three for
+three-plane construction. Accepted common sources are deduplicated by object
+identity and sorted by server-owned construction keys. The full accepted set
+is retained independently of evaluation: center consumes its first canonical
+source, pair its first two and three-plane evaluation requires exactly three
+planes. These evaluator rules do not establish additional native controller
+arity/admission rules. Request collections are bounded to 10,000 source IDs as
+an application work limit. Callers cannot change ordering keys to force a
+different result. Read `outcome` and `diagnostics` from preview: supported
+degenerate cases can return fallback/origin or preserve prior point geometry.
+An edit that retains geometry after near-parallel rejection can retain internal
+dirty state; persisted inspection does not infer a fresh outcome from that word.
+
+Apply/Cancel use the same owned session/version contract as numeric references.
+Apply keeps the exact cached point and full source set, assigns only selected
+missing source keys in the same history transaction, and stages admitted
+dependent refresh before publication. A locked source can receive only its
+deterministic absent identity key; protected geometry remains unchanged.
+Locked descendants, missing/changed identities and cycles reject atomically.
+Cancel/expiry never assign keys. JSON/binary project admission checks current,
+Undo and Redo source bindings. Numeric-plane edits through `datum_construct`
+and plane transforms through `mesh_transform` stage the full admitted point
+dependency closure before committing the source and descendants together.
+Both return `refreshedEntityIds` and `evaluations`, whose rows contain
+`entityId`, fresh `outcome` and `diagnostics`. Empty arrays mean no descendants
+were reevaluated. These fresh results do not change persisted inspection's
+`outcome:null` convention. Inspect affected objects with `object_get` afterward.
+
+A locked descendant rejects the entire source edit, without changing source
+buffers, points, revision or history. Inspect the dependency chain; explicitly
+unlock or detach the dependent through existing operations if intended, then
+retry with the current revision and a new request ID. Do not retry a failed
+request ID with changed parameters. A successful source edit is one model
+Undo/Redo step for the complete chain.
+
+Destructive selection edits, in-place mesh processing and surface replacement
+also reject when they would remove or retype a numeric plane still referenced
+by a point. The shared publication guard preserves geometry, history and
+selection. Use `mesh_copy` to obtain an independent editable mesh while keeping
+the plane and dependent points, or explicitly detach/delete the dependent
+construction before replacing its source. Do not treat this rejection as a
+successful conversion. Source writer, GUI/MCP and reopen acceptance must
+be verified on the exact integrated candidate; this contract is not a claim that
+unrun lifecycle checks passed. Line pair/average, other primitive/CAD/scan/sketch
+pick sources and full M4 acceptance remain open.
+
 ### Single stored-line midpoint
 
 Preview a midpoint with `reference_construct` arguments
@@ -2199,7 +2410,9 @@ point may switch between midpoint and coordinates through a new preview.
 
 The source must be an existing semantic `referenceLine` in accepted `endpoints`
 mode with empty common sources and a saved construction identity. Read
-`project_get`/`object_get` to find its ID and definition. CAD, fitted axes, scan
+`reference_construction_sources` with `kind:"point",mode:"midpoint"` for the
+same stored-line eligibility used by the GUI, or `project_get`/`object_get` to
+inspect its ID and definition. CAD, fitted axes, scan
 and sketch source families, pair/average lines and point sources reject. Hidden
 or locked source lines remain readable; the destination must be unlocked.
 No source key migration occurs. Midpoint Apply retains the active source link;
@@ -2309,8 +2522,10 @@ native sketch children, native failed-fit editor acceptance or Sketch v2.
 `origin` (world XYZ mm), `normal`, optional `xDirection` and positive `displaySize`
 (mm). The X direction is projected perpendicular to the normal and normalized;
 parallel/zero directions reject. Omit X direction to use the existing deterministic
-plane basis. The result exposes the rigid right-handed `frame`, `entityId` and
-units. Creation accepts an optional name. To edit a numeric plane supply its
+plane basis. The result exposes the rigid right-handed `frame`, `entityId`,
+units, `displaySize`, `refreshedEntityIds` and fresh descendant `evaluations`.
+Creation and edits without affected descendants return empty refresh arrays.
+Creation accepts an optional name. To edit a numeric plane supply its
 `entityId`; keep its name through this operation and use `object_rename` to rename.
 Fitted/exact CAD/parametric planes reject this numeric edit. Apply records one
 model-history edit; GUI Cancel publishes nothing. Normal revision/request, lock
@@ -2359,6 +2574,9 @@ about the world origin. Transformed fit residuals are cleared because they no
 longer describe a fit to the original samples. Invalid frames, nonfinite output
 or plane coordinates outside +/-1e9 mm reject before committing. Model history and
 project persistence retain the transformed datum and its sketch-source eligibility.
+The result includes `entityId`, `refreshedEntityIds` and descendant `evaluations`.
+Admitted derived points refresh atomically; any locked descendant rejects the
+whole transform. Each successful transform remains one model-history edit.
 
 Numeric datum GUI forms capture the workspace revision when opened. If another
 agent or operation changes that workspace before Apply, the draft is rejected

@@ -145,7 +145,7 @@ it("rejects midpoint arithmetic overflow instead of publishing a constructor or 
     ),
   ).toThrow();
 });
-it("allows only exactly one typed stored-line source in every imported state", () => {
+it("validates stored links in every imported state without imposing derived-mode arity", () => {
   const root = line(),
     child = point(root);
   const session = {
@@ -174,9 +174,9 @@ it("allows only exactly one typed stored-line source in every imported state", (
   expect(() =>
     assertReferenceWorkspaceAdmission({
       ...session,
-      future: [{ entities: [root, invalid], label: "unsupported" }],
+      future: [{ entities: [root, invalid], label: "retained fallback" }],
     }),
-  ).toThrow();
+  ).not.toThrow();
   expect(referenceDeletionDependents([root, child], [root.id])).toEqual([
     child.id,
   ]);
@@ -188,7 +188,10 @@ it("rejects affected cycles and exceeded refresh work before returning staged ge
   const root = line(),
     child = point(root);
   root.reference!.definition = {
-    ...root.reference!.definition,
+    version: 1,
+    kind: "line",
+    mode: "pair",
+    records: [],
     sources: [
       { id: child.id, constructionOrderKey: child.constructionOrderKey! },
     ],

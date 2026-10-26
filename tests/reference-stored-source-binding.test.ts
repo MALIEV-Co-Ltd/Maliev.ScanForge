@@ -122,6 +122,15 @@ it("keeps ordered repeated picks separate from the common dependency set", () =>
   ]);
   expect(inputs.records[0].record).not.toBe(definition.records[0]);
   expect(Object.is(inputs.records[0].record.coordinates[0], -0)).toBe(true);
+  const first = inputs.records[0].primitive,
+    repeated = inputs.records[2].primitive;
+  if (first.kind !== "point" || repeated.kind !== "point")
+    throw Error("Expected repeated point primitives");
+  expect(first).not.toBe(repeated);
+  expect(first.position).not.toBe(repeated.position);
+  Reflect.set(first.position, 0, 99);
+  expect(repeated.position).toEqual([4, 0, 0]);
+  expect(b.reference!.geometry).toEqual({ kind: "point", position: [4, 0, 0] });
 });
 
 it("extracts stored lines with raw direction and Double endpoint arithmetic", () => {
@@ -163,6 +172,22 @@ it("extracts stored lines with raw direction and Double endpoint arithmetic", ()
     objectResolved: true,
   });
   expect(inputs.records[0].primitive).not.toBe(inputs.records[1].primitive);
+  const first = inputs.records[0].primitive,
+    repeated = inputs.records[1].primitive;
+  if (first.kind !== "axis" || repeated.kind !== "axis")
+    throw Error("Expected repeated axis primitives");
+  expect(first.start).not.toBe(repeated.start);
+  expect(first.end).not.toBe(repeated.end);
+  Reflect.set(first.start, 0, 99);
+  Reflect.set(first.end, 0, 101);
+  expect(repeated.start).toEqual([16777217, 0, 0]);
+  expect(repeated.end).toEqual([16777223, 0, 0]);
+  expect(entity.reference!.geometry).toEqual({
+    kind: "line",
+    start: [16777217, 0, 0],
+    direction: [2, 0, 0],
+    length: 3,
+  });
 });
 
 it("rejects missing common sources and stale keys before evaluating geometry", () => {
@@ -202,7 +227,7 @@ it("rejects duplicate scene IDs and collisions even on unselected objects", () =
   ).toThrow(/collision/);
 });
 
-it("rejects missing active pick sources without collapsing records or inventing failed extraction", () => {
+it("rejects an active pick outside its declared common set without inventing failed extraction for a missing object", () => {
   expect(() =>
     resolveStoredReferenceConstructionInputs([a], {
       version: 1,
@@ -211,7 +236,7 @@ it("rejects missing active pick sources without collapsing records or inventing 
       sources: [source(a)],
       records: [pick("missing")],
     }),
-  ).toThrow(/Missing construction record source/);
+  ).toThrow(/outside its common source set/);
 });
 
 it("rejects unresolved source families and malformed semantic sources", () => {

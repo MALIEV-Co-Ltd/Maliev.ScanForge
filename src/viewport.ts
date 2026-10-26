@@ -345,6 +345,7 @@ export class Viewport {
   private readonly zoomWindowHint = document.createElement("div");
   private navigationCursor?: { clientX: number; clientY: number };
   private pickTargetId: string | null = null;
+  private referenceCoordinatePicking = false;
   private grid: THREE.GridHelper;
   private gridSpacing = 10;
   private automaticGrid = true;
@@ -383,6 +384,7 @@ export class Viewport {
       point: Vec3,
       entityId: string,
       triangleIndex?: number,
+      pointIndex?: number,
     ) => void,
     private readonly onSelect: (id: string) => void,
     private readonly onSelection?: (
@@ -1456,7 +1458,12 @@ export class Viewport {
       event.button === 1
         ? { x: event.clientX, y: event.clientY, moved: false }
         : undefined;
-    if (this.zoomWindowActive && event.button === 0 && this.controls.enabled) {
+    if (
+      !this.referenceCoordinatePicking &&
+      this.zoomWindowActive &&
+      event.button === 0 &&
+      this.controls.enabled
+    ) {
       event.preventDefault();
       event.stopImmediatePropagation();
       this.cancelViewTransition();
@@ -1476,6 +1483,7 @@ export class Viewport {
           }
         : undefined;
     if (
+      !this.referenceCoordinatePicking &&
       this.bridgeSession?.mode === "holes" &&
       event.button === 0 &&
       !event.ctrlKey &&
@@ -1490,13 +1498,14 @@ export class Viewport {
         return;
       }
     }
-    if (this.beginBridgeDrag(event)) return;
+    if (!this.referenceCoordinatePicking && this.beginBridgeDrag(event)) return;
     if (
       event.button === 0 &&
       event.isPrimary &&
       !event.ctrlKey &&
       !event.shiftKey &&
       !event.altKey &&
+      !this.referenceCoordinatePicking &&
       this.interactiveDrag &&
       this.interactiveGizmo?.group.visible
     ) {
@@ -2005,7 +2014,7 @@ export class Viewport {
   }
   private contextMenu(event: MouseEvent): void {
     event.preventDefault();
-    if (this.rightPanPointer?.moved) return;
+    if (this.referenceCoordinatePicking || this.rightPanPointer?.moved) return;
     if (this.sketchDrag || this.sketchCurvePoints.length) {
       this.cancelSketchDrag();
       return;
@@ -2366,6 +2375,7 @@ export class Viewport {
   private beginSketchDrag(event: PointerEvent): boolean {
     const editor = this.sketchEditor;
     if (
+      this.referenceCoordinatePicking ||
       !editor ||
       editor.tool === "navigate" ||
       event.button !== 0 ||
@@ -2932,7 +2942,7 @@ export class Viewport {
     );
   };
   private pickAt(event: PointerEvent): string | undefined {
-    if (this.originPicking) {
+    if (this.originPicking && !this.referenceCoordinatePicking) {
       const hit = this.originHit(event);
       if (hit)
         this.onOriginPlane?.(hit.object.userData.originPlane as OriginPlane);
@@ -2952,6 +2962,7 @@ export class Viewport {
         (item) =>
           item.mesh.visible &&
           item.mesh.userData.objectPickable !== false &&
+          (!this.referenceCoordinatePicking || !!item.pointCloud) &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -2997,16 +3008,31 @@ export class Viewport {
       );
     } else {
       const point = pickedWorldPoint(hit);
-      this.onPick(
-        [point.x, point.y, point.z],
-        id,
-        hit.faceIndex == null
-          ? undefined
-          : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
-              hit.faceIndex),
-      );
+      if (
+        this.referenceCoordinatePicking &&
+        hit.object instanceof THREE.Points &&
+        !hit.object.userData.referenceKind
+      )
+        this.onPick([point.x, point.y, point.z], id, undefined, hit.index);
+      else
+        this.onPick(
+          [point.x, point.y, point.z],
+          id,
+          hit.faceIndex == null
+            ? undefined
+            : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
+                hit.faceIndex),
+        );
     }
     return id;
+  }
+
+  setReferenceCoordinatePicking(enabled: boolean): void {
+    this.referenceCoordinatePicking = enabled;
+    if (enabled) {
+      this.pointerCancel();
+      this.setBrush(false);
+    }
   }
 
   setPickTarget(entityId: string | null): void {
@@ -3014,7 +3040,8 @@ export class Viewport {
   }
 
   private referenceCandidates(pickable: boolean) {
-    if (pickable && this.brushing) return [];
+    if (pickable && (this.brushing || this.referenceCoordinatePicking))
+      return [];
     return [...(this.referenceObjects?.values() ?? [])]
       .map((display) => display.object)
       .filter(
@@ -3054,6 +3081,7 @@ export class Viewport {
         (item) =>
           item.mesh.visible &&
           item.mesh.userData.objectPickable !== false &&
+          (!this.referenceCoordinatePicking || !!item.pointCloud) &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -3087,14 +3115,26 @@ export class Viewport {
               return;
             this.onSelect(id);
             const point = pickedWorldPoint(hit);
-            this.onPick(
-              [point.x, point.y, point.z],
-              id,
-              hit.faceIndex == null
-                ? undefined
-                : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
-                    hit.faceIndex),
-            );
+            if (
+              this.referenceCoordinatePicking &&
+              hit.object instanceof THREE.Points &&
+              !hit.object.userData.referenceKind
+            )
+              this.onPick(
+                [point.x, point.y, point.z],
+                id,
+                undefined,
+                hit.index,
+              );
+            else
+              this.onPick(
+                [point.x, point.y, point.z],
+                id,
+                hit.faceIndex == null
+                  ? undefined
+                  : (this.objects.get(id)?.triangleSlots?.[hit.faceIndex] ??
+                      hit.faceIndex),
+              );
           },
         };
       });

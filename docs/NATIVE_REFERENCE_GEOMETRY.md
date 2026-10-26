@@ -1,9 +1,12 @@
 # Reference point and line reconstruction contract
 
 Typed point and finite-line construction now has shared GUI/MCP creation, editing,
-preview/Apply/Cancel, history and project reopening. A single stored semantic-line
-midpoint now uses the same lifecycle with atomic dependent refresh and project
-admission. Other source-derived modes remain under implementation and unavailable.
+preview/Apply/Cancel, history and project reopening. Midpoint, center, pair and
+three-plane points share dependent refresh and project admission for admitted
+semantic and numeric-plane sources. The current candidate also implements
+located semantic pair/average lines; its final API, rendered and persistence
+checks are still in progress. Required CAD/scan acquisition, additional source
+families and native lifecycle acceptance remain open.
 This document records the native evidence and the shared application work needed
 for [M4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4). It does not
 establish numerical equivalence or completion of that milestone.

@@ -1,8 +1,5 @@
 import type { Entity } from "./types";
-import {
-  copyReferenceEntityData,
-  validateReferenceEntity,
-} from "./reference-entity";
+import { validateReferenceEntity } from "./reference-entity";
 import { resolveConstructionIdentities } from "./reference-construction-identity";
 import { resolveStoredReferenceConstructionInputs } from "./reference-construction-resolver";
 import {
@@ -11,7 +8,7 @@ import {
 } from "./reference-construction-evaluation";
 import type { ReferenceConstructionDefinition } from "./reference-construction";
 import { referenceGeometrySceneBounds } from "./reference-scene-bounds";
-import { datumEntityDependencies } from "./datum-dependencies";
+import { refreshReferenceConstructions } from "./reference-construction-lifecycle";
 
 /** Application work admission, not a native object-count limit. */
 export const REFERENCE_MIDPOINT_LIMIT = 10000;
@@ -118,96 +115,10 @@ export function refreshReferenceMidpoints(
   rootId: string,
   check: () => void = () => {},
 ) {
-  check();
-  let work = 0;
-  const charge = (amount = 1) => {
-    check();
-    work += amount;
-    if (work > REFERENCE_MIDPOINT_WORK_LIMIT)
-      throw new Error("Reference midpoint refresh work limit exceeded.");
-  };
-  const graph = datumEntityDependencies(entities);
-  const byId = new Map(entities.map((entity) => [entity.id, entity]));
-  if (byId.size !== entities.length)
-    throw new Error("Duplicate reference scene identity.");
-  if (!byId.has(rootId)) throw new Error("Reference refresh root is missing.");
-  const reverse = new Map<string, string[]>();
-  for (const row of graph)
-    for (const sourceId of row.references) {
-      const children = reverse.get(sourceId) ?? [];
-      children.push(row.id);
-      reverse.set(sourceId, children);
-    }
-  const affected = new Set([rootId]);
-  const pending = [rootId];
-  for (let index = 0; index < pending.length; index++) {
-    check();
-    for (const id of reverse.get(pending[index]) ?? [])
-      if (!affected.has(id)) {
-        affected.add(id);
-        pending.push(id);
-      }
-  }
-  if (affected.size === 1 && !(reverse.get(rootId) ?? []).includes(rootId))
-    return { entities, refreshedEntityIds: [] as string[] };
-  if (entities.length > REFERENCE_MIDPOINT_LIMIT)
-    throw new Error("Reference midpoint scene limit exceeded.");
-  charge(
-    entities.length +
-      graph.reduce((count, row) => count + row.references.length, 0),
-  );
-  const counts = new Map(
-    graph
-      .filter((row) => affected.has(row.id))
-      .map((row) => [
-        row.id,
-        row.references.filter((id) => affected.has(id)).length,
-      ]),
-  );
-  const ready = graph
-    .filter((row) => affected.has(row.id) && counts.get(row.id) === 0)
-    .map((row) => row.id);
-  const refreshedEntityIds: string[] = [];
-  for (let index = 0; index < ready.length; index++) {
-    charge();
-    const id = ready[index];
-    const child = byId.get(id)!;
-    if (id !== rootId) {
-      if (child.locked)
-        throw new Error("A dependent reference is locked: " + id);
-      const data = validateReferenceEntity(child);
-      if (!data)
-        throw new Error(
-          "Reference dependency rebuild is required for unsupported dependent: " +
-            id,
-        );
-      charge(entities.length * 6);
-      const refreshed = evaluateReferenceMidpoint(
-        [...byId.values()],
-        data.definition,
-        { geometry: data.geometry, state: { completionWord: 1 } },
-      );
-      byId.set(id, {
-        ...child,
-        reference: copyReferenceEntityData({
-          ...data,
-          geometry: refreshed.geometry,
-          evaluation: refreshed.state,
-        }),
-      });
-      refreshedEntityIds.push(id);
-    }
-    for (const dependent of reverse.get(id) ?? [])
-      if (affected.has(dependent)) {
-        counts.set(dependent, counts.get(dependent)! - 1);
-        if (counts.get(dependent) === 0) ready.push(dependent);
-      }
-  }
-  if (ready.length !== affected.size)
-    throw new Error("Reference dependencies contain a cycle.");
+  const result = refreshReferenceConstructions(entities, [rootId], { check });
   return {
-    entities: entities.map((entity) => byId.get(entity.id)!),
-    refreshedEntityIds,
+    entities: result.entities,
+    refreshedEntityIds: result.refreshedEntityIds,
   };
 }
 

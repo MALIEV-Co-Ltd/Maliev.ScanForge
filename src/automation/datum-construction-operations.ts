@@ -1,3 +1,4 @@
+import { refreshReferenceConstructions } from "../reference-construction-lifecycle";
 import type { Handler, WorkspaceHost } from "./api";
 import {
   createNumericDatumPlane,
@@ -105,13 +106,20 @@ export function createDatumConstructionOperations(
               : {}),
           }
         : built;
+      const staged = existing
+        ? snapshot.entities.map((item) =>
+            item.id === entity.id ? entity : item,
+          )
+        : [...snapshot.entities, entity];
+      const refreshed =
+        existing && !isFrame
+          ? refreshReferenceConstructions(staged, [entity.id], {
+              check: () => context.check(),
+            })
+          : { entities: staged, refreshedEntityIds: [], evaluations: [] };
       context.mutate(() => {
         host.commit(
-          existing
-            ? snapshot.entities.map((item) =>
-                item.id === entity.id ? entity : item,
-              )
-            : [...snapshot.entities, entity],
+          refreshed.entities,
           isFrame
             ? existing
               ? "Edit coordinate system"
@@ -127,6 +135,8 @@ export function createDatumConstructionOperations(
         frame,
         units: "mm",
         displaySize: args.displaySize,
+        refreshedEntityIds: refreshed.refreshedEntityIds,
+        evaluations: refreshed.evaluations,
       };
     },
   };

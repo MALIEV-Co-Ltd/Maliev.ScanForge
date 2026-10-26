@@ -9,6 +9,7 @@ import { SketchUndo } from "../src/sketch-undo";
 import type { Sketch } from "../src/sketch";
 import { coordinateSketchFrame } from "../src/sketch-frame";
 import { parseProject, serializeProject } from "../src/io";
+import nativeCircle from "./fixtures/sketch-circle-native-iges-r8.json";
 
 const apis: ApplicationApi[] = [];
 afterEach(() => {
@@ -404,4 +405,87 @@ it("keeps owned reference previews and source entities intact when drawing is re
   ).toMatchObject({ active: true, sessionId: preview.sessionId });
   expect(h.setSketch).not.toHaveBeenCalled();
   expect(h.host.commit).not.toHaveBeenCalled();
+});
+
+it("matches a captured native 6 mm circle's exported metric and full closure through public sketch_draw and project roundtrip", async () => {
+  const h = setup();
+  // This declared comparison frame is IGES export space, not recovered native world placement.
+  const comparison: Sketch = {
+    ...blank(),
+    frame: coordinateSketchFrame("OXY", 0),
+  };
+  h.state.settings.snapGrid = false;
+  h.state.sketchDraft = comparison;
+  h.state.authoring.sketches![0].sketch = comparison;
+  const { center: capturedCenter, start: capturedStart } =
+    nativeCircle.exportSpace;
+  expect(nativeCircle.type100.transformationEntityId).toBe(
+    nativeCircle.type124.directoryEntityId,
+  );
+  const localCenter = [
+    ...nativeCircle.type100.center,
+    nativeCircle.type100.zPlane,
+  ];
+  expect(
+    nativeCircle.type124.matrixRows.map(
+      (row) =>
+        row[0]! * localCenter[0]! +
+        row[1]! * localCenter[1]! +
+        row[2]! * localCenter[2]! +
+        row[3]!,
+    ),
+  ).toEqual(capturedCenter);
+  const result = await value(
+    h.draw({
+      kind: "circle",
+      points: [capturedCenter.slice(0, 2), capturedStart.slice(0, 2)],
+    }),
+  );
+  expect(nativeCircle.type100.closed).toBe(true);
+  expect(nativeCircle.type100.start).toEqual(nativeCircle.type100.end);
+  expect(nativeCircle.type100.diameterMm).toBe(
+    nativeCircle.provenance.nativeAcceptedDiameterMm,
+  );
+  expect(result).toMatchObject({
+    changed: true,
+    grid: { enabled: false },
+    createdConstraintIds: [],
+  });
+  expect(result.createdPointIds).toHaveLength(3);
+  expect(result.createdCurveIds).toHaveLength(2);
+  const accepted = (await value(h.api.invoke("sketch_get", {})))
+    .sketch as Sketch;
+  expect(accepted.frame).toEqual(comparison.frame);
+  expect(accepted.points).toHaveLength(3);
+  expect(accepted.segments).toEqual([]);
+  expect(accepted.constraints).toEqual([]);
+  expect(accepted.arcs).toHaveLength(2);
+  const [first, second] = accepted.arcs!;
+  expect(first.center).toBe(second.center);
+  expect(first.a).toBe(second.b);
+  expect(first.b).toBe(second.a);
+  expect(first.clockwise).toBe(second.clockwise);
+  const center = accepted.points.find((point) => point.id === first.center)!;
+  expect([center.x, center.y]).toEqual(capturedCenter.slice(0, 2));
+  const a = accepted.points.find((point) => point.id === first.a)!,
+    b = accepted.points.find((point) => point.id === first.b)!;
+  for (const endpoint of [a, b])
+    expect(
+      Math.hypot(endpoint.x - center.x, endpoint.y - center.y),
+    ).toBeCloseTo(nativeCircle.type100.radiusMm, 12);
+  // Opposite endpoints with matching orientation make the two stored arcs one full circle.
+  expect(a.x + b.x).toBeCloseTo(2 * center.x, 12);
+  expect(a.y + b.y).toBeCloseTo(2 * center.y, 12);
+  const restored = parseProject(
+    serializeProject(
+      "Native circle export-space comparison",
+      h.state.entities,
+      h.state.authoring,
+    ),
+  );
+  expect(restored.authoring!.sketches![0].sketch).toEqual(accepted);
+  expect(h.setSketch).toHaveBeenCalledOnce();
+  expect(h.host.commit).not.toHaveBeenCalled();
+  expect(h.state.history).toEqual([]);
+  expect(h.state.future).toEqual([]);
 });

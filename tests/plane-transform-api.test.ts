@@ -177,6 +177,8 @@ it.each([false, true])(
     const revision = h.api.currentRevision();
     expect(await value(h.api.invoke("mesh_transform", args))).toEqual({
       entityId: h.source.id,
+      refreshedEntityIds: [],
+      evaluations: [],
     });
     expect(h.commit).toHaveBeenCalledOnce();
     expect(

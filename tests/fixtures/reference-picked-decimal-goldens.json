@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent Decimal precision15 mathematical candidates; no native-policy or runtime-output claim",
+  "generatorSha256": "4e2a39a046a6085d726e244d058b95be1db2d31944574d417cd2bd8db59a70c5",
+  "method": "Decimal.from_float(binary64 input), Context precision15 with ROUND_HALF_EVEN/ROUND_HALF_UP, then correctly rounded decimal parse to binary64; explicit input -0 preservation",
+  "policyChosenForApplication": null,
+  "cases": [
+    {
+      "name": "positive-zero",
+      "inputBitsLE": "0000000000000000",
+      "exactInputDecimal": "0",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "0",
+          "outputBitsLE": "0000000000000000"
+        },
+        "legacy-away": {
+          "decimal": "0",
+          "outputBitsLE": "0000000000000000"
+        }
+      }
+    },
+    {
+      "name": "negative-zero",
+      "inputBitsLE": "0000000000000080",
+      "exactInputDecimal": "-0",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-0",
+          "outputBitsLE": "0000000000000080"
+        },
+        "legacy-away": {
+          "decimal": "-0",
+          "outputBitsLE": "0000000000000080"
+        }
+      }
+    },
+    {
+      "name": "R10-promoted-f32-6.8",
+      "inputBitsLE": "0000004033331b40",
+      "exactInputDecimal": "6.80000019073486328125",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "6.80000019073486",
+          "outputBitsLE": "fcffff3f33331b40"
+        },
+        "legacy-away": {
+          "decimal": "6.80000019073486",
+          "outputBitsLE": "fcffff3f33331b40"
+        }
+      }
+    },
+    {
+      "name": "negative-R10-promoted-f32-6.8",
+      "inputBitsLE": "0000004033331bc0",
+      "exactInputDecimal": "-6.80000019073486328125",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-6.80000019073486",
+          "outputBitsLE": "fcffff3f33331bc0"
+        },
+        "legacy-away": {
+          "decimal": "-6.80000019073486",
+          "outputBitsLE": "fcffff3f33331bc0"
+        }
+      }
+    },
+    {
+      "name": "exact-f32-halfway-positive",
+      "inputBitsLE": "0000008000408f40",
+      "exactInputDecimal": "1000.000244140625",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408f40"
+        },
+        "legacy-away": {
+          "decimal": "1000.00024414063",
+          "outputBitsLE": "2c00008000408f40"
+        }
+      }
+    },
+    {
+      "name": "exact-f32-halfway-negative",
+      "inputBitsLE": "0000008000408fc0",
+      "exactInputDecimal": "-1000.000244140625",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408fc0"
+        },
+        "legacy-away": {
+          "decimal": "-1000.00024414063",
+          "outputBitsLE": "2c00008000408fc0"
+        }
+      }
+    },
+    {
+      "name": "below-halfway-positive",
+      "inputBitsLE": "ffffff7f00408f40",
+      "exactInputDecimal": "1000.0002441406248863131622783839702606201171875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408f40"
+        },
+        "legacy-away": {
+          "decimal": "1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408f40"
+        }
+      }
+    },
+    {
+      "name": "above-halfway-positive",
+      "inputBitsLE": "0100008000408f40",
+      "exactInputDecimal": "1000.0002441406251136868377216160297393798828125",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000.00024414063",
+          "outputBitsLE": "2c00008000408f40"
+        },
+        "legacy-away": {
+          "decimal": "1000.00024414063",
+          "outputBitsLE": "2c00008000408f40"
+        }
+      }
+    },
+    {
+      "name": "below-halfway-negative-magnitude",
+      "inputBitsLE": "ffffff7f00408fc0",
+      "exactInputDecimal": "-1000.0002441406248863131622783839702606201171875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408fc0"
+        },
+        "legacy-away": {
+          "decimal": "-1000.00024414062",
+          "outputBitsLE": "d4ffff7f00408fc0"
+        }
+      }
+    },
+    {
+      "name": "above-halfway-negative-magnitude",
+      "inputBitsLE": "0100008000408fc0",
+      "exactInputDecimal": "-1000.0002441406251136868377216160297393798828125",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000.00024414063",
+          "outputBitsLE": "2c00008000408fc0"
+        },
+        "legacy-away": {
+          "decimal": "-1000.00024414063",
+          "outputBitsLE": "2c00008000408fc0"
+        }
+      }
+    },
+    {
+      "name": "binary64-apparent-decimal-tie",
+      "inputBitsLE": "170000000000f03f",
+      "exactInputDecimal": "1.0000000000000051070259132757200859487056732177734375",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1.00000000000001",
+          "outputBitsLE": "2d0000000000f03f"
+        },
+        "legacy-away": {
+          "decimal": "1.00000000000001",
+          "outputBitsLE": "2d0000000000f03f"
+        }
+      }
+    },
+    {
+      "name": "negative-binary64-apparent-decimal-tie",
+      "inputBitsLE": "170000000000f0bf",
+      "exactInputDecimal": "-1.0000000000000051070259132757200859487056732177734375",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1.00000000000001",
+          "outputBitsLE": "2d0000000000f0bf"
+        },
+        "legacy-away": {
+          "decimal": "-1.00000000000001",
+          "outputBitsLE": "2d0000000000f0bf"
+        }
+      }
+    },
+    {
+      "name": "carry-six-to-seven-digit-exponent",
+      "inputBitsLE": "fcffffff7f842e41",
+      "exactInputDecimal": "999999.9999999995343387126922607421875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000000.00000000",
+          "outputBitsLE": "0000000080842e41"
+        },
+        "legacy-away": {
+          "decimal": "1000000.00000000",
+          "outputBitsLE": "0000000080842e41"
+        }
+      }
+    },
+    {
+      "name": "negative-exponent-carry",
+      "inputBitsLE": "fcffffff7f842ec1",
+      "exactInputDecimal": "-999999.9999999995343387126922607421875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000000.00000000",
+          "outputBitsLE": "0000000080842ec1"
+        },
+        "legacy-away": {
+          "decimal": "-1000000.00000000",
+          "outputBitsLE": "0000000080842ec1"
+        }
+      }
+    },
+    {
+      "name": "carry-zero-to-one-exponent",
+      "inputBitsLE": "ffffffffffff2340",
+      "exactInputDecimal": "9.9999999999999982236431605997495353221893310546875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "10.0000000000000",
+          "outputBitsLE": "0000000000002440"
+        },
+        "legacy-away": {
+          "decimal": "10.0000000000000",
+          "outputBitsLE": "0000000000002440"
+        }
+      }
+    },
+    {
+      "name": "negative-carry-zero-to-one-exponent",
+      "inputBitsLE": "ffffffffffff23c0",
+      "exactInputDecimal": "-9.9999999999999982236431605997495353221893310546875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-10.0000000000000",
+          "outputBitsLE": "00000000000024c0"
+        },
+        "legacy-away": {
+          "decimal": "-10.0000000000000",
+          "outputBitsLE": "00000000000024c0"
+        }
+      }
+    },
+    {
+      "name": "small-exponent-carry",
+      "inputBitsLE": "2c431cebe2361a3f",
+      "exactInputDecimal": "0.0000999999999999999912396464463171241732197813689708709716796875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "0.000100000000000000",
+          "outputBitsLE": "2d431cebe2361a3f"
+        },
+        "legacy-away": {
+          "decimal": "0.000100000000000000",
+          "outputBitsLE": "2d431cebe2361a3f"
+        }
+      }
+    },
+    {
+      "name": "negative-small-exponent-carry",
+      "inputBitsLE": "2c431cebe2361abf",
+      "exactInputDecimal": "-0.0000999999999999999912396464463171241732197813689708709716796875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-0.000100000000000000",
+          "outputBitsLE": "2d431cebe2361abf"
+        },
+        "legacy-away": {
+          "decimal": "-0.000100000000000000",
+          "outputBitsLE": "2d431cebe2361abf"
+        }
+      }
+    },
+    {
+      "name": "upper-world-bound",
+      "inputBitsLE": "0000000065cdcd41",
+      "exactInputDecimal": "1000000000",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000000000",
+          "outputBitsLE": "0000000065cdcd41"
+        },
+        "legacy-away": {
+          "decimal": "1000000000",
+          "outputBitsLE": "0000000065cdcd41"
+        }
+      }
+    },
+    {
+      "name": "lower-world-bound",
+      "inputBitsLE": "0000000065cdcdc1",
+      "exactInputDecimal": "-1000000000",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000000000",
+          "outputBitsLE": "0000000065cdcdc1"
+        },
+        "legacy-away": {
+          "decimal": "-1000000000",
+          "outputBitsLE": "0000000065cdcdc1"
+        }
+      }
+    },
+    {
+      "name": "upper-world-bound-neighbour",
+      "inputBitsLE": "ffffffff64cdcd41",
+      "exactInputDecimal": "999999999.99999988079071044921875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1000000000.00000",
+          "outputBitsLE": "0000000065cdcd41"
+        },
+        "legacy-away": {
+          "decimal": "1000000000.00000",
+          "outputBitsLE": "0000000065cdcd41"
+        }
+      }
+    },
+    {
+      "name": "lower-world-bound-neighbour",
+      "inputBitsLE": "ffffffff64cdcdc1",
+      "exactInputDecimal": "-999999999.99999988079071044921875",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1000000000.00000",
+          "outputBitsLE": "0000000065cdcdc1"
+        },
+        "legacy-away": {
+          "decimal": "-1000000000.00000",
+          "outputBitsLE": "0000000065cdcdc1"
+        }
+      }
+    },
+    {
+      "name": "positive-min-subnormal",
+      "inputBitsLE": "0100000000000000",
+      "exactInputDecimal": "4.940656458412465441765687928682213723650598026143247644255856825006755072702087518652998363616359923797965646954457177309266567103559397963987747960107818781263007131903114045278458171678489821036887186360569987307230500063874091535649843873124733972731696151400317153853980741262385655911710266585566867681870395603106249319452715914924553293054565444011274801297099995419319894090804165633245247571478690147267801593552386115501348035264934720193790268107107491703332226844753335720832431936092382893458368060106011506169809753078342277318329247904982524730776375927247874656084778203734469699533647017972677717585125660551199131504891101451037862738167250955837389733598993664809941164205702637090279242767544565229087538682506419718265533447265625E-324",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "4.94065645841247E-324",
+          "outputBitsLE": "0100000000000000"
+        },
+        "legacy-away": {
+          "decimal": "4.94065645841247E-324",
+          "outputBitsLE": "0100000000000000"
+        }
+      }
+    },
+    {
+      "name": "negative-min-subnormal",
+      "inputBitsLE": "0100000000000080",
+      "exactInputDecimal": "-4.940656458412465441765687928682213723650598026143247644255856825006755072702087518652998363616359923797965646954457177309266567103559397963987747960107818781263007131903114045278458171678489821036887186360569987307230500063874091535649843873124733972731696151400317153853980741262385655911710266585566867681870395603106249319452715914924553293054565444011274801297099995419319894090804165633245247571478690147267801593552386115501348035264934720193790268107107491703332226844753335720832431936092382893458368060106011506169809753078342277318329247904982524730776375927247874656084778203734469699533647017972677717585125660551199131504891101451037862738167250955837389733598993664809941164205702637090279242767544565229087538682506419718265533447265625E-324",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-4.94065645841247E-324",
+          "outputBitsLE": "0100000000000080"
+        },
+        "legacy-away": {
+          "decimal": "-4.94065645841247E-324",
+          "outputBitsLE": "0100000000000080"
+        }
+      }
+    },
+    {
+      "name": "positive-max-subnormal",
+      "inputBitsLE": "ffffffffffff0f00",
+      "exactInputDecimal": "2.2250738585072008890245868760858598876504231122409594654935248025624400092282356951787758888037591552642309780950434312085877387158357291821993020294379224223559819827501242041788969571311791082261043971979604000454897391938079198936081525613113376149842043271751033627391549782731594143828136275113838604094249464942286316695429105080201815926642134996606517803095075913058719846423906068637102005108723282784678843631944515866135041223479014792369585208321597621066375401613736583044193603714778355306682834535634005074073040135602968046375918583163124224521599262546494300836851861719422417646455137135420132217031370496583210154654068035397417906022589503023501937519773030945763173210852507299305089761582519159720757232455434770912461317493580281734466552734375E-308",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "2.22507385850720E-308",
+          "outputBitsLE": "fdffffffffff0f00"
+        },
+        "legacy-away": {
+          "decimal": "2.22507385850720E-308",
+          "outputBitsLE": "fdffffffffff0f00"
+        }
+      }
+    },
+    {
+      "name": "positive-min-normal",
+      "inputBitsLE": "0000000000001000",
+      "exactInputDecimal": "2.225073858507201383090232717332404064219215980462331830553327416887204434813918195854283159012511020564067339731035811005152434161553460108856012385377718821130777993532002330479610147442583636071921565046942503734208375250806650616658158948720491179968591639648500635908770118304874799780887753749949451580451605050915399856582470818645113537935804992115981085766051992433352114352390148795699609591288891602992641511063466313393663477586513029371762047325631781485664350872122828637642044846811407613911477062801689853244110024161447421618567166150540154285084716752901903161322778896729707373123334086988983175067838846926092773977972858659654941091369095406136467568702398678315290680984617210924625396728515625E-308",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "2.22507385850720E-308",
+          "outputBitsLE": "fdffffffffff0f00"
+        },
+        "legacy-away": {
+          "decimal": "2.22507385850720E-308",
+          "outputBitsLE": "fdffffffffff0f00"
+        }
+      }
+    },
+    {
+      "name": "positive-tiny-normal",
+      "inputBitsLE": "59f3f8c21f6ea501",
+      "exactInputDecimal": "1.00000000000000002505909183520875968569614680770370524992534231990046604318405148467630281218195010089496230627027825414891031146499880413081224609160619018271942662793458427551041478278701507022263926060379361392435977509403014386614147912551359088259101734169222292122040491862182202915561954185941852588326204092831631787205015401996986616948980410676557942431921652541808732242554300585073938340203330993157646467433638479065531661724812599598594906293782493759617177861888792970476530542335134710418229637566637950767497147854236589795152044892049176025289756709261767081824924720105632337755616538050643653812583050224659631159300563236507929025398878153811554013986009587978081167432804936359631140419153283449560376539011485874652862548828125E-300",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1.00000000000000E-300",
+          "outputBitsLE": "59f3f8c21f6ea501"
+        },
+        "legacy-away": {
+          "decimal": "1.00000000000000E-300",
+          "outputBitsLE": "59f3f8c21f6ea501"
+        }
+      }
+    },
+    {
+      "name": "negative-tiny-normal",
+      "inputBitsLE": "59f3f8c21f6ea581",
+      "exactInputDecimal": "-1.00000000000000002505909183520875968569614680770370524992534231990046604318405148467630281218195010089496230627027825414891031146499880413081224609160619018271942662793458427551041478278701507022263926060379361392435977509403014386614147912551359088259101734169222292122040491862182202915561954185941852588326204092831631787205015401996986616948980410676557942431921652541808732242554300585073938340203330993157646467433638479065531661724812599598594906293782493759617177861888792970476530542335134710418229637566637950767497147854236589795152044892049176025289756709261767081824924720105632337755616538050643653812583050224659631159300563236507929025398878153811554013986009587978081167432804936359631140419153283449560376539011485874652862548828125E-300",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1.00000000000000E-300",
+          "outputBitsLE": "59f3f8c21f6ea581"
+        },
+        "legacy-away": {
+          "decimal": "-1.00000000000000E-300",
+          "outputBitsLE": "59f3f8c21f6ea581"
+        }
+      }
+    },
+    {
+      "name": "positive-one",
+      "inputBitsLE": "000000000000f03f",
+      "exactInputDecimal": "1",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "1",
+          "outputBitsLE": "000000000000f03f"
+        },
+        "legacy-away": {
+          "decimal": "1",
+          "outputBitsLE": "000000000000f03f"
+        }
+      }
+    },
+    {
+      "name": "negative-one",
+      "inputBitsLE": "000000000000f0bf",
+      "exactInputDecimal": "-1",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "-1",
+          "outputBitsLE": "000000000000f0bf"
+        },
+        "legacy-away": {
+          "decimal": "-1",
+          "outputBitsLE": "000000000000f0bf"
+        }
+      }
+    },
+    {
+      "name": "positive-sixteenth",
+      "inputBitsLE": "000000000000b03f",
+      "exactInputDecimal": "0.0625",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "0.0625",
+          "outputBitsLE": "000000000000b03f"
+        },
+        "legacy-away": {
+          "decimal": "0.0625",
+          "outputBitsLE": "000000000000b03f"
+        }
+      }
+    },
+    {
+      "name": "decimal-tenth",
+      "inputBitsLE": "9a9999999999b93f",
+      "exactInputDecimal": "0.1000000000000000055511151231257827021181583404541015625",
+      "candidates": {
+        "nearest-even": {
+          "decimal": "0.100000000000000",
+          "outputBitsLE": "9a9999999999b93f"
+        },
+        "legacy-away": {
+          "decimal": "0.100000000000000",
+          "outputBitsLE": "9a9999999999b93f"
+        }
+      }
+    }
+  ]
+}

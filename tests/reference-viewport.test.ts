@@ -597,3 +597,113 @@ it.each(["numeric", "fitted"] as const)(
     }
   },
 );
+
+function coordinateGestureFixture(tool: "line" | "trim") {
+  const f = fixture();
+  const capture = new Set<number>();
+  Object.assign(f.state.renderer.domElement, {
+    style: {},
+    setPointerCapture: (id: number) => capture.add(id),
+    hasPointerCapture: (id: number) => capture.has(id),
+    releasePointerCapture: (id: number) => capture.delete(id),
+  });
+  const beginDraw = vi.fn(() => 17),
+    beginTrim = vi.fn(() => 17);
+  const onDraw = vi.fn(),
+    onTrim = vi.fn();
+  Object.assign(f.state, {
+    sketchEditor: {
+      sketch: { version: 1, points: [], segments: [], constraints: [] },
+      tool,
+      constraints: false,
+      trimRadiusMm: 0.25,
+      beginDraw,
+      beginTrim,
+      onDraw,
+      onTrim,
+      onError: vi.fn(),
+    },
+    sketchGeometry: new THREE.Group(),
+    sketchPreview: new THREE.Group(),
+    sketchCurvePoints: [],
+    sketchCurveRawPoints: [],
+    sketchPlanePoint: vi.fn(() => [1, 2]),
+    renderSketchDrag: vi.fn(),
+    setBrush: vi.fn((enabled: boolean) => {
+      f.state.brushing = enabled;
+    }),
+    paintTrail: { setAttribute: vi.fn() },
+    selectionOverlay: { hidden: true },
+  });
+  return { ...f, capture, beginDraw, beginTrim, onDraw, onTrim };
+}
+
+it.each(["line", "trim"] as const)(
+  "suspends active sketch %s gestures while acquiring a reference coordinate",
+  (tool) => {
+    const f = coordinateGestureFixture(tool);
+    f.view.setReferenceCoordinatePicking(true);
+    const event = {
+      clientX: 50,
+      clientY: 50,
+      button: 0,
+      isPrimary: true,
+      pointerId: 9,
+      ctrlKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault: vi.fn(),
+      stopImmediatePropagation: vi.fn(),
+    } as unknown as PointerEvent;
+    expect(f.state.beginSketchDrag(event)).toBe(false);
+    expect(f.beginDraw).not.toHaveBeenCalled();
+    expect(f.beginTrim).not.toHaveBeenCalled();
+    expect(f.onDraw).not.toHaveBeenCalled();
+    expect(f.onTrim).not.toHaveBeenCalled();
+    expect(f.state.sketchDrag).toBeUndefined();
+    expect(f.capture.size).toBe(0);
+    // Exiting acquisition resumes the same editor, without publishing a drawing.
+    f.view.setReferenceCoordinatePicking(false);
+    expect(f.state.beginSketchDrag(event)).toBe(true);
+    expect(tool === "trim" ? f.beginTrim : f.beginDraw).toHaveBeenCalledOnce();
+    f.state.cancelSketchDrag();
+    expect(f.onDraw).not.toHaveBeenCalled();
+    expect(f.onTrim).not.toHaveBeenCalled();
+  },
+);
+
+it("retires pending sketch capture, defining picks and trim preview when entering reference coordinate acquisition", () => {
+  const f = coordinateGestureFixture("line");
+  const controller = new AbortController();
+  const geometry = new THREE.BufferGeometry();
+  const material = new THREE.LineBasicMaterial();
+  const disposed = vi.spyOn(geometry, "dispose");
+  f.state.sketchPreview.add(new THREE.Line(geometry, material));
+  f.capture.add(17);
+  Object.assign(f.state, {
+    sketchDrag: { id: 17, start: [0, 0], end: [1, 2], tolerance: 0.1 },
+    sketchCurvePoints: [
+      [1, 2],
+      [3, 4],
+    ],
+    sketchCurveRawPoints: [
+      [1.1, 2.1],
+      [3.1, 4.1],
+    ],
+    sketchCurveRevision: 17,
+    trimPreviewPending: true,
+    trimPreviewController: controller,
+  });
+  f.view.setReferenceCoordinatePicking(true);
+  expect(f.capture.size).toBe(0);
+  expect(f.state.sketchDrag).toBeUndefined();
+  expect(f.state.sketchCurvePoints).toEqual([]);
+  expect(f.state.sketchCurveRawPoints).toEqual([]);
+  expect(f.state.sketchCurveRevision).toBeUndefined();
+  expect(f.state.trimPreviewPending).toBe(false);
+  expect(controller.signal.aborted).toBe(true);
+  expect(f.state.sketchPreview.children).toHaveLength(0);
+  expect(disposed).toHaveBeenCalledOnce();
+  expect(f.onDraw).not.toHaveBeenCalled();
+  expect(f.onTrim).not.toHaveBeenCalled();
+});

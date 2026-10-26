@@ -5,6 +5,45 @@ and milestone 5. The live trackers carry merge and closure status. The evidence
 below distinguishes application/public MCP results from native observations
 and the remaining release gates.
 
+## Required scope still in progress
+
+The owner-approved [reference-construction design](superpowers/specs/2026-10-23-reference-construction-design.md)
+requires picked point/line inputs, pair and average lines, primitive-center and
+pair points, three-plane points, and CAD/scan source acquisition. The numeric
+and one-line midpoint candidate does not complete that scope. Remaining input
+families and original-native mode/lifecycle acceptance remain release blockers.
+They are being implemented and verified before PR #17 can merge or M4 close.
+
+The existing integrated receipts describe candidate `04c7026`. A subsequent
+[derived-point/cloud-pick checkpoint](evidence/m4-derived-point-cloud-pick-acceptance-20261026.json)
+records build `scanforge-5e63abfd85df5fab`, shared center/pair/three-plane points,
+actual GUI/public-MCP cloud vertex picks for points and line endpoints, exact
+encoding across JSON, source deletion and worker reopening. Numeric-plane
+edits/transforms refresh point chains atomically; other mesh writers reject
+invalidating linked plane sources. The later checkpoint records build
+`scanforge-9dfaedad90e869ce`, 249 focused passing tests and actual GUI/public-MCP
+pair/average line comparisons, preserving repeated records, edit Cancel and
+worker reopen. A separate rendered deferred-Preview harness passes for fractions,
+line endpoints and point coordinates. Required input families, native acceptance
+and final current-head release verification remain open.
+
+The [analytic-source/editor checkpoint](evidence/m4-analytic-editor-acceptance-20261026.json)
+records build `scanforge-e36c99758d1515a0`, real-worker sphere/cylinder inputs,
+shared GUI/MCP CAD rebuild of mixed reference descendants, locked-source
+preservation and numeric editor initialization with Cancel/Apply, history and
+worker reopening. The subsequent full suite passed 49,590 tests, skipped 64 and
+failed 15. Corrected admission assertions and detached repeated-record primitive
+results pass 198 focused regressions; a fresh full run against the checkpoint
+commit remains pending. These results do not close the remaining required gates.
+
+Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
+the saved point contains `6.80000019073486` after the native numeric control's
+15-significant-digit text roundtrip. The shared operation now models this stage
+after the separate float-pick quantizer, and the exact QSF regression passes
+through API and real GUI/public-MCP verification. R11 distinguishes positive
+G15 halfway rounding from fixed-six editor initialization. Desktop input failed
+before R11 persistence; no QSF save/reopen or complete numeric parity is claimed.
+
 ## Capability inventory
 
 | Capability                                                           | Shared application and MCP coverage                                                                                                                                                                                                                                                                        | Current acceptance boundary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -17,7 +56,17 @@ and the remaining release gates.
 | Shared canvas drawing                                                | `sketch_draw` exposes line, center/radius circle, three-point circle/arc and endpoint movement using raw UV intents, shared grid snapping, explicit line relation/tolerance options, work limits and scoped history. Canvas submission captures the first gesture revision; Escape discards pending input. | Pure/API/viewport/history tests pass. Actual canvas gestures and independent public MCP intents produce equal canonical geometry, topology and constraints, with Escape, failed-constraint atomicity, scoped history and worker reopen verified on the integrated build. Native curve and solver numerical comparisons remain open.                                                                                                                                                                         |
 | Existing Sketch v1 authoring                                         | Shared `sketch_set`, `sketch_solve`, corner trim, fillet, paint-trim and mirror operations; constraints, scan-section references, rigid placement and analytic line/arc extrusion profiles persist.                                                                                                        | GUI/public MCP tests cover failed-constraint atomicity, Cancel, scoped history, section projection, closed profiles, downstream extrusion and worker reopen within the tested fixtures. Extended mirror/junction/fillet/paint-trim browser acceptance passes, including rejected edits, Escape, scoped history and worker reopen. Native constraint/profile comparisons remain open. Full ordered child/source provenance, duplication and unsupported curve families are not supplied by this graph model. |
 | Internal sketch child restoration                                    | Internal line/conic/ellipse backends and recovered source-record arithmetic; conic/ellipse export/restore/fork retain the prior successful backend request separately from the latest failed preparation.                                                                                                  | Mock and actual generated-worker/OCCT tests verify retained arc/circle/ellipse BREP, empty failed-circle state, detached binary64 state and owned handle disposal. This is internal backend restoration, not public ordered Sketch v2, its project codec, spline integration or original-native numerical parity.                                                                                                                                                                                           |
-| Additional construction and sketch modes                             | Recovered evaluators and native inventory document other point/line source combinations, plane-construction modes, duplication and curve/path workflows.                                                                                                                                                   | Unsupported modes remain absent from discovery. Each admitted mode needs coherent shared operations, validation, dependencies where applicable, persistence and appropriate native acceptance. Recovering a native branch does not by itself make every branch a release requirement; the final bounded issue #4 inventory must remain explicit.                                                                                                                                                            |
+| Additional construction and sketch modes                             | Recovered evaluators and native inventory document other point/line source combinations, plane-construction modes, duplication and curve/path workflows.                                                                                                                                                   | Unsupported modes remain absent from discovery. Each admitted mode needs coherent shared operations, validation, dependencies where applicable, persistence and appropriate native acceptance. The approved required reference modes listed above remain blocking until implemented and verified; unrelated recovered native branches do not expand the milestone automatically.                                                                                                                            |
+
+## Additional native checkpoints
+
+[Original native R6/R8/R9 observations](evidence/reference-native-acceptance-20261026.json)
+record plane and section-sketch QSF reopening, a persisted 6 mm circle, and an
+accepted 1.8 mm solid exported as STEP. The real application CAD worker imports
+that native STEP and the equivalent application extrusion: both solids are
+valid, their volumes differ by less than 1e-7 cubic millimetres, and their bounds
+match within 1e-6 mm. This verifies representative geometry and placement; it
+does not establish topology identity or all required construction modes.
 
 ## Verification and ownership
 

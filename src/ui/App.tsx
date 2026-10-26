@@ -1,3 +1,4 @@
+import { assertReferenceConstructionSceneAdmission } from "../reference-construction-lifecycle";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
@@ -79,7 +80,7 @@ import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
 import { RIBBON_TABS } from "./ribbon-model";
-import { createCadFeature, rebuildCadFeature } from "../automation/operations";
+import { createCadFeature } from "../automation/operations";
 import {
   duplicateObject,
   lockedObjectEdit,
@@ -320,6 +321,100 @@ const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const datumPointPick = useRef<((point: Vec3) => void) | null>(null);
+  const referenceCoordinatePick = useRef<{
+    pick(entityId: string, pointIndex?: number): void;
+    cancel(): void;
+  } | null>(null);
+  const [referencePicking, setReferencePicking] = useState(false);
+  function requestReferenceCoordinatePick(signal: AbortSignal): Promise<{
+    entityId: string;
+    pointIndex: number;
+    position: Vec3;
+    revision: number;
+  }> {
+    return new Promise((resolve, reject) => {
+      if (signal.aborted) {
+        reject(new DOMException("Coordinate picking cancelled.", "AbortError"));
+        return;
+      }
+      if (referenceCoordinatePick.current) {
+        reject(new Error("Another coordinate pick is active."));
+        return;
+      }
+      let pending = false;
+      const guard = (event: Event) => {
+        const target = event.target;
+        if (target instanceof Node && viewportHost.current?.contains(target))
+          return;
+        if (
+          target instanceof Element &&
+          target.closest("[data-reference-coordinate-pick]")
+        )
+          return;
+        event.preventDefault();
+        event.stopPropagation();
+      };
+      const finish = (
+        point?: {
+          entityId: string;
+          pointIndex: number;
+          position: Vec3;
+          revision: number;
+        },
+        error?: Error,
+      ) => {
+        if (referenceCoordinatePick.current !== entry) return;
+        referenceCoordinatePick.current = null;
+        signal.removeEventListener("abort", entry.cancel);
+        document.removeEventListener("pointerdown", guard, true);
+        document.removeEventListener("click", guard, true);
+        viewport.current?.setReferenceCoordinatePicking(false);
+        setReferencePicking(false);
+        if (error) reject(error);
+        else resolve(point!);
+      };
+      const entry = {
+        cancel: () =>
+          finish(
+            undefined,
+            new DOMException("Coordinate picking cancelled.", "AbortError"),
+          ),
+        pick: (entityId: string, pointIndex?: number) => {
+          if (pending) return;
+          if (pointIndex === undefined) {
+            setMessage("Click a point-cloud vertex.");
+            return;
+          }
+          pending = true;
+          void workspaceApi
+            .invoke("reference_construction_pick", { entityId, pointIndex })
+            .then((receipt) => {
+              if (!receipt.ok) throw new Error(receipt.error.message);
+              finish({
+                ...(receipt.result as {
+                  entityId: string;
+                  pointIndex: number;
+                  position: Vec3;
+                }),
+                revision: receipt.revision,
+              });
+            })
+            .catch((failure) =>
+              finish(
+                undefined,
+                failure instanceof Error ? failure : new Error(String(failure)),
+              ),
+            );
+        },
+      };
+      referenceCoordinatePick.current = entry;
+      signal.addEventListener("abort", entry.cancel, { once: true });
+      document.addEventListener("pointerdown", guard, true);
+      document.addEventListener("click", guard, true);
+      viewport.current?.setReferenceCoordinatePicking(true);
+      setReferencePicking(true);
+    });
+  }
   const datumFacePick = useRef<
     ((entityId: string, triangleIndex?: number) => void) | null
   >(null);
@@ -877,8 +972,12 @@ export function App() {
     try {
       viewport.current = new Viewport(
         viewportHost.current!,
-        (point, id, triangleIndex) => {
+        (point, id, triangleIndex, pointIndex) => {
           if (busyRef.current || interactiveStore.getSnapshot()) return;
+          if (referenceCoordinatePick.current) {
+            referenceCoordinatePick.current.pick(id, pointIndex);
+            return;
+          }
           if (datumFacePick.current) {
             const pick = datumFacePick.current;
             datumFacePick.current = null;
@@ -909,6 +1008,7 @@ export function App() {
           // Viewport invokes onSelect before onPick for one click. Keep the scan
           // selected until onPick binds the reference and completes the gesture.
           if (scanReferencePick.current) return;
+          if (referenceCoordinatePick.current) return;
           if (datumPointPick.current) return;
           if (datumFacePick.current) return;
           if (
@@ -1040,6 +1140,7 @@ export function App() {
           console.error("SpaceMouse cleanup failed", error);
         }
         // Effect cleanup releases the hook's owner lease; page exit is permanent.
+        referenceCoordinatePick.current?.cancel();
         if (event) workspaceApi.dispose();
         datumPreview.current = null;
         datumPointPick.current = null;
@@ -1182,6 +1283,7 @@ export function App() {
         workspace === "mesh" &&
         toolPanelOpen &&
         !busy &&
+        !referencePicking &&
         !selected?.kernelId &&
         !scanPanel &&
         !scanBoundaryPaths.length,
@@ -1195,6 +1297,7 @@ export function App() {
     sampledSelected,
     scanPanel,
     scanBoundaryPaths,
+    referencePicking,
   ]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
@@ -2523,6 +2626,7 @@ export function App() {
         : entity;
     });
     entityFeatureModel(next);
+    assertReferenceConstructionSceneAdmission(next);
     next = next.map(canonicalCloud);
     if (!modelChanged(entities, next)) {
       setEntities(next);
@@ -4461,23 +4565,45 @@ export function App() {
     };
   }
   function rebuildFeature(recipe: ParametricRecipe) {
-    void action("Rebuilding parametric features…", async () => {
+    void (async () => {
       if (!selected) throw new Error("Select a parametric body.");
-      const result = await rebuildCadFeature(
-        cad.current!,
-        entities,
-        history,
-        future,
-        selected.id,
+      const receipt = await uiCommand("cad_rebuild", {
+        entityId: selected.id,
         recipe,
-      );
-      commit(result.entities);
-      if (result.cleanupFailures.length)
-        setError(result.cleanupFailures.map((f) => f.message).join("; "));
-      setMessage(
-        `Rebuilt ${result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
-      );
-    });
+      });
+      if (!receipt.ok) return;
+      const { jobId } = receipt.result as { jobId: string };
+      // The shared job owns admission, cancellation, limits and publication.
+      for (;;) {
+        const response = await workspaceApi.invoke("job_get", { jobId });
+        if (!response.ok) throw Error(response.error.message);
+        const job = response.result as {
+          status: string;
+          result?: {
+            rebuiltFeatureIds: string[];
+            cleanupFailures: { message: string }[];
+          };
+          error?: { message: string };
+        };
+        if (job.status === "succeeded" && job.result) {
+          if (job.result.cleanupFailures.length)
+            setError(
+              job.result.cleanupFailures
+                .map((failure) => failure.message)
+                .join("; "),
+            );
+          setMessage(
+            `Rebuilt ${job.result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
+          );
+          return;
+        }
+        if (job.status !== "running")
+          throw Error(job.error?.message ?? "Feature rebuild cancelled.");
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    })().catch((error: unknown) =>
+      setError(error instanceof Error ? error.message : String(error)),
+    );
   }
   function save() {
     setSaveDialogOpen(true);
@@ -7944,6 +8070,7 @@ export function App() {
         <ReferenceConstructionDialog
           api={workspaceApi}
           entities={entities}
+          pickCoordinate={requestReferenceCoordinatePick}
           {...referenceDialog}
           onClose={() => setReferenceDialog(undefined)}
         />

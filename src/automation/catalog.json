@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact. Semantic reference objects also expose reference.editorInputs with detached startup-mm/N6 point or endpoint vectors and lossless encodings, separate from accepted geometry; editorInputsError reports a numeric-edit preparation bound without hiding saved geometry. This read does not open a preview, mutate a recipe, assign keys or change history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -2536,7 +2536,7 @@
   },
   {
     "name": "cad_rebuild",
-    "description": "Atomically edit a feature recipe and rebuild dependents; preserve prior outputs for Undo.",
+    "description": "Atomically edit a feature recipe and rebuild dependents; preserve prior outputs for Undo. Rebuild every changed CAD output and refresh admitted reference-point/line descendants as one atomic history transaction. Current validated sphere/cylinder primitive recipes are authoritative construction inputs; stale fit diagnostics are not. Returns rebuiltFeatureIds, refreshedEntityIds, evaluations and cleanupFailures. Deep locks, unsupported source replacement, cancellation, resource limits or commit failure preserve prior geometry/history and release newly owned handles, retaining current/history/future handles.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3474,7 +3474,10 @@
         {
           "type": "object",
           "properties": {
-            "kind": { "type": "string", "enum": ["line"] },
+            "kind": {
+              "type": "string",
+              "enum": ["line"]
+            },
             "points": {
               "type": "array",
               "items": {
@@ -3490,14 +3493,23 @@
               "minItems": 2,
               "maxItems": 2
             },
-            "autoConstraints": { "type": "boolean" },
+            "autoConstraints": {
+              "type": "boolean"
+            },
             "snapToleranceMm": {
               "type": "number",
               "minimum": 0,
               "maximum": 1000000000
             },
-            "expectedRevision": { "type": "integer", "minimum": 0 },
-            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           },
           "required": [
             "kind",
@@ -3512,7 +3524,10 @@
         {
           "type": "object",
           "properties": {
-            "kind": { "type": "string", "enum": ["circle"] },
+            "kind": {
+              "type": "string",
+              "enum": ["circle"]
+            },
             "points": {
               "type": "array",
               "items": {
@@ -3528,8 +3543,15 @@
               "minItems": 2,
               "maxItems": 2
             },
-            "expectedRevision": { "type": "integer", "minimum": 0 },
-            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           },
           "required": ["kind", "points", "expectedRevision", "requestId"],
           "additionalProperties": false
@@ -3537,7 +3559,10 @@
         {
           "type": "object",
           "properties": {
-            "kind": { "type": "string", "enum": ["circle3", "arc3"] },
+            "kind": {
+              "type": "string",
+              "enum": ["circle3", "arc3"]
+            },
             "points": {
               "type": "array",
               "items": {
@@ -3553,8 +3578,15 @@
               "minItems": 3,
               "maxItems": 3
             },
-            "expectedRevision": { "type": "integer", "minimum": 0 },
-            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           },
           "required": ["kind", "points", "expectedRevision", "requestId"],
           "additionalProperties": false
@@ -3562,8 +3594,15 @@
         {
           "type": "object",
           "properties": {
-            "kind": { "type": "string", "enum": ["move"] },
-            "pointId": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "kind": {
+              "type": "string",
+              "enum": ["move"]
+            },
+            "pointId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
             "position": {
               "type": "array",
               "items": {
@@ -3574,8 +3613,15 @@
               "minItems": 2,
               "maxItems": 2
             },
-            "expectedRevision": { "type": "integer", "minimum": 0 },
-            "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
           },
           "required": [
             "kind",
@@ -3763,7 +3809,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside Ãƒâ€šÃ‚Â±1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5183,7 +5229,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2Ã¢â‚¬â€œ32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -6919,7 +6965,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2Ã¢â‚¬â€œ32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -7411,7 +7457,7 @@
   },
   {
     "name": "reference_construction_get",
-    "description": "Inspect the shared typed point/line construction session: exact millimeter geometry, definition, version, expiry and evaluation diagnostics. Preview is ephemeral and non-pickable; object_get inspects accepted geometry. Inactive sessions report their termination reason and cleanup failures.",
+    "description": "Inspect the shared typed point/line construction session: exact millimeter geometry, definition, version, expiry and evaluation diagnostics. Preview is ephemeral and non-pickable; object_get inspects accepted geometry. Inactive sessions report their termination reason and cleanup failures. Active inspection includes geometryEncoding using the existing lossless point/line geometry codec; use it to verify signed zero and exact coordinate bits across JSON.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -7422,8 +7468,67 @@
     }
   },
   {
+    "name": "reference_construction_pick",
+    "description": "Read one original point-cloud vertex by entityId and zero-based pointIndex, returning a detached numeric coordinate for existing reference_construct point/endpoint Preview/Apply. The source must be a visible unlocked selectable pointcloud, matching the GUI picking eligibility for this admitted family. Resolve the current original vertex in world millimetres; placed clouds transform just this local triple through the authoritative pose without materializing whole world-position/normal buffers. Apply the recovered startup millimetres/N6 float-controller bake: input Float32, binary64 magnitude*1e6+0.5 and integer truncation/division with recovered sign threshold, final Float32 promoted to double, then native numeric-control exchange through15significant decimal digits and parsing, preserving explicit signed zero. This is separate from fixed-six native editor initialization. Returns entityId,pointIndex,position,positionEncoding (existing lossless point-geometry codec),units:mm,coordinateSpace:world,acquisition:point-cloud-vertex,numericOnly:true,sourceDependencyRetained:false; normal outer revision binds the read. No geometry/history/selection/key mutation or preview is created. Read again with the same arguments to acquire current geometry; no mutation receipt is required. Caller coordinates, ordering keys, raw bits and provenance assertions are forbidden. For exact publication use reference_construct positionPick/startPick/endPick:{entityId,pointIndex} with this read response revision as expectedRevision. Server-side resolution preserves negative-zero bits across public JSON; number arrays alone cannot. Verify positionEncoding and preview/get geometryEncoding. Accepted numeric points/lines retain no dependency or new pick records, so later source edits/deletion do not refresh them; existing inactive line records stay preserved. CAD/mesh/sketch picks, the native cached precise-double route, alternate native unit/precision settings and derived line-pick acquisition remain unsupported.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "pointIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Zero-based index in the current original source point order, not a sampled display slot."
+        }
+      },
+      "required": ["entityId", "pointIndex"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_sources",
+    "description": "Read-only paged source eligibility for point and line construction, shared by GUI selectors and MCP. Modes center/pair/threePlanes use semantic points/lines, current validated sphere/cylinder primitive recipes and explicit numeric plane equations as supported; midpoint uses the existing stored endpoints-line-only policy. Returns world millimetres, total,nextOffset and source rows with entityId,name,kind,primitiveKind,eligible,reason when unavailable,read-only saved/provisional constructionOrderKey and identityStatus. Discovery never assigns keys or edits geometry/history. Optional entityId is the edit target; self and dependency-cycle sources remain listed as ineligible. Reading locked sources is allowed. offset defaults0, limit defaults50/max100; ordinary outer response revision binds the page. For kind:line, pair admits semantic reference points/lines plus sphere/cylinder primitive recipes, and average admits semantic lines or cylinder recipes; primitiveKind point needs no parameter and axis needs an explicit finite fraction [0,1] when acquiring a new sourcePick. kind/mode must match. General CAD, fit-only metadata, cone, scan/sketch line acquisition and numeric-plane line extents remain unsupported. Primitive recipe output0 and the current recipe win over stale display kind/fit diagnostics; cylinder location uses the worker midpoint/base/height convention, an application analytic segment rather than a native raw payload claim. Provisional keys are deterministic inspection results, not caller-editable parameters.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["point", "line"]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": ["kind", "mode"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "reference_construct",
-    "description": "Create/edit typed reference points, finite endpoint lines, or a point with mode:midpoint and sourceEntityId referencing one semantic stored endpoints line. Midpoint excludes numeric position/start/end and CAD/fitted/scan/sketch source families. Omitted mode requires position (point) or start/end (line), world XYZ mm within +/-1e9; endpoints must be nondegenerate. Preview uses an owned 60-second session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Update using sessionId/version; destination/name stay fixed. Apply publishes the exact cached geometry and refreshes supported dependent midpoints atomically in one history step. A locked or unsupported dependent rejects the whole edit. Cancel creates no history. Source/model/history changes invalidate previews; selection/camera do not. Revision/retry protection, project/backup/history persistence and structured source bindings apply. Midpoint retains its active source; changing to coordinates unlinks it. Reading a locked source is allowed. Midpoint creation/affected refresh limits:10000 scene objects and 2000000 refresh work units; numeric-only construction and unrelated project admission do not inherit this scene cap. Semantic transform/duplicate remain gated. Delete accepts unlocked leaf references or a complete source/dependent set; surviving dependent references reject atomically. Other derived modes/picks remain unavailable. Inspect object_get after Apply. Cleanup failures retain owner-scoped Cancel recovery.",
+    "description": "Create/edit typed reference points, finite endpoint lines, stored-line midpoint, source-derived points, or located semantic pair/average lines in world XYZ millimetres. For kind:point use mode:center, pair or threePlanes with sourceEntityIds; the server resolves authoritative semantic referencePoint/referenceLine geometry, current validated sphere/cylinder primitive recipes and canonical numeric planeFrame equations (no fit/kernel/parametric). This plane adapter is an application analytic equation, not native direct-plane extent or CAD-provider extraction. Center admits plane selectors and reports the recovered origin fallback when the first canonical source is a plane, retaining all common links. Center consumes the first canonical source, pair the first two, threePlanes evaluates exactly three planes; the full accepted source set is retained independently, sorted by read-only construction-order keys and deduplicated by object identity. Known GUI selector defaults are center one/two, pair two, threePlanes three; no additional native controller count rule is inferred. Fallback/origin/unchanged outcomes are explicit; unchanged edits may retain prior geometry and dirty state. sourceEntityIds excludes numeric coordinates, sourceEntityId, raw records, keys, state and provenance. mode:midpoint keeps the existing one stored semantic endpoints-line sourceEntityId contract. Omitted mode accepts position OR positionPick for a point; each line endpoint independently accepts start OR startPick and end OR endPick. Pick intents contain only {entityId,pointIndex} and use the same visible/unlocked/selectable cloud resolution, native mm/N6 float bake and15significant-digit numeric-control roundtrip as reference_construction_pick, resolved server-side under expectedRevision so JSON cannot lose signed zero. Never supply both forms for one field or use pick fields with derived modes. Preserve the readonly pick response revision for the mutation; changed sources reject rather than quietly re-resolve. Inputs/output world bounds remain +/-1e9 and endpoint lines must be nondegenerate. Numeric picked definitions retain no common dependency or new line-pick records; existing inactive line records are preserved. Preview/get include lossless geometryEncoding and definitionEncoding (F32 retained-record bits). Line mode:pair/average uses sourcePicks; records preserve requested order/repetitions independently of canonical deduplicated common dependencies. Pair admits semantic points/lines plus sphere/cylinder primitive recipes; average admits semantic lines or cylinder recipes. Current primitive recipe/output0 is authoritative; fit-only metadata and stale display kind cannot override it. Cylinder axes follow the application worker midpoint/base/height convention. No general CAD/scan/sketch/cone/plane-extent acquisition is inferred. Each point pick omits parameter; each finite line pick requires a fraction [0,1], consumed once into an F32 world hit without N6 or G15. Omitted sourcePicks reuses exact existing/owned records and common bindings; endpoints with inactive records can restore them only when all sources resolve. Changed source selections require explicit new location intents. New derived lines require an owned typed-endpoint preview as explicit prior, then a same-session mode edit; direct new derived requests cannot invent a constructor/default-average seed. Apply reevaluates the captured actual prior and inputs to verify exact cached geometry; per-version prior is internal, never caller writable. Preview uses an owned60second versioned session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Updates keep destination/name fixed. Apply publishes cached geometry and atomically refreshes admitted derived descendants in one history step, including selected missing source-key assignments; locked source reads and deterministic key-only migration are allowed, locked dependent geometry rejects. Cancel has no history or key migration. Models/source/history changes invalidate previews; camera/selection do not. Source queries and inspection expose read-only identities and structured outcomes. Derived construction/refresh admission is bounded; unrelated numeric operations/imports do not inherit a scene cap. Semantic transforms/duplicate and general CAD/fit-only/scan/sketch/cone derived-line acquisition remain gated. Located line authoring/refresh has an operation-local1000record bound; persistence has no new global scene/record cap. Delete permits leaves or complete dependency sets; cleanupPending retains owner-scoped retry recovery. Existing numeric edits can use initialize:true exclusively with entityId or an owned edit session/version, without retransmitting raw coordinates. It prepares startup-mm/N6 editor defaults server-side, preserves accepted geometry until Apply, and never initializes a new object or detaches a derived recipe. object_get.reference.editorInputs exposes the same detached vectors and lossless vector encodings; project_get object summaries agree. If saved geometry exceeds numeric edit bounds, reference.editorInputsError reports the unavailable preparation while accepted geometry remains inspectable. Point initialization uses the proved N7 sign/pre-round before fixed6 ties-even and G15; line endpoints use direct fixed6 and G15. Explicit typed coordinates and project persistence are not rounded by this intent. Partial native R11 text observations do not establish negative/general tie, line signed-zero or all unit configurations.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -7439,7 +7544,7 @@
         },
         "mode": {
           "type": "string",
-          "enum": ["midpoint"]
+          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
         },
         "sourceEntityId": {
           "type": "string",
@@ -7504,6 +7609,96 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200
+        },
+        "sourceEntityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 10000,
+          "description": "Derived point source selectors. Server owns canonical identity ordering and deduplication, retaining all accepted common links independently of evaluator consumption. Application request/work bound10000 is not a native mode arity. Never supply constructionOrderKey, completion state or raw retained picks."
+        },
+        "positionPick": {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "pointIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["entityId", "pointIndex"],
+          "additionalProperties": false,
+          "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+        },
+        "startPick": {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "pointIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["entityId", "pointIndex"],
+          "additionalProperties": false,
+          "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+        },
+        "endPick": {
+          "type": "object",
+          "properties": {
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "pointIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["entityId", "pointIndex"],
+          "additionalProperties": false,
+          "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+        },
+        "sourcePicks": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "properties": {
+              "entityId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "parameter": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": ["entityId"],
+            "additionalProperties": false
+          },
+          "description": "kind:line mode:pair/average only. Ordered located semantic sources, repetitions preserved. A point forbids parameter; a finite line requires it. Parameter is consumed once as start+(end-start)*fraction in authoritative world F64, then each coordinate rounds once to F32 without numeric N6/G15 baking. Server owns retained records and common identity keys. Omit sourcePicks only to reuse existing/owned retained records exactly; changing a source requires a new explicit location. Max1000 is an application work bound, not native arity."
+        },
+        "initialize": {
+          "type": "boolean",
+          "description": "Preview-only existing numeric edit initialization. With true, provide an existing entityId or an owned EDIT session/version and kind; omit all numeric, pick, mode and source replacements. Server prepares accepted point coordinates through N7 pre-round/fixed6-even/G15, or stored line endpoints through direct fixed6-even/G15 without point pre-round. Derived definitions and new-object seeds reject. Explicit typed create/update values keep their exact existing meaning."
         }
       },
       "required": ["action", "expectedRevision", "requestId"],
@@ -7518,8 +7713,15 @@
     "inputSchema": {
       "type": "object",
       "properties": {
-        "kind": { "type": "string", "enum": ["plane", "frame"] },
-        "entityId": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "kind": {
+          "type": "string",
+          "enum": ["plane", "frame"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
         "origin": {
           "type": "array",
           "items": {
@@ -7555,9 +7757,20 @@
           "exclusiveMinimum": 0,
           "maximum": 2000000000
         },
-        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
-        "expectedRevision": { "type": "integer", "minimum": 0 },
-        "requestId": { "type": "string", "minLength": 1, "maxLength": 200 }
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
       },
       "required": [
         "kind",

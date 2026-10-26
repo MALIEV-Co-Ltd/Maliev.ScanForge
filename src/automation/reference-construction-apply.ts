@@ -8,10 +8,16 @@ import {
 } from "../reference-entity";
 import { lockedObjectEdit } from "../object-operations";
 import {
-  evaluateReferenceMidpoint,
-  refreshReferenceMidpoints,
-  REFERENCE_MIDPOINT_LIMIT,
-} from "../reference-midpoint";
+  refreshReferenceConstructions,
+  REFERENCE_CONSTRUCTION_SCENE_LIMIT,
+} from "../reference-construction-lifecycle";
+import {
+  evaluateReferenceConstruction,
+  type ReferenceConstructionState,
+} from "../reference-construction-evaluation";
+import { resolveStoredReferenceConstructionInputs } from "../reference-construction-resolver";
+import { encodeReferenceGeometry } from "../reference-construction-values";
+import { referenceGeometrySceneBounds } from "../reference-scene-bounds";
 
 export type ReferenceConstructionApplyTarget =
   | {
@@ -31,6 +37,8 @@ export function applyReferenceConstructionToWorkspace(
     readonly owner: string;
     readonly version: number;
     readonly target: ReferenceConstructionApplyTarget;
+    /** Actual prior used by the captured Preview, never a caller-authored input. */
+    readonly evaluationPrior?: ReferenceConstructionState;
   },
 ) {
   context.check();
@@ -67,14 +75,13 @@ export function applyReferenceConstructionToWorkspace(
     request.version,
     (candidate) => {
       context.check();
-      const midpoint =
-        candidate.definition.kind === "point" &&
-        candidate.definition.mode === "center" &&
-        candidate.definition.sources.length === 1;
+      const derived =
+        candidate.definition.kind === "point"
+          ? candidate.definition.mode !== "coordinates"
+          : candidate.definition.mode !== "endpoints";
       if (
-        candidate.definition.mode !== "coordinates" &&
-        candidate.definition.mode !== "endpoints" &&
-        !midpoint
+        derived &&
+        candidate.preview.diagnostics.reason === "evaluation-disabled"
       )
         throw new Error(
           "Derived reference acceptance requires source-specific finalization.",
@@ -86,12 +93,12 @@ export function applyReferenceConstructionToWorkspace(
       if (target.kind === "create" && existing)
         throw new Error("Reference destination already exists.");
       if (
-        midpoint &&
+        derived &&
         target.kind === "create" &&
-        snapshot.entities.length >= REFERENCE_MIDPOINT_LIMIT
+        snapshot.entities.length >= REFERENCE_CONSTRUCTION_SCENE_LIMIT
       )
         throw new Error(
-          "Reference midpoint creation would exceed the scene limit.",
+          "Reference construction creation would exceed the scene limit.",
         );
       if (target.kind === "edit") {
         if (!existing || existing.locked || !validateReferenceEntity(existing))
@@ -117,39 +124,42 @@ export function applyReferenceConstructionToWorkspace(
         JSON.stringify(candidate.definition.sources)
       )
         throw new Error("Reference source identity binding changed.");
+      const assignments = derived ? identities.assignments : [];
+      const assigned = new Map(
+        assignments.map((source) => [source.id, source.constructionOrderKey]),
+      );
+      const stagedSources = snapshot.entities.map((source) =>
+        assigned.has(source.id)
+          ? { ...source, constructionOrderKey: assigned.get(source.id)! }
+          : source,
+      );
       const reference = copyReferenceEntityData({
         version: 1,
-        definition: midpoint
+        definition: derived
           ? candidate.definition
           : { ...candidate.definition, sources: [] },
         geometry: candidate.preview.geometry,
         evaluation: { completionWord: 0x100 },
       });
-      if (midpoint) {
-        if (
-          candidate.preview.outcome !== "updated" ||
-          candidate.preview.diagnostics.reason !== "center"
-        )
-          throw new Error("Only a successful midpoint preview can be applied.");
-        const finalized = evaluateReferenceMidpoint(
-          snapshot.entities,
+      referenceGeometrySceneBounds(reference.geometry);
+      if (derived) {
+        const finalized = evaluateReferenceConstruction(
           reference.definition,
-          { geometry: reference.geometry, state: { completionWord: 1 } },
+          resolveStoredReferenceConstructionInputs(
+            stagedSources,
+            reference.definition,
+          ),
+          {
+            geometry: request.evaluationPrior?.geometry ?? reference.geometry,
+            state: { completionWord: 1 },
+          },
         );
         if (
-          reference.geometry.kind !== "point" ||
-          finalized.geometry.kind !== "point" ||
-          !reference.geometry.position.every((value, index) =>
-            Object.is(
-              value,
-              finalized.geometry.kind === "point"
-                ? finalized.geometry.position[index]
-                : undefined,
-            ),
-          )
+          encodeReferenceGeometry(reference.geometry).bits !==
+          encodeReferenceGeometry(finalized.geometry).bits
         )
           throw new Error(
-            "Reference midpoint no longer matches the cached preview.",
+            "Reference construction no longer matches the cached preview.",
           );
         reference.evaluation = finalized.state;
       }
@@ -176,24 +186,26 @@ export function applyReferenceConstructionToWorkspace(
               selectable: true,
             };
       validateReferenceEntity(entity);
-      const next = snapshot.entities.map((source) =>
+      const next = stagedSources.map((source) =>
         source.id === target.id ? entity : source,
       );
       if (target.kind === "create") next.push(entity);
-      const refreshed = refreshReferenceMidpoints(next, entity.id, () =>
-        context.check(),
-      );
-      if (lockedObjectEdit(snapshot.entities, refreshed.entities))
+      const refreshed = refreshReferenceConstructions(next, [entity.id], {
+        check: () => context.check(),
+      });
+      const policy = { constructionIdentityMigration: assignments };
+      if (lockedObjectEdit(snapshot.entities, refreshed.entities, policy))
         throw new Error("Reference Apply would edit locked geometry.");
       mutate(() =>
         host.commit(
           refreshed.entities,
           `${target.kind === "create" ? "Create" : "Edit"} reference ${reference.geometry.kind}`,
+          policy,
         ),
       );
       publication = {
         entityId: entity.id,
-        assignedSources: [],
+        assignedSources: assignments,
         refreshedEntityIds: refreshed.refreshedEntityIds,
       };
     },

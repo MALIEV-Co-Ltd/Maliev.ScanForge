@@ -1,3 +1,7 @@
+import {
+  refreshReferenceConstructions,
+  assertReferenceConstructionSceneAdmission,
+} from "../reference-construction-lifecycle";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
@@ -238,8 +242,10 @@ export async function rebuildCadFeature(
     { signal, preserveKernelIds: preserved },
   );
   const features = new Map(rebuilt.model.features.map((f) => [f.id, f]));
+  const changedFeatures = new Set(rebuilt.rebuiltFeatureIds);
   const next = entities.map((e) => {
-    if (!e.parametric) return e;
+    if (!e.parametric || !changedFeatures.has(e.parametric.feature.id))
+      return e;
     const feature = features.get(e.parametric.feature.id)!;
     const output = rebuilt.results[feature.id][e.parametric.output];
     return {
@@ -406,7 +412,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       host.select(source.kind === "pointcloud" ? null : (next[0]?.id ?? null));
   };
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
-    const write = () => host.commit(entities.map(retainIndexedMesh), label);
+    const write = () => {
+      const next = entities.map(retainIndexedMesh);
+      assertReferenceConstructionSceneAdmission(next);
+      host.commit(next, label);
+    };
     if (c.mutate) c.mutate(write);
     else {
       c.check();
@@ -1358,8 +1368,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
       c.check();
-      if (positions || segments?.length)
-        host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
+      if (positions || segments?.length) {
+        const staged = next.map(retainIndexedMesh);
+        assertReferenceConstructionSceneAdmission(staged);
+        host.commit(staged, `Mesh ${kind}`);
+      }
       if (selected) host.setSelection(e.id, selected);
       return response;
     },
@@ -1399,12 +1412,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         updated.kind = "plane";
         updated.planeFrame = planeFrame;
       }
-      commit(
-        c,
-        s.entities.map((x) => (x.id === e.id ? updated : x)),
-        "Transform mesh",
-      );
-      return { entityId: e.id };
+      const staged = s.entities.map((x) => (x.id === e.id ? updated : x));
+      const refreshed = storedPlane
+        ? refreshReferenceConstructions(staged, [e.id], {
+            check: () => c.check(),
+          })
+        : { entities: staged, refreshedEntityIds: [], evaluations: [] };
+      commit(c, refreshed.entities, "Transform mesh");
+      return {
+        entityId: e.id,
+        refreshedEntityIds: refreshed.refreshedEntityIds,
+        evaluations: refreshed.evaluations,
+      };
     },
     analysis_fit: (a, c) => {
       const s = host.snapshot(),
@@ -1532,15 +1551,36 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           c.signal,
         );
       try {
-        commit(c, result.entities, "Rebuild CAD feature");
+        c.check();
+        const rebuilt = new Set(result.rebuiltFeatureIds);
+        const roots = result.entities
+          .filter(
+            (entity) =>
+              entity.parametric && rebuilt.has(entity.parametric.feature.id),
+          )
+          .map((entity) => entity.id);
+        const refreshed = refreshReferenceConstructions(
+          result.entities,
+          roots,
+          {
+            check: () => c.check(),
+          },
+        );
+        commit(c, refreshed.entities, "Rebuild CAD feature");
+        return {
+          rebuiltFeatureIds: result.rebuiltFeatureIds,
+          cleanupFailures: result.cleanupFailures,
+          refreshedEntityIds: refreshed.refreshedEntityIds,
+          evaluations: refreshed.evaluations,
+        };
       } catch (error) {
-        await releaseCreated(cad, result.entities, s.entities);
+        await releaseCreated(cad, result.entities, [
+          ...s.entities,
+          ...s.history.flatMap((row) => row.entities),
+          ...s.future.flatMap((row) => row.entities),
+        ]);
         throw error;
       }
-      return {
-        rebuiltFeatureIds: result.rebuiltFeatureIds,
-        cleanupFailures: result.cleanupFailures,
-      };
     },
     sketch_get: () => {
       const s = host.snapshot();

@@ -1,3 +1,4 @@
+import { PerspectiveCamera, Vector3 } from "three";
 import assert from "node:assert/strict";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
@@ -496,6 +497,1115 @@ try {
   };
   console.log(
     "GUI/MCP midpoint, source refresh/history/reopen and lock/delete rejection passed",
+  );
+
+  // Independent MCP source intents are compared with actual GUI source selectors.
+  await mutate("object_update", {
+    entityId: pointId,
+    patch: { name: "M4 source point" },
+  });
+  const planes = [];
+  for (const [name, origin, normal, xDirection] of [
+    ["Derived PX", [2, 0, 0], [1, 0, 0], [0, 1, 0]],
+    ["Derived PY", [0, 3, 0], [0, 1, 0], [0, 0, 1]],
+    ["Derived PZ", [0, 0, 4], [0, 0, 1], [1, 0, 0]],
+  ])
+    planes.push(
+      (
+        await mutate("datum_construct", {
+          kind: "plane",
+          name,
+          origin,
+          normal,
+          xDirection,
+          displaySize: 10,
+        })
+      ).result.entityId,
+    );
+  ledger.derivedPoints = [];
+  for (const [mode, label, ids, names, expected] of [
+    [
+      "center",
+      "Primitive center",
+      [pointId, lineApplied.entityId],
+      ["M4 source point", "M4 line"],
+      null,
+    ],
+    [
+      "pair",
+      "Two primitives",
+      [pointId, lineApplied.entityId],
+      ["M4 source point", "M4 line"],
+      [2, 0, 0],
+    ],
+    [
+      "threePlanes",
+      "Three planes",
+      planes,
+      ["Derived PX", "Derived PY", "Derived PZ"],
+      [2, 3, 4],
+    ],
+  ]) {
+    const rows = (
+      await call("reference_construction_sources", {
+        kind: "point",
+        mode,
+        limit: 100,
+      })
+    ).result.sources;
+    for (const id of ids)
+      assert(rows.some((row) => row.entityId === id && row.eligible));
+    const independent = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind: "point",
+        mode,
+        sourceEntityIds: ids,
+      })
+    ).result;
+    if (expected) assert.deepEqual(independent.geometry.position, expected);
+    await mutate("reference_construct", {
+      action: "cancel",
+      sessionId: independent.sessionId,
+      version: independent.version,
+    });
+    const oldIds = new Set(
+      (await call("project_get")).result.objects.map((row) => row.id),
+    );
+    await page.getByRole("tab", { name: "Construct", exact: true }).click();
+    await page
+      .getByRole("group", { name: "Primitives", exact: true })
+      .getByRole("button", { name: "Reference point", exact: true })
+      .click();
+    dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+    await dialog.locator(".app-select > button").first().click();
+    await page.getByRole("option", { name: label, exact: true }).click();
+    for (let i = 0; i < names.length; i++) {
+      await dialog
+        .locator(".app-select > button")
+        .nth(i + 1)
+        .click();
+      await page.getByRole("option", { name: names[i], exact: true }).click();
+    }
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          '[role="dialog"] .button-row:last-child button:nth-child(2)',
+        )?.disabled,
+    );
+    const actual = (await call("reference_construction_get")).result;
+    assert.deepEqual(actual.geometry, independent.geometry);
+    assert.deepEqual(actual.definition, independent.definition);
+    await page.screenshot({
+      path: fileURLToPath(new URL(`derived-${mode}-preview.png`, artifactDir)),
+    });
+    await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    const id = (await call("project_get")).result.objects.find(
+      (row) => !oldIds.has(row.id),
+    ).id;
+    const stored = (await call("object_get", { entityId: id })).result
+      .reference;
+    assert.deepEqual(stored.definition, independent.definition);
+    assert.deepEqual(stored.geometry, independent.geometry);
+    await mutate("object_select", { entityId: id });
+    await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+    await page
+      .getByRole("button", { name: "Edit reference", exact: true })
+      .click();
+    dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+    assert.equal(await dialog.locator("select").first().inputValue(), mode);
+    const retained = await dialog.locator("select").evaluateAll((selects) =>
+      selects
+        .slice(1)
+        .map((select) => select.value)
+        .filter(Boolean),
+    );
+    assert.deepEqual(
+      retained,
+      stored.definition.sources.map((source) => source.id),
+    );
+    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    ledger.derivedPoints.push({
+      mode,
+      entityId: id,
+      sourceIds: ids,
+      guiMcpPreviewEqual: true,
+      geometry: stored.geometry,
+      editRetainedSources: true,
+    });
+  }
+  const threePoint = ledger.derivedPoints.find(
+    (row) => row.mode === "threePlanes",
+  );
+  const threeGeometry = async () =>
+    (await call("object_get", { entityId: threePoint.entityId })).result
+      .reference.geometry.position;
+  await mutate("datum_construct", {
+    kind: "plane",
+    entityId: planes[0],
+    origin: [7, 0, 0],
+    normal: [1, 0, 0],
+    xDirection: [0, 1, 0],
+    displaySize: 10,
+  });
+  assert.deepEqual(await threeGeometry(), [7, 3, 4]);
+  await mutate("history_undo", {});
+  assert.deepEqual(await threeGeometry(), [2, 3, 4]);
+  await mutate("history_redo", {});
+  assert.deepEqual(await threeGeometry(), [7, 3, 4]);
+  const derivedArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: derivedArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(await threeGeometry(), [7, 3, 4]);
+  ledger.derivedSourceEditHistoryReopen = true;
+  console.log(
+    "Derived point GUI/public MCP, retained selectors, plane-source edit/history/reopen passed",
+  );
+
+  // Located line records retain order/repetitions independently of dependencies.
+  const extraLinePreview = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      start: [0, 4, 0],
+      end: [10, 4, 0],
+      name: "Average source",
+    })
+  ).result;
+  const extraLine = (
+    await mutate("reference_construct", {
+      action: "apply",
+      sessionId: extraLinePreview.sessionId,
+      version: extraLinePreview.version,
+    })
+  ).result.entityId;
+  const sourcePointName = (await call("object_get", { entityId: pointId }))
+    .result.name;
+  ledger.derivedLines = [];
+  for (const [mode, label, picks, names] of [
+    [
+      "pair",
+      "Two primitives",
+      [
+        { entityId: pointId },
+        { entityId: lineApplied.entityId, parameter: 0.25 },
+      ],
+      [sourcePointName, "M4 line"],
+    ],
+    [
+      "average",
+      "Average lines",
+      [
+        { entityId: lineApplied.entityId, parameter: 0.25 },
+        { entityId: extraLine, parameter: 0.75 },
+        { entityId: lineApplied.entityId, parameter: 0.25 },
+      ],
+      ["M4 line", "Average source", "M4 line"],
+    ],
+  ]) {
+    const seed = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind: "line",
+        start: [0, 0, 0],
+        end: [10, 0, 0],
+      })
+    ).result;
+    const independent = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind: "line",
+        mode,
+        sourcePicks: picks,
+        sessionId: seed.sessionId,
+        version: seed.version,
+      })
+    ).result;
+    await mutate("reference_construct", {
+      action: "cancel",
+      sessionId: independent.sessionId,
+      version: independent.version,
+    });
+    const oldIds = new Set(
+      (await call("project_get")).result.objects.map((row) => row.id),
+    );
+    await page.getByRole("tab", { name: "Construct", exact: true }).click();
+    await page
+      .getByRole("group", { name: "Primitives", exact: true })
+      .getByRole("button", { name: "Reference line", exact: true })
+      .click();
+    dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+    for (const [field, value] of [
+      ["Start X", 0],
+      ["Start Y", 0],
+      ["Start Z", 0],
+      ["End X", 10],
+      ["End Y", 0],
+      ["End Z", 0],
+    ])
+      await dialog.getByLabel(field, { exact: true }).fill(String(value));
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          '[role="dialog"] .button-row:last-child button:nth-child(2)',
+        )?.disabled,
+    );
+    await dialog.locator(".app-select > button").first().click();
+    await page.getByRole("option", { name: label, exact: true }).click();
+    if (picks.length > 2)
+      await dialog
+        .getByRole("button", { name: "Add source", exact: true })
+        .click();
+    for (let i = 0; i < picks.length; i++) {
+      await dialog
+        .locator(".app-select > button")
+        .nth(i + 1)
+        .click();
+      await page.getByRole("option", { name: names[i], exact: true }).click();
+      if (picks[i].parameter !== undefined)
+        await dialog
+          .getByLabel(`Source ${i + 1} fraction`, { exact: true })
+          .fill(String(picks[i].parameter));
+    }
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          '[role="dialog"] .button-row:last-child button:nth-child(2)',
+        )?.disabled,
+    );
+    const actual = (await call("reference_construction_get")).result;
+    assert.deepEqual(actual.geometryEncoding, independent.geometryEncoding);
+    assert.deepEqual(actual.definition, independent.definition);
+    await page.screenshot({
+      path: fileURLToPath(new URL(`line-${mode}-preview.png`, artifactDir)),
+    });
+    await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    const id = (await call("project_get")).result.objects.find(
+      (row) => !oldIds.has(row.id),
+    ).id;
+    const stored = (await call("object_get", { entityId: id })).result
+      .reference;
+    assert.deepEqual(stored.geometryEncoding, independent.geometryEncoding);
+    await mutate("object_select", { entityId: id });
+    await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+    await page
+      .getByRole("button", { name: "Edit reference", exact: true })
+      .click();
+    dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+    const retained = await dialog
+      .locator("select")
+      .evaluateAll((selects) => selects.slice(1).map((select) => select.value));
+    assert.deepEqual(
+      retained,
+      picks.map((pick) => pick.entityId),
+    );
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          '[role="dialog"] .button-row:last-child button:nth-child(2)',
+        )?.disabled,
+    );
+    assert.deepEqual(
+      (await call("reference_construction_get")).result.geometryEncoding,
+      stored.geometryEncoding,
+    );
+    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    ledger.derivedLines.push({
+      mode,
+      entityId: id,
+      geometryEncoding: stored.geometryEncoding,
+      definition: stored.definition,
+      guiMcpEqual: true,
+      retainedEditCancel: true,
+    });
+  }
+  const lineArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: lineArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  for (const row of ledger.derivedLines) {
+    const stored = (await call("object_get", { entityId: row.entityId })).result
+      .reference;
+    assert.deepEqual(stored.geometryEncoding, row.geometryEncoding);
+    assert.deepEqual(stored.definition, row.definition);
+  }
+  console.log(
+    "Pair/average GUI/public MCP, repeated retained records, edit Cancel and worker reopen passed",
+  );
+
+  const primitiveIds = {};
+  for (const [key, name, input] of [
+    [
+      "sphere",
+      "Analytic sphere source",
+      { kind: "sphere", center: [2, 3, 4], radius: 2 },
+    ],
+    [
+      "cylinder",
+      "Analytic cylinder source",
+      {
+        kind: "cylinder",
+        center: [0, 5, 0],
+        axis: [1, 0, 0],
+        radius: 1,
+        height: 10,
+      },
+    ],
+    [
+      "second",
+      "Second cylinder source",
+      {
+        kind: "cylinder",
+        center: [0, 9, 0],
+        axis: [1, 0, 0],
+        radius: 1,
+        height: 10,
+      },
+    ],
+  ]) {
+    primitiveIds[key] = (
+      await job(
+        await mutate("cad_create", {
+          name,
+          recipe: { kind: "primitive", input },
+        }),
+      )
+    ).entityIds[0];
+  }
+  await mutate("object_update", {
+    entityId: primitiveIds.sphere,
+    patch: { locked: true },
+  });
+  ledger.analyticSources = [];
+  for (const [key, name, expected] of [
+    ["sphere", "Analytic sphere source", [2, 3, 4]],
+    ["cylinder", "Analytic cylinder source", [0, 5, 0]],
+  ]) {
+    const sourceId = primitiveIds[key];
+    const independent = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind: "point",
+        mode: "center",
+        sourceEntityIds: [sourceId],
+      })
+    ).result;
+    assert.deepEqual(independent.geometry.position, expected);
+    await mutate("reference_construct", {
+      action: "cancel",
+      sessionId: independent.sessionId,
+      version: independent.version,
+    });
+    const oldIds = new Set(
+      (await call("project_get")).result.objects.map((row) => row.id),
+    );
+    await page.getByRole("tab", { name: "Construct", exact: true }).click();
+    await page
+      .getByRole("group", { name: "Primitives", exact: true })
+      .getByRole("button", { name: "Reference point", exact: true })
+      .click();
+    dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+    await dialog.locator(".app-select > button").first().click();
+    await page
+      .getByRole("option", { name: "Primitive center", exact: true })
+      .click();
+    await dialog.locator(".app-select > button").nth(1).click();
+    await page.getByRole("option", { name, exact: true }).click();
+    await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+    await page.waitForFunction(
+      () =>
+        !document.querySelector(
+          '[role="dialog"] .button-row:last-child button:nth-child(2)',
+        )?.disabled,
+    );
+    assert.deepEqual(
+      (await call("reference_construction_get")).result.geometryEncoding,
+      independent.geometryEncoding,
+    );
+    await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    const entityId = (await call("project_get")).result.objects.find(
+      (row) => !oldIds.has(row.id),
+    ).id;
+    assert.deepEqual(
+      (await call("object_get", { entityId })).result.reference.definition,
+      independent.definition,
+    );
+    ledger.analyticSources.push({ key, entityId, sourceId, guiMcpEqual: true });
+  }
+  const seedAxis = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      start: [0, 0, 0],
+      end: [10, 0, 0],
+    })
+  ).result;
+  const axisPicks = [
+    { entityId: primitiveIds.cylinder, parameter: 0.25 },
+    { entityId: primitiveIds.second, parameter: 0.75 },
+  ];
+  const independentAxis = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      mode: "average",
+      sourcePicks: axisPicks,
+      sessionId: seedAxis.sessionId,
+      version: seedAxis.version,
+    })
+  ).result;
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: independentAxis.sessionId,
+    version: independentAxis.version,
+  });
+  const oldAnalyticIds = new Set(
+    (await call("project_get")).result.objects.map((row) => row.id),
+  );
+  await page.getByRole("tab", { name: "Construct", exact: true }).click();
+  await page
+    .getByRole("group", { name: "Primitives", exact: true })
+    .getByRole("button", { name: "Reference line", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  await dialog.locator(".app-select > button").first().click();
+  await page
+    .getByRole("option", { name: "Average lines", exact: true })
+    .click();
+  for (const [index, name, parameter] of [
+    [0, "Analytic cylinder source", 0.25],
+    [1, "Second cylinder source", 0.75],
+  ]) {
+    await dialog
+      .locator(".app-select > button")
+      .nth(index + 1)
+      .click();
+    await page.getByRole("option", { name, exact: true }).click();
+    await dialog
+      .getByLabel(`Source ${index + 1} fraction`, { exact: true })
+      .fill(String(parameter));
+  }
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    independentAxis.geometryEncoding,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const analyticAxisId = (await call("project_get")).result.objects.find(
+    (row) => !oldAnalyticIds.has(row.id),
+  ).id;
+  const followerPreview = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      mode: "center",
+      sourceEntityIds: [analyticAxisId],
+    })
+  ).result;
+  const followerId = (
+    await mutate("reference_construct", {
+      action: "apply",
+      sessionId: followerPreview.sessionId,
+      version: followerPreview.version,
+    })
+  ).result.entityId;
+  const analyticIds = [
+    ...ledger.analyticSources.map((row) => row.entityId),
+    analyticAxisId,
+    followerId,
+  ];
+  const analyticBefore = await Promise.all(
+    analyticIds.map(
+      async (entityId) =>
+        (await call("object_get", { entityId })).result.reference
+          .geometryEncoding,
+    ),
+  );
+  const rebuiltAnalytic = await job(
+    await mutate("cad_rebuild", {
+      entityId: primitiveIds.cylinder,
+      recipe: {
+        kind: "primitive",
+        input: {
+          kind: "cylinder",
+          center: [0, 6, 0],
+          axis: [1, 0, 0],
+          radius: 1,
+          height: 10,
+        },
+      },
+    }),
+  );
+  for (const entityId of [
+    ledger.analyticSources.find((row) => row.key === "cylinder").entityId,
+    analyticAxisId,
+    followerId,
+  ])
+    assert(rebuiltAnalytic.refreshedEntityIds.includes(entityId));
+  const analyticAfter = await Promise.all(
+    analyticIds.map(
+      async (entityId) =>
+        (await call("object_get", { entityId })).result.reference
+          .geometryEncoding,
+    ),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: analyticIds[1] })).result.reference
+      .geometry.position,
+    [0, 6, 0],
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: analyticAxisId })).result.reference
+      .geometry.start,
+    [0, 7.5, 0],
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: followerId })).result.reference
+      .geometry.position,
+    [5, 7.5, 0],
+  );
+  const lockedSphere = (
+    await call("object_get", { entityId: primitiveIds.sphere })
+  ).result;
+  assert.equal(lockedSphere.locked, true);
+  assert.match(lockedSphere.constructionOrderKey, /^[0-9a-f]{32}$/);
+  assert.notDeepEqual(analyticAfter.slice(1), analyticBefore.slice(1));
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    await Promise.all(
+      analyticIds.map(
+        async (entityId) =>
+          (await call("object_get", { entityId })).result.reference
+            .geometryEncoding,
+      ),
+    ),
+    analyticBefore,
+  );
+  await mutate("history_redo", {});
+  assert.deepEqual(
+    await Promise.all(
+      analyticIds.map(
+        async (entityId) =>
+          (await call("object_get", { entityId })).result.reference
+            .geometryEncoding,
+      ),
+    ),
+    analyticAfter,
+  );
+  await mutate("object_select", { entityId: primitiveIds.cylinder });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  const rebuildPanel = page.getByRole("region", {
+    name: "Parametric rebuild",
+    exact: true,
+  });
+  await rebuildPanel
+    .getByLabel("Parametric feature recipe", { exact: true })
+    .fill(
+      JSON.stringify({
+        kind: "primitive",
+        input: {
+          kind: "cylinder",
+          center: [0, 8, 0],
+          axis: [1, 0, 0],
+          radius: 1,
+          height: 10,
+        },
+      }),
+    );
+  await rebuildPanel
+    .getByRole("button", {
+      name: "Rebuild feature and dependents",
+      exact: true,
+    })
+    .click();
+  await page.waitForFunction(() =>
+    document.body.innerText.includes("Rebuilt "),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: analyticIds[1] })).result.reference
+      .geometry.position,
+    [0, 8, 0],
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: analyticAxisId })).result.reference
+      .geometry.start,
+    [0, 8.5, 0],
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: followerId })).result.reference
+      .geometry.position,
+    [5, 8.5, 0],
+  );
+  const analyticGuiAfter = await Promise.all(
+    analyticIds.map(
+      async (entityId) =>
+        (await call("object_get", { entityId })).result.reference
+          .geometryEncoding,
+    ),
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    await Promise.all(
+      analyticIds.map(
+        async (entityId) =>
+          (await call("object_get", { entityId })).result.reference
+            .geometryEncoding,
+      ),
+    ),
+    analyticAfter,
+  );
+  await mutate("history_redo", {});
+  assert.deepEqual(
+    await Promise.all(
+      analyticIds.map(
+        async (entityId) =>
+          (await call("object_get", { entityId })).result.reference
+            .geometryEncoding,
+      ),
+    ),
+    analyticGuiAfter,
+  );
+  const analyticArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: analyticArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(
+    await Promise.all(
+      analyticIds.map(
+        async (entityId) =>
+          (await call("object_get", { entityId })).result.reference
+            .geometryEncoding,
+      ),
+    ),
+    analyticGuiAfter,
+  );
+  ledger.analyticRecipeInputs = {
+    realCadWorker: true,
+    lockedSphereReadAndKeyMigration: true,
+    averageGuiMcpEqual: true,
+    mixedDescendantRebuild: true,
+    guiRebuildSharedClosure: true,
+    undoRedo: true,
+    workerReopen: true,
+  };
+  console.log(
+    "Real-worker sphere/cylinder GUI/public MCP sources, locked read, mixed CAD rebuild/history/reopen passed",
+  );
+
+  // Point-cloud vertex acquisition crosses the real JSON transport, preserving -0 via source intents.
+  const cloudXYZ = [1.0000005, -3e-7, 6.8, 10, 0, 0, 0, 10, 0];
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "m4-picked-cloud.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: Buffer.from(
+        JSON.stringify({
+          format: "maliev-scanforge",
+          version: 1,
+          units: "mm",
+          name: "M4 picked cloud",
+          entities: [
+            {
+              id: "pick-cloud",
+              name: "Picked cloud",
+              kind: "pointcloud",
+              positions: cloudXYZ,
+              color: "#2288cc",
+              pointSize: 10,
+              visible: true,
+              opacity: 1,
+            },
+          ],
+        }),
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Picked cloud", exact: true })
+    .waitFor();
+  for (let attempt = 0; ; attempt++) {
+    const state = (await call("application_inspect", { maxControls: 1 }))
+      .result;
+    if (!state.busy) break;
+    assert(attempt < 120, "Point-cloud project presentation did not finish");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  await mutate("viewport_control", {
+    action: "camera",
+    position: [25, -30, 25],
+    target: [3, 3, 3],
+    up: [0, 0, 1],
+    projection: "perspective",
+    zoom: 1,
+  });
+  await mutate("sketch_manage", {
+    action: "create",
+    name: "Preserved during coordinate picks",
+    sketch: {
+      version: 1,
+      points: [],
+      segments: [],
+      arcs: [],
+      constraints: [],
+      frame: {
+        origin: [0, 0, 0],
+        u: [1, 0, 0],
+        v: [0, 1, 0],
+        normal: [0, 0, 1],
+      },
+    },
+  });
+  await mutate("ui_set", { workspace: "sketch", toolPanelOpen: true });
+  await page
+    .getByRole("region", { name: "Parametric sketch", exact: true })
+    .getByRole("button", { name: "Line", exact: true })
+    .click();
+  const sketchBeforeCoordinatePicks = (await call("sketch_get")).result.sketch;
+  const vertexPick = (
+    await call("reference_construction_pick", {
+      entityId: "pick-cloud",
+      pointIndex: 0,
+    })
+  ).result;
+  const expectedPickEncoding = JSON.parse(
+    await readFile(
+      new URL(
+        "tests/fixtures/reference-point-picked-cloud-native-r10.json",
+        root,
+      ),
+      "utf8",
+    ),
+  ).accepted.geometryEncoding;
+  assert.deepEqual(vertexPick.positionEncoding, expectedPickEncoding);
+  assert.equal(
+    Object.is(vertexPick.position[1], -0),
+    false,
+    "JSON numeric inspection loses -0; source intents must preserve it",
+  );
+  const independentPick = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      positionPick: { entityId: "pick-cloud", pointIndex: 0 },
+    })
+  ).result;
+  assert.deepEqual(independentPick.geometryEncoding, expectedPickEncoding);
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: independentPick.sessionId,
+    version: independentPick.version,
+  });
+  const canvas = page.locator(".viewport canvas").first();
+  async function clickCloudVertex(index) {
+    const view = (await call("viewport_get")).result,
+      camera = new PerspectiveCamera();
+    camera.projectionMatrix.fromArray(view.projectionMatrix);
+    camera.matrixWorld.fromArray(view.cameraWorldMatrix);
+    camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+    const clip = new Vector3(
+        ...cloudXYZ.slice(index * 3, index * 3 + 3).map(Math.fround),
+      ).project(camera),
+      rect = await canvas.boundingBox();
+    assert(
+      rect && clip.z >= -1 && clip.z <= 1,
+      "Picked cloud vertex must be visible",
+    );
+    await page.mouse.click(
+      rect.x + ((clip.x + 1) * rect.width) / 2,
+      rect.y + ((1 - clip.y) * rect.height) / 2,
+    );
+  }
+  await page.getByRole("tab", { name: "Construct", exact: true }).click();
+  await page
+    .getByRole("group", { name: "Primitives", exact: true })
+    .getByRole("button", { name: "Reference point", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+  await dialog
+    .getByRole("button", { name: "Pick position", exact: true })
+    .click();
+  await page
+    .getByRole("dialog", { name: "Pick reference coordinate", exact: true })
+    .getByRole("button", { name: "Cancel picking", exact: true })
+    .click();
+  await dialog.getByLabel("Position X", { exact: true }).waitFor();
+  assert.equal(
+    await dialog.getByLabel("Position X", { exact: true }).inputValue(),
+    "0",
+  );
+  await dialog
+    .getByRole("button", { name: "Pick position", exact: true })
+    .click();
+  await clickCloudVertex(0);
+  await dialog.getByLabel("Position X", { exact: true }).waitFor();
+  assert.equal(
+    Number(await dialog.getByLabel("Position X", { exact: true }).inputValue()),
+    1,
+  );
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    expectedPickEncoding,
+  );
+  await page.screenshot({
+    path: fileURLToPath(new URL("picked-point-preview.png", artifactDir)),
+  });
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const pickedPointId = (await call("project_get")).result.objects.find(
+    (row) => row.kind === "referencePoint",
+  ).id;
+  const readPickedPoint = async () =>
+    (await call("object_get", { entityId: pickedPointId })).result.reference;
+  assert.deepEqual(
+    (await readPickedPoint()).geometryEncoding,
+    expectedPickEncoding,
+  );
+  assert.deepEqual((await readPickedPoint()).definition.sources, []);
+  const independentPickedLine = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      startPick: { entityId: "pick-cloud", pointIndex: 0 },
+      endPick: { entityId: "pick-cloud", pointIndex: 1 },
+    })
+  ).result;
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: independentPickedLine.sessionId,
+    version: independentPickedLine.version,
+  });
+  await page
+    .getByRole("group", { name: "Primitives", exact: true })
+    .getByRole("button", { name: "Reference line", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+  await dialog.getByRole("button", { name: "Pick start", exact: true }).click();
+  await clickCloudVertex(0);
+  await dialog.getByLabel("Start X", { exact: true }).waitFor();
+  await dialog.getByRole("button", { name: "Pick end", exact: true }).click();
+  await clickCloudVertex(1);
+  await dialog.getByLabel("End X", { exact: true }).waitFor();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    independentPickedLine.geometryEncoding,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const pickedLineId = (await call("project_get")).result.objects.find(
+    (row) => row.kind === "referenceLine",
+  ).id;
+  assert.deepEqual(
+    (await call("object_get", { entityId: pickedLineId })).result.reference
+      .definition.sources,
+    [],
+  );
+  await mutate("object_delete", { entityId: "pick-cloud" });
+  assert.deepEqual(
+    (await readPickedPoint()).geometryEncoding,
+    expectedPickEncoding,
+  );
+  const pickedArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: pickedArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(
+    (await readPickedPoint()).geometryEncoding,
+    expectedPickEncoding,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: pickedLineId })).result.reference
+      .geometryEncoding,
+    independentPickedLine.geometryEncoding,
+  );
+  assert.deepEqual(
+    (await call("sketch_get")).result.sketch,
+    sketchBeforeCoordinatePicks,
+    "Coordinate picks must not publish active sketch gestures",
+  );
+  ledger.pickedCloudCoordinates = {
+    activeSketchPreserved: true,
+    guiMcpPointEqual: true,
+    guiMcpLineEqual: true,
+    signedZeroPreservedAcrossPublicJson: true,
+    pickCancel: true,
+    bakedWithoutSourceLinks: true,
+    sourceDeleted: true,
+    workerReopen: true,
+  };
+  console.log(
+    "Actual GUI/public MCP cloud picks, signed-zero-safe intents, numeric bake and source-delete/reopen passed",
+  );
+
+  ledger.numericEditInitialization = [];
+  for (const [kind, entityId] of [
+    ["point", pickedPointId],
+    ["line", pickedLineId],
+  ]) {
+    const original = (await call("object_get", { entityId })).result.reference;
+    const fields = original.editorInputs;
+    assert.equal(fields.kind, kind);
+    if (kind === "point") assert.deepEqual(fields.position, [1, 0, 6.8]);
+    const independent = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind,
+        entityId,
+        initialize: true,
+      })
+    ).result;
+    await mutate("reference_construct", {
+      action: "cancel",
+      sessionId: independent.sessionId,
+      version: independent.version,
+    });
+    for (const action of ["Cancel", "Apply"]) {
+      await mutate("object_select", { entityId });
+      await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+      await page
+        .getByRole("button", { name: "Edit reference", exact: true })
+        .click();
+      dialog = page.getByRole("dialog", {
+        name: `Reference ${kind}`,
+        exact: true,
+      });
+      await dialog.locator("fieldset:not([disabled])").waitFor();
+      const coordinates =
+        kind === "point"
+          ? [["Position", fields.position]]
+          : [
+              ["Start", fields.start],
+              ["End", fields.end],
+            ];
+      for (const [label, values] of coordinates)
+        for (let i = 0; i < 3; i++)
+          assert.equal(
+            Number(
+              await dialog
+                .getByLabel(`${label} ${["X", "Y", "Z"][i]}`, { exact: true })
+                .inputValue(),
+            ),
+            values[i],
+          );
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForFunction(
+        () =>
+          !document.querySelector(
+            '[role="dialog"] .button-row:last-child button:nth-child(2)',
+          )?.disabled,
+      );
+      assert.deepEqual(
+        (await call("reference_construction_get")).result.geometryEncoding,
+        independent.geometryEncoding,
+      );
+      await dialog.getByRole("button", { name: action, exact: true }).click();
+      await dialog.waitFor({ state: "detached" });
+      assert.deepEqual(
+        (await call("object_get", { entityId })).result.reference
+          .geometryEncoding,
+        action === "Cancel"
+          ? original.geometryEncoding
+          : independent.geometryEncoding,
+      );
+    }
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      (await call("object_get", { entityId })).result.reference
+        .geometryEncoding,
+      original.geometryEncoding,
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      (await call("object_get", { entityId })).result.reference
+        .geometryEncoding,
+      independent.geometryEncoding,
+    );
+    ledger.numericEditInitialization.push({
+      kind,
+      entityId,
+      guiMcpEqual: true,
+      cancelPreservedOriginal: true,
+      undoRedo: true,
+      geometryEncoding: independent.geometryEncoding,
+    });
+  }
+  const initializedArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: initializedArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  for (const row of ledger.numericEditInitialization)
+    assert.deepEqual(
+      (await call("object_get", { entityId: row.entityId })).result.reference
+        .geometryEncoding,
+      row.geometryEncoding,
+    );
+  console.log(
+    "Native-style numeric editor fields, GUI/public MCP initialize, Cancel/Apply, history and worker reopen passed",
   );
 
   await mutate("project_new", { discard: true });
