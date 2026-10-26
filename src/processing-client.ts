@@ -641,7 +641,10 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
-        if (copied.operation.kind === "repolygonize") {
+        if (
+          copied.operation.kind === "averageMesh" ||
+          copied.operation.kind === "repolygonize"
+        ) {
           const cloneTopology = (
             mesh: import("./types").IndexedMesh | undefined,
           ) => {
@@ -666,27 +669,6 @@ function runProcessingRequest(
           );
           copied.operation.targetTopology =
             copied.operation.targetTopology?.map(cloneTopology);
-        }
-        if (
-          copied.operation.kind === "averageMesh" ||
-          copied.operation.kind === "repolygonize"
-        ) {
-          if (copied.operation.sourceTopology) {
-            const mesh = copied.operation.sourceTopology;
-            const triangles = Uint32Array.from(mesh.triangles);
-            transfers.push(triangles.buffer);
-            copied.operation.sourceTopology = {
-              vertices: clone(mesh.vertices),
-              triangles,
-            };
-          }
-          copied.operation.targetTopology =
-            copied.operation.targetTopology?.map((mesh) => {
-              if (!mesh) return undefined;
-              const triangles = Uint32Array.from(mesh.triangles);
-              transfers.push(triangles.buffer);
-              return { vertices: clone(mesh.vertices), triangles };
-            });
         }
         if (
           copied.operation.kind === "averageMesh" ||

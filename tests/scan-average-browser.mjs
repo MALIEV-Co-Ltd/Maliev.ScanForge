@@ -387,10 +387,12 @@ try {
     }),
   );
   assert.deepEqual((await geometry(finalId)).positions, gui);
-  assert.deepEqual(
-    (await geometry(finalId)).indexedMesh,
-    guiGeometry.indexedMesh,
-  );
+  const reopenedIndexed = (await geometry(finalId)).indexedMesh;
+  // Persistence materializes the per-facet normals for this upward-facing plane.
+  assert.deepEqual(reopenedIndexed, {
+    ...guiGeometry.indexedMesh,
+    facetNormals: [0, 0, 1, 0, 0, 1],
+  });
   for (const input of inputs)
     assert.deepEqual((await geometry(input.id)).positions, input.positions);
   for (const input of inputs)

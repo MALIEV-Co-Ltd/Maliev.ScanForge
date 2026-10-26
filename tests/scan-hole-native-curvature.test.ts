@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
 import fixture from "./fixtures/hole-fill-observed-curvature-annulus.json";
+import cups from "./fixtures/hole-fill-observed-cups.json";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { runScanEditAsync } from "../src/scan-edit";
@@ -93,5 +94,39 @@ it.each(["curvature", "automatic"] as const)(
     expect(orientedDigest(result.positions as Float32Array)).toBe(
       orientedDigest(positions(fixture.native)),
     );
+  },
+);
+
+it.each(cups.cases)(
+  "preserves the $rimEdges-edge cup when its Curvature collar cannot form a graph",
+  async (sample) => {
+    const source = new Float32Array(
+      sample.faces.flatMap((face) => face.flatMap((id) => sample.vertices[id])),
+    );
+    const before = source.slice();
+    const indexed = topology(source);
+    const vertices = indexed.vertices.slice();
+    const triangles = indexed.triangles.slice();
+    await expect(
+      runScanEditAsync(
+        {
+          kind: "scanEdit",
+          action: "fillHoles",
+          positions: source,
+          indices: [0],
+          algorithm: "curvature",
+        },
+        {
+          topologyCache: {
+            positions: source,
+            tolerance: 1e-6,
+            topology: indexed,
+          },
+        },
+      ),
+    ).rejects.toThrow(/Curvature/i);
+    expect(source).toEqual(before);
+    expect(indexed.vertices).toEqual(vertices);
+    expect(indexed.triangles).toEqual(triangles);
   },
 );

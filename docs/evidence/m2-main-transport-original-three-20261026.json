@@ -1,0 +1,60 @@
+{
+  "scope": "Original three-scan replay after normal-preserving transport correction; remaining M2 gates open",
+  "build": "scanforge-83e557f8be96d4a9",
+  "sourceIdentity": {
+    "head": "1327d0587163ac4d827fb231d284b1c1ed18b71a",
+    "files": 2982,
+    "unchanged": true,
+    "manifestSha256": "116a531cf883ecd632ca1ccc9aef2fbe86ccf3ddf0947b849cb23bc4f4ed69dc"
+  },
+  "pointResolutionMm": 0.5,
+  "nativeComparison": "Same retained aligned poses and native export; no fresh native GUI run",
+  "result": {
+    "guiMcpNativeOrderedCoordinatesEqual": true,
+    "facetCount": 136,
+    "newOwner": true,
+    "hiddenUnchangedInputs": true,
+    "undoRedo": true,
+    "retryProtected": true,
+    "cancellationRollback": true,
+    "failureRollback": true,
+    "indexedSaveReopen": true,
+    "pageErrors": [],
+    "originalThreeScans": {
+      "inputTriangles": 6147452,
+      "outputTriangles": 50895,
+      "orderedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+      "guiMcpNativeEqual": true,
+      "allSourceBuffersUnchanged": true,
+      "historyVisibilityRollback": true
+    }
+  },
+  "cleanup": [
+    {
+      "port": 64387,
+      "closed": true
+    },
+    {
+      "pid": 65940,
+      "exited": true
+    },
+    {
+      "port": 64388,
+      "closed": true
+    },
+    {
+      "pid": 61824,
+      "exited": true
+    }
+  ],
+  "resources": {
+    "exitCode": 0,
+    "rootExited": true,
+    "childJobFinalActive": 0,
+    "cleanupErrors": [],
+    "elapsedSeconds": 135.2162965000025,
+    "childPeakJobMemoryBytes": 2413776896,
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500
+  }
+}

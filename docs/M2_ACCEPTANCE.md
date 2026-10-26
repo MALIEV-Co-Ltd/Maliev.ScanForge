@@ -161,3 +161,38 @@ checks pass on that frozen build. Owned sketches, facet normals, history and
 binary reopening coexist. Earlier failed test/build receipts remain recorded.
 Full hosted CI, the original three-scan replay and remaining native acceptance
 gates are still required before M2 can close.
+
+The [fresh original three-scan replay](evidence/m2-main-original-three-20261026.json)
+on this integrated build now passes: 6,147,452 input triangles produce 50,895
+triangles at 0.5 mm with the retained native ordered-coordinate SHA-256. All
+source buffers remain unchanged; GUI/public-MCP equality, visibility rollback,
+undo/redo and indexed save/reopen pass. The bounded Job peaked at 2,463,584,256
+bytes, exited zero and released every owned helper and port. This compares the
+retained aligned poses and native export; it is not a fresh native GUI run.
+
+## Integrated processing and normal transport, 2026-10-26
+
+[The processing record](evidence/m2-main-processing-20261026.json) retains current
+GUI/public-MCP Average, scale, mirror, flip, million-facet noise and large
+Defeature results, including source preservation, history and reopening. The
+manufactured Defeature selection contains 18,425 facets; it does not replace the
+unavailable original selection. The retained 39/40-edge cup controls reject
+unusable Curvature collars without changing source coordinates or cached
+topology. The separate native 41-edge failure still lacks equivalent coverage.
+
+Full CI on `1327d05` found two transport regressions after 49,307 passing tests:
+an obsolete second topology copy discarded normal carriers. One shared copy
+now preserves these carriers for Average and reconstruction. The corrected
+candidate passes 238 affected checks, 27 transport/Average checks, all thirteen
+TypeScript batches and the warning-free build `scanforge-83e557f8be96d4a9`.
+Fresh Average browser acceptance passes on that build, including exact reopened
+facet normals. Prior failed receipts remain recorded. These bounded results do
+not close the remaining native acceptance, review and merge gates.
+
+The [post-correction original-input replay](evidence/m2-main-transport-original-three-20261026.json)
+also passes on `scanforge-83e557f8be96d4a9`: the same 6,147,452 input facets and
+50,895 output facets retain native ordered-coordinate SHA-256
+`e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2`.
+All source buffers, visibility/history rollback and indexed persistence checks
+pass, with no page errors or surviving owned helpers. This verifies the
+normal-preserving transport correction rather than reusing the earlier build.
