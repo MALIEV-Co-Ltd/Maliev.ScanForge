@@ -8,7 +8,9 @@ import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { runScanEditAsync } from "../src/scan-edit";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
 
-function positions(mesh: typeof fixture.source): Float32Array {
+function positions(
+  mesh: Pick<typeof fixture.source, "vertices" | "faces">,
+): Float32Array {
   return new Float32Array(
     mesh.faces.flatMap((face) => face.flatMap((id) => mesh.vertices[id])),
   );

@@ -19,7 +19,7 @@
     "failed": 0,
     "receipt": {
       "mode": "mirror-focused",
-      "label": "m2-failed-cup41-20261027-r2",
+      "label": "m2-failed-cup41-types-green-20261027-r1",
       "argv": [
         "C:\\Program Files\\nodejs\\node.exe",
         "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
@@ -29,14 +29,14 @@
         "tests/scan-hole-curvature-frame.test.ts",
         "tests/processing-response.test.ts",
         "--reporter=json",
-        "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-failed-cup41-20261027-r2-results.json"
+        "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-failed-cup41-types-green-20261027-r1-results.json"
       ],
       "leaseSeconds": 300,
       "guardMiB": 3072,
       "heapMiB": 1024,
-      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-20261027-r2-mirror-focused.stdout.log",
-      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-20261027-r2-mirror-focused.stderr.log",
-      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-20261027-r2-mirror-focused.receipt.json",
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-types-green-20261027-r1-mirror-focused.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-types-green-20261027-r1-mirror-focused.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-types-green-20261027-r1-mirror-focused.receipt.json",
       "scope": "Owned validation helper plus descendants only; no native/user application handles",
       "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
       "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
@@ -50,27 +50,77 @@
       "cleanupErrors": [],
       "rootExited": true,
       "childJobActive": 0,
-      "admittedFreeBytes": 10610376704,
-      "immediateChildFreeBytes": 10610298880,
+      "admittedFreeBytes": 10631397376,
+      "immediateChildFreeBytes": 10631323648,
       "identity": {
-        "pid": 26800,
-        "startFileTime": "134375142030799383",
+        "pid": 57936,
+        "startFileTime": "134375147476774982",
         "executable": "C:\\Program Files\\nodejs\\node.exe"
       },
       "exitCode": 0,
-      "childPeakJobMemoryBytes": 1018916864,
+      "childPeakJobMemoryBytes": 1021915136,
       "childJobFinalActive": 0,
-      "outerPeakJobMemoryBytes": 1037193216,
+      "outerPeakJobMemoryBytes": 1040416768,
       "outerJobFinalActive": 1,
-      "elapsedSeconds": 4.503424800001085,
+      "elapsedSeconds": 4.502525500021875,
       "completed": true
     }
   },
-  "browserDriver": {
+  "freshTypeBuild": {
+    "mode": "build",
+    "label": "m2-failed-cup41-type-build-20261027-r1",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+      "run",
+      "build"
+    ],
+    "leaseSeconds": 300,
+    "guardMiB": 4096,
+    "heapMiB": 3072,
+    "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-type-build-20261027-r1-build.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-type-build-20261027-r1-build.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-type-build-20261027-r1-build.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 10566807552,
+    "immediateChildFreeBytes": 10566729728,
+    "identity": {
+      "pid": 54128,
+      "startFileTime": "134375145584013406",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 1679331328,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 1700282368,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 152.77416679996531,
+    "completed": true
+  },
+  "retainedFailure": {
+    "commit": "734cada28169480ccfe4f8cc1272a3a6a76f296e",
+    "run": 40381583548,
+    "job": 121778934027,
+    "reason": "Test helper required irrelevant stlSha256 metadata. Corrected structural Pick of vertices/faces; all13 TypeScript batches and build pass afterward."
+  },
+  "reviewCorrection": "The first browser checks independently matched Curvature errors. Strengthened final driver requires exact singular/coincident-collar error, equality across GUI/MCP and OPERATION_FAILED. Flat follow-up proves recovery after reopening; live cache preservation is separately asserted by unit tests.",
+  "priorBrowserDriver": {
     "path": "tests/hole-pit-browser.mjs",
     "sha256": "ea705687fa7ba4f72ca06584759a03fbcd2027f3012919cc4179e3156428e4c8"
   },
-  "cases": [
+  "priorBrowserCases": [
     {
       "algorithm": "curvature",
       "result": {
@@ -235,6 +285,178 @@
       "screenshot": {
         "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\.resources\\m2-failed-cup41-automatic-browser-20261027-r1\\rejected.png",
         "sha256": "d8973d9383835e2afacdac4fcb6516ccf0445471504b93c31de7975e29b5c125"
+      }
+    }
+  ],
+  "browserDriver": {
+    "path": "tests/hole-pit-browser.mjs",
+    "sha256": "0e35dc036b4b201b4204bf18bf502fbc1ac635568e844372c70fb504a936d3b7"
+  },
+  "cases": [
+    {
+      "algorithm": "curvature",
+      "result": {
+        "failedNativeCup": 41,
+        "algorithm": "curvature",
+        "nativeOutputIsFailure": true,
+        "guiError": "Curvature interpolation has a singular or coincident collar.",
+        "mcpError": {
+          "code": "OPERATION_FAILED",
+          "message": "Curvature interpolation has a singular or coincident collar."
+        },
+        "guiMcpRejection": true,
+        "sourcePreserved": true,
+        "historyPreserved": true,
+        "binaryReopen": true,
+        "reopenedTopologyUnchanged": true,
+        "validFollowupAndUndoRedo": true,
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 53840,
+          "closed": true
+        },
+        {
+          "pid": 36532,
+          "exited": true
+        },
+        {
+          "port": 53841,
+          "closed": true
+        },
+        {
+          "pid": 42572,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-failed-cup41-curvature-browser-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\hole-pit-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-curvature-browser-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-curvature-browser-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-curvature-browser-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10537709568,
+        "immediateChildFreeBytes": 10537697280,
+        "identity": {
+          "pid": 1108,
+          "startFileTime": "134375147250298499",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 905220096,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 923574272,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 5.31245540000964,
+        "completed": true
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\.resources\\m2-failed-cup41-curvature-browser-20261027-r2\\rejected.png",
+        "sha256": "ab30078bdc0ad00dfe9afb85c2286034504219d2bde30e5682ce6c5de36b97d1"
+      }
+    },
+    {
+      "algorithm": "automatic",
+      "result": {
+        "failedNativeCup": 41,
+        "algorithm": "automatic",
+        "nativeOutputIsFailure": true,
+        "guiError": "Curvature interpolation has a singular or coincident collar.",
+        "mcpError": {
+          "code": "OPERATION_FAILED",
+          "message": "Curvature interpolation has a singular or coincident collar."
+        },
+        "guiMcpRejection": true,
+        "sourcePreserved": true,
+        "historyPreserved": true,
+        "binaryReopen": true,
+        "reopenedTopologyUnchanged": true,
+        "validFollowupAndUndoRedo": true,
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 62457,
+          "closed": true
+        },
+        {
+          "pid": 60420,
+          "exited": true
+        },
+        {
+          "port": 62458,
+          "closed": true
+        },
+        {
+          "pid": 51560,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-failed-cup41-automatic-browser-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\hole-pit-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-automatic-browser-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-automatic-browser-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-failed-cup41-automatic-browser-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10619580416,
+        "immediateChildFreeBytes": 10620305408,
+        "identity": {
+          "pid": 22800,
+          "startFileTime": "134375147420082089",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 909021184,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 927481856,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 5.516139100014698,
+        "completed": true
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\.resources\\m2-failed-cup41-automatic-browser-20261027-r2\\rejected.png",
+        "sha256": "71f7aa073c37d87028613e1dd37a782362c843f81b7769696c58ec822b1f20d7"
       }
     }
   ],

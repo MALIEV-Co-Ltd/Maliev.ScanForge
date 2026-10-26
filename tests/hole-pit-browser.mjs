@@ -519,6 +519,9 @@ try {
     const banner = page.getByRole("alert");
     await banner.filter({ hasText: /Curvature/i }).waitFor();
     const guiError = await banner.innerText();
+    const expectedError =
+      "Curvature interpolation has a singular or coincident collar.";
+    assert.equal(guiError, expectedError);
     assert.equal(await history(), beforeHistory);
     assert.deepEqual((await geometry()).positions, original.positions);
     await page.screenshot({
@@ -541,7 +544,9 @@ try {
       }),
       "failed",
     );
-    assert.match(JSON.stringify(rejected.error), /Curvature/i);
+    assert.equal(rejected.error.code, "OPERATION_FAILED");
+    assert.equal(rejected.error.message, expectedError);
+    assert.equal(rejected.error.message, guiError);
     assert.equal(await history(), beforeHistory);
     assert.deepEqual((await geometry()).positions, original.positions);
     const saved = await job(
@@ -561,7 +566,7 @@ try {
       )
     ).result.topology;
     assert.deepEqual(reopened, originalTopology);
-    // A valid follow-up proves failure did not poison the source/cache or history.
+    // A valid follow-up verifies recovery after reopening the preserved source.
     await job(
       await mutate("mesh_process", {
         entityId: panelId,
