@@ -758,6 +758,17 @@ export function App() {
   surfaceFitRef.current = surfaceFit;
   const surfaceFitAbort = useRef<AbortController | null>(null);
   const cad = useRef<CadClient | null>(null);
+  const cadJobAbort = useRef<AbortController | null>(null);
+  const [cadJobRunning, setCadJobRunning] = useState(false);
+  // Publication selects a new output; only App disposal retires this owner.
+  useEffect(
+    () => () => {
+      const owned = cadJobAbort.current;
+      cadJobAbort.current = null;
+      owned?.abort();
+    },
+    [],
+  );
   const stepExportAbort = useRef<AbortController | null>(null);
   const [stepExportBusy, setStepExportBusy] = useState(false);
   useEffect(() => () => stepExportAbort.current?.abort(), []);
@@ -4231,33 +4242,19 @@ export function App() {
     setDirty(true);
   }
   function extrude(profile: ParametricProfile, height: number) {
-    void (async () => {
-      const receipt = await uiCommand("cad_create", {
+    runOwnedCadJob(
+      "cad_create",
+      () => ({
         recipe: { kind: "extrude", profile, height },
         selectCreated: true,
         name:
           profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
-      });
-      if (!receipt.ok) return;
-      const { jobId } = receipt.result as { jobId: string };
-      const expires = Date.now() + 95_000;
-      while (Date.now() < expires) {
-        const response = await workspaceApi.invoke("job_get", { jobId });
-        if (!response.ok) throw new Error(response.error.message);
-        const job = response.result as {
-          status: string;
-          result?: { entityIds: string[] };
-          error?: { message: string };
-        };
-        if (job.status === "succeeded" && job.result) return;
-        if (job.status !== "running")
-          throw new Error(job.error?.message ?? "Extrusion cancelled.");
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      await workspaceApi.invoke("job_cancel", { jobId });
-      throw new Error("Extrusion exceeded its time limit.");
-    })().catch((error: unknown) =>
-      setError(error instanceof Error ? error.message : String(error)),
+      }),
+      {
+        cancelledMessage: "Extrusion cancelled.",
+        leaseMessage: "Extrusion exceeded its time limit.",
+        leaseMs: 95_000,
+      },
     );
   }
   function createMesh(
@@ -4371,6 +4368,39 @@ export function App() {
     setSelectedId(created[0].id);
     setMessage(`Created ${created.length} segmented meshes`);
   }
+  function runOwnedCadJob(
+    command: "cad_create" | "cad_rebuild",
+    args: () => Record<string, unknown>,
+    options: Omit<Parameters<typeof runApplicationJobCommand>[3], "signal">,
+    onSuccess?: (result: Record<string, unknown>) => void,
+  ) {
+    if (busy || cadJobAbort.current) return;
+    const controller = new AbortController();
+    cadJobAbort.current = controller;
+    setCadJobRunning(true);
+    setError("");
+    void (async () => {
+      try {
+        const result = await runApplicationJobCommand(
+          workspaceApi,
+          command,
+          args(),
+          { ...options, signal: controller.signal },
+        );
+        if (cadJobAbort.current === controller && !controller.signal.aborted)
+          onSuccess?.(result);
+      } catch (failure) {
+        if (cadJobAbort.current !== controller) return;
+        if (controller.signal.aborted) setMessage(options.cancelledMessage);
+        else setError(errorText(failure));
+      } finally {
+        if (cadJobAbort.current === controller) {
+          cadJobAbort.current = null;
+          setCadJobRunning(false);
+        }
+      }
+    })();
+  }
   function cadOperation(
     label: string,
     recipe: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
@@ -4378,34 +4408,32 @@ export function App() {
     hideInputs = false,
     expectedRevision?: number,
   ) {
-    if (busy) return;
-    setError("");
-    void (async () => {
-      const refs = inputIds.map((id): FeatureRef => {
-        const input = entities.find((entity) => entity.id === id);
-        if (!input?.kernelId) throw Error("Choose available exact CAD inputs.");
+    runOwnedCadJob(
+      "cad_create",
+      () => {
+        const refs = inputIds.map((id): FeatureRef => {
+          const input = entities.find((entity) => entity.id === id);
+          if (!input?.kernelId)
+            throw Error("Choose available exact CAD inputs.");
+          return {
+            featureId: input.parametric?.feature.id ?? input.id,
+            output: input.parametric?.output ?? 0,
+          };
+        });
         return {
-          featureId: input.parametric?.feature.id ?? input.id,
-          output: input.parametric?.output ?? 0,
-        };
-      });
-      await runApplicationJobCommand(
-        workspaceApi,
-        "cad_create",
-        {
           recipe: typeof recipe === "function" ? recipe(refs) : recipe,
           name: label.replace(/…$/, ""),
           hideInputs,
           selectCreated: true,
-        },
-        {
-          cancelledMessage: "CAD creation cancelled.",
-          leaseMessage: "CAD creation exceeded its time limit.",
-          expectedRevision,
-        },
-      );
-      setMessage(label + " created as exact CAD");
-    })().catch((failure) => setError(errorText(failure)));
+        };
+      },
+      {
+        cancelledMessage: "CAD creation cancelled.",
+        leaseMessage: "CAD creation exceeded its time limit.",
+        expectedRevision,
+      },
+      () => setMessage(label + " created as exact CAD"),
+    );
   }
 
   function rebuildFeature(recipe: ParametricRecipe) {
@@ -4414,17 +4442,14 @@ export function App() {
       setError("Select a parametric body.");
       return;
     }
-    setError("");
-    void runApplicationJobCommand(
-      workspaceApi,
+    runOwnedCadJob(
       "cad_rebuild",
-      { entityId: selected.id, recipe },
+      () => ({ entityId: selected.id, recipe }),
       {
         cancelledMessage: "CAD rebuild cancelled.",
         leaseMessage: "CAD rebuild exceeded its time limit.",
       },
-    )
-      .then((result) => {
+      (result) => {
         const failures = result.cleanupFailures as { message: string }[];
         if (failures.length)
           setError(failures.map((f) => f.message).join("; "));
@@ -4433,8 +4458,8 @@ export function App() {
             (result.rebuiltFeatureIds as string[]).length +
             " dependent features · previous CAD retained for Undo",
         );
-      })
-      .catch((failure) => setError(errorText(failure)));
+      },
+    );
   }
   function save() {
     setSaveDialogOpen(true);
@@ -4458,26 +4483,22 @@ export function App() {
     });
   }
   function revolve(points: [number, number][], angle: number) {
-    if (busy) return;
-    setError("");
-    void runApplicationJobCommand(
-      workspaceApi,
+    runOwnedCadJob(
       "cad_create",
-      {
+      () => ({
         name: "Revolved solid",
         recipe: { kind: "revolve", points, angleDegrees: angle },
         selectCreated: true,
-      },
+      }),
       {
         cancelledMessage: "Revolve cancelled.",
         leaseMessage: "Revolve exceeded its time limit.",
       },
-    )
-      .then(() => {
+      () => {
         setMessage("Profile revolved to exact CAD");
         requestAnimationFrame(() => viewport.current?.fitView());
-      })
-      .catch((failure) => setError(errorText(failure)));
+      },
+    );
   }
   function exportStep() {
     if (busy || stepExportAbort.current) return;
@@ -5099,6 +5120,12 @@ export function App() {
         if (files.length && !editingBlocked) void openFiles(files);
       }}
     >
+      {cadJobRunning && (
+        <CadJobCancel
+          label="Cancel CAD operation"
+          onCancel={() => cadJobAbort.current?.abort()}
+        />
+      )}
       {stepExportBusy && (
         <CadJobCancel
           label="Cancel STEP export"

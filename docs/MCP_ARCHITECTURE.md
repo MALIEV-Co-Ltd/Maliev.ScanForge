@@ -43,6 +43,19 @@ feature ID and output index, so deriving from a split output preserves siblings.
 The GUI consumes shared cleanup diagnostics after rebuilding. This dispatch does
 not widen the deliberate ribbon verification allowlist.
 
+App owns one abort controller for GUI generic CAD creation/rebuilding, polygon
+or sketch extrusion, and revolve. Its **Cancel CAD operation** portal remains
+outside the inert inspector. The controller forwards to the same `job_cancel`
+contract agents use; `job_get` and `session_get` expose the job and cleanup state.
+App disposal detaches the owner before aborting, and asynchronous GUI completion
+and error writes require matching ownership. Selection of a newly published
+output does not retire the job. The shared API remains the sole busy/history
+owner. Extrusion retains its shorter 95-second observation lease; the native
+90-second operation timeout and other shared job leases are unchanged.
+Sketch-surface, surface blend and STEP export retain their separate existing
+owners. The inherited Construct primitive direct creation path is outside this
+generic-job cancellation scope and remains subject to the M4 integration audit.
+
 ## Exact surface trimming
 
 The GUI Trim surfaces panel submits the `trimSurfaces` recipe through the shared

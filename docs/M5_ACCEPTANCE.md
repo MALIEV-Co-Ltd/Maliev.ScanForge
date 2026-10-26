@@ -42,18 +42,51 @@ integration remains required; the restore candidate/CI above is historical.
 
 ## Operation matrix
 
-| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                         |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established. |
-| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.  |
-| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                               |
-| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Exact kernel smoke passes analytic volumes, straight/bent sweeps and invalid inputs. Real-input GUI/MCP/native operation-matrix replay remains open.                                                                                                                |
-| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                              |
-| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Kernel smoke passes these operations and exchange. Complete real scan-to-sketch-to-solid workflow, explicit recovery, GUI/public-MCP/native parity and solid boundaries remain open.                                                                                |
-| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Exact surface recipe and BREP survive project save/reopen in browser; STEP export header verified. Kernel smoke covers STEP round-trips. Real scan-derived whole-solid STEP/BREP acceptance remains open.                                                           |
-| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
+| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.                                |
+| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.                                 |
+| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                                              |
+| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Exact kernel smoke passes analytic volumes, straight/bent sweeps and invalid inputs. Real-input GUI/MCP/native operation-matrix replay remains open.                                                                                                                                               |
+| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                                             |
+| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Kernel smoke passes these operations and exchange. Real scan-section to editable profile, exact face, solid and STEP GUI/MCP replay passes at43f6637. Generic GUI create/rebuild cancellation passes the focused replay. Remaining real-input families and native boundary acceptance remain open. |
+| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Exact surface recipe and BREP survive project save/reopen in browser; STEP export header verified. Kernel smoke covers STEP round-trips. Real scan-derived body STEP/BREP GUI/MCP roundtrips pass; native interoperability and broader matrix acceptance remain open.                              |
+| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. The sketch chain passes at2.80GB peak; generic GUI create/rebuild cancellation passes at2.55GB with full cleanup. Broader native workflow resource gates remain open.   |
 
 ## Candidate history and validation
+
+### Generic CAD cancellation
+
+Generic GUI CAD creation and parametric rebuilding now own an AbortController
+and expose **Cancel CAD operation** outside the busy inspector. Extrusion and
+revolve use the same owner; extrusion retains its95-second observation lease.
+The GUI requests the existing shared `job_cancel`, with `job_get` and
+`session_get` reporting terminal status and lane cleanup. Separate sketch,
+blend and export owners remain independent. Legacy Construct primitive creation
+is outside this generic owner and has not gained cancellation from this change.
+
+The [actual browser replay](evidence/m5-20261025/cad-cancellation-browser-green.json)
+holds real creation and rebuild results, clicks the rendered cancel control,
+and verifies acknowledged release of both late native handles. Revision,
+model/authoring history, source display buffers and raw saved BREP stay unchanged.
+Recovery creates an84mm³ loft and rebuilds it to108mm³, including a dependent
+body; consuming the original source handle still works. Output selection does
+not abort successful publication. The matching initial missing-control RED is
+retained. Both held-state screenshots were visually inspected.
+
+Affected regressions pass162tests across13files, and API/UI scoped TypeScript
+passes. The initial App-only type configuration omitted Node ambient types and
+failed on three inherited timer.unref diagnostics; that failed receipt remains.
+The corrected private App configuration passes separately in6.513s with
+512,208,896bytes peak and zero active processes. No application source correction
+was needed for those configuration diagnostics.
+
+Fresh Vite build and offline manifest pass. The [browser Job receipt](evidence/m5-20261025/cad-cancellation-browser-green-job.json)
+records18.313s, peak2,551,500,800bytes under4GiB, zero active processes, closed
+owned preview5206 and released mutex. Console/page errors and warnings are empty.
+Independent source review found no actionable P1/P2 cancellation defect.
+This is focused verification of the uncommitted cancellation change; exact-head
+hosted CI, the real-input operation matrix and final integration remain required.
 
 ### Exact sketch surfaces and real scan section chain
 
@@ -96,8 +129,13 @@ validation and synchronous solving, through the shared CAD path. Cached legacy
 recipes remain structurally readable without forcing a solve: a129-point cached
 extrusion survives binary project/history reopen and unrelated CAD edits.
 Focused affected suites pass159tests across13files plus scoped TypeScript.
-Full integrated-candidate static/unit/CAD/format checks and hosted CI remain
-required before merge. Both initial driver failures are retained: endpoint
+Exact feature commit `43f6637044f87b547e43bd039221f784af835871` passes
+[hosted CI](evidence/m5-20261025/sketch-surface-hosted-ci.json): all12 typecheck
+batches/build,49,193unit tests/64skipped (684files/18skipped), standard CAD smoke
+including the new kernel phase, and repository formatting. The interrupted local
+combined formatting check remains a failed receipt; hosted formatting passed
+independently. Final main-integrated checks remain required. Both initial driver
+failures are retained: endpoint
 assignment created an invalid intermediate segment, then a page-wide Thicken
 selector collided with an object name. Corrections change only the driver and
 preserve application validation and all geometry assertions.

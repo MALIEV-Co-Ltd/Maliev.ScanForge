@@ -6,6 +6,7 @@ import { replayCadTimeout } from "./helpers/cad-timeout-browser.mjs";
 import { replayNativeFit } from "./helpers/native-fit-browser.mjs";
 import { replaySurfaceBlend } from "./helpers/surface-blend-browser.mjs";
 import { replaySketchSurface } from "./helpers/sketch-surface-browser.mjs";
+import { replayCadCancellation } from "./helpers/cad-cancellation-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -1163,6 +1164,19 @@ try {
     });
   if (process.env.SCANFORGE_TEST_SKETCH_SURFACE === "1")
     await replaySketchSurface({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_CAD_CANCELLATION === "1")
+    await replayCadCancellation({
       page,
       call,
       mutate,

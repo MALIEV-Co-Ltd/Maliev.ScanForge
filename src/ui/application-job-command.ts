@@ -4,6 +4,8 @@ export interface ApplicationJobOptions {
   signal?: AbortSignal;
   readOnly?: boolean;
   expectedRevision?: number;
+  /** Preserve a caller's shorter observation lease, such as GUI extrusion. */
+  leaseMs?: number;
   onProgress?: (fraction: number, stage: string) => void;
 }
 
@@ -49,10 +51,13 @@ export async function runApplicationJobCommand(
       options.signal?.reason ?? new DOMException("Aborted", "AbortError"),
     );
   };
-  const lease = setTimeout(() => {
-    cancel();
-    rejectStop(Error(options.leaseMessage));
-  }, 15 * 60_000);
+  const lease = setTimeout(
+    () => {
+      cancel();
+      rejectStop(Error(options.leaseMessage));
+    },
+    options.leaseMs ?? 15 * 60_000,
+  );
   options.signal?.addEventListener("abort", abort, { once: true });
   let pollTimer: ReturnType<typeof setTimeout> | undefined;
   try {

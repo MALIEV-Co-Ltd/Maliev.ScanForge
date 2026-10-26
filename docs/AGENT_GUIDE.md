@@ -1072,6 +1072,18 @@ Several CAD ribbon commands remain gated pending full workflow verification;
 experimental panel access is not evidence that their ordinary ribbon entry or
 native-reference behavior is accepted.
 
+Generic GUI CAD creation and parametric rebuilding, including polygon/sketch
+extrusion and revolve, provide **Cancel CAD operation** outside the busy tool
+panel. It requests cancellation of that GUI-started shared job. Agents use the
+same `job_cancel` operation, then poll `job_get` until terminal and `session_get`
+until the busy lane is released; native work and late-handle cleanup may still
+be settling after a cancellation request. Output selection on successful creation
+does not cancel the job. GUI extrusion retains its 95-second observation lease
+and CAD's 90-second native-operation limit remains unchanged. The existing
+sketch-surface, blend and export controls keep their own job owners. This generic
+cancel control does not cover the inherited Construct primitive direct path,
+whose M4 integration audit is separate.
+
 `command_get`/`command_run` ribbon launchers now share the visible ribbon's
 verification, source-selection and busy gates. A disabled experimental ribbon
 entry is no longer advertised as an available command. The underlying shared
