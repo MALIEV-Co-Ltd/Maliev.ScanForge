@@ -54,6 +54,20 @@ cases, 35 later API/owner cases (overlapping acquisition coverage), 11 real work
 checks and four observer cases pass. Full hosted verification of the next commit,
 original-native acceptance and reference transform/duplication policies remain open.
 
+The [numeric-reference transform checkpoint](evidence/m4-numeric-transform-acceptance-20261026.json)
+records build `scanforge-c6fcc0fb53c79136`, 205 focused/regression passes, all 13
+type-check batches and a rendered GUI/public-MCP run. Numeric points and endpoint
+lines with empty source/pick sets share `mesh_transform`, exact payload/definition
+inspection, atomic descendant refresh, history and worker reopen. Line direction
+transforms without normalization and its stored length remains unchanged. The
+browser verifies actual Move/Scale, one history step and numeric editor Cancel.
+Derived modes, inactive retained line picks, duplication and original-native
+controller/acceptance policies remain separate required gates. The acquisition
+checkpoint's hosted 49,679 tests, build and CAD smoke passed; its worker formatting
+failure was corrected in `d0353e9`, whose fresh hosted build, full tests, CAD smoke
+and repository formatting pass. Later numeric-transform source needs its own
+exact-commit hosted checks.
+
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's
 15-significant-digit text roundtrip. The shared operation now models this stage

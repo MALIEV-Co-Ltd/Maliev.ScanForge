@@ -1608,6 +1608,246 @@ try {
     "Native-style numeric editor fields, GUI/public MCP initialize, Cancel/Apply, history and worker reopen passed",
   );
 
+  // Imported exact numeric payloads exercise raw nonunit direction/length.
+  // This is application Euler-parameter parity, not a native toolbar replay.
+  const transformBits = (values) => {
+    const buffer = Buffer.alloc(values.length * 8);
+    values.forEach((value, index) => buffer.writeDoubleLE(value, index * 8));
+    return buffer.toString("hex");
+  };
+  const transformEntities = ["line", "point"].flatMap((kind, kindIndex) =>
+    ["gui", "mcp"].map((path, pathIndex) => {
+      const position = [1 + 2 ** -40, -3, 2 ** -100],
+        start = [2 + 2 ** -40, 4, 6],
+        direction = [2, -3, 0.5],
+        length = 8;
+      const end = start.map((value, axis) => value + direction[axis] * length);
+      return {
+        id: `transform-${path}-${kind}`,
+        name: `Transform ${path.toUpperCase()} ${kind}`,
+        kind: kind === "line" ? "referenceLine" : "referencePoint",
+        positions: [],
+        color: "#2266aa",
+        visible: true,
+        opacity: 1,
+        constructionOrderKey: (kindIndex * 2 + pathIndex + 1)
+          .toString(16)
+          .padStart(2, "0")
+          .repeat(16),
+        reference: {
+          version: 1,
+          definition:
+            kind === "line"
+              ? {
+                  version: 1,
+                  kind,
+                  mode: "endpoints",
+                  sources: [],
+                  records: [],
+                  startBits: transformBits(start),
+                  endBits: transformBits(end),
+                }
+              : {
+                  version: 1,
+                  kind,
+                  mode: "coordinates",
+                  sources: [],
+                  positionBits: transformBits(position),
+                },
+          geometry: {
+            version: 1,
+            kind,
+            bits: transformBits(
+              kind === "line" ? [...start, ...direction, length] : position,
+            ),
+          },
+          evaluation: { completionWord: 0x100 },
+        },
+      };
+    }),
+  );
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "m4-numeric-transforms.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: Buffer.from(
+        JSON.stringify({
+          format: "maliev-scanforge",
+          version: 3,
+          units: "mm",
+          name: "Numeric transform parity",
+          entities: transformEntities,
+        }),
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Transform GUI line", exact: true })
+    .waitFor();
+  for (let attempt = 0; ; attempt++) {
+    if (!(await call("application_inspect", { maxControls: 1 })).result.busy)
+      break;
+    assert(
+      attempt < 120,
+      "Numeric transform fixture presentation did not finish",
+    );
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  const transformChildren = {};
+  for (const path of ["gui", "mcp"]) {
+    const preview = (
+      await mutate("reference_construct", {
+        action: "preview",
+        kind: "point",
+        mode: "center",
+        sourceEntityIds: [`transform-${path}-line`],
+      })
+    ).result;
+    transformChildren[path] = (
+      await mutate("reference_construct", {
+        action: "apply",
+        sessionId: preview.sessionId,
+        version: preview.version,
+      })
+    ).result.entityId;
+  }
+  const transformParameters = {
+    translation: [10, -5, 0],
+    rotation: [0, 0, 90],
+    scale: 2,
+  };
+  const transformedReferences = {};
+  for (const kind of ["line", "point"]) {
+    const guiId = `transform-gui-${kind}`,
+      mcpId = `transform-mcp-${kind}`;
+    const independent = (
+      await mutate("mesh_transform", {
+        entityId: mcpId,
+        ...transformParameters,
+      })
+    ).result;
+    if (kind === "line")
+      assert.deepEqual(independent.refreshedEntityIds, [transformChildren.mcp]);
+    const expected = (await call("object_get", { entityId: mcpId })).result
+      .reference;
+    const beforeGui = (await call("project_get")).result;
+    await mutate("object_select", { entityId: guiId });
+    await page.getByRole("tab", { name: "CAD", exact: true }).click();
+    const transformEntry = page.getByRole("button", {
+      name: kind === "line" ? "Move body" : "Scale body",
+      exact: true,
+    });
+    assert.equal(
+      await transformEntry.isEnabled(),
+      true,
+      "Only the eligible numeric reference path should override the broader workflow gate",
+    );
+    await transformEntry.click();
+    const panel = page.locator(".transform-panel");
+    await panel.waitFor();
+    for (let axis = 0; axis < 3; axis++) {
+      await panel
+        .getByLabel(`Move (mm) ${["X", "Y", "Z"][axis]}`, { exact: true })
+        .fill(String(transformParameters.translation[axis]));
+      await panel
+        .getByLabel(`Rotate (°) ${["X", "Y", "Z"][axis]}`, { exact: true })
+        .fill(String(transformParameters.rotation[axis]));
+    }
+    await panel
+      .getByLabel("Uniform scale", { exact: true })
+      .fill(String(transformParameters.scale));
+    await panel
+      .getByRole("button", { name: "Apply transform", exact: true })
+      .click();
+    let accepted;
+    for (let attempt = 0; ; attempt++) {
+      accepted = (await call("object_get", { entityId: guiId })).result
+        .reference;
+      if (accepted.geometryEncoding.bits === expected.geometryEncoding.bits)
+        break;
+      assert(
+        attempt < 30,
+        "GUI transform did not publish the matching shared result",
+      );
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert.deepEqual(accepted.geometryEncoding, expected.geometryEncoding);
+    assert.deepEqual(accepted.definitionEncoding, expected.definitionEncoding);
+    assert.equal((await call("project_get")).result.undo, beforeGui.undo + 1);
+    transformedReferences[guiId] = {
+      geometry: accepted.geometryEncoding,
+      definition: accepted.definitionEncoding,
+    };
+    if (kind === "line") {
+      assert.equal(accepted.geometry.length, 8);
+      assert.notEqual(Math.hypot(...accepted.geometry.direction), 1);
+      assert.deepEqual(
+        (await call("object_get", { entityId: transformChildren.gui })).result
+          .reference.geometryEncoding,
+        (await call("object_get", { entityId: transformChildren.mcp })).result
+          .reference.geometryEncoding,
+      );
+    }
+  }
+  await page.screenshot({
+    path: fileURLToPath(
+      new URL("numeric-reference-transform.png", artifactDir),
+    ),
+  });
+  await mutate("object_select", { entityId: "transform-gui-line" });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  await page
+    .getByRole("button", { name: "Edit reference", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+  await dialog.locator("fieldset:not([disabled])").waitFor();
+  const transformCancelHistory = (await call("project_get")).result.undo;
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  assert.deepEqual(
+    (await call("object_get", { entityId: "transform-gui-line" })).result
+      .reference.geometryEncoding,
+    transformedReferences["transform-gui-line"].geometry,
+  );
+  assert.equal((await call("project_get")).result.undo, transformCancelHistory);
+  await mutate("history_undo", {});
+  const transformSavedWithFuture = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: transformSavedWithFuture.artifactId,
+      replace: true,
+    }),
+  );
+  await mutate("history_redo", {});
+  for (const [entityId, expected] of Object.entries(transformedReferences)) {
+    const actual = (await call("object_get", { entityId })).result.reference;
+    assert.deepEqual(actual.geometryEncoding, expected.geometry);
+    assert.deepEqual(actual.definitionEncoding, expected.definition);
+  }
+  assert.deepEqual(
+    (await call("object_get", { entityId: transformChildren.gui })).result
+      .reference.geometryEncoding,
+    (await call("object_get", { entityId: transformChildren.mcp })).result
+      .reference.geometryEncoding,
+  );
+  ledger.numericReferenceTransforms = {
+    guiMcpPointEqual: true,
+    guiMcpLineEqual: true,
+    rawNonunitDirection: true,
+    storedLengthUnchanged: true,
+    descendantRefresh: true,
+    oneHistoryStep: true,
+    numericEditCancelPreservedPayload: true,
+    workerReopenWithFuture: true,
+    nativeToolbarReplay: false,
+  };
+  console.log(
+    "GUI/public MCP numeric reference transforms, raw line length/direction, descendant refresh, edit Cancel and history/future reopen passed",
+  );
+
   // A newly fitted plane is a point-construction source while its authoritative
   // frame and fit diagnostics coexist. Plane-center evaluation retains the
   // recovered explicit origin fallback; it does not invent a plane centroid.
@@ -2424,6 +2664,7 @@ try {
     "actual project worker export/import preserving semantic IDs and history",
     "GUI line edit Preview/Cancel",
     "GUI/MCP stored-line midpoint with atomic source refresh, history, worker reopen and lock/delete rollback",
+    "GUI/MCP numeric reference transforms preserving raw line length/direction, descendants, edit Cancel and history/future worker reopen",
     "actual fitted-plane GUI/MCP point source, source transform refresh and history/future worker reopen",
     "real CAD vertex/curve acquisition, GUI/MCP vertex selector parity and numeric-only source-delete/history/reopen",
     "GUI/MCP normalized-screen original-mesh surface acquisition and numeric-only source-delete/reopen",

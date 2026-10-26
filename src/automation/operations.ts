@@ -18,6 +18,10 @@ import { selectStepExportEntities } from "../step-export";
 import { referenceDeletionDependents } from "../reference-midpoint";
 import { inspectReferenceFrame } from "../reference-frame";
 import { transformPlaneFrame, validatePlaneFrame } from "../plane-frame";
+import {
+  referenceTransformMatrix,
+  transformNumericReference,
+} from "../reference-transform";
 import { isSampledScan } from "../scan-source";
 import { renameObjects } from "../object-renaming";
 import { autoColorScene } from "../scene-auto-color";
@@ -64,6 +68,7 @@ import { partitionMeshSelection } from "../mesh-selection-edit";
 import {
   assertSampledGeometry,
   inspectReferenceEntity,
+  isReferenceEntity,
 } from "../reference-entity";
 import { partitionTriangles, selectionCount } from "../selection";
 import { meshStats } from "../geometry";
@@ -1379,6 +1384,26 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_transform: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      if (isReferenceEntity(e)) {
+        c.check();
+        const transformed = transformNumericReference(
+          e,
+          referenceTransformMatrix(a.translation, a.rotation, a.scale),
+        );
+        const staged = s.entities.map((entity) =>
+          entity.id === e.id ? transformed : entity,
+        );
+        // Root payload is already transformed; refresh only its dependent closure.
+        const refreshed = refreshReferenceConstructions(staged, [e.id], {
+          check: () => c.check(),
+        });
+        commit(c, refreshed.entities, "Transform reference");
+        return {
+          entityId: e.id,
+          refreshedEntityIds: refreshed.refreshedEntityIds,
+          evaluations: refreshed.evaluations,
+        };
+      }
       editable(e, true);
       const storedPlane = e.kind === "plane" ? e.planeFrame : undefined;
       if (storedPlane) validatePlaneFrame(storedPlane, e.positions, e.kind);

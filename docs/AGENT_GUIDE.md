@@ -2214,6 +2214,34 @@ displayed values are therefore distinct from saved geometry until acceptance.
 Startup millimetre/N6 behavior is the admitted scope; other native unit settings
 and unobserved negative-zero formatting remain separate evidence limits.
 
+### Transform a detached numeric reference
+
+`mesh_transform` also moves numeric reference points in `coordinates` mode and
+finite reference lines in `endpoints` mode. Their common source set must be empty;
+lines must also have no retained pick records. GUI Move/Scale and `ui_set` with
+`workspace:"transform"` use the same eligibility and operation. Derived references,
+inactive line-pick records, frame datums and semantic duplication remain gated.
+
+Use the existing required `translation:[x,y,z]` in world millimeters,
+`rotation:[x,y,z]` in degrees, positive finite `scale`, `expectedRevision` and
+`requestId`. Scaling is about the world origin, followed by X, Y and Z rotations
+and translation. Reference payloads use binary64 matrix arithmetic without
+Float32 or numeric-editor rounding. A line's raw direction receives the linear
+matrix while its stored length remains bit-identical. Its endpoint is
+`start+direction*length`; after scaling, stored length alone need not equal the
+physical endpoint distance. This is the application parameter conversion and
+recovered supplied-matrix payload contract, not original-native toolbar parity.
+
+The operation synchronizes the numeric authoring fields with the transformed
+payload, refreshes admitted reference descendants and commits once. A locked root,
+locked/unsupported dependent, invalid transform, nonfinite result or world endpoint
+outside +/-1e9 mm rejects atomically. Unrelated objects and prior history snapshots
+remain unchanged. Inspect returned `refreshedEntityIds`/`evaluations` and
+`object_get.reference.geometryEncoding`/`definitionEncoding`; Undo/Redo and project
+reopen retain both representations. Opening the numeric editor is a separate
+rounding operation: Cancel preserves the transformed payload, while Apply accepts
+the prepared numeric fields under the ordinary editor contract.
+
 ### Pair and average reference lines
 
 Use `reference_construct` with `kind:"line",mode:"pair"|"average"` and

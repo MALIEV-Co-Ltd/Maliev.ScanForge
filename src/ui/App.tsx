@@ -57,6 +57,7 @@ import {
   supportsSampledGeometry,
   assertSampledGeometry,
 } from "../reference-entity";
+import { referenceTransformEligibility } from "../reference-transform";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
 import { GlobalAlignmentTools } from "./GlobalAlignmentTools";
 import { inspectGlobalAlignmentCandidates } from "../global-alignment-input";
@@ -886,6 +887,8 @@ export function App() {
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [rotation, setRotation] = useState<Vec3>([0, 0, 0]);
   const [scale, setScale] = useState(1);
+  const [applyingTransform, setApplyingTransform] = useState(false);
+  const transformPending = useRef(false);
   const [primitiveDialog, setPrimitiveDialog] = useState(false);
   const [primitiveKind, setPrimitiveKind] = useState<
     "box" | "sphere" | "cylinder" | "cone"
@@ -953,6 +956,7 @@ export function App() {
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
   const sampledSelected = supportsSampledGeometry(selected);
+  const selectedTransformEligibility = referenceTransformEligibility(selected);
   useEffect(() => {
     if (!selected || sampledSelected) return;
     try {
@@ -961,7 +965,13 @@ export function App() {
       setMode("inspect");
       setWorkspace("properties");
     }
-  }, [selected?.id, sampledSelected, mode, workspace]);
+  }, [
+    selected?.id,
+    sampledSelected,
+    selectedTransformEligibility.eligible,
+    mode,
+    workspace,
+  ]);
   useEffect(() => {
     if (selected && !objectPickable(selected)) setSelectedId(null);
   }, [selected]);
@@ -4189,19 +4199,39 @@ export function App() {
     })();
   }
   function applyTransform() {
+    if (!selected || editingBlocked || transformPending.current) return;
+    const semanticReference = !supportsSampledGeometry(selected);
+    if (semanticReference && !selectedTransformEligibility.eligible) {
+      setError(
+        selectedTransformEligibility.reason ??
+          "This reference cannot be transformed.",
+      );
+      return;
+    }
     if (
-      selected?.kind === "plane" &&
-      selected.planeFrame &&
-      !selected.kernelId
+      semanticReference ||
+      (selected.kind === "plane" && selected.planeFrame && !selected.kernelId)
     ) {
+      transformPending.current = true;
+      setApplyingTransform(true);
       void uiCommand("mesh_transform", {
         entityId: selected.id,
         translation,
         rotation,
         scale,
-      }).then((result) => {
-        if (result.ok) setMessage("Reference plane transform applied");
-      });
+      })
+        .then((result) => {
+          if (result.ok)
+            setMessage(
+              semanticReference
+                ? "Reference transform applied"
+                : "Reference plane transform applied",
+            );
+        })
+        .finally(() => {
+          transformPending.current = false;
+          setApplyingTransform(false);
+        });
       return;
     }
     if (selected?.kernelId) {
@@ -5402,6 +5432,7 @@ export function App() {
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
         selectionKind={selected?.kind}
+        referenceTransformEligibility={selectedTransformEligibility}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -6854,30 +6885,56 @@ export function App() {
                       </ToolSection>
                       <ToolSection tools={["transform"]}>
                         <Panel title="Transform" className="transform-panel">
-                          <VectorField
-                            label="Move (mm)"
-                            value={translation}
-                            onChange={setTranslation}
-                          />
-                          <VectorField
-                            label="Rotate (°)"
-                            value={rotation}
-                            onChange={setRotation}
-                          />
-                          <Field
-                            label="Uniform scale"
-                            value={scale}
-                            min={0.001}
-                            step={0.1}
-                            onChange={setScale}
-                          />
-                          <button
-                            className="wide"
-                            disabled={busy}
-                            onClick={applyTransform}
+                          <fieldset
+                            disabled={
+                              busy ||
+                              applyingTransform ||
+                              (!sampledSelected &&
+                                !selectedTransformEligibility.eligible)
+                            }
+                            style={{
+                              border: 0,
+                              margin: 0,
+                              padding: 0,
+                              minWidth: 0,
+                            }}
                           >
-                            Apply transform
-                          </button>
+                            <VectorField
+                              label="Move (mm)"
+                              value={translation}
+                              onChange={setTranslation}
+                            />
+                            <VectorField
+                              label="Rotate (°)"
+                              value={rotation}
+                              onChange={setRotation}
+                            />
+                            <Field
+                              label="Uniform scale"
+                              value={scale}
+                              min={!sampledSelected ? Number.MIN_VALUE : 0.001}
+                              step={0.1}
+                              onChange={setScale}
+                            />
+                            <button
+                              className="wide"
+                              disabled={
+                                busy ||
+                                applyingTransform ||
+                                (!sampledSelected &&
+                                  !selectedTransformEligibility.eligible)
+                              }
+                              onClick={applyTransform}
+                            >
+                              Apply transform
+                            </button>
+                          </fieldset>
+                          {!sampledSelected &&
+                            !selectedTransformEligibility.eligible && (
+                              <p role="status">
+                                {selectedTransformEligibility.reason}
+                              </p>
+                            )}
                           {selected.kernelId && (
                             <p className="muted">
                               Exact CAD transforms preserve STEP export.

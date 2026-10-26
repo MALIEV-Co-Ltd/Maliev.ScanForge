@@ -534,6 +534,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 
 export interface RibbonState {
   selectionKind?: Entity["kind"];
+  referenceTransformEligibility?: { eligible: boolean; reason?: string };
   landmarkSourceId?: string | null;
   interactiveTargetError?: string | null;
   globalAlignmentError?: string | null;
@@ -555,7 +556,29 @@ export function ribbonToolAvailability(
   actions: RibbonActions,
 ): { available: boolean; reason: string } {
   const verification = ribbonVerification(tool.id, !!tool.action);
-  if (verification.status !== "verified")
+  const semanticTransform =
+    tool.action === "transform" &&
+    ["transform", "scaleBody"].includes(tool.id) &&
+    ["referencePoint", "referenceLine", "referenceFrame"].includes(
+      state.selectionKind ?? "",
+    );
+  const numericTransform =
+    semanticTransform &&
+    state.selectionKind !== "referenceFrame" &&
+    state.referenceTransformEligibility?.eligible === true;
+  if (
+    semanticTransform &&
+    state.referenceTransformEligibility?.eligible === false
+  )
+    return {
+      available: false,
+      reason:
+        state.referenceTransformEligibility.reason ??
+        "This reference cannot be transformed.",
+    };
+  // The broader CAD transform workflow keeps its existing verification gate.
+  // Only the selected, validated numeric-reference shared path is admitted.
+  if (verification.status !== "verified" && !numericTransform)
     return { available: false, reason: verification.reason };
   if (
     !tool.action ||
@@ -600,7 +623,8 @@ export function ribbonToolAvailability(
         "decimateMesh",
         "prepareScan",
       ].includes(tool.action)) &&
-    !["measure", "objectColor", "wireframe", "delete"].includes(tool.action)
+    !["measure", "objectColor", "wireframe", "delete"].includes(tool.action) &&
+    !numericTransform
   )
     return {
       available: false,

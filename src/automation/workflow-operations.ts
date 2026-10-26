@@ -4,6 +4,7 @@ import {
   assertSampledGeometry,
   supportsSampledGeometry,
 } from "../reference-entity";
+import { referenceTransformEligibility } from "../reference-transform";
 
 export interface ViewportCommand {
   view?: "main" | "moving" | "fixed";
@@ -50,12 +51,22 @@ export function coordinateAlignmentInterface(
   patch: InterfacePatch,
   selected?: Entity,
 ): InterfacePatch {
+  const numericTransform =
+    selected &&
+    !supportsSampledGeometry(selected) &&
+    patch.workspace === "transform"
+      ? referenceTransformEligibility(selected)
+      : undefined;
+  if (numericTransform && !numericTransform.eligible)
+    throw new Error(
+      numericTransform.reason ?? "This reference cannot be transformed.",
+    );
   if (
     selected &&
     !supportsSampledGeometry(selected) &&
     (patch.mode === "brush" ||
       patch.mode === "section" ||
-      [
+      ([
         "mesh",
         "section",
         "scanTools",
@@ -70,7 +81,8 @@ export function coordinateAlignmentInterface(
         "pointNoise",
         "pointReduce",
         "fineAlign",
-      ].includes(patch.workspace ?? ""))
+      ].includes(patch.workspace ?? "") &&
+        !numericTransform?.eligible))
   )
     assertSampledGeometry(selected);
   if (!patch.datumAlignmentOpen) return patch;

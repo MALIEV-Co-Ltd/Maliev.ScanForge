@@ -666,11 +666,25 @@ geometry, locks, cancellation, cycles and work admission, then returns detached
 entities to the same one-commit mutation boundary. It never edits source objects
 or assigns their already-required keys. Apply reports `refreshedEntityIds`.
 An explicit semantic dependency guard rejects source deletion before ordinary
-geometry-tool eligibility; existing transform/duplicate/delete restrictions stay
-in place. Workspace import admits only the integrated midpoint recipe and validates
-its exact source/key in each retained state; existing codecs retain definitions,
-precise geometry and evaluation state. This application integration does not turn
+geometry-tool eligibility. Current transform and duplication admission is described
+below; linked source deletion remains guarded. Workspace import validates supported
+point/line recipes and their source/key bindings in each retained state; existing
+codecs retain definitions, precise geometry and evaluation state. This application integration does not turn
 the retained static native evidence into numerical/runtime acceptance.
+
+`reference-transform.ts` supplies one eligibility rule and a small binary64 payload
+transform for detached numeric points and empty-record endpoint lines. The GUI,
+ribbon and `ui_set` share that eligibility; `mesh_transform` branches into the
+same operation before sampled-geometry admission. A supplied row-major 3x4 matrix
+transforms original point/start and raw direction components without normalization
+or stored-length changes. The existing application XYZ-degree/positive-scale
+conversion constructs that matrix; original-native toolbar conversion is not
+claimed. The separate numeric definition is synchronized from the resulting
+geometry, then the shared dependency planner refreshes descendants without
+reevaluating the root. One guarded commit retains revision/retry, cancellation,
+locks, history and persistence. Derived modes, retained inactive picks, frame
+datums and semantic duplication remain gated pending their own policy and
+acceptance. This introduces no separate agent implementation or CAD allocation.
 
 `reference-entity.ts` supplies precise bounds, detached inspection and a shared
 sampled-geometry admission check. Bounds reconstruct a line endpoint from its raw

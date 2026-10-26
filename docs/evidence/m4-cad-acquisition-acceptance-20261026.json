@@ -209,5 +209,27 @@
     "Fresh full hosted checks on new checkpoint, final review and merged-main verification before issue4/milestone5 closure"
   ],
   "milestoneComplete": false,
-  "merged": false
+  "merged": false,
+  "hostedAcquisitionCheckpoint": {
+    "commit": "0a320dd4a6e3402fcd2d4b1015730580ceb53b46",
+    "runId": 40262356255,
+    "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40262356255",
+    "conclusion": "failure",
+    "passedTests": 49679,
+    "skippedTests": 64,
+    "failedTests": 0,
+    "build": true,
+    "cadSmoke": true,
+    "formatting": "Only public/cad-worker.js chained-call reflow failed; no functional test failure",
+    "formattingOnlyCorrection": "d0353e99d2a3f5c43a2668e622f8ff604449fa5c",
+    "independentWorkerFormatCheckPassed": true,
+    "freshHostedChecks": {
+      "commit": "d0353e99d2a3f5c43a2668e622f8ff604449fa5c",
+      "runId": 40264306880,
+      "jobId": 121383209202,
+      "conclusion": "success",
+      "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40264306880",
+      "scope": "Fresh exact-commit build/full tests/CAD smoke/repository formatting; later numeric-transform changes require their own checks"
+    }
+  }
 }
