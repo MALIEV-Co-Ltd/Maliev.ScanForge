@@ -4,6 +4,7 @@ import { replayStepExport } from "./helpers/step-export-browser.mjs";
 import { replayExactFreeform } from "./helpers/exact-freeform-browser.mjs";
 import { replayCadTimeout } from "./helpers/cad-timeout-browser.mjs";
 import { replayNativeFit } from "./helpers/native-fit-browser.mjs";
+import { replaySurfaceBlend } from "./helpers/surface-blend-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -777,7 +778,17 @@ try {
       out,
       sourceId,
     });
+  let realBlendInput;
   if (process.env.SCANFORGE_TEST_REAL_SCAN) {
+    const realControls =
+      process.env.SCANFORGE_TEST_MATCH_NATIVE_CONTROLS === "1" ? 5 : 4;
+    const realFitOptions = {
+      countU: realControls,
+      countV: realControls,
+      degree: 3,
+      projection: "xy",
+      sampleLimit: 10000,
+    };
     const file = await readFile(process.env.SCANFORGE_TEST_REAL_SCAN);
     const connectedRegion =
       process.env.SCANFORGE_TEST_CONNECTED_REGION === "1"
@@ -835,10 +846,10 @@ try {
     });
     await realPanel
       .getByRole("spinbutton", { name: "U count", exact: true })
-      .fill("4");
+      .fill(String(realControls));
     await realPanel
       .getByRole("spinbutton", { name: "V count", exact: true })
-      .fill("4");
+      .fill(String(realControls));
     await realPanel
       .locator("label.field")
       .filter({ hasText: "Orientation" })
@@ -874,13 +885,7 @@ try {
       await mutate("surface_fit", {
         entityId: scan.id,
         selectionOnly: true,
-        options: {
-          countU: 4,
-          countV: 4,
-          degree: 3,
-          projection: "xy",
-          sampleLimit: 10000,
-        },
+        options: realFitOptions,
       }),
     );
     const realMcpPatch = (
@@ -1055,13 +1060,7 @@ try {
     const commonFit = await job(
       await mutate("surface_fit", {
         entityId: commonInputId,
-        options: {
-          countU: 4,
-          countV: 4,
-          degree: 3,
-          projection: "xy",
-          sampleLimit: 10000,
-        },
+        options: realFitOptions,
       }),
     );
     assert.deepEqual(
@@ -1089,13 +1088,7 @@ try {
         {
           patch: realMcpPatch,
           connectedRegion,
-          options: {
-            countU: 4,
-            countV: 4,
-            degree: 3,
-            projection: "xy",
-            sampleLimit: 10000,
-          },
+          options: realFitOptions,
           thicknessMm: -0.1,
           report: solidReport,
           surfaceReport,
@@ -1125,6 +1118,7 @@ try {
         sha256: createHash("sha256").update(file).digest("hex"),
       },
       selectedFacets: 200,
+      fitOptions: realFitOptions,
       connectedRegion,
       guiMcpPatchEquality: true,
       fit: realFit,
@@ -1143,6 +1137,7 @@ try {
       limitation:
         "A selected real scan region with kernel validity and exchange checks; not whole-part reconstruction, a global self-intersection certificate or native application parity.",
     });
+    realBlendInput = { patch: realMcpPatch, sourceId: scan.id };
     await mutate("viewport_control", {
       action: "fit",
       entityId: solidId,
@@ -1151,6 +1146,20 @@ try {
       path: fileURLToPath(new URL("real-region-solid.png", out)),
     });
   }
+  if (process.env.SCANFORGE_TEST_SURFACE_BLEND === "1")
+    await replaySurfaceBlend({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId: realBlendInput?.sourceId ?? sourceId,
+      realPatch: realBlendInput?.patch,
+    });
   if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
     const before = (await call("project_get")).result;
     const oldJobs = new Set(

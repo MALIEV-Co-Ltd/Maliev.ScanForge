@@ -27,20 +27,63 @@ current readiness confirmation and a CUA runtime reset, r4 accepted native
 thickening and saved a QSF; STEP export and analytic comparison remain pending.
 Local checks are retained below; M5 is not merged or closed.
 
+The compatible transition-surface candidate adds shared GUI/MCP C0/C1 blending
+with build `scanforge-88f56117136cbb52`; its source hashes and actual receipts are
+retained in [validation](evidence/m5-20261025/compatible-blend-validation.json).
+This is a new independently editable exact face between compatible NURBS
+boundaries. General CAD-edge/G2 blending, persistent seams and native blend
+equivalence are not established. Final standard checks and integration remain
+required; the preceding candidate/CI above is historical for this new runtime.
+
 ## Operation matrix
 
-| Required area                                           | Application/shared MCP path                                                           | Evidence and remaining gate                                                                                                                                                                                                                                         |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Scan fitting                                            | Fit Surface / `surface_fit`                                                           | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established. |
-| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                     | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.  |
-| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                  | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                               |
-| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                               | Exact kernel smoke passes analytic volumes, straight/bent sweeps and invalid inputs. Real-input GUI/MCP/native operation-matrix replay remains open.                                                                                                                |
-| Surface trimming/blends                                 | Shared retained-region surface trim, compatible joins and solid split/Boolean recipes | Exact retained-region trimming now has GUI/public-MCP and kernel evidence below. Native trimming parity remains open. C0/C1 joins do not establish a general surface-blend implementation.                                                                          |
-| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                          | Kernel smoke passes these operations and exchange. Complete real scan-to-sketch-to-solid workflow, explicit recovery, GUI/public-MCP/native parity and solid boundaries remain open.                                                                                |
-| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`         | Exact surface recipe and BREP survive project save/reopen in browser; STEP export header verified. Kernel smoke covers STEP round-trips. Real scan-derived whole-solid STEP/BREP acceptance remains open.                                                           |
-| Resources                                               | Existing admission guards, owned browser/MCP process leases                           | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
+| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                         |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established. |
+| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.  |
+| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                               |
+| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Exact kernel smoke passes analytic volumes, straight/bent sweeps and invalid inputs. Real-input GUI/MCP/native operation-matrix replay remains open.                                                                                                                |
+| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                              |
+| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Kernel smoke passes these operations and exchange. Complete real scan-to-sketch-to-solid workflow, explicit recovery, GUI/public-MCP/native parity and solid boundaries remain open.                                                                                |
+| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Exact surface recipe and BREP survive project save/reopen in browser; STEP export header verified. Kernel smoke covers STEP round-trips. Real scan-derived whole-solid STEP/BREP acceptance remains open.                                                           |
+| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
 
 ## Candidate history and validation
+
+### Compatible transition surfaces and matching control-count scan replay
+
+The [browser ledger](evidence/m5-20261025/compatible-blend-browser-ledger.json)
+passes GUI/public-MCP mesh and exact targets crossed with C0/C1 continuity.
+Raw reference and reference-ID paths produce equal patches/display buffers,
+preserve both inputs and selection, and record one history step. Invalid
+references have matching errors and no edits. Both GUI/MCP project reopen
+preserve saved geometry exactly; STEP area matches the original within
+max(1e-6mm², originalArea×1e-8). Explicit cancellation releases the late-created
+native handle, and a dependent transform proves the retained source handle
+still works. Selection-change/closure/unmount paths are source-reviewed rather
+than blend-specific runtime claims.
+
+Rational planar bridges of analytic area80mm² inspect as79.99983591090583mm².
+The inspector's nonadaptive integration is approximate; the fixture explicitly
+uses max(1e-6mm², expectedArea×1e-5), not an inspector-wide accuracy guarantee.
+The initial too-strict fixture failure and missing-GUI-control RED are retained.
+Math suites passed96tests; API focused18passed after fixture corrections, while
+64affected regressions passed on the unchanged production source in the earlier
+run. These are separate run counts, not a fabricated single combined pass.
+
+The same browser run fits the connected200-facet original scan region through
+GUI and MCP using5×5controls/degree3/XY, matching the native serialized count.
+Both patches agree, RMS0.004591297951926558mm/max0.018220739978460188mm.
+Its thickened part is valid1solid/6faces, area15.106088543277144mm² and
+volume0.700819433669289mm³. A scan-derived C1bridge is a valid exact face with
+area16.51170359149748mm². Matching control counts and GUI/MCP results do not
+establish native fitting/seam/solid equivalence.
+
+Fresh build and manifest passed with no browser console errors/warnings or page
+errors. The bounded run took61.612s, peaked2,936,479,744bytes under4GiB and
+finished with zero processes, own preview5206closed and the existing application
+preserved. The [rendered C1 result](evidence/m5-20261025/compatible-blend-exact-c1.png)
+was visually inspected. Complete sketch-chain/native/M4 gates remain open.
 
 ### Native solid session r4: accepted thickness and saved QSF
 

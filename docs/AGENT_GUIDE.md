@@ -937,7 +937,7 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 | Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                                                   |
 | Parametric edits         | `cad_rebuild`, persistent feature/output references, dependency validation and rollback                                                                                                                                                                         |
 | Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit extrusion of solved profiles                                                                                                                |
-| NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, C0/C1 joins and shell diagnostics; exact face/closed-patch conversion through recipes                                               |
+| NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, compatible C0/C1 joins/transition surfaces and shell diagnostics; exact face/closed-patch conversion through recipes                |
 | History and interaction  | Modeling undo/redo and timeline seeking, standard camera views/fit, display/theme/grid settings                                                                                                                                                                 |
 | Files and execution      | Local artifact upload/download, project/scan/CAD import, project/STL/STEP export, job status/cancel                                                                                                                                                             |
 
@@ -981,6 +981,33 @@ same operation and exposes its owned cancellation outside the busy panel.
 The joined patch is materialized, with no persistent seam dependency. C1 matches
 transverse homogeneous derivatives in normalized parameters; it is not a general
 surface blend or a native-reference equivalence claim.
+
+Create a separate compatible transition with the same `surface_operation`
+reference/options contract and `operation:"blend"`; optional `name` names the
+new surface. The existing target must be an unlocked mesh patch or unlocked
+exact authored `surface` target. Both sources, their metadata and native/BREP
+handles stay unchanged, and the current target selection is retained. Locked
+references are readable, including a snapshot of a feature downstream from the
+target; blend does not rebuild either source. Self-reference is rejected.
+
+Blend returns `entityId`, `featureId`, `representation:"exactCad"`, applied
+`options` (including default `reverse:false`) and `referenceSource` as either
+`{kind:"entity",entityId}` or `{kind:"patch"}`. Use `surface_get` to inspect the
+new control net and `cad_inspect` for exact diagnostics. The new entity has an
+independent editable `surface` recipe. Later source edits do not update its seams.
+One accepted blend adds one model-history step; identical request retries reuse
+the same job receipt. Native failure, cancellation or stale revision prevents
+publication and retires newly created handles while retaining source/history
+handles. Cancel the owned operation with `job_cancel`.
+
+The supported bridge uses source coordinates in millimetres, compatible seam
+degree/control count/normalized knots and the same 2–16 controls/degree 1–5
+limits. C0 creates a linear transverse patch; C1 creates a cubic homogeneous
+Hermite patch matching outward reference and inward target derivatives in
+normalized parameters. `reverse:true` reverses reference seam order. Invalid
+generated rational weights and invalid native faces reject. This materialized
+transition has no persistent seam/source constraint and does not provide general
+CAD-edge blends, G2 continuity or native-reference equivalence.
 
 `surface_operation` also accepts exact authored `surface` targets for `grid`,
 `quadImport`, `knot`, `crease` and `snap`, using the same dependent rebuild path.

@@ -4918,7 +4918,7 @@
   },
   {
     "name": "surface_operation",
-    "description": "Use shared editor NURBS helpers on mesh patches or exact authored surface targets: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining. Exact edits use the ordinary guarded dependent rebuild and return rebuiltFeatureIds/cleanupFailures. Snap defaults to the associated scan, or the target display geometry. Join accepts exactly one workspace referenceId or bounded referencePatch, preserves that reference and additionally returns representation, applied options, reference source and changed control indices. C0/C1 are compatible normalized-parameter boundary joins, not general surface blends.",
+    "description": "Use shared editor NURBS helpers on mesh patches or exact authored surface targets: grid, ordered quad import, knot insertion, crease preparation, scan control snapping, compatible C0/C1 joining or transition-surface blending. Exact edits use the ordinary guarded dependent rebuild and return rebuiltFeatureIds/cleanupFailures. Snap defaults to the associated scan, or the target display geometry. Join/blend accept exactly one workspace referenceId or bounded referencePatch and required boundary/continuity options. Join changes the target and returns changed control indices. Blend creates a NEW independently editable exact surface recipe through ordinary CAD creation, preserves both sources and target selection, and returns entityId/featureId/representation:exactCad/options/referenceSource. Optional name names the new transition. Compatible seam degree/count/normalized knots must match; C0 is linear and C1 matches normalized transverse homogeneous derivatives. Invalid generated weights/native faces reject. No persistent seam/source dependency, general CAD-edge blend, G2 or native-reference equivalence is promised.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4926,7 +4926,15 @@
       "properties": {
         "operation": {
           "type": "string",
-          "enum": ["grid", "quadImport", "knot", "crease", "snap", "join"]
+          "enum": [
+            "grid",
+            "quadImport",
+            "knot",
+            "crease",
+            "snap",
+            "join",
+            "blend"
+          ]
         },
         "entityId": {
           "type": "string",
@@ -4997,7 +5005,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200,
-          "description": "Fixed workspace NURBS reference for operation:join. Must differ from the target; exact joins reject downstream references. Locked references are readable."
+          "description": "Fixed workspace NURBS reference for operation:join or blend. Must differ from the target; exact joins reject downstream references, while blend reads their snapshot. Locked references are readable."
         },
         "options": {
           "type": "object",
@@ -5033,7 +5041,7 @@
         },
         "referencePatch": {
           "type": "object",
-          "description": "Fixed compatible NURBS reference value for operation:join. Supply exactly one of referencePatch or referenceId. Target must be a mesh patch or an exact authored surface recipe; no persistent seam dependency is created.",
+          "description": "Fixed compatible NURBS reference value for operation:join or blend. Supply exactly one of referencePatch or referenceId. Target must be an unlocked mesh patch or an unlocked exact authored surface recipe; no persistent seam dependency is created. Blend materializes a separate exact surface and leaves both inputs unchanged.",
           "properties": {
             "format": {
               "type": "string",

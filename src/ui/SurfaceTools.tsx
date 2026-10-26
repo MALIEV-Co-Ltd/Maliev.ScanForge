@@ -32,6 +32,11 @@ export interface SurfaceToolsProps {
     options: PatchJoinOptions,
     signal: AbortSignal,
   ) => Promise<unknown>;
+  onBlend: (
+    reference: NurbsPatch,
+    options: PatchJoinOptions,
+    signal: AbortSignal,
+  ) => Promise<unknown>;
   onSnap: (index: number, signal: AbortSignal) => Promise<unknown>;
   active?: boolean;
   onCreateMesh: (positions: Float32Array, name: string) => void;
@@ -49,6 +54,7 @@ export function SurfaceTools({
   patch,
   onPatchChange,
   onJoin,
+  onBlend,
   onSnap,
   active = true,
   onCreateMesh,
@@ -182,6 +188,20 @@ export function SurfaceTools({
       "Joining compatible patch boundaries…",
       `${continuity} boundary applied to active patch. Reference remains fixed.`,
       "Cancel surface join",
+    );
+  }
+  async function blend() {
+    if (!referencePatch || !patch) return;
+    await edit(
+      (signal) =>
+        onBlend(
+          referencePatch,
+          { referenceEdge, targetEdge, continuity, reverse: reverseSeam },
+          signal,
+        ),
+      "Creating compatible transition surface…",
+      `${continuity} transition surface created. Both input patches remain fixed.`,
+      "Cancel surface blend",
     );
   }
   const fitScan = async () => {
@@ -568,6 +588,17 @@ export function SurfaceTools({
                   onClick={() => void join()}
                 >
                   Apply boundary join
+                </button>
+                <p className="muted">
+                  Create an independently editable exact transition surface
+                  between these compatible boundaries. Both input patches stay
+                  fixed; later edits do not maintain their seams.
+                </p>
+                <button
+                  disabled={disabled || joinBusy}
+                  onClick={() => void blend()}
+                >
+                  Create transition surface
                 </button>
                 <button
                   onClick={() =>

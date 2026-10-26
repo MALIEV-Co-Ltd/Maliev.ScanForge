@@ -6,6 +6,7 @@ import {
   insertPatchKnot,
   preparePatchCrease,
   joinPatchBoundary,
+  blendPatchBoundaries,
   snapControlPoint,
   importQuadGridObj,
   assemblePatchShell,
@@ -18,7 +19,10 @@ import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 import { lockedObjectEdit } from "../object-operations";
 import { assertSampledGeometry } from "../reference-entity";
-import { createCadRebuildOperation } from "./operations";
+import {
+  createCadCreateOperation,
+  createCadRebuildOperation,
+} from "./operations";
 import { featureDependencies } from "../parametric";
 
 function fixedSurfaceReference(
@@ -60,6 +64,7 @@ export function createAuthoringOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
   const rebuildExact = createCadRebuildOperation(host);
+  const createExact = createCadCreateOperation(host);
   const find = (id: string) => {
     const e = host.snapshot().entities.find((e) => e.id === id);
     if (!e) throw new Error("Object does not exist");
@@ -323,32 +328,57 @@ export function createAuthoringOperations(
                 e);
           fixedSurfaceReference(s.entities, e, scan, "snap");
           patch = snapControlPoint(patch, a.index, scan.positions);
-        } else if (a.operation === "join") {
+        } else if (a.operation === "join" || a.operation === "blend") {
+          const blend = a.operation === "blend";
           const hasId = a.referenceId !== undefined,
             hasRaw = a.referencePatch !== undefined;
           if (hasId === hasRaw)
             throw Error(
-              "Choose exactly one referenceId or referencePatch for joining.",
+              `Choose exactly one referenceId or referencePatch for ${blend ? "blending" : "joining"}.`,
             );
           if (hasId && a.referenceId === e.id)
-            throw Error("A join reference must differ from its target.");
+            throw Error(
+              `A ${a.operation} reference must differ from its target.`,
+            );
           if (!a.options || typeof a.options !== "object")
-            throw Error("Join boundary and continuity options are required.");
+            throw Error(
+              `${blend ? "Blend" : "Join"} boundary and continuity options are required.`,
+            );
           const referenceEntity = hasId ? find(a.referenceId) : undefined;
           const reference = hasId
             ? referenceEntity?.surfacePatch
             : a.referencePatch;
           if (!reference) throw new Error("Reference has no NURBS patch");
-          fixedSurfaceReference(s.entities, e, referenceEntity, "join");
+          if (!blend)
+            fixedSurfaceReference(s.entities, e, referenceEntity, "join");
           c.check();
+          const referenceSource = hasId
+            ? { kind: "entity", entityId: a.referenceId }
+            : { kind: "patch" };
+          const options = { ...a.options, reverse: a.options.reverse ?? false };
+          if (blend) {
+            const bridge = blendPatchBoundaries(reference, patch, a.options);
+            const created = await createExact(
+              {
+                name: a.name ?? "NURBS transition surface",
+                recipe: { kind: "surface", patch: bridge },
+              },
+              c,
+            );
+            return {
+              entityId: created.entityIds[0],
+              featureId: created.featureId,
+              representation: "exactCad",
+              options,
+              referenceSource,
+            };
+          }
           const original = patch;
           patch = joinPatchBoundary(reference, patch, a.options);
           joinResult = {
             representation: e.kernelId ? "exactCad" : "mesh",
-            options: { ...a.options, reverse: a.options.reverse ?? false },
-            referenceSource: hasId
-              ? { kind: "entity", entityId: a.referenceId }
-              : { kind: "patch" },
+            options,
+            referenceSource,
             changedControlIndices: patch.points.flatMap((point, index) =>
               point.some(
                 (value, axis) => value !== original.points[index][axis],

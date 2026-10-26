@@ -397,6 +397,29 @@ function commitEntities(
   }
 }
 
+/** One context-aware creation publication path for MCP and compound application operations. */
+export function createCadCreateOperation(host: WorkspaceHost) {
+  return async (a: Parameters<Handler>[0], c: CommandContext) => {
+    const s = host.snapshot(),
+      cad = host.cad(),
+      result = await createCadFeature(cad, s.entities, a.recipe, a.name, {
+        hideInputs: a.hideInputs,
+        signal: c.signal,
+      });
+    try {
+      commitEntities(host, c, result.entities, "Create CAD feature");
+    } catch (error) {
+      await releaseCreated(cad, result.entities, s.entities);
+      throw error;
+    }
+    if (a.selectCreated === true) host.select(result.created[0].id);
+    return {
+      entityIds: result.created.map((e) => e.id),
+      featureId: result.created[0].parametric!.feature.id,
+    };
+  };
+}
+
 /** One context-aware rebuild publication path for MCP and compound application operations. */
 export function createCadRebuildOperation(host: WorkspaceHost) {
   return async (a: Parameters<Handler>[0], c: CommandContext) => {
@@ -1452,25 +1475,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     ...createInspectionOperations(host),
     analysis_measure: (a) =>
       measureGeometry(a as import("../inspection").MeasurementInput),
-    cad_create: async (a, c) => {
-      const s = host.snapshot(),
-        cad = host.cad(),
-        result = await createCadFeature(cad, s.entities, a.recipe, a.name, {
-          hideInputs: a.hideInputs,
-          signal: c.signal,
-        });
-      try {
-        commit(c, result.entities, "Create CAD feature");
-      } catch (error) {
-        await releaseCreated(cad, result.entities, s.entities);
-        throw error;
-      }
-      if (a.selectCreated === true) host.select(result.created[0].id);
-      return {
-        entityIds: result.created.map((e) => e.id),
-        featureId: result.created[0].parametric!.feature.id,
-      };
-    },
+    cad_create: createCadCreateOperation(host),
     cad_rebuild: createCadRebuildOperation(host),
     sketch_get: () => {
       const s = host.snapshot();

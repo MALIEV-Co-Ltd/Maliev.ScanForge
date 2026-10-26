@@ -7056,6 +7056,12 @@ export function App() {
                           signal,
                         )
                       }
+                      onBlend={(referencePatch, options, signal) =>
+                        runSurfaceOperation(
+                          { operation: "blend", referencePatch, options },
+                          signal,
+                        )
+                      }
                       onSnap={(index, signal) =>
                         runSurfaceOperation(
                           { operation: "snap", index },

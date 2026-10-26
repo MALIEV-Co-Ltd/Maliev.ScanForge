@@ -105,6 +105,29 @@ reference source and changed control indices. The reference is a fixed input,
 not a persistent dependency. The GUI awaits publication before success and aborts
 its owned job on close/unmount; its cancel control remains outside inert content.
 
+Compatible transition creation uses `surface_operation` with `operation:"blend"`
+and the same bounded reference/options contract. It evaluates
+`blendPatchBoundaries` and invokes the extracted `createCadCreateOperation(host)`
+directly with the same command context and an independent `surface` recipe.
+Ordinary `cad_create` calls that identical handler. There is no nested API job,
+source-feature binding or persistent source/seam dependency. The shared creator
+retains its revision/cancellation publication fence, retry/history behavior and
+late/failed-publication native-handle cleanup. It leaves source objects,
+metadata, saved BREP and history-owned handles untouched. The blend does not
+request created-entity selection, preserving the panel's selected target while
+its owned operation is pending.
+
+Blend retains existing unlocked mesh/authored-exact target eligibility and
+rejects self-reference. Locked references remain readable. Unlike join/snap,
+it accepts downstream reference snapshots because no source is rebuilt.
+Structured output identifies the new `entityId`/`featureId`,
+`representation:"exactCad"`, normalized option defaults and reference source.
+`surface_get` and `cad_inspect` expose editable geometry and exact diagnostics.
+The bridge is materialized: C0 is transverse linear, C1 is homogeneous cubic
+Hermite with normalized transverse derivatives, and incompatible seams or invalid
+generated weights reject before native publication. General CAD-edge blending,
+G2 and persistent seam constraints remain outside this contract.
+
 The same authored-surface guard and rebuild dispatch cover `grid`, `quadImport`,
 `knot`, `crease` and `snap`. Mesh-only/point-cloud guards remain for unsupported
 targets. Snapping resolves explicit source IDs or the GUI's associated-source /
