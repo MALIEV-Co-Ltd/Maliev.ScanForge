@@ -4,18 +4,32 @@ import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import { randomUUID, randomBytes, createHash } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { resolve } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const residentFixture = process.argv.includes("--resident");
+const globalControl = process.argv.includes("--global-control");
+const sourceFile = process.env.SCANFORGE_REDUCTION_SOURCE;
+const globalFixture = JSON.parse(
+  await readFile(
+    new URL("fixtures/reduction-global-routing.json", import.meta.url),
+    "utf8",
+  ),
+);
 const root = new URL("../", import.meta.url),
-  out = new URL(
-    residentFixture
-      ? "../.resources/resident-reduction/"
-      : "../.resources/large-reduction/",
-    import.meta.url,
-  );
+  dist = process.env.SCANFORGE_QA_DIST
+    ? pathToFileURL(resolve(process.env.SCANFORGE_QA_DIST) + "/")
+    : new URL("dist/", root),
+  out = process.env.SCANFORGE_QA_OUT
+    ? pathToFileURL(resolve(process.env.SCANFORGE_QA_OUT) + "/")
+    : new URL(
+        residentFixture
+          ? "../.resources/resident-reduction/"
+          : "../.resources/large-reduction/",
+        import.meta.url,
+      );
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -68,12 +82,8 @@ try {
   server = http.createServer(async (req, res) => {
     try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
-      const file = new URL(
-        name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
-      );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      const file = new URL(name === "/" ? "index.html" : name.slice(1), dist);
+      if (!file.href.startsWith(dist.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -148,6 +158,23 @@ try {
   });
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.__reductionStages = [];
+    const Original = window.Worker;
+    window.Worker = class extends Original {
+      constructor(url, options) {
+        super(url, options);
+        if (String(url).includes("processing-worker"))
+          this.addEventListener("message", (e) => {
+            if (e.data.stage) window.__reductionStages.push(e.data.stage);
+            if (window.__holdReductionResult && e.data.result) {
+              e.stopImmediatePropagation();
+              window.__pendingReductionResult = true;
+            }
+          });
+      }
+    };
+  });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("tab", { name: "AI agents", exact: true }).click();
@@ -199,12 +226,13 @@ try {
     }
     throw Error("Geometry job timeout");
   };
-  const geometryHash = async () => {
+  const geometryHash = async (rawSource) => {
     await idle();
     const exported = (
       await job(await call("project_export", { format: "stl", visible: true }))
     ).result;
     const hash = createHash("sha256");
+    const differences = { count: 0, numericallyDifferent: 0, first: [] };
     try {
       // Stream coordinate bytes only; STL headers/normals are export metadata.
       let at = 84;
@@ -218,10 +246,42 @@ try {
         ).result;
         const data = Buffer.from(read.base64, "base64");
         assert(data.length > 0 && data.length % 50 === 0);
-        for (let face = 0; face < data.length; face += 50)
+        for (let face = 0; face < data.length; face += 50) {
           hash.update(data.subarray(face + 12, face + 48));
+          if (rawSource)
+            for (let coordinate = 0; coordinate < 9; coordinate++) {
+              const offset = face + 12 + coordinate * 4,
+                sourceOffset = at + offset;
+              if (
+                data.readUInt32LE(offset) !==
+                rawSource.readUInt32LE(sourceOffset)
+              ) {
+                differences.count++;
+                if (
+                  data.readFloatLE(offset) !==
+                  rawSource.readFloatLE(sourceOffset)
+                )
+                  differences.numericallyDifferent++;
+                if (differences.first.length < 16)
+                  differences.first.push({
+                    face: (at - 84 + face) / 50,
+                    coordinate,
+                    sourceBits: rawSource.readUInt32LE(sourceOffset),
+                    exportedBits: data.readUInt32LE(offset),
+                    source: rawSource.readFloatLE(sourceOffset),
+                    exported: data.readFloatLE(offset),
+                  });
+              }
+            }
+        }
         assert.equal(read.nextOffset, at + data.length);
         at = read.nextOffset;
+      }
+      if (rawSource) {
+        ledger.importCoordinateDifferences = differences;
+        console.log(
+          JSON.stringify({ importCoordinateDifferences: differences }),
+        );
       }
       return hash.digest("hex");
     } finally {
@@ -229,13 +289,25 @@ try {
     }
   };
 
-  const nx = residentFixture ? 300 : 750,
-    ny = residentFixture ? 192 : 768,
-    inputTriangles = nx * ny * 2;
-  const bytes = Buffer.alloc(84 + inputTriangles * 50);
-  bytes.writeUInt32LE(inputTriangles, 80);
+  const nx = globalControl ? globalFixture.nx : residentFixture ? 300 : 750,
+    ny = globalControl ? globalFixture.ny : residentFixture ? 192 : 768;
+  const bytes = sourceFile
+    ? await readFile(sourceFile)
+    : Buffer.alloc(84 + nx * ny * 2 * 50);
+  const inputTriangles = sourceFile ? bytes.readUInt32LE(80) : nx * ny * 2;
+  assert.equal(
+    bytes.length,
+    84 + inputTriangles * 50,
+    "Expected complete binary STL source",
+  );
+  if (!sourceFile) bytes.writeUInt32LE(inputTriangles, 80);
   let offset = 84;
-  const z = (x, y) => 15 * Math.sin(x / 100) * Math.cos(y / 80);
+  const z = globalControl
+    ? (x, y) =>
+        0.002 * x * x +
+        0.001 * y * y +
+        0.2 * Math.sin(0.3 * x) * Math.cos(0.2 * y)
+    : (x, y) => 15 * Math.sin(x / 100) * Math.cos(y / 80);
   const emit = (vertices) => {
     bytes.writeFloatLE(1, offset + 8);
     for (let corner = 0; corner < 3; corner++)
@@ -246,12 +318,12 @@ try {
         );
     offset += 50;
   };
-  for (let y = 0; y < ny; y++)
+  for (let y = 0; !sourceFile && y < ny; y++)
     for (let x = 0; x < nx; x++) {
-      const x0 = (x * 600) / nx,
-        x1 = ((x + 1) * 600) / nx;
-      const y0 = (y * 300) / ny,
-        y1 = ((y + 1) * 300) / ny;
+      const x0 = globalControl ? x : (x * 600) / nx,
+        x1 = globalControl ? x + 1 : ((x + 1) * 600) / nx;
+      const y0 = globalControl ? y : (y * 300) / ny,
+        y1 = globalControl ? y + 1 : ((y + 1) * 300) / ny;
       const a = [x0, y0, z(x0, y0)],
         b = [x1, y0, z(x1, y0)],
         c = [x1, y1, z(x1, y1)],
@@ -262,8 +334,23 @@ try {
   const file = fixturePath;
   await writeFile(file, bytes);
   const inputSha256 = createHash("sha256").update(bytes).digest("hex");
+  const rawHash = createHash("sha256"),
+    exportHash = createHash("sha256");
+  for (let at = 84; at < bytes.length; at += 50) {
+    const raw = bytes.subarray(at + 12, at + 48);
+    rawHash.update(raw);
+    // STLExporter applies the identity world matrix, which normalizes -0 to +0.
+    // Canonicalize only that bit pattern; numerical changes still fail separately.
+    const canonical = Buffer.from(raw);
+    for (let slot = 0; slot < 36; slot += 4)
+      if (canonical.readUInt32LE(slot) === 0x80000000)
+        canonical.writeUInt32LE(0, slot);
+    exportHash.update(canonical);
+  }
+  const rawSourceGeometrySha256 = rawHash.digest("hex");
+  const expectedExportGeometrySha256 = exportHash.digest("hex");
   console.log(
-    `Importing ${inputTriangles} triangles; 600 x 300 mm curved panel`,
+    `Importing ${inputTriangles} triangles; ${sourceFile ?? (globalControl ? "160 x 128 mm frozen curved control" : "600 x 300 mm curved panel")}`,
   );
   await page.locator('input[type=file][accept*=".stl"]').setInputFiles(file);
   await page.getByRole("button", { name: "Import", exact: true }).click();
@@ -275,6 +362,23 @@ try {
     (o) => o.name === "large-reduction-panel.stl",
   );
   assert.equal(object.triangles, inputTriangles);
+  const sourceGeometrySha256 = await geometryHash(bytes);
+  assert.equal(
+    sourceGeometrySha256,
+    expectedExportGeometrySha256,
+    "Import/export changed coordinates beyond signed-zero normalization",
+  );
+  assert.equal(
+    ledger.importCoordinateDifferences.numericallyDifferent,
+    0,
+    "Import/export changed numerical coordinates",
+  );
+  if (globalControl)
+    assert.equal(
+      sourceGeometrySha256,
+      globalFixture.sourceSha256,
+      "Imported source differs from frozen global control",
+    );
   await page
     .getByRole("button", { name: "large-reduction-panel.stl", exact: true })
     .click();
@@ -332,6 +436,33 @@ try {
       .count()),
   );
   await page.screenshot({ path: fileURLToPath(new URL("preview.png", out)) });
+  await panel.getByRole("button", { name: "Cancel", exact: true }).click();
+  await panel.waitFor({ state: "hidden" });
+  await idle();
+  assert.equal((await call("project_get")).result.undo, imported.undo);
+  assert.equal(
+    await geometryHash(),
+    sourceGeometrySha256,
+    "GUI Cancel changed source",
+  );
+  await page.getByRole("button", { name: "Simplify", exact: true }).click();
+  await panel.waitFor();
+  await panel.getByRole("button", { name: "Reduce by", exact: true }).click();
+  await page
+    .getByRole("option", { name: "Percentage remaining", exact: true })
+    .click();
+  await panel
+    .getByRole("spinbutton", { name: "Triangles remaining (%)", exact: true })
+    .fill("50");
+  await panel
+    .locator("footer")
+    .getByRole("button", { name: "Preview", exact: true })
+    .last()
+    .click();
+  await panel
+    .getByRole("button", { name: "Accept", exact: true })
+    .waitFor({ timeout: 180000 });
+  await idle();
   await panel.getByRole("button", { name: "Accept", exact: true }).click();
   await page.waitForTimeout(200);
   const accepted = (await call("project_get")).result;
@@ -350,12 +481,69 @@ try {
     `GUI accepted ${outputTriangles} triangles; preview + comparison ${Math.round(previewMs)} ms`,
   );
   const guiGeometrySha256 = await geometryHash();
+  if (globalControl)
+    assert.equal(
+      guiGeometrySha256,
+      globalFixture.globalFloat32Sha256,
+      "GUI missed frozen whole-input sequence",
+    );
   await mutate("history_seek", { index: imported.undo });
   assert.equal(
     (await call("project_get")).result.objects.find((o) => o.id === object.id)
       .triangles,
     inputTriangles,
   );
+  const staged = await job(
+    await mutate("scan_preview", {
+      action: "create",
+      entityId: object.id,
+      operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+    }),
+  );
+  assert.equal(
+    await geometryHash(),
+    sourceGeometrySha256,
+    "Public preview mutated source",
+  );
+  assert.equal((await call("project_get")).result.undo, imported.undo);
+  await job(
+    await mutate("scan_preview", {
+      action: "cancel",
+      entityId: object.id,
+      previewId: staged.result.previewId,
+    }),
+  );
+  assert.equal(
+    await geometryHash(),
+    sourceGeometrySha256,
+    "Public preview discard mutated source",
+  );
+  await page.evaluate(() => {
+    window.__holdReductionResult = true;
+    window.__pendingReductionResult = false;
+  });
+  const cancelled = await mutate("mesh_process", {
+    entityId: object.id,
+    operation: {
+      kind: "scanTools",
+      operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+    },
+  });
+  await page.waitForFunction(() => window.__pendingReductionResult, null, {
+    timeout: 180000,
+  });
+  await call("job_cancel", { jobId: cancelled.result.jobId });
+  await job(cancelled, "cancelled");
+  await page.evaluate(() => {
+    window.__holdReductionResult = false;
+    window.__pendingReductionResult = false;
+  });
+  assert.equal(
+    await geometryHash(),
+    sourceGeometrySha256,
+    "Cancelled worker result published geometry",
+  );
+  assert.equal((await call("project_get")).result.undo, imported.undo);
   await job(
     await mutate("mesh_process", {
       entityId: object.id,
@@ -363,8 +551,8 @@ try {
         kind: "scanTools",
         operation: {
           kind: "reducePolygons",
-          mode: "percentage",
-          percentage: 50,
+          mode: "triangles",
+          targetTriangles: Math.floor(inputTriangles / 2),
           measureDeviation: true,
           deviation: 0.05,
           paletteThreshold: 0.05,
@@ -378,6 +566,10 @@ try {
     guiGeometrySha256,
     "GUI and MCP differ on the same source and 50% target",
   );
+  await mutate("history_undo", {});
+  assert.equal(await geometryHash(), sourceGeometrySha256);
+  await mutate("history_redo", {});
+  assert.equal(await geometryHash(), guiGeometrySha256);
   const secondStart = performance.now();
   await job(
     await mutate("mesh_process", {
@@ -399,6 +591,26 @@ try {
   const mcpTriangles = after.objects.find((o) => o.id === object.id).triangles;
   assert(mcpTriangles < outputTriangles);
   assert.equal(after.undo, accepted.undo + 1);
+  const finalGeometrySha256 = await geometryHash();
+  const saved = await job(await call("project_export", { format: "project" }));
+  await job(
+    await mutate("project_import", {
+      artifactId: saved.result.artifactId,
+      replace: true,
+    }),
+  );
+  assert.equal(
+    await geometryHash(),
+    finalGeometrySha256,
+    "Binary reopen changed reduced coordinates",
+  );
+  await call("artifact_delete", { artifactId: saved.result.artifactId });
+  const stages = await page.evaluate(() => window.__reductionStages);
+  assert(
+    stages.includes("Collapsing native mesh edges") &&
+      !stages.includes("Reducing spatial patches"),
+    "Admitted browser reduction did not retain the whole-input sequence",
+  );
   assert.deepEqual(errors, []);
   ledger.result = {
     passed: true,
@@ -417,6 +629,18 @@ try {
     previewPreservesSource: true,
     mcpDirectComparison: true,
     sameInputGeometryParity: true,
+    directCountMatchesGuiPercentage: true,
+    globalSequenceObserved: true,
+    sourceFile: sourceFile ?? null,
+    rawSourceGeometrySha256,
+    sourceGeometrySha256,
+    frozenGlobalControl: globalControl,
+    guiCancelBeforeAccept: true,
+    publicPreviewDiscard: true,
+    cancelledWorkerResultRollback: true,
+    undoRedo: true,
+    binarySaveReopen: true,
+    finalGeometrySha256,
     guiGeometrySha256,
     mcpGeometrySha256,
     errors,
