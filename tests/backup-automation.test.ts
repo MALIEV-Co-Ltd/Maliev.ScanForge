@@ -7,15 +7,97 @@ import {
 import { createOperations } from "../src/automation/operations";
 import { listBackups } from "../src/project-backup";
 import { encodeProjectFile } from "../src/project-file";
+import type { Entity } from "../src/types";
+const { importBrep } = vi.hoisted(() => ({ importBrep: vi.fn() }));
 vi.mock("../src/project-backup", async (original) => ({
   ...(await original<typeof import("../src/project-backup")>()),
   listBackups: vi.fn(),
 }));
 vi.mock("../src/cad/client", () => ({
   CadClient: class {
+    importFile = importBrep;
     dispose() {}
   },
 }));
+it.each(["project_import", "backup_restore"])(
+  "%s refreshes CAD handles without replacing saved geometry or BREP in any history state",
+  async (operation) => {
+    const { api, state } = setup();
+    const saved: Entity = {
+      id: "saved-cad",
+      name: "Native fitted solid",
+      kind: "cad",
+      positions: [0.12345678901234567, 0, 0, 1, 0, 0, 0, 1, 0],
+      normals: [0, 0, 1, 0, 0, 1, 0, 0, 1],
+      edgePositions: [0.12345678901234567, 0, 0, 1, 0, 0],
+      brep: "SAVED BREP",
+      kernelId: "retired",
+      color: "#ffffff",
+      visible: true,
+      opacity: 1,
+    };
+    importBrep.mockReset().mockResolvedValue({
+      kernelId: "fresh",
+      positions: [0.123456789012345, 0, 0, 1, 0, 0, 0, 1, 0],
+      normals: Array(9).fill(0),
+      edgePositions: [],
+      brep: "RESERIALIZED BREP",
+    });
+    const file = await encodeProjectFile({
+      project: {
+        format: "maliev-scanforge",
+        version: 1,
+        units: "mm",
+        name: "Saved",
+        entities: [saved],
+      },
+      history: [{ label: "Earlier", entities: [saved] }],
+      future: [{ label: "Redo", entities: [saved] }],
+    });
+    vi.mocked(listBackups).mockResolvedValue([
+      { id: "existing", name: "Saved", savedAt: 1, file },
+    ]);
+    try {
+      let args: Record<string, unknown> = { backupId: "existing" };
+      if (operation === "project_import") {
+        const uploaded = await api.invoke("artifact_put", {
+          name: "saved.scanforge",
+          offset: 0,
+          base64: Buffer.from(await file.arrayBuffer()).toString("base64"),
+        });
+        expect(uploaded.ok).toBe(true);
+        if (!uploaded.ok) throw Error("Project fixture upload failed");
+        args = {
+          artifactId: (uploaded.result as { artifactId: string }).artifactId,
+        };
+      }
+      const started = await api.invoke(operation, {
+        ...args,
+        replace: true,
+        expectedRevision: api.currentRevision(),
+        requestId: "saved-cad-restore",
+      });
+      expect(started.ok).toBe(true);
+      await vi.waitFor(() => expect(state.entities).toHaveLength(1));
+      for (const restored of [
+        state.entities[0],
+        state.history[0].entities[0],
+        state.future[0].entities[0],
+      ]) {
+        expect(Array.from(restored.positions)).toEqual(saved.positions);
+        expect(Array.from(restored.normals!)).toEqual(saved.normals);
+        expect(Array.from(restored.edgePositions!)).toEqual(
+          saved.edgePositions,
+        );
+        expect(restored.brep).toBe(saved.brep);
+        expect(restored.kernelId).toBe("fresh");
+      }
+      expect(importBrep).toHaveBeenCalledTimes(1);
+    } finally {
+      api.dispose();
+    }
+  },
+);
 function setup() {
   const state: WorkspaceSnapshot = {
     projectId: "existing",

@@ -513,6 +513,13 @@ Never infer that an operation succeeded from a status message or transport succe
 
 Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Source geometry, scanner normals, selections and undo/redo history remain intact. Indexed display buffers borrow stored computed normals; older active indexed meshes initialize absent computed normals from their topology. See `docs/PROJECT_LOAD_PERFORMANCE.md` for earlier measurements and limits.
 
+Exact CAD restoration refreshes kernel handles from saved BREP while retaining
+the saved positions, normals, edge buffers and BREP in current, undo and redo
+states. Reopening does not replace those buffers with a fresh tessellation or
+reserialization. Identical BREP seeds reuse one restored handle; the restore
+cache retains handles only. GUI opening, `project_import` and `backup_restore`
+preserve the same saved values.
+
 GUI Save, automatic backup and MCP `project_export` share concurrent encoding of
 the same immutable snapshot. Each caller retains its own cancellation: cancelling
 one export leaves another caller's backup running; the last cancellation retires

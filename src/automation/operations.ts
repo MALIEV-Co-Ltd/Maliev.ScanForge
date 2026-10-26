@@ -470,23 +470,25 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         cad = new CadClient();
       let transferred = false;
       try {
-        const cache = new Map<string, KernelMesh>();
+        const cache = new Map<string, string>();
         const restore = async (entities: Entity[]) => {
           const restored: Entity[] = [];
           for (const e of entities) {
             abort(c.signal);
-            let output: KernelMesh | undefined;
+            let kernelId: string | undefined;
             if (e.brep) {
-              output = cache.get(e.brep);
-              if (!output) {
-                output = await cad.importFile(
+              kernelId = cache.get(e.brep);
+              if (!kernelId) {
+                const output = await cad.importFile(
                   new TextEncoder().encode(e.brep),
                   "brep",
                 );
-                cache.set(e.brep, output);
+                kernelId = output.kernelId;
+                cache.set(e.brep, kernelId);
               }
             }
-            restored.push({ ...e, ...output });
+            // Rehydrate native ownership without replacing the saved exact/display data.
+            restored.push(kernelId ? { ...e, kernelId } : e);
           }
           return restored;
         };
