@@ -1398,6 +1398,7 @@ MCP publishes a replacement or model revision. The retained worker keeps its
 canonical geometry and returns no duplicate successor buffer for that result.
 Successful patch publication allocates one Float32 successor and creates
 successor adjacency only after a patch is accepted.
+
 ## Exact CAD restoration
 
 Project/backup restore rehydrates exact BREP into a separate CadClient before
