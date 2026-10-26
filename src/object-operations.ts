@@ -105,13 +105,17 @@ export function objectPickable(
   return !entity.locked && entity.selectable !== false;
 }
 
+export function objectDuplicateSupported(entity: Entity | undefined): boolean {
+  return !!entity && !isReferenceEntity(entity);
+}
+
 /** Copy geometry and metadata without duplicating a parametric feature identity. */
 export function duplicateObject(
   source: Entity,
   id: string,
   entities: Entity[],
 ): Entity {
-  if (isReferenceEntity(source))
+  if (!objectDuplicateSupported(source))
     throw new Error("Reference construction duplication is not yet supported.");
   const constructionOrderKey =
     source.constructionOrderKey === undefined

@@ -233,6 +233,59 @@ try {
     }
     throw Error("Geometry job failed to settle");
   }
+  async function unavailableReferenceDuplicate(entityId) {
+    const object = (await call("object_get", { entityId })).result;
+    const objects = (await call("project_get")).result.objects;
+    const index = objects.findIndex((row) => row.id === entityId);
+    assert(index >= 0);
+    await page
+      .locator(".objects-panel > .object-list > li")
+      .nth(index)
+      .getByRole("button", { name: object.name, exact: true })
+      .click({ button: "right" });
+    const menu = page.getByRole("menu", {
+      name: "Object actions",
+      exact: true,
+    });
+    assert(
+      await menu
+        .getByRole("menuitem", { name: "Duplicate", exact: true })
+        .isDisabled(),
+    );
+    assert.equal((await call("project_get")).result.selectedId, entityId);
+    await page.screenshot({
+      path: fileURLToPath(
+        new URL(`duplicate-unavailable-${entityId}.png`, artifactDir),
+      ),
+    });
+    await page.keyboard.press("Escape");
+    const before = await call("project_get");
+    const response = await client.callTool({
+      name: "object_duplicate",
+      arguments: {
+        entityId,
+        expectedRevision: before.revision,
+        requestId: randomUUID(),
+      },
+    });
+    const wire =
+      response.structuredContent ?? JSON.parse(response.content[0].text);
+    assert.equal(wire.ok, false, JSON.stringify(wire));
+    assert.equal(wire.error.code, "OPERATION_FAILED");
+    assert.equal(
+      wire.error.message,
+      "Reference construction duplication is not yet supported.",
+    );
+    assert.deepEqual(await call("project_get"), before);
+    ledger.referenceDuplicateGuards ??= [];
+    ledger.referenceDuplicateGuards.push({
+      entityId,
+      kind: object.kind,
+      guiDuplicateDisabled: true,
+      mcpRejection: wire.error,
+      revisionAndHistoryPreserved: true,
+    });
+  }
 
   console.log("paired");
   assert(discovered.tools.some((tool) => tool.name === "reference_construct"));
@@ -286,6 +339,7 @@ try {
   const pointId = scene.objects[0].id;
   const point = (await call("object_get", { entityId: pointId })).result;
   assert(point.reference, JSON.stringify(point));
+  await unavailableReferenceDuplicate(pointId);
   await mutate("history_undo", {});
   assert.equal((await call("project_get")).result.objects.length, 0);
   await mutate("history_redo", {});
@@ -332,6 +386,7 @@ try {
     entityIds: [axisObject.id],
     name: "M4 line",
   });
+  await unavailableReferenceDuplicate(axisObject.id);
   assert.equal((await call("project_get")).result.objects.length, 2);
   console.log("GUI finite axis equals MCP typed line preview and applied");
   const saved = await job(await call("project_export", { format: "project" }));
@@ -447,6 +502,7 @@ try {
     (await inspectMidpoint()).sourceBindings[0].status,
     "identity-matched",
   );
+  await unavailableReferenceDuplicate(midpointId);
   async function rejectMutation(name, args) {
     const state = await call("project_get");
     const reply = await client.callTool({
@@ -2663,6 +2719,7 @@ try {
     "MCP point Preview/Cancel",
     "equal GUI/MCP numeric point preview",
     "GUI Apply and MCP object inspection",
+    "disabled GUI Duplicate and atomic public MCP rejection for numeric and derived references",
     "MCP Undo/Redo",
     "MCP finite line preview/edit Apply and equal GUI finite-axis creation",
     "actual project worker export/import preserving semantic IDs and history",

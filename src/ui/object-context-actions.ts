@@ -1,4 +1,5 @@
 import type { Entity } from "../types";
+import { objectDuplicateSupported } from "../object-operations";
 import type { ContextAction } from "./ContextMenu";
 
 export function objectContextActions(
@@ -22,7 +23,11 @@ export function objectContextActions(
       disabled: blocked || entity?.locked || entity?.selectable === false,
       run: handlers.properties,
     },
-    { label: "Duplicate", disabled: blocked, run: handlers.duplicate },
+    {
+      label: "Duplicate",
+      disabled: blocked || !objectDuplicateSupported(entity),
+      run: handlers.duplicate,
+    },
     { label: "Rename…", disabled: blocked, run: handlers.rename },
     {
       label: entity?.visible ? "Hide object" : "Show object",

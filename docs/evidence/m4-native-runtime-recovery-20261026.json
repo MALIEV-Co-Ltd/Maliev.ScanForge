@@ -50,8 +50,8 @@
     "sourceSha256ReverifiedAfterExit": true,
     "cleanupErrors": []
   },
-  "scope": "R13 and R15 confirm original-native desktop input and fixture reopening; R14 failed before modeling. R15 adds midpoint acceptance, a fresh saved QSF and reopening with both history objects. Reopened recipe fields, source-edit persistence, copy/transform policy, native controller parity and complete M4 acceptance remain unverified.",
-  "latestAttempt": {
+  "scope": "R13/R15/R16 confirm original-native desktop input and fixture reopening; R14 failed before modeling. R16 verifies the saved midpoint recipe, source-line endpoint edit, dependent midpoint recomputation from 5 to 10 mm, and edited native save/reopen with recipe/source preserved. Copy/transform policy, other source families and mode/degeneracy cases, native controller parity and complete M4 acceptance remain open.",
+  "priorSuccessfulAttempt": {
     "session": "R15",
     "startedUtc": "2026-10-26T10:24:50.881280Z",
     "finishedUtc": "2026-10-26T10:31:24.013174Z",
@@ -82,5 +82,53 @@
     "watchdogStopped": true,
     "sourceSha256ReverifiedAfterExit": true,
     "cleanupErrors": []
+  },
+  "latestAttempt": {
+    "session": "R16",
+    "startedUtc": "2026-10-26T10:59:58.056258Z",
+    "finishedUtc": "2026-10-26T11:05:37.112731Z",
+    "inputQsfSha256": "bffef12394b8f8c53cf7fbd2321cf5c360087855d112d15c2abcb16f4f32c8a9",
+    "inputQsfUnchanged": true,
+    "observations": [
+      "Reopened the R15 midpoint fixture; native Point editor displayed Line Middle Point, source Ref. Line(1) and XYZ(5,0,0).",
+      "Changed the source line endpoint X from 10 to 20 with actual keyboard input and accepted Length 20 mm.",
+      "Reopened the dependent Point editor; it displayed XYZ(10,0,0) while retaining Line Middle Point and Ref. Line(1).",
+      "Saved a fresh m4-midpoint-source-edit-20.qsf, reopened it, and verified the Point editor still displayed XYZ(10,0,0), Line Middle Point and Ref. Line(1).",
+      "Inspected point History/Objects and line Objects context menus, and the Edit/View ribbon. No Copy or Transform command appeared in those inspected surfaces; this does not establish universal command absence or copy/transform policy."
+    ],
+    "outputQsf": {
+      "name": "m4-midpoint-source-edit-20.qsf",
+      "bytes": 754,
+      "sha256": "c0400357e1d74c7cc9b326ae7c3153804e6b4a9a3d61ad825b221683cd84a4cd"
+    },
+    "reopenedRecipeFieldsVerified": true,
+    "sourceEditVerified": true,
+    "editedConstructionReopened": true,
+    "copyTransformPolicyVerified": false,
+    "stopReason": "authenticated-finish",
+    "elapsedSeconds": 339.3102565999725,
+    "peakJobBytes": 668721152,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "processAndThreadHandlesClosed": true,
+    "watchdogStopped": true,
+    "sourceSha256ReverifiedAfterExit": true,
+    "cleanupErrors": [],
+    "storedDataReadback": {
+      "method": "Read-only strict captured-v4 line/point collection parser; complete index tables, exact record spans and EOF verified. No native execution or QSF writing.",
+      "lineStartXYZ": [0, 0, 0],
+      "lineEndXYZ": [20, 0, 0],
+      "pointXYZ": [10, 0, 0],
+      "lineEndXFloat64BitsLE": "0000000000003440",
+      "pointXFloat64BitsLE": "0000000000002440",
+      "reciprocalSourceAndDependentIdentities": true,
+      "sameObjectIdentitiesAsR15": true,
+      "lineRecordCount": 2,
+      "lineRecordSourceIdentitiesAllZero": true,
+      "rawPointMode": 3,
+      "rawPointSubmode": 0,
+      "uninterpretedPointField2c0": 404,
+      "scope": "Stored-file data corroborates the separate native UI source-edit/save-reopen observations; the parser alone does not prove native recomputation or full native file-format support."
+    }
   }
 }

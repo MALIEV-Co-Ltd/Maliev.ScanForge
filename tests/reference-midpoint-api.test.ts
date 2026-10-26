@@ -19,6 +19,7 @@ import {
   parseProject,
 } from "../src/io";
 import type { Entity } from "../src/types";
+import { objectContextActions } from "../src/ui/object-context-actions";
 
 const apis: ApplicationApi[] = [];
 afterEach(() => {
@@ -132,6 +133,49 @@ async function createMidpoint(h: ReturnType<typeof setup>) {
   );
   return { preview, result };
 }
+it("disables unavailable reference duplication in the GUI and rejects it through MCP without changing history", async () => {
+  const h = setup();
+  await createMidpoint(h);
+  h.commit.mockClear();
+  const before = h.state.entities;
+  const history = [...h.state.history];
+  const revision = h.api.currentRevision();
+  const handlers = {
+    properties: vi.fn(),
+    duplicate: vi.fn(),
+    rename: vi.fn(),
+    visibility: vi.fn(),
+    selectable: vi.fn(),
+    lock: vi.fn(),
+    edit: vi.fn(),
+    remove: vi.fn(),
+  };
+  for (const entity of before) {
+    expect(
+      await h.api.invoke("object_duplicate", {
+        entityId: entity.id,
+        expectedRevision: revision,
+        requestId: crypto.randomUUID(),
+      }),
+    ).toMatchObject({
+      ok: false,
+      revision,
+      error: {
+        code: "OPERATION_FAILED",
+        message: "Reference construction duplication is not yet supported.",
+      },
+    });
+    expect(
+      objectContextActions(entity, false, handlers).find(
+        (action) => action.label === "Duplicate",
+      )?.disabled,
+    ).toBe(true);
+  }
+  expect(h.state.entities).toBe(before);
+  expect(h.state.history).toEqual(history);
+  expect(h.api.currentRevision()).toBe(revision);
+  expect(h.commit).not.toHaveBeenCalled();
+});
 it("publishes only a successful semantic-line midpoint with active provenance and no source migration", async () => {
   const h = setup();
   const source = h.state.entities[0];

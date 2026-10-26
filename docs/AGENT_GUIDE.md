@@ -1096,29 +1096,36 @@ identity. GUI duplication uses the same operation. Project save/reopen and model
 Undo/Redo preserve these keys, and duplicate or malformed keys within one scene
 are rejected. Keys may recur across different history states for the same object.
 
-Typed point/line references save and reopen through GUI project opening,
-MCP `project_import` and `backup_restore`, including current, Undo and Redo states.
-Single-source midpoint definitions referencing a semantic stored endpoints line
-are also admitted. Other source-derived definitions and unresolved common sources
-remain gated at that shared boundary. Rejection preserves the open workspace;
-changing version tags or removing semantic metadata is not a migration.
+Semantic reference-point and reference-line duplication is currently unavailable:
+the GUI disables Duplicate, and `object_duplicate` returns `OPERATION_FAILED`
+without changing the model, revision or history. This availability guard does
+not complete the remaining native duplication/link-policy work.
+
+Typed and supported source-derived point/line references save and reopen through
+GUI project opening, MCP `project_import` and `backup_restore`, including current,
+Undo and Redo states. Midpoint, center/pair/three-plane point and pair/average line
+modes use the source eligibility documented for `reference_construct` and
+`reference_construction_sources`. Unsupported input families and unresolved
+source bindings remain gated at that shared boundary. Rejection preserves the
+open workspace; changing version tags or removing semantic metadata is not a
+migration.
 
 The internal cached-session core now checks versions and a 60-second lease and
-consumes an exact cached Apply proposal. The public typed/midpoint commands wrap
-this core; other source families remain gated. See
+consumes an exact cached Apply proposal. The advertised `reference_construct`
+modes wrap this core; unsupported source families remain gated. See
 [session evidence](evidence/reference-construction-session-20261024.json).
 
 The internal workspace binding preserves selection-only changes while retiring
 cached results after model/history changes. It follows immutable geometry-carrier
 publication and compares precise reference payloads through the lossless codec;
 it does not hash scan buffers or admit additional native source families. The
-typed/midpoint operations use this binding. See
+construction operations use this binding. See
 [binding evidence](evidence/reference-construction-binding-20261024.json).
 
 An internal host preview owner now supplies timer expiry, owner-scoped release,
 display-restoration failure handling and cleanup-pending diagnostics after a
 committed Apply. Its callbacks now reach the production viewport and stable host
-proxy, and the typed/midpoint commands share this owner. See
+proxy, and the advertised construction modes share this owner. See
 [owner evidence](evidence/reference-construction-preview-20261024.json) and
 [adapter evidence](evidence/reference-preview-adapter-20261024.json).
 
