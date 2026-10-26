@@ -22,8 +22,9 @@ owned session imported/saved the connected scan region with verified cleanup
 failed before acceptance. A second owned session accepted the native fit and
 exported actual QSF/STEP; the measured comparison below shows a fitting gap.
 The native operation matrix and M4 acceptance remain incomplete.
-The next fresh native session was blocked before input by Windows AccessDenied;
-its cleanup passed, but native thickening remains unverified (receipt below).
+Session r3 was blocked before input by Windows AccessDenied. After the user's
+current readiness confirmation and a CUA runtime reset, r4 accepted native
+thickening and saved a QSF; STEP export and analytic comparison remain pending.
 Local checks are retained below; M5 is not merged or closed.
 
 ## Operation matrix
@@ -40,6 +41,30 @@ Local checks are retained below; M5 is not merged or closed.
 | Resources                                               | Existing admission guards, owned browser/MCP process leases                           | Successful browser replays verified browser/server exit and bridge closure; port 5173 preserved. Failed receipts retained. Full workflow peak and failure/timeout/cancellation gates remain open.                                                                   |
 
 ## Candidate history and validation
+
+### Native solid session r4: accepted thickness and saved QSF
+
+The [r4 receipt](evidence/m5-20261025/native-thicken-r4.json) records restored
+input capability in a fresh owned instance. The saved native fitted surface was
+reopened, isolated from the scan and selected in the viewport. Tree focus alone
+did not enable surface modeling. Native Thicken used default Depth1=0.1mm,
+Depth2 disabled and the middle one-sided direction icon. Accepting it produced
+`Solids(1) / [1] Thicken(1)` and history `Thicken(1) (Solid)`.
+
+Save As created `m5-native-thickened-0p1.qsf`,139,145bytes, SHA-256
+`d60588900e6720e9acb641489db9363753c1bd214c87f8dfe4f7ffea74bf223c`.
+The previous fitted QSF remains byte-identical. The save completed at01:08:28.660UTC,
+slightly after the planned01:08:27input-stop reserve. Scheduled owned finish
+occurred at01:08:42.616; the later export-ribbon attempt reported no foreground
+PID, so no further input followed. Next captures must check the clock before
+each UI batch and reserve30seconds for cleanup.
+
+Actual scheduled cleanup passed: zero active Job processes, owned process exited,
+handles closed, watchdog stopped, no errors; peak669,134,848bytes under4GiB/25%.
+The original three windows remained present. The session ended before STEP
+export. This proves native acceptance/save only; signed-normal interpretation,
+exact solid topology/properties and comparison remain unverified. Export from
+this saved QSF is queued for a later explicitly granted owned session.
 
 ### Native solid session r3: desktop input blocked
 
