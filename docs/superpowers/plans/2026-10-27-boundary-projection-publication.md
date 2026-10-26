@@ -34,7 +34,9 @@
 
 ## Task 2: Rendered lifecycle and integration
 
-- [ ] Build immutable candidate, all13TypeScript batches, no warnings, source identities unchanged.
-- [ ] Verify selected/all projection through GUI/publicMCP, default read-only report, identical sketches/frames/IDs ownership, source isolation, active/unrelated sketches, undo/redo/seek, job cancellation and binary reopening.
-- [ ] Record exact receipts, output/build/source/driver digests, screenshots and cleanup, retaining failed attempts.
-- [ ] Commit/push coherent repair, update PR18/issue2, fast-forward clean live preview and preserve scene/history. Native comparisons and full-M2 final review/CI/merge remain separate gates.
+- [x] Build immutable candidate, all13TypeScript batches, no warnings, source identities unchanged.
+- [x] Verify selected/all projection through GUI/publicMCP, default read-only report, identical sketches/frames/IDs ownership, source isolation, active/unrelated sketches, undo/redo/seek, job cancellation and binary reopening.
+- [x] Record exact receipts, output/build/source/driver digests, screenshots and cleanup, retaining failed attempts.
+- [x] Commit/push coherent repair, update PR18/issue2, fast-forward clean live preview and preserve scene/history. Native comparisons and full-M2 final review/CI/merge remain separate gates.
+
+Task 2 completion applies to this projection repair only. M2 and PR #18 remain open/draft/unmerged pending native inventory comparisons, remaining processing lifecycles, full-candidate review and final integrated CI.

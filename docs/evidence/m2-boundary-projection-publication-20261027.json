@@ -546,5 +546,39 @@
     "Installed-native boundary smoothing/projection outputs and native settings/lifecycle",
     "Other M2 inventory acceptance gates",
     "Final whole-candidate review, exact-head CI and main merge"
-  ]
+  ],
+  "publicationCommit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+  "task1Done": {
+    "label": "m2-boundary-projection-task1-done-20261027-r1",
+    "passed": 143,
+    "failed": 0,
+    "receipt": "project-index-validation-m2-boundary-projection-task1-done-20261027-r1-mirror-focused.receipt.json"
+  },
+  "precedingCI": {
+    "commit": "4badead401b7beab8fc684c71b268ebc8391a410",
+    "run": 40366607530,
+    "job": 121725920058,
+    "conclusion": "success",
+    "testsPassed": 49901,
+    "testsSkipped": 64,
+    "testFilesPassed": 717,
+    "testFilesSkipped": 18,
+    "build": true,
+    "cad": true,
+    "cadCurvature": true,
+    "format": true
+  },
+  "integrationCheckpoint": {
+    "liveUrl": "http://127.0.0.1:5174/",
+    "liveCommit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+    "scenePreserved": "Existing base-scan.stl, two facets, timeline two with Scale mesh retained after fast-forward; IABtab7/ownedVite51664 stayed open.",
+    "pr": 18,
+    "issue": 2,
+    "state": "open/draft/unmerged",
+    "latestCI": {
+      "commit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+      "run": 40368918217,
+      "status": "in_progress_at_recording"
+    }
+  }
 }

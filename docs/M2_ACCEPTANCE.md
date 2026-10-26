@@ -2,7 +2,7 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-Latest confirmed green full hosted checkpoint `a831a21` passes [run 40361910539](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40361910539): 49,897 tests, 64 conditional skips, 717 passing files, 18 skipped files, build, both CAD smoke checks and formatting. The noise publication/comparison correction and separate current component lifecycle scope are recorded below.
+Latest confirmed green full hosted checkpoint `4badead` passes [run 40366607530](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40366607530): 49,901 tests, 64 conditional skips, 717 passing files, 18 skipped files, build, both CAD smoke checks and formatting. Projection publication at `6d01346` has separate scoped validation below; its exact-head CI remains required.
 
 Flat Bridge checkpoint `242ea74` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40318500393):
 49,325 tests, 64 conditional skips, production build, both CAD smoke checks and
