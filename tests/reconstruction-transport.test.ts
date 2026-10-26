@@ -245,3 +245,153 @@ it("rejects ambiguous typed and legacy targets before worker creation", async ()
   ).rejects.toThrow(/one.*representation/);
   expect(WorkerDouble.instances).toHaveLength(0);
 });
+
+it.each([true, false])(
+  "preserves native indexed normal carriers with shared=%s without detaching authored buffers",
+  async (borrow) => {
+    const floats = () => (borrow ? shared() : Float32Array.from(values));
+    const topology = () => {
+      const triangles = borrow
+        ? new Uint32Array(new SharedArrayBuffer(12))
+        : new Uint32Array(3);
+      triangles.set([0, 1, 2]);
+      return {
+        vertices: floats(),
+        triangles,
+        normals: floats(),
+        geometryNormals: floats(),
+        facetNormals: floats().subarray(0, 3),
+      };
+    };
+    const source = floats(),
+      target = floats();
+    const sourceTopology = topology(),
+      targetTopology = topology();
+    const pending = processMesh({
+      kind: "scanTools",
+      positions: source,
+      operation: {
+        kind: "repolygonize",
+        method: "native",
+        targets: [target],
+        sourceTopology,
+        targetTopology: [targetTopology],
+      },
+    });
+    const worker = await started(),
+      delivered = worker.delivered;
+    if (
+      delivered?.kind !== "scanTools" ||
+      delivered.operation.kind !== "repolygonize"
+    )
+      throw Error("Wrong request");
+    expect(worker.transfers).toHaveLength(borrow ? 2 : 12);
+    for (const [original, result] of [
+      [sourceTopology, delivered.operation.sourceTopology],
+      [targetTopology, delivered.operation.targetTopology?.[0]],
+    ] as const) {
+      expect(result).toBeDefined();
+      for (const key of [
+        "vertices",
+        "normals",
+        "geometryNormals",
+        "facetNormals",
+      ] as const) {
+        const before = original[key],
+          after = result![key] as Float32Array;
+        expect(after).toEqual(before);
+        expect(after.buffer).toBeInstanceOf(
+          borrow ? SharedArrayBuffer : ArrayBuffer,
+        );
+        expect(before.byteLength).toBe(key === "facetNormals" ? 12 : 36);
+        if (borrow) expect(after.byteOffset).toBe(before.byteOffset);
+      }
+      expect(result!.triangles).toEqual(new Uint32Array([0, 1, 2]));
+      expect((result!.triangles as Uint32Array).buffer).toBeInstanceOf(
+        ArrayBuffer,
+      );
+      expect(original.triangles.byteLength).toBe(12);
+      expect(original.triangles).toEqual(new Uint32Array([0, 1, 2]));
+    }
+    if (
+      worker.sent?.kind !== "scanTools" ||
+      worker.sent.operation.kind !== "repolygonize"
+    )
+      throw Error("Wrong sent request");
+    expect(
+      worker.sent.operation.sourceTopology!.vertices ===
+        sourceTopology.vertices,
+    ).toBe(borrow);
+    expect(
+      worker.sent.operation.sourceTopology!.facetNormals ===
+        sourceTopology.facetNormals,
+    ).toBe(borrow);
+    worker.complete();
+    await pending;
+    expect(worker.terminated).toBe(true);
+    expect(source).toEqual(Float32Array.from(values));
+    expect(target).toEqual(Float32Array.from(values));
+  },
+);
+
+it("rejects oversized native indexed payload before any clone or worker", async () => {
+  const unread = new Proxy<number[]>([], {
+    get(_target, key) {
+      if (key === "length") return 150_000_000;
+      throw Error("Indexed scalar read before admission");
+    },
+  });
+  await expect(
+    processMesh({
+      kind: "scanTools",
+      positions: shared(),
+      operation: {
+        kind: "repolygonize",
+        method: "native",
+        sourceTopology: {
+          vertices: unread,
+          triangles: new Uint32Array([0, 1, 2]),
+        },
+      },
+    }),
+  ).rejects.toThrow(/topology exceeds 256 MiB/);
+  expect(WorkerDouble.instances).toHaveLength(0);
+});
+
+it("rejects explicit native point inputs before creating a worker", async () => {
+  await expect(
+    processMesh({
+      kind: "scanTools",
+      positions: shared().subarray(0, 3),
+      operation: {
+        kind: "repolygonize",
+        inputKind: "points",
+        method: "native",
+      },
+    }),
+  ).rejects.toThrow(/triangle meshes/);
+  expect(WorkerDouble.instances).toHaveLength(0);
+});
+
+it("rejects an invalid typed record kind before cloning or creating a worker", async () => {
+  let failure: unknown;
+  const pending = processMesh({
+    kind: "scanTools",
+    positions: shared(),
+    operation: {
+      kind: "repolygonize",
+      inputKind: "invalid" as "triangles",
+    },
+  }).catch((error) => {
+    failure = error;
+  });
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+  try {
+    expect(WorkerDouble.instances).toHaveLength(0);
+    expect(failure).toBeInstanceOf(Error);
+    expect((failure as Error).message).toMatch(/complete triangles/);
+  } finally {
+    for (const worker of WorkerDouble.instances) worker.complete();
+    await pending;
+  }
+});

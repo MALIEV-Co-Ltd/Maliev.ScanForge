@@ -1,4 +1,4 @@
-import type { Positions } from "./types";
+import type { IndexedMesh, Positions } from "./types";
 
 export const RECONSTRUCTION_MAX_INPUT_COORDINATES = 500_000_000;
 export const RECONSTRUCTION_MAX_PRIVATE_BYTES = 256 * 1024 * 1024;
@@ -78,4 +78,66 @@ export function admitReconstructionInputs(
     borrowShared,
   );
   return { coordinates, triangles, privateBytes };
+}
+
+/** Native indexed descriptors share the pre-clone numeric transport budget. */
+export function admitReconstructionTransport(
+  inputs: readonly Positions[],
+  topology: readonly (IndexedMesh | undefined)[],
+  borrowShared = true,
+) {
+  const admitted = admitReconstructionInputs(inputs, borrowShared);
+  if (topology.length !== inputs.length)
+    throw Error("Reconstruction topology references must match its inputs.");
+  let privateBytes = admitted.privateBytes;
+  for (let i = 0; i < topology.length; i++) {
+    const mesh = topology[i];
+    if (!mesh) continue;
+    if (
+      !(
+        Array.isArray(mesh.vertices) || mesh.vertices instanceof Float32Array
+      ) ||
+      !(
+        Array.isArray(mesh.triangles) || mesh.triangles instanceof Uint32Array
+      ) ||
+      !Number.isSafeInteger(mesh.vertices.length) ||
+      !mesh.vertices.length ||
+      mesh.vertices.length % 3 ||
+      !Number.isSafeInteger(mesh.triangles.length) ||
+      mesh.triangles.length * 3 !== inputs[i].length
+    )
+      throw Error(
+        "Reconstruction indexed carriers do not match the source dimensions.",
+      );
+    const arrays: Positions[] = [mesh.vertices];
+    for (const [normal, length] of [
+      [mesh.normals, mesh.vertices.length],
+      [mesh.geometryNormals, mesh.vertices.length],
+      [mesh.facetNormals, mesh.triangles.length],
+    ] as const) {
+      if (normal === undefined) continue;
+      if (
+        !(Array.isArray(normal) || normal instanceof Float32Array) ||
+        !Number.isSafeInteger(normal.length) ||
+        normal.length !== length
+      )
+        throw Error(
+          "Reconstruction indexed normal carriers have invalid dimensions.",
+        );
+      arrays.push(normal);
+    }
+    // Indices are always copied into a dedicated transferable Uint32Array.
+    let bytes = mesh.triangles.length * 4;
+    for (const array of arrays)
+      bytes +=
+        borrowShared && isBorrowableReconstructionInput(array)
+          ? 0
+          : array.length * (array instanceof Float32Array ? 4 : 8);
+    if (bytes > RECONSTRUCTION_MAX_PRIVATE_BYTES - privateBytes)
+      throw Error(
+        "Reconstruction private numeric transport payload including topology exceeds 256 MiB.",
+      );
+    privateBytes += bytes;
+  }
+  return { ...admitted, privateBytes };
 }

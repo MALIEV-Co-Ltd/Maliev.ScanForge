@@ -4,28 +4,53 @@ The reference application's shipped `QSHelp.pdf` documents **Reference Mesh > Ed
 
 ## ScanForge workflow
 
-- For boundary repair, open **Edit scan > Holes**, leave maximum diameter at **0** to include every closed boundary, and choose **Fill multiple holes**. Invalid boundaries may be skipped; open chains and nonmanifold defects need separate repair. This command already existed.
-- For reconstruction, select a raw mesh and open **Scan Data > Re-polygonize**. Optionally check additional aligned mesh objects. Set Point resolution in millimetres and Apply. The selected mesh is replaced in one undoable history step; additional inputs are retained unchanged. Original scans should be aligned first.
-- Successful reconstruction now includes a measured topology check: no boundary edges, nonmanifold edges/vertices, inconsistent winding, duplicate faces or degenerate triangles. Disconnected regions can remain separate closed components; the result reports their count. This is a topological closure check, not a self-intersection or manufacturing certificate.
-- The existing independent voxel algorithm samples a shell about 0.75 times the resolution, fills enclosed cavities and extracts its surface. Small gaps/features can merge; open sheets become thick shells. It does not reproduce the native numerical kernel. Large holes are not guaranteed to preserve their intended interior surface.
-- Limits are one billion grid points, 500 million input coordinates, 256 MiB of logical private numeric transport payload, 16 million output triangles and at most 32 additional meshes. Float32 shared-buffer inputs are borrowed read-only by a disposable worker; ordinary Float32 and numeric-array inputs retain private copies, charged per view at four and eight bytes per coordinate respectively. The transport payload limit is not a process memory bound. Sampling has a 500-million-candidate work budget and exterior flooding has a bounded frontier. Increase point resolution when the grid limit is exceeded. Cancellation, validation errors and verification failures leave the workspace unchanged.
+For boundary repair, use **Edit scan > Holes > Fill multiple holes**. Maximum diameter 0 includes every eligible closed boundary; open chains and nonmanifold defects require separate decisions. Boundary repair and reconstruction remain distinct operations.
 
-MCP uses the same binding, worker and verification.
+For reconstruction, select a raw scan and open **Scan Data > Re-polygonize**. The **Reconstruction method** choices are **Native field** and **Closed voxel shell**. Both use the same public `mesh_process` executor, disposable worker, revision/retry checks, cancellation and history commit as MCP. Align original scans first and inspect the returned diagnostics.
 
-GUI Apply now submits the same public `mesh_process` job as MCP, including its disposable worker and single model commit. The previous GUI-only retained reconstruction output copy is removed. See [shared-job validation](RECONSTRUCTION_JOB_VALIDATION.md) for geometry/history parity, cancellation, worker failure and measured cleanup; this does not raise the input limit or establish full original-three reconstruction. For example:
+| Method   | Inputs and default                                                                                    | Result policy                                                                                                                                                                                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `native` | Default for all-mesh input; explicit native rejects clouds                                            | Signed field, ordered extraction/repair and enabled half-count optimization. Creates/selects a new mesh and hides unchanged inputs by default. Open boundaries, nonmanifold edges and multiple components are reported rather than rejected as a false closed-solid promise. |
+| `voxel`  | Default when the source or selected references include a cloud; can be selected explicitly for meshes | Existing offset occupancy envelope, filling, extraction and closed-topology verification. Replaces the source unless `createNew:true`. Separate closed components may remain.                                                                                                |
+
+Native omitted top-level `targetIds` discovers eligible visible raw meshes in workspace order. `targetIds:[]` explicitly reconstructs only the source. Explicit native IDs are also computed in workspace order. Voxel retains explicit ordered additional mesh/cloud IDs; omit the field for source alone and do not provide an empty array. Up to 32 distinct additional IDs may be supplied, excluding the source. CAD requires an explicit mesh copy. The operation resolves buffers and entity kinds from the workspace; callers cannot inject `sourceTopology`, `targetTopology`, private geometry arrays or native cached state.
+
+Native `createNew:false` replaces the **requested** source owner, even when ordered field computation begins with another input. Otherwise all input geometry is preserved and input visibility changes atomically with the new owner. Locked inputs cannot participate in a hide transaction. Undo/Redo, timeline navigation, file/project import and backup restoration retain the modeling visibility transaction through trusted internal history metadata. It is not an agent-editable field. Failed validation, cancellation and worker failure preserve the workspace; cancellation can race with terminal success, so inspect `job_get` and current state.
+
+For example, this requests a native single-source reconstruction and keeps its original owner:
 
 ```json
 {
   "entityId": "scan-a",
-  "targetIds": ["scan-b"],
+  "targetIds": [],
   "operation": {
     "kind": "scanTools",
-    "operation": { "kind": "repolygonize", "resolution": 0.5 }
+    "operation": {
+      "kind": "repolygonize",
+      "method": "native",
+      "resolution": 0.5
+    }
   }
 }
 ```
 
-Use normal `expectedRevision` and unique `requestId`, then poll `job_get`. Omit `targetIds` for one source. References must be distinct raw mesh workspace IDs, excluding the source; CAD requires an explicit mesh copy. `createNew:true` is available to agents. Results include `topology` counts and `diagnostics.watertight`, `inputMeshes`, `resolution`, `weldTolerance`, and `selfIntersectionsChecked:false`.
+Add normal `expectedRevision` and a unique `requestId`, then poll `job_get`. Omit `targetIds` to discover native mesh inputs, or provide explicit IDs to select them. Result diagnostics identify the reconstruction method and ordered input IDs, alongside topology and method-specific work. Use `object_geometry_digest` for full bounded carrier verification and `object_get(includeGeometry:true)` for an admitted geometry artifact. No new agent-only kernel is used.
+
+## Method-specific limits and geometry interpretation
+
+Shared admission permits up to 500 million input coordinates and 256 MiB logical private numeric transport payload, including native indexed descriptors. Ordinary Float32 views cost four bytes per value and numeric arrays eight; immutable shared Float32 views are borrowed read-only by a disposable worker. Payload admission is not a process-memory limit. Native field nodes, corners, candidates and output records have separate finite budgets; finalization and half-count reduction also check working-memory estimates before allocation. See `scan-native-repolygonize.ts` and the shared [memory validation record](RECONSTRUCTION_MEMORY_VALIDATION.md). Exceeding a budget fails atomically; increasing resolution is an explicit user/agent choice, never silent coarsening.
+
+Voxel retains one billion grid points, 500 million sampling candidates, 16 million output triangles and bounded frontier verification. Its mesh distance shell is approximately 0.75 times resolution. Every XYZ point uses radius `sqrt(0.75) * resolution`, scanner normals are ignored, and mixed inputs form one unsigned occupancy union. Open scans become offset shells; small gaps/features can merge and sparse scans can produce separate closed components. The sphere policy and complete point representation diagnostics are unchanged.
+
+Native may preserve open/nonmanifold characteristics that voxel closes. Neither method promises one component, registration convergence, a maximum-deviation tolerance, absence of self-intersections or manufacturing fitness. Resolution is sampling spacing. Independent full-surface distances, topology and intersection measurements must retain their actual input, output, method and source-build scopes. The 25% CPU / 4 GiB owned validation Job policy is separate from application admission and is not an accuracy guarantee.
+
+## Retained native comparison scope, current candidate pending
+
+Immutable M2 commit `6217bea` records an analyst-observed QUICKSURFACE Pro 8.0.123 import of all three fixed-pose STL-derived indexed PLY inputs in millimetres, Re-polygonize 0.500 mm with default simplification, and the binary STL export. The input pack contains 3,121,976 vertices and 6,147,452 triangles without subsampling. The retained export SHA-256 is `2d08d015b1b257c75a90f9457276c17fe16bc5812e104358567dcacece1c810d`; all 50,895 ordered facets have expanded Float32 corner-coordinate hash `e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2`. A separate 136-facet tilted-box control is retained.
+
+The full STL normal stream (152,685 Float32 components) independently matches `f32(f32(f32(n0+n1)+n2)/3)`, where the three vectors are angle-weighted computed vertex normals in triangle order; there is no final renormalization. These export vectors are distinct from `indexedMesh.facetNormals`, which stores geometric facet normals, and from imported scanner attributes. All STL attribute words are 0x2020; this records export metadata without inferring an opaque native owner field. The native export itself is open/nonmanifold: 4,189 boundary edges, 166 nonmanifold edges, 441 nonmanifold vertices, four duplicate faces and 140 components. Exact native parity must not be presented as a watertightness certificate.
+
+The committed analyst observation binds settings and file hashes. A separate raw native GUI action/process receipt has not been located, and the owner does not know the retained STL/QSF provenance. That uncertainty remains explicit; no user attestation, native session access or unknown QSF settings are invented. The newly integrated candidate still requires its own complete GUI/public-MCP coordinate, normal-carrier, ownership, history and persistence verification. **New-candidate native parity is pending.** Earlier voxel quality and lifecycle measurements below retain their original dates/methods; they do not establish this new method's acceptance.
 
 ## Native investigation, 2026-10-16
 

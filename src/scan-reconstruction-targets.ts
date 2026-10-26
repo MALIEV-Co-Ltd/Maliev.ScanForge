@@ -4,6 +4,69 @@ import {
   admitReconstructionRecords,
   type ReconstructionInput,
 } from "./scan-reconstruction-input";
+
+export type ReconstructionMethod = "native" | "voxel";
+
+export function nativeReconstructionReferences(
+  source: Entity,
+  entities: Entity[],
+) {
+  return entities.filter(
+    (e) =>
+      e.id !== source.id &&
+      e.visible &&
+      e.kind === "mesh" &&
+      !e.kernelId &&
+      !e.parametric &&
+      e.positions.length >= 9,
+  );
+}
+
+/** Keep implicit mesh/cloud behavior identical at the GUI and agent boundary. */
+export function reconstructionMethod(
+  source: Entity,
+  targets: Entity[],
+  requested?: ReconstructionMethod,
+): ReconstructionMethod {
+  if (
+    requested !== undefined &&
+    requested !== "native" &&
+    requested !== "voxel"
+  )
+    throw Error("Unknown reconstruction method.");
+  const points = [source, ...targets].some((e) => e.kind === "pointcloud");
+  if (requested === "native" && points)
+    throw Error(
+      "Native reconstruction requires triangle meshes; use voxel for point clouds.",
+    );
+  return requested ?? (points ? "voxel" : "native");
+}
+
+/** The native command enumerates eligible visible meshes in document order. */
+export function bindNativeReconstruction(
+  source: Entity,
+  targetIds: string[] | undefined,
+  entities: Entity[],
+) {
+  if (!source.visible)
+    throw Error("Native reconstruction requires a visible source mesh.");
+  const references =
+    targetIds === undefined
+      ? nativeReconstructionReferences(source, entities)
+      : targetIds.map((id) => {
+          const entity = entities.find((e) => e.id === id);
+          if (!entity)
+            throw Error("Reconstruction reference no longer exists.");
+          return entity;
+        });
+  reconstructionTargets(source, references);
+  const ids = new Set([source.id, ...references.map((e) => e.id)]);
+  const inputs = entities.filter((e) => ids.has(e.id));
+  if (!inputs.length || inputs.length !== ids.size)
+    throw Error("Reconstruction source no longer exists.");
+  return { source: inputs[0], references: inputs.slice(1), inputs };
+}
+
 /** Resolve additional read-only scans identically for GUI and MCP. */
 export function reconstructionTargets(
   source: Entity,

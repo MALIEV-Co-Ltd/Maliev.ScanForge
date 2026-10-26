@@ -91,7 +91,12 @@ it("routes GUI and MCP through identical multi-mesh reconstruction and diagnosti
   const gui = runScanTool(
     scanToolRequest(
       source,
-      { kind: "repolygonize", resolution: 0.5, targetIds: [target.id] },
+      {
+        kind: "repolygonize",
+        method: "voxel",
+        resolution: 0.5,
+        targetIds: [target.id],
+      },
       h.state.entities,
     ),
   );
@@ -111,7 +116,7 @@ it("routes GUI and MCP through identical multi-mesh reconstruction and diagnosti
       targetIds: [target.id],
       operation: {
         kind: "scanTools",
-        operation: { kind: "repolygonize", resolution: 0.5 },
+        operation: { kind: "repolygonize", method: "voxel", resolution: 0.5 },
       },
     },
     h.context,
@@ -142,7 +147,11 @@ it("rejects invalid MCP reconstruction references atomically", async () => {
           targetIds,
           operation: {
             kind: "scanTools",
-            operation: { kind: "repolygonize", resolution: 0.5 },
+            operation: {
+              kind: "repolygonize",
+              method: "voxel",
+              resolution: 0.5,
+            },
           },
         },
         h.context,

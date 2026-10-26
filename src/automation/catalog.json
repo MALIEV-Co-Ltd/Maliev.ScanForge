@@ -725,10 +725,15 @@
                           "type": "string",
                           "enum": ["repolygonize"]
                         },
+                        "method": {
+                          "type": "string",
+                          "enum": ["native", "voxel"],
+                          "description": "Defaults to native for all-mesh inputs and voxel when the source or selected targets include a point cloud. Explicit native rejects point-cloud inputs. Native uses the signed field, ordered repair and enabled half-count optimization; its output may remain open or nonmanifold. Voxel retains the closed occupancy-shell workflow. Method selection, input binding and ownership are shared by GUI and MCP."
+                        },
                         "resolution": {
                           "type": "number",
                           "exclusiveMinimum": 0,
-                          "description": "Sampling spacing in mm, default 0.5. Accepts raw meshes and XYZ point clouds, including mixed inputs. Point clouds use every XYZ point with radius sqrt(0.75) times spacing; scanner normals are not used. Produces a mesh; sparse scans may remain disconnected. Finer spacing preserves smaller details but is not a maximum-deviation tolerance. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload; immutable Float32 shared buffers are borrowed by a disposable worker. This payload limit is not a process memory bound. Surface-local sampling retains one billion grid points, 500 million sampling candidates and sixteen million output triangles; oversized work fails without changing geometry or silently coarsening resolution."
+                          "description": "Sampling spacing in mm, default 0.5; not a maximum-deviation tolerance. Native accepts raw meshes with independent signed-field/finalization/optimization working budgets and reports open or nonmanifold topology without claiming watertightness. Voxel accepts raw meshes and XYZ point clouds, including mixed inputs; every XYZ point uses radius sqrt(0.75) times spacing and scanner normals are not used. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload including native indexed descriptors; immutable Float32 shared buffers are borrowed by a disposable worker. Payload admission is not a process memory bound. Voxel retains one billion grid points, 500 million sampling candidates and sixteen million output triangles. Oversized work fails without changing geometry or silently coarsening resolution."
                         }
                       },
                       "required": ["kind"],
@@ -1358,16 +1363,17 @@
             "minLength": 1,
             "maxLength": 200
           },
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 32,
           "uniqueItems": true,
-          "description": "For nativeRefine: ordered fixed indexed mesh targets, ties retain the first. For scanTools/repolygonize: optional additional aligned visible raw mesh or point-cloud IDs, retained unchanged. Whole-scope shrinkwrap accepts raw meshes only. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
+          "description": "For nativeRefine: nonempty ordered fixed indexed mesh targets, ties retain the first. For native scanTools/repolygonize: omission discovers eligible visible raw meshes in workspace order; [] means the source alone; explicit IDs compute in workspace order. Native input geometry remains unchanged and is hidden when creating a new owner; locked inputs cannot be hidden. Voxel reconstruction retains explicit ordered mesh/cloud IDs; omit for source alone and do not supply []. Other operations retain their existing nonempty-list requirements. Whole-scope shrinkwrap accepts raw meshes only. Up to 32 distinct IDs, excluding the source; mutually exclusive with targetId."
         },
         "selectionOnly": {
           "type": "boolean"
         },
         "createNew": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Native Re-polygonize defaults to a selected new mesh owner and hides unchanged input objects; false replaces the requested source owner instead. Voxel and other operations retain their existing ownership defaults. Revision, lock and history checks apply to both GUI and MCP."
         },
         "previewOnly": {
           "type": "boolean",

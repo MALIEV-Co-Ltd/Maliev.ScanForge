@@ -2,6 +2,8 @@ import { bindShrinkwrap } from "../shrinkwrap-request";
 import {
   reconstructionTargets,
   reconstructionScanInputs,
+  reconstructionMethod,
+  bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
 import type { Entity } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
@@ -25,6 +27,7 @@ export function scanToolRequest(
       "Create a separate mesh copy before using Scan Data tools on CAD.",
     );
   let operation: ScanToolOperation;
+  let positions = source.positions;
   switch (parameters.kind) {
     case "shrinkwrap": {
       operation = bindShrinkwrap(source, parameters, entities, selection);
@@ -37,20 +40,40 @@ export function scanToolRequest(
           throw new Error("Reconstruction reference no longer exists.");
         return entity;
       });
-      operation =
-        source.kind === "pointcloud" ||
-        targets.some((e) => e.kind === "pointcloud")
-          ? {
-              kind: parameters.kind,
-              resolution: parameters.resolution,
-              inputKind: source.kind === "pointcloud" ? "points" : "triangles",
-              targetInputs: reconstructionScanInputs(source, targets),
-            }
-          : {
-              kind: parameters.kind,
-              resolution: parameters.resolution,
-              targets: reconstructionTargets(source, targets),
-            };
+      const method = reconstructionMethod(source, targets, parameters.method);
+      if (method === "native") {
+        const bound = bindNativeReconstruction(
+          source,
+          parameters.targetIds,
+          entities,
+        );
+        positions = bound.source.positions;
+        operation = {
+          kind: parameters.kind,
+          resolution: parameters.resolution,
+          method,
+          sourceTopology: bound.source.indexedMesh,
+          targetTopology: bound.references.map((e) => e.indexedMesh),
+          targets: bound.references.map((e) => e.positions),
+        };
+      } else
+        operation =
+          source.kind === "pointcloud" ||
+          targets.some((e) => e.kind === "pointcloud")
+            ? {
+                kind: parameters.kind,
+                resolution: parameters.resolution,
+                method,
+                inputKind:
+                  source.kind === "pointcloud" ? "points" : "triangles",
+                targetInputs: reconstructionScanInputs(source, targets),
+              }
+            : {
+                kind: parameters.kind,
+                resolution: parameters.resolution,
+                method,
+                targets: reconstructionTargets(source, targets),
+              };
       break;
     }
     case "averageMesh": {
@@ -127,5 +150,5 @@ export function scanToolRequest(
     default:
       operation = parameters;
   }
-  return { kind: "scanTools", positions: source.positions, operation };
+  return { kind: "scanTools", positions, operation };
 }

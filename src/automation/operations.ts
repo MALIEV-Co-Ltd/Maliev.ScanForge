@@ -2,10 +2,13 @@ import { geometryArtifact } from "./geometry-artifact";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
+import { resolveConstructionIdentities } from "../reference-construction-identity";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
   reconstructionScanInputs,
+  reconstructionMethod,
+  bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
@@ -997,6 +1000,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const kind = op.kind as ProcessingRequest["kind"];
       const reconstruction =
         kind === "scanTools" && op.operation?.kind === "repolygonize";
+      let nativeReconstruction:
+        ReturnType<typeof bindNativeReconstruction> | undefined;
+      if (!reconstruction && Array.isArray(a.targetIds) && !a.targetIds.length)
+        throw Error(
+          "targetIds requires at least one reference for this operation.",
+        );
       if (
         e.kind === "pointcloud" &&
         !["paired", "global", "icp", "pointCloudEdit"].includes(kind) &&
@@ -1212,7 +1221,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           "targets" in op.operation ||
           "selection" in op.operation ||
           "targetInputs" in op.operation ||
-          "inputKind" in op.operation
+          "inputKind" in op.operation ||
+          "sourceTopology" in op.operation ||
+          "targetTopology" in op.operation
         )
           throw new Error("Inner geometry must refer to workspace objects.");
         if (op.operation.kind === "shrinkwrap") {
@@ -1234,7 +1245,6 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           if (
             a.targetIds !== undefined &&
             (!Array.isArray(a.targetIds) ||
-              a.targetIds.length < 1 ||
               a.targetIds.length > 32 ||
               a.targetIds.some((id: unknown) => typeof id !== "string"))
           )
@@ -1244,7 +1254,35 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           const targets = (a.targetIds ?? []).map((id: string) =>
             sampledObject(s, id),
           );
-          if (
+          op.operation.method = reconstructionMethod(
+            e,
+            targets,
+            op.operation.method,
+          );
+          if (op.operation.method === "voxel" && a.targetIds?.length === 0)
+            throw Error(
+              "Reconstruction accepts one to 32 additional targetIds; omit for a single source.",
+            );
+          if (op.operation.method === "native") {
+            nativeReconstruction = bindNativeReconstruction(
+              e,
+              a.targetIds,
+              s.entities,
+            );
+            if (a.createNew ?? true)
+              nativeReconstruction.inputs.forEach((input) =>
+                editable(input, true),
+              );
+            request.positions = nativeReconstruction.source.positions;
+            op.operation.sourceTopology =
+              nativeReconstruction.source.indexedMesh;
+            op.operation.targetTopology = nativeReconstruction.references.map(
+              (input) => input.indexedMesh,
+            );
+            op.operation.targets = nativeReconstruction.references.map(
+              (input) => input.positions,
+            );
+          } else if (
             [e, ...targets].some(
               (entity: Entity) => entity.kind === "pointcloud",
             )
@@ -1323,11 +1361,29 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
-        else if (a.createNew) {
+        else if (a.createNew ?? !!nativeReconstruction) {
           updated.id = id();
-          updated.name = `${e.name} ${kind}`;
+          if (
+            nativeReconstruction &&
+            updated.constructionOrderKey !== undefined
+          )
+            updated.constructionOrderKey = resolveConstructionIdentities(
+              [...s.entities, { id: updated.id }],
+              [updated.id],
+            ).orderedSources[0].constructionOrderKey;
+          updated.name = nativeReconstruction
+            ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
+            : `${e.name} ${kind}`;
           created.push(updated);
           next = [...next, updated];
+          if (nativeReconstruction) {
+            const inputIds = new Set(
+              nativeReconstruction.inputs.map((input) => input.id),
+            );
+            next = next.map((input) =>
+              inputIds.has(input.id) ? { ...input, visible: false } : input,
+            );
+          }
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
       if (segments?.length) {
@@ -1342,6 +1398,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         next = [...next, ...created.filter((x) => !next.includes(x))];
       }
       const response = {
+        ...(nativeReconstruction
+          ? {
+              reconstruction: {
+                inputEntityIds: nativeReconstruction.inputs.map(
+                  (input) => input.id,
+                ),
+                method: "native",
+              },
+            }
+          : {}),
         entityIds: created.length
           ? created.map((x) => x.id)
           : positions?.length
@@ -1367,8 +1433,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
       c.check();
-      if (positions || segments?.length)
-        host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
+      if (positions || segments?.length) {
+        if (nativeReconstruction && created.length)
+          host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`, {
+            modelVisibilityFor: nativeReconstruction.inputs.map(
+              (input) => input.id,
+            ),
+          });
+        else host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
+      }
+      if (nativeReconstruction && created.length) host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;
     },

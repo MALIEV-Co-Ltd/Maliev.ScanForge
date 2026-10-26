@@ -13,7 +13,9 @@ import { acquireProcessingSession } from "./processing-session";
 import { queueProcessing } from "./processing-queue";
 import {
   admitReconstructionRecords,
+  admitReconstructionTransport,
   isBorrowableReconstructionInput,
+  type ReconstructionInput,
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
@@ -198,7 +200,7 @@ export function processMesh(
         request.operation.targetInputs !== undefined
       )
         throw Error("Use only one reconstruction target representation.");
-      admitReconstructionRecords([
+      const records: ReconstructionInput[] = [
         {
           kind: request.operation.inputKind ?? "triangles",
           positions: request.positions,
@@ -208,7 +210,42 @@ export function processMesh(
             kind: "triangles" as const,
             positions,
           }))),
-      ]);
+      ];
+      // Keep typed-kind validation before reducing native records to positions.
+      admitReconstructionRecords(records);
+      const topology = [
+        request.operation.sourceTopology,
+        ...(
+          request.operation.targetInputs ??
+          request.operation.targets ??
+          []
+        ).map((_, i) =>
+          request.operation.kind === "repolygonize"
+            ? request.operation.targetTopology?.[i]
+            : undefined,
+        ),
+      ];
+      if (
+        request.operation.targetTopology &&
+        request.operation.targetTopology.length !== records.length - 1
+      )
+        throw Error(
+          "Reconstruction topology references must match its inputs.",
+        );
+      if (records.some((record) => record.kind === "points")) {
+        if (request.operation.method === "native")
+          throw Error(
+            "Native reconstruction requires triangle meshes; use voxel for point inputs.",
+          );
+        if (topology.some(Boolean))
+          throw Error(
+            "Reconstruction indexed topology requires triangle inputs.",
+          );
+      } else if (topology.some(Boolean))
+        admitReconstructionTransport(
+          records.map((record) => record.positions),
+          topology,
+        );
     } catch (error) {
       return Promise.reject(error);
     }
@@ -578,6 +615,32 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "repolygonize") {
+          const cloneTopology = (
+            mesh: import("./types").IndexedMesh | undefined,
+          ) => {
+            if (!mesh) return undefined;
+            const triangles = Uint32Array.from(mesh.triangles);
+            transfers.push(triangles.buffer);
+            return {
+              ...mesh,
+              vertices: clone(mesh.vertices),
+              triangles,
+              ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+              ...(mesh.geometryNormals
+                ? { geometryNormals: clone(mesh.geometryNormals) }
+                : {}),
+              ...(mesh.facetNormals
+                ? { facetNormals: clone(mesh.facetNormals) }
+                : {}),
+            };
+          };
+          copied.operation.sourceTopology = cloneTopology(
+            copied.operation.sourceTopology,
+          );
+          copied.operation.targetTopology =
+            copied.operation.targetTopology?.map(cloneTopology);
+        }
         if (
           copied.operation.kind === "averageMesh" ||
           copied.operation.kind === "repolygonize" ||

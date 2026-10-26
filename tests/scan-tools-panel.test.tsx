@@ -94,6 +94,30 @@ it("uses the requested millimetre defaults", () => {
   expect(render("unroll")).toContain('value="0"');
 });
 
+it("defaults mesh reconstruction to native with visible mesh references selected", () => {
+  const html = render("repolygonize", mesh, [
+    mesh,
+    { ...mesh, id: "aligned", name: "Aligned native scan" },
+    { ...mesh, id: "hidden", name: "Hidden native scan", visible: false },
+  ]);
+  expect(html).toContain('aria-label="Reconstruction method"');
+  expect(html).toContain('value="native" selected=""');
+  expect(html).toContain('checked=""/>Aligned native scan');
+  expect(html).not.toContain('checked=""/>Hidden native scan');
+});
+
+it("keeps point-cloud reconstruction on the closed voxel route", () => {
+  const cloud: Entity = {
+    ...mesh,
+    kind: "pointcloud",
+    positions: [0, 0, 0, 1, 1, 1],
+  };
+  const html = render("repolygonize", cloud, [cloud]);
+  expect(html).toContain('value="voxel" selected=""');
+  expect(html).toContain("Point clouds use every XYZ");
+  expect(html).toContain("separate closed components");
+});
+
 it("admits a two-point cloud only for reconstruction and lists aligned cloud targets", () => {
   const cloud: Entity = {
     ...mesh,
@@ -261,7 +285,7 @@ it("reports a clear triangle count without repeating the selected filename and g
   expect(comparison).toContain("Comparison tolerance (mm)");
 });
 
-it("offers additional reconstruction scans with measured closure and shape-change guidance", () => {
+it("offers native reconstruction references with measured open-topology guidance", () => {
   const html = render("repolygonize", mesh, [
     mesh,
     { ...mesh, id: "second", name: "Aligned scan" },
@@ -269,7 +293,9 @@ it("offers additional reconstruction scans with measured closure and shape-chang
   expect(html).toContain('aria-label="Additional reconstruction scans"');
   expect(html).toContain("Aligned scan");
   expect(html).toContain("retained unchanged");
-  expect(html).toContain("separate closed components");
-  expect(html).toContain("one billion grid points");
+  expect(html).toContain(
+    "nonmanifold edges and separate components can remain",
+  );
+  expect(html).toContain("Creates a new mesh and hides the unchanged inputs");
   expect(html).toContain("not a maximum-deviation tolerance");
 });

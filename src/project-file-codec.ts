@@ -282,6 +282,9 @@ export async function encodeProjectFileLocally(
     return Promise.all(
       items.map(async (item) => ({
         label: item.label,
+        ...(item.restoreVisibilityFor?.length
+          ? { restoreVisibilityFor: item.restoreVisibilityFor }
+          : {}),
         entities: await state(item.entities),
       })),
     );
@@ -629,11 +632,30 @@ export async function decodeProjectContents(
     }).entities;
   }
   function revisions(
-    items: { label: string; entities: number[] }[],
+    items: {
+      label: string;
+      entities: number[];
+      restoreVisibilityFor?: string[];
+    }[],
   ): Revision[] {
     return items.map((item) => {
       if (!item || typeof item.label !== "string") return invalid();
-      return { label: item.label, entities: state(item.entities) };
+      const ids = item.restoreVisibilityFor;
+      if (
+        ids !== undefined &&
+        (!Array.isArray(ids) ||
+          ids.length > 100000 ||
+          ids.some(
+            (id) => typeof id !== "string" || !id.length || id.length > 1024,
+          ) ||
+          new Set(ids).size !== ids.length)
+      )
+        return invalid();
+      return {
+        label: item.label,
+        entities: state(item.entities),
+        ...(ids?.length ? { restoreVisibilityFor: [...ids] } : {}),
+      };
     });
   }
   const project = validateProject({
