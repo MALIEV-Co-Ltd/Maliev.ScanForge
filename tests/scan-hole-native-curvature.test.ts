@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
 import fixture from "./fixtures/hole-fill-observed-curvature-annulus.json";
 import cups from "./fixtures/hole-fill-observed-cups.json";
+import failedCup41 from "./fixtures/hole-fill-observed-failed-cup-41.json";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { runScanEditAsync } from "../src/scan-edit";
@@ -37,6 +38,15 @@ function orientedDigest(points: Float32Array): string {
   }
   return createHash("sha256").update(faces.sort().join("\n")).digest("hex");
 }
+
+it("binds the failed 41-edge cup to the original binary STL corner stream", () => {
+  const source = positions(failedCup41);
+  expect(source.length / 9).toBe(123);
+  expect(
+    createHash("sha256").update(new Uint8Array(source.buffer)).digest("hex"),
+  ).toBe("abf34711c3b63cb69ccab0537d96319d054fc3dd11255c2675b461fdc6f215b0");
+  expect(topology(source).boundaryLoops[0]).toHaveLength(41);
+});
 
 it("retains the successful native Curvature control and its remeshed collar", () => {
   const original = new Set(
@@ -97,8 +107,18 @@ it.each(["curvature", "automatic"] as const)(
   },
 );
 
-it.each(cups.cases)(
-  "preserves the $rimEdges-edge cup when its Curvature collar cannot form a graph",
+it.each([
+  ...cups.cases.map((sample) => ({
+    ...sample,
+    algorithm: "curvature" as const,
+  })),
+  ...(["curvature", "automatic"] as const).map((algorithm) => ({
+    ...failedCup41,
+    rimEdges: failedCup41.holeEdges,
+    algorithm,
+  })),
+])(
+  "preserves the $rimEdges-edge cup when its $algorithm collar cannot form a graph",
   async (sample) => {
     const source = new Float32Array(
       sample.faces.flatMap((face) => face.flatMap((id) => sample.vertices[id])),
@@ -114,7 +134,7 @@ it.each(cups.cases)(
           action: "fillHoles",
           positions: source,
           indices: [0],
-          algorithm: "curvature",
+          algorithm: sample.algorithm,
         },
         {
           topologyCache: {
