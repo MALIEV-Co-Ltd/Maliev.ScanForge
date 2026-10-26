@@ -50,5 +50,37 @@
     "sourceSha256ReverifiedAfterExit": true,
     "cleanupErrors": []
   },
-  "scope": "R13 confirmed original-native desktop input and fixture reopening at that time; R14 subsequently failed before modeling. Recovery is not stable. Neither attempt establishes source-edit persistence, midpoint save/reopen, copy/transform policy, native controller parity or complete M4 acceptance."
+  "scope": "R13 and R15 confirm original-native desktop input and fixture reopening; R14 failed before modeling. R15 adds midpoint acceptance, a fresh saved QSF and reopening with both history objects. Reopened recipe fields, source-edit persistence, copy/transform policy, native controller parity and complete M4 acceptance remain unverified.",
+  "latestAttempt": {
+    "session": "R15",
+    "startedUtc": "2026-10-26T10:24:50.881280Z",
+    "finishedUtc": "2026-10-26T10:31:24.013174Z",
+    "nativeInputRecovered": true,
+    "nativePixelsCaptured": true,
+    "observations": [
+      "Maximized the fresh owned original native window and reopened the immutable R2 line fixture.",
+      "Constructed Line Middle Point with source Ref. Line(1) displayed (5,0,0); accepted the point.",
+      "Saved a fresh m4-midpoint-5.qsf and reopened it using the native recent-file command.",
+      "Reopened title identified m4-midpoint-5.qsf and history retained Ref. Line(1) and Ref. Point(1).",
+      "The attempted reopened recipe-editor inspection was refused before input by the conservative modal cutoff."
+    ],
+    "outputQsf": {
+      "name": "m4-midpoint-5.qsf",
+      "bytes": 754,
+      "sha256": "bffef12394b8f8c53cf7fbd2321cf5c360087855d112d15c2abcb16f4f32c8a9"
+    },
+    "inputQsfSha256Unchanged": true,
+    "reopenedRecipeFieldsVerified": false,
+    "sourceEditVerified": false,
+    "copyTransformVerified": false,
+    "stopReason": "authenticated-finish",
+    "elapsedSeconds": 393.38519760000054,
+    "peakJobBytes": 686301184,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "processAndThreadHandlesClosed": true,
+    "watchdogStopped": true,
+    "sourceSha256ReverifiedAfterExit": true,
+    "cleanupErrors": []
+  }
 }
