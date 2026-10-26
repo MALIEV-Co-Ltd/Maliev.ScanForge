@@ -158,7 +158,11 @@ import "./workspace-chrome.css";
 import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
 import type { SketchPlaneSelection } from "../sketch-plane-source";
-import { ReferenceConstructionDialog } from "./ReferenceConstructionDialog";
+import {
+  ReferenceConstructionDialog,
+  type PickedReferenceCoordinate,
+} from "./ReferenceConstructionDialog";
+import { decodeReferenceGeometry } from "../reference-construction-values";
 import { DatumConstructionDialog } from "./DatumConstructionDialog";
 import { encodeReferenceFrame } from "../reference-frame";
 import { runApplicationJobCommand } from "./application-job-command";
@@ -322,16 +326,19 @@ export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const datumPointPick = useRef<((point: Vec3) => void) | null>(null);
   const referenceCoordinatePick = useRef<{
-    pick(entityId: string, pointIndex?: number): void;
+    pick(
+      entityId: string,
+      pointIndex?: number,
+      screen?: { x: number; y: number },
+    ): void;
     cancel(): void;
   } | null>(null);
   const [referencePicking, setReferencePicking] = useState(false);
-  function requestReferenceCoordinatePick(signal: AbortSignal): Promise<{
-    entityId: string;
-    pointIndex: number;
-    position: Vec3;
-    revision: number;
-  }> {
+  function requestReferenceCoordinatePick(
+    signal: AbortSignal,
+    mode: "cloud" | "surface" = "cloud",
+    targetEntityId?: string,
+  ): Promise<PickedReferenceCoordinate> {
     return new Promise((resolve, reject) => {
       if (signal.aborted) {
         reject(new DOMException("Coordinate picking cancelled.", "AbortError"));
@@ -342,6 +349,8 @@ export function App() {
         return;
       }
       let pending = false;
+      let jobId: string | undefined;
+      const previousTarget = viewport.current?.getPickTarget() ?? null;
       const guard = (event: Event) => {
         const target = event.target;
         if (target instanceof Node && viewportHost.current?.contains(target))
@@ -354,33 +363,99 @@ export function App() {
         event.preventDefault();
         event.stopPropagation();
       };
-      const finish = (
-        point?: {
-          entityId: string;
-          pointIndex: number;
-          position: Vec3;
-          revision: number;
-        },
-        error?: Error,
-      ) => {
+      const finish = (point?: PickedReferenceCoordinate, error?: Error) => {
         if (referenceCoordinatePick.current !== entry) return;
         referenceCoordinatePick.current = null;
         signal.removeEventListener("abort", entry.cancel);
         document.removeEventListener("pointerdown", guard, true);
         document.removeEventListener("click", guard, true);
         viewport.current?.setReferenceCoordinatePicking(false);
+        viewport.current?.setPickTarget(previousTarget);
         setReferencePicking(false);
         if (error) reject(error);
         else resolve(point!);
       };
       const entry = {
-        cancel: () =>
+        cancel: () => {
+          if (jobId) void workspaceApi.invoke("job_cancel", { jobId });
+          // Keep the picker owned until its native read job is terminal.
+          if (mode === "surface" && pending) return;
           finish(
             undefined,
             new DOMException("Coordinate picking cancelled.", "AbortError"),
-          ),
-        pick: (entityId: string, pointIndex?: number) => {
+          );
+        },
+        pick: (
+          entityId: string,
+          pointIndex?: number,
+          screen?: { x: number; y: number },
+        ) => {
           if (pending) return;
+          if (mode === "surface") {
+            if (!screen || entityId !== targetEntityId) return;
+            pending = true;
+            void (async () => {
+              const receipt = await workspaceApi.invoke(
+                "reference_construction_acquire",
+                {
+                  entityId,
+                  expectedRevision: workspaceApi.currentRevision(),
+                  selection: { kind: "screen", ...screen },
+                },
+              );
+              if (!receipt.ok) throw new Error(receipt.error.message);
+              jobId = (receipt.result as { jobId: string }).jobId;
+              if (signal.aborted) {
+                await workspaceApi.invoke("job_cancel", { jobId });
+              }
+              const expires = Date.now() + 900000;
+              while (Date.now() < expires) {
+                const response = await workspaceApi.invoke("job_get", {
+                  jobId,
+                });
+                if (!response.ok) throw new Error(response.error.message);
+                const job = response.result as {
+                  status: string;
+                  error?: { message: string };
+                  result?: {
+                    positionEncoding: unknown;
+                    sourceRevision: number;
+                  };
+                };
+                if (job.status !== "running") signal.throwIfAborted();
+                if (job.status === "succeeded" && job.result) {
+                  signal.throwIfAborted();
+                  const geometry = decodeReferenceGeometry(
+                    job.result.positionEncoding,
+                  );
+                  if (geometry.kind !== "point")
+                    throw new Error(
+                      "Coordinate acquisition returned invalid geometry.",
+                    );
+                  finish({
+                    entityId,
+                    acquisitionJobId: jobId,
+                    position: [...geometry.position],
+                    revision: job.result.sourceRevision,
+                  });
+                  return;
+                }
+                if (job.status === "failed" || job.status === "cancelled")
+                  throw new Error(
+                    job.error?.message ?? "Coordinate acquisition cancelled.",
+                  );
+                await new Promise((resume) => setTimeout(resume, 50));
+              }
+              await workspaceApi.invoke("job_cancel", { jobId });
+              throw new Error("Coordinate acquisition timed out.");
+            })().catch((failure) =>
+              finish(
+                undefined,
+                failure instanceof Error ? failure : new Error(String(failure)),
+              ),
+            );
+            return;
+          }
           if (pointIndex === undefined) {
             setMessage("Click a point-cloud vertex.");
             return;
@@ -411,7 +486,9 @@ export function App() {
       signal.addEventListener("abort", entry.cancel, { once: true });
       document.addEventListener("pointerdown", guard, true);
       document.addEventListener("click", guard, true);
-      viewport.current?.setReferenceCoordinatePicking(true);
+      if (mode === "surface")
+        viewport.current?.setPickTarget(targetEntityId ?? null);
+      viewport.current?.setReferenceCoordinatePicking(true, mode);
       setReferencePicking(true);
     });
   }
@@ -972,10 +1049,10 @@ export function App() {
     try {
       viewport.current = new Viewport(
         viewportHost.current!,
-        (point, id, triangleIndex, pointIndex) => {
+        (point, id, triangleIndex, pointIndex, screen) => {
           if (busyRef.current || interactiveStore.getSnapshot()) return;
           if (referenceCoordinatePick.current) {
-            referenceCoordinatePick.current.pick(id, pointIndex);
+            referenceCoordinatePick.current.pick(id, pointIndex, screen);
             return;
           }
           if (datumFacePick.current) {
@@ -4933,6 +5010,8 @@ export function App() {
     },
     setInterface,
     inspectViewport: (view) => alignmentViewport(view).inspectAgentView(),
+    referenceCoordinateView: (entityId, view) =>
+      alignmentViewport(view).referenceCoordinateView(entityId),
     inspectSpaceMouse,
     controlSpaceMouse,
     controlViewport: (command) => {

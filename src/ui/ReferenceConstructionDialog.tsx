@@ -8,10 +8,12 @@ import {
 import { VectorField } from "./controls";
 import { AppSelect } from "./AppSelect";
 import { isStoredReferenceLine } from "../reference-midpoint";
+import { ReferenceCadCoordinateDialog } from "./ReferenceCadCoordinateDialog";
 
 export interface PickedReferenceCoordinate {
   entityId: string;
-  pointIndex: number;
+  pointIndex?: number;
+  acquisitionJobId?: string;
   position: Vec3;
   revision: number;
 }
@@ -30,7 +32,11 @@ export function ReferenceConstructionDialog({
   finiteAxis?: boolean;
   entity?: Entity;
   entities?: Entity[];
-  pickCoordinate?(signal: AbortSignal): Promise<PickedReferenceCoordinate>;
+  pickCoordinate?(
+    signal: AbortSignal,
+    mode?: "cloud" | "surface",
+    targetEntityId?: string,
+  ): Promise<PickedReferenceCoordinate>;
   onClose(): void;
 }) {
   const geometry = entity?.reference?.geometry;
@@ -156,6 +162,7 @@ export function ReferenceConstructionDialog({
   );
   const [startPick, setStartPick] = useState<PickedReferenceCoordinate>();
   const [endPick, setEndPick] = useState<PickedReferenceCoordinate>();
+  const [cadTarget, setCadTarget] = useState<"start" | "end">();
   const [initializing, setInitializing] = useState(!!entity);
   const [initializationError, setInitializationError] = useState("");
   const [useInitializedFields, setUseInitializedFields] = useState(
@@ -325,10 +332,10 @@ export function ReferenceConstructionDialog({
         throw new Error(
           "The workspace changed. Pick the coordinates again before previewing.",
         );
-      const selection = (pick: PickedReferenceCoordinate) => ({
-        entityId: pick.entityId,
-        pointIndex: pick.pointIndex,
-      });
+      const selection = (pick: PickedReferenceCoordinate) =>
+        pick.acquisitionJobId !== undefined
+          ? { acquisitionJobId: pick.acquisitionJobId }
+          : { entityId: pick.entityId, pointIndex: pick.pointIndex };
       const result = await api.invoke("reference_construct", {
         action,
         ...owner,
@@ -425,6 +432,27 @@ export function ReferenceConstructionDialog({
       setBusy(false);
     }
   }
+  if (cadTarget)
+    return (
+      <ReferenceCadCoordinateDialog
+        api={api}
+        entities={entities}
+        pickSurface={
+          pickCoordinate
+            ? (signal, sourceId) => pickCoordinate(signal, "surface", sourceId)
+            : undefined
+        }
+        onPick={(value) => {
+          (cadTarget === "start" ? setStart : setEnd)(value.position);
+          (cadTarget === "start" ? setStartPick : setEndPick)(value);
+          setUseInitializedFields(false);
+          setInitializationError("");
+          setDirty(true);
+          setCadTarget(undefined);
+        }}
+        onCancel={() => setCadTarget(undefined)}
+      />
+    );
   if (picking)
     return (
       <section
@@ -691,6 +719,13 @@ export function ReferenceConstructionDialog({
               {kind === "point" ? "Pick position" : "Pick start"}
             </button>
           )}
+          {!derived && (
+            <button onClick={() => setCadTarget("start")}>
+              {kind === "point"
+                ? "Choose CAD/mesh position"
+                : "Choose CAD/mesh start"}
+            </button>
+          )}
           {kind === "line" && lineMode === "endpoints" && (
             <VectorField
               label="End"
@@ -710,6 +745,11 @@ export function ReferenceConstructionDialog({
               onClick={() => void acquireCoordinate("end")}
             >
               Pick end
+            </button>
+          )}
+          {kind === "line" && lineMode === "endpoints" && (
+            <button onClick={() => setCadTarget("end")}>
+              Choose CAD/mesh end
             </button>
           )}
         </fieldset>

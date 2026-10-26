@@ -1608,6 +1608,725 @@ try {
     "Native-style numeric editor fields, GUI/public MCP initialize, Cancel/Apply, history and worker reopen passed",
   );
 
+  // A newly fitted plane is a point-construction source while its authoritative
+  // frame and fit diagnostics coexist. Plane-center evaluation retains the
+  // recovered explicit origin fallback; it does not invent a plane centroid.
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "m4-fitted-plane-source.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: Buffer.from(
+        JSON.stringify({
+          format: "maliev-scanforge",
+          version: 1,
+          units: "mm",
+          name: "Fitted plane point source",
+          entities: [
+            {
+              id: "fitted-plane-scan",
+              name: "Original fitted-plane scan",
+              kind: "mesh",
+              positions: [
+                0, 0, 5, 10, 0, 5, 0, 10, 5, 10, 0, 5, 10, 10, 5, 0, 10, 5,
+              ],
+              color: "#2288cc",
+              visible: true,
+              opacity: 1,
+            },
+          ],
+        }),
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Original fitted-plane scan", exact: true })
+    .waitFor();
+  for (let attempt = 0; ; attempt++) {
+    if (!(await call("application_inspect", { maxControls: 1 })).result.busy)
+      break;
+    assert(attempt < 120, "Fitted-plane fixture presentation did not finish");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  const fittedPlaneCreation = await job(
+    await mutate("primitive_fit_create", {
+      entityId: "fitted-plane-scan",
+      kind: "plane",
+      selectionOnly: false,
+      name: "Fitted construction plane",
+    }),
+  );
+  const fittedPlaneSourceId = fittedPlaneCreation.entityId;
+  const fittedPlaneBefore = (
+    await call("object_get", { entityId: fittedPlaneSourceId })
+  ).result;
+  assert.equal(fittedPlaneBefore.kind, "plane");
+  assert.equal(fittedPlaneBefore.fit.kind, "plane");
+  assert(fittedPlaneBefore.planeFrame);
+  const fittedPlaneIndependent = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      mode: "center",
+      sourceEntityIds: [fittedPlaneSourceId],
+    })
+  ).result;
+  assert.equal(fittedPlaneIndependent.outcome, "origin");
+  assert.equal(
+    fittedPlaneIndependent.diagnostics.reason,
+    "source-extraction-failed",
+  );
+  assert.deepEqual(fittedPlaneIndependent.geometry.position, [0, 0, 0]);
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: fittedPlaneIndependent.sessionId,
+    version: fittedPlaneIndependent.version,
+  });
+  await page.getByRole("tab", { name: "Construct", exact: true }).click();
+  await page
+    .getByRole("group", { name: "Primitives", exact: true })
+    .getByRole("button", { name: "Reference point", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+  await dialog.locator(".app-select > button").first().click();
+  await page
+    .getByRole("option", { name: "Primitive center", exact: true })
+    .click();
+  await dialog.locator(".app-select > button").nth(1).click();
+  await page
+    .getByRole("option", { name: "Fitted construction plane", exact: true })
+    .click();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    fittedPlaneIndependent.geometryEncoding,
+  );
+  await page.screenshot({
+    path: fileURLToPath(
+      new URL("fitted-plane-reference-preview.png", artifactDir),
+    ),
+  });
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const fittedPlanePointId = (await call("project_get")).result.objects.find(
+    (row) => row.kind === "referencePoint",
+  ).id;
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlanePointId })).result
+      .reference.definition,
+    fittedPlaneIndependent.definition,
+  );
+  const fittedPlaneTransform = (
+    await mutate("mesh_transform", {
+      entityId: fittedPlaneSourceId,
+      translation: [0, 0, 2],
+      rotation: [0, 0, 0],
+      scale: 1,
+    })
+  ).result;
+  assert.deepEqual(fittedPlaneTransform.refreshedEntityIds, [
+    fittedPlanePointId,
+  ]);
+  const fittedPlaneAfter = (
+    await call("object_get", { entityId: fittedPlaneSourceId })
+  ).result;
+  assert.equal(fittedPlaneAfter.fit, undefined);
+  assert.deepEqual(
+    fittedPlaneAfter.planeFrame.center,
+    fittedPlaneBefore.planeFrame.center.map(
+      (value, axis) => value + (axis === 2 ? 2 : 0),
+    ),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlanePointId })).result
+      .reference.geometryEncoding,
+    fittedPlaneIndependent.geometryEncoding,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlaneSourceId })).result.fit,
+    fittedPlaneBefore.fit,
+  );
+  const fittedPlaneArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: fittedPlaneArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlaneSourceId })).result
+      .planeFrame,
+    fittedPlaneBefore.planeFrame,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlanePointId })).result
+      .reference.geometryEncoding,
+    fittedPlaneIndependent.geometryEncoding,
+  );
+  await mutate("history_redo", {});
+  assert.deepEqual(
+    (await call("object_get", { entityId: fittedPlaneSourceId })).result
+      .planeFrame,
+    fittedPlaneAfter.planeFrame,
+  );
+  assert.equal(
+    (await call("object_get", { entityId: fittedPlaneSourceId })).result.fit,
+    undefined,
+  );
+  assert.equal(
+    (await call("object_get", { entityId: fittedPlanePointId })).result
+      .reference.definition.sources[0].id,
+    fittedPlaneSourceId,
+  );
+  ledger.fittedPlanePointSource = {
+    actualPrimitiveFitCreate: true,
+    initialFrameAndDiagnosticsRetained: true,
+    guiMcpCenterEqual: true,
+    centerOutcome: "origin",
+    sourceTransformRefresh: true,
+    fitClearedOnTransform: true,
+    undoRedo: true,
+    workerReopenWithFuture: true,
+  };
+  console.log(
+    "Actual fitted-plane GUI/public MCP point source, transform refresh and history/future worker reopen passed",
+  );
+
+  // Exact CAD acquisition uses real topology through the public job gateway.
+  // GUI selectors consume the same retained acquisition job, never display XYZ.
+  await mutate("project_new", { discard: true });
+  const cadCoordinateSourceId = (
+    await job(
+      await mutate("cad_create", {
+        name: "Exact coordinate box",
+        recipe: {
+          kind: "primitive",
+          input: {
+            kind: "box",
+            center: [100000000.125, 0, 0],
+            size: [0.125, 2, 2],
+          },
+        },
+      }),
+    )
+  ).entityIds[0];
+  const cadCoordinateBaseline = await call("project_get");
+  const cadVertices = await job(
+    await call("reference_construction_features", {
+      entityId: cadCoordinateSourceId,
+      family: "vertices",
+      limit: 100,
+    }),
+  );
+  assert.equal(cadVertices.total, 8);
+  const cadVertex = cadVertices.rows.find((row) => row.eligible);
+  assert(
+    cadVertex &&
+      cadVertex.position.some((value) => value !== Math.fround(value)),
+    "Exact vertex must retain Double detail absent from the Float32 display",
+  );
+  async function acquireCoordinate(entityId, selection) {
+    const receipt = await mutate("reference_construction_acquire", {
+      entityId,
+      selection,
+    });
+    return { jobId: receipt.result.jobId, result: await job(receipt) };
+  }
+  const cadVertexCoordinate = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "vertex",
+    vertexIndex: cadVertex.index,
+  });
+  assert.deepEqual(cadVertexCoordinate.result.position, cadVertex.position);
+  assert.equal(cadVertexCoordinate.result.numericOnly, true);
+  assert.equal(cadVertexCoordinate.result.sourceDependencyRetained, false);
+  const cadEdges = await job(
+    await call("reference_construction_features", {
+      entityId: cadCoordinateSourceId,
+      family: "edges",
+      limit: 100,
+    }),
+  );
+  assert.equal(cadEdges.total, 12);
+  const cadEdge = cadEdges.rows.find((row) => row.eligible && !row.degenerate);
+  assert(cadEdge);
+  const cadEdgeStart = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "edge-endpoint",
+    edgeIndex: cadEdge.index,
+    endpoint: "start",
+  });
+  const cadEdgeEnd = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "edge-endpoint",
+    edgeIndex: cadEdge.index,
+    endpoint: "end",
+  });
+  const cadEdgeFraction = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "edge-fraction",
+    edgeIndex: cadEdge.index,
+    fraction: 0.25,
+  });
+  for (let axis = 0; axis < 3; axis++)
+    assert(
+      Math.abs(
+        cadEdgeFraction.result.position[axis] -
+          (cadEdgeStart.result.position[axis] +
+            (cadEdgeEnd.result.position[axis] -
+              cadEdgeStart.result.position[axis]) *
+              0.25),
+      ) < 1e-6,
+      "Box parameter fraction must resolve the straight edge location",
+    );
+  assert.equal(
+    (await call("project_get")).revision,
+    cadCoordinateBaseline.revision,
+  );
+  assert.equal(
+    (await call("project_get")).result.undo,
+    cadCoordinateBaseline.result.undo,
+  );
+  const cadIndependentPoint = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      positionPick: { acquisitionJobId: cadVertexCoordinate.jobId },
+    })
+  ).result;
+  assert.deepEqual(
+    cadIndependentPoint.geometryEncoding,
+    cadVertexCoordinate.result.positionEncoding,
+  );
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: cadIndependentPoint.sessionId,
+    version: cadIndependentPoint.version,
+  });
+  async function openCoordinatePoint() {
+    await page.getByRole("tab", { name: "Construct", exact: true }).click();
+    await page
+      .getByRole("group", { name: "Primitives", exact: true })
+      .getByRole("button", { name: "Reference point", exact: true })
+      .click();
+    return page.getByRole("dialog", { name: "Reference point", exact: true });
+  }
+  dialog = await openCoordinatePoint();
+  await dialog
+    .getByRole("button", { name: "Choose CAD/mesh position", exact: true })
+    .click();
+  const cadChooser = page.getByRole("dialog", {
+    name: "Choose CAD or mesh coordinate",
+    exact: true,
+  });
+  await cadChooser
+    .getByRole("button", { name: "Coordinate source", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "Exact coordinate box", exact: true })
+    .click();
+  await cadChooser
+    .getByRole("button", { name: "Load features", exact: true })
+    .click();
+  await cadChooser
+    .getByRole("button", { name: "Coordinate feature", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: `Vertex ${cadVertex.index}`, exact: true })
+    .click();
+  await page.screenshot({
+    path: fileURLToPath(new URL("cad-coordinate-selector.png", artifactDir)),
+  });
+  await cadChooser
+    .getByRole("button", { name: "Use vertex coordinate", exact: true })
+    .click();
+  await dialog.getByLabel("Position X", { exact: true }).waitFor();
+  assert.equal(
+    Number(await dialog.getByLabel("Position X", { exact: true }).inputValue()),
+    cadVertexCoordinate.result.position[0],
+  );
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    cadIndependentPoint.geometryEncoding,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const cadBakedPointId = (await call("project_get")).result.objects.find(
+    (row) => row.kind === "referencePoint",
+  ).id;
+  const currentCadVertex = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "vertex",
+    vertexIndex: cadVertex.index,
+  });
+  const currentCadFraction = await acquireCoordinate(cadCoordinateSourceId, {
+    kind: "edge-fraction",
+    edgeIndex: cadEdge.index,
+    fraction: 0.25,
+  });
+  const cadIndependentLine = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      startPick: { acquisitionJobId: currentCadVertex.jobId },
+      endPick: { acquisitionJobId: currentCadFraction.jobId },
+    })
+  ).result;
+  const cadBakedLineId = (
+    await mutate("reference_construct", {
+      action: "apply",
+      sessionId: cadIndependentLine.sessionId,
+      version: cadIndependentLine.version,
+    })
+  ).result.entityId;
+  for (const id of [cadBakedPointId, cadBakedLineId])
+    assert.deepEqual(
+      (await call("object_get", { entityId: id })).result.reference.definition
+        .sources,
+      [],
+    );
+  await mutate("object_delete", { entityId: cadCoordinateSourceId });
+  await mutate("history_undo", {});
+  assert(
+    (await call("project_get")).result.objects.some(
+      (row) => row.id === cadCoordinateSourceId,
+    ),
+  );
+  await mutate("history_redo", {});
+  assert(
+    !(await call("project_get")).result.objects.some(
+      (row) => row.id === cadCoordinateSourceId,
+    ),
+  );
+  const cadCoordinateArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: cadCoordinateArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadBakedPointId })).result.reference
+      .geometryEncoding,
+    cadIndependentPoint.geometryEncoding,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: cadBakedLineId })).result.reference
+      .geometryEncoding,
+    cadIndependentLine.geometryEncoding,
+  );
+  ledger.cadCoordinateAcquisition = {
+    exactDoubleVertex: true,
+    parameterFraction: true,
+    guiVertexMcpEqual: true,
+    readOnlyHistory: true,
+    sourceDeleted: true,
+    undoRedo: true,
+    workerReopen: true,
+    numericOnly: true,
+  };
+  console.log(
+    "Real CAD vertex/edge acquisition, GUI/public MCP selector parity and numeric-only source-delete/history/reopen passed",
+  );
+
+  // Controlled transport delay checks App cancellation ownership; the eventual
+  // released query still executes the real kernel, separately from this delay.
+  const cancelSurfaceSourceId = (
+    await job(
+      await mutate("cad_create", {
+        name: "Cancellation surface box",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [0, 0, 0], size: [4, 4, 4] },
+        },
+      }),
+    )
+  ).entityIds[0];
+  await mutate("viewport_control", {
+    action: "camera",
+    position: [0, 0, 10],
+    target: [0, 0, 0],
+    up: [0, 1, 0],
+    projection: "perspective",
+    zoom: 1,
+  });
+  const surfaceCancelBefore = await call("project_get");
+  dialog = await openCoordinatePoint();
+  await dialog
+    .getByRole("button", { name: "Choose CAD/mesh position", exact: true })
+    .click();
+  const cancelSurfaceChooser = page.getByRole("dialog", {
+    name: "Choose CAD or mesh coordinate",
+    exact: true,
+  });
+  await cancelSurfaceChooser
+    .getByRole("button", { name: "Coordinate source", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "Cancellation surface box", exact: true })
+    .click();
+  await page.evaluate(() => {
+    const original = Worker.prototype.postMessage;
+    let held, timer;
+    const state = { held: false, released: false };
+    const release = () => {
+      Worker.prototype.postMessage = original;
+      clearTimeout(timer);
+      if (held) {
+        const message = held;
+        held = undefined;
+        Reflect.apply(original, message.worker, message.args);
+      }
+      state.released = true;
+    };
+    window.__m4SurfaceDelay = { state, release };
+    Worker.prototype.postMessage = function (...args) {
+      const message = args[0];
+      if (
+        !state.held &&
+        message?.operation === "alignmentMesh" &&
+        message.payload?.referenceAcquisition === true
+      ) {
+        state.held = true;
+        held = { worker: this, args };
+        timer = setTimeout(release, 5000);
+        return;
+      }
+      return Reflect.apply(original, this, args);
+    };
+  });
+  let cancelledSurfaceJobId;
+  try {
+    await cancelSurfaceChooser
+      .getByRole("button", { name: "Pick source surface", exact: true })
+      .click();
+    const cancelSurfacePrompt = page.getByRole("dialog", {
+      name: "Pick source surface coordinate",
+      exact: true,
+    });
+    await cancelSurfacePrompt.waitFor();
+    const rect = await canvas.boundingBox();
+    assert(rect);
+    await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    await page.waitForFunction(
+      () => window.__m4SurfaceDelay.state.held,
+      undefined,
+      { timeout: 2000 },
+    );
+    cancelledSurfaceJobId = (await call("session_get")).result.activeJobId;
+    assert(cancelledSurfaceJobId);
+    await cancelSurfacePrompt
+      .getByRole("button", { name: "Cancel picking", exact: true })
+      .click();
+    await cancelSurfacePrompt
+      .getByRole("button", { name: "Cancelling...", exact: true })
+      .waitFor({ state: "visible", timeout: 1000 });
+    assert.equal(
+      await dialog.count(),
+      0,
+      "The numeric parent must stay absent while its cancelled native read is running",
+    );
+    assert.equal(
+      (await call("job_get", { jobId: cancelledSurfaceJobId })).result.status,
+      "running",
+    );
+    assert.equal(
+      await page.evaluate(() => window.__m4SurfaceDelay.state.released),
+      false,
+    );
+  } finally {
+    await page.evaluate(() => window.__m4SurfaceDelay?.release());
+  }
+  await dialog.getByLabel("Position X", { exact: true }).waitFor();
+  assert.equal(
+    (await call("job_get", { jobId: cancelledSurfaceJobId })).result.status,
+    "cancelled",
+  );
+  assert.equal(
+    await dialog.getByLabel("Position X", { exact: true }).inputValue(),
+    "0",
+  );
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  assert.equal(
+    (await call("project_get")).revision,
+    surfaceCancelBefore.revision,
+  );
+  assert.equal(
+    (await call("project_get")).result.undo,
+    surfaceCancelBefore.result.undo,
+  );
+  assert(
+    (await call("project_get")).result.objects.some(
+      (row) => row.id === cancelSurfaceSourceId,
+    ),
+  );
+  await page.evaluate(() => {
+    delete window.__m4SurfaceDelay;
+  });
+  ledger.surfaceCancelOwnership = {
+    controlledTransportDelay: true,
+    realKernelQueryReleased: true,
+    cancellationTerminalBeforeParentRestored: true,
+    unchangedModelHistory: true,
+    maximumHoldMs: 5000,
+  };
+
+  // Surface picking compares the shared normalized-screen operation on original
+  // source triangles; this is application arithmetic, not a native hit claim.
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "m4-coordinate-surface.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: Buffer.from(
+        JSON.stringify({
+          format: "maliev-scanforge",
+          version: 1,
+          units: "mm",
+          name: "Coordinate surface",
+          entities: [
+            {
+              id: "coordinate-surface",
+              name: "Original coordinate surface",
+              kind: "mesh",
+              positions: [-4, -4, 0, 4, -4, 0, 0, 4, 0],
+              color: "#2288cc",
+              visible: true,
+              opacity: 1,
+            },
+          ],
+        }),
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Original coordinate surface", exact: true })
+    .waitFor();
+  for (let attempt = 0; ; attempt++) {
+    if (!(await call("application_inspect", { maxControls: 1 })).result.busy)
+      break;
+    assert(attempt < 120, "Surface project presentation did not finish");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  await mutate("viewport_control", {
+    action: "camera",
+    position: [0, 0, 10],
+    target: [0, 0, 0],
+    up: [0, 1, 0],
+    projection: "perspective",
+    zoom: 1,
+  });
+  const surfaceAcquisition = await acquireCoordinate("coordinate-surface", {
+    kind: "screen",
+    x: 0.5,
+    y: 0.5,
+  });
+  assert.equal(
+    surfaceAcquisition.result.selectionModel,
+    "application-canonical-triangle",
+  );
+  const surfaceIndependent = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      positionPick: { acquisitionJobId: surfaceAcquisition.jobId },
+    })
+  ).result;
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: surfaceIndependent.sessionId,
+    version: surfaceIndependent.version,
+  });
+  dialog = await openCoordinatePoint();
+  await dialog
+    .getByRole("button", { name: "Choose CAD/mesh position", exact: true })
+    .click();
+  const surfaceChooser = page.getByRole("dialog", {
+    name: "Choose CAD or mesh coordinate",
+    exact: true,
+  });
+  await surfaceChooser
+    .getByRole("button", { name: "Pick source surface", exact: true })
+    .click();
+  await page
+    .getByRole("dialog", {
+      name: "Pick source surface coordinate",
+      exact: true,
+    })
+    .waitFor();
+  await page.screenshot({
+    path: fileURLToPath(new URL("surface-coordinate-prompt.png", artifactDir)),
+  });
+  const surfaceCanvasRect = await canvas.boundingBox();
+  assert(surfaceCanvasRect);
+  await page.mouse.click(
+    surfaceCanvasRect.x + surfaceCanvasRect.width / 2,
+    surfaceCanvasRect.y + surfaceCanvasRect.height / 2,
+  );
+  await dialog.getByLabel("Position X", { exact: true }).waitFor();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  assert.deepEqual(
+    (await call("reference_construction_get")).result.geometryEncoding,
+    surfaceIndependent.geometryEncoding,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const surfaceBakedPointId = (await call("project_get")).result.objects.find(
+    (row) => row.kind === "referencePoint",
+  ).id;
+  await mutate("object_delete", { entityId: "coordinate-surface" });
+  const surfaceArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: surfaceArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: surfaceBakedPointId })).result
+      .reference.geometryEncoding,
+    surfaceIndependent.geometryEncoding,
+  );
+  assert.deepEqual(
+    (await call("object_get", { entityId: surfaceBakedPointId })).result
+      .reference.definition.sources,
+    [],
+  );
+  ledger.surfaceCoordinateAcquisition = {
+    sharedNormalizedScreen: true,
+    guiMcpEqual: true,
+    originalSourceTriangles: true,
+    sourceDeleted: true,
+    workerReopen: true,
+    numericOnly: true,
+    nativeViewportEquivalence: false,
+  };
+  console.log(
+    "GUI/public MCP source-mesh surface acquisition and numeric-only worker reopen passed",
+  );
+
   await mutate("project_new", { discard: true });
   await page.getByRole("tab", { name: "Construct", exact: true }).click();
   await page
@@ -1705,6 +2424,9 @@ try {
     "actual project worker export/import preserving semantic IDs and history",
     "GUI line edit Preview/Cancel",
     "GUI/MCP stored-line midpoint with atomic source refresh, history, worker reopen and lock/delete rollback",
+    "actual fitted-plane GUI/MCP point source, source transform refresh and history/future worker reopen",
+    "real CAD vertex/curve acquisition, GUI/MCP vertex selector parity and numeric-only source-delete/history/reopen",
+    "GUI/MCP normalized-screen original-mesh surface acquisition and numeric-only source-delete/reopen",
     "rendered WebGL screenshots and clean page errors",
     "injected WebGL retirement failure retains applied dialog and owner-scoped cleanup retry",
     "GUI expiry/invalidation restart preserves coordinates and foreign preview ownership",

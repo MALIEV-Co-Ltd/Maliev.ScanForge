@@ -60,6 +60,11 @@ function fixedSix(value: number): number {
   return value < 0 ? -prepared : prepared;
 }
 
+/** Precise CAD coordinate bake: direct fixed-six fields, then numeric exchange. */
+export function roundTripNativePreciseCoordinate(value: number): number {
+  return roundTripNativePickedCoordinate(fixedSix(value));
+}
+
 function pointPreRound(value: number): number {
   coordinate(value);
   const sign = value <= -(2 ** -23) ? -1 : 1;

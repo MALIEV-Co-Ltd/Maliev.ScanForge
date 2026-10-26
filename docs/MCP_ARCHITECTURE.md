@@ -909,8 +909,83 @@ source. Apply persists a detached numeric coordinate/endpoints definition with
 no new source link or retained pick record; existing inactive line records remain.
 The recovered
 mm/N6 float-controller rounding is scoped separately from precise-double picks
-and derived line records. Other acquisition families remain gated until their
-provenance is integrated.
+and derived line records. Asynchronous CAD/original-mesh acquisition is separate
+from this unchanged synchronous cloud path.
+
+### Retained-job CAD and mesh coordinate acquisition
+
+`reference_construction_features` and `reference_construction_acquire` are
+read-only jobs in the existing serial API admission lane. Both are permitted
+inside an owned reference preview and preserve its owner/version. Feature pages
+default to 50 rows, allow at most 100, and return the captured `sourceRevision`.
+Acquisition requires `expectedRevision` even though it is read-only, preventing
+an old feature index from silently selecting a rebuilt source. Vertex,
+edge-endpoint, edge-fraction and normalized-screen selection arms are strict;
+caller XYZ, bits, handles, display-triangle indices and barycentric/provenance
+fields are rejected by discovery and execution.
+
+`reference-acquisition-operations.ts` owns source eligibility, worker queries,
+camera witnesses and numeric preparation. `CadClient.referenceFeatures` and
+`referenceCoordinate` return plain detached topology data and expose a read-only
+worker generation witness. Exact CAD vertex/curve locations use direct fixed-six
+preparation plus the existing G15 exchange, without point-editor N7. Screen
+locations use `alignmentMesh` canonical geometry and server-resolved face ranges;
+`resolveReferenceScreenCoordinate` consumes the captured camera, material side,
+clipping state and hidden slots. Its declared arithmetic is world Float32 nodes,
+double ray/triangle intersection and one Float32 XYZ before float/N6/G15 bake.
+This is application canonical screen behavior, not a claim of native provider
+intermediate arithmetic. Camera/clipping changes across awaits reject; later
+camera-only changes do not invalidate an already completed world point. Raw
+meshes use a matching original indexed carrier for vertex IDs and connectivity,
+falling back to flat source records when no valid indexed witness remains.
+Carrier choice is shared by feature pages, vertex acquisition and screen
+topology; equal coordinates are never deduplicated by the gateway. The screen
+work bound is checked before linear indexed-witness validation. Meshes expose
+surface acquisition, not invented CAD
+edge/face topology. Sampled-only sources reject. CAD hidden display slots cannot
+be assumed to match canonical slots, so that screen case rejects with recovery.
+The viewport adapter also rejects a mixed global-union/local-intersection clip
+configuration rather than flattening those distinct predicates into one flag.
+
+The generic `CommandContext` captures `startRevision`, provides an internal
+`retainPrivateJobData` setter and an exact-command `getCompletedJobData` reader.
+Private metadata lives inside the existing retained Job row, not another cache.
+The acquisition handler stores a frozen three-number coordinate and immutable
+source witnesses: Entity identity, geometry/carrier/recipe identities,
+kernel/BREP values and CAD-client identity/generation. These are borrowed
+references, never source-buffer copies. Checks run after every native await and
+again when Preview consumes `{acquisitionJobId}`. Failed/cancelled work,
+eviction, owner release/disposal and observed model revision changes clear the
+private metadata so obsolete projects are not kept alive by job bindings.
+Witness failure at reuse also clears its retained authority. The existing
+32-job retention policy bounds successful-job lifetime; no new TTL is added.
+The React host additionally observes committed entity/history/future array and
+project identity publication after rendering. This internal boundary clears
+private acquisition bindings even when replacement objects have the same wire
+revision signature. Camera/UI-only renders do not trigger this effect or a scene
+revision walk, and preserve already acquired world coordinates.
+
+Only the small public acquisition result is cloned and recursively frozen.
+`job_get`/`session_get` omit private fields; other job results and shared geometry
+buffers retain their existing identity behavior. A public result alias cannot
+alter the retained coordinate. Preview requires the exact successful acquisition
+command, current owner/revision and source witness. The job identifier is never
+stored in accepted geometry: numeric Apply remains source-detached and uses the
+ordinary cached session/version, one history step and lossless geometry codec.
+
+Local work budgets are 100,000 CAD topology visits/identity comparisons,
+2,000,000 screen triangles and 32 clips, alongside the existing canonical mesh
+cache/converter limits. The acquisition-only `alignmentMesh` option also checks
+prospective canonical conversion against 2,000,000 triangles/6,000,000 nodes
+before allocation and rejects oversized cached conversions. This whole-source
+preparation guard is conservative even for a selected face; existing alignment
+callers retain their original limits. These guards do not alter global
+model/import admission.
+Cancellation remains boundary-based: native queries settle and clean temporary
+handles, then publication checks reject cancellation. Ordinary cancellation
+never resets all source bodies. Browser GUI picking and MCP both submit these
+shared operations; the host adapter contributes actual camera/clip capture,
+not caller-authored geometry.
 
 ### Source-derived point adapter
 

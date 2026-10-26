@@ -33,8 +33,26 @@ shared GUI/MCP CAD rebuild of mixed reference descendants, locked-source
 preservation and numeric editor initialization with Cancel/Apply, history and
 worker reopening. The subsequent full suite passed 49,590 tests, skipped 64 and
 failed 15. Corrected admission assertions and detached repeated-record primitive
-results pass 198 focused regressions; a fresh full run against the checkpoint
-commit remains pending. These results do not close the remaining required gates.
+results pass 198 focused regressions. Hosted CI for checkpoint
+`8a95c9748685f25717318665dcaa72fce8020119` subsequently passed the build,
+49,605 tests with 64 conditional skips, CAD smoke and repository formatting
+([run 40257603548](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40257603548)).
+Later acquisition changes require fresh verification. These results do not close
+the remaining required gates.
+
+The [CAD/mesh acquisition checkpoint](evidence/m4-cad-acquisition-acceptance-20261026.json)
+records build `scanforge-05dd00833777a05e`: GUI and MCP share revision-bound jobs
+for exact CAD vertices, finite curve endpoints/parameter fractions and original
+mesh vertices or normalized screen picks. The final rendered public-MCP run
+passes numeric-only source deletion, history/reopen, fitted-plane point-source
+admission and transform refresh, and cancellation that waits for the owned native
+query to finish. Camera/clipping, indexed source identities and operation-local
+work limits have focused coverage. A separate real React/API observer regression
+verifies prompt release of private source bindings after GUI model publication
+without a scene walk on camera-only renders. The full build, 95 initial focused
+cases, 35 later API/owner cases (overlapping acquisition coverage), 11 real worker
+checks and four observer cases pass. Full hosted verification of the next commit,
+original-native acceptance and reference transform/duplication policies remain open.
 
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's

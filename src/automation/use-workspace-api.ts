@@ -106,6 +106,11 @@ export function useWorkspaceApi(host: WorkspaceHost) {
           current.current.setInterface(patch);
         }),
       inspectViewport: (view) => current.current.inspectViewport?.(view),
+      referenceCoordinateView: (entityId, view) => {
+        if (!current.current.referenceCoordinateView)
+          throw new Error("Reference coordinate camera capture unavailable.");
+        return current.current.referenceCoordinateView(entityId, view);
+      },
       inspectSpaceMouse: () => current.current.inspectSpaceMouse?.(),
       controlSpaceMouse: (command, signal) => {
         if (!current.current.controlSpaceMouse)
@@ -185,5 +190,14 @@ export function useWorkspaceApi(host: WorkspaceHost) {
     });
   }
   useEffect(() => api.current!.retainOwner(), []);
+  const publication = host.snapshot();
+  useEffect(() => {
+    api.current!.observeModelPublication();
+  }, [
+    publication.entities,
+    publication.history,
+    publication.future,
+    publication.projectId,
+  ]);
   return api.current;
 }

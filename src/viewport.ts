@@ -346,6 +346,7 @@ export class Viewport {
   private navigationCursor?: { clientX: number; clientY: number };
   private pickTargetId: string | null = null;
   private referenceCoordinatePicking = false;
+  private referenceSurfacePicking = false;
   private grid: THREE.GridHelper;
   private gridSpacing = 10;
   private automaticGrid = true;
@@ -385,6 +386,7 @@ export class Viewport {
       entityId: string,
       triangleIndex?: number,
       pointIndex?: number,
+      screen?: { x: number; y: number },
     ) => void,
     private readonly onSelect: (id: string) => void,
     private readonly onSelection?: (
@@ -856,6 +858,52 @@ export class Viewport {
             },
           }
         : {}),
+    };
+  }
+
+  referenceCoordinateView(entityId: string) {
+    const item = this.objects.get(entityId);
+    if (
+      !item ||
+      !item.mesh.visible ||
+      item.mesh.userData.objectPickable === false
+    )
+      throw new Error(
+        "Coordinate acquisition requires a visible selectable source.",
+      );
+    const view = inspectCamera(
+      this.camera,
+      this.controls.target,
+      this.bounds,
+      this.container.clientWidth,
+      this.container.clientHeight,
+    );
+    const material = item.mesh.material;
+    if (
+      this.renderer.clippingPlanes.length &&
+      material.clipIntersection &&
+      material.clippingPlanes?.length
+    )
+      throw new Error(
+        "Coordinate acquisition requires global union clipping or local intersection clipping separately. Clear one clipping group before acquiring.",
+      );
+    return {
+      projection: view.projection as "perspective" | "orthographic",
+      cameraMatrixFormat: "column-major-4x4" as const,
+      projectionMatrix: [...view.projectionMatrix],
+      cameraWorldMatrix: [...view.cameraWorldMatrix],
+      viewport: { ...view.viewport },
+      clippingPlanes: [
+        ...this.renderer.clippingPlanes,
+        ...(material.clippingPlanes ?? []),
+      ].map((plane) => ({
+        normal: plane.normal.toArray() as Vec3,
+        constant: plane.constant,
+      })),
+      materialSide: material.side,
+      clipIntersection: this.renderer.clippingPlanes.length
+        ? false
+        : material.clipIntersection,
     };
   }
 
@@ -2962,7 +3010,10 @@ export class Viewport {
         (item) =>
           item.mesh.visible &&
           item.mesh.userData.objectPickable !== false &&
-          (!this.referenceCoordinatePicking || !!item.pointCloud) &&
+          (!this.referenceCoordinatePicking ||
+            (this.referenceSurfacePicking
+              ? !item.pointCloud
+              : !!item.pointCloud)) &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -2974,16 +3025,19 @@ export class Viewport {
     const hit = this.raycaster
       .intersectObjects(candidates, false)
       .find((candidate) =>
-        (
-          (
-            candidate.object as THREE.Mesh<
-              THREE.BufferGeometry,
-              THREE.MeshStandardMaterial
-            >
-          ).material.clippingPlanes ?? []
-        ).every(
-          (plane) => plane.distanceToPoint(pickedWorldPoint(candidate)) >= 0,
-        ),
+        this.referenceSurfacePicking
+          ? this.referenceSurfaceHitVisible(candidate)
+          : (
+              (
+                candidate.object as THREE.Mesh<
+                  THREE.BufferGeometry,
+                  THREE.MeshStandardMaterial
+                >
+              ).material.clippingPlanes ?? []
+            ).every(
+              (plane) =>
+                plane.distanceToPoint(pickedWorldPoint(candidate)) >= 0,
+            ),
       );
     if (!hit) return;
     const id = hit.object.userData.entityId as string;
@@ -3008,7 +3062,18 @@ export class Viewport {
       );
     } else {
       const point = pickedWorldPoint(hit);
-      if (
+      if (this.referenceCoordinatePicking && this.referenceSurfacePicking)
+        this.onPick(
+          [point.x, point.y, point.z],
+          id,
+          hit.faceIndex ?? undefined,
+          undefined,
+          {
+            x: (event.clientX - rect.left) / rect.width,
+            y: (event.clientY - rect.top) / rect.height,
+          },
+        );
+      else if (
         this.referenceCoordinatePicking &&
         hit.object instanceof THREE.Points &&
         !hit.object.userData.referenceKind
@@ -3027,8 +3092,12 @@ export class Viewport {
     return id;
   }
 
-  setReferenceCoordinatePicking(enabled: boolean): void {
+  setReferenceCoordinatePicking(
+    enabled: boolean,
+    mode: "cloud" | "surface" = "cloud",
+  ): void {
     this.referenceCoordinatePicking = enabled;
+    this.referenceSurfacePicking = enabled && mode === "surface";
     if (enabled) {
       this.pointerCancel();
       this.setBrush(false);
@@ -3037,6 +3106,28 @@ export class Viewport {
 
   setPickTarget(entityId: string | null): void {
     this.pickTargetId = entityId;
+  }
+
+  getPickTarget(): string | null {
+    return this.pickTargetId;
+  }
+
+  private referenceSurfaceHitVisible(hit: THREE.Intersection): boolean {
+    const point = pickedWorldPoint(hit);
+    if (
+      this.renderer.clippingPlanes.some(
+        (plane) => plane.distanceToPoint(point) < 0,
+      )
+    )
+      return false;
+    const material = (
+      hit.object as THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>
+    ).material;
+    const planes = material.clippingPlanes ?? [];
+    return material.clipIntersection
+      ? !planes.length ||
+          !planes.every((plane) => plane.distanceToPoint(point) < 0)
+      : planes.every((plane) => plane.distanceToPoint(point) >= 0);
   }
 
   private referenceCandidates(pickable: boolean) {
@@ -3057,7 +3148,7 @@ export class Viewport {
   selectionChoicesAt(
     event: Pick<PointerEvent, "clientX" | "clientY">,
   ): CanvasPickChoice[] {
-    if (this.originPicking)
+    if (this.originPicking && !this.referenceCoordinatePicking)
       return this.originHits(event).map((hit) => {
         const plane = hit.object.userData.originPlane as OriginPlane;
         return {
@@ -3081,7 +3172,10 @@ export class Viewport {
         (item) =>
           item.mesh.visible &&
           item.mesh.userData.objectPickable !== false &&
-          (!this.referenceCoordinatePicking || !!item.pointCloud) &&
+          (!this.referenceCoordinatePicking ||
+            (this.referenceSurfacePicking
+              ? !item.pointCloud
+              : !!item.pointCloud)) &&
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
@@ -3093,14 +3187,16 @@ export class Viewport {
     return this.raycaster
       .intersectObjects(meshes, false)
       .filter((hit) =>
-        (
-          (
-            hit.object as THREE.Mesh<
-              THREE.BufferGeometry,
-              THREE.MeshStandardMaterial
-            >
-          ).material.clippingPlanes ?? []
-        ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
+        this.referenceSurfacePicking
+          ? this.referenceSurfaceHitVisible(hit)
+          : (
+              (
+                hit.object as THREE.Mesh<
+                  THREE.BufferGeometry,
+                  THREE.MeshStandardMaterial
+                >
+              ).material.clippingPlanes ?? []
+            ).every((plane) => plane.distanceToPoint(hit.point) >= 0),
       )
       .map((hit) => {
         const id = hit.object.userData.entityId as string;
@@ -3115,7 +3211,18 @@ export class Viewport {
               return;
             this.onSelect(id);
             const point = pickedWorldPoint(hit);
-            if (
+            if (this.referenceCoordinatePicking && this.referenceSurfacePicking)
+              this.onPick(
+                [point.x, point.y, point.z],
+                id,
+                hit.faceIndex ?? undefined,
+                undefined,
+                {
+                  x: (event.clientX - rect.left) / rect.width,
+                  y: (event.clientY - rect.top) / rect.height,
+                },
+              );
+            else if (
               this.referenceCoordinatePicking &&
               hit.object instanceof THREE.Points &&
               !hit.object.userData.referenceKind

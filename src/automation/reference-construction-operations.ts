@@ -1,4 +1,8 @@
-import type { Handler, WorkspaceHost } from "./api";
+import type { CommandContext, Handler, WorkspaceHost } from "./api";
+import {
+  createReferenceAcquisitionOperations,
+  resolveReferenceAcquisitionJob,
+} from "./reference-acquisition-operations";
 import {
   copyReferenceConstruction,
   encodeReferenceConstruction,
@@ -83,6 +87,7 @@ export function createReferenceConstructionOperations(
     };
   };
   return {
+    ...createReferenceAcquisitionOperations(host),
     reference_construction_get: inspect,
     reference_construction_pick: (args, context) => {
       context.check();
@@ -376,19 +381,19 @@ export function createReferenceConstructionOperations(
         initialized?.kind === "point"
           ? initialized.position
           : pickedPosition
-            ? resolveCoordinatePick(scene, args.positionPick)
+            ? resolvePreviewCoordinatePick(host, context, args.positionPick)
             : args.position;
       const start =
         initialized?.kind === "line"
           ? initialized.start
           : pickedStart
-            ? resolveCoordinatePick(scene, args.startPick)
+            ? resolvePreviewCoordinatePick(host, context, args.startPick)
             : args.start;
       const end =
         initialized?.kind === "line"
           ? initialized.end
           : pickedEnd
-            ? resolveCoordinatePick(scene, args.endPick)
+            ? resolvePreviewCoordinatePick(host, context, args.endPick)
             : args.end;
       context.check();
       const definition = midpoint
@@ -562,6 +567,31 @@ function copyState(
 }
 
 /** Shared by read-only acquisition and lossless Preview intents; no caller-authored coordinates. */
+function resolvePreviewCoordinatePick(
+  host: WorkspaceHost,
+  context: CommandContext,
+  input: unknown,
+) {
+  if (
+    input &&
+    typeof input === "object" &&
+    !Array.isArray(input) &&
+    "acquisitionJobId" in input
+  ) {
+    if (
+      Reflect.ownKeys(input).length !== 1 ||
+      typeof input.acquisitionJobId !== "string"
+    )
+      throw new Error("Acquisition pick accepts only acquisitionJobId.");
+    return resolveReferenceAcquisitionJob(
+      host,
+      context,
+      input.acquisitionJobId,
+    );
+  }
+  return resolveCoordinatePick(host.snapshot().entities, input);
+}
+
 function resolveCoordinatePick(scene: readonly Entity[], input: unknown) {
   if (!input || typeof input !== "object" || Array.isArray(input))
     throw new Error(

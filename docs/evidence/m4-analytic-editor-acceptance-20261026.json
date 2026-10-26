@@ -177,7 +177,21 @@
       "failedTests": 0,
       "files": 5
     },
-    "freshFullRerun": "Pending exact checkpoint commit hosted CI",
-    "scope": "Production build/browser checkpoint above predates the later per-record detachment fix; focused contract/numeric tests validate that fix. No all-pass full-suite claim."
+    "freshFullRerun": {
+      "commit": "8a95c9748685f25717318665dcaa72fce8020119",
+      "runId": 40257603548,
+      "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40257603548",
+      "conclusion": "success",
+      "passedTests": 49605,
+      "skippedTests": 64,
+      "failedTests": 0,
+      "passedFiles": 705,
+      "skippedFiles": 18,
+      "build": true,
+      "cadSmoke": true,
+      "repositoryFormatting": true,
+      "scope": "Hosted Linux checkpoint only; later acquisition source changes require fresh verification."
+    },
+    "scope": "The failed local full receipt is retained. The corrected checkpoint passed hosted full CI; the production browser receipt above predates per-record detachment and subsequent acquisition changes."
   }
 }

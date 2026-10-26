@@ -707,3 +707,295 @@ it("retires pending sketch capture, defining picks and trim preview when enterin
   expect(f.onDraw).not.toHaveBeenCalled();
   expect(f.onTrim).not.toHaveBeenCalled();
 });
+
+function referenceSurfaceFixture() {
+  const f = fixture();
+  Object.assign(f.state, {
+    container: { clientWidth: 200, clientHeight: 100 },
+    pointerCancel: vi.fn(),
+    setBrush: vi.fn(),
+  });
+  f.state.renderer.clippingPlanes = [];
+  f.state.renderer.domElement.getBoundingClientRect = () => ({
+    left: 100,
+    top: 50,
+    width: 200,
+    height: 100,
+  });
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([-4, -4, 0, 4, -4, 0, 0, 4, 0], 3),
+  );
+  const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData.entityId = "surface";
+  mesh.userData.objectPickable = true;
+  const cloud = new THREE.Points(
+    new THREE.BufferGeometry().setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute([0, 0, 2], 3),
+    ),
+    new THREE.PointsMaterial({ size: 1 }),
+  );
+  cloud.userData.entityId = "cloud";
+  const cloudParent = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    new THREE.MeshStandardMaterial(),
+  );
+  cloudParent.userData.entityId = "cloud";
+  cloudParent.userData.objectPickable = true;
+  cloudParent.add(cloud);
+  f.state.objects.set("surface", {
+    mesh,
+    positions: [-4, -4, 0, 4, -4, 0, 0, 4, 0],
+    triangleSlots: [42],
+  });
+  f.state.objects.set("cloud", {
+    mesh: cloudParent,
+    pointCloud: cloud,
+    positions: [0, 0, 2],
+  });
+  f.state.scene.add(mesh, cloudParent);
+  f.state.scene.updateMatrixWorld(true);
+  return { ...f, mesh, cloud, material };
+}
+
+it.each(["perspective", "orthographic"] as const)(
+  "captures detached %s source camera, dimensions and clipping state",
+  (projection) => {
+    const f = referenceSurfaceFixture();
+    try {
+      if (projection === "orthographic") {
+        const camera = new THREE.OrthographicCamera(-3, 3, 2, -2, 0.1, 100);
+        camera.position.set(0, 0, 10);
+        camera.updateMatrixWorld(true);
+        f.state.camera = camera;
+      }
+      const camera = f.state.camera as
+        THREE.PerspectiveCamera | THREE.OrthographicCamera;
+      const global = new THREE.Plane(new THREE.Vector3(1, 0, 0), 2);
+      const local = new THREE.Plane(new THREE.Vector3(0, 1, 0), 3);
+      f.state.renderer.clippingPlanes = [global];
+      f.material.clippingPlanes = [local];
+      f.material.side = THREE.BackSide;
+      const capture = f.view.referenceCoordinateView("surface");
+      expect(capture).toMatchObject({
+        projection,
+        cameraMatrixFormat: "column-major-4x4",
+        viewport: { width: 200, height: 100 },
+        clippingPlanes: [
+          { normal: [1, 0, 0], constant: 2 },
+          { normal: [0, 1, 0], constant: 3 },
+        ],
+        materialSide: THREE.BackSide,
+        clipIntersection: false,
+      });
+      expect(capture.projectionMatrix).toEqual(
+        camera.projectionMatrix.toArray(),
+      );
+      expect(capture.cameraWorldMatrix).toEqual(camera.matrixWorld.toArray());
+      expect(capture.projectionMatrix).not.toBe(
+        camera.projectionMatrix.elements,
+      );
+      expect(capture.cameraWorldMatrix).not.toBe(camera.matrixWorld.elements);
+      capture.projectionMatrix[0] = 123;
+      capture.cameraWorldMatrix[12] = 123;
+      capture.clippingPlanes[0].normal[0] = 123;
+      capture.clippingPlanes[1].constant = 123;
+      expect(camera.projectionMatrix.elements[0]).not.toBe(123);
+      expect(camera.matrixWorld.elements[12]).toBe(0);
+      expect(global.normal.x).toBe(1);
+      expect(local.constant).toBe(3);
+    } finally {
+      f.view.setEntities([], null);
+    }
+  },
+);
+
+it("captures local clipping intersection and rejects an unrepresentable mixed global policy", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(1, 0, 0), 2),
+    ];
+    f.material.clipIntersection = true;
+    expect(f.view.referenceCoordinateView("surface")).toMatchObject({
+      clipIntersection: true,
+      clippingPlanes: [{ normal: [1, 0, 0], constant: 2 }],
+    });
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 2),
+    ];
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /clip|intersection|policy/i,
+    );
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("captures global-only clipping as union even when the material has an unused intersection flag", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.material.clipIntersection = true;
+    f.material.clippingPlanes = [];
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 2),
+    ];
+    expect(f.view.referenceCoordinateView("surface")).toMatchObject({
+      clipIntersection: false,
+      clippingPlanes: [{ normal: [0, 1, 0], constant: 2 }],
+    });
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("requires an existing visible pickable object for a coordinate camera capture", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    expect(() => f.view.referenceCoordinateView("missing")).toThrow(
+      /visible selectable/,
+    );
+    f.mesh.visible = false;
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /visible selectable/,
+    );
+    f.mesh.visible = true;
+    f.mesh.userData.objectPickable = false;
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /visible selectable/,
+    );
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface acquisition supplies normalized canvas coordinates as a fifth argument and excludes clouds", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setPickTarget("surface");
+    expect(f.view.getPickTarget()).toBe("surface");
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    expect(f.state.pickAt({ clientX: 220, clientY: 90 })).toBe("surface");
+    const args = f.state.onPick.mock.calls.at(-1);
+    expect(args).toHaveLength(5);
+    expect(args.slice(1)).toEqual([
+      "surface",
+      0,
+      undefined,
+      { x: 0.6, y: 0.4 },
+    ]);
+    expect(args[0]).toHaveLength(3);
+    expect(args[0].every(Number.isFinite)).toBe(true);
+    f.view.setPickTarget("cloud");
+    expect(f.view.getPickTarget()).toBe("cloud");
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.state.onPick).toHaveBeenCalledOnce();
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface overlap choices use the same fifth argument while an origin guide is active", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.state.originPicking = true;
+    f.state.originHits = vi.fn(() => []);
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    const choices = f.view.selectionChoicesAt({ clientX: 220, clientY: 90 });
+    expect(choices.map((choice) => choice.id)).toEqual(["surface"]);
+    choices[0].choose();
+    expect(f.state.onPick.mock.calls.at(-1).slice(1)).toEqual([
+      "surface",
+      0,
+      undefined,
+      { x: 0.6, y: 0.4 },
+    ]);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(5);
+    expect(f.state.originHits).not.toHaveBeenCalled();
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface direct and overlap picks use local intersection clipping while global planes always clip independently", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    f.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(1, 0, 0), -1),
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 1),
+    ];
+    f.material.clipIntersection = true;
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("surface");
+    const visible = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    expect(visible.map((choice) => choice.id)).toEqual(["surface"]);
+    visible[0].choose();
+    expect(f.state.onPick).toHaveBeenCalledTimes(2);
+    f.material.clipIntersection = false;
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.view.selectionChoicesAt({ clientX: 200, clientY: 100 })).toEqual(
+      [],
+    );
+    f.material.clipIntersection = true;
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 0, 1), -1),
+    ];
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.view.selectionChoicesAt({ clientX: 200, clientY: 100 })).toEqual(
+      [],
+    );
+    expect(f.state.onPick).toHaveBeenCalledTimes(2);
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("cloud acquisition preserves the four-argument record index callback for direct and overlap picks", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true);
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("cloud");
+    expect(f.state.onPick).toHaveBeenLastCalledWith(
+      [0, 0, 2],
+      "cloud",
+      undefined,
+      0,
+    );
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(4);
+    const choices = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    expect(choices.map((choice) => choice.id)).toEqual(["cloud"]);
+    choices[0].choose();
+    expect(f.state.onPick).toHaveBeenLastCalledWith(
+      [0, 0, 2],
+      "cloud",
+      undefined,
+      0,
+    );
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(4);
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("leaving coordinate acquisition retains the legacy three-argument original-facet callback", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    f.view.setReferenceCoordinatePicking(false);
+    f.view.setPickTarget("surface");
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("surface");
+    expect(f.state.onPick).toHaveBeenLastCalledWith([0, 0, 0], "surface", 42);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(3);
+    const choices = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    choices[0].choose();
+    expect(f.state.onPick).toHaveBeenLastCalledWith([0, 0, 0], "surface", 42);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(3);
+    f.view.setPickTarget(null);
+    expect(f.view.getPickTarget()).toBeNull();
+  } finally {
+    f.view.setEntities([], null);
+  }
+});

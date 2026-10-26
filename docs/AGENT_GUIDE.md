@@ -2317,9 +2317,86 @@ Accepted objects remain stored
 new retained line-pick records. Source edits or deletion therefore do not move
 the accepted object; model Undo/Redo and project save/reopen retain its baked
 numeric geometry. Picking alone publishes nothing, and Cancel discards the
-draft. This slice does not provide mesh/CAD/sketch acquisition, the native
-cached precise-double point route, alternate native unit/precision settings or
-the retained hits needed by derived line pair/average construction.
+draft. The cloud tool remains synchronous; CAD and original-mesh numeric
+acquisition use the separate job tools below. Native cached-provider equivalence,
+sketch acquisition, alternate unit/precision settings and retained CAD/scan hits
+for derived line construction remain separate required input work.
+
+### Acquire exact CAD or original-mesh numeric coordinates
+
+Use read-only job `reference_construction_features` with
+`{entityId,family:"vertices"|"edges"|"faces",offset:0,limit:50}` to inspect a
+source. Limit is at most 100; follow `nextOffset` until null. Poll `job_get` until
+the job succeeds. Results include `entityId`, `sourceRevision`, `total`,
+`nextOffset`, `rows`, `selectionModel`, world coordinate space and millimetre units.
+CAD rows expose unique query-local vertex/edge indices, finite curve parameter
+ranges, or face ranges with eligibility/reasons. Mesh rows use original indexed
+vertex IDs/connectivity when validated against current expanded geometry, or
+flat source records otherwise; they do not deduplicate equal coordinates. Mesh
+edge/face listing is unsupported.
+Indices are source-revision-bound, not persistent topology identities.
+
+Start read-only job `reference_construction_acquire` with that `sourceRevision`
+as mandatory `expectedRevision`, the source `entityId`, and one strict selection:
+
+- `{kind:"vertex",vertexIndex:0}`.
+- `{kind:"edge-endpoint",edgeIndex:0,endpoint:"start"|"end"}` for exact CAD.
+- `{kind:"edge-fraction",edgeIndex:0,fraction:0.25}` for exact CAD. Fraction is
+  the finite curve parameter interval fraction, not arc length.
+- `{kind:"screen",x:0.5,y:0.5,view:"main"}` for source-specific surface input.
+  Coordinates are normalized top-left values in `[0,1]`; `view` can also be
+  `moving` or `fixed`. Optional `faceIndex` restricts exact CAD acquisition to one
+  canonical face range.
+
+The source must be visible, unlocked and selectable. Sampled-only mesh previews
+without the accepted original source reject. CAD vertex/curve queries use exact
+worker topology and direct fixed-six preparation followed by the G15 numeric
+exchange; they do not use point-editor N7 or the cloud Float32 bake. Surface and
+source-mesh acquisition use world Float32 carrier coordinates, double
+ray/triangle arithmetic and one Float32 XYZ result before the float/N6/G15 bake.
+Screen picking captures actual camera, viewport, material side and clipping
+state; changing them before the job completes rejects the result. A completed
+world coordinate remains valid after later camera-only movement.
+
+The successful job result contains
+`{entityId,sourceRevision,position,positionEncoding,units:"mm",coordinateSpace:"world",acquisition,selectionModel,numericOnly:true,sourceDependencyRetained:false}`.
+For publication, send `positionPick:{acquisitionJobId:"<successful job ID>"}`
+inside ordinary numeric `reference_construct` Preview, with `sourceRevision` as
+`expectedRevision`. Each line endpoint independently accepts the same job arm,
+the existing cloud-index arm, or typed coordinates. Do not retransmit the numeric
+array as authority: JSON can erase negative zero. Verify `positionEncoding` and
+Preview/Get `geometryEncoding`. Caller XYZ, encoded bits, kernel handles,
+display-triangle indices, barycentric fields and provenance are forbidden.
+
+Feature/acquisition jobs may run while a reference preview is open without
+replacing its owner/version. Their private numeric authority belongs to the same
+API owner and existing 32-row job retention window. Running, failed, cancelled,
+foreign, evicted or stale jobs cannot fill Preview. Source replacement, geometry,
+BREP, kernel/client generation or revision changes require reacquisition.
+GUI model/history/project publication also retires private bindings when its
+wire revision signature happens to stay equal; reacquire after that boundary.
+`job_get` exposes only the detached small result, never private source witnesses;
+editing a returned result cannot alter the server's coordinate. No successful-job
+TTL or new persistent topology cache is introduced. Cancellation waits for native
+work to settle and release temporary handles; it does not reset source bodies.
+
+Work limits apply to these operations: 100,000 CAD topology visits/identity
+comparisons, 2,000,000 screen-triangle visits and 32 clipping planes. Existing
+canonical converter/cache limits remain. CAD screen acquisition also rejects
+whole-source canonical conversion above 2,000,000 triangles or 6,000,000 nodes
+before converting/allocating its arrays, including oversized cached results;
+selecting a small face does not bypass that whole-source preparation bound.
+After a work-limit error choose a
+simpler source, a smaller face or split the source; no new global import/project
+cap applies. Raw-mesh hidden triangles are excluded in their original slots.
+CAD screen acquisition with hidden display triangles rejects because their
+mapping to canonical slots is not established; clear hidden faces or choose an
+exact vertex/edge. A mixed global-union/local-intersection clipping configuration
+also rejects rather than merging different renderer predicates; disable that
+combination or use an exact vertex/edge. `application-canonical-triangle` explicitly describes the
+application arithmetic, not original-native CAD viewport equivalence. This
+numeric acquisition creates no retained source dependency; Apply, Cancel,
+history and save/reopen follow the existing numeric construction lifecycle.
 
 ### Semantic-source point construction
 

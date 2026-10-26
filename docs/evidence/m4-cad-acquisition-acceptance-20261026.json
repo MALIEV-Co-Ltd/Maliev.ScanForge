@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 CAD/mesh coordinate acquisition and fitted-plane source checkpoint; remaining native and lifecycle gates open",
+  "baseCommit": "8a95c9748685f25717318665dcaa72fce8020119",
+  "productionBuild": "scanforge-05dd00833777a05e",
+  "productionInputs": {
+    "scope": "production build inputs",
+    "count": 1039,
+    "sha256": "b464ec32523b31930907de6507f282f935b74d1111b98174a03bfcb876b1a812",
+    "serializedPinReceipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.4344907999620773,
+      "peakJobBytes": 49115136,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T02:58:56.008559+00:00",
+      "finishedUtc": "2026-10-26T02:58:56.443063+00:00"
+    }
+  },
+  "build": {
+    "initialFullBuild": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 123.34847160003847,
+      "peakJobBytes": 1743228928,
+      "totalProcesses": 36,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T02:45:32.921745+00:00",
+      "finishedUtc": "2026-10-26T02:47:36.270289+00:00"
+    },
+    "fullTypecheckBatches": 13,
+    "laterObserverSourceTypecheckAndRebundle": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 14.718891600030474,
+      "peakJobBytes": 1547337728,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T02:56:28.776161+00:00",
+      "finishedUtc": "2026-10-26T02:56:43.495126+00:00"
+    },
+    "advisory": "Vite agent API chunk exceeds configured1200kB advisory; build succeeded"
+  },
+  "focused": {
+    "initialAcquisitionFittedScreenViewport": {
+      "passedTests": 95,
+      "files": 4,
+      "receipt": {
+        "passed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 1.7835262999869883,
+        "peakJobBytes": 507551744,
+        "totalProcesses": 11,
+        "activeAfter": 0,
+        "jobLimitBytes": 4294967296,
+        "startedUtc": "2026-10-26T02:43:10.385139+00:00",
+        "finishedUtc": "2026-10-26T02:43:12.168676+00:00"
+      }
+    },
+    "laterAcquisitionOwnerPublication": {
+      "passedTests": 35,
+      "files": 2,
+      "overlapsPriorAcquisitionCases": true,
+      "receipt": {
+        "passed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 1.759059600008186,
+        "peakJobBytes": 398000128,
+        "totalProcesses": 9,
+        "activeAfter": 0,
+        "jobLimitBytes": 4294967296,
+        "startedUtc": "2026-10-26T02:55:29.799459+00:00",
+        "finishedUtc": "2026-10-26T02:55:31.558528+00:00"
+      }
+    }
+  },
+  "realBundledCadWorker": {
+    "passedChecks": 11,
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 1.0189594999537803,
+      "peakJobBytes": 456065024,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T02:43:17.659818+00:00",
+      "finishedUtc": "2026-10-26T02:43:18.678787+00:00"
+    },
+    "scope": "Application bundled OCCT query protocol; no original-native viewport predicate equivalence"
+  },
+  "actualGuiPublicStdioMcp": {
+    "passed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 28.496823100023903,
+    "peakJobBytes": 1739313152,
+    "totalProcesses": 16,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "startedUtc": "2026-10-26T03:00:48.039011+00:00",
+    "finishedUtc": "2026-10-26T03:01:16.535844+00:00"
+  },
+  "browserReportSha256": "4f54d480a9923d2eb6a166690347c2f0c5679164683ebb1aac3c9131ee102d8d",
+  "browserCoverage": {
+    "fittedPlanePointSource": {
+      "actualPrimitiveFitCreate": true,
+      "initialFrameAndDiagnosticsRetained": true,
+      "guiMcpCenterEqual": true,
+      "centerOutcome": "origin",
+      "sourceTransformRefresh": true,
+      "fitClearedOnTransform": true,
+      "undoRedo": true,
+      "workerReopenWithFuture": true
+    },
+    "cadCoordinateAcquisition": {
+      "exactDoubleVertex": true,
+      "parameterFraction": true,
+      "guiVertexMcpEqual": true,
+      "readOnlyHistory": true,
+      "sourceDeleted": true,
+      "undoRedo": true,
+      "workerReopen": true,
+      "numericOnly": true
+    },
+    "surfaceCancelOwnership": {
+      "controlledTransportDelay": true,
+      "realKernelQueryReleased": true,
+      "cancellationTerminalBeforeParentRestored": true,
+      "unchangedModelHistory": true,
+      "maximumHoldMs": 5000
+    },
+    "surfaceCoordinateAcquisition": {
+      "sharedNormalizedScreen": true,
+      "guiMcpEqual": true,
+      "originalSourceTriangles": true,
+      "sourceDeleted": true,
+      "workerReopen": true,
+      "numericOnly": true,
+      "nativeViewportEquivalence": false
+    }
+  },
+  "sourcePublicationObserver": {
+    "scope": "Actual React hook and ApplicationApi; CAD numeric backend mocked; private binding release observed without a later API call",
+    "passedCases": 4,
+    "cameraOnlyRendersPreserveCompletedPoints": true,
+    "cameraOnlyRevisionWalks": 0,
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 1.5754533999715932,
+      "peakJobBytes": 314855424,
+      "totalProcesses": 14,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T02:55:32.528076+00:00",
+      "finishedUtc": "2026-10-26T02:55:34.103541+00:00"
+    },
+    "reportSha256": "5ab3537da82e0a9bab0c9bb6edaa4b3635f04633ebc02c516a06f1ecbc459e8d"
+  },
+  "visualInspection": [
+    "CAD coordinate selector after feature load",
+    "Surface coordinate prompt"
+  ],
+  "contracts": [
+    "reference_construction_features: paginated exact CAD topology or original indexed mesh vertices",
+    "reference_construction_acquire: strict revision-bound vertex, curve endpoint/fraction or normalized screen selection",
+    "reference_construct coordinate fields accept only trusted completed acquisitionJobId intents",
+    "Small public point result is detached; same32-row retained job owns private source witness; no persistent source dependency",
+    "100000 CAD topology visits/identity comparisons,2000000 screen triangles,32clips; local conversion guard before allocation",
+    "CAD hidden display masks reject pending canonical index mapping; global union and local intersection clipping are handled explicitly"
+  ],
+  "priorFailuresRetained": [
+    {
+      "receipt": "cad-fitted-input-red-r1.json",
+      "scope": "Missing acquisition tools and fitted-plane source support;35failed7passed"
+    },
+    {
+      "receipt": "cad-screen-fitted-green-r1.json",
+      "scope": "Malformed parallel plane tangent admitted;67passed1failed; corrected resolver guard"
+    },
+    {
+      "receipt": "acquisition-publication-api-red-r1.json",
+      "scope": "Missing model-publication source-witness retirement;25passed1failed"
+    },
+    {
+      "receipt": "acquisition-publication-hook-red-r1.json",
+      "scope": "Harness infrastructure doubleheaders failure; not product RED"
+    },
+    {
+      "receipt": "acquisition-publication-hook-red-r2.json",
+      "scope": "Actual GUI entity publication retained old private source witness; fixed observer"
+    },
+    {
+      "receipt": "build-acquisition-observer-r1.json",
+      "scope": "Temporary supplemental config omitted vite.config.ts Node ambient types; corrected config passed"
+    },
+    {
+      "receipt": "cad-acquisition-scheduling-audit-r1.json",
+      "scope": "Initial whole-source hash overlapped early build preparation; not atomic. Replaced by fresh serialized streaming production-input pin above"
+    }
+  ],
+  "remainingRequiredGates": [
+    "Semantic reference transform and duplication policies, including derived source/pick lifecycle",
+    "Original-native mode acceptance and persistence, frame/fit/curve/constraint comparisons",
+    "Fresh full hosted checks on new checkpoint, final review and merged-main verification before issue4/milestone5 closure"
+  ],
+  "milestoneComplete": false,
+  "merged": false
+}

@@ -226,12 +226,22 @@ export function resolveReferencePointSource(
   if (
     entity.kind === "plane" &&
     entity.planeFrame !== undefined &&
-    entity.fit === undefined &&
     entity.kernelId === undefined &&
     entity.parametric === undefined
   ) {
     validatePlaneFrame(entity.planeFrame, entity.positions, entity.kind);
-    const { center, normal } = entity.planeFrame;
+    const { center, normal, tangent } = entity.planeFrame;
+    const tangentNormal = tangent.reduce(
+      (sum, value, axis) => sum + value * normal[axis],
+      0,
+    );
+    const tangentLength = Math.hypot(
+      ...tangent.map((value, axis) => value - tangentNormal * normal[axis]),
+    );
+    if (!Number.isFinite(tangentLength) || tangentLength < 1e-9)
+      throw new Error(
+        "Construction plane tangent must not be parallel to its normal.",
+      );
     const offset = -normal.reduce(
       (sum, value, axis) => sum + value * center[axis],
       0,
