@@ -1,0 +1,1005 @@
+{
+  "owner": "surface-fit-browser",
+  "applicationOrigin": "http://127.0.0.1:5206",
+  "expiresAt": "2026-10-26T10:00:42.746Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "pid": 66880,
+      "startedAt": "2026-10-26T09:57:42.2849613Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "port-reservation",
+      "port": 63261,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 42300,
+      "startedAt": "2026-10-26T09:57:43.0951049Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "mcp-server",
+      "port": 63261,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 66820,
+      "startedAt": "2026-10-26T09:57:43.6226170Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "kind": "browser",
+      "persistentData": false
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "mcp-server",
+      "pid": 42300,
+      "originalStart": "2026-10-26T09:57:43.0951049Z",
+      "absent": true
+    },
+    {
+      "kind": "browser",
+      "pid": 66820,
+      "originalStart": "2026-10-26T09:57:43.6226170Z",
+      "absent": true
+    },
+    {
+      "port": 63261,
+      "closed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "guiLaunch": "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
+      "hiddenState": "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
+      "requestedTriangles": 288,
+      "fittedTriangles": 287,
+      "selectedIds": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+        57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+        93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+        109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+        137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150,
+        151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+        165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+        179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+        221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+        235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+        249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+        263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287
+      ],
+      "sourceId": "d9c3dc5e-818f-4585-8a07-175063c00f5b",
+      "guiId": "db5a5854-94ae-408d-84af-462d306e3453",
+      "mcpId": "d7ead179-ba7a-4163-bf0b-3e088a14649a",
+      "options": {
+        "countU": 4,
+        "countV": 4,
+        "degree": 3,
+        "projection": "xy",
+        "sampleLimit": 10000
+      },
+      "previewNoCommit": true,
+      "guiOneHistoryStep": true,
+      "mcpOneHistoryStep": true,
+      "exactPatchEquality": true,
+      "exactRenderGeometryEquality": true,
+      "sourceGeometryPreserved": true,
+      "mcpResult": {
+        "entityId": "d7ead179-ba7a-4163-bf0b-3e088a14649a",
+        "samples": 861,
+        "rms": 1.2518105224974623e-14,
+        "maxError": 1.0302869668521453e-13,
+        "projection": "xy",
+        "solverBytes": 22968
+      },
+      "limitations": [
+        "Hidden-selected filtering is checked by GUI region count and the MCP fit sample count; the planar fixture does not prove behavior on unrestricted surfaces.",
+        "Authored planar fixture establishes GUI/MCP refactor equality, not native numerical parity, unrestricted input sizes or point-cloud browser behavior."
+      ]
+    },
+    {
+      "controlEdit": "GUI Z control and public surface_set",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true
+    },
+    {
+      "exactSurface": "GUI control edit and public cad_rebuild",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true,
+      "stepExport": 5997,
+      "projectReopenExactCad": true
+    },
+    {
+      "exactInspectionGuiMcpEquality": true,
+      "unchangedRevision": true,
+      "report": {
+        "entityId": "2d94914a-718d-40f1-88af-0427dc221300",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 148.67578360074663,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      }
+    },
+    {
+      "sketchSurfaceAnalyticMcp": {
+        "centerXYMm": [0.210029929876, 0.06886227428913],
+        "radiusMm": 3,
+        "frame": {
+          "origin": [0, 0, 5],
+          "u": [1, 0, 0],
+          "v": [0, 1, 0],
+          "normal": [0, 0, 1]
+        },
+        "expectedAreaMm2": 28.274333882308138,
+        "areaToleranceMm2": 1e-7,
+        "report": {
+          "entityId": "153a60c4-665c-48e0-b2e5-f9e446391e74",
+          "units": "mm",
+          "valid": true,
+          "solids": 0,
+          "shells": 0,
+          "faces": 1,
+          "edges": 2,
+          "vertices": 2,
+          "areaMm2": 28.274333882308078,
+          "signedVolumeMm3": 0,
+          "volumeMm3": 0,
+          "topologyVisits": 7,
+          "edgeReferences": {
+            "offset": 0,
+            "total": 2,
+            "nextOffset": null,
+            "items": [
+              {
+                "index": 0,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [3.2100299298759998, 0.06886227428913, 5],
+                  [-2.7899700701240002, 0.06886227428913935, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, 0.06886217428913, 4.9999999],
+                  "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                }
+              },
+              {
+                "index": 1,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [-2.7899700701240002, 0.06886227428913, 5],
+                  [3.2100299298759998, 0.06886227428911998, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                  "max": [3.2100300298759996, 0.06886237428913, 5.0000001]
+                }
+              }
+            ]
+          },
+          "inspectedRevision": 38
+        },
+        "placementProof": {
+          "frame": {
+            "origin": [0, 0, 5],
+            "u": [1, 0, 0],
+            "v": [0, 1, 0],
+            "normal": [0, 0, 1]
+          },
+          "thicknessMm": 0,
+          "expectedBounds": {
+            "min": [-2.7899700701240002, -2.93113772571087, 5],
+            "max": [3.2100299298759998, 3.06886227428913, 5]
+          },
+          "actualBounds": {
+            "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+            "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+          },
+          "normalRangeMm": [0, 0],
+          "endpointToleranceMm": 1e-7,
+          "boundsToleranceMm": 0.000001,
+          "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+        },
+        "noSketchHistoryEdit": true,
+        "unchangedAuthoring": true,
+        "sourceBuffersPreserved": true,
+        "oneModelHistoryStep": true,
+        "scope": "Synthetic analytic circle through public MCP and actual OpenCascade; no scan-fit or native-operation equivalence claim"
+      }
+    },
+    {
+      "sketchSurfaceGuiAdmission": {
+        "activeSavedSketch": true,
+        "selectedId": null
+      }
+    },
+    {
+      "sketchSurfaceGuiMcp": {
+        "defaultName": "Sketch surface",
+        "guiReport": {
+          "entityId": "1d84d968-a7c6-4b92-abd8-704a2b0674af",
+          "units": "mm",
+          "valid": true,
+          "solids": 0,
+          "shells": 0,
+          "faces": 1,
+          "edges": 2,
+          "vertices": 2,
+          "areaMm2": 28.274333882308078,
+          "signedVolumeMm3": 0,
+          "volumeMm3": 0,
+          "topologyVisits": 7,
+          "edgeReferences": {
+            "offset": 0,
+            "total": 2,
+            "nextOffset": null,
+            "items": [
+              {
+                "index": 0,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [3.2100299298759998, 0.06886227428913, 5],
+                  [-2.7899700701240002, 0.06886227428913935, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, 0.06886217428913, 4.9999999],
+                  "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                }
+              },
+              {
+                "index": 1,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [-2.7899700701240002, 0.06886227428913, 5],
+                  [3.2100299298759998, 0.06886227428911998, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                  "max": [3.2100300298759996, 0.06886237428913, 5.0000001]
+                }
+              }
+            ]
+          },
+          "inspectedRevision": 43,
+          "placementProof": {
+            "frame": {
+              "origin": [0, 0, 5],
+              "u": [1, 0, 0],
+              "v": [0, 1, 0],
+              "normal": [0, 0, 1]
+            },
+            "thicknessMm": 0,
+            "expectedBounds": {
+              "min": [-2.7899700701240002, -2.93113772571087, 5],
+              "max": [3.2100299298759998, 3.06886227428913, 5]
+            },
+            "actualBounds": {
+              "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+              "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+            },
+            "normalRangeMm": [0, 0],
+            "endpointToleranceMm": 1e-7,
+            "boundsToleranceMm": 0.000001,
+            "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+          }
+        },
+        "solidReport": {
+          "entityId": "7180db6b-f88c-4c4d-8408-b73cc999dbce",
+          "units": "mm",
+          "valid": true,
+          "solids": 1,
+          "shells": 1,
+          "faces": 4,
+          "edges": 6,
+          "vertices": 4,
+          "areaMm2": 90.47786844461525,
+          "signedVolumeMm3": 50.89380103070363,
+          "volumeMm3": 50.89380103070363,
+          "topologyVisits": 42,
+          "edgeReferences": {
+            "offset": 0,
+            "total": 6,
+            "nextOffset": null,
+            "items": [
+              {
+                "index": 0,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [3.2100299298759998, 0.06886227428913, 5],
+                  [-2.7899700701240002, 0.06886227428913935, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, 0.06886217428913, 4.9999999],
+                  "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                }
+              },
+              {
+                "index": 1,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [-2.7899700701240002, 0.06886227428913, 5],
+                  [3.2100299298759998, 0.06886227428911998, 5]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                  "max": [3.2100300298759996, 0.06886237428913, 5.0000001]
+                }
+              },
+              {
+                "index": 2,
+                "kind": "bspline",
+                "curveType": 6,
+                "degenerate": false,
+                "endpoints": [
+                  [-2.7899700701240007, 0.06886227428913072, 5],
+                  [-2.7899700701240007, 0.06886227428913072, 6.8]
+                ],
+                "lengthMm": 1.7999999999999998,
+                "boundsMm": {
+                  "min": [-2.7899701701240005, 0.06886217428913072, 4.9999999],
+                  "max": [-2.789969970124001, 0.06886237428913072, 6.8000001]
+                }
+              },
+              {
+                "index": 3,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [3.2100299298759998, 0.06886227428913, 6.8],
+                  [-2.7899700701240002, 0.06886227428913935, 6.8]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [
+                    -2.789970170124, 0.06886217428913, 6.7999998999999995
+                  ],
+                  "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+                }
+              },
+              {
+                "index": 4,
+                "kind": "bspline",
+                "curveType": 6,
+                "degenerate": false,
+                "endpoints": [
+                  [3.210029929876, 0.06886227428912983, 5],
+                  [3.210029929876, 0.06886227428912983, 6.8]
+                ],
+                "lengthMm": 1.7999999999999998,
+                "boundsMm": {
+                  "min": [3.2100298298760004, 0.06886217428912983, 4.9999999],
+                  "max": [3.210030029876, 0.06886237428912984, 6.8000001]
+                }
+              },
+              {
+                "index": 5,
+                "kind": "circle",
+                "curveType": 1,
+                "degenerate": false,
+                "endpoints": [
+                  [-2.7899700701240002, 0.06886227428913, 6.8],
+                  [3.2100299298759998, 0.06886227428911998, 6.8]
+                ],
+                "lengthMm": 9.424777960769372,
+                "boundsMm": {
+                  "min": [
+                    -2.789970170124, -2.93113782571087, 6.7999998999999995
+                  ],
+                  "max": [3.2100300298759996, 0.06886237428913, 6.8000001]
+                }
+              }
+            ]
+          },
+          "inspectedRevision": 59,
+          "placementProof": {
+            "frame": {
+              "origin": [0, 0, 5],
+              "u": [1, 0, 0],
+              "v": [0, 1, 0],
+              "normal": [0, 0, 1]
+            },
+            "thicknessMm": 1.8,
+            "expectedBounds": {
+              "min": [-2.7899700701240002, -2.93113772571087, 5],
+              "max": [3.2100299298759998, 3.06886227428913, 6.8]
+            },
+            "actualBounds": {
+              "min": [-2.7899701701240005, -2.93113782571087, 4.9999999],
+              "max": [3.210030029876, 3.0688623742891297, 6.8000001]
+            },
+            "normalRangeMm": [0, 1.7999999999999998],
+            "endpointToleranceMm": 1e-7,
+            "boundsToleranceMm": 0.000001,
+            "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+          }
+        },
+        "guiMcpRawGeometryEqual": true,
+        "oneModelEditAndNoAuthoringEdit": true,
+        "noEqualContentGuiSketchHistoryEdit": true,
+        "outputSelectionSurvivesPublication": true,
+        "savedSketchSnapshotIndependent": true,
+        "guiMcpDependentRebuildEqual": true,
+        "modelAndSketchUndoRedo": true,
+        "failures": [
+          {
+            "kind": "constraint",
+            "message": "Sketch conflicts: fixed-center, conflicting-center"
+          },
+          {
+            "kind": "open-profile",
+            "message": "Extrusion requires one closed profile."
+          }
+        ],
+        "ownedCancellationLateRelease": {
+          "created": ["cad-e0e8485c-01c3-457e-b032-8684ee62d87a-12"],
+          "released": ["cad-e0e8485c-01c3-457e-b032-8684ee62d87a-12"],
+          "releaseAcknowledgements": [
+            {
+              "requestId": 16,
+              "kernelIds": ["cad-e0e8485c-01c3-457e-b032-8684ee62d87a-12"],
+              "result": true
+            }
+          ]
+        },
+        "retainedNativeSourceHandle": true,
+        "repeatUsesSavedSketchAdmission": true,
+        "idlePanelCloseAndSavedSourceSwitch": true,
+        "idleInPlaceSavedSourceSwitch": true,
+        "emptySketchGuiAndCommandAdmissionRejected": true,
+        "busySourceChangeScope": "Public edits and source tree are blocked while busy; no private state injection or claim of a forced busy-source-change race",
+        "persistence": {
+          "displayBuffersBitExact": true,
+          "exactBreps": [
+            {
+              "entityId": "1d84d968-a7c6-4b92-abd8-704a2b0674af",
+              "bytes": 13747,
+              "sha256": "f60a04883da303d81941db598fa1e5ca376c474152c908911fb20ba67426189d"
+            },
+            {
+              "entityId": "f652c543-e32e-4446-a1e8-2708b53e80b5",
+              "bytes": 54053,
+              "sha256": "a16c8071c3d86cf4ad1b61f3ff853bdb92e48840ad48a881e8113d6939682138"
+            }
+          ],
+          "guiAndMcpReopen": true
+        },
+        "faceStep": {
+          "sha256": "360dbc6828b65228953f845bee6f2469b538983a2719cd274e130926b1d9fe8d",
+          "bytes": 3624,
+          "report": {
+            "entityId": "8025bd0b-acfd-45f2-854c-0dba4227f054",
+            "units": "mm",
+            "valid": true,
+            "solids": 0,
+            "shells": 1,
+            "faces": 1,
+            "edges": 2,
+            "vertices": 2,
+            "areaMm2": 28.274333882308078,
+            "signedVolumeMm3": 0,
+            "volumeMm3": 0,
+            "topologyVisits": 8,
+            "edgeReferences": {
+              "offset": 0,
+              "total": 2,
+              "nextOffset": null,
+              "items": [
+                {
+                  "index": 0,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913017, 5],
+                    [-2.7899700701240002, 0.06886227428913952, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, 0.06886217428913016, 4.9999999],
+                    "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                  }
+                },
+                {
+                  "index": 1,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428913017, 5],
+                    [3.2100299298759998, 0.06886227428912015, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                    "max": [3.2100300298759996, 0.06886237428913017, 5.0000001]
+                  }
+                }
+              ]
+            },
+            "inspectedRevision": 111,
+            "placementProof": {
+              "frame": {
+                "origin": [0, 0, 5],
+                "u": [1, 0, 0],
+                "v": [0, 1, 0],
+                "normal": [0, 0, 1]
+              },
+              "thicknessMm": 0,
+              "expectedBounds": {
+                "min": [-2.7899700701240002, -2.93113772571087, 5],
+                "max": [3.2100299298759998, 3.06886227428913, 5]
+              },
+              "actualBounds": {
+                "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+              },
+              "normalRangeMm": [0, 0],
+              "endpointToleranceMm": 1e-7,
+              "boundsToleranceMm": 0.000001,
+              "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+            }
+          }
+        },
+        "solidStep": {
+          "sha256": "b3bc4b2588b699e83bcdbdf9c1b3a6dba0e1c6d43f88c6084a0b144e1433e306",
+          "bytes": 13244,
+          "report": {
+            "entityId": "04ffd9ac-73eb-4de9-a90d-05f429bfff35",
+            "units": "mm",
+            "valid": true,
+            "solids": 1,
+            "shells": 1,
+            "faces": 4,
+            "edges": 6,
+            "vertices": 4,
+            "areaMm2": 90.47786844461743,
+            "signedVolumeMm3": 50.89380103070629,
+            "volumeMm3": 50.89380103070629,
+            "topologyVisits": 42,
+            "edgeReferences": {
+              "offset": 0,
+              "total": 6,
+              "nextOffset": null,
+              "items": [
+                {
+                  "index": 0,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913017, 5],
+                    [-2.7899700701240002, 0.06886227428913952, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, 0.06886217428913016, 4.9999999],
+                    "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                  }
+                },
+                {
+                  "index": 1,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428913017, 5],
+                    [3.2100299298759998, 0.06886227428912015, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                    "max": [3.2100300298759996, 0.06886237428913017, 5.0000001]
+                  }
+                },
+                {
+                  "index": 2,
+                  "kind": "bspline",
+                  "curveType": 6,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.789970070124, 0.06886227428913, 5],
+                    [-2.789970070124, 0.06886227428913, 6.8]
+                  ],
+                  "lengthMm": 1.7999999999999998,
+                  "boundsMm": {
+                    "min": [-2.7899701701239996, 0.06886217428913, 4.9999999],
+                    "max": [-2.789969970124, 0.06886237428913, 6.8000001]
+                  }
+                },
+                {
+                  "index": 3,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913017, 6.8],
+                    [-2.7899700701240002, 0.06886227428913952, 6.8]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, 0.06886217428913016, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+                  }
+                },
+                {
+                  "index": 4,
+                  "kind": "bspline",
+                  "curveType": 6,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.210029929876, 0.06886227428913, 5],
+                    [3.210029929876, 0.06886227428913, 6.8]
+                  ],
+                  "lengthMm": 1.7999999999999998,
+                  "boundsMm": {
+                    "min": [3.2100298298760004, 0.06886217428913, 4.9999999],
+                    "max": [3.210030029876, 0.06886237428913, 6.8000001]
+                  }
+                },
+                {
+                  "index": 5,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428913017, 6.8],
+                    [3.2100299298759998, 0.06886227428912015, 6.8]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, -2.93113782571087, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 0.06886237428913017, 6.8000001]
+                  }
+                }
+              ]
+            },
+            "inspectedRevision": 117,
+            "placementProof": {
+              "frame": {
+                "origin": [0, 0, 5],
+                "u": [1, 0, 0],
+                "v": [0, 1, 0],
+                "normal": [0, 0, 1]
+              },
+              "thicknessMm": 1.8,
+              "expectedBounds": {
+                "min": [-2.7899700701240002, -2.93113772571087, 5],
+                "max": [3.2100299298759998, 3.06886227428913, 6.8]
+              },
+              "actualBounds": {
+                "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                "max": [3.210030029876, 3.0688623742891297, 6.8000001]
+              },
+              "normalRangeMm": [0, 1.7999999999999998],
+              "endpointToleranceMm": 1e-7,
+              "boundsToleranceMm": 0.000001,
+              "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+            }
+          }
+        },
+        "nativeCircle": {
+          "supplied": true,
+          "sha256": "acc7522d082692299a49b6cb288bb94185349c6cf537610de5beac567c534cae",
+          "bytes": 11714,
+          "report": {
+            "entityId": "ac18ae15-9af4-469a-88df-30e82c38c3b5",
+            "units": "mm",
+            "valid": true,
+            "solids": 1,
+            "shells": 1,
+            "faces": 4,
+            "edges": 6,
+            "vertices": 4,
+            "areaMm2": 90.47786842338827,
+            "signedVolumeMm3": 50.89380098815688,
+            "volumeMm3": 50.89380098815688,
+            "topologyVisits": 42,
+            "edgeReferences": {
+              "offset": 0,
+              "total": 6,
+              "nextOffset": null,
+              "items": [
+                {
+                  "index": 0,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428912031, 6.8],
+                    [3.2100299298759998, 0.06886227428912008, 6.8]
+                  ],
+                  "lengthMm": 9.4247779607694,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, 0.06886217428912007, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+                  }
+                },
+                {
+                  "index": 1,
+                  "kind": "line",
+                  "curveType": 0,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.210029929876, 0.06886227428913, 6.8],
+                    [3.210029929876, 0.06886227428913, 5]
+                  ],
+                  "lengthMm": 1.8,
+                  "boundsMm": {
+                    "min": [3.2100298298760004, 0.06886217428913, 4.9999999],
+                    "max": [3.210030029876, 0.06886237428913, 6.8000001]
+                  }
+                },
+                {
+                  "index": 2,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428912031, 5],
+                    [3.2100299298759998, 0.06886227428912008, 5]
+                  ],
+                  "lengthMm": 9.4247779607694,
+                  "boundsMm": {
+                    "min": [-2.789970170124, 0.06886217428912007, 4.9999999],
+                    "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                  }
+                },
+                {
+                  "index": 3,
+                  "kind": "line",
+                  "curveType": 0,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.789970070124, 0.06886227428913, 6.8],
+                    [-2.789970070124, 0.06886227428913, 5]
+                  ],
+                  "lengthMm": 1.8,
+                  "boundsMm": {
+                    "min": [-2.7899701701239996, 0.06886217428913, 4.9999999],
+                    "max": [-2.789969970124, 0.06886237428913, 6.8000001]
+                  }
+                },
+                {
+                  "index": 4,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913, 6.8],
+                    [-2.7899700701240002, 0.06886227428912031, 6.8]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, -2.93113782571087, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 0.06886237428913, 6.8000001]
+                  }
+                },
+                {
+                  "index": 5,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913, 5],
+                    [-2.7899700701240002, 0.06886227428912031, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                    "max": [3.2100300298759996, 0.06886237428913, 5.0000001]
+                  }
+                }
+              ]
+            },
+            "inspectedRevision": 120
+          },
+          "applicationReport": {
+            "entityId": "7180db6b-f88c-4c4d-8408-b73cc999dbce",
+            "units": "mm",
+            "valid": true,
+            "solids": 1,
+            "shells": 1,
+            "faces": 4,
+            "edges": 6,
+            "vertices": 4,
+            "areaMm2": 90.47786844461525,
+            "signedVolumeMm3": 50.89380103070363,
+            "volumeMm3": 50.89380103070363,
+            "topologyVisits": 42,
+            "edgeReferences": {
+              "offset": 0,
+              "total": 6,
+              "nextOffset": null,
+              "items": [
+                {
+                  "index": 0,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913, 5],
+                    [-2.7899700701240002, 0.06886227428913935, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, 0.06886217428913, 4.9999999],
+                    "max": [3.2100300298759996, 3.0688623742891297, 5.0000001]
+                  }
+                },
+                {
+                  "index": 1,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428913, 5],
+                    [3.2100299298759998, 0.06886227428911998, 5]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+                    "max": [3.2100300298759996, 0.06886237428913, 5.0000001]
+                  }
+                },
+                {
+                  "index": 2,
+                  "kind": "bspline",
+                  "curveType": 6,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240007, 0.06886227428913072, 5],
+                    [-2.7899700701240007, 0.06886227428913072, 6.8]
+                  ],
+                  "lengthMm": 1.7999999999999998,
+                  "boundsMm": {
+                    "min": [
+                      -2.7899701701240005, 0.06886217428913072, 4.9999999
+                    ],
+                    "max": [-2.789969970124001, 0.06886237428913072, 6.8000001]
+                  }
+                },
+                {
+                  "index": 3,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.2100299298759998, 0.06886227428913, 6.8],
+                    [-2.7899700701240002, 0.06886227428913935, 6.8]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, 0.06886217428913, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+                  }
+                },
+                {
+                  "index": 4,
+                  "kind": "bspline",
+                  "curveType": 6,
+                  "degenerate": false,
+                  "endpoints": [
+                    [3.210029929876, 0.06886227428912983, 5],
+                    [3.210029929876, 0.06886227428912983, 6.8]
+                  ],
+                  "lengthMm": 1.7999999999999998,
+                  "boundsMm": {
+                    "min": [3.2100298298760004, 0.06886217428912983, 4.9999999],
+                    "max": [3.210030029876, 0.06886237428912984, 6.8000001]
+                  }
+                },
+                {
+                  "index": 5,
+                  "kind": "circle",
+                  "curveType": 1,
+                  "degenerate": false,
+                  "endpoints": [
+                    [-2.7899700701240002, 0.06886227428913, 6.8],
+                    [3.2100299298759998, 0.06886227428911998, 6.8]
+                  ],
+                  "lengthMm": 9.424777960769372,
+                  "boundsMm": {
+                    "min": [
+                      -2.789970170124, -2.93113782571087, 6.7999998999999995
+                    ],
+                    "max": [3.2100300298759996, 0.06886237428913, 6.8000001]
+                  }
+                }
+              ]
+            },
+            "inspectedRevision": 59,
+            "placementProof": {
+              "frame": {
+                "origin": [0, 0, 5],
+                "u": [1, 0, 0],
+                "v": [0, 1, 0],
+                "normal": [0, 0, 1]
+              },
+              "thicknessMm": 1.8,
+              "expectedBounds": {
+                "min": [-2.7899700701240002, -2.93113772571087, 5],
+                "max": [3.2100299298759998, 3.06886227428913, 6.8]
+              },
+              "actualBounds": {
+                "min": [-2.7899701701240005, -2.93113782571087, 4.9999999],
+                "max": [3.210030029876, 3.0688623742891297, 6.8000001]
+              },
+              "normalRangeMm": [0, 1.7999999999999998],
+              "endpointToleranceMm": 1e-7,
+              "boundsToleranceMm": 0.000001,
+              "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+            }
+          },
+          "nativeBounds": {
+            "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+            "max": [3.210030029876, 3.0688623742891297, 6.8000001]
+          },
+          "applicationBounds": {
+            "min": [-2.7899701701240005, -2.93113782571087, 4.9999999],
+            "max": [3.210030029876, 3.0688623742891297, 6.8000001]
+          },
+          "volumeToleranceMm3": 1e-7,
+          "boundsToleranceMm": 0.000001,
+          "scope": "Geometric comparison to actual native extrusion; no BREP identity or native Thicken equivalence claim"
+        }
+      }
+    }
+  ],
+  "runner": {
+    "pid": 66880,
+    "startedAt": "2026-10-26T09:57:42.2849613Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "fixture": {
+    "provenance": "Authored planar binary STL, not native application output",
+    "planarFacets": 288,
+    "outlierFacets": 1,
+    "bytes": 14534
+  },
+  "existingApplicationPreserved": true,
+  "finishedAt": "2026-10-26T09:58:32.406Z",
+  "passed": false,
+  "error": "locator.click: Error: strict mode violation: getByRole('button', { name: 'Thicken', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" title=\"Thicken\" aria-label=\"Thicken\" class=\"ribbon-button\" aria-description=\"Thicken\" data-verification=\"verified\" data-command=\"surfaceThicken\">…</button> aka getByRole('button', { name: 'Thicken', description: 'Thicken' })\n    2) <button class=\"object-name\" aria-pressed=\"false\">…</button> aka getByRole('main').getByRole('button', { name: 'Thicken', exact: true })\n\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Thicken', exact: true })\u001b[22m\n"
+}

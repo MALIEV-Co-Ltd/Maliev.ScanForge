@@ -1,7 +1,36 @@
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MeshTools } from "../src/ui/MeshTools";
+import { SketchSurfaceTools } from "../src/ui/SketchSurfaceTools";
+import { rectangleSketch } from "../src/sketch";
 const noop = () => {};
+it("isolates the sketch surface panel and keeps closed tools inactive", () => {
+  const props = {
+    sourceKey: "saved-sketch",
+    sourceName: "Section profile",
+    sketch: rectangleSketch(),
+    available: true,
+    disabled: false,
+    onCreate: async () => {},
+    onError: noop,
+  };
+  const html = renderToStaticMarkup(<SketchSurfaceTools {...props} active />);
+  expect(html).toContain('aria-label="Surface from sketch"');
+  expect(html).toContain("Section profile");
+  expect(html).toContain("Create surface");
+  expect(html).not.toContain("NURBS");
+  expect(html).not.toContain("Extrusion height");
+  expect(
+    renderToStaticMarkup(<SketchSurfaceTools {...props} active={false} />),
+  ).toBe("");
+  for (const patch of [
+    { disabled: true, available: true },
+    { disabled: false, available: false },
+  ])
+    expect(
+      renderToStaticMarkup(<SketchSurfaceTools {...props} {...patch} active />),
+    ).toMatch(/<button[^>]*disabled=""/);
+});
 it("Fine Align renders alignment controls without unrelated mesh commands", () => {
   const html = renderToStaticMarkup(
     <MeshTools

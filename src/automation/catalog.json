@@ -1843,7 +1843,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1, validated by validateSketch"
+                          "description": "Sketch v1, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         },
                         "chordTolerance": {
                           "type": "number",
@@ -1862,7 +1862,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
                       "required": ["kind", "sketch"],
@@ -1875,6 +1875,21 @@
                 }
               },
               "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sketchSurface"]
+                },
+                "sketch": {
+                  "type": "object",
+                  "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
+                }
+              },
+              "required": ["kind", "sketch"],
               "additionalProperties": false
             },
             {
@@ -2850,7 +2865,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1, validated by validateSketch"
+                          "description": "Sketch v1, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         },
                         "chordTolerance": {
                           "type": "number",
@@ -2869,7 +2884,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
                       "required": ["kind", "sketch"],
@@ -2882,6 +2897,21 @@
                 }
               },
               "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sketchSurface"]
+                },
+                "sketch": {
+                  "type": "object",
+                  "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
+                }
+              },
+              "required": ["kind", "sketch"],
               "additionalProperties": false
             },
             {
@@ -5305,7 +5335,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. sketchSurface opens Surface from sketch for the active saved/current editable draft independently of object selection; create geometry with ordinary cad_create sketchSurface recipe. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5367,6 +5397,7 @@
             "sewSurfaces",
             "shell",
             "surfaceThicken",
+            "sketchSurface",
             "splitSolid",
             "circularPattern",
             "linearPattern",

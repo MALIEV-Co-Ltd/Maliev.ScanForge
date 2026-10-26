@@ -136,7 +136,7 @@ export async function createCadFeature(
     ...previous.model,
     features: [...previous.model.features, feature],
   };
-  validateParametricModel(model);
+  validateParametricModel(model, { admitFeatureIds: [feature.id] });
   const rebuilt = await rebuildParametric(
     previous,
     model,
@@ -235,7 +235,7 @@ export async function rebuildCadFeature(
     previous,
     model,
     createCadEvaluator(cad),
-    { signal, preserveKernelIds: preserved },
+    { signal, preserveKernelIds: preserved, admitFeatureIds: [featureId] },
   );
   const features = new Map(rebuilt.model.features.map((f) => [f.id, f]));
   const next = entities.map((e) => {

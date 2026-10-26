@@ -1,0 +1,27 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--maxWorkers=1",
+    "tests/ribbon-model.test.ts",
+    "tests/ribbon-command-availability.test.ts",
+    "tests/ribbon-verification.test.tsx",
+    "tests/tool-panel-isolation.test.tsx",
+    "tests/workflow-operations.test.ts",
+    "tests/command-repeat.test.ts",
+    "tests/reconstruction-ui-command.test.ts",
+    "tests/parametric-sketch-surface.test.ts",
+    "tests/sketch-surface-api.test.ts",
+    "tests/cad-client.test.ts"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 1,
+  "peakJobBytes": 360841216,
+  "totalProcesses": 17,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 3.559397400007583
+}

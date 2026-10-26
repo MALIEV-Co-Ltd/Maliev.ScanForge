@@ -55,6 +55,60 @@ integration remains required; the restore candidate/CI above is historical.
 
 ## Candidate history and validation
 
+### Exact sketch surfaces and real scan section chain
+
+Build `scanforge-c5026733e6e566fd` passes the complete new sketch-surface replay
+through the GUI and public MCP. The retained [browser ledger](evidence/m5-20261025/sketch-surface-browser-ledger.json)
+covers analytic circles, saved/current sketch admission without object selection,
+one model edit without authoring edits, dependent recipe rebuild, Undo/Redo,
+matching errors, owned cancellation and acknowledged late-handle release.
+Both GUI and MCP project reopen preserve display buffers and raw saved BREP
+chunks exactly; face/solid STEP imports preserve numerical geometry and placement.
+Selection of the new output does not abort creation, and idle in-place saved
+source switching uses the replacement snapshot. Unmount and busy-source-change
+ownership remain source-review scope rather than forced runtime claims.
+
+The actual `scan-1.stl` import is bit-equal through GUI and MCP. Its full section
+at OXY Z=-323.2705535888672mm supplies the reference for a newly authored closed
+16-point line profile. All points, coordinates and segments were entered through
+rendered controls, with public-state acknowledgements for endpoint edits. The
+measured continuous deviation bound is0.16138845486272677mm, below0.25mm, including
+reference-join displacement. The exact face area is84.28827382618779mm²;
+positive1.8mm thickening gives a valid one-solid body with18faces/48edges and
+signed volume151.71889288713894mm³. GUI/MCP face and solid display geometry agree
+exactly; both STEP paths, Undo/Redo and exact project reopen pass. This is a
+bounded scan-section-derived part, not whole-scan curved reconstruction or native
+Thicken equivalence. The [rendered solid](evidence/m5-20261025/sketch-surface-real-solid.png)
+was visually inspected.
+
+The actual native radius3mm circle extrusion baseline separately matches the
+new sketch-face/thicken chain within1e-7mm³ volume and1e-6mm bounds. Actual-worker
+[kernel checks](evidence/m5-20261025/sketch-surface-kernel-green.json) cover
+CW/CCW profiles in offset/rotated frames, both thickness signs, outward solid
+orientation and unchanged source BREP, including curved-face compatibility.
+Those checks caught and fixed inferred-plane winding dependence, inward solids
+and shared-source metadata mutation. The same native fitted-input comparison
+retains the0.067% absolute-volume gap after those fixes; no native equivalence
+claim follows.
+
+CAD sketch solver admission now bounds submitted/evaluated work before detailed
+validation and synchronous solving, through the shared CAD path. Cached legacy
+recipes remain structurally readable without forcing a solve: a129-point cached
+extrusion survives binary project/history reopen and unrelated CAD edits.
+Focused affected suites pass159tests across13files plus scoped TypeScript.
+Full integrated-candidate static/unit/CAD/format checks and hosted CI remain
+required before merge. Both initial driver failures are retained: endpoint
+assignment created an invalid intermediate segment, then a page-wide Thicken
+selector collided with an object name. Corrections change only the driver and
+preserve application validation and all geometry assertions.
+
+Fresh Vite build and normal offline manifest passed. Browser errors and warnings
+are empty. The [Job receipt](evidence/m5-20261025/sketch-surface-browser-job.json)
+records84.565s, peak2,803,449,856bytes under4GiB, zero active processes, closed
+owned preview5206 and released mutex. Existing applications were preserved.
+M4 acceptance, broader native matrix/seam gates and final main integration remain
+open; this section does not close M5.
+
 ### Compatible transition surfaces and matching control-count scan replay
 
 The [browser ledger](evidence/m5-20261025/compatible-blend-browser-ledger.json)
@@ -109,9 +163,18 @@ ScanForge thickening of the same native fitted surface at -0.1mm produces
 volume0.6985898570432448mm³, a relative difference0.0006683542375106542.
 The +0.1mm direction produces absolute volume0.6909659689179515mm³ and negative
 signed volume. Both directions are retained; the native icon's signed-normal
-convention and native equivalence remain unestablished. An independent adaptive
-mass-integration diagnostic is prepared but has not run. No production accuracy
-change or relaxed parity tolerance follows from this comparison.
+convention and native equivalence remain unestablished. A private-copy
+[adaptive integration diagnostic](evidence/m5-20261025/native-solid-adaptive-diagnostic-r1.json)
+using SurfaceProperties2/VolumeProperties2 with requested epsilon1e-9 gives native
+volume0.6990278588007794mm³ versus ScanForge -0.1mm volume0.6985318471203524mm³,
+relative gap0.0007095735515862645. It does not remove the discrepancy. The
+[diagnostic Job](evidence/m5-20261025/native-solid-adaptive-diagnostic-r1-job.json)
+passed in1.346s, peak648,077,312bytes, zero active processes/handles and unchanged
+source hashes. This diagnostic changes only a private worker copy; no production
+accuracy change or relaxed parity tolerance follows from this comparison. The
+[provenance](evidence/m5-20261025/native-solid-adaptive-diagnostic-provenance.json)
+pins both worker hashes and exact substitutions; requested epsilon is not a
+measured accuracy guarantee.
 
 The [comparison Job](evidence/m5-20261025/native-solid-comparison-r1-job.json)
 exited0 in1.347s, peaked642,322,432bytes, left zero active processes and zero

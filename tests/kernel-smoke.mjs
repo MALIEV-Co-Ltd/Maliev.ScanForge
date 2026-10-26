@@ -2170,3 +2170,5 @@ try {
 } finally {
   clearTimeout(expiry);
 }
+
+await import("./sketch-surface-kernel.mjs");

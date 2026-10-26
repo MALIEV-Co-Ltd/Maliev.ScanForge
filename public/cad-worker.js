@@ -1818,14 +1818,8 @@ function extrudeShape(oc, input) {
   }
 }
 
-// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
-function extrudeCurvesShape(oc, input) {
-  const { edges, height } = input;
-  const frame = sketchPlacement(input.frame);
-  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
-    throw new Error(
-      "Extrusion height must be positive and at most one billion.",
-    );
+// Returns one owned face; all construction wrappers are temporary.
+function sketchProfileFace(oc, edges, frame, authoredPlane = false) {
   if (!Array.isArray(edges) || edges.length < 2 || edges.length > 10000)
     throw new Error("Choose a closed profile with 2 to 10000 edges.");
   const point = (p) =>
@@ -1881,6 +1875,28 @@ function extrudeCurvesShape(oc, input) {
   }
   if (!Number.isFinite(area) || Math.abs(area) < 1e-8)
     throw new Error("Sketch profile has zero area.");
+  // Native face validation can accept two loops touching at a contour vertex.
+  const vertices = new Map();
+  for (let i = 0; i < edges.length; i++) {
+    const start = edges[i].start,
+      x = Math.floor(start[0] / 1e-8),
+      y = Math.floor(start[1] / 1e-8);
+    for (let dx = -1; dx <= 1; dx++)
+      for (let dy = -1; dy <= 1; dy++)
+        for (const prior of vertices.get(`${x + dx},${y + dy}`) ?? [])
+          if (
+            prior !== i - 1 &&
+            !(prior === 0 && i === edges.length - 1) &&
+            distance(start, edges[prior].start) <= 1e-8
+          )
+            throw new Error(
+              "Sketch profile intersects itself or has invalid geometry.",
+            );
+    const key = `${x},${y}`,
+      bucket = vertices.get(key) ?? [];
+    bucket.push(i);
+    vertices.set(key, bucket);
+  }
   const handles = [];
   const keep = (h) => (handles.push(h), h);
   const placed = (uv) => {
@@ -1891,7 +1907,7 @@ function extrudeCurvesShape(oc, input) {
       throw new Error("Placed sketch coordinates must be finite and bounded.");
     return keep(new oc.gp_Pnt_3(...world));
   };
-  let solid;
+  let face;
   try {
     const wireMaker = keep(new oc.BRepBuilderAPI_MakeWire_1());
     for (let i = 0; i < edges.length; i++) {
@@ -1923,16 +1939,49 @@ function extrudeCurvesShape(oc, input) {
       wireMaker.Add_1(keep(maker.Edge()));
       if (!wireMaker.IsDone()) throw new Error("CAD wire construction failed.");
     }
-    const wire = keep(wireMaker.Wire()),
-      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
+    const wire = keep(wireMaker.Wire());
+    let faceMaker;
+    if (authoredPlane) {
+      const origin = keep(new oc.gp_Pnt_3(...frame.origin)),
+        normal = keep(new oc.gp_Dir_4(...frame.normal)),
+        plane = keep(new oc.gp_Pln_3(origin, normal));
+      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_16(plane, wire, true));
+    } else faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
     if (!faceMaker.IsDone())
       throw new Error("CAD sketch face construction failed.");
-    const face = keep(faceMaker.Face()),
-      faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
+    face = faceMaker.Face();
+    const faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
     if (!faceCheck.IsValid_2())
       throw new Error(
         "Sketch profile intersects itself or has invalid geometry.",
       );
+    const owned = face;
+    face = undefined;
+    return owned;
+  } finally {
+    face?.delete();
+    cleanup(handles);
+  }
+}
+
+function sketchSurfaceShape(oc, input) {
+  const frame = sketchPlacement(input.frame);
+  return register(oc, sketchProfileFace(oc, input.edges, frame, true));
+}
+
+// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
+function extrudeCurvesShape(oc, input) {
+  const { edges, height } = input;
+  const frame = sketchPlacement(input.frame);
+  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
+    throw new Error(
+      "Extrusion height must be positive and at most one billion.",
+    );
+  const handles = [];
+  const keep = (h) => (handles.push(h), h);
+  let solid;
+  try {
+    const face = keep(sketchProfileFace(oc, edges, frame));
     const direction = keep(
       new oc.gp_Vec_4(...frame.normal.map((n) => n * height)),
     );
@@ -2016,6 +2065,8 @@ function thicknessShape(oc, input, hollow) {
   const handles = [],
     maker = new oc.BRepOffsetAPI_MakeThickSolid_1();
   handles.push(maker);
+  const keep = (handle) => (handles.push(handle), handle);
+  let solid;
   try {
     if (hollow) {
       if (
@@ -2053,13 +2104,30 @@ function thicknessShape(oc, input, hollow) {
         oc.GeomAbs_JoinType.GeomAbs_Arc,
         false,
       );
-    } else maker.MakeThickSolidBySimple(shape, input.thickness);
+    } else {
+      // Offset construction and output meshing must not change the source BREP.
+      const copy = keep(new oc.BRepBuilderAPI_Copy_2(shape, true, false)),
+        working = keep(copy.Shape());
+      maker.MakeThickSolidBySimple(working, input.thickness);
+    }
     if (!maker.IsDone())
       throw new Error(
         "CAD wall construction failed. Reduce thickness or choose other faces.",
       );
-    return register(oc, maker.Shape());
+    if (hollow) return register(oc, maker.Shape());
+    const output = keep(maker.Shape());
+    if (output.ShapeType().value !== oc.TopAbs_ShapeEnum.TopAbs_SOLID.value)
+      throw new Error("CAD thickening did not produce one closed solid.");
+    solid = oc.TopoDS.Solid_1(output);
+    if (!oc.BRepLib.OrientClosedSolid(solid))
+      throw new Error(
+        "CAD thickening does not enclose a finite orientable volume.",
+      );
+    const owned = solid;
+    solid = undefined;
+    return register(oc, owned);
   } finally {
+    solid?.delete();
     cleanup(handles);
   }
 }
@@ -2582,6 +2650,8 @@ self.onmessage = (event) => {
       else if (operation === "extrude") result = extrudeShape(oc, payload);
       else if (operation === "extrudeCurves")
         result = extrudeCurvesShape(oc, payload);
+      else if (operation === "sketchSurface")
+        result = sketchSurfaceShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "loft") result = loftShape(oc, payload);
       else if (operation === "sweep") result = sweepShape(oc, payload);

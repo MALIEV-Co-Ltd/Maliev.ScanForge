@@ -6,6 +6,8 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  surface2dSketch:
+    "docs/AGENT_GUIDE.md: exact planar sketch surfaces; tests/helpers/sketch-surface-browser.mjs: GUI/public MCP source admission, snapshot ownership, analytic geometry, rebuild and exact exchange",
   nurbsSurface:
     "docs/M5_ACCEPTANCE.md: shared mesh/exact patch edits and compatible C1 joins, reference preservation, history and exact exchange",
   fillet:

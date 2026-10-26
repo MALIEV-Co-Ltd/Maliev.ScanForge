@@ -941,6 +941,83 @@ Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` sh
 
 `cad_create` and `cad_rebuild` accept the explicit `sketch-curves` profile discriminant. The shared parametric evaluator solves the inline sketch and emits an ordered exact line/arc descriptor to `CadClient.extrudeCurves`; the worker constructs analytic edges, checks the planar face and resulting prism, then registers the CAD body. The sketch GUI submits the same shared `cad_create` operation. Discovery schemas expose this variant. Existing `sketch` profiles continue through the sampled polygon evaluator, preserving historical geometry; no automatic migration changes saved recipes.
 
+### Embedded sketch surface recipes
+
+The GUI `surface2dSketch` ribbon action, public command discovery and command
+repeat share one sketch-source admission flag, independent of object selection.
+The `sketchSurface` workspace is exposed by the existing `ui_set` schema. Its
+dedicated `SketchSurfaceTools` panel clones the active draft for an ordinary
+`cad_create` submission through `runApplicationJobCommand`; it does not solve or
+publish authoring state locally. The API retains revision/request guards, model
+history, busy ownership, cancellation and publication.
+
+The panel's AbortController belongs to the active saved/legacy sketch key and
+draft identity. Closing, unmounting or replacing that source aborts the owner;
+selecting the published face does not. Saved-sketch selection preserves an open
+surface panel while replacing its source. The existing `CadJobCancel` portal
+keeps owned cancellation outside the inert inspector. The ordinary ParametricTools
+and `cad_rebuild` paths edit the embedded recipe and its dependents.
+
+Both CAD catalog schemas expose `{kind:"sketchSurface",sketch:Sketch}` through
+ordinary `cad_create` and `cad_rebuild`. Recipe validation calls `validateSketch`;
+the shared parametric evaluator calls `solveSketch`, rejects unconverged results,
+then passes `sketchCurveProfile(solution.sketch)` and the solved frame to
+`CadClient.sketchSurface`. This preserves analytic line/arc edges and uses the
+same single closed nonconstruction profile contract as analytic extrusion.
+Scan reference samples remain separate from the editable profile.
+
+All three CAD sketch consumers share a cheap admission guard in a submitted
+feature prepass before detailed `validateSketch` and before direct evaluator
+solving. It counts all authored
+points, explicit constraints, stored segments/arcs (including construction),
+implicit arc residuals and the current solver's exact relation row widths.
+Limits are 128 points, 256 constraints, 10,000 stored curves, 512 residual rows,
+65,536 dense cells and 250,000,000 estimated work units. For `N=2P` and `R` rows,
+the estimate is `N*N*R + 4*N*R + N*N`, plus
+`100*(2*N*N*N + N*N*R + 4*N*R)` only when `R>0`. The final finite-difference
+Jacobian runs even at convergence; a zero-row sketch cannot enter the iterative
+dense solve. Admission fails before repeated validation scans or dense allocation
+with shared count/budget diagnostics. This CAD boundary does not change the
+global sketch solver, its iteration/tolerance/convergence semantics or authoring
+history. It is an allocation/work estimate rather than an RSS or wall-time cap.
+
+General `validateParametricModel` defaults to structural stored-recipe checks;
+its optional `admitFeatureIds` selects the execution/submission prepass. Shared
+CAD creation selects only the new feature ID. Shared rebuild passes its explicit
+replacement ID even for an identical recipe; `rebuildParametric` additionally
+selects new/changed recipes and forced features. Previous model reads remain
+structural. This preserves older oversized cached extrusion BREP, project/history
+restore and unrelated edits without silently granting execution admission. All
+three direct evaluator branches retain their guards when actual solving is needed.
+Unchanged recipes with missing/invalid cached outputs also enter the admission
+prepass before any detailed model validation. Admission and dirty detection share
+the same cached-output check, preventing a cache miss from bypassing this fence.
+
+The embedded snapshot is cloned and frozen by the existing parametric rebuild
+boundary, retaining authored IDs, constraints, frame and scan reference metadata.
+It has no feature dependency on a saved sketch or source scan. Authoring state is
+never replaced with solved coordinates. Explicit replacement through
+`cad_rebuild` changes the face and rebuilds downstream feature references, such
+as `thicken`; `object_get` exposes the editable recipe in normal entity metadata.
+No new executor, editor adapter, job, history or selection implementation is
+introduced. Existing revision fences, retry receipts, locks, cancellation and
+failed/late publication cleanup govern these results and retain Undo-owned BREP.
+
+The worker shares the bounded analytic wire/face builder with curve extrusion.
+Extrusion consumes the face as a temporary prism input; sketch surface transfers
+the owned face directly to common BRepCheck/registration. Temporary wrappers are
+retired independently of the transferred face, including on failure. Existing
+edge-count, coordinate, radius, area and right-handed-frame checks remain active.
+
+Sketch surfaces opt into an explicit plane constructed from the authored frame
+origin and normal, with the finite boundary oriented on that plane independently
+of curve winding. Curve extrusion retains its existing inferred-plane builder
+and explicit prism direction. Ordinary `thicken` deep-copies native topology and
+geometry before offset construction so generated pcurves and display meshing
+cannot mutate the source BREP. It requires one closed solid, applies the shared
+finite-volume orientation check and transfers that typed, oriented solid wrapper
+to registration. The shell operation retains its existing join/closing-face path.
+
 ### Atomic sketch constraint application
 
 The sketch panel's Add constraint action submits `sketch_set` with `solve:true`. The existing executor validates the full Sketch v1, solves it, rejects conflicts before host mutation and publishes once through `setSketch`; revision checks, retry receipts and per-sketch edit history remain shared with MCP. The default false preserves unsolved-draft replacement. Symmetry is a persisted shared-solver constraint, including its construction-axis reference and explicit endpoint correspondence; no separate agent solver or GUI-only geometry path is introduced.

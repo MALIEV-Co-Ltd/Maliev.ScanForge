@@ -12,6 +12,7 @@ const ready = {
   landmarkSourceId: "scan",
   disabled: false,
   hasSelection: true,
+  hasSketchSurfaceSource: true,
   canUndo: true,
   canRedo: true,
 };
@@ -197,6 +198,26 @@ describe("ribbon verification gate", () => {
         id,
       ).not.toContain('disabled=""');
   });
+});
+
+it("renders From 2D sketch using the sketch source gate with no selected object", () => {
+  for (const hasSketchSurfaceSource of [false, true]) {
+    const markup = renderToStaticMarkup(
+      <Ribbon
+        {...ready}
+        hasSelection={false}
+        hasSketchSurfaceSource={hasSketchSurfaceSource}
+        activeTab="surfacing"
+        onTabChange={() => {}}
+        actions={{ surface2dSketch: vi.fn() }}
+      />,
+    );
+    const button = markup.match(
+      /<button[^>]*data-command="surface2dSketch"[^>]*>/,
+    )?.[0];
+    expect(button).toContain('data-verification="verified"');
+    expect(button?.includes('disabled=""')).toBe(!hasSketchSurfaceSource);
+  }
 });
 
 it("renders the reachable section command with its guarded callback", () => {

@@ -1,0 +1,23 @@
+Shared bounded validation mutex acquired (wait status 0).
+file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/sketch-surface-kernel.mjs:351
+    throw new Error(
+          ^
+
+Error: Sketch thickening regressions:
+offset OXY CCW circle thickening changed the exact source BREP
+offset OXY CCW circle positive analytic thickening volume: -50.893801030703614 versus 50.893800988154645
+offset OXY CW circle thickening changed the exact source BREP
+offset OXY CW circle authored-normal lower extent: -1.7999999999999998 versus 0
+offset OXY CW circle positive authored-normal thickening extent: 8.881784197001252e-16 versus 1.8
+offset OXY CW circle positive analytic thickening volume: -50.89380103070358 versus 50.893800988154645
+rotated CCW circle thickening changed the exact source BREP
+rotated CCW circle positive analytic thickening volume: -50.89380103070364 versus 50.893800988154645
+rotated CW circle thickening changed the exact source BREP
+rotated CW circle authored-normal lower extent: -1.8000000000000036 versus 0
+rotated CW circle positive authored-normal thickening extent: -2.220446049250313e-16 versus 1.8
+rotated CW circle positive analytic thickening volume: -50.893801030703656 versus 50.893800988154645
+    at file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/sketch-surface-kernel.mjs:351:11
+
+Node.js v22.22.0
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=768", "tests/sketch-surface-kernel.mjs"], "jobLimitBytes": 4294967296, "leaseSeconds": 16, "exitCode": 1, "peakJobBytes": 494247936, "totalProcesses": 2, "activeAfter": 0, "passed": false, "elapsedSeconds": 1.0013314000098035}
+Shared bounded validation mutex released after guard cleanup.

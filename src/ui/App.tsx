@@ -44,6 +44,7 @@ import { GeometryStatistics } from "./GeometryStatistics";
 import { CadDiagnostics } from "./CadDiagnostics";
 import { CadJobCancel } from "./CadJobCancel";
 import { SurfaceTrimTools } from "./SurfaceTrimTools";
+import { SketchSurfaceTools } from "./SketchSurfaceTools";
 import { runApplicationJobCommand } from "./application-job-command";
 import {
   selectObject,
@@ -443,6 +444,10 @@ export function App() {
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
   );
+  const hasSketchSurfaceSource =
+    sketchDraft.points.length > 0 &&
+    (sketchDraft.segments.some((curve) => !curve.construction) ||
+      sketchDraft.arcs?.some((curve) => !curve.construction) === true);
   const [spaceMouseStatus, setSpaceMouseStatus] = useState(
     "Move the SpaceMouse cap to detect it",
   );
@@ -2065,6 +2070,9 @@ export function App() {
       : undefined,
     fitSurface: openSurfaceFit,
     nurbsSurface: () => showTools("surface"),
+    surface2dSketch: () => {
+      if (hasSketchSurfaceSource) showTools("sketchSurface");
+    },
     newFreeform: () => showTools("surface"),
     autoFreeform: () => showTools("surface"),
     quadObj: () => showTools("surface"),
@@ -2261,6 +2269,7 @@ export function App() {
             interactiveTargetError,
             globalAlignmentError,
             hasSelection: !!selected,
+            hasSketchSurfaceSource,
             selectionKind: selected?.kind,
             landmarkSourceId: landmarkSource?.id ?? null,
             canUndo: !!history.length,
@@ -4293,6 +4302,25 @@ export function App() {
       setError(failures.map((failure) => failure.message).join("; "));
     return result;
   }
+  async function createSketchSurface(snapshot: Sketch, signal: AbortSignal) {
+    setError("");
+    const result = await runApplicationJobCommand(
+      workspaceApi,
+      "cad_create",
+      {
+        name: "Sketch surface",
+        recipe: { kind: "sketchSurface", sketch: snapshot },
+        selectCreated: true,
+      },
+      {
+        signal,
+        cancelledMessage: "Sketch surface cancelled.",
+        leaseMessage: "Sketch surface exceeded its time limit.",
+      },
+    );
+    if (!signal.aborted) setMessage("Surface created from sketch");
+    return result;
+  }
   function editSurface(patch: NurbsPatch) {
     if (selected?.parametric?.feature.recipe.kind === "surface") {
       rebuildFeature({ kind: "surface", patch });
@@ -5159,6 +5187,7 @@ export function App() {
         interactiveTargetError={interactiveTargetError}
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
+        hasSketchSurfaceSource={hasSketchSurfaceSource}
         selectionKind={selected?.kind}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
@@ -5647,7 +5676,11 @@ export function App() {
                         setSelectedId(null);
                         setActiveSketchId(item.id);
                         setSketchDraft(item.sketch);
-                        showTools("sketch");
+                        showTools(
+                          workspace === "sketchSurface" && toolPanelOpen
+                            ? "sketchSurface"
+                            : "sketch",
+                        );
                       }}
                     >
                       <ScanLine size={16} />
@@ -7022,7 +7055,8 @@ export function App() {
                       )}
                     </div>
                   </>
-                ) : activeSketchId && workspace === "sketch" ? (
+                ) : activeSketchId &&
+                  ["sketch", "sketchSurface"].includes(workspace) ? (
                   <div className="selected-title">
                     <ScanLine size={25} />
                     <div>
@@ -7109,6 +7143,21 @@ export function App() {
                       Create exact NURBS CAD face
                     </button>
                   </div>
+                )}
+                {workspace === "sketchSurface" && (
+                  <SketchSurfaceTools
+                    sourceKey={activeSketchId ?? "legacy"}
+                    sourceName={
+                      savedSketches.find((item) => item.id === activeSketchId)
+                        ?.name
+                    }
+                    sketch={sketchDraft}
+                    available={hasSketchSurfaceSource}
+                    active={toolPanelOpen}
+                    disabled={busy}
+                    onCreate={createSketchSurface}
+                    onError={setError}
+                  />
                 )}
                 {workspaceGroup(workspace) === "sketch" && (
                   <div className="sketch-panels">

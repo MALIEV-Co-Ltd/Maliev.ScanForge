@@ -1,0 +1,42 @@
+[
+  {
+    "path": "public/cad-worker.js",
+    "sha256": "d6852fee026346e56eb74cf9108605c62feabd9ca99973acad37a258c12802aa"
+  },
+  {
+    "path": "src/cad/client.ts",
+    "sha256": "9129fc3fe46c7917bd973aab5251232e537760a048b6993ba4447d2b99b739ff"
+  },
+  {
+    "path": "src/parametric.ts",
+    "sha256": "c065fefac70644276ded6b537a8503c65f2217d5f121cb3eb972a012b0cf3c2a"
+  },
+  {
+    "path": "src/automation/operations.ts",
+    "sha256": "228f7419c121ab6b8fad5952343db07ca727dd5ec2f441f57c9d18883fcded00"
+  },
+  {
+    "path": "src/automation/catalog.json",
+    "sha256": "a374da19159e1a1c930d918bbebadd73c9a9dcc5f1540d42e10e965510056e8f"
+  },
+  {
+    "path": "src/ui/App.tsx",
+    "sha256": "6544009959e42c4485d1b26884a5e99def72c34dff821100d1b68e8b51155a15"
+  },
+  {
+    "path": "src/ui/SketchSurfaceTools.tsx",
+    "sha256": "a73609d33f1ae0611080f5bf267169ba7602bb8236c97360728ba2dc4e482fcb"
+  },
+  {
+    "path": "src/ui/ribbon-model.ts",
+    "sha256": "080f67abc1ed7b369c5eb187881960f18307171da94e1f2c2c023152ae9b7c75"
+  },
+  {
+    "path": "src/ui/ribbon-verification.ts",
+    "sha256": "b18b2de543953a9567b2a1cebde0c286bb889a475b1ff1324f1a630850d0d1c3"
+  },
+  {
+    "path": "src/ui/tool-panel-scope.tsx",
+    "sha256": "2948974925d10e6f33968c3675c2155b69763ac52d7e8f8305376c4a21e6ac60"
+  }
+]

@@ -1,0 +1,17 @@
+Resource admission: 12322 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: From 2D sketch must accept the active saved sketch with no object selected
+    at replaySketchSurface (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/sketch-surface-browser.mjs:194:3)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1165:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

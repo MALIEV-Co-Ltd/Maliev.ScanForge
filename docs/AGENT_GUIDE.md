@@ -934,9 +934,9 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 | Scan processing          | `mesh_process`: polygon/noise reduction, scale, winding flip, repolygonize, average, mirror, unroll; repair, smoothing, decimation, segmentation; paired/ICP/global registration; scan components, eligible hole fill, boundary processing, defeature and split |
 | Region operations        | Connected selection, morphology and scan section extraction through `mesh_process`; `selectionOnly` uses the selection on the specified selected object                                                                                                         |
 | Analysis                 | Mesh topology, primitive fitting, sections, signed primitive deviations, distance/angle/radius/diameter measurements                                                                                                                                            |
-| Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                                                   |
+| Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, sketchSurface planar face, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                        |
 | Parametric edits         | `cad_rebuild`, persistent feature/output references, dependency validation and rollback                                                                                                                                                                         |
-| Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit extrusion of solved profiles                                                                                                                |
+| Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit exact planar faces and extrusion of solved profiles                                                                                         |
 | NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, compatible C0/C1 joins/transition surfaces and shell diagnostics; exact face/closed-patch conversion through recipes                |
 | History and interaction  | Modeling undo/redo and timeline seeking, standard camera views/fit, display/theme/grid settings                                                                                                                                                                 |
 | Files and execution      | Local artifact upload/download, project/scan/CAD import, project/STL/STEP export, job status/cancel                                                                                                                                                             |
@@ -1918,6 +1918,95 @@ tessellation does not certify a closed or valid exact CAD solid.
 Use `cad_create` with `recipe:{kind:"extrude",profile:{kind:"sketch-curves",sketch:<Sketch v1>},height:10}` and the usual revision/request fields. The sketch must solve into one closed unbranched line/arc cycle; construction geometry is excluded. Height is positive millimetres, at most one billion. The optional sketch frame places the profile and defines its extrusion normal. Circular arcs remain exact CAD curves; no `chordTolerance` is accepted for this profile kind. Invalid topology, inconsistent radii, unsolved constraints and intersecting profiles fail before a body is committed. Inspect the job receipt and `project_get`; use `cad_rebuild` with the same recipe kind to edit the feature. Both the GUI's solved-profile extrusion and MCP call the shared `cad_create` operation, with existing cancellation, revision, retry and model-history behavior.
 
 Existing `profile:{kind:"sketch",sketch:...,chordTolerance:...}` recipes retain their sampled polygon geometry on rebuild. Use `sketch-curves` explicitly to migrate a legacy feature to analytic curves. The sketch panel's arc preview tolerance affects drawing only. CAD meshes remain tessellated for display. Exact-cylinder volume and STEP round-trip checks establish kernel correctness; native workflow equivalence remains unverified.
+
+### Exact planar surfaces from sketches
+
+In the GUI, select a saved sketch or use the current editable sketch, then choose
+**Surfacing → From 2D sketch → Create surface**. Object selection is not required;
+selecting a saved sketch clears it. The dedicated **Surface from sketch** panel
+follows a different saved sketch selected while it is open. It submits one cloned
+snapshot through the same `cad_create` job and selects the completed face without
+adding a sketch-authoring edit. Empty or construction-only sketches are unavailable;
+invalid nonempty profiles receive the shared CAD validation error. **Cancel sketch
+surface** remains reachable while the inspector is busy. Closing the panel or
+changing its source cancels its owned work; publication's output selection is not
+a sketch-source change. Agents can inspect the same admission with `command_get`
+for `ribbon:surface2dSketch`, open it through `command_run` / `command_repeat` or
+`ui_set` with `workspace:"sketchSurface"`, and create geometry directly with the
+recipe below. For the resulting face, use **Object properties → Parametric feature
+recipe → Rebuild feature and dependents** or ordinary `cad_rebuild`; analytic
+sketch faces do not have a freeform control grid.
+
+Use `cad_create` with `recipe:{kind:"sketchSurface",sketch:<Sketch v1>}`,
+`name`, the current `expectedRevision` and a fresh `requestId`. Read the active
+editable sketch with `sketch_get` and embed its full snapshot, including optional
+frame, constraints and scan reference. The shared evaluator solves a copy and
+requires convergence before forming one exact planar face from the ordered
+nonconstruction line/arc cycle. Underconstrained sketches are allowed when they
+converge. Circular arcs remain analytic; no height or chord tolerance is accepted.
+
+The profile must have 2–10,000 edges and nonzero analytic area. Open profiles,
+branches, disconnected cycles/holes, zero-length edges, inconsistent radii,
+invalid frames and invalid native faces reject without a model edit. Coordinates
+must be finite and within the existing one-billion-millimetre local/world limits;
+frames must be orthonormal and right-handed. Reference samples alone do not form
+an editable profile. Exactly equal UV endpoints join in the derived wire without
+changing authored point IDs; real gaps are not snapped or silently closed.
+
+CAD sketch consumers (`sketchSurface` and both extrusion sketch profiles) admit
+new/replacement submissions before detailed sketch validation, and every actual
+solve before solver work: at most 128 authored
+points, 256 explicit constraints, 10,000 stored segments/arcs, 512 scalar residual
+rows and 65,536 dense normal-matrix cells. Unused points and construction curves
+count. Every stored arc adds an implicit radius row; fixed/coincident/collinear
+relations add two, symmetric line pairs add four, symmetric arc pairs add six,
+and other constraints add one. Exceeding a count or the 250,000,000 estimated
+work-unit budget fails the CAD job before solver/native acquisition without
+changing authoring or history. Reduce the embedded sketch's points, construction
+curves or relations and submit a fresh request after reviewing its revision.
+
+For `N=2*pointCount` and `R=residualRows`, the estimate is
+`N*N*R + 4*N*R + N*N`, plus
+`100*(2*N*N*N + N*N*R + 4*N*R)` when `R>0`. Residual-free sketches skip the
+iterative charge because the solver loop cannot run; final Jacobian/copy work
+is still counted. This is a conservative CAD admission estimate, not an elapsed
+time or process-memory guarantee. Global sketch authoring/solve behavior and
+native profile limits are unchanged.
+
+Stored recipes are structurally validated separately from execution admission.
+An older oversized sketch recipe can reopen with its retained exact BREP and
+display geometry, bind into the feature model, and remain cached while unrelated
+features are edited. Reading or restoring that geometry does not solve the sketch.
+Explicit `cad_create`/`cad_rebuild` submissions still require admission, including
+an identical replacement of a cached recipe. A changed or forced feature and any
+feature that actually reaches the evaluator must also pass the limits. To modify
+an oversized cached sketch feature, reduce its embedded input before rebuilding;
+retained exact shape inspection/export does not require solving it.
+
+Poll `job_get`. Success returns the ordinary `{entityIds,featureId}` and adds one
+model-history step, preserving the source scan and sketch authoring. Optional
+`selectCreated:true` selects the face before success; the default preserves
+selection. `object_get` exposes `parametric.feature.recipe` with the full embedded
+snapshot. Change that snapshot explicitly through `cad_rebuild` to edit the face
+and rebuild its dependents. Later saved-sketch edits do not change an existing
+face automatically, and the scan reference is metadata rather than a feature
+dependency. Rebuild locks, revision/retry protection, cancellation via `job_cancel`,
+late-handle cleanup, Undo/Redo and project persistence use the ordinary CAD path.
+
+To continue to a solid, create a `thicken` recipe with
+`source:{featureId:<face featureId>,output:0}` and finite nonzero `thickness` in
+millimetres, then use exact STEP export. Inspect the result with `cad_inspect`;
+the face's analytic area and zero solid count are separate from display-mesh
+measurements. Kernel checks do not establish native application equivalence.
+
+An exact sketch surface's face normal follows its embedded `frame.normal`,
+independent of line/arc traversal direction. For these planar faces, positive
+`thickness` extends along that normal and negative thickness extends opposite
+it. Ordinary `thicken` preserves the source BREP and returns an outward-oriented
+closed solid. A result that cannot enclose a finite orientable volume fails
+before publication; reduce thickness or repair the source face and retry with
+fresh revision/request fields. Curved faces use their local surface orientation
+and do not acquire a global sketch-plane normal.
 
 ### Symmetry and atomic sketch solving
 

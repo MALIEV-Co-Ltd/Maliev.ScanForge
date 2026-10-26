@@ -44,6 +44,7 @@ export const RIBBON_ACTION_IDS = [
   "autoColorize",
   "fitSurface",
   "nurbsSurface",
+  "surface2dSketch",
   "newFreeform",
   "autoFreeform",
   "quadObj",
@@ -388,7 +389,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("nurbsSurface", "NURBS surface", "surface"),
         tool("loft", "Loft", "surface"),
         planned("fillSurface", "Fill surface", "surface"),
-        planned("surface2dSketch", "From 2D sketch", "surface"),
+        tool("surface2dSketch", "From 2D sketch", "surface"),
         tool("sweep", "Sweep", "surface"),
         planned("pipe", "Pipe", "cylinder"),
         planned("sketch3d", "3D sketch", "curve"),
@@ -535,6 +536,7 @@ export interface RibbonState {
   globalAlignmentError?: string | null;
   disabled: boolean;
   hasSelection: boolean;
+  hasSketchSurfaceSource?: boolean;
   canUndo: boolean;
   canRedo: boolean;
 }
@@ -563,6 +565,11 @@ export function ribbonToolAvailability(
     return {
       available: false,
       reason: "Wait for the current operation to finish",
+    };
+  if (tool.action === "surface2dSketch" && !state.hasSketchSurfaceSource)
+    return {
+      available: false,
+      reason: "Create or select an editable sketch profile first",
     };
   if (tool.action === "alignNPoints" && !state.landmarkSourceId)
     return {

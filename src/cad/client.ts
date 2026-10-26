@@ -175,6 +175,17 @@ export class CadClient {
     }) as Promise<KernelMesh & { placementMatrix: number[] }>;
   }
 
+  sketchSurface(
+    edges: SketchProfileEdge[],
+    frame?: SketchFrame,
+  ): Promise<KernelMesh> {
+    if (frame !== undefined) validateSketchFrame(frame);
+    return this.request("sketchSurface", {
+      edges,
+      frame,
+    }) as Promise<KernelMesh>;
+  }
+
   extrudeCurves(
     edges: SketchProfileEdge[],
     height: number,
