@@ -1,0 +1,18 @@
+[
+  {
+    "file": "main-integration-r1-job.json",
+    "sha256": "f844ae5f768987dbbaf8df355fbe86bcd657b60721cd267df1991d7abe11e693"
+  },
+  {
+    "file": "main-integration-r1-commands.json",
+    "sha256": "560350606fe2297880e60bfdfb19bd5754d18e61480a142eca97e28fed55536e"
+  },
+  {
+    "file": "main-integration-r1.log",
+    "sha256": "5367e5e822afa6805f24004e8c7a126abf63aa981e8143f9f4a743f3a7cd4950"
+  },
+  {
+    "file": "main-integration-r1-ledger.json",
+    "sha256": "4f136b283085b7f10a00e5ab94853e40142de7c0d4d495d97e8b7c32e6275e82"
+  }
+]

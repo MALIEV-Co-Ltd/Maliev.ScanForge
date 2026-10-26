@@ -1,6 +1,7 @@
 import type { Entity, IndexedMesh, Positions } from "./types";
+import { transformDatumCoordinates } from "./datum-transform-kernel";
 import { indexedMeshMatches, rotateIndexedNormals } from "./indexed-mesh";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import { prepareNativeLandmarkRegion } from "./native-landmark-region";
 import {
   nativeRefineAlignmentMeshes,
@@ -284,6 +285,11 @@ function finishRefinement(
           indexedMesh: {
             vertices: transform(request.sourceIndexed.vertices),
             triangles: Uint32Array.from(request.sourceIndexed.triangles),
+            facetNormals: transformDatumCoordinates(
+              meshFacetNormals(request.sourceIndexed),
+              result.matrix,
+              true,
+            ),
             geometryNormals: rotateIndexedNormals(normals, [
               result.matrix[0],
               result.matrix[1],

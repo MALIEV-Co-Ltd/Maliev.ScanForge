@@ -1,5 +1,10 @@
+import {
+  admitReconstructionRecords,
+  type ReconstructionInput,
+} from "./scan-reconstruction-input";
+import { nativeRepolygonizeScanMesh } from "./scan-native-repolygonize";
 import { shrinkwrapScanMesh, type ShrinkwrapOptions } from "./scan-shrinkwrap";
-import type { Positions, Vec3 } from "./types";
+import type { IndexedMesh, Positions, Vec3 } from "./types";
 import type { MeshProcessingOptions } from "./mesh-processing";
 import { weldScanSamples } from "./scan-resident-samples";
 import { compareReductionSurface } from "./scan-reduction-comparison";
@@ -43,7 +48,16 @@ export type ScanToolOperation =
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
   | { kind: "flipNormals" }
-  | { kind: "repolygonize"; resolution?: number; targets?: Positions[] }
+  | {
+      kind: "repolygonize";
+      resolution?: number;
+      targets?: Positions[];
+      inputKind?: ReconstructionInput["kind"];
+      targetInputs?: ReconstructionInput[];
+      sourceTopology?: IndexedMesh;
+      targetTopology?: (IndexedMesh | undefined)[];
+      method?: "native" | "voxel";
+    }
   | { kind: "averageMesh"; targets: Positions[]; tolerance?: number }
   | { kind: "mirrorMesh"; center: Vec3; normal: Vec3; tangent?: Vec3 }
   | {
@@ -70,8 +84,40 @@ export function runScanTool(
       return reduceScanNoise(positions, { ...operation, ...options });
     case "shrinkwrap":
       return shrinkwrapScanMesh(positions, { ...operation, ...options });
-    case "repolygonize":
-      return repolygonizeScanMesh(positions, { ...operation, ...options });
+    case "repolygonize": {
+      if (
+        operation.method !== undefined &&
+        operation.method !== "native" &&
+        operation.method !== "voxel"
+      )
+        throw Error("Unknown reconstruction method.");
+      if (
+        operation.targets !== undefined &&
+        operation.targetInputs !== undefined
+      )
+        throw Error("Use only one reconstruction target representation.");
+      const records: ReconstructionInput[] = [
+        { kind: operation.inputKind ?? "triangles", positions },
+        ...(operation.targetInputs ??
+          (operation.targets ?? []).map((positions) => ({
+            kind: "triangles" as const,
+            positions,
+          }))),
+      ];
+      admitReconstructionRecords(records);
+      const hasPoints = records.some((record) => record.kind === "points");
+      if (operation.method === "native" && hasPoints)
+        throw Error(
+          "Native reconstruction requires triangle meshes; use voxel for point inputs.",
+        );
+      return operation.method === "voxel" || hasPoints
+        ? repolygonizeScanMesh(positions, { ...operation, ...options })
+        : nativeRepolygonizeScanMesh(positions, {
+            ...operation,
+            targets: records.slice(1).map((record) => record.positions),
+            ...options,
+          });
+    }
     case "scaleMesh":
       return scaleScanMesh(positions, { ...operation, ...options });
     case "flipNormals":

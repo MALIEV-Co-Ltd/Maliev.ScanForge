@@ -1,0 +1,11 @@
+{
+  "command": ["npm.cmd", "run", "typecheck"],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 1203683328,
+  "totalProcesses": 19,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 121.0689409999759
+}

@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "evidence": ".resources\\m3\\native-r3-production-public-r2\\evidence.json",
+  "evidenceSha256": "4a28e7f7fa3622e7ac4c1686fa6cccbb06eb583dc44d8fbba83ce347509fac68",
+  "receipt": ".resources\\m3\\native-r3-production-public-r2.receipt.json",
+  "receiptSha256": "f21f2b4af538232fa45f2faccd0dd06462f1f792ddbb145e3e04f6d3aff273f7",
+  "build": {
+    "selectedLabel": "m3-shared-cache-pinned-build-r1",
+    "sourceManifestSha256": "7029d848f4d077d5958df13a75983a207943ad4b0fd0f4bd5925a91d010113f3",
+    "sourcePath": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/m3-shared-cache-pinned-build-r1.source.json",
+    "sourceFileSha256": "00f251de48a9e808415ca60b6560405d84d02be59f9f42ee222b6e72f16570ce",
+    "buildReceiptPath": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/m3-shared-cache-pinned-build-r1.build.json",
+    "buildReceiptSha256": "6990d5ce945a8640b0841258b6fcb0c58ec302f727e947471d561353901053f0"
+  },
+  "fullR1FreshFacetValues": 19989492,
+  "samplingClocks": 3903,
+  "queries": 38,
+  "correspondenceRecords": 27420,
+  "localEntryExitPairs": 6,
+  "sameR3ObservedSetterComparisons": 6,
+  "fullR3AfterSupportedValues": 40278222,
+  "expandedPositionValues": 59968476,
+  "scope": {
+    "testWorkspaceHost": true,
+    "actualReactEditor": false,
+    "stdioMcp": false,
+    "rendering": false,
+    "nativeSetterEntryObserved": true,
+    "nativeBaseline": "R3-before equals full R2-after; originals are not pristine here",
+    "initialBaselineStorage": "Immutable SAB using production readonly allocation; ordinary-buffer r1 admission failure retained separately",
+    "observerInstrumentedController": true,
+    "oracleInputsSuppliedToController": false,
+    "nativeFacetNormalComparison": "Fresh complete original R1 import and production complete R3-before/after carriers",
+    "nativeFacetNormalField": true,
+    "completeNativeParity": false
+  },
+  "checks": {
+    "originalImportedFullGeometry": true,
+    "nativeR2PrealignedInputSnapshot": true,
+    "publicApplicationApi": true,
+    "isolatedController": true,
+    "realQueryAndSetterWorkers": true,
+    "nativeFinalStatesAndSupportedBuffers": true,
+    "immutableR3BaselineStreams": true,
+    "exactCachedApply": true,
+    "retryCommittedOnce": true,
+    "historyEntries": 1,
+    "outerClockCalls": 1,
+    "unresolvedOwnedWorkers": 0
+  },
+  "sourceInputsUnchanged": true,
+  "observerTransforms": [
+    {
+      "path": "C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/src/scan-global-controller-core.ts",
+      "sourceSha256": "deae025b0406c6983741d1f71c6ee1c827deeeab033d7db64d54d1e067d64727",
+      "transformedSha256": "513db1cc301d3706837abbd0d54b810da5ea17847d7d8aa2af943671c888c962",
+      "scope": "Copies computed query/local entry/exit observations only; no expected data is present in controller code or messages"
+    }
+  ],
+  "ownedCleanup": {
+    "elapsedSeconds": 29.722220099996775,
+    "childPeakJobMemoryBytes": 2119069696,
+    "outerPeakJobMemoryBytes": 2132774912,
+    "childJobFinalActive": 0,
+    "cleanupErrors": [],
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true
+  },
+  "priorFailure": "r1 ordinary baseline exceeded unchanged 512 MiB query admission; retained separately",
+  "exactHarnessArchive": ".resources\\m3\\native-r3-production-public-r2\\harness"
+}

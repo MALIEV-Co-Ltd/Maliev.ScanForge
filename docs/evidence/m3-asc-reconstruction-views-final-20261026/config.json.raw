@@ -1,0 +1,117 @@
+{
+  "label": "asc-actual-output-three-view-native-repoly-c-r1",
+  "buildLabel": "m3-native-repoly-pinned-build-r3",
+  "canonicalProof": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.commit-296925e.json",
+  "buildId": "scanforge-bab4f9199590cf11",
+  "sourceCommit": "296925eac314f49c2875bcbdb5ea5245e2cf6fe9",
+  "sourceManifestSha256": "629378cdea560728b97062186fb65ec7e87698ec48cf4f4d2dec05d57ededb95",
+  "compilerInputs": 2095,
+  "output": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\output",
+  "examples": "C:/repo/alignment-example-files",
+  "pins": [
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.build.json",
+      "bytes": 891,
+      "sha256": "52eb23a2dcd06d1e587b99415efb1693a40a182f0dbfc43e5ac36dc2c60e5b14"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.source.json",
+      "bytes": 554351,
+      "sha256": "a6d2cef5c9b5600185d2f38240c9da540844bcc77c7558705f06043a10878d1c"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.dist.json",
+      "bytes": 49853,
+      "sha256": "4a28a2a47e4af68fa3c11de10300e44f16862249a05ba65e2b8aa5f2ea9327a9"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-native-repoly-pinned-build-r3.commit-296925e.json",
+      "bytes": 486665,
+      "sha256": "c828c3717642f58184f6f41a6574dedcbc18d319a96c8bd6a0d3999754c16510"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-r1.case.json",
+      "bytes": 1203,
+      "sha256": "dc076b60dfb27fbd2635176194175ac7e08bdba5f9d88d449937c69f19918eb9"
+    },
+    {
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\closed-evidence-through-asc-reconstruction-r2\\original-asc-reconstruction-final-cloud-selection-r2\\browser\\evidence.json",
+      "bytes": 115398,
+      "sha256": "8fc5124a94ebd2a7f1f9d7c49e0c2bdccc03e9401961ba36dc7ee3e1de718ec3"
+    },
+    {
+      "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\original-asc-reconstruction-final-cloud-selection-r2-geometry-9d3275112e85\\output-geometry.json",
+      "bytes": 53565639,
+      "sha256": "ab294ccce4ee6a886ffa6df863ad8c06e1c6e6c13ffb8e0f66634688535c61fd"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-local-c.mjs",
+      "bytes": 10743,
+      "sha256": "eda3e68b42e7bc6dd50c2ee3ccf2f87b98b616b5234aa4eb01cfbc15b0b3b3c8"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-local-c-origin.mjs",
+      "bytes": 1752,
+      "sha256": "484341c7a3db603162a5f23827fe3201f47d97d78c855834d14f775417b90a64"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-local-c-runner.mjs",
+      "bytes": 4631,
+      "sha256": "38980e387aa07bf74b030497fc49d8ac840add3dba814a74c98c80e682ac2cd0"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-local-c-run.py",
+      "bytes": 1767,
+      "sha256": "4fa6b656a0341b9a3390e5be2c371c80369131fd861b4b591ca2e8d7421176ac"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\OWNER.json",
+      "bytes": 281,
+      "sha256": "85e535e4901a5d1dddf570190aea1c34050ea75d6f540ec39b93e6948b5e5ed7"
+    }
+  ],
+  "qualityCapture": {
+    "files": [
+      "output-geometry.json",
+      "output-reopened-geometry.json"
+    ],
+    "previousPreparation": "original-asc-reconstruction-final-r1.pre-quality-capture.config.json",
+    "scope": "Public object_get/includeGeometry and streamed artifact_read before/after persistence, separate JSON SHA and full carrier digest equality; JSON key order not geometry"
+  },
+  "geometryOutput": {
+    "directory": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\generated-ply",
+    "owner": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\OWNER.json",
+      "bytes": 281,
+      "sha256": "85e535e4901a5d1dddf570190aea1c34050ea75d6f540ec39b93e6948b5e5ed7"
+    },
+    "scope": "Fresh task-owned Z folder; actual complete geometry artifact JSON before/after persistence, C stores metadata only"
+  },
+  "priorPreparation": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-r1.config.json",
+    "sha256": "55f2edb3fcfddaa70c8231a3ffa373db3a196a759d9d10af76fad393f6a4a816",
+    "scope": "Earlier unexecuted 445bab3/fd58 configuration retained unchanged; this is new3e3bbcd/b9a7 binding"
+  },
+  "previousFailedAdmission": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-asc-reconstruction-final-cloud-selection-r1.receipt.json",
+    "sha256": "2c2d2ce04f7a72ff85a843f164726cebe313baf0ae9aa1c4b6bee146b0a40241",
+    "scope": "r1 childC6GiB preflight rejected beforebrowser; preservedimmutable"
+  },
+  "renderCase": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-r1.case.json",
+  "writeOwner": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\OWNER.json",
+    "bytes": 281,
+    "sha256": "85e535e4901a5d1dddf570190aea1c34050ea75d6f540ec39b93e6948b5e5ed7"
+  },
+  "writeRoot": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f",
+  "downloads": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\downloads",
+  "traces": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\local-c-validation-296925e\\views-876c0a4f7f\\traces",
+  "filesystemScope": "FreshLOCAL C actualwritevolume; persistentDEFAULT ownedprofile/TEMP/TMP/downloads/traces/outputs; same6GiBC+RAM/4GiB25percent840context900outer. ExistingC180incompletecases andZvariantsunchanged. No userprofiles orlive/nativeapplication interaction.",
+  "captureProvenance": "FullactualJSON53.6MB from3e3/b9voxelreconstruction asretainedinputonly; current296925e/bab4GUIrender/importsupport, no nativeRePolyoutputsubstitution or newreconstruction claim.",
+  "previousUnlaunchedVariant": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\asc-actual-output-three-view-native-repoly-z-r1.config.json",
+    "sha256": "940b362158a430f72c5f0f531176b5fca0a72fb1ba2323307bab529267f2a753",
+    "scope": "Zfilesystem variant retainedunchanged; thisfreshCmodeisnot a rerun/relabel offailedoldcases"
+  },
+  "pathScope": "ShortfreshownedCsubdirectory avoids unnecessaryWindowsprofilepathlength growth; all oldwriteRoot candidateswere uncreated."
+}

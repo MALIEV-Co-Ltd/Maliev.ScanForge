@@ -2,7 +2,7 @@ import { yieldScanTask } from "./scan-task";
 import type { Entity, IndexedMesh, Positions } from "./types";
 import { datumFeatureMetadata } from "./scan-native-datum-primitive";
 import { cacheScanRenderData, prepareScanRenderData } from "./scan-render-data";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import {
   cloudPoseMatrix,
   nextCloudPlacementStages,
@@ -29,7 +29,14 @@ async function indexedScan(
 ): Promise<IndexedMesh | undefined> {
   const indexed = entity.indexedMesh;
   if (!indexed || entity.kind !== "mesh") return undefined;
-  const { vertices, triangles, normals, geometryNormals } = indexed;
+  const { vertices, triangles, normals, geometryNormals, facetNormals } =
+    indexed;
+  if (
+    facetNormals !== undefined &&
+    (!(Array.isArray(facetNormals) || facetNormals instanceof Float32Array) ||
+      facetNormals.length !== triangles.length)
+  )
+    throw Error("Computed facet normals must match the indexed triangles.");
   if (
     !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
@@ -46,7 +53,10 @@ async function indexedScan(
         Array.isArray(geometryNormals) ||
         geometryNormals instanceof Float32Array
       ) ||
-        geometryNormals.length !== vertices.length))
+        geometryNormals.length !== vertices.length)) ||
+    (facetNormals !== undefined &&
+      (!(Array.isArray(facetNormals) || facetNormals instanceof Float32Array) ||
+        facetNormals.length !== triangles.length))
   )
     return undefined;
   const finite = async (values: Positions, requireFloat32 = false) =>
@@ -69,6 +79,8 @@ async function indexedScan(
     (geometryNormals && !(await finite(geometryNormals, true)))
   )
     return undefined;
+  if (facetNormals && !(await finite(facetNormals, true)))
+    throw Error("Computed facet normals require finite Float32 vectors.");
   const matches = await visit(
     triangles.length,
     (first, end) => {
@@ -164,6 +176,9 @@ export async function transformDatumScanStages(
   const geometryNormals = indexed
     ? await transform(meshGeometryNormals(indexed), frames, true)
     : undefined;
+  const facetNormals = indexed
+    ? await transform(meshFacetNormals(indexed), frames, true)
+    : undefined;
   const sourceNormals = placement ? placement.sourceNormals : entity.normals;
   const normals = sourceNormals
     ? await transform(sourceNormals, coordinateFrames, true)
@@ -183,6 +198,7 @@ export async function transformDatumScanStages(
           vertices: vertices!.output,
           triangles: indexed.triangles,
           geometryNormals: geometryNormals!.output,
+          facetNormals: facetNormals!.output,
           ...(indexedNormals ? { normals: indexedNormals.output } : {}),
         }
       : undefined,

@@ -1,0 +1,2193 @@
+{
+  "schema": 1,
+  "status": "COMPLETED_FINAL_PLY_MEASUREMENTS_MIXED_QUALITY_NO_RELEASE_VERDICT",
+  "measurementJobsCompleted": true,
+  "registrationQualityPassed": null,
+  "nativeEquivalencePassed": null,
+  "overallM3Passed": false,
+  "candidateAtCapture": {
+    "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+    "buildId": "scanforge-fd58d9b0cd235edc",
+    "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+    "canonicalCommitProofPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\01-m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+      "bytes": 484103,
+      "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+    },
+    "regressionReceipt": "m3-main-integrated-regression-20261026.json"
+  },
+  "scope": "Actual final815010863-byte ddee checkpoint; independent complete original/aligned saved history plus full combined topology. No R7 geometry/metrics, no sampling/filtering/after clipping, no invented accuracy/native/usability verdict.",
+  "publicationEncoding": "Repository-normalized JSON preserves complete raw report/config values. Raw capture hashes/lengths below refer to unchanged exact archive bytes; raw geometry is not copied or reread by publication.",
+  "rawArchiveSummaryPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\summary.json",
+    "bytes": 54238,
+    "sha256": "d89c0e5f7ac6959b37ab92d446e52d75af7017126f6b7d3bc72482790b20d033"
+  },
+  "archiveFiles": [
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.build.json",
+        "bytes": 893,
+        "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+      },
+      "archived": "00-m3-main-integrated-pinned-build-r1.build.json",
+      "bytes": 893,
+      "sha256": "0bffb3960730e7a01de7f37e3e6e13dca3bd9cb8ff65ded927e4f8dfe614914b"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "bytes": 484103,
+        "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+      },
+      "archived": "01-m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+      "bytes": 484103,
+      "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.dist.json",
+        "bytes": 49855,
+        "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+      },
+      "archived": "02-m3-main-integrated-pinned-build-r1.dist.json",
+      "bytes": 49855,
+      "sha256": "1b3b44c8ebf04bcda0aca923ad2a9ca37a18eaaaf77394585b136e9a47060ba8"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.source.json",
+        "bytes": 551430,
+        "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+      },
+      "archived": "03-m3-main-integrated-pinned-build-r1.source.json",
+      "bytes": 551430,
+      "sha256": "0a2acdfbd6909efd24c59f70372985254f23f7795c0361ae26b555805b1f8d3e"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.json",
+        "bytes": 43362,
+        "sha256": "fd09c4139c7be1c694f2a09919e8d656988a312b859bdffcf7abcb53d54058ff"
+      },
+      "archived": "04-original-ply-quality-final-main-r1.json",
+      "bytes": 43362,
+      "sha256": "fd09c4139c7be1c694f2a09919e8d656988a312b859bdffcf7abcb53d54058ff"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.receipt.json",
+        "bytes": 2142,
+        "sha256": "0830d3773514a87b0e48c27aaad23c2556596acd10756b38fc086e8344d0031c"
+      },
+      "archived": "05-original-ply-quality-final-main-r1.receipt.json",
+      "bytes": 2142,
+      "sha256": "0830d3773514a87b0e48c27aaad23c2556596acd10756b38fc086e8344d0031c"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "archived": "06-original-ply-quality-final-main-r1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.stdout.log",
+        "bytes": 14288,
+        "sha256": "e4d3919511040ea4dae9eaae2b0d1163188a6aa2f36567169f9060086e786216"
+      },
+      "archived": "07-original-ply-quality-final-main-r1.stdout.log",
+      "bytes": 14288,
+      "sha256": "e4d3919511040ea4dae9eaae2b0d1163188a6aa2f36567169f9060086e786216"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.receipt.json",
+        "bytes": 2148,
+        "sha256": "b12f10966d2807462f9e99b9eea7f1697da3e63be8e9feefb4dc30ec82824990"
+      },
+      "archived": "08-original-ply-topology-final-main-r1.receipt.json",
+      "bytes": 2148,
+      "sha256": "b12f10966d2807462f9e99b9eea7f1697da3e63be8e9feefb4dc30ec82824990"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.stderr.log",
+        "bytes": 467,
+        "sha256": "1d329ac13171de7c31debf9b7e4879ed152095199d4ee88e878032033392929d"
+      },
+      "archived": "09-original-ply-topology-final-main-r1.stderr.log",
+      "bytes": 467,
+      "sha256": "1d329ac13171de7c31debf9b7e4879ed152095199d4ee88e878032033392929d"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "archived": "10-original-ply-topology-final-main-r1.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.json",
+        "bytes": 8934,
+        "sha256": "b87f8a4ed10cc2e85a24b0522500a6c59b427a0083231b04e6b3c4c74fae00c7"
+      },
+      "archived": "11-original-ply-topology-final-main-r2.json",
+      "bytes": 8934,
+      "sha256": "b87f8a4ed10cc2e85a24b0522500a6c59b427a0083231b04e6b3c4c74fae00c7"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.receipt.json",
+        "bytes": 2149,
+        "sha256": "ca0d5703fc7eddb6aa8debee38e8f98f0bae61cc347fe93ff52cf15d93860108"
+      },
+      "archived": "12-original-ply-topology-final-main-r2.receipt.json",
+      "bytes": 2149,
+      "sha256": "ca0d5703fc7eddb6aa8debee38e8f98f0bae61cc347fe93ff52cf15d93860108"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "archived": "13-original-ply-topology-final-main-r2.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.stdout.log",
+        "bytes": 328,
+        "sha256": "146f4526b324333ff6471319a0bfc97591d823344c29fed7e4a867ea9391497d"
+      },
+      "archived": "14-original-ply-topology-final-main-r2.stdout.log",
+      "bytes": 328,
+      "sha256": "146f4526b324333ff6471319a0bfc97591d823344c29fed7e4a867ea9391497d"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1\\evidence.json",
+        "bytes": 1407459,
+        "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+      },
+      "archived": "15-evidence.json",
+      "bytes": 1407459,
+      "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-quality-configured.mjs",
+        "bytes": 20301,
+        "sha256": "d4e41b67606864f07a4c732a8ed7577167191e56f15659b9d6bfe9dfca00811d"
+      },
+      "archived": "16-ply-final-history-quality-configured.mjs",
+      "bytes": 20301,
+      "sha256": "d4e41b67606864f07a4c732a8ed7577167191e56f15659b9d6bfe9dfca00811d"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured-r2.mjs",
+        "bytes": 13902,
+        "sha256": "6ad74d1edc346968d7ea31d73742ff3089ff54f87d23d153810b2c4d8eeedbb0"
+      },
+      "archived": "17-ply-final-history-topology-configured-r2.mjs",
+      "bytes": 13902,
+      "sha256": "6ad74d1edc346968d7ea31d73742ff3089ff54f87d23d153810b2c4d8eeedbb0"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured.mjs",
+        "bytes": 13867,
+        "sha256": "38dbda5036d666d4c0011010b2ef0e0719088747e019881c4efddb85e523395d"
+      },
+      "archived": "18-ply-final-history-topology-configured.mjs",
+      "bytes": 13867,
+      "sha256": "38dbda5036d666d4c0011010b2ef0e0719088747e019881c4efddb85e523395d"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-measurements-run.py",
+        "bytes": 1487,
+        "sha256": "ccd105cf0413ba28bfaf98932cd1984bb4deaf5a41b5728e2f5785a70b26cf5d"
+      },
+      "archived": "19-ply-final-measurements-run.py",
+      "bytes": 1487,
+      "sha256": "ccd105cf0413ba28bfaf98932cd1984bb4deaf5a41b5728e2f5785a70b26cf5d"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-quality-final-main-r1.config.json",
+        "bytes": 2433,
+        "sha256": "f7fd6ba1e463a242ff69a791a2b4d8a1dc2c0a2751a5ec4cc361c617fd98e9fa"
+      },
+      "archived": "20-ply-final-quality-final-main-r1.config.json",
+      "bytes": 2433,
+      "sha256": "f7fd6ba1e463a242ff69a791a2b4d8a1dc2c0a2751a5ec4cc361c617fd98e9fa"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-topology-final-main-r1.config.json",
+        "bytes": 2069,
+        "sha256": "4e2b1e5d5b42a319b8397bb2dac322a6fcb9e299487a15ea15864a0b78fb1bcc"
+      },
+      "archived": "21-ply-final-topology-final-main-r1.config.json",
+      "bytes": 2069,
+      "sha256": "4e2b1e5d5b42a319b8397bb2dac322a6fcb9e299487a15ea15864a0b78fb1bcc"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-topology-final-main-r2.config.json",
+        "bytes": 3204,
+        "sha256": "accc2b5b508d125e35d0a799a70ca510a3c7c076153c9d63d8410fa05140e229"
+      },
+      "archived": "22-ply-final-topology-final-main-r2.config.json",
+      "bytes": 3204,
+      "sha256": "accc2b5b508d125e35d0a799a70ca510a3c7c076153c9d63d8410fa05140e229"
+    },
+    {
+      "original": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+        "bytes": 6171,
+        "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+      },
+      "archived": "23-m3-mesh-intersections.mjs",
+      "bytes": 6171,
+      "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+    }
+  ],
+  "snapshot": {
+    "stage": "combined",
+    "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+    "bytes": 815010863,
+    "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+    "chunks": 3110,
+    "maxDecodedChunkBytes": 262144,
+    "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation",
+    "source": "Exact saved history state in same combined checkpoint"
+  },
+  "quality": {
+    "rawReportPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\04-original-ply-quality-final-main-r1.json",
+      "bytes": 43362,
+      "sha256": "fd09c4139c7be1c694f2a09919e8d656988a312b859bdffcf7abcb53d54058ff"
+    },
+    "rawConfigurationPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\20-ply-final-quality-final-main-r1.config.json",
+      "bytes": 2433,
+      "sha256": "f7fd6ba1e463a242ff69a791a2b4d8a1dc2c0a2751a5ec4cc361c617fd98e9fa"
+    },
+    "report": {
+      "completed": true,
+      "workflowStatus": {
+        "overallWorkflowPassed": false,
+        "geometryStagePassed": true,
+        "persistenceMeasuredHere": false,
+        "qualityOnlyScope": true,
+        "sourceWorkflowEvidenceSha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c",
+        "sourceWorkflowReceiptSha256": "39c72861c3bddc44078f2e70df91503e9614e118124e690e0833f323f7f7ca82",
+        "sourceWorkflowReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1.receipt.json",
+        "meaning": "Independent full geometry from ONE hash/length-verified combined checkpoint history. Stage-A geometry success is separate from Stage-B persistence and overall M3 acceptance."
+      },
+      "scope": "Current production original-three PLY snapshots; every indexed source vertex measured against all complete other-scan triangles; independent installed BVH, no application registration/transform code. Full discrete source/output carriers also measured.",
+      "selfTests": {
+        "analyticCases": 5,
+        "degenerateCase": true,
+        "indirectIndexPreserved": true
+      },
+      "oracleControls": [
+        {
+          "stage": "before",
+          "source": "ply-1.ply",
+          "target": "ply-2.ply",
+          "actual": 0.9256466564039917,
+          "distance": 0.9256466564039917,
+          "boundsChecked": 2697877,
+          "trianglesChecked": 243
+        },
+        {
+          "stage": "before",
+          "source": "ply-1.ply",
+          "target": "ply-3.ply",
+          "actual": 0.9193516936784731,
+          "distance": 0.9193516936784731,
+          "boundsChecked": 3691133,
+          "trianglesChecked": 351
+        },
+        {
+          "stage": "before",
+          "source": "ply-2.ply",
+          "target": "ply-1.ply",
+          "actual": 0.18798692138805959,
+          "distance": 0.18798692138806167,
+          "boundsChecked": 274154,
+          "trianglesChecked": 322
+        },
+        {
+          "stage": "before",
+          "source": "ply-2.ply",
+          "target": "ply-3.ply",
+          "actual": 0.02485292414122399,
+          "distance": 0.024852924141198208,
+          "boundsChecked": 3691133,
+          "trianglesChecked": 95
+        },
+        {
+          "stage": "before",
+          "source": "ply-3.ply",
+          "target": "ply-1.ply",
+          "actual": 2.478054422543996,
+          "distance": 2.4780544225440013,
+          "boundsChecked": 274154,
+          "trianglesChecked": 122
+        },
+        {
+          "stage": "before",
+          "source": "ply-3.ply",
+          "target": "ply-2.ply",
+          "actual": 0.01066164326709532,
+          "distance": 0.01066164326710789,
+          "boundsChecked": 2697877,
+          "trianglesChecked": 151
+        },
+        {
+          "stage": "after",
+          "source": "ply-1.ply",
+          "target": "ply-2.ply",
+          "actual": 0.9299873268855016,
+          "distance": 0.9299873268855106,
+          "boundsChecked": 2697877,
+          "trianglesChecked": 254
+        },
+        {
+          "stage": "after",
+          "source": "ply-1.ply",
+          "target": "ply-3.ply",
+          "actual": 0.8949580462499074,
+          "distance": 0.8949580462499074,
+          "boundsChecked": 3691133,
+          "trianglesChecked": 311
+        },
+        {
+          "stage": "after",
+          "source": "ply-2.ply",
+          "target": "ply-1.ply",
+          "actual": 0.17021888507429075,
+          "distance": 0.17021888507429542,
+          "boundsChecked": 274154,
+          "trianglesChecked": 316
+        },
+        {
+          "stage": "after",
+          "source": "ply-2.ply",
+          "target": "ply-3.ply",
+          "actual": 0.03666790284302007,
+          "distance": 0.03666790284300408,
+          "boundsChecked": 3691133,
+          "trianglesChecked": 96
+        },
+        {
+          "stage": "after",
+          "source": "ply-3.ply",
+          "target": "ply-1.ply",
+          "actual": 2.4720028460475256,
+          "distance": 2.4720028460475154,
+          "boundsChecked": 274154,
+          "trianglesChecked": 122
+        },
+        {
+          "stage": "after",
+          "source": "ply-3.ply",
+          "target": "ply-2.ply",
+          "actual": 0.009573520876506937,
+          "distance": 0.009573520876509267,
+          "boundsChecked": 2697877,
+          "trianglesChecked": 148
+        }
+      ],
+      "oracleToleranceMm": 1e-6,
+      "inputPins": [
+        {
+          "stage": "before",
+          "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+          "bytes": 815010863,
+          "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+          "chunks": 3110,
+          "maxDecodedChunkBytes": 262144,
+          "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation",
+          "source": "Exact saved history state in same combined checkpoint"
+        },
+        {
+          "stage": "after",
+          "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+          "bytes": 815010863,
+          "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+          "chunks": 3110,
+          "maxDecodedChunkBytes": 262144,
+          "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation",
+          "source": "Exact saved history state in same combined checkpoint"
+        },
+        {
+          "stage": "combined",
+          "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+          "bytes": 815010863,
+          "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+          "chunks": 3110,
+          "maxDecodedChunkBytes": 262144,
+          "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation",
+          "source": "Exact saved history state in same combined checkpoint"
+        }
+      ],
+      "browserEvidenceSha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c",
+      "measurementConfigPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-quality-final-main-r1.config.json",
+      "measurementConfigSha256": "f7fd6ba1e463a242ff69a791a2b4d8a1dc2c0a2751a5ec4cc361c617fd98e9fa",
+      "sourceFiles": [
+        {
+          "path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+          "name": "ply-1.ply",
+          "bytes": 6926970,
+          "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+        },
+        {
+          "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+          "name": "ply-2.ply",
+          "bytes": 68084515,
+          "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+        },
+        {
+          "path": "C:\\repo\\alignment-example-files\\ply-3.ply",
+          "name": "ply-3.ply",
+          "bytes": 92765339,
+          "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2"
+        }
+      ],
+      "sourceVerticesPerStage": 3381455,
+      "sourceVerticesEvaluated": 6762910,
+      "trianglesPerStage": 6663164,
+      "pairDirections": 6,
+      "downsampled": false,
+      "normalOrBoundaryFiltering": false,
+      "normalProvenance": [
+        {
+          "stage": "before",
+          "name": "ply-1.ply",
+          "authoredScannerNormalsSha256": "53005524622dc63dafb1568183ac792398cc5f33dd491f565b0607601999478c",
+          "computedGeometryNormalsSha256": "b9938dcafdfc681a388bb6d7027fc47656298a916665cdb3fc08c342e35e5d0c",
+          "computedFacetNormalsSha256": "13ffb72481530af2aed722089ea3ae9845c0f826bf53a31cb6223cfe4c4dd8a0",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "before",
+          "name": "ply-2.ply",
+          "authoredScannerNormalsSha256": "261b0aac12b2ab2d2e4635032f83ab9c56b5c07200800c82b5424fe149944231",
+          "computedGeometryNormalsSha256": "4e8510da21830c25b1905ba0d5d1f2569762a23a3dd7eb83a0733fd68a677915",
+          "computedFacetNormalsSha256": "a9c0bae100f76682cdadf74ca5f7824f87343e21bd5e0d904c5e82a78d2ef6ef",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "before",
+          "name": "ply-3.ply",
+          "authoredScannerNormalsSha256": "7a6d79cf44894caee07e5915c544a5671a3dc6a0652b1b6b0ae03ad03f35c5cd",
+          "computedGeometryNormalsSha256": "55b1169c7ac69267b510272196233a8e876ef68845220bfaff2121c51b95538f",
+          "computedFacetNormalsSha256": "c9afe7ec8070ca94e5856fac7308c511ebd5883b169fcc04e86921a5f8690c11",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "after",
+          "name": "ply-1.ply",
+          "authoredScannerNormalsSha256": "09f325981f10d8b0d2abb84a01e9f298f834f6070fc3c00d85053bc6f8a80792",
+          "computedGeometryNormalsSha256": "1e4a00fbc8744fc70aea7bb93283e723ff2d706354cb898b607b89eb84fbbb2d",
+          "computedFacetNormalsSha256": "3b3ab4f24f1fb6d02c21658f8e2f2a5cf88cb15046cc9417b2e45c743b8a585f",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "after",
+          "name": "ply-2.ply",
+          "authoredScannerNormalsSha256": "b1a6d0b88a8b7dc2863590ed2692ae1e0bac8e39a77b9a2f885326aa90b0bee0",
+          "computedGeometryNormalsSha256": "dba05b50b97e2c9439cc1e73eba7a659fd7e3180ea96dcb73f23a3cd422df99a",
+          "computedFacetNormalsSha256": "ff90af70a7d14d94fe3feabd10daf532900cfcd2823c893fac3d886898c3f6f1",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "after",
+          "name": "ply-3.ply",
+          "authoredScannerNormalsSha256": "16cfd5a533f69248404c6285b2bfc48e8005923faf1de03bd6079a727d8ab20d",
+          "computedGeometryNormalsSha256": "eab960028991983674a1e21f54852ecd26a8cc076fc69a7adcc5695904af4e96",
+          "computedFacetNormalsSha256": "f6f64c2608a12263ba83f2b5ba8cade9380b9410538145094cef6e0113bc8e8d",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "combined",
+          "name": "ply-2.ply",
+          "authoredScannerNormalsSha256": "b1a6d0b88a8b7dc2863590ed2692ae1e0bac8e39a77b9a2f885326aa90b0bee0",
+          "computedGeometryNormalsSha256": "dba05b50b97e2c9439cc1e73eba7a659fd7e3180ea96dcb73f23a3cd422df99a",
+          "computedFacetNormalsSha256": "ff90af70a7d14d94fe3feabd10daf532900cfcd2823c893fac3d886898c3f6f1",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        },
+        {
+          "stage": "combined",
+          "name": "ply-3.ply",
+          "authoredScannerNormalsSha256": "16cfd5a533f69248404c6285b2bfc48e8005923faf1de03bd6079a727d8ab20d",
+          "computedGeometryNormalsSha256": "eab960028991983674a1e21f54852ecd26a8cc076fc69a7adcc5695904af4e96",
+          "computedFacetNormalsSha256": "f6f64c2608a12263ba83f2b5ba8cade9380b9410538145094cef6e0113bc8e8d",
+          "separateFields": true,
+          "nativeFacetNormalFieldCompared": false
+        }
+      ],
+      "metric": "Unsigned nearest complete triangle surfaces; vertex-weighted, not uniform-area weighting or scanner ground truth",
+      "reportingSearchRadiusMm": 0.5,
+      "reportingSearchRadiusMeaning": "Actual global command correspondence search setting; not an invented registration release threshold",
+      "scans": [
+        {
+          "name": "ply-1.ply",
+          "id": "dbc92197-19b7-40d5-a328-a2d4c4da32b4",
+          "sourceVertices": 140113,
+          "targetTriangles": 6389010,
+          "before": {
+            "count": 140113,
+            "withinSearchRadius": 51733,
+            "withinSearchRadiusPercent": 36.9223412531314,
+            "meanMm": 1.273139777489315,
+            "rmsMm": 1.6708887048331806,
+            "medianMm": 1.199222338019511,
+            "p95Mm": 3.092467669328884,
+            "p99Mm": 3.210446061546272,
+            "maximumMm": 4.99951265072375
+          },
+          "after": {
+            "count": 140113,
+            "withinSearchRadius": 51370,
+            "withinSearchRadiusPercent": 36.66326465067481,
+            "meanMm": 1.2932991810777736,
+            "rmsMm": 1.6943694411670076,
+            "medianMm": 1.2370999115820545,
+            "p95Mm": 3.1159136083635315,
+            "p99Mm": 3.2188093185195896,
+            "maximumMm": 4.9959659155041845
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 51733,
+              "withinSearchRadius": 51733,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.10406017608348851,
+              "rmsMm": 0.16719328455173307,
+              "medianMm": 0.040790491779741936,
+              "p95Mm": 0.41099012110911254,
+              "p99Mm": 0.48244202013560616,
+              "maximumMm": 0.49999601568269597
+            },
+            "after": {
+              "count": 51733,
+              "withinSearchRadius": 50928,
+              "withinSearchRadiusPercent": 98.44393327276593,
+              "meanMm": 0.10579303002820326,
+              "rmsMm": 0.17183460747032928,
+              "medianMm": 0.042071889449723274,
+              "p95Mm": 0.4256522990175016,
+              "p99Mm": 0.5192603273743255,
+              "maximumMm": 0.6656507142203363
+            },
+            "beforeBounds": {
+              "count": 51733,
+              "min": [
+                -32.87358474731445, -38.09662628173828, -330.3721618652344
+              ],
+              "max": [72.256591796875, 72.85503387451172, -261.84112548828125],
+              "extent": [105.13017654418945, 110.95166015625, 68.53103637695312]
+            },
+            "afterBounds": {
+              "count": 51733,
+              "min": [
+                -32.89036560058594, -38.132179260253906, -330.3204345703125
+              ],
+              "max": [72.33393859863281, 72.87322235107422, -261.9849548339844],
+              "extent": [
+                105.22430419921875, 111.00540161132812, 68.33547973632812
+              ]
+            },
+            "sourceVertexIdMaskSha256": "e47367defab4c194f32f545bbfb2cc660481aee9bf7e49f6590c539b4def79fc"
+          },
+          "gainedWithinSearchRadius": 442,
+          "lostWithinSearchRadius": 805,
+          "beforeDistanceSha256": "9a4d251af51c971f0b5cbbf94d0de162cad19f7bfbe2f8ab5831bbc4da876c0d",
+          "afterDistanceSha256": "a7105c50543089b6aaba04d901a762cd0508951ac749b56c81f16877010bf38d"
+        },
+        {
+          "name": "ply-2.ply",
+          "id": "b2c00f9a-83a3-4fd6-8276-49e93a163911",
+          "sourceVertices": 1375494,
+          "targetTriangles": 3965287,
+          "before": {
+            "count": 1375494,
+            "withinSearchRadius": 1348518,
+            "withinSearchRadiusPercent": 98.03881369166278,
+            "meanMm": 0.04113562383616336,
+            "rmsMm": 0.1688947182236694,
+            "medianMm": 0.012028423500567889,
+            "p95Mm": 0.07111568723255822,
+            "p99Mm": 1.0045790946478743,
+            "maximumMm": 2.478232445495542
+          },
+          "after": {
+            "count": 1375494,
+            "withinSearchRadius": 1348579,
+            "withinSearchRadiusPercent": 98.0432484620071,
+            "meanMm": 0.04211081792596475,
+            "rmsMm": 0.16866067500526852,
+            "medianMm": 0.013231186371894884,
+            "p95Mm": 0.07291680660100885,
+            "p99Mm": 1.0006759091224102,
+            "maximumMm": 2.4686915016335247
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 1348518,
+              "withinSearchRadius": 1348518,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.020195357636977454,
+              "rmsMm": 0.04377131057099454,
+              "medianMm": 0.011722147115748418,
+              "p95Mm": 0.053622946865030795,
+              "p99Mm": 0.21921961245297902,
+              "maximumMm": 0.4999744646952981
+            },
+            "after": {
+              "count": 1348518,
+              "withinSearchRadius": 1348425,
+              "withinSearchRadiusPercent": 99.99310354033094,
+              "meanMm": 0.021248929158015076,
+              "rmsMm": 0.044301135110526274,
+              "medianMm": 0.01291022726493441,
+              "p95Mm": 0.055227813022943543,
+              "p99Mm": 0.22123498604418937,
+              "maximumMm": 0.5134209099666718
+            },
+            "beforeBounds": {
+              "count": 1348518,
+              "min": [
+                -33.08653259277344, -38.053462982177734, -330.05120849609375
+              ],
+              "max": [72.04571533203125, 72.94178009033203, -262.1809387207031],
+              "extent": [
+                105.13224792480469, 110.99524307250977, 67.87026977539062
+              ]
+            },
+            "afterBounds": {
+              "count": 1348518,
+              "min": [-33.08375930786133, -38.05825424194336, -330.05029296875],
+              "max": [72.0538558959961, 72.94074249267578, -262.1920471191406],
+              "extent": [
+                105.13761520385742, 110.99899673461914, 67.85824584960938
+              ]
+            },
+            "sourceVertexIdMaskSha256": "ece6eddabe4f4e48d02fc56d61f19b4ccd8cb9a4929e1b34d84e61064024ab52"
+          },
+          "gainedWithinSearchRadius": 154,
+          "lostWithinSearchRadius": 93,
+          "beforeDistanceSha256": "b7fdff35b4e1fb77012bf523107c6e148c723b7caa23220087cc8223461b6ce9",
+          "afterDistanceSha256": "439c0bccf855ad4f28e569cb08e2f0e7e2496a5aef172837d787e58bc5bd86a2"
+        },
+        {
+          "name": "ply-3.ply",
+          "id": "29401053-dc7b-48c7-9bee-bd581b8bd734",
+          "sourceVertices": 1865848,
+          "targetTriangles": 2972031,
+          "before": {
+            "count": 1865848,
+            "withinSearchRadius": 1847276,
+            "withinSearchRadiusPercent": 99.00463488987313,
+            "meanMm": 0.03561988830552099,
+            "rmsMm": 0.10573182180651781,
+            "medianMm": 0.013137014816368987,
+            "p95Mm": 0.13521770238386935,
+            "p99Mm": 0.4990578205618756,
+            "maximumMm": 1.788227485555477
+          },
+          "after": {
+            "count": 1865848,
+            "withinSearchRadius": 1847744,
+            "withinSearchRadiusPercent": 99.02971731888128,
+            "meanMm": 0.03583501321050068,
+            "rmsMm": 0.10436301872712077,
+            "medianMm": 0.0144020642716695,
+            "p95Mm": 0.12448020600415344,
+            "p99Mm": 0.4922703078486874,
+            "maximumMm": 1.7930750979169583
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 1847276,
+              "withinSearchRadius": 1847276,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.027981117739360593,
+              "rmsMm": 0.06312304184596178,
+              "medianMm": 0.012964108888316297,
+              "p95Mm": 0.09903254602930917,
+              "p99Mm": 0.33934946400816934,
+              "maximumMm": 0.49997835202616736
+            },
+            "after": {
+              "count": 1847276,
+              "withinSearchRadius": 1846817,
+              "withinSearchRadiusPercent": 99.9751526030761,
+              "meanMm": 0.02824581692885094,
+              "rmsMm": 0.06123396112378954,
+              "medianMm": 0.014221518918870704,
+              "p95Mm": 0.09274577828374841,
+              "p99Mm": 0.3296347784070924,
+              "maximumMm": 0.5467152743712147
+            },
+            "beforeBounds": {
+              "count": 1847276,
+              "min": [
+                -33.20513153076172, -38.007720947265625, -330.28436279296875
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.0752182006836, 110.9635238647461, 68.15399169921875
+              ]
+            },
+            "afterBounds": {
+              "count": 1847276,
+              "min": [
+                -33.20513153076172, -38.007720947265625, -330.28436279296875
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.0752182006836, 110.9635238647461, 68.15399169921875
+              ]
+            },
+            "sourceVertexIdMaskSha256": "e87d8259edc61599e89f062cd3f1813f8b4dc8979df19de4be0351b5f97a1ab7"
+          },
+          "gainedWithinSearchRadius": 927,
+          "lostWithinSearchRadius": 459,
+          "beforeDistanceSha256": "e62a9e45f6cabfd66cfe1d9fa3378370abdab0c4fa0bd140d9f90091b4ec70f9",
+          "afterDistanceSha256": "780c92d0792fc13ffeec31a45a86fdcd1732f04eac4b2aea7e96b9e36d8b0d69"
+        }
+      ],
+      "pairs": [
+        {
+          "source": "ply-1.ply",
+          "target": "ply-2.ply",
+          "sourceVertices": 140113,
+          "targetTriangles": 2697877,
+          "before": {
+            "count": 140113,
+            "withinSearchRadius": 37711,
+            "withinSearchRadiusPercent": 26.914704559890946,
+            "meanMm": 1.532029690010351,
+            "rmsMm": 1.8684261289678328,
+            "medianMm": 1.6888140151520596,
+            "p95Mm": 3.116238299777035,
+            "p99Mm": 3.2740227511150017,
+            "maximumMm": 4.99951265072375
+          },
+          "after": {
+            "count": 140113,
+            "withinSearchRadius": 37151,
+            "withinSearchRadiusPercent": 26.51502715665213,
+            "meanMm": 1.5582271656039925,
+            "rmsMm": 1.8961928108340893,
+            "medianMm": 1.7303769646867633,
+            "p95Mm": 3.146534151478569,
+            "p99Mm": 3.3401515915896187,
+            "maximumMm": 4.9959659155041845
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 37711,
+              "withinSearchRadius": 37711,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.13302389569597287,
+              "rmsMm": 0.19373884864218002,
+              "medianMm": 0.06492775321869558,
+              "p95Mm": 0.4335147294761038,
+              "p99Mm": 0.48687060917310304,
+              "maximumMm": 0.499944714159543
+            },
+            "after": {
+              "count": 37711,
+              "withinSearchRadius": 36709,
+              "withinSearchRadiusPercent": 97.34295033279415,
+              "meanMm": 0.13839976044444555,
+              "rmsMm": 0.20349879142841398,
+              "medianMm": 0.06732495756782363,
+              "p95Mm": 0.45872752965857466,
+              "p99Mm": 0.5437052598198842,
+              "maximumMm": 0.6606718813510283
+            },
+            "beforeBounds": {
+              "count": 37711,
+              "min": [
+                -32.87358474731445, -38.09662628173828, -330.3721618652344
+              ],
+              "max": [72.256591796875, 72.85503387451172, -261.84112548828125],
+              "extent": [105.13017654418945, 110.95166015625, 68.53103637695312]
+            },
+            "afterBounds": {
+              "count": 37711,
+              "min": [
+                -32.89036560058594, -38.132179260253906, -330.3204345703125
+              ],
+              "max": [72.33393859863281, 72.87322235107422, -261.9849548339844],
+              "extent": [
+                105.22430419921875, 111.00540161132812, 68.33547973632812
+              ]
+            },
+            "sourceVertexIdMaskSha256": "fa9a083134803848f836906043afa24d5900b7056cd1f020d59f746fe8562bce"
+          },
+          "gainedWithinSearchRadius": 442,
+          "lostWithinSearchRadius": 1002,
+          "beforeDistanceSha256": "b7395ebd585abf8dd7eb7ecea39c5e947657e85fdd835f959b8e3cb263ba93ff",
+          "afterDistanceSha256": "f74ae55cf298f48cbde3e56c4c47fe45a64fa28975956638158071e84db32955"
+        },
+        {
+          "source": "ply-1.ply",
+          "target": "ply-3.ply",
+          "sourceVertices": 140113,
+          "targetTriangles": 3691133,
+          "before": {
+            "count": 140113,
+            "withinSearchRadius": 45620,
+            "withinSearchRadiusPercent": 32.559434170990556,
+            "meanMm": 1.4349903096130392,
+            "rmsMm": 1.8402135638650303,
+            "medianMm": 1.4674803954756799,
+            "p95Mm": 3.1409344871789995,
+            "p99Mm": 3.857115965712955,
+            "maximumMm": 6.067962811565652
+          },
+          "after": {
+            "count": 140113,
+            "withinSearchRadius": 45197,
+            "withinSearchRadiusPercent": 32.25753498961552,
+            "meanMm": 1.4585441400486296,
+            "rmsMm": 1.8668692436147707,
+            "medianMm": 1.4998505434283798,
+            "p95Mm": 3.1877574628081713,
+            "p99Mm": 3.8826446972930064,
+            "maximumMm": 6.090518045521169
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 45620,
+              "withinSearchRadius": 45620,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.11371762604169175,
+              "rmsMm": 0.17537753612956444,
+              "medianMm": 0.04812058912913093,
+              "p95Mm": 0.41925285665333173,
+              "p99Mm": 0.48389455566163225,
+              "maximumMm": 0.49999601568269597
+            },
+            "after": {
+              "count": 45620,
+              "withinSearchRadius": 44775,
+              "withinSearchRadiusPercent": 98.14774221832529,
+              "meanMm": 0.11560274826501944,
+              "rmsMm": 0.1808504375101606,
+              "medianMm": 0.04873557763154457,
+              "p95Mm": 0.4361301702551759,
+              "p99Mm": 0.5304363808738451,
+              "maximumMm": 0.6656507142203363
+            },
+            "beforeBounds": {
+              "count": 45620,
+              "min": [
+                -32.87358474731445, -38.02749252319336, -330.235107421875
+              ],
+              "max": [
+                72.02651977539062, 72.85503387451172, -261.84112548828125
+              ],
+              "extent": [
+                104.90010452270508, 110.88252639770508, 68.39398193359375
+              ]
+            },
+            "afterBounds": {
+              "count": 45620,
+              "min": [
+                -32.89036560058594, -38.063716888427734, -330.1903076171875
+              ],
+              "max": [72.10454559326172, 72.87322235107422, -261.9849548339844],
+              "extent": [
+                104.99491119384766, 110.93693923950195, 68.20535278320312
+              ]
+            },
+            "sourceVertexIdMaskSha256": "a86a525f0ce3f4b792d27373e43666b5a0ec7fc59f4a5fe290d19b42417beb32"
+          },
+          "gainedWithinSearchRadius": 422,
+          "lostWithinSearchRadius": 845,
+          "beforeDistanceSha256": "c867e76365e5056cfd747c76e9e1e5ff2f7addc5c8fb8fc250d49cac444e6e0a",
+          "afterDistanceSha256": "bce22173ff32747711a4c38d053a4cf07bd4a7aaea830e88dba7d11d9709d4f4"
+        },
+        {
+          "source": "ply-2.ply",
+          "target": "ply-1.ply",
+          "sourceVertices": 1375494,
+          "targetTriangles": 274154,
+          "before": {
+            "count": 1375494,
+            "withinSearchRadius": 431663,
+            "withinSearchRadiusPercent": 31.382397887595292,
+            "meanMm": 1.320744177999978,
+            "rmsMm": 1.6742069391093468,
+            "medianMm": 1.2828097137770709,
+            "p95Mm": 2.996076142850751,
+            "p99Mm": 3.159426990925975,
+            "maximumMm": 3.506861801413388
+          },
+          "after": {
+            "count": 1375494,
+            "withinSearchRadius": 431013,
+            "withinSearchRadiusPercent": 31.335142138024594,
+            "meanMm": 1.3284598451099727,
+            "rmsMm": 1.683570987097599,
+            "medianMm": 1.296582057436912,
+            "p95Mm": 3.0133948187070203,
+            "p99Mm": 3.2090055207718837,
+            "maximumMm": 3.5364104880875615
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 431663,
+              "withinSearchRadius": 431663,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.10997665514439511,
+              "rmsMm": 0.17238865931950062,
+              "medianMm": 0.048075791255968815,
+              "p95Mm": 0.42456443553729273,
+              "p99Mm": 0.4850392971020732,
+              "maximumMm": 0.4999967562259071
+            },
+            "after": {
+              "count": 431663,
+              "withinSearchRadius": 428051,
+              "withinSearchRadiusPercent": 99.16323613559652,
+              "meanMm": 0.11241602397060116,
+              "rmsMm": 0.17554742497263728,
+              "medianMm": 0.04964551276850371,
+              "p95Mm": 0.42808025790779586,
+              "p99Mm": 0.49543968451258386,
+              "maximumMm": 0.6516608297299084
+            },
+            "beforeBounds": {
+              "count": 431663,
+              "min": [
+                -33.08653259277344, -38.053462982177734, -330.05120849609375
+              ],
+              "max": [72.04571533203125, 72.94178009033203, -262.1809387207031],
+              "extent": [
+                105.13224792480469, 110.99524307250977, 67.87026977539062
+              ]
+            },
+            "afterBounds": {
+              "count": 431663,
+              "min": [-33.08375930786133, -38.05825424194336, -330.05029296875],
+              "max": [72.0538558959961, 72.94074249267578, -262.1920471191406],
+              "extent": [
+                105.13761520385742, 110.99899673461914, 67.85824584960938
+              ]
+            },
+            "sourceVertexIdMaskSha256": "2d7ce84e9a8e4dc5b1439d21b0d564d8f0499a9fc99379c655d97f55bb146e4b"
+          },
+          "gainedWithinSearchRadius": 2962,
+          "lostWithinSearchRadius": 3612,
+          "beforeDistanceSha256": "46c1d0f4aaaa27e0dc5479cf178b91859179331007d31dd6e8734e1b3b311a0f",
+          "afterDistanceSha256": "1487b41f26d7316d05a501eabf0e39fd074d5bb0931f0d69a16a037e94f8099e"
+        },
+        {
+          "source": "ply-2.ply",
+          "target": "ply-3.ply",
+          "sourceVertices": 1375494,
+          "targetTriangles": 3691133,
+          "before": {
+            "count": 1375494,
+            "withinSearchRadius": 1303288,
+            "withinSearchRadiusPercent": 94.75054053307393,
+            "meanMm": 0.11565245734694098,
+            "rmsMm": 0.48576896648347134,
+            "medianMm": 0.013059817504395397,
+            "p95Mm": 0.5475032640533194,
+            "p99Mm": 2.620773871540403,
+            "maximumMm": 5.994806647578085
+          },
+          "after": {
+            "count": 1375494,
+            "withinSearchRadius": 1302829,
+            "withinSearchRadiusPercent": 94.71717070376171,
+            "meanMm": 0.116920016717372,
+            "rmsMm": 0.4863464805261255,
+            "medianMm": 0.01433807757981437,
+            "p95Mm": 0.5526534794299075,
+            "p99Mm": 2.6230143386761826,
+            "maximumMm": 5.998999776239189
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 1303288,
+              "withinSearchRadius": 1303288,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.025534127940051877,
+              "rmsMm": 0.06130395340862105,
+              "medianMm": 0.012181917177618923,
+              "p95Mm": 0.07169507415350475,
+              "p99Mm": 0.356475931400408,
+              "maximumMm": 0.49999843828601875
+            },
+            "after": {
+              "count": 1303288,
+              "withinSearchRadius": 1302803,
+              "withinSearchRadiusPercent": 99.9627864294001,
+              "meanMm": 0.026711473516381916,
+              "rmsMm": 0.062465844290438804,
+              "medianMm": 0.013413852972553856,
+              "p95Mm": 0.0728548036380533,
+              "p99Mm": 0.361712640139405,
+              "maximumMm": 0.513897429824754
+            },
+            "beforeBounds": {
+              "count": 1303288,
+              "min": [
+                -33.08653259277344, -38.053462982177734, -330.05120849609375
+              ],
+              "max": [72.04571533203125, 72.94178009033203, -262.1809387207031],
+              "extent": [
+                105.13224792480469, 110.99524307250977, 67.87026977539062
+              ]
+            },
+            "afterBounds": {
+              "count": 1303288,
+              "min": [-33.08375930786133, -38.05825424194336, -330.05029296875],
+              "max": [72.0538558959961, 72.94074249267578, -262.1920471191406],
+              "extent": [
+                105.13761520385742, 110.99899673461914, 67.85824584960938
+              ]
+            },
+            "sourceVertexIdMaskSha256": "385cfa87f9d05755374968f841404d5cc34547ccecc4e89c7065506c27145314"
+          },
+          "gainedWithinSearchRadius": 26,
+          "lostWithinSearchRadius": 485,
+          "beforeDistanceSha256": "b507843565adce5cd494617cfd5b8ef31c6e5778fd59de429ca6ecc06cc9d290",
+          "afterDistanceSha256": "2ff8fdd56d1cc3b12cb6d2fc01bbee9cbebb418f433966b27238dfe972f38626"
+        },
+        {
+          "source": "ply-3.ply",
+          "target": "ply-1.ply",
+          "sourceVertices": 1865848,
+          "targetTriangles": 274154,
+          "before": {
+            "count": 1865848,
+            "withinSearchRadius": 691484,
+            "withinSearchRadiusPercent": 37.060039188615576,
+            "meanMm": 1.2224538228453725,
+            "rmsMm": 1.6075876695472946,
+            "medianMm": 1.1158462882000941,
+            "p95Mm": 2.9630758521055363,
+            "p99Mm": 3.1609672976883045,
+            "maximumMm": 3.4915298838494317
+          },
+          "after": {
+            "count": 1865848,
+            "withinSearchRadius": 690964,
+            "withinSearchRadiusPercent": 37.032169823050964,
+            "meanMm": 1.230117590372137,
+            "rmsMm": 1.6182023584250627,
+            "medianMm": 1.1320000073901828,
+            "p95Mm": 2.984112884691399,
+            "p99Mm": 3.2149775104063685,
+            "maximumMm": 3.554109453706512
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 691484,
+              "withinSearchRadius": 691484,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.10870246100191319,
+              "rmsMm": 0.1692018260863316,
+              "medianMm": 0.04677577575160696,
+              "p95Mm": 0.4136083491302024,
+              "p99Mm": 0.4823480153054082,
+              "maximumMm": 0.4999988851904563
+            },
+            "after": {
+              "count": 691484,
+              "withinSearchRadius": 686390,
+              "withinSearchRadiusPercent": 99.26332351869313,
+              "meanMm": 0.10853489233754571,
+              "rmsMm": 0.16951799166305065,
+              "medianMm": 0.0476663641512196,
+              "p95Mm": 0.41474440506887555,
+              "p99Mm": 0.4920785720147207,
+              "maximumMm": 0.6597205915721388
+            },
+            "beforeBounds": {
+              "count": 691484,
+              "min": [
+                -33.14164733886719, -38.007720947265625, -330.28436279296875
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.01173400878906, 110.9635238647461, 68.15399169921875
+              ]
+            },
+            "afterBounds": {
+              "count": 691484,
+              "min": [
+                -33.14164733886719, -38.007720947265625, -330.28436279296875
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.01173400878906, 110.9635238647461, 68.15399169921875
+              ]
+            },
+            "sourceVertexIdMaskSha256": "e04fcf6cda1497c016f6c0c4d69856f240afe149ce81f9c76febe8d53adc0c93"
+          },
+          "gainedWithinSearchRadius": 4574,
+          "lostWithinSearchRadius": 5094,
+          "beforeDistanceSha256": "3f06e438ae5bf8cba5a64f855694f534640149fca86e0d5f39a8eeef252b0ea6",
+          "afterDistanceSha256": "301a9cc2b20e1a3321f05436a9dcbc0126b0497ce67b5ab77351ecd506a2315f"
+        },
+        {
+          "source": "ply-3.ply",
+          "target": "ply-2.ply",
+          "sourceVertices": 1865848,
+          "targetTriangles": 2697877,
+          "before": {
+            "count": 1865848,
+            "withinSearchRadius": 1654922,
+            "withinSearchRadiusPercent": 88.69543499792051,
+            "meanMm": 0.1987078949374184,
+            "rmsMm": 0.5659081699434393,
+            "medianMm": 0.014917278966109292,
+            "p95Mm": 1.513315392367965,
+            "p99Mm": 2.5638730840754813,
+            "maximumMm": 3.1974302635181693
+          },
+          "after": {
+            "count": 1865848,
+            "withinSearchRadius": 1655824,
+            "withinSearchRadiusPercent": 88.74377762818837,
+            "meanMm": 0.19879588101944087,
+            "rmsMm": 0.5643974141176459,
+            "medianMm": 0.01639870119495422,
+            "p95Mm": 1.5070560049622928,
+            "p99Mm": 2.562132725258875,
+            "maximumMm": 3.1954561963400434
+          },
+          "fixedBeforeSupport": {
+            "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+            "before": {
+              "count": 1654922,
+              "withinSearchRadius": 1654922,
+              "withinSearchRadiusPercent": 100,
+              "meanMm": 0.032282817222191874,
+              "rmsMm": 0.07752352365706602,
+              "medianMm": 0.012684721177685808,
+              "p95Mm": 0.15679679784924708,
+              "p99Mm": 0.41395745529503175,
+              "maximumMm": 0.4999951361742106
+            },
+            "after": {
+              "count": 1654922,
+              "withinSearchRadius": 1654843,
+              "withinSearchRadiusPercent": 99.99522636112155,
+              "meanMm": 0.033039653036335576,
+              "rmsMm": 0.07689355739348924,
+              "medianMm": 0.01402862493037072,
+              "p95Mm": 0.15393307524588534,
+              "p99Mm": 0.40950023979223105,
+              "maximumMm": 0.5098884520616855
+            },
+            "beforeBounds": {
+              "count": 1654922,
+              "min": [
+                -33.20513153076172, -38.007720947265625, -329.91876220703125
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.0752182006836, 110.9635238647461, 67.78839111328125
+              ]
+            },
+            "afterBounds": {
+              "count": 1654922,
+              "min": [
+                -33.20513153076172, -38.007720947265625, -329.91876220703125
+              ],
+              "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+              "extent": [
+                105.0752182006836, 110.9635238647461, 67.78839111328125
+              ]
+            },
+            "sourceVertexIdMaskSha256": "4031ec86c9186719c55545c457960e05e34b3520f7f6119b9ef1a8f3d29c44b5"
+          },
+          "gainedWithinSearchRadius": 981,
+          "lostWithinSearchRadius": 79,
+          "beforeDistanceSha256": "58502ba6b3629c931b9a931fb9343742b7e53e2f1f77add701d69db2546ab04d",
+          "afterDistanceSha256": "18a47e61f4ef5d2c1f6f755330ae96333de227b8f54e3ce5c388c454ba36d387"
+        }
+      ],
+      "aggregateFixedSupport": {
+        "vertices": 3247527,
+        "beforeRmsMm": 0.059223085839322724,
+        "afterRmsMm": 0.05846527283388884
+      },
+      "combined": {
+        "inputToOutput": [
+          {
+            "source": "ply-1.ply",
+            "count": 140113,
+            "withinSearchRadius": 139284,
+            "withinSearchRadiusPercent": 99.40833470127683,
+            "meanMm": 0.3171107765294404,
+            "rmsMm": 0.32407074766965266,
+            "medianMm": 0.3170813876061479,
+            "p95Mm": 0.42849952341956865,
+            "p99Mm": 0.48878002166748047,
+            "maximumMm": 0.6636673650202392,
+            "distanceSha256": "a6a6ce991a25b2543e51c5b7918590472d2a9877366c8130f146f6c14ee6cc06"
+          },
+          {
+            "source": "ply-2.ply",
+            "count": 1375494,
+            "withinSearchRadius": 1361779,
+            "withinSearchRadiusPercent": 99.00290368405824,
+            "meanMm": 0.3272217442989808,
+            "rmsMm": 0.333677209192441,
+            "medianMm": 0.326092407229749,
+            "p95Mm": 0.43927031775347086,
+            "p99Mm": 0.49992600679632254,
+            "maximumMm": 0.7554159164428711,
+            "distanceSha256": "7975fee7b0768f4335dd8304e5603e88bb9f1039774a693d303ffa3a766b5264"
+          },
+          {
+            "source": "ply-3.ply",
+            "count": 1865848,
+            "withinSearchRadius": 1849501,
+            "withinSearchRadiusPercent": 99.1238836175294,
+            "meanMm": 0.3250843528005712,
+            "rmsMm": 0.33160017342280457,
+            "medianMm": 0.32424553747008966,
+            "p95Mm": 0.4363161454897521,
+            "p99Mm": 0.4965176582336426,
+            "maximumMm": 0.7347812652587891,
+            "distanceSha256": "58cae831555fb280991be652a2b1d4eedbacb089cd6bc9f5439178e83af04e50"
+          }
+        ],
+        "outputToInputVertices": {
+          "count": 1002918,
+          "withinSearchRadius": 893567,
+          "withinSearchRadiusPercent": 89.09671578334421,
+          "meanMm": 0.3745833538823234,
+          "rmsMm": 0.3872223450119776,
+          "medianMm": 0.37500746494863024,
+          "p95Mm": 0.5405988769343947,
+          "p99Mm": 0.5792385096785121,
+          "maximumMm": 0.6798605012699607,
+          "distanceSha256": "4d3467ade4fb477e265e7ad3550e67a4ebc9646b7ac8eda0324c74d590085dd3"
+        },
+        "outputTriangles": 334306,
+        "observedPublicTopology": {
+          "vertices": 166899,
+          "triangles": 334306,
+          "components": 4,
+          "boundaryLoops": 0,
+          "boundaryChains": 0,
+          "boundaryEdges": 0,
+          "nonManifoldEdges": 0,
+          "nonManifoldVertices": 0,
+          "inconsistentEdges": 0,
+          "duplicateTriangles": 0,
+          "degenerateTriangles": 0,
+          "watertight": true
+        },
+        "observedPublicDiagnostics": {
+          "watertight": true,
+          "inputMeshes": 3,
+          "inputPointClouds": 0,
+          "inputPoints": 0,
+          "inputTriangles": 6663164,
+          "processedPoints": 0,
+          "representedPoints": 0,
+          "field": "unsigned-distance-occupancy-union",
+          "triangleRadius": 0.375,
+          "pointRadius": 0,
+          "resolution": 0.5,
+          "gridPoints": 7438200,
+          "distanceTests": 2942052,
+          "samplingCandidates": 28591026,
+          "verification": "streamed-edge-pairing-and-vertex-fans",
+          "extraction": "face-consistent-cube-contours",
+          "peakTopologyFrontierEdges": 1466,
+          "weldTolerance": 1e-6,
+          "selfIntersectionsChecked": false,
+          "summary": "Verified watertight voxel surface: 4 closed components at 0.5 mm point resolution; 122 enclosed samples filled. Surface offset approximately 0.375 mm. Enclosed regions fused and filled."
+        },
+        "independentTopologyOrIntersectionsChecked": false,
+        "hausdorffBound": false,
+        "sampling": "All source indexed vertices and all output triangle corners; full target surfaces in every query"
+      },
+      "nativeComparison": false,
+      "nativeSetterEntryObserved": false,
+      "nativeFacetNormalFieldCompared": false,
+      "registrationQualityPassThresholdSpecified": false,
+      "registrationQualityPassed": null,
+      "productMutated": false,
+      "elapsedMs": 157964
+    },
+    "configuration": {
+      "kind": "FINAL_PLY_FULL_HISTORY_QUALITY",
+      "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+      "buildId": "scanforge-fd58d9b0cd235edc",
+      "sourceManifestSha256": "95c12c9d706aa6d31b18bead11fe528c51c1a97811cd0462b3111264c57ff8eb",
+      "sourceCommitProof": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\m3-main-integrated-pinned-build-r1.commit-445bab3.json",
+        "sha256": "109f765489a7555943f8ec50e5e65801829c3172b5feec1d4407f348197724d9"
+      },
+      "evidence": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1\\evidence.json",
+        "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+      },
+      "ownedSourceReceipt": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1.receipt.json",
+        "sha256": "39c72861c3bddc44078f2e70df91503e9614e118124e690e0833f323f7f7ca82"
+      },
+      "snapshot": {
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+        "bytes": 815010863,
+        "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc"
+      },
+      "manifest": {
+        "bytes": 16110,
+        "sha256": "b6585f125496a6800ebe1494097708740d5af3226e687b771d2827108c8b53b8"
+      },
+      "stateIndices": {
+        "before": 3,
+        "after": 4,
+        "combined": 5
+      },
+      "qualityOutputPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.json",
+      "supportPins": [
+        {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-quality-configured.mjs",
+          "sha256": "d4e41b67606864f07a4c732a8ed7577167191e56f15659b9d6bfe9dfca00811d"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+          "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+        }
+      ],
+      "scope": "Actual final A one complete saved project; full original/aligned/current geometry from its exact history, all indexed vertices/full targets, five analytic and twelve complete-triangle controls. No R7 values transplanted; no sampling or invented accuracy threshold."
+    },
+    "ownedReceiptPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\05-original-ply-quality-final-main-r1.receipt.json",
+      "bytes": 2142,
+      "sha256": "0830d3773514a87b0e48c27aaad23c2556596acd10756b38fc086e8344d0031c"
+    },
+    "ownedReceipt": {
+      "mode": "cad",
+      "label": "m3-ply-final-quality-final-main-r1",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-quality-configured.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-quality-final-main-r1.config.json",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 3072,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12123631616,
+      "immediateChildFreeBytes": 12123750400,
+      "identity": {
+        "pid": 59060,
+        "startFileTime": "134374418297940767",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 1374470144,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 1388191744,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 158.14326829998754,
+      "completed": true
+    }
+  },
+  "topology": {
+    "rawReportPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\11-original-ply-topology-final-main-r2.json",
+      "bytes": 8934,
+      "sha256": "b87f8a4ed10cc2e85a24b0522500a6c59b427a0083231b04e6b3c4c74fae00c7"
+    },
+    "rawConfigurationPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\22-ply-final-topology-final-main-r2.config.json",
+      "bytes": 3204,
+      "sha256": "accc2b5b508d125e35d0a799a70ca510a3c7c076153c9d63d8410fa05140e229"
+    },
+    "report": {
+      "completed": true,
+      "scope": "Independent full actual combined-output topology and all self-BVH candidate triangle-pair predicates. No downsampling, edits, component removal or assumed usability threshold.",
+      "workflowStatus": {
+        "overallWorkflowPassed": false,
+        "geometryStagePassed": true,
+        "persistenceMeasuredHere": false,
+        "qualityOnlyScope": true,
+        "sourceWorkflowEvidenceSha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c",
+        "sourceWorkflowReceiptSha256": "39c72861c3bddc44078f2e70df91503e9614e118124e690e0833f323f7f7ca82",
+        "sourceWorkflowReceipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1.receipt.json",
+        "meaning": "Independent full geometry from ONE hash/length-verified combined checkpoint history. Stage-A geometry success is separate from Stage-B persistence and overall M3 acceptance."
+      },
+      "qualitySha256": "fd09c4139c7be1c694f2a09919e8d656988a312b859bdffcf7abcb53d54058ff",
+      "topologyConfigPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-topology-final-main-r2.config.json",
+      "topologyConfigSha256": "accc2b5b508d125e35d0a799a70ca510a3c7c076153c9d63d8410fa05140e229",
+      "qualityReceiptSha256": "0830d3773514a87b0e48c27aaad23c2556596acd10756b38fc086e8344d0031c",
+      "snapshot": {
+        "stage": "combined",
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+        "bytes": 815010863,
+        "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc",
+        "chunks": 3110,
+        "maxDecodedChunkBytes": 262144,
+        "route": "Public artifact_read; existing 256-KiB schema cap (below one MiB); no whole-artifact accumulation",
+        "source": "Exact saved history state in same combined checkpoint"
+      },
+      "selfTests": {
+        "closedCube": true,
+        "twoDisjointCubes": true,
+        "vertexContactFans": true,
+        "openTriangle": true,
+        "duplicateOrientation": true,
+        "intersectionControls": 8
+      },
+      "intersectionHelper": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+        "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+      },
+      "independentTopology": {
+        "method": "Exact Float32 coordinate welding; face components connected through complete shared edges; independent edge incidence/orientation and vertex fan union; no arbitrary weld/removal",
+        "triangles": 334306,
+        "vertices": 166899,
+        "edges": 501459,
+        "components": [
+          {
+            "id": 4565,
+            "triangles": 333838,
+            "vertices": 166659,
+            "surfaceAreaMm2": 28988.364446501793,
+            "signedVolumeMm3": 10486.488732710015,
+            "min": [
+              -33.45513153076172, -38.78450393676758, -331.81597900390625
+            ],
+            "max": [73.04486846923828, 73.21549987792969, -261.81597900390625],
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "inconsistentEdges": 0,
+            "absoluteEnclosedVolumeMm3": 10486.488732710015,
+            "extent": [106.5, 112.00000381469727, 70],
+            "areaPercent": 99.86281703939147,
+            "closed": true
+          },
+          {
+            "id": 136633,
+            "triangles": 218,
+            "vertices": 111,
+            "surfaceAreaMm2": 18.503235271730922,
+            "signedVolumeMm3": 2.7708333333333357,
+            "min": [22.54486846923828, 41.71549606323242, -304.81597900390625],
+            "max": [29.04486846923828, 42.71549606323242, -300.81597900390625],
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "inconsistentEdges": 0,
+            "absoluteEnclosedVolumeMm3": 2.7708333333333357,
+            "extent": [6.5, 1, 4],
+            "areaPercent": 0.06374230605482346,
+            "closed": true
+          },
+          {
+            "id": 272224,
+            "triangles": 198,
+            "vertices": 101,
+            "surfaceAreaMm2": 16.824930258323892,
+            "signedVolumeMm3": 2.8593750000000457,
+            "min": [43.54486846923828, 17.715496063232422, -284.81597900390625],
+            "max": [45.54486846923828, 21.715496063232422, -282.31597900390625],
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "inconsistentEdges": 0,
+            "absoluteEnclosedVolumeMm3": 2.8593750000000457,
+            "extent": [2, 4, 2.5],
+            "areaPercent": 0.057960666776779086,
+            "closed": true
+          },
+          {
+            "id": 48859,
+            "triangles": 52,
+            "vertices": 28,
+            "surfaceAreaMm2": 4.493559671141487,
+            "signedVolumeMm3": 0.6770833333333343,
+            "min": [2.0448684692382812, 48.71549606323242, -318.81597900390625],
+            "max": [3.0448684692382812, 50.21549606323242, -317.81597900390625],
+            "boundaryEdges": 0,
+            "nonManifoldEdges": 0,
+            "inconsistentEdges": 0,
+            "absoluteEnclosedVolumeMm3": 0.6770833333333343,
+            "extent": [1, 1.5, 1],
+            "areaPercent": 0.015479987776576427,
+            "closed": true
+          }
+        ],
+        "boundaryEdges": 0,
+        "boundaryLoops": 0,
+        "boundaryChains": 0,
+        "nonManifoldEdges": 0,
+        "nonManifoldVertices": 0,
+        "inconsistentEdges": 0,
+        "duplicateTriangles": 0,
+        "degenerateTriangles": 0,
+        "totalSurfaceAreaMm2": 29028.186171703088,
+        "watertight": true,
+        "positionsSha256": "42ddbbb51ad704623d4c99eeec16fdf8d1120fee86af8d4c732605a9d4e33b95"
+      },
+      "separations": [
+        {
+          "components": [4565, 136633],
+          "aabbSeparationLowerBoundMm": 0,
+          "axisGapsMm": [0, 0, 0],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        },
+        {
+          "components": [4565, 272224],
+          "aabbSeparationLowerBoundMm": 0,
+          "axisGapsMm": [0, 0, 0],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        },
+        {
+          "components": [4565, 48859],
+          "aabbSeparationLowerBoundMm": 0,
+          "axisGapsMm": [0, 0, 0],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        },
+        {
+          "components": [136633, 272224],
+          "aabbSeparationLowerBoundMm": 29.432125305522877,
+          "axisGapsMm": [14.5, 20, 16],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        },
+        {
+          "components": [136633, 48859],
+          "aabbSeparationLowerBoundMm": 24.19194080680589,
+          "axisGapsMm": [19.5, 6, 13],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        },
+        {
+          "components": [272224, 48859],
+          "aabbSeparationLowerBoundMm": 58.80688735173797,
+          "axisGapsMm": [40.5, 27, 33],
+          "meaning": "Bounds-only lower bound; not exact surface distance or intended-part classification"
+        }
+      ],
+      "intersections": {
+        "method": "exhaustive-self-BVH-triangle-pairs-with-coplanar-area-and-shared-feature-exclusion",
+        "controls": 8,
+        "pairs": 14113163,
+        "invalidIntersections": 0,
+        "examples": [],
+        "tolerances": {
+          "coplanarDistance": 1e-9,
+          "coplanarArea": 1e-12,
+          "sharedFeatureSquaredDistance": 1e-16
+        },
+        "scope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof."
+      },
+      "observedPublicTopology": {
+        "vertices": 166899,
+        "triangles": 334306,
+        "components": 4,
+        "boundaryLoops": 0,
+        "boundaryChains": 0,
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "nonManifoldVertices": 0,
+        "inconsistentEdges": 0,
+        "duplicateTriangles": 0,
+        "degenerateTriangles": 0,
+        "watertight": true
+      },
+      "componentInterpretation": "Areas, volumes and bounds describe all components; intended separate parts versus unwanted islands is not inferred from component count alone.",
+      "selfIntersectionsChecked": true,
+      "geometricPredicateTolerance": "Retained corrected helper uses1e-12 projected overlap area,1e-9 plane and1e-8 endpoint/edge distance tolerances; exact shared coordinates allowed.",
+      "hausdorffBound": false,
+      "productMutated": false,
+      "elapsedMs": 18835
+    },
+    "configuration": {
+      "kind": "FINAL_PLY_COMBINED_TOPOLOGY",
+      "sourceCommit": "445bab3d7ef0c362fef93718fae847c29fd7c9a2",
+      "buildId": "scanforge-fd58d9b0cd235edc",
+      "evidence": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-a-final-main-r1\\evidence.json",
+        "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+      },
+      "snapshot": {
+        "path": "Z:\\ScanForge-M3-01a17303-ce23-7102-b9ea-be8de30e84be-generated\\final-a-final-main-r1-817493a3\\original-three-combined.scanforge",
+        "bytes": 815010863,
+        "sha256": "ddee7896ce96c945b83daac220c72e48178df58a0897f72c37adf1bb98c2a2bc"
+      },
+      "qualityOutputPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.json",
+      "qualityReceiptPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-quality-final-main-r1.receipt.json",
+      "qualityConfiguration": {
+        "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-quality-final-main-r1.config.json",
+        "sha256": "f7fd6ba1e463a242ff69a791a2b4d8a1dc2c0a2751a5ec4cc361c617fd98e9fa"
+      },
+      "topologyOutputPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.json",
+      "supportPins": [
+        {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured-r2.mjs",
+          "sha256": "6ad74d1edc346968d7ea31d73742ff3089ff54f87d23d153810b2c4d8eeedbb0"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\tests\\m3-mesh-intersections.mjs",
+          "sha256": "082088c1e9c30d9a34188b86dffb047a8fd45111f5fb6303cebd1a6f53613b22"
+        }
+      ],
+      "scope": "Actual final combined output only; corrected full topology/self-BVH candidate predicates and analytic controls. No R7 geometry or component assumption.",
+      "harnessPath": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured-r2.mjs",
+      "priorHarnessFailure": {
+        "receipt": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.receipt.json",
+          "sha256": "b12f10966d2807462f9e99b9eea7f1697da3e63be8e9feefb4dc30ec82824990"
+        },
+        "stderr": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.stderr.log",
+          "sha256": "1d329ac13171de7c31debf9b7e4879ed152095199d4ee88e878032033392929d"
+        },
+        "source": {
+          "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured.mjs",
+          "sha256": "38dbda5036d666d4c0011010b2ef0e0719088747e019881c4efddb85e523395d"
+        },
+        "cause": "Private configured-reader adaptation omitted const fd=openSync; no application or geometry failure. All original topology/control predicates unchanged."
+      }
+    },
+    "ownedReceiptPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\12-original-ply-topology-final-main-r2.receipt.json",
+      "bytes": 2149,
+      "sha256": "ca0d5703fc7eddb6aa8debee38e8f98f0bae61cc347fe93ff52cf15d93860108"
+    },
+    "ownedReceipt": {
+      "mode": "cad",
+      "label": "m3-ply-final-topology-final-main-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured-r2.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-topology-final-main-r2.config.json",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 3072,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r2.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 12107046912,
+      "immediateChildFreeBytes": 12107026432,
+      "identity": {
+        "pid": 44000,
+        "startFileTime": "134374421723472389",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 293470208,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 307372032,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 19.00300139997853,
+      "completed": true
+    }
+  },
+  "normalChannels": {
+    "indexedMesh.normals": "File-authored scanner normal vectors in original indexed vertex order, including unused vertices.",
+    "normals": "Original PLY file-authored vectors expanded in triangle-corner order; separate from computed renderer normals.",
+    "indexedMesh.geometryNormals": "Computed stored per-indexed-vertex Float32 vectors.",
+    "indexedMesh.facetNormals": "Computed stored XYZ per-triangle Float32 vectors, rigidly staged/serialized with their own carrier.",
+    "nativeScope": "This production lifecycle run verifies preservation and GUI/MCP canonical parity, not independent native R2-world authored scanner-normal bytes or native reconstruction equality. Strict supported-field native shared-controller comparison is a separate R4 receipt."
+  },
+  "controlsAndGeometryScope": {
+    "indexedSourceVerticesPerStage": 3381455,
+    "beforeAfterIndexedVerticesEvaluated": 6762910,
+    "fullTargetTrianglesPerStage": 6663164,
+    "directedPairs": 6,
+    "analyticControls": 5,
+    "completeTriangleBruteForceComparisons": 12,
+    "indirectIndexPreservationChecked": true,
+    "allOutputCorners": 1002918,
+    "topologyIntersectionControls": 8,
+    "fullSelfBvhCandidatePairs": 14113163,
+    "samplingOrNormalBoundaryFiltering": false
+  },
+  "mixedFindings": {
+    "aggregateFixedSupport": {
+      "vertices": 3247527,
+      "beforeRmsMm": 0.059223085839322724,
+      "afterRmsMm": 0.05846527283388884
+    },
+    "perScan": [
+      {
+        "name": "ply-1.ply",
+        "wholeBefore": {
+          "count": 140113,
+          "withinSearchRadius": 51733,
+          "withinSearchRadiusPercent": 36.9223412531314,
+          "meanMm": 1.273139777489315,
+          "rmsMm": 1.6708887048331806,
+          "medianMm": 1.199222338019511,
+          "p95Mm": 3.092467669328884,
+          "p99Mm": 3.210446061546272,
+          "maximumMm": 4.99951265072375
+        },
+        "wholeAfter": {
+          "count": 140113,
+          "withinSearchRadius": 51370,
+          "withinSearchRadiusPercent": 36.66326465067481,
+          "meanMm": 1.2932991810777736,
+          "rmsMm": 1.6943694411670076,
+          "medianMm": 1.2370999115820545,
+          "p95Mm": 3.1159136083635315,
+          "p99Mm": 3.2188093185195896,
+          "maximumMm": 4.9959659155041845
+        },
+        "fixedBeforeSupport": {
+          "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+          "before": {
+            "count": 51733,
+            "withinSearchRadius": 51733,
+            "withinSearchRadiusPercent": 100,
+            "meanMm": 0.10406017608348851,
+            "rmsMm": 0.16719328455173307,
+            "medianMm": 0.040790491779741936,
+            "p95Mm": 0.41099012110911254,
+            "p99Mm": 0.48244202013560616,
+            "maximumMm": 0.49999601568269597
+          },
+          "after": {
+            "count": 51733,
+            "withinSearchRadius": 50928,
+            "withinSearchRadiusPercent": 98.44393327276593,
+            "meanMm": 0.10579303002820326,
+            "rmsMm": 0.17183460747032928,
+            "medianMm": 0.042071889449723274,
+            "p95Mm": 0.4256522990175016,
+            "p99Mm": 0.5192603273743255,
+            "maximumMm": 0.6656507142203363
+          },
+          "beforeBounds": {
+            "count": 51733,
+            "min": [-32.87358474731445, -38.09662628173828, -330.3721618652344],
+            "max": [72.256591796875, 72.85503387451172, -261.84112548828125],
+            "extent": [105.13017654418945, 110.95166015625, 68.53103637695312]
+          },
+          "afterBounds": {
+            "count": 51733,
+            "min": [
+              -32.89036560058594, -38.132179260253906, -330.3204345703125
+            ],
+            "max": [72.33393859863281, 72.87322235107422, -261.9849548339844],
+            "extent": [
+              105.22430419921875, 111.00540161132812, 68.33547973632812
+            ]
+          },
+          "sourceVertexIdMaskSha256": "e47367defab4c194f32f545bbfb2cc660481aee9bf7e49f6590c539b4def79fc"
+        },
+        "gainedWithinSearchRadius": 442,
+        "lostWithinSearchRadius": 805
+      },
+      {
+        "name": "ply-2.ply",
+        "wholeBefore": {
+          "count": 1375494,
+          "withinSearchRadius": 1348518,
+          "withinSearchRadiusPercent": 98.03881369166278,
+          "meanMm": 0.04113562383616336,
+          "rmsMm": 0.1688947182236694,
+          "medianMm": 0.012028423500567889,
+          "p95Mm": 0.07111568723255822,
+          "p99Mm": 1.0045790946478743,
+          "maximumMm": 2.478232445495542
+        },
+        "wholeAfter": {
+          "count": 1375494,
+          "withinSearchRadius": 1348579,
+          "withinSearchRadiusPercent": 98.0432484620071,
+          "meanMm": 0.04211081792596475,
+          "rmsMm": 0.16866067500526852,
+          "medianMm": 0.013231186371894884,
+          "p95Mm": 0.07291680660100885,
+          "p99Mm": 1.0006759091224102,
+          "maximumMm": 2.4686915016335247
+        },
+        "fixedBeforeSupport": {
+          "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+          "before": {
+            "count": 1348518,
+            "withinSearchRadius": 1348518,
+            "withinSearchRadiusPercent": 100,
+            "meanMm": 0.020195357636977454,
+            "rmsMm": 0.04377131057099454,
+            "medianMm": 0.011722147115748418,
+            "p95Mm": 0.053622946865030795,
+            "p99Mm": 0.21921961245297902,
+            "maximumMm": 0.4999744646952981
+          },
+          "after": {
+            "count": 1348518,
+            "withinSearchRadius": 1348425,
+            "withinSearchRadiusPercent": 99.99310354033094,
+            "meanMm": 0.021248929158015076,
+            "rmsMm": 0.044301135110526274,
+            "medianMm": 0.01291022726493441,
+            "p95Mm": 0.055227813022943543,
+            "p99Mm": 0.22123498604418937,
+            "maximumMm": 0.5134209099666718
+          },
+          "beforeBounds": {
+            "count": 1348518,
+            "min": [
+              -33.08653259277344, -38.053462982177734, -330.05120849609375
+            ],
+            "max": [72.04571533203125, 72.94178009033203, -262.1809387207031],
+            "extent": [
+              105.13224792480469, 110.99524307250977, 67.87026977539062
+            ]
+          },
+          "afterBounds": {
+            "count": 1348518,
+            "min": [-33.08375930786133, -38.05825424194336, -330.05029296875],
+            "max": [72.0538558959961, 72.94074249267578, -262.1920471191406],
+            "extent": [
+              105.13761520385742, 110.99899673461914, 67.85824584960938
+            ]
+          },
+          "sourceVertexIdMaskSha256": "ece6eddabe4f4e48d02fc56d61f19b4ccd8cb9a4929e1b34d84e61064024ab52"
+        },
+        "gainedWithinSearchRadius": 154,
+        "lostWithinSearchRadius": 93
+      },
+      {
+        "name": "ply-3.ply",
+        "wholeBefore": {
+          "count": 1865848,
+          "withinSearchRadius": 1847276,
+          "withinSearchRadiusPercent": 99.00463488987313,
+          "meanMm": 0.03561988830552099,
+          "rmsMm": 0.10573182180651781,
+          "medianMm": 0.013137014816368987,
+          "p95Mm": 0.13521770238386935,
+          "p99Mm": 0.4990578205618756,
+          "maximumMm": 1.788227485555477
+        },
+        "wholeAfter": {
+          "count": 1865848,
+          "withinSearchRadius": 1847744,
+          "withinSearchRadiusPercent": 99.02971731888128,
+          "meanMm": 0.03583501321050068,
+          "rmsMm": 0.10436301872712077,
+          "medianMm": 0.0144020642716695,
+          "p95Mm": 0.12448020600415344,
+          "p99Mm": 0.4922703078486874,
+          "maximumMm": 1.7930750979169583
+        },
+        "fixedBeforeSupport": {
+          "definition": "Exact source indexed-vertex IDs with before distance strictly below actual command search radius 0.5 mm; same IDs evaluated after with no clipping, normal or boundary filters",
+          "before": {
+            "count": 1847276,
+            "withinSearchRadius": 1847276,
+            "withinSearchRadiusPercent": 100,
+            "meanMm": 0.027981117739360593,
+            "rmsMm": 0.06312304184596178,
+            "medianMm": 0.012964108888316297,
+            "p95Mm": 0.09903254602930917,
+            "p99Mm": 0.33934946400816934,
+            "maximumMm": 0.49997835202616736
+          },
+          "after": {
+            "count": 1847276,
+            "withinSearchRadius": 1846817,
+            "withinSearchRadiusPercent": 99.9751526030761,
+            "meanMm": 0.02824581692885094,
+            "rmsMm": 0.06123396112378954,
+            "medianMm": 0.014221518918870704,
+            "p95Mm": 0.09274577828374841,
+            "p99Mm": 0.3296347784070924,
+            "maximumMm": 0.5467152743712147
+          },
+          "beforeBounds": {
+            "count": 1847276,
+            "min": [
+              -33.20513153076172, -38.007720947265625, -330.28436279296875
+            ],
+            "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+            "extent": [105.0752182006836, 110.9635238647461, 68.15399169921875]
+          },
+          "afterBounds": {
+            "count": 1847276,
+            "min": [
+              -33.20513153076172, -38.007720947265625, -330.28436279296875
+            ],
+            "max": [71.87008666992188, 72.95580291748047, -262.13037109375],
+            "extent": [105.0752182006836, 110.9635238647461, 68.15399169921875]
+          },
+          "sourceVertexIdMaskSha256": "e87d8259edc61599e89f062cd3f1813f8b4dc8979df19de4be0351b5f97a1ab7"
+        },
+        "gainedWithinSearchRadius": 927,
+        "lostWithinSearchRadius": 459
+      }
+    ],
+    "fixedPairRmsWorsenedCount": 5,
+    "interpretation": "Aggregate fixed support improves while scans1/2 worsen and scan3 improves; every pair/tail/spatial bound/mask and distance hash/gain-loss remains in the full report. No uniform accuracy or native convergence pass inferred."
+  },
+  "outputGeometryInterpretation": {
+    "components": [
+      {
+        "id": 4565,
+        "triangles": 333838,
+        "vertices": 166659,
+        "surfaceAreaMm2": 28988.364446501793,
+        "signedVolumeMm3": 10486.488732710015,
+        "min": [-33.45513153076172, -38.78450393676758, -331.81597900390625],
+        "max": [73.04486846923828, 73.21549987792969, -261.81597900390625],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 10486.488732710015,
+        "extent": [106.5, 112.00000381469727, 70],
+        "areaPercent": 99.86281703939147,
+        "closed": true
+      },
+      {
+        "id": 136633,
+        "triangles": 218,
+        "vertices": 111,
+        "surfaceAreaMm2": 18.503235271730922,
+        "signedVolumeMm3": 2.7708333333333357,
+        "min": [22.54486846923828, 41.71549606323242, -304.81597900390625],
+        "max": [29.04486846923828, 42.71549606323242, -300.81597900390625],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.7708333333333357,
+        "extent": [6.5, 1, 4],
+        "areaPercent": 0.06374230605482346,
+        "closed": true
+      },
+      {
+        "id": 272224,
+        "triangles": 198,
+        "vertices": 101,
+        "surfaceAreaMm2": 16.824930258323892,
+        "signedVolumeMm3": 2.8593750000000457,
+        "min": [43.54486846923828, 17.715496063232422, -284.81597900390625],
+        "max": [45.54486846923828, 21.715496063232422, -282.31597900390625],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 2.8593750000000457,
+        "extent": [2, 4, 2.5],
+        "areaPercent": 0.057960666776779086,
+        "closed": true
+      },
+      {
+        "id": 48859,
+        "triangles": 52,
+        "vertices": 28,
+        "surfaceAreaMm2": 4.493559671141487,
+        "signedVolumeMm3": 0.6770833333333343,
+        "min": [2.0448684692382812, 48.71549606323242, -318.81597900390625],
+        "max": [3.0448684692382812, 50.21549606323242, -317.81597900390625],
+        "boundaryEdges": 0,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "absoluteEnclosedVolumeMm3": 0.6770833333333343,
+        "extent": [1, 1.5, 1],
+        "areaPercent": 0.015479987776576427,
+        "closed": true
+      }
+    ],
+    "componentClassification": "Four closed components preserved, main333838 triangles/99.862817% area plus218/198/52 triangle islands. Their intended status is not inferred and no arbitrary removal occurs.",
+    "invalidIntersections": 0,
+    "floatingPredicateScope": "Full output triangle pairs; expected shared vertices/edges excluded. Floating-point geometric assessment, not exact arithmetic proof.",
+    "tolerances": {
+      "coplanarDistance": 1e-9,
+      "coplanarArea": 1e-12,
+      "sharedFeatureSquaredDistance": 1e-16
+    },
+    "exactArithmeticProof": false,
+    "reconstructionResolutionMm": 0.5,
+    "approximateOccupancyRadiusMm": 0.375,
+    "resolutionIsMaximumDeviationGuarantee": false
+  },
+  "metricLimits": {
+    "metric": "Unsigned nearest complete triangle surfaces; vertex-weighted, not uniform-area weighting or scanner ground truth",
+    "reportingSearchRadiusMm": 0.5,
+    "searchBandMeaning": "Actual command correspondence band, not release accuracy. Fixed support is exact before-stage indexed vertex IDs; same IDs measured after without clipping.",
+    "continuousHausdorffBound": false,
+    "uniformAreaWeighting": false,
+    "scannerGroundTruth": false,
+    "userReleaseAccuracyThresholdSpecified": false,
+    "nativeFieldOracleComparedByTheseJobs": false,
+    "controllerConvergence": "Separate ordinary-clock optimizer diagnostic=false in Stage A, not a full-surface quality verdict.",
+    "finalUsabilityVerdict": "PENDING_COORDINATOR_REVIEW"
+  },
+  "priorPrivateHarnessFailure": {
+    "rawReceiptPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\08-original-ply-topology-final-main-r1.receipt.json",
+      "bytes": 2148,
+      "sha256": "b12f10966d2807462f9e99b9eea7f1697da3e63be8e9feefb4dc30ec82824990"
+    },
+    "receipt": {
+      "mode": "cad",
+      "label": "m3-ply-final-topology-final-main-r1",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=768",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-history-topology-configured.mjs",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\ply-final-topology-final-main-r1.config.json",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.json"
+      ],
+      "leaseSeconds": 900,
+      "guardMiB": 3072,
+      "heapMiB": 768,
+      "stdout": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\original-ply-topology-final-main-r1.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11455463424,
+      "immediateChildFreeBytes": 11457323008,
+      "identity": {
+        "pid": 46516,
+        "startFileTime": "134374420513456415",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 1,
+      "childPeakJobMemoryBytes": 106258432,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 119984128,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 14.704354700050317,
+      "completed": false
+    },
+    "stderrPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\09-original-ply-topology-final-main-r1.stderr.log",
+      "bytes": 467,
+      "sha256": "1d329ac13171de7c31debf9b7e4879ed152095199d4ee88e878032033392929d"
+    },
+    "stderr": "file:///C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/ply-final-history-topology-configured.mjs:73\n}finally{fs.closeSync(fd);}\n                      ^\n\nReferenceError: fd is not defined\n    at file:///C:/Users/Shoung/.codex/worktrees/m3-alignment/Maliev.ScanForge/.resources/m3/ply-final-history-topology-configured.mjs:73:23\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n\nNode.js v22.22.0\n",
+    "failedConfiguredReaderPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\18-ply-final-history-topology-configured.mjs",
+      "bytes": 13867,
+      "sha256": "38dbda5036d666d4c0011010b2ef0e0719088747e019881c4efddb85e523395d"
+    },
+    "correctedReaderPin": {
+      "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\17-ply-final-history-topology-configured-r2.mjs",
+      "bytes": 13902,
+      "sha256": "6ad74d1edc346968d7ea31d73742ff3089ff54f87d23d153810b2c4d8eeedbb0"
+    },
+    "classification": "Private adaptation omitted fd=openSync. Failed before topology assessment, clean resources; fresh r2 restores file-open initialization, with original full predicates/controls unchanged. No product bug or app source fix."
+  },
+  "originalFilePins": [
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-1.ply",
+      "name": "ply-1.ply",
+      "bytes": 6926970,
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+      "name": "ply-2.ply",
+      "bytes": 68084515,
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+    },
+    {
+      "path": "C:\\repo\\alignment-example-files\\ply-3.ply",
+      "name": "ply-3.ply",
+      "bytes": 92765339,
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2"
+    }
+  ],
+  "rawSourceWorkflowPin": {
+    "path": "C:\\Users\\Shoung\\.codex\\worktrees\\m3-alignment\\Maliev.ScanForge\\.resources\\m3\\evidence\\ply-independent-quality-final-main-r1\\15-evidence.json",
+    "bytes": 1407459,
+    "sha256": "efdace8ed035ab685892cb2c5f23fab41a1d265ed0c465cec2fd61c3f17e679c"
+  },
+  "separateProductionLifecycleReceipt": "m3-ply-final-stage-a-20261026.json",
+  "remainingGates": [
+    "PLY B remains bound but UNRUN: cold/warm all-history persistence, original-wrapper identities and useful front/top/isometric output-only views",
+    "Actual ASC placement revision conflict after GUI landmark remains unresolved under readonly key/identity diagnosis; do not label merely ready-race or waive it",
+    "Final coordinator review of measured registration/output usability and all written M3 requirements",
+    "Final-head/actual-rule review with hosted Linux failure-not-started billing disclosed, not falsely green; normal permitted merge/closure only after complete acceptance"
+  ]
+}

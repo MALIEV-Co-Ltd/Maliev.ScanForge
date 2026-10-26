@@ -5,6 +5,11 @@ import {
 import type { ProjectSession } from "./project-file";
 import { projectEncodingSnapshot } from "./project-encoding-snapshot";
 import { diskBackedBlob } from "./transient-blob-storage";
+import { rememberProjectSharedChunks } from "./project-shared-chunks";
+import {
+  projectEncodingChunkSources,
+  resolveEncodingChunkTokens,
+} from "./project-encoding-chunks";
 
 // Backup and explicit GUI/MCP exports share one bounded encoding lane. A failed
 // worker must not fall back to expensive synchronous validation on the UI thread.
@@ -152,6 +157,7 @@ function encodeQueued(
           return;
         }
         let worker: Worker | undefined;
+        let chunkSources: SharedArrayBuffer[] = [];
         const storage = new AbortController();
         let lease: ReturnType<typeof setTimeout> | undefined;
         let finished = false;
@@ -177,12 +183,36 @@ function encodeQueued(
           );
           worker.onmessage = ({
             data,
-          }: MessageEvent<{ file?: Blob; error?: string }>) => {
+          }: MessageEvent<{
+            file?: Blob;
+            error?: string;
+            sharedChunkTokens?: unknown;
+          }>) => {
+            if (finished) return;
             if (data?.file instanceof Blob) {
+              let chunks;
+              try {
+                chunks = resolveEncodingChunkTokens(
+                  data.sharedChunkTokens,
+                  chunkSources,
+                );
+              } catch (error) {
+                finish(error as Error);
+                return;
+              }
               worker?.terminate();
               worker = undefined;
               void diskBackedBlob(data.file, storage.signal).then(
-                (file) => finish(undefined, file),
+                (file) => {
+                  if (
+                    finished ||
+                    signal.aborted ||
+                    generation !== pageGeneration
+                  )
+                    return;
+                  rememberProjectSharedChunks(chunks);
+                  finish(undefined, file);
+                },
                 (error) =>
                   finish(
                     error instanceof Error ? error : new Error(String(error)),
@@ -209,8 +239,13 @@ function encodeQueued(
             120_000,
           );
           const snapshot = projectEncodingSnapshot(session);
+          chunkSources = projectEncodingChunkSources(snapshot);
           if (!containsLargeNumericArrays(snapshot))
-            worker.postMessage(snapshot);
+            worker.postMessage(
+              chunkSources.length
+                ? { ...snapshot, sharedChunkSources: chunkSources }
+                : snapshot,
+            );
           else
             void packProjectTransport(snapshot, {
               check: () => {
@@ -226,7 +261,13 @@ function encodeQueued(
               },
             })
               .then(({ packet, transfers }) => {
-                if (!finished) worker!.postMessage(packet, transfers);
+                if (!finished)
+                  worker!.postMessage(
+                    chunkSources.length
+                      ? { ...packet, sharedChunkSources: chunkSources }
+                      : packet,
+                    transfers,
+                  );
               })
               .catch((error) =>
                 finish(

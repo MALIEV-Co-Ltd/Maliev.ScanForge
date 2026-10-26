@@ -1,0 +1,78 @@
+[
+  {
+    "workerUrl": "http://127.0.0.1:63895/assets/processing-worker-BeBTQGKy.js",
+    "receivedAtEpochMs": 1792983994807,
+    "registration": {
+      "transform": {
+        "rotation": [
+          0.9999855301643663,
+          -0.0010269438012018423,
+          -0.005280610601031543,
+          0.0010381777779324094,
+          0.9999972030640607,
+          0.0021251002228030525,
+          0.005278413473001232,
+          -0.0021305516855320275,
+          0.9999837994191322
+        ],
+        "translation": [
+          -1.5581856888638057,
+          0.6160757734223328,
+          -0.04513992814953883
+        ]
+      },
+      "rms": 1.8626354018230098,
+      "wholeCloudRms": 1.8626354018230098,
+      "overlapRms": 0.17365358764251612,
+      "overlapPoints": 264708,
+      "requiredOverlapPoints": 699093,
+      "overlapSatisfied": false,
+      "maxError": 6.109952999044512,
+      "pairs": 822462,
+      "evaluatedPoints": 822462,
+      "targetPoints": 1865848,
+      "rejectedPoints": 557754,
+      "overlapFraction": 0.32184830423776417,
+      "inlierPairs": 264708,
+      "inlierRms": 0.17365358764251612,
+      "iterations": 56,
+      "converged": true,
+      "targetRms": 0.5,
+      "targetReached": false,
+      "terminationReason": "stoppedImproving",
+      "matching": "fullTargetPointToPoint",
+      "targetRmsBasis": "overlap",
+      "overlapPercent": 85,
+      "sampleSize": 20000,
+      "fittingSamples": 20000,
+      "distanceTests": 5728871565
+    },
+    "diagnostics": {
+      "rms": 1.8626354018230098,
+      "maxError": 6.109952999044512,
+      "converged": true,
+      "iterations": 56,
+      "pairs": 822462,
+      "algorithm": "fullTargetPointToPoint",
+      "targetRms": 0.5,
+      "targetReached": false,
+      "terminationReason": "stoppedImproving",
+      "evaluatedPoints": 822462,
+      "targetPoints": 1865848,
+      "distanceTests": 5728871565,
+      "rejectedPoints": 557754,
+      "overlapFraction": 0.32184830423776417,
+      "inlierRms": 0.17365358764251612,
+      "inlierPairs": 264708,
+      "targetRmsBasis": "overlap",
+      "overlapRms": 0.17365358764251612,
+      "wholeCloudRms": 1.8626354018230098,
+      "overlapPercent": 85,
+      "sampleSize": 20000,
+      "fittingSamples": 20000,
+      "overlapPoints": 264708,
+      "requiredOverlapPoints": 699093,
+      "overlapSatisfied": false
+    }
+  }
+]

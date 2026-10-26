@@ -951,9 +951,11 @@ describe("processing worker resource ownership", () => {
   });
 });
 
-it("copies and transfers indexed normals without detaching source or history buffers", async () => {
+it("copies and transfers indexed normals and facets without detaching source or history buffers", async () => {
   const normals = new Float32Array([2, 0, 0, 0, 3, 0, 0, 0, 4]);
+  const facetNormals = new Float32Array([-0, 0.6, 0.8]);
   const sourceIndexed = {
+    facetNormals,
     vertices: positions,
     triangles: new Uint32Array([0, 1, 2]),
     normals,
@@ -977,6 +979,12 @@ it("copies and transfers indexed normals without detaching source or history buf
   expect(worker.transfers).toContain(
     (sent.sourceIndexed.normals as Float32Array).buffer,
   );
+  expect(sent.sourceIndexed.facetNormals).toEqual(facetNormals);
+  expect(sent.sourceIndexed.facetNormals).not.toBe(facetNormals);
+  expect(worker.transfers).toContain(
+    (sent.sourceIndexed.facetNormals as Float32Array).buffer,
+  );
+  expect(facetNormals.byteLength).toBe(12);
   expect(normals.byteLength).toBe(36);
   worker.reply({
     result: {

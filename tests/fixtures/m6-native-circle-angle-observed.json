@@ -15,6 +15,8 @@
     "vertex": [6.07971549, -13.596557617, 0],
     "third": [6.07971549, -4.127994061, 0],
     "degrees": 90,
+    "labelScreenshot": "native-angle-90-label.png",
+    "labelScreenshotSha256": "63d9a0efc9420b87ccd1bb8bbab9de565ba8e59517ab727c4ecd7bd068a6b65d",
     "absoluteToleranceDegrees": 1e-9,
     "scope": "Observed 90deg native dimension proposal on two snapped perpendicular lines. Accepting a redundant constraint raises an overdefined-sketch warning; constraint acceptance parity is excluded."
   },

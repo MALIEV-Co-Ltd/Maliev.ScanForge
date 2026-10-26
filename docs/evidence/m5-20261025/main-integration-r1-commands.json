@@ -1,0 +1,37 @@
+[
+  {
+    "label": "format-resolutions",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "resource-check",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "prepare-kernel",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "typecheck",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "build",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "manifest",
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "label": "standard-cad",
+    "exitCode": 0,
+    "error": null
+  }
+]

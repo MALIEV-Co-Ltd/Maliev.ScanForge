@@ -8,6 +8,15 @@ import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { parseLandmarkSeedVertices } from "../native-landmark-region";
 import { processScanRegistration } from "../scan-registration";
+import { registrationTargetPoints } from "../registration-target";
+
+function fineAlignmentStatus(reason: string): string {
+  return reason === "targetReached"
+    ? "Target accuracy reached"
+    : reason === "stoppedImproving"
+      ? "Stopped improving; target accuracy not reached"
+      : "Iteration limit reached; target accuracy not reached";
+}
 
 export type MeshTool =
   | "fineAlign"
@@ -83,7 +92,10 @@ export function MeshTools({
   const [targetId, setTargetId] = useState(""),
     [surfaceSamples, setSurfaceSamples] = useState(500),
     [distance, setDistance] = useState(10),
-    [icpIterations, setIcpIterations] = useState(40);
+    [icpIterations, setIcpIterations] = useState(200),
+    [targetRms, setTargetRms] = useState(0.5),
+    [overlapPercent, setOverlapPercent] = useState(85),
+    [fittingSampleCount, setFittingSampleCount] = useState(20000);
   const [additionalTargetIds, setAdditionalTargetIds] = useState<string[]>([]);
   const [parallelRefinement, setParallelRefinement] = useState(false);
   const [landmarkSeeds, setLandmarkSeeds] = useState("");
@@ -119,7 +131,10 @@ export function MeshTools({
       .filter((id) => id !== targetId)
       .map((id) => targets.find((entity) => entity.id === id)),
   ].filter((entity): entity is Entity => !!entity);
-  async function run(request: ProcessingRequest, label: string) {
+  async function run(
+    input: ProcessingRequest | (() => ProcessingRequest),
+    label: string,
+  ) {
     if (controller.current || !selected) return;
     const cancellation = new AbortController();
     controller.current = cancellation;
@@ -129,6 +144,7 @@ export function MeshTools({
     try {
       busyCallback.current?.(true);
       onStatus(`${label}…`);
+      let request = typeof input === "function" ? input() : input;
       if (
         (request.kind === "paired" ||
           request.kind === "icp" ||
@@ -161,9 +177,13 @@ export function MeshTools({
         onStatus("Surface refinement did not converge · geometry unchanged");
         return;
       }
-      onStatus(
-        `${label} complete${outcome.registration ? ` · RMS ${outcome.registration.rms.toPrecision(4)} mm${outcome.registration.converged ? "" : " · iteration limit reached"}` : ""}`,
-      );
+      const registration = outcome.registration;
+      const summary = registration
+        ? "overlapRms" in registration
+          ? ` · Overlap RMS ${registration.overlapRms.toPrecision(4)} mm · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
+          : ` · RMS ${registration.rms.toPrecision(4)} mm · ${registration.converged ? "converged" : "iteration limit reached"}`
+        : "";
+      onStatus(`${label} complete${summary}`);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError")
         onStatus("Mesh operation cancelled; original geometry retained.");
@@ -442,6 +462,38 @@ export function MeshTools({
         )}
         {tool === "fineAlign" && (
           <>
+            <Field
+              label="Target overlap RMS (mm)"
+              value={targetRms}
+              onChange={setTargetRms}
+              min={0.000001}
+              step={0.01}
+            />
+            <Field
+              label="Expected overlap (%)"
+              value={overlapPercent}
+              onChange={setOverlapPercent}
+              min={0.01}
+              max={100}
+              step={1}
+            />
+            <label className="field">
+              <span>
+                Fitting sample count:{" "}
+                <output>{fittingSampleCount.toLocaleString()}</output>
+              </span>
+              <input
+                aria-label="Fitting sample count"
+                type="range"
+                min={3}
+                max={100000}
+                step={1}
+                value={fittingSampleCount}
+                onChange={(event) =>
+                  setFittingSampleCount(event.target.valueAsNumber)
+                }
+              />
+            </label>
             <fieldset>
               <legend>Additional fixed surfaces</legend>
               {targets
@@ -569,7 +621,7 @@ export function MeshTools({
                 const target = targets.find((entity) => entity.id === targetId);
                 if (selected && target)
                   void run(
-                    {
+                    () => ({
                       kind: "icp",
                       positions: selected.positions,
                       sourceTriangleMask:
@@ -580,29 +632,35 @@ export function MeshTools({
                               triangleSelection,
                               selected.meshSelection?.hidden,
                             ),
-                      target: target.positions,
+                      target: registrationTargetPoints(target),
                       maxDistance: distance,
                       maxIterations: icpIterations,
-                      sampleSize: 4000,
+                      sampleSize: fittingSampleCount,
                       targetSampleSize: 20000,
+                      targetRms,
+                      overlapPercent,
                       tolerance: 0.00001,
-                      trimFraction: 0.85,
-                    },
-                    "Fine align scans with sampled ICP",
+                    }),
+                    "Fine align scans with dense ICP",
                   );
               }}
             >
-              Fine align with sampled ICP
+              Fine align with dense ICP
             </button>
             <p className="muted">
               {selected?.kind === "pointcloud"
-                ? "All points drive alignment; the whole cloud moves. "
+                ? "The whole cloud moves. "
                 : triangleSelection?.some((value) => value !== 0)
                   ? "Selected visible triangles drive fine alignment; the whole scan moves. "
                   : "Visible triangles drive fine alignment; the whole scan moves. "}
-              ICP uses up to 4,000 source and 20,000 target samples. Start from
-              approximate alignment; symmetric geometry can settle into an
-              incorrect local match.
+              ICP fits up to {fittingSampleCount.toLocaleString()} source points
+              against the full target cloud. Target accuracy uses overlap RMS
+              for the closest {overlapPercent}% of eligible source points within
+              the search distance. Whole-cloud RMS includes every eligible
+              source point, including unmatched regions. Both final metrics are
+              verified independently of fitting samples. Start from approximate
+              alignment; symmetric geometry can settle into an incorrect local
+              match.
             </p>
           </>
         )}
@@ -673,6 +731,39 @@ export function MeshTools({
       {result && (
         <div role="status" aria-label="Mesh operation result">
           <h4>Result</h4>
+          {result.registration &&
+            "terminationReason" in result.registration && (
+              <p>
+                {fineAlignmentStatus(result.registration.terminationReason)} ·
+                Overlap RMS {result.registration.overlapRms.toPrecision(4)} mm ·
+                Target {result.registration.targetRms} mm
+              </p>
+            )}
+          {result.registration && "overlapRms" in result.registration && (
+            <>
+              <p>
+                Whole-cloud RMS{" "}
+                {result.registration.wholeCloudRms.toPrecision(4)} mm
+              </p>
+              <p>
+                Expected overlap {result.registration.overlapPercent}% · Overlap
+                points {result.registration.overlapPoints} /{" "}
+                {result.registration.requiredOverlapPoints} required · Within
+                search distance{" "}
+                {(result.registration.overlapFraction * 100).toFixed(1)}%
+              </p>
+              <p>
+                Fitting samples {result.registration.fittingSamples} /{" "}
+                {result.registration.sampleSize} requested
+              </p>
+              {!result.registration.overlapSatisfied && (
+                <p role="alert">
+                  Insufficient overlap within the search distance; target
+                  accuracy not reached.
+                </p>
+              )}
+            </>
+          )}
           {result.topology && (
             <dl>
               {Object.entries(result.topology).map(([key, value]) => (
@@ -687,6 +778,11 @@ export function MeshTools({
             .filter(
               ([key]) =>
                 !["pointCloudPose", "localBuffersRetained"].includes(key),
+            )
+            .filter(
+              ([key]) =>
+                !(result.registration && "overlapRms" in result.registration) ||
+                ["iterations", "maxError", "rejectedPoints"].includes(key),
             )
             .map(([key, value]) => (
               <p key={key}>

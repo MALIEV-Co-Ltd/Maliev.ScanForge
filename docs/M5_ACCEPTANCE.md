@@ -2,6 +2,19 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
+The pending integration of M5 `d5eb684` with main `57c77aa` passes the
+[local pre-commit integration runtime](evidence/m5-20261025/main-integration-r1-ledger.json),
+build `scanforge-6df43e18c921f0bd`. All seven phases exit 0: formatting the
+two conflict resolutions, resource check, kernel preparation, all 13 TypeScript
+batches, Vite build with no warnings/errors, offline manifest and full standard
+CAD. CAD retains all 338 datum goldens and zero live-input BREP mutations across
+11 families, followed by the exact sketch-surface phase. The guarded run took
+136.212 s at 1,553,100,800 peak Job bytes with terminal exit 0, active zero and
+complete handle/mutex cleanup. The merge commit, integrated hosted CI and
+browser replay, fresh combined authoring chain and native acceptance remain
+pending; this local result does not close M5. Earlier candidate evidence below
+retains its historical scope.
+
 Previous restore candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
 `scanforge-c869395b41d3f42a`. Preceding candidate `1594c78` had a
 [hosted run](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807)
@@ -38,7 +51,8 @@ equivalence are not established. Exact-head `7a0bedc` now passes the full
 typecheck batches/build,49,145tests passed/64skipped, CAD smoke and formatting.
 The two test-fixture readonly assignments from the first hosted attempt were
 corrected without production changes and independently re-reviewed. Final main
-integration remains required; the restore candidate/CI above is historical.
+integration commit and hosted/browser checks remain required; the restore
+candidate/CI above is historical.
 
 ## Operation matrix
 

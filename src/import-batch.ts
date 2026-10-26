@@ -30,7 +30,10 @@ export function importConcurrency(
       memory?: { jsHeapSizeLimit: number; usedJSHeapSize: number };
     }
   )?.memory;
-  const estimate = files.reduce((sum, file) => sum + file.size, 0) * 12;
+  // Reserve another third for retained computed facet vectors (12 bytes/face
+  // beside the 36-byte expanded triangle stream). This remains a concurrency
+  // heuristic, not an acceptance limit or a whole-process memory guarantee.
+  const estimate = files.reduce((sum, file) => sum + file.size, 0) * 16;
   return files.length > 1 &&
     capacity.cores > 2 &&
     capacity.memoryGiB > 4 &&
