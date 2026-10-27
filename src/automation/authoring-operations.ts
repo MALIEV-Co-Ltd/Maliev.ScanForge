@@ -297,7 +297,7 @@ export function createAuthoringOperations(
       return {
         sketchId,
         ...(a.action === "create"
-          ? { frame: sketches[sketches.length - 1].sketch.frame }
+          ? { frame: sketches[sketches.length - 1].sketch?.frame }
           : {}),
       };
     },
