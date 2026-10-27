@@ -13,7 +13,24 @@
     "outputProjectSha256": "398b8d2d8db3a3e73782b41e7c525914bfce27e5c97f51d4cbd3e62063115ebd",
     "privateObservationSha256": "a47b03357f72999fe2fc190d453e723be5df5df6ea5d954f6f8386cb5281cb1b",
     "privateCleanupReceiptSha256": "1725f943dd0ca76c534e3bf6ff4215b4280a1f89c974490344c9820eee88f32c",
-    "cleanup": "Authenticated owned finish, zero active processes, closed handles, no cleanup errors, released mutex; 100.06 seconds under 540-second outer lease."
+    "cleanup": "Authenticated owned finish, zero active processes, closed handles, no cleanup errors, released mutex; 100.06 seconds under 540-second outer lease.",
+    "storedReadback": {
+      "scope": "Strict, data-only index and bounded field comparison of the two pinned QSF v4 files; no native execution or reference-point/line copy-policy claim.",
+      "observation": "The four original record spans are byte-identical after duplication; a fifth type-0x8 record is appended. The two type-0x8 records contain the observed Plane(1) and Plane(1)(1) strings and each repeats a different 16-byte value in two positions. Excluding those two 16-byte fields and string count/value leaves 304 compared bytes, with one differing byte at normalized offset 4. Its four-byte little-endian values are 4 and 5, matching these records' one-based positions; that field's meaning and source/dependent links are not established.",
+      "initialOffsetAttempt": "A first exploratory read used the point/line name offset and returned empty strings; that interpretation was rejected and its receipt retained. The corrected bounded read uses the next field and matches the independently observed native names.",
+      "sha256": {
+        "indexReport": "01315533813099993a0c97bb003c26d1004def4dae0496cf9a704609e89cb4de",
+        "indexReceipt": "b1ae8aa7147b70815267c995922e21be2b6b7aac00b11ae327e0e5339ff7512e",
+        "initialOffsetReport": "a16e033faa7d8a9a750b29ebdb5afc6e5b8629318ee881f66669da0613e92a0e",
+        "initialOffsetReceipt": "efe2558dd20d4714fd193bc33dead76fe86c3eb34ca5d112172a1630315a8196",
+        "correctedNameReport": "8a55a8113013650a1b74f73cbbfcc4254793b75479faa9cdba143d0807d9742d",
+        "correctedNameReceipt": "9dd52925ffad6d69e8551a637dc009feeda6153ab7630791bc9764ba0a46421d",
+        "payloadComparison": "aab5e58de06ef6e7ab8aae59c8bd83878b805c94c82543447a4eeeb826a4257c",
+        "payloadReceipt": "230bf858e6fa5ff59559fbe346c2c1a9567e542f9f02aa3c8f7a20a168fdcc70",
+        "headerFieldReport": "c8bc26d719c443beba3e73e8fae40a0c9c4a81908730d666bf217ab95558a72a",
+        "headerFieldReceipt": "1d928ae9c9179286e56c8d6caccc3aab7c45aa0a602f0a3d5d76fd5beb1f37d2"
+      }
+    }
   },
   "applicationAndMcp": {
     "inputPlySha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
