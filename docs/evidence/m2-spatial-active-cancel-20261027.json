@@ -1,0 +1,57 @@
+{
+  "control": "public MCP cancellation after first spatial boundary fit progress",
+  "combinedPreviewCommit": "74e0e75c7304bfa4700641f02ea072ae0677c01d",
+  "fixture": {
+    "description": "400 translated copies of the 64-facet curved annulus in a 20 by 20 grid at 12 mm spacing",
+    "sha256": "57594dd820325d98eec199f5815d85905e8fe9212d1594f9223a950de5b26575",
+    "facets": 25600,
+    "components": 400,
+    "closedBoundaries": 800
+  },
+  "operation": {
+    "kind": "scanEdit",
+    "action": "boundarySpatialSketch",
+    "fitToleranceMm": 0.001,
+    "indices": "all"
+  },
+  "observed": {
+    "status": "running",
+    "stage": "Fitting spatial boundaries",
+    "progress": 0.00125,
+    "interpretation": "one of 800 boundary fits reported completed; exact instruction executing at cancellation was not independently observed"
+  },
+  "cancellation": {
+    "requested": true,
+    "terminalStatus": "cancelled",
+    "errorCode": "CANCELLED"
+  },
+  "beforeAfter": {
+    "revision": [2, 2],
+    "undo": [1, 1],
+    "redo": [0, 0],
+    "savedSketchCount": [0, 0],
+    "sourceFloat32PositionSha256": [
+      "daa4e72f09d8091561e2354299287c068ce20092d70fa4c2b5d422ee247c72c8",
+      "daa4e72f09d8091561e2354299287c068ce20092d70fa4c2b5d422ee247c72c8"
+    ]
+  },
+  "browserLog": {
+    "scanForgeWarningsOrErrors": 0,
+    "extensionErrors": 1,
+    "extensionError": "Chrome extension autofill overlay insertBefore NotFoundError"
+  },
+  "cleanup": {
+    "helperExitCode": 0,
+    "childJobFinalActive": 0,
+    "childJobClosed": true,
+    "outerJobClosed": true,
+    "cleanupErrors": [],
+    "helperJobMemoryLimitBytes": 4294967296,
+    "helperCpuRatePercent": 25,
+    "scope": "owned helper and descendants; browser process outside this job"
+  },
+  "limitations": [
+    "This validates cancellation after reported fitting progress; it does not instrument the exact instruction executing when cancellation arrived.",
+    "This manufactured control is not a native QuickSurface comparison."
+  ]
+}
