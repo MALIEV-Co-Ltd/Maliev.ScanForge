@@ -5,7 +5,7 @@
   "native": {
     "sourceSha256": "ec54d4c2d2b06e1c836bb7d53b700176dd89970919ffd7b5948a3a56c7d39b9b",
     "nativeSha256": "21b7db9591b1d4c55a79a6d75c4748dbb303014aa99a1ce4a62c637d286b3d17",
-    "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+    "nativeVersion": "native reference 8.0.123",
     "units": "mm",
     "mode": "partial",
     "algorithm": "flat",
@@ -16,7 +16,9 @@
   },
   "fixture": {
     "path": "tests\\fixtures\\hole-observed-semi-flat-square.json",
-    "sha256": "2c4de54b50de706b9adbacc76a34a6ffde8b2df8e93fea4797a7128bea7448a8",
+    "sha256AtValidation": "2c4de54b50de706b9adbacc76a34a6ffde8b2df8e93fea4797a7128bea7448a8",
+    "sha256AfterProvenanceSanitization": "e7b99dca68f6a1f15d51de5db0c287810bbd426214889703789dfa92e6ca329b",
+    "sanitization": "Changed only the native version description; numeric fixture data is unchanged.",
     "sourceTriangles": 8,
     "nativeTriangles": 9
   },

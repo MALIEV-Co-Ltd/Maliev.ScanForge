@@ -108,7 +108,7 @@
   "limitations": [
     "The new Y-seed control is manufactured from the inferred static algorithm, not a native export.",
     "Ghidra candidate bounds, operand meanings and runtime reachability are not established by independent mnemonic checks alone.",
-    "Native QuickSurface export comparison for Y- and Z-seed cylinders remains required.",
+    "Native reference export comparison for Y- and Z-seed cylinders remains required.",
     "Negative-Z native direction handling differs between candidate paths and remains unverified."
   ],
   "review": {

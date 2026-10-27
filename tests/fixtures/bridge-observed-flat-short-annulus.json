@@ -1,5 +1,5 @@
 {
-  "provenance": "Installed QUICKSURFACE Pro 8.0.123; original manufactured annulus, Bridge/Flat in mm; connections at -67.5 to 67.5 degrees and -56.25 to 56.25 degrees. Earlier shorter attempted span did not commit and remains a failed observation.",
+  "provenance": "Installed native reference 8.0.123; original manufactured annulus, Bridge/Flat in mm; connections at -67.5 to 67.5 degrees and -56.25 to 56.25 degrees. Earlier shorter attempted span did not commit and remains a failed observation.",
   "sourceStlSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
   "nativeStlSha256": "53b8fa04a3f2da8ba8b2d8b211ba777dc7436924619efeb4085b31d6c628b00a",
   "sourceTriangles": 64,

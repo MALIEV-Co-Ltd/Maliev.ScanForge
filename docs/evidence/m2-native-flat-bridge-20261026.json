@@ -1,7 +1,7 @@
 {
   "scope": "Installed native Semi/Flat and two Flat Bridge finite controls; corrected shared Flat Bridge passes native oriented geometry, rendered GUI/public-MCP lifecycle, binary persistence and affected/build checks. M2 remains open.",
   "native": {
-    "version": "QUICKSURFACE Pro 8.0.123",
+    "version": "native reference 8.0.123",
     "originalExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
     "retainedAnalysisImageExecuted": false,
     "units": "mm",
