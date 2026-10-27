@@ -220,6 +220,11 @@ verifies two candidate pointer locations and the bytes of their bounded native
 listings. The listings compute projected point and line-midpoint candidates;
 they do not establish a duplicate factory or its link policy. This static result
 does not replace the required original-native duplication and lifecycle checks.
+The later [duplicate-command lead](evidence/m4-native-duplicate-command-lead-20261027.json)
+binds a duplicate-related label to a UI registration value and a conditional
+indirect dispatch in byte-verified static listings. The destination handler,
+live receiver and reference-copy semantics remain unverified; the initial
+unsuccessful import lookup is retained as a failed observation.
 
 ## Verification and ownership
 
