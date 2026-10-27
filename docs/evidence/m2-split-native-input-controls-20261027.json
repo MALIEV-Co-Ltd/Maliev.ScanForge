@@ -1,0 +1,66 @@
+{
+  "scope": "Prepared manufactured inputs for native Split comparisons; native command, source/target binding, results and parity have not been observed.",
+  "applicationControl": "tests/scan-split-browser.mjs",
+  "inputFiles": {
+    "disjoint-source": {
+      "file": "disjoint-source.stl",
+      "sha256": "86208348d2200cf78ad30ccd78b194a97aa10ba28b997a86ddcddffb125496f2",
+      "facets": 1,
+      "units": "mm"
+    },
+    "finite-plane-cutter": {
+      "file": "finite-plane-cutter.stl",
+      "sha256": "6bc09b0c998bdd68883144fcd5157e0d2ccf0794603506f22361b7a09bd9566d",
+      "facets": 2,
+      "units": "mm"
+    },
+    "square-source": {
+      "file": "square-source.stl",
+      "sha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+      "facets": 2,
+      "units": "mm"
+    },
+    "convex-cutter": {
+      "file": "convex-cutter.stl",
+      "sha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+      "facets": 12,
+      "units": "mm"
+    },
+    "concave-cutter": {
+      "file": "concave-cutter.stl",
+      "sha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+      "facets": 28,
+      "units": "mm"
+    }
+  },
+  "cases": [
+    {
+      "name": "finite-disjoint-plane",
+      "source": "disjoint-source",
+      "cutter": "finite-plane-cutter",
+      "applicationObservedParts": 1,
+      "applicationObservedAreaMm2": [1]
+    },
+    {
+      "name": "closed-convex",
+      "source": "square-source",
+      "cutter": "convex-cutter",
+      "applicationObservedParts": 2,
+      "applicationObservedAreaMm2": [1, 15]
+    },
+    {
+      "name": "closed-concave",
+      "source": "square-source",
+      "cutter": "concave-cutter",
+      "applicationObservedParts": 2,
+      "applicationObservedAreaMm2": [3, 13]
+    }
+  ],
+  "checks": "Five generated binary STLs independently re-read with matching SHA-256, file lengths and facet counts. A separate comparison against the current browser control source arrays and cubeCells helper confirmed every Float32 triangle corner and its order.",
+  "readiness": "A fresh owned native session was opened, but native window input returned GetCursorPos access denied. No Split inputs were loaded or native operation attempted. Owned process and bounded job exited with cleanup confirmed.",
+  "remaining": [
+    "Observe native command availability, settings, source/cutter selection and outputs from fresh original input for each case.",
+    "Compare complete output geometry, topology and ownership and verify GUI/public MCP lifecycle on the same inputs.",
+    "These manufactured controls do not establish native behavior until those comparisons are performed."
+  ]
+}

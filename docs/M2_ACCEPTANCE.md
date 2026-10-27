@@ -435,6 +435,12 @@ All 123 affected tests, thirteen TypeScript batches and the warning-free build p
 
 All 143 affected contract/geometry/history/persistence tests in eight files and all thirteen TypeScript/build batches pass on `scanforge-2a46d3d412c3aeea`. One frozen browser driver reproduces the old history failure and passes selected/all GUI/public-MCP equality on the correction. Source geometry, active draft and unrelated/later sketches remain intact across Undo/Redo/Seek and binary reopening; retry does not duplicate sketches. Held-result job cancellation, GUI Cancel-and-back, locked publication rejection and protected read-only projection pass. Independently visible saved projections render as three closed planar outlines, and binary reopening preserves visibility. Exact identities, timings, peaks, screenshots and complete helper/port cleanup are retained. Installed-native boundary output/settings comparisons, remaining M2 rows and final whole-candidate review/CI/main merge stay open.
 
+The [prepared Split input record](evidence/m2-split-native-input-controls-20261027.json)
+pins the existing disjoint-plane, convex and concave application controls as
+binary STL inputs for later native runs. A fresh native session opened, but
+Windows denied input before import; no native Split result is claimed. Equivalent
+native command settings, output geometry and ownership remain required.
+
 ## Split cutter binding and segment publication state, 2026-10-27
 
 [The split/segment record](evidence/m2-split-segment-publication-20261027.json) retains actual failures for plane binding, component visibility history, empty result rejection and source-file provenance. Materialized planes persist `planeFrame`, which both old split paths missed after project loading removed transient fit data. GUI and MCP now share authoritative reference-plane binding; ordinary meshes remain finite, and explicit operation planes stay authoritative. Both adapters publish split/extracted/segmented parts through one constructor, retain raw source/cutter buffers and source filenames, use matching names/normal part appearance, hide the original and select the first result. Existing `modelVisibilityFor` history ownership restores source visibility on Undo/Redo/Seek; all-empty results fail atomically. No clipping/classification algorithm or resource guard changed.
