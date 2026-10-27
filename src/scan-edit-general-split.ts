@@ -32,6 +32,9 @@ interface Tree {
 const vec = (p: Vec3) => new Vector3(...p);
 const roundingBound = (...points: Vec3[]) =>
   Number.EPSILON * 32 * Math.max(1, ...points.flatMap((p) => p.map(Math.abs)));
+const sameContact = (a: Vec3, b: Vec3) =>
+  a.every((n, i) => Math.fround(n) === Math.fround(b[i])) &&
+  Math.hypot(...subtract(a, b)) <= roundingBound(a, b);
 function treeOf(faces: CutterFace[]): Tree {
   const box = new Box3();
   for (const face of faces) box.union(face.box);
@@ -274,6 +277,38 @@ function addIntersectionPoints(
   }
   return output;
 }
+/** Remove consecutive numerical copies of one observed cutter contact. */
+function collapseContactCopies(
+  poly: Vec3[],
+  contacts: Vec3[],
+  source: Vec3[],
+): Vec3[] {
+  const result = [...poly];
+  const original = (point: Vec3) =>
+    source.some((vertex) =>
+      vertex.every((value, axis) => Object.is(value, point[axis])),
+    );
+  let changed = true;
+  while (changed && result.length > 3) {
+    changed = false;
+    for (let i = 0; i < result.length; i++) {
+      const next = (i + 1) % result.length,
+        a = result[i],
+        b = result[next];
+      if (!sameContact(a, b) || (original(a) && original(b))) continue;
+      if (
+        !contacts.some(
+          (contact) => sameContact(a, contact) && sameContact(b, contact),
+        )
+      )
+        continue;
+      result.splice(original(b) ? i : next, 1);
+      changed = true;
+      break;
+    }
+  }
+  return result;
+}
 function append(output: number[], poly: Vec3[]) {
   if (poly.length < 3) return;
   if (poly.length === 3) {
@@ -449,16 +484,11 @@ export function splitGeneralCutter(
     const hits = nearby
       .map((face) => ({ face, ...intersection(triangle, face) }))
       .filter((hit) => hit.points.length > 0);
+    const hitPoints = hits.flatMap((hit) => hit.points);
     const crossing = hits.filter(
       (hit) => !hit.coplanar && hit.points.length === 2,
     );
-    let fragments = [
-      addIntersectionPoints(
-        triangle,
-        hits.flatMap((hit) => hit.points),
-        epsilon,
-      ),
-    ];
+    let fragments = [addIntersectionPoints(triangle, hitPoints, epsilon)];
     for (const { face, points } of crossing) {
       checkProgress(
         o,
@@ -499,7 +529,7 @@ export function splitGeneralCutter(
       } else isInside = nearestSigned(tree, center) < -epsilon;
       const output = isInside ? inside : outside;
       if (!hits.length) output.push(...triangle.flat());
-      else append(output, polygon);
+      else append(output, collapseContactCopies(polygon, hitPoints, triangle));
     }
   }
   checkProgress(o, 1, "General cutter split complete");
