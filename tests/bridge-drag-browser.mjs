@@ -8,13 +8,25 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/bridge-response-browser/", import.meta.url);
+  out = new URL(
+    process.env.SCANFORGE_BRIDGE_OUTPUT ??
+      (process.env.SCANFORGE_SEMI_TANGENT === "1"
+        ? "../.resources/m2-partial-tangent-browser-20261027/"
+        : "../.resources/bridge-response-browser/"),
+    import.meta.url,
+  );
 const builtRoot = process.env.SCANFORGE_QA_DIST
   ? pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/`)
   : new URL("dist/", root);
+const semiTangent = process.env.SCANFORGE_SEMI_TANGENT === "1";
 const semiFlatFixture = JSON.parse(
   await readFile(
-    new URL("fixtures/hole-observed-semi-flat-square.json", import.meta.url),
+    new URL(
+      semiTangent
+        ? "fixtures/hole-observed-semi-tangent-curved.json"
+        : "fixtures/hole-observed-semi-flat-square.json",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );
@@ -373,6 +385,7 @@ try {
         b.points.every((v, i) => i % 3 !== 0 || (v >= 0 && v <= 2.5)),
     );
     assert(hole >= 0);
+    assert(hole >= 0);
     const result = await runEdit({
       kind: "scanEdit",
       action: "fillHoles",
@@ -436,12 +449,14 @@ try {
     const project = {
       format: "maliev-scanforge",
       version: 1,
-      name: "Native Semi Flat square",
+      name: semiTangent
+        ? "Native Semi Tangent annulus"
+        : "Native Semi Flat square",
       units: "mm",
       entities: [
         {
           id: "rim",
-          name: "Native square annulus",
+          name: semiTangent ? "Native curved annulus" : "Native square annulus",
           kind: "mesh",
           positions: semiFlatFixture.source,
           visible: true,
@@ -475,15 +490,25 @@ try {
       (b) =>
         b.closed && b.points.every((v, i) => i % 3 === 2 || Math.abs(v) <= 3),
     );
-    assert.equal(hole, semiFlatFixture.boundary);
+    if (!semiTangent) assert.equal(hole, semiFlatFixture.boundary);
+    const points = inventory.inventory.boundaries[hole].points;
+    const endpoint = (sign) => {
+      for (let i = 0; i < points.length; i += 3)
+        if (
+          Math.abs(points[i] - sign * 2.12132025) < 0.00001 &&
+          Math.abs(points[i + 1] - sign * 2.12132025) < 0.00001
+        )
+          return i / 3;
+      throw Error("Missing native endpoint");
+    };
     const operation = {
       kind: "scanEdit",
       action: "fillHoles",
       mode: "partial",
-      algorithm: "flat",
+      algorithm: semiTangent ? "tangent" : "flat",
       indices: [hole],
-      start: semiFlatFixture.start,
-      end: semiFlatFixture.end,
+      start: semiTangent ? endpoint(1) : semiFlatFixture.start,
+      end: semiTangent ? endpoint(-1) : semiFlatFixture.end,
       tolerance: semiFlatFixture.tolerance,
     };
     const expectedResult = await runEdit(operation);
@@ -491,7 +516,7 @@ try {
     const patch = {
       positions: expectedGeometry.positions.slice(original.positions.length),
     };
-    assert.equal(patch.positions.length, 9);
+    assert.equal(patch.positions.length, semiTangent ? 900 : 9);
     await mutate("history_undo", {});
     assert.equal(await history(), beforeHistory);
     assert.deepEqual((await geometry()).positions, original.positions);
@@ -505,7 +530,12 @@ try {
         .getByRole("option", { name: "Semi hole", exact: true })
         .click();
       await controls.locator(".app-select > button").nth(1).click();
-      await page.getByRole("option", { name: "Flat", exact: true }).click();
+      await page
+        .getByRole("option", {
+          name: semiTangent ? "Tangent" : "Flat",
+          exact: true,
+        })
+        .click();
       await controls.locator(".scan-topology-list button").nth(hole).click();
       await controls
         .getByRole("spinbutton", { name: "Start vertex", exact: true })
@@ -521,7 +551,12 @@ try {
     assert.equal(await history(), beforeHistory);
     controls = await openSemi();
     await page.screenshot({
-      path: fileURLToPath(new URL("native-semi-flat-settings.png", out)),
+      path: fileURLToPath(
+        new URL(
+          `native-semi-${semiTangent ? "tangent" : "flat"}-settings.png`,
+          out,
+        ),
+      ),
     });
     await controls
       .getByRole("button", { name: "Fill selected hole", exact: true })
@@ -545,7 +580,12 @@ try {
     );
     await mutate("viewport_control", { action: "fit", entityId: "rim" });
     await page.screenshot({
-      path: fileURLToPath(new URL("native-semi-flat-filled.png", out)),
+      path: fileURLToPath(
+        new URL(
+          `native-semi-${semiTangent ? "tangent" : "flat"}-filled.png`,
+          out,
+        ),
+      ),
     });
     await page.keyboard.press("Control+z");
     assert.deepEqual((await geometry()).positions, original.positions);
@@ -567,7 +607,7 @@ try {
     );
     assert.deepEqual((await geometry()).positions, gui.positions);
     reports.push({
-      scenario: "native-semi-flat",
+      scenario: semiTangent ? "native-semi-tangent" : "native-semi-flat",
       sourceTriangles: original.positions.length / 9,
       outputTriangles: gui.positions.length / 9,
       patchTriangles: patch.positions.length / 9,

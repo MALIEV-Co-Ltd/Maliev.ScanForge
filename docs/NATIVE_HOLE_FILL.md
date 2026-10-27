@@ -5,6 +5,26 @@ shared async, GUI and public-MCP checks. See the latest acceptance section below
 and [its evidence](evidence/m2-curvature-integration-20261026.json). Earlier
 failed stages are retained as investigation history. M2 remains open.
 
+## Partial Tangent curved-annulus control, 2026-10-27
+
+The 64-facet original curved annulus was imported into the native application
+and a partial Tangent patch was exported at 164 facets. The input SHA-256 is
+`0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61`;
+the native STL SHA-256 is
+`d7a0034352028a3a7ffa857b559e166d534b3eace33deae6d8b9032f0cda1753`.
+Sanitized coordinates and selection observations are retained in
+`tests/fixtures/hole-observed-semi-tangent-curved.json`. One complementary
+arc matches all 164 oriented facets in the shared operation. The captured
+chord is a ten-segment Hermite curve; static caller evidence shows zeroed
+normal fields for its intermediate vertices. Interpolating those normals
+produced a different patch. The retained browser driver also matches the full
+oriented native geometry through the GUI and public MCP, preserves the source
+corners, and checks Back, Undo/Redo and binary project reopening. The existing
+Semi/Flat browser control still passes. See
+[the finite acceptance record](evidence/m2-partial-tangent-20261027.json).
+This result does not establish parity for other selections or other partial
+and bridge algorithms, and does not close M2.
+
 ## Manufactured cup controls, 2026-10-26
 
 Native reference build 8.0.123 imported binary STL cups with radius 2 mm, bottom

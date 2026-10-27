@@ -1,0 +1,43 @@
+{
+  "scope": "One installed-native partial Tangent curved-annulus control; other partial and bridge controls and M2 remain open.",
+  "native": {
+    "version": "8.0.123",
+    "units": "mm",
+    "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+    "nativeStlSha256": "d7a0034352028a3a7ffa857b559e166d534b3eace33deae6d8b9032f0cda1753",
+    "sourceFacets": 64,
+    "outputFacets": 164,
+    "fixture": "tests/fixtures/hole-observed-semi-tangent-curved.json",
+    "selection": "Two endpoints inferred from the exported partial patch boundary; native operation was observed in the installed application."
+  },
+  "investigation": {
+    "previousSharedFacets": 79,
+    "nativeChordWithInterpolatedNormals": "98 added facets; oriented geometry did not match",
+    "nativeChordWithZeroNormals": "100 added facets and all 100 native oriented patch facets match",
+    "curve": "Ten Hermite segments on this control, with endpoint tangents derived from retained vertex normals.",
+    "staticEvidence": "The partial fill caller creates intermediate vertex records with zero normal fields before the spatial solver."
+  },
+  "validation": {
+    "nativeFixtureAndMcpOperationTests": "91 focused tests passed in four files after intersection and proximity guards; six native-fixture tests passed after the multi-boundary correction",
+    "neighboringScanEditTests": "66 passed in six files before the retained browser driver update",
+    "typescript": "All 13 batches passed under a 4 GiB job limit before a subsequent test-only addition",
+    "vite": "Production Vite build passed under a 4 GiB job limit",
+    "browser": {
+      "driver": "tests/bridge-drag-browser.mjs",
+      "case": "SCANFORGE_BRIDGE_CASES=native-semi-flat and SCANFORGE_SEMI_TANGENT=1",
+      "guiAndPublicMcpMatchNativeOrientedFacets": true,
+      "retainedSourceCornersExact": true,
+      "backUndoRedoAndBinaryReopen": true,
+      "pageErrors": [],
+      "jobPeakBytes": 714674176,
+      "cleanupConfirmed": true
+    },
+    "existingSemiFlatBrowserControl": "Passed GUI/public MCP, native oriented geometry and lifecycle; job cleanup confirmed"
+  },
+  "limitations": [
+    "One manufactured partial Tangent native control; no general native parity claim.",
+    "The other directed arc was checked for cache consistency, not compared with a separate native export.",
+    "Multi-boundary separated-patch cache and crossing-patch rejection controls are manufactured; their large-input cost is not measured.",
+    "Other partial and bridge algorithms and the M2 acceptance gates remain open."
+  ]
+}

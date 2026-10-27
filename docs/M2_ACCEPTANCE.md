@@ -6,6 +6,8 @@ Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), s
 
 M2 covers the scan-repair and processing commands listed in issue #2, including Average, Mirror and cylindrical Unroll. Boundary-to-sketch creation and its own publication, history and persistence are M2 processing outcomes; general spatial-sketch editing belongs to [M4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4) and is not an M2 closure requirement. Re-polygonize is listed in M2; M3's already reviewed alignment and combination acceptance is a separate milestone, not a new M2 gate. Shared CAD restore, MCP, project history and resource protections are verified only as needed by M2 operations; completing all M5, M7 or M8 functionality is not required to close M2. M1 is the sole milestone dependency listed in issue #2 and has been closed.
 
+The 2026-10-27 partial Tangent curved-annulus control matches the installed native export through the shared operation, rendered GUI and public MCP. Source corners, history and binary reopening pass; the complementary arc has a separate result. [Evidence](evidence/m2-partial-tangent-20261027.json) is limited to this one control; other partial and bridge algorithms and the remaining M2 gates stay open.
+
 Latest confirmed green full hosted application checkpoint `69a1380` passes [run 40379322369](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40379322369): 49,926 tests, 64 conditional skips, build, both CAD smoke checks and formatting. Subsequent test/evidence-only commits require their own exact-head CI.
 
 Flat Bridge checkpoint `242ea74` passes [exact-head hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40318500393):
