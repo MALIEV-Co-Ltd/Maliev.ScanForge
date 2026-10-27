@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
 import fixture from "./fixtures/boundary-smooth-observed-annulus.json";
+import selectedFixture from "./fixtures/boundary-smooth-selected-inner-native.json";
 import { runScanEditAsync } from "../src/scan-edit";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
@@ -60,6 +61,44 @@ it("matches one native all-boundary smoothing operation at observed 100 percent 
       )
         continue;
       expect(output[i], `coordinate ${i}`).toBe(expected[i]);
+    }
+  });
+}, 30000);
+
+it("matches native smoothing of the selected inner boundary", async () => {
+  const source = Float32Array.from(fixture.source);
+  const topology = importedTopology(source);
+  const inner = topology.boundaryLoops.findIndex((loop) =>
+    loop.every(
+      (id) =>
+        Math.hypot(topology.vertices[id * 3], topology.vertices[id * 3 + 1]) <
+        4,
+    ),
+  );
+  expect(inner).toBeGreaterThanOrEqual(0);
+  const expected = Float32Array.from(selectedFixture.output);
+  expect(
+    createHash("sha256").update(new Uint8Array(expected.buffer)).digest("hex"),
+  ).toBe(selectedFixture.nativeCoordinatesSha256);
+  await withCurvatureKernel(async () => {
+    const result = await runScanEditAsync(
+      {
+        kind: "scanEdit",
+        action: "boundarySmooth",
+        positions: source,
+        indices: [inner],
+        strength: 1,
+      },
+      { topologyCache: { positions: source, tolerance: 1e-6, topology } },
+    );
+    expect(result.positions?.length).toBe(expected.length);
+    const tolerance =
+      16 * Number.EPSILON * Math.max(1, ...source.map(Math.abs));
+    for (let i = 0; i < expected.length; i++) {
+      const actual = result.positions![i];
+      if (Math.abs(actual) <= tolerance && Math.abs(expected[i]) <= tolerance)
+        continue;
+      expect(actual, `coordinate ${i}`).toBe(expected[i]);
     }
   });
 }, 30000);
