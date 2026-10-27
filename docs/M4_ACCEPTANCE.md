@@ -145,8 +145,9 @@ excluding its name and two changing 16-byte fields leaves one unexplained byte
 difference across 304 compared bytes. A byte-verified serializer prefix and
 readback show distinct identities and empty saved common source/dependent sets
 for this case. A statically traced candidate payload is identical in both saved
-records and contains a vector matching the displayed normal; live binding and
-the remaining 32-byte tail remain unverified. Native displayed normal and
+records and contains a vector matching the displayed normal. The remaining
+32-byte tails are identical and all zero in this zero-list case; their field
+meanings and live binding remain unverified. Native displayed normal and
 application axis differ by approximately 0.014° ignoring sign, but their
 sampled populations are not known to match. These observations do not establish
 general link or fit parity.
