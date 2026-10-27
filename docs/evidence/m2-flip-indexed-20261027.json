@@ -54,5 +54,23 @@
     "Native GUI comparison for the original scan and scanner-normal metadata remains open.",
     "Synchronous source-index validation on very large inputs has not been benchmarked for UI responsiveness.",
     "Other M2 acceptance gates remain open."
-  ]
+  ],
+  "nativePreFlipInference": {
+    "scope": "The retained native pre-Flip snapshot is compared with application Flip output by mathematically inverting normal sign bits; this is not an observed native post-Flip result.",
+    "snapshotReportSha256": "7e81ea5eb2f86d959f76b13f166f66c71911df3e78c89542609ca63d05e37d8a",
+    "snapshotNonAtomic": true,
+    "twoReadPassesEqual": true,
+    "vertices": 140113,
+    "facets": 274154,
+    "indexedPositionsTrianglesAndBothNormalInputsMatchApplication": true,
+    "inferredFlippedFacetSha256": "78ca8dc4d7224f12a428c231b11c5fbe9d0bcce66c77a4ed34af499114fed493",
+    "facetBitsMatchInversion": true,
+    "inferredFlippedVertexSha256": "cafa1126c7f43e4e9b429a12a7ae1320d241c0d227d81d23cfbc2eebad69f814",
+    "applicationVertexSha256": "511f3c3bcba8ca3f84af9c375c178e4f91c7f4f666612137b4eab31ba5b29e58",
+    "differingVertexWords": 6,
+    "signedZeroOnlyDifferences": 6,
+    "numericDifferences": 0,
+    "actualNativePostFlipCaptured": false,
+    "cleanupConfirmed": true
+  }
 }
