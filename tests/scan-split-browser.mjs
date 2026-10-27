@@ -362,61 +362,126 @@ try {
     }
     return result;
   };
-  const sourceId = "scan",
-    cutterId = "cutter",
-    results = [];
+  let sourceId = "scan",
+    cutterId = "cutter";
+  const results = [];
+  const inputDirectory = process.env.SCANFORGE_SPLIT_INPUT_DIR;
+  const fileInputs = {
+    "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
+    "closed-convex": ["square-source.stl", "convex-cutter.stl"],
+    "closed-concave": ["square-source.stl", "concave-cutter.stl"],
+  };
+  const inputManifest =
+    inputDirectory &&
+    JSON.parse(await readFile(`${inputDirectory}/manifest.json`, "utf8"));
+  const expectedFileHashes = {
+    "disjoint-source.stl":
+      "86208348d2200cf78ad30ccd78b194a97aa10ba28b997a86ddcddffb125496f2",
+    "finite-plane-cutter.stl":
+      "6bc09b0c998bdd68883144fcd5157e0d2ccf0794603506f22361b7a09bd9566d",
+    "square-source.stl":
+      "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+    "convex-cutter.stl":
+      "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+    "concave-cutter.stl":
+      "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+  };
   const load = async (c) => {
-    const project = {
-      format: "maliev-scanforge",
-      version: 1,
-      name: `Split ${c.name}`,
-      units: "mm",
-      entities: [
-        {
-          id: sourceId,
-          name: "Split source",
-          source: "manufactured-split-control.stl",
-          kind: "mesh",
-          positions: c.source,
-          color: "#d24d57",
-          opacity: 0.4,
-          visible: true,
-        },
-        {
-          id: cutterId,
-          name: `Cutter ${c.name}`,
-          kind: c.kind,
-          positions: c.target,
-          color: "#728a99",
-          opacity: 0.35,
-          visible: true,
-          ...(c.fit ? { fit: c.fit } : {}),
-          ...(c.kind === "plane"
-            ? {
-                planeFrame: {
-                  center: [0, 0, 0],
-                  normal: [1, 0, 0],
-                  tangent: [0, 1, 0],
-                },
-              }
-            : {}),
-        },
-      ],
-    };
-    const upload = (
-      await call("artifact_put", {
-        name: "split-control.json",
-        offset: 0,
-        base64: Buffer.from(JSON.stringify(project)).toString("base64"),
-      })
-    ).result;
-    await job(
-      await mutate("project_import", {
-        artifactId: upload.artifactId,
-        replace: true,
-      }),
-    );
-    await call("artifact_delete", { artifactId: upload.artifactId });
+    if (inputDirectory) {
+      await mutate("project_new", { discard: true });
+      const importStl = async (filename) => {
+        const bytes = await readFile(`${inputDirectory}/${filename}`);
+        const entry = Object.values(inputManifest.files).find(
+          (item) => item.file === filename,
+        );
+        assert(entry, `Missing manifest entry for ${filename}`);
+        assert.equal(entry.sha256, expectedFileHashes[filename]);
+        assert.equal(
+          createHash("sha256").update(bytes).digest("hex"),
+          expectedFileHashes[filename],
+        );
+        const artifact = (
+          await call("artifact_put", {
+            name: filename,
+            offset: 0,
+            base64: bytes.toString("base64"),
+          })
+        ).result;
+        const imported = await job(
+          await mutate("project_import", {
+            artifactId: artifact.artifactId,
+            unit: "mm",
+            placeAtOrigin: false,
+          }),
+        );
+        await call("artifact_delete", { artifactId: artifact.artifactId });
+        return imported.result.entityId;
+      };
+      [sourceId, cutterId] = [
+        await importStl(fileInputs[c.name][0]),
+        await importStl(fileInputs[c.name][1]),
+      ];
+      await mutate("object_update", {
+        entityId: sourceId,
+        patch: { name: "Split source" },
+      });
+      await mutate("object_update", {
+        entityId: cutterId,
+        patch: { name: `Cutter ${c.name}` },
+      });
+    } else {
+      const project = {
+        format: "maliev-scanforge",
+        version: 1,
+        name: `Split ${c.name}`,
+        units: "mm",
+        entities: [
+          {
+            id: sourceId,
+            name: "Split source",
+            source: "manufactured-split-control.stl",
+            kind: "mesh",
+            positions: c.source,
+            color: "#d24d57",
+            opacity: 0.4,
+            visible: true,
+          },
+          {
+            id: cutterId,
+            name: `Cutter ${c.name}`,
+            kind: c.kind,
+            positions: c.target,
+            color: "#728a99",
+            opacity: 0.35,
+            visible: true,
+            ...(c.fit ? { fit: c.fit } : {}),
+            ...(c.kind === "plane"
+              ? {
+                  planeFrame: {
+                    center: [0, 0, 0],
+                    normal: [1, 0, 0],
+                    tangent: [0, 1, 0],
+                  },
+                }
+              : {}),
+          },
+        ],
+      };
+      const upload = (
+        await call("artifact_put", {
+          name: "split-control.json",
+          offset: 0,
+          base64: Buffer.from(JSON.stringify(project)).toString("base64"),
+        })
+      ).result;
+      await job(
+        await mutate("project_import", {
+          artifactId: upload.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: upload.artifactId });
+    }
     await mutate("object_select", { entityId: sourceId });
     await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
     await mutate("viewport_control", {
@@ -496,7 +561,12 @@ try {
     for (const p of output) {
       assert.equal(p.metadata.visible, true);
       assert.equal(p.metadata.opacity, 1);
-      assert.equal(p.metadata.source, "manufactured-split-control.stl");
+      assert.equal(
+        p.metadata.source,
+        inputDirectory
+          ? fileInputs[c.name][0]
+          : "manufactured-split-control.stl",
+      );
       assert.equal(p.metadata.kind, "mesh");
       assert(p.positions.length > 0);
     }
@@ -517,6 +587,7 @@ try {
     return verifyState(state, c);
   };
   for (const c of cases) {
+    if (inputDirectory && !fileInputs[c.name]) continue;
     const baseline = await load(c);
     await open(c);
     await panel
@@ -673,6 +744,13 @@ try {
     );
     results.push({
       name: c.name,
+      sourceMode: inputDirectory ? "pinned STL import" : "project fixture",
+      ...(inputDirectory
+        ? {
+            sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
+            cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+          }
+        : {}),
       inputCoordinateSha256: digest(c.source),
       cutterCoordinateSha256: digest(c.target),
       parts: c.parts,
