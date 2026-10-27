@@ -30,7 +30,7 @@ export interface EdgeUse {
 export interface MeshTopology {
   vertices: Float64Array;
   triangles: Uint32Array;
-  /** Immutable directory. Copy into Map before replacing edge uses during edits. */
+  /** Immutable directory. Edits must retain earlier edge-use snapshots. */
   edges: ReadonlyMap<string, EdgeUse[]>;
   neighbors: number[][];
   components: number[][];

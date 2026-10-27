@@ -91,8 +91,23 @@ it("matches the native curved-annulus partial Tangent result for its captured ch
       tolerance: fixture.tolerance,
     };
     const output = runScanEdit(request).positions!;
-    const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> =
-      {};
+    const cachedTopology = analyzeMesh(positions, {
+      tolerance: fixture.tolerance,
+    });
+    const edgeIndex = cachedTopology.edges;
+    cachedTopology.edges = new Proxy(edgeIndex, {
+      get(target, property) {
+        if (property === Symbol.iterator)
+          throw new Error("The complete edge directory must not be copied");
+        const value = Reflect.get(target, property, target);
+        return typeof value === "function" ? value.bind(target) : value;
+      },
+    });
+    const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> = {
+      positions,
+      tolerance: fixture.tolerance,
+      topology: cachedTopology,
+    };
     const cached = runScanEdit(request, { topologyCache }).positions!;
     expect(orientedFaces(cached)).toEqual(orientedFaces(output));
     const fresh = analyzeMesh(cached, { tolerance: fixture.tolerance });

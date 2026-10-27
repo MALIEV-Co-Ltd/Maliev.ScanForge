@@ -55,6 +55,21 @@
         "jobPeakBytes": 1351397376,
         "cleanupConfirmed": true,
         "scope": "Shared indexed importer and topology analysis; no fill, rendered GUI/MCP or native comparison."
+      },
+      "successfulPartialCacheMemory": {
+        "boundaryIndex": 3,
+        "startVertex": 255,
+        "endVertex": 263,
+        "addedFacets": 13,
+        "sourceCoordinatesSha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945",
+        "outputCoordinatesSha256": "db9794c41df6c16bb56a2d292cf1679be4542a31f2a42a9bcffef3bf42d9bb9d",
+        "sourceUnchanged": true,
+        "oldJobPeakBytes": 3907825664,
+        "newJobPeakBytes": 2352549888,
+        "jobLimitBytes": 4294967296,
+        "nodeOldSpaceLimitMiB": 3072,
+        "cleanupConfirmed": true,
+        "scope": "Matched isolated indexed worker fill with topology cache; no GUI, public MCP, native comparison, or full serialization memory measurement."
       }
     },
     "thirdOriginalMemory": {

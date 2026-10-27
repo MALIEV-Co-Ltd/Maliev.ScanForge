@@ -5,6 +5,7 @@ import { holeFillTitle, type HoleFillProgress } from "./hole-fill-progress";
 import type { Vec3 } from "./types";
 import type { MeshTopology, MeshProcessingOptions } from "./mesh-processing";
 import { analyzeIndexedMesh } from "./mesh-processing";
+import { appendMeshEdges } from "./mesh-edge-index";
 import { fitCurvatureSurface } from "./scan-defeature-surface";
 import { fairHolePatch } from "./scan-hole-fair";
 import { flatHoleTriangles } from "./scan-hole-flat";
@@ -818,28 +819,17 @@ function* holeFillSteps(
       throw new Error("Coordinates exceed Float32 output precision.");
   }
   if (o.topologyCache && cachedVertices && cachedTriangles) {
-    // Appending a patch preserves every existing edge use. Copy the map, sharing
-    // untouched immutable records, and copy only arrays receiving a new face.
-    // If Float32 output changes old coordinates, refresh from scratch so newly
-    // degenerate facets cannot retain stale adjacency.
+    // Reuse the immutable edge directory and retain only appended edge uses.
+    // Changed Float32 coordinates require a full refresh for correct adjacency.
     const edges = t.vertices.every((value) => Math.fround(value) === value)
-      ? new Map(t.edges)
+      ? appendMeshEdges(
+          t.edges,
+          cachedTriangles,
+          t.triangles.length,
+          cachedTriangles.length,
+          o.signal,
+        )
       : undefined;
-    if (edges) {
-      for (
-        let corner = t.triangles.length;
-        corner < cachedTriangles.length;
-        corner += 3
-      ) {
-        for (let k = 0; k < 3; k++) {
-          const from = cachedTriangles[corner + k],
-            to = cachedTriangles[corner + ((k + 1) % 3)];
-          const key = edgeId(from, to),
-            uses = edges.get(key) ?? [];
-          edges.set(key, [...uses, { face: corner / 3, from, to }]);
-        }
-      }
-    }
     const topology = analyzeIndexedMesh(
       Float64Array.from(cachedVertices, Math.fround),
       new Uint32Array(cachedTriangles),
