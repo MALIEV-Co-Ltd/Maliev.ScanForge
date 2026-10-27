@@ -87,6 +87,8 @@ Indexed Flip Normals now retains vertex identities and reverses indexed triangle
 
 Indexed Flip admission now yields between bounded checks for both GUI and MCP. A small indexed PLY passes GUI/public-MCP geometry equality, Undo and Redo; 50,054 tests pass with 64 skipped. The prior three-million-facet synchronous admission took 129–140 ms in an isolated Chrome control; the staged run allowed observed frames, though frame gaps include other rendering activity and do not establish a maximum task duration. Large-input public-MCP cancellation delivery, subsequent synchronous copies and publication, and native original-scan post-Flip behavior remain open. [Evidence](evidence/m2-flip-staged-admission-20261027.json).
 
+On the original 274,154-facet PLY, the staged candidate also produces matching GUI/public-MCP output buffer digests and Undo restores all input digests, including scanner normals. An immediately cancelled public MCP job reported progress zero and left input digests unchanged; its actual admission stage was not observed. A subsequent MCP Flip succeeded and matched the GUI. This is application parity, not a native post-Flip capture. [Evidence](evidence/m2-flip-staged-admission-20261027.json).
+
 ## Unroll and Average correction checkpoint
 
 The shared operation now integrates native seam removal, swap-last order, positive reference-angle rotation and bounded Unroll instances. Average integrates indexed native surface queries, boundary rejection, ordered Float32 accumulation, largest-facet base selection and new-owner publication. Both GUI commands invoke the same public MCP operation and preserve explicit replacement support. The original inputs remain intact by default.
