@@ -1,0 +1,10 @@
+{
+  "scope": "One reopened native numeric line and its dependent midpoint point; history context menus only.",
+  "nativeVersion": "QuickSurface Pro 8.0.123",
+  "inputProjectSha256": "c0400357e1d74c7cc9b326ae7c3153804e6b4a9a3d61ad825b221683cd84a4cd",
+  "observation": "The saved project reopened with Ref. Line(1) and dependent Ref. Point(1). The point history context menu offered Edit, Hide All But This, Color, Set Default Color, Transparent, Rename and Delete; it did not show Duplicate. The line history context menu offered Edit, Hide All But This, Disable All Next, Color, Set Default Color, Transparent, Rename and Delete; it did not show Duplicate.",
+  "limitations": "This is a menu observation, not proof that reference duplication is unavailable through other routes or that copy and dependency semantics are known. No geometry was changed or saved. No application or MCP behavior changed.",
+  "ownedSessionReportSha256": "ef3c8f600a24d6fc165543d2693957ef7fa245abf3fe886c8bbd88bb92c18790",
+  "boundedCleanupReceiptSha256": "d232962461cbe317b428324ab6e36475839ecaf04cb6cb0fdbf3d40d71446578",
+  "cleanup": "Authenticated finish; owned root and descendants exited, all handles closed, no cleanup errors or lease overrun, validation lane released."
+}

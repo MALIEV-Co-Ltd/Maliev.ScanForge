@@ -210,6 +210,11 @@ before R11 persistence; no QSF save/reopen or complete numeric parity is claimed
 
 ## Additional native checkpoints
 
+[Native reference history menus](evidence/m4-native-reference-history-menus-20261027.json)
+were inspected after reopening one numeric line and its dependent midpoint. Neither
+history context menu showed Duplicate. This does not establish whether other native
+routes can duplicate references or determine their copy/link behavior.
+
 [Original native R6/R8/R9 observations](evidence/reference-native-acceptance-20261026.json)
 record plane and section-sketch QSF reopening, a persisted 6 mm circle, and an
 accepted 1.8 mm solid exported as STEP. The real application CAD worker imports
