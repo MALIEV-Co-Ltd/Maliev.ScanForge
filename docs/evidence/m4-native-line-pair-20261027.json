@@ -1,0 +1,35 @@
+{
+  "scope": "One original-native constructed reference line from two parallel numeric reference lines; not general pair or average acceptance.",
+  "native": {
+    "version": "QuickSurface Pro 8.0.123",
+    "inputProjectSha256": "746db06ceb22e2b6f39546acb47096bf0ce036e47d9695396244c9b025645991",
+    "inputProjectUnchanged": true,
+    "firstSource": {
+      "name": "Ref. Line(1)",
+      "startMm": [0, 0, 0],
+      "endMm": [10, 0, 0]
+    },
+    "secondSource": {
+      "name": "Ref. Line(2)",
+      "startMm": [0, 4, 0],
+      "endMm": [10, 4, 0]
+    },
+    "targetPrior": { "startMm": [2, -3, 0], "endMm": [8, -3, 0] },
+    "operation": "Reopened target Ref. Line(3), chose Constructed, and selected the two named source lines from its dropdowns.",
+    "displayedResult": {
+      "startMm": [5, 0, 0],
+      "endMm": [5, 4, 0],
+      "lengthMm": 4
+    },
+    "reopen": "After accepting, saving to a separate QSF, and reopening it, the target editor displayed Constructed, both source names, the same endpoints and length.",
+    "outputProjectSha256": "c01a5ef88e231fe1cf4c429881f828d0821abdfae6ce3b341fcc993f085e2ec0",
+    "privateCleanupReceiptSha256": "e829b05ba08ce5950b31b63f22f9e06bb2fdbb171fcf958de58eb50136ea77af",
+    "cleanup": "Authenticated owned finish; zero active processes, root exited, handles closed, no cleanup errors or overrun, and mutex released after cleanup; 195.50 seconds under the 540-second outer lease."
+  },
+  "limitations": [
+    "The source choices came from native dropdowns; no viewport-picked locations were confirmed. The result is one parallel-line fixture and does not establish general native source-location rules.",
+    "The native average picker remained at zero selected after a visible line click. The experiment was cancelled; no average result or persistence claim is made.",
+    "No source mutation, raw binary geometry comparison, or application/public MCP comparison of this exact fixture was performed in this session. Existing application pair/average GUI and MCP coverage is a separate checkpoint.",
+    "This checkpoint does not complete M4 or authorize merge or milestone closure."
+  ]
+}
