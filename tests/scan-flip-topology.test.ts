@@ -433,3 +433,36 @@ it.each(noiseCapture.cases.filter((entry) => entry.triangles.length > 0))(
     ).toBe(entry.nativeNormalBits);
   },
 );
+
+it.each(["Preparing facet normals", "Refreshing vertex normals"])(
+  "cancels indexed Flip during %s without publishing a partial cache",
+  (cancelStage) => {
+    const positions = decode(capture.cases[0].inputBits);
+    const before = positions.slice();
+    const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+    const topology = analyzeMesh(positions, {
+      tolerance: 0.001,
+      topologyCache: cache,
+    });
+    const vertices = Float32Array.from(topology.vertices);
+    const triangles = topology.triangles.slice();
+    const sourceVertices = vertices.slice();
+    const sourceTriangles = triangles.slice();
+    const controller = new AbortController();
+    expect(() =>
+      flipScanNormals(positions, {
+        topologyCache: cache,
+        sourceTopology: { vertices, triangles },
+        signal: controller.signal,
+        onProgress: (_, stage) => {
+          if (stage === cancelStage) controller.abort();
+        },
+      }),
+    ).toThrow(/cancelled|aborted/i);
+    expect(positions).toEqual(before);
+    expect(vertices).toEqual(sourceVertices);
+    expect(triangles).toEqual(sourceTriangles);
+    expect(cache.positions).toBe(positions);
+    expect(cache.topology).toBe(topology);
+  },
+);

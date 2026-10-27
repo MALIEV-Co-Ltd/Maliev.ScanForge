@@ -9,7 +9,7 @@
   },
   "tests": {
     "focusedFiles": 5,
-    "passed": 204,
+    "passed": 206,
     "checks": [
       "shared GUI/MCP binding",
       "original indexed identities",
@@ -72,5 +72,29 @@
     "numericDifferences": 0,
     "actualNativePostFlipCaptured": false,
     "cleanupConfirmed": true
+  },
+  "cancellation": {
+    "scope": "Original 274154-facet PLY through public MCP; reported stage precedes cancellation but the exact worker instruction at delivery is not independently observed.",
+    "observedStage": "Refreshing vertex normals",
+    "observedProgress": 0.3,
+    "cancelRequested": true,
+    "terminalStatus": "cancelled",
+    "revisionBefore": 0,
+    "revisionAfter": 0,
+    "historyUndoBefore": 1,
+    "historyUndoAfter": 1,
+    "historyRedoBefore": 0,
+    "historyRedoAfter": 0,
+    "allReportedGeometryAndScannerNormalDigestsUnchanged": true,
+    "laterFlipSucceededAndMatchedPriorOutput": true,
+    "directUnitControls": [
+      "Preparing facet normals",
+      "Refreshing vertex normals"
+    ],
+    "directUnitSourceAndWarmCacheUnchanged": true,
+    "browserWarningsOrErrors": 0,
+    "ownedHelperCleanupConfirmed": true,
+    "helperPeakJobBytes": 472588288,
+    "memoryScope": "Owned helper and bridge only; browser memory is not included."
   }
 }
