@@ -3,6 +3,7 @@ import { analyzeMesh } from "../src/mesh-processing";
 import type { MeshProcessingOptions } from "../src/mesh-processing";
 import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
 import { computeAngleWeightedNormals } from "../src/scan-defeature-repatch";
+import { partialTangentRim } from "../src/scan-hole-partial-tangent";
 import fixture from "./fixtures/hole-observed-semi-tangent-curved.json";
 
 function orientedFaces(positions: ArrayLike<number>) {
@@ -301,4 +302,50 @@ it("rejects crossing partial patches within one multi-boundary request atomicall
     }),
   ).toThrow(/intersect|tolerance/i);
   expect(positions).toEqual(before);
+});
+
+it("constructs a partial tangent rim without enumerating all source edges", () => {
+  const topology = analyzeMesh(Float32Array.from(fixture.source), {
+    tolerance: fixture.tolerance,
+  });
+  const loop = topology.boundaryLoops.find(
+    (ids) =>
+      ids.length === 32 &&
+      ids.every(
+        (id) =>
+          Math.abs(topology.vertices[id * 3 + 2] - 0.27000001072883606) <
+          0.00001,
+      ),
+  )!;
+  const edges = new Proxy(topology.edges, {
+    get(target, property) {
+      if (
+        property === Symbol.iterator ||
+        property === "entries" ||
+        property === "forEach"
+      )
+        throw Error("Full edge enumeration is forbidden");
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  const result = partialTangentRim(
+    { ...topology, edges },
+    loop.slice(0, 5),
+    computeAngleWeightedNormals(topology),
+  );
+  expect(result.topology.edges.size).toBeLessThan(topology.edges.size);
+  expect(result.rim.length).toBeGreaterThanOrEqual(5);
+  const key = (a: number, b: number) => (a < b ? `${a}:${b}` : `${b}:${a}`);
+  for (let i = 0; i < 4; i++) {
+    const id = key(loop[i], loop[i + 1]);
+    expect(result.topology.edges.get(id)).toEqual(topology.edges.get(id));
+  }
+  for (let i = 4; i < result.rim.length; i++) {
+    const from = result.rim[i],
+      to = result.rim[(i + 1) % result.rim.length];
+    expect(result.topology.edges.get(key(from, to))).toEqual([
+      { face: -1, from, to },
+    ]);
+  }
 });

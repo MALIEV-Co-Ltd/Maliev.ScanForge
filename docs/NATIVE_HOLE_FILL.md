@@ -36,6 +36,16 @@ job limit. At 0.001 mm tolerance it has one nonmanifold edge, so no partial fill
 was attempted; the opt-in `tests/original-partial-topology.test.ts` retains this
 topology-only control. It does not establish GUI/MCP or native parity.
 
+On the pinned 3,326,910-facet third STL, partial Tangent previously copied
+5,009,433 source edge records to construct a small synthetic rim. The solver
+now retains only the selected arc and chord edges. In a matched worker-level
+probe the owned-job peak fell from 3,660,705,792 to 1,722,908,672 bytes; rim
+construction fell from 5.53 seconds to 9.90 milliseconds. Six complete
+partial attempts on three boundaries were all skipped and left the source
+unchanged both before and after; their job peak fell from 3,817,005,056 to
+1,756,082,176 bytes. These measurements do not establish a successful fill or
+GUI/MCP/native parity on that scan. Exact scope and hashes are in the evidence.
+
 ## Manufactured cup controls, 2026-10-26
 
 Native reference build 8.0.123 imported binary STL cups with radius 2 mm, bottom
