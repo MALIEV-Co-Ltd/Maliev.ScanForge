@@ -142,9 +142,12 @@ as equivalent, and native copy links, other modes and semantic reference point
 or line duplication remain open. Strict saved-file readback confirms the four
 original record spans are unchanged and a fifth plane-type span is appended;
 excluding its name and two changing 16-byte fields leaves one unexplained byte
-difference across 304 compared bytes. Native displayed normal and application
-axis differ by approximately 0.014° ignoring sign, but their sampled populations
-are not known to match. These observations do not establish link or fit parity.
+difference across 304 compared bytes. A byte-verified serializer prefix and
+readback show distinct identities and empty saved common source/dependent sets
+for this case; the type-specific tail remains unparsed. Native displayed normal
+and application axis differ by approximately 0.014° ignoring sign, but their
+sampled populations are not known to match. These observations do not establish
+general link or fit parity.
 
 The [scan-plane sketch guard checkpoint](evidence/m4-scan-plane-sketch-guards-20261027.json)
 extends the original scan, fitted-plane and sketch workflow with GUI draft

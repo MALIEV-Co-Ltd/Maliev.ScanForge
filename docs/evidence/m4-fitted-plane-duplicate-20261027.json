@@ -29,7 +29,8 @@
     },
     "storedReadback": {
       "scope": "Strict, data-only index and bounded field comparison of the two pinned QSF v4 files; no native execution or reference-point/line copy-policy claim.",
-      "observation": "The four original record spans are byte-identical after duplication; a fifth type-0x8 record is appended. The two type-0x8 records contain the observed Plane(1) and Plane(1)(1) strings and each repeats a different 16-byte value in two positions. Excluding those two 16-byte fields and string count/value leaves 304 compared bytes, with one differing byte at normalized offset 4. Its four-byte little-endian values are 4 and 5, matching these records' one-based positions; that field's meaning and source/dependent links are not established.",
+      "observation": "The four original record spans are byte-identical after duplication; a fifth type-0x8 record is appended. The two type-0x8 records contain the observed Plane(1) and Plane(1)(1) strings and each repeats a different 16-byte value in two positions. Excluding those two 16-byte fields and string count/value leaves 304 compared bytes, with one differing byte at normalized offset 4. Its four-byte little-endian values are 4 and 5, matching these records' one-based positions; that field's meaning is not established.",
+      "verifiedPrefix": "A byte-verified 958-byte serializer entry writes the type-0x8 marker, 120-byte header, existing name/common-state helpers and a selected plane prefix. Reading that prefix finds distinct identities, empty saved common source/dependent sets, update level 0 and raw mode 2 in both records. The next vector and scalar fields contain promoted FLT_MAX sentinels and the 12-byte record count is zero in both. Each record retains 144 unparsed type-specific bytes. This one case does not establish behavior after source edits, other plane modes or reference-point/line duplication.",
       "initialOffsetAttempt": "A first exploratory read used the point/line name offset and returned empty strings; that interpretation was rejected and its receipt retained. The corrected bounded read uses the next field and matches the independently observed native names.",
       "sha256": {
         "indexReport": "01315533813099993a0c97bb003c26d1004def4dae0496cf9a704609e89cb4de",
@@ -41,7 +42,12 @@
         "payloadComparison": "aab5e58de06ef6e7ab8aae59c8bd83878b805c94c82543447a4eeeb826a4257c",
         "payloadReceipt": "230bf858e6fa5ff59559fbe346c2c1a9567e542f9f02aa3c8f7a20a168fdcc70",
         "headerFieldReport": "c8bc26d719c443beba3e73e8fae40a0c9c4a81908730d666bf217ab95558a72a",
-        "headerFieldReceipt": "1d928ae9c9179286e56c8d6caccc3aab7c45aa0a602f0a3d5d76fd5beb1f37d2"
+        "headerFieldReceipt": "1d928ae9c9179286e56c8d6caccc3aab7c45aa0a602f0a3d5d76fd5beb1f37d2",
+        "planeSerializerByteVerification": "7f8dc1470516f163268e87f93277a553ed56b56330c3c8ec5e94c01dc6c0f442",
+        "planeSerializerListingReceipt": "a5c21221d3d409408a756d4fcefe2e135f43ec8fac0c9cfb3f70eb9a090b620c",
+        "planeSerializerVerificationReceipt": "493612fa241626e419a2b7eda89cce285dd74568bde54cd4de9092502ff20530",
+        "planePrefixReadback": "3b4b21761868515999059098e12fdec61706b9a4634da91a5c072e7998c00336",
+        "planePrefixReceipt": "153bd6f471384c3272cf6f997d347299107edf201cf12422d41d5cc7edcd1f6a"
       }
     }
   },
