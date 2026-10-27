@@ -154,6 +154,13 @@ source edit, undo/redo and project-worker reopen. This one dropdown-selected nat
 general acquisition or fallback semantics. The native average picker did not
 confirm a source and remains unverified.
 
+Strict saved-record readback of the two native pair projects confirms reciprocal
+source/dependent identities, mode 3, ordered source identities and zero-valued
+pick suffixes before and after the source edit. The tested application midpoint
+fraction route retains nonzero midpoint coordinates for these same sources.
+The matching displayed result does not close this native dropdown acquisition
+and persisted-record parity gap.
+
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's
 15-significant-digit text roundtrip. The shared operation now models this stage
