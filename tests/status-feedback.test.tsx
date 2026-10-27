@@ -39,6 +39,23 @@ it("renders operation progress separately from scrolling text, including complet
     expect(html).toContain("status-operation-track");
   }
 });
+it("offers cancellation for an active operation in the status bar", () => {
+  const html = renderToStaticMarkup(
+    <OperationStatus
+      message="Validating indexed topology · 0%"
+      fraction={0}
+      busy
+      onCancel={() => {}}
+    />,
+  );
+  expect(html).toContain("Validating indexed topology");
+  expect(html).toContain('aria-label="Cancel scan operation"');
+  expect(
+    renderToStaticMarkup(
+      <OperationStatus message="Ready" busy={false} onCancel={() => {}} />,
+    ),
+  ).not.toContain('aria-label="Cancel scan operation"');
+});
 it("expires completed feedback at five seconds and cancels stale operation timers", () => {
   vi.useFakeTimers();
   try {

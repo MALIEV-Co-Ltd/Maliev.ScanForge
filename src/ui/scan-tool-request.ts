@@ -171,10 +171,11 @@ export async function stagedScanToolRequest(
   entities: Entity[],
   selection: Uint8Array | null | undefined,
   check: () => void,
+  progress?: (fraction: number, stage: string) => void,
 ): Promise<ScanToolsRequest> {
   const preparedFlip =
     parameters.kind === "flipNormals"
-      ? { topology: await flipSourceTopology(source, check) }
+      ? { topology: await flipSourceTopology(source, check, progress) }
       : undefined;
   check();
   return scanToolRequest(source, parameters, entities, selection, preparedFlip);

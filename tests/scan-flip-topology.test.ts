@@ -58,6 +58,28 @@ it("lets cancellation interrupt large indexed Flip admission before worker dispa
   }
 });
 
+it("yields to browser tasks across short indexed validation fields", async () => {
+  const vertices = new Float32Array(65535),
+    triangles = new Uint32Array(65535);
+  const source = {
+    positions: new Float32Array(196605),
+    indexedMesh: {
+      vertices,
+      triangles,
+      normals: vertices,
+      geometryNormals: vertices,
+      facetNormals: vertices,
+    },
+  };
+  const timer = vi.spyOn(globalThis, "setTimeout");
+  try {
+    expect(await flipSourceTopology(source as never)).toBeDefined();
+    expect(timer).toHaveBeenCalled();
+  } finally {
+    timer.mockRestore();
+  }
+});
+
 it("preserves the synchronous topology admission contract across invalid and sparse inputs", async () => {
   const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const valid = { vertices: Array.from(positions), triangles: [0, 1, 2] };

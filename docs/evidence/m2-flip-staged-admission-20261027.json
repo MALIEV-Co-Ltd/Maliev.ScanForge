@@ -1,5 +1,5 @@
 {
-  "scope": "Staged indexed Flip admission; small indexed PLY GUI/public MCP parity, not a native comparison or a large-scan cancellation timing proof.",
+  "scope": "Indexed Flip admission and cancellation; small fixture parity plus a large original-scan GUI/public-MCP replay, not an installed-native comparison or cancellation-latency guarantee.",
   "baseCommit": "9bb9d1cfaadd0642a061fdd43682aedd6f05b653",
   "implementation": "GUI and MCP validate indexed topology in bounded chunks, checking cancellation and workspace state between tasks. Worker still validates the transferred topology. Later transport and publication checks can remain synchronous.",
   "tests": {
@@ -39,9 +39,9 @@
     "screenshotRetained": false
   },
   "remaining": [
-    "Public MCP cancellation delivery during large staged admission has not been directly observed in a real browser.",
-    "Full-operation responsiveness, later synchronous buffer copies and publication, and concurrent React update behavior are not established by admission-only timings.",
-    "Installed-native original-scan post-Flip comparison and other M2 acceptance remain open."
+    "Installed-native original-scan post-Flip comparison and other M2 acceptance remain open.",
+    "Large appended-overlay reversal/serialization cost and full-operation responsiveness are not established by this admission check.",
+    "Cancellation delivery is scheduling-dependent and is not guaranteed to occur before worker dispatch."
   ],
   "originalScanBrowserMcp": {
     "candidateCommit": "d2c5c5ee6195e69990c8caaaf28cbcd58cce3244",
@@ -58,5 +58,48 @@
     "browserConsole": "Two errors from password-manager extension autofill overlay; no application errors observed.",
     "screenshot": "Viewed; not retained.",
     "nativeComparison": "No native post-Flip result captured."
+  },
+  "largeIndexedAdmission": {
+    "sourceFileSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "facets": 2697877,
+    "indexedVertices": 1375494,
+    "build": "scanforge-f00172bd8f19929e",
+    "publicMcp": {
+      "observedStage": "Validating indexed topology",
+      "terminal": "cancelled",
+      "flipWorkerDispatched": false,
+      "sourceBufferDigestsAndHistoryUnchanged": true
+    },
+    "gui": {
+      "validationStageVisible": true,
+      "statusCancelVisible": true,
+      "sourceBufferDigestsAndHistoryUnchanged": true,
+      "workerFailureInjected": true,
+      "failureMessageVisible": true
+    },
+    "subsequentMcpRetry": "succeeded; Undo restored every source buffer digest and history cursor",
+    "pageErrors": [],
+    "ownedJobPeakBytes": 2015948800,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "driver": "tests/flip-admission-browser.mjs",
+    "scope": "Isolated rendered browser and public MCP; injected worker failure is a controlled test. This is not a native comparison or a bound on cancellation latency.",
+    "finalValidation": {
+      "typecheckBatchesPassed": 13,
+      "fullSuitePassed": 50072,
+      "fullSuiteSkipped": 69,
+      "fullSuitePeakJobBytes": 1331228672,
+      "cleanupConfirmed": true
+    }
+  },
+  "failedAdmissionAttempts": [
+    "Two initial public MCP attempts observed validation and ended cancelled with unchanged geometry/history, but cancellation arrived after Flip worker dispatch; both cleaned up.",
+    "An initial GUI attempt looked for a nonexistent tool panel; the immediate command exposed no visible status or cancel control. The status bar was corrected and the retained run passed."
+  ],
+  "fairnessBenchmark": {
+    "facets": 3000000,
+    "elapsedMs": 219.595,
+    "frameTicks": 7,
+    "scope": "Single isolated synthetic headless Chrome observation; frame gaps and timings are not responsiveness guarantees."
   }
 }

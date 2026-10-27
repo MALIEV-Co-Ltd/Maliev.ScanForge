@@ -24,10 +24,18 @@
 }
 .status-operation-feedback {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   column-gap: 6px;
   width: 100%;
+}
+.status-operation-cancel {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  line-height: 1;
+  font-size: 15px;
 }
 .status-operation-track {
   grid-column: 1 / -1;

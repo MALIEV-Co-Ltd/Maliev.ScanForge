@@ -56,8 +56,11 @@ hydrated the flipped cache under the 4 GiB limit. A rendered native-fixture
 GUI/public-MCP replay still matches, including history and project reopening.
 The [resource record](evidence/m2-flip-cache-memory-20261027.json) distinguishes
 these tests and the earlier test-assertion allocation artifact from full browser
-large-scan or native behavior. Native original-scan Flip and large-input MCP
-cancellation remain open.
+large-scan or native behavior. A separate 2,697,877-facet PLY replay observed indexed validation and
+cancelled through both GUI and public MCP with source buffers and history
+unchanged; the public-MCP cancel arrived before worker dispatch. A subsequent
+Flip and Undo passed. Cancellation delivery remains scheduling-dependent.
+Native original-scan Flip remains open.
 
 ## Boundary smoothing minimum-strength control (2026-10-27)
 
@@ -100,7 +103,7 @@ The retained oblique-cylinder native export now also has a current exact-CAD GUI
 
 Indexed Flip Normals now retains vertex identities and reverses indexed triangles while refreshing computed normal state. Its output vertex-normal bits match 41 retained native facet-plus-vertex kernel captures when their triangle winding is reversed before Flip. On both a small indexed PLY and the 274,154-facet original PLY, GUI and public MCP agree on all reported output geometry buffers; Undo restores the original scanner-normal and geometry digests. The small PLY control also passes Redo; separate indexed unit controls pass binary reopening. On the original PLY, public MCP cancelled after the vertex-normal refresh stage was reported, preserving all reported geometry and scanner-normal digests, revision and history; a subsequent Flip matched the prior successful result. The exact worker instruction at cancellation was not observed. A retained pre-Flip native snapshot matches the original input buffers: the output facet bits match sign inversion, and vertex normals match numerically with six zero-sign differences. This is an inference from pre-Flip data, not a captured native post-Flip output. Native original-scan post-Flip comparison and very-large-input admission responsiveness remain open. [Evidence](evidence/m2-flip-indexed-20261027.json).
 
-Indexed Flip admission now yields between bounded checks for both GUI and MCP. A small indexed PLY passes GUI/public-MCP geometry equality, Undo and Redo; 50,054 tests pass with 64 skipped. The prior three-million-facet synchronous admission took 129–140 ms in an isolated Chrome control; the staged run allowed observed frames, though frame gaps include other rendering activity and do not establish a maximum task duration. Large-input public-MCP cancellation delivery, subsequent synchronous copies and publication, and native original-scan post-Flip behavior remain open. [Evidence](evidence/m2-flip-staged-admission-20261027.json).
+Indexed Flip admission now yields between bounded checks for both GUI and MCP. A small indexed PLY passes GUI/public-MCP geometry equality, Undo and Redo; 50,054 tests pass with 64 skipped. The prior three-million-facet synchronous admission took 129–140 ms in an isolated Chrome control; the staged run allowed observed frames, though frame gaps include other rendering activity and do not establish a maximum task duration. The later large-input GUI/public-MCP cancellation replay is described above; subsequent synchronous copies and publication, and native original-scan post-Flip behavior remain open. [Evidence](evidence/m2-flip-staged-admission-20261027.json).
 
 On the original 274,154-facet PLY, the staged candidate also produces matching GUI/public-MCP output buffer digests and Undo restores all input digests, including scanner normals. An immediately cancelled public MCP job reported progress zero and left input digests unchanged; its actual admission stage was not observed. A subsequent MCP Flip succeeded and matched the GUI. This is application parity, not a native post-Flip capture. [Evidence](evidence/m2-flip-staged-admission-20261027.json).
 

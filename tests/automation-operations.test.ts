@@ -399,7 +399,12 @@ it("cancels GUI and MCP Flip admission without starting the worker or changing t
   expect(vi.mocked(processMesh).mock.calls.length).toBe(priorCalls);
   expect(h.host.commit).not.toHaveBeenCalled();
   expect(h.state.entities[0]).toBe(source);
+  expect(h.context.progress).toHaveBeenCalledWith(
+    0,
+    "Validating indexed topology",
+  );
 
+  const guiProgress = vi.fn();
   const guiController = new AbortController();
   const guiTimer = setTimeout(() => guiController.abort(), 0);
   try {
@@ -410,11 +415,13 @@ it("cancels GUI and MCP Flip admission without starting the worker or changing t
         [source],
         undefined,
         () => guiController.signal.throwIfAborted(),
+        guiProgress,
       ),
     ).rejects.toThrow();
   } finally {
     clearTimeout(guiTimer);
   }
+  expect(guiProgress).toHaveBeenCalledWith(0, "Validating indexed topology");
   expect(source.positions).toBe(positions);
   expect(source.indexedMesh?.triangles).toBe(triangles);
 });

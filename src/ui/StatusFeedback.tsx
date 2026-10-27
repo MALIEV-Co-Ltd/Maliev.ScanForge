@@ -30,10 +30,12 @@ export function OperationStatus({
   message,
   fraction,
   busy,
+  onCancel,
 }: {
   message: string;
   fraction?: number;
   busy: boolean;
+  onCancel?: () => void;
 }) {
   const [expired, setExpired] = useState<string>();
   const completed =
@@ -55,19 +57,29 @@ export function OperationStatus({
           text={ready ? "Ready" : message.replace(/ · \d+%$/, "")}
         />
         {percent !== undefined && (
-          <>
-            <span className="status-operation-percent">{percent}%</span>
-            <div
-              className="status-operation-track"
-              role="progressbar"
-              aria-label="Operation progress"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={percent}
-            >
-              <span style={{ width: `${percent}%` }} />
-            </div>
-          </>
+          <span className="status-operation-percent">{percent}%</span>
+        )}
+        {busy && onCancel && (
+          <button
+            className="status-operation-cancel"
+            aria-label="Cancel scan operation"
+            title="Cancel scan operation"
+            onClick={onCancel}
+          >
+            ×
+          </button>
+        )}
+        {percent !== undefined && (
+          <div
+            className="status-operation-track"
+            role="progressbar"
+            aria-label="Operation progress"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percent}
+          >
+            <span style={{ width: `${percent}%` }} />
+          </div>
         )}
       </div>
     </StatusMessage>
