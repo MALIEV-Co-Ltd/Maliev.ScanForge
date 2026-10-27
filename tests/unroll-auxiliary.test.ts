@@ -1,3 +1,4 @@
+import nativeRollFrame from "./fixtures/unroll-native-roll-frame.json";
 import { expect, it } from "vitest";
 import fixture from "./fixtures/unroll-observed-cylinder.json";
 import tilted from "./fixtures/unroll-observed-tilted-cylinder.json";
@@ -36,6 +37,35 @@ function auxiliary(offsetDegrees = 0, instances = 1) {
     },
   );
 }
+
+it("matches the retained native Roll frame matrix on the original cylinder control", async () => {
+  const bytes = Uint8Array.from(
+    nativeRollFrame.matrixBytesHex.match(/../g) ?? [],
+    (pair) => Number.parseInt(pair, 16),
+  );
+  expect(bytes).toHaveLength(96);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  expect(
+    Array.from(new Uint8Array(digest), (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join(""),
+  ).toBe(nativeRollFrame.matrixBytesSha256);
+  const view = new DataView(bytes.buffer);
+  const frame = auxiliary().frame.coordinateFrame!.frame;
+  const actual = [frame.u, frame.v, frame.normal, frame.origin];
+  let maximumDifference = 0;
+  for (let row = 0; row < 3; row++) {
+    for (let column = 0; column < 4; column++) {
+      const native = view.getFloat64((row * 4 + column) * 8, true);
+      maximumDifference = Math.max(
+        maximumDifference,
+        Math.abs(native - actual[column][row]),
+      );
+    }
+  }
+  // QSF matrix interpretation is inferred for this pinned native project.
+  expect(maximumDifference).toBeLessThanOrEqual(1e-15);
+});
 
 it.each([
   [0, 1],

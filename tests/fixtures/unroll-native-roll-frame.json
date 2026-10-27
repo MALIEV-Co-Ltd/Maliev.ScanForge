@@ -1,0 +1,18 @@
+{
+  "source": "native-frame90-unroll0.qsf",
+  "sourceSha256": "557494b57c4e006aa5a4d079ffce2bd87ba036de7918d6032664f033a50f8e47",
+  "sourceBytes": 5601,
+  "recordName": "Roll frame(1)",
+  "nameOffset": 3540,
+  "matrixOffset": 3602,
+  "matrixBytesHex": "075c143326a6913c0000000000000000000000000000f03f0000000000000040000000000000f03f0000000000000000075c143326a691bc00000000000000000000000000000000000000000000f03f00000000000000000000000000000000",
+  "matrixBytesSha256": "269c3668c922ecf0638e009ad17deec8b5e865f7dc1eb6bd18196e7e91e44e19",
+  "interpretation": "Inferred 3x4 row-major affine matrix from the retained native file, nearby named frame and prior static frame constructor; not an independently decoded general QSF format.",
+  "settings": {
+    "center": [0, 0, 0],
+    "axis": [0, 0, 1],
+    "radius": 2,
+    "offsetDegrees": 0,
+    "instances": 1
+  }
+}
