@@ -441,7 +441,7 @@ it("creates a sketch from the numeric plane through the existing shared placemen
     }),
   );
   expect(result.frame).toEqual({ ...plane.frame, origin: [2, 3, 2] });
-  expect(h.state.authoring.sketches![0].sketch.frame).toEqual(result.frame);
+  expect(h.state.authoring.sketches![0].sketch?.frame).toEqual(result.frame);
   expect(h.commit).toHaveBeenCalledOnce();
 });
 it("creates and inspects a real named coordinate frame without triangle geometry or aliased responses", async () => {
@@ -863,6 +863,6 @@ it.each([
         origin: [100, 100, 100],
       }),
     );
-    expect(h.state.authoring.sketches![0].sketch.frame).toEqual(expected);
+    expect(h.state.authoring.sketches![0].sketch?.frame).toEqual(expected);
   },
 );
