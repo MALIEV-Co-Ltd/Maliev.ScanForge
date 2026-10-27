@@ -28,8 +28,8 @@
     "cleanup": "Owned public-MCP runner and child jobs closed with zero active children and no cleanup errors; port 5199 released."
   },
   "limitations": [
-    "One anchor per boundary supported; multiple anchors on the same boundary are rejected.",
-    "Native multiple-anchor, open, folded and other meshes remain unverified.",
+    "One anchor total is supported; multiple anchors are rejected.",
+    "Native multiple-anchor, walk-head anchor, open, folded and other meshes remain unverified.",
     "GUI uses a point index, not native viewport click placement.",
     "Binary reopen and active nested-CAD cancellation are not revalidated by this anchored case.",
     "M2 and exact final-head CI remain open."

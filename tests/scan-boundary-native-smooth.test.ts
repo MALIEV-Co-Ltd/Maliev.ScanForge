@@ -155,6 +155,10 @@ it("rejects invalid and multiple anchors before publishing geometry", async () =
       { boundary: 0, point: 0 },
       { boundary: 0, point: 1 },
     ],
+    [
+      { boundary: 0, point: 0 },
+      { boundary: 1, point: 0 },
+    ],
   ]) {
     await expect(
       runScanEditAsync(
