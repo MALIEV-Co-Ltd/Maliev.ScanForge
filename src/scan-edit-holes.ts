@@ -11,6 +11,10 @@ import { flatHoleTriangles } from "./scan-hole-flat";
 import { nativeHoleBoundaryWalks } from "./scan-hole-boundary-order";
 import { holeBoundaryDiameters } from "./scan-hole-diameter";
 import {
+  partialTangentRim,
+  partialVerticesNearExisting,
+} from "./scan-hole-partial-tangent";
+import {
   bridgeAttachmentNormals,
   bridgeInsideBoundary,
   bridgeIntersectsMesh,
@@ -248,7 +252,15 @@ function* holeFillSteps(
     }
     const first = t.edges.get(edgeId(loop[0], loop[1]))?.[0];
     if (first?.from === loop[0]) loop.reverse();
-    const points = loop.map((id) => pointAt(t.vertices, id));
+    const partialTangent =
+      r.mode === "partial" && requestedAlgorithm === "tangent";
+    const partial = partialTangent
+      ? partialTangentRim(t, [...loop].reverse(), vertexNormals)
+      : undefined;
+    if (partial) loop = [...partial.rim].reverse();
+    const points = loop.map((id) =>
+      pointAt(partial?.topology.vertices ?? t.vertices, id),
+    );
     const n: Vec3 = [0, 0, 0];
     points.forEach((p, i) => {
       const q = points[(i + 1) % points.length];
@@ -346,7 +358,7 @@ function* holeFillSteps(
     const boundaryNormals =
       r.mode === "bridge"
         ? bridgeAttachmentNormals(t, loop)
-        : loop.map((id) => pointAt(vertexNormals, id));
+        : loop.map((id) => pointAt(partial?.normals ?? vertexNormals, id));
     const curvedTangents = boundaryNormals.some((normal) => {
       const alignment = dotProduct(normal, unit);
       return alignment > 0.2 && alignment < Math.cos((5 * Math.PI) / 180);
@@ -519,17 +531,24 @@ function* holeFillSteps(
     if (
       method !== "flat" &&
       !fallbackReason &&
-      (r.mode ?? "entire") === "entire"
+      ((r.mode ?? "entire") === "entire" || partialTangent)
     ) {
-      const patch = repatchSpatialBoundary(t, original, {
-        vertexNormals,
-        maxIterations: nativeTangent
-          ? 10000
-          : Math.min(10000, Math.max(64, original.length * 8)),
-        signal: o.signal,
-        onProgress: () => checkProgress(o, 0.25, "Interpolating hole surface"),
-      });
-      if (nativeTangent && !patch.completed) {
+      const patchTopology = partial?.topology ?? t;
+      const patch = repatchSpatialBoundary(
+        patchTopology,
+        partial?.rim ?? original,
+        {
+          vertexNormals: partial?.normals ?? vertexNormals,
+          maxIterations:
+            nativeTangent || partialTangent
+              ? 10000
+              : Math.min(10000, Math.max(64, original.length * 8)),
+          signal: o.signal,
+          onProgress: () =>
+            checkProgress(o, 0.25, "Interpolating hole surface"),
+        },
+      );
+      if ((nativeTangent || partialTangent) && !patch.completed) {
         if (selected.length <= 1)
           throw new HoleRefinementError(
             `Tangent filling could not close the boundary (${patch.reason}); the hole was left unchanged.`,
@@ -545,8 +564,13 @@ function* holeFillSteps(
           const p = pointAt(patch.insertedVertices, i),
             delta = subtract(p, points[0]);
           const xy = new Vector2(dotProduct(delta, u), dotProduct(delta, v));
-          mapping.set(t.vertices.length / 3 + i, candidatePoints.length);
-          candidatePoints.push(nativeTangent ? p : surface(xy));
+          mapping.set(
+            patchTopology.vertices.length / 3 + i,
+            candidatePoints.length,
+          );
+          candidatePoints.push(
+            nativeTangent || partialTangent ? p : surface(xy),
+          );
           candidateProjection.push(xy);
         }
         const candidate: number[][] = [];
@@ -558,7 +582,7 @@ function* holeFillSteps(
           points.push(...candidatePoints.slice(rimCount));
           projected.push(...candidateProjection.slice(rimCount));
           triangles = candidate;
-        } else if (nativeTangent) {
+        } else if (nativeTangent || partialTangent) {
           if (selected.length <= 1)
             throw new HoleRefinementError(
               "Tangent filling produced an invalid cap; the hole was left unchanged.",
@@ -702,18 +726,61 @@ function* holeFillSteps(
       skipHole();
       continue;
     }
-    if (bridging && bridgeIntersectsMesh(t, points, triangles, loop, o))
-      throw new Error("Bridge intersects the retained scan surface.");
+    const validationTopology =
+      partialTangent && cachedVertices && cachedTriangles && filledHoles
+        ? analyzeIndexedMesh(
+            Float64Array.from(cachedVertices, Math.fround),
+            Uint32Array.from(cachedTriangles),
+            { ...o, onProgress: undefined },
+          )
+        : t;
+    if (
+      partialTangent &&
+      partialVerticesNearExisting(
+        validationTopology,
+        points,
+        loop,
+        o.tolerance ?? 1e-6,
+        o.signal,
+        t.vertices.length / 3,
+      )
+    )
+      throw new Error(
+        "Partial hole patch vertices overlap within weld tolerance.",
+      );
+    if (
+      (bridging || partialTangent) &&
+      bridgeIntersectsMesh(
+        validationTopology,
+        points,
+        triangles,
+        partialTangent
+          ? loop.map((id) => (id < t.vertices.length / 3 ? id : -1))
+          : loop,
+        o,
+      )
+    )
+      throw new Error(
+        `${bridging ? "Bridge" : "Partial hole patch"} intersects the retained scan surface.`,
+      );
     for (let tri of triangles) {
       if (orient(projected[tri[0]], projected[tri[1]], projected[tri[2]]) < 0)
         tri = [tri[0], tri[2], tri[1]];
       const [a, b, c] = tri.map((i) => points[i]);
       output.push(...a, ...b, ...c);
     }
-    if (o.topologyCache || nativeWhole) {
+    if (o.topologyCache || nativeWhole || partialTangent) {
       cachedVertices ??= Array.from(t.vertices);
       cachedTriangles ??= Array.from(t.triangles);
       const mapping = new Map(loop.map((id, i) => [i, id]));
+      if (partial) {
+        for (let i = 0; i < loop.length; i++) {
+          if (loop[i] >= t.vertices.length / 3) {
+            mapping.set(i, cachedVertices.length / 3);
+            cachedVertices.push(...points[i]);
+          }
+        }
+      }
       for (const tri of triangles)
         for (const id of tri) {
           if (!mapping.has(id)) {

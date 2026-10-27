@@ -32,7 +32,8 @@ import { ScanPreviewSession } from "../src/scan-preview";
 import boundaryNative from "./fixtures/boundary-smooth-observed-annulus.json";
 import anchorNative from "./fixtures/boundary-smooth-anchor-inner-native.json";
 import twoAnchorNative from "./fixtures/boundary-smooth-two-anchors-native.json";
-import { analyzeIndexedMesh } from "../src/mesh-processing";
+import { analyzeIndexedMesh, analyzeMesh } from "../src/mesh-processing";
+import partialTangentNative from "./fixtures/hole-observed-semi-tangent-curved.json";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { indexedMeshMatches } from "../src/indexed-mesh";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
@@ -560,6 +561,42 @@ it("retains segmentation classification fits in agent-created regions", async ()
 });
 
 describe("shared workspace operation contracts", () => {
+  it("routes partial Tangent through MCP to the shared native-matching result", async () => {
+    const positions = Float32Array.from(partialTangentNative.source);
+    const topology = analyzeMesh(positions, { tolerance: 0.001 });
+    const target = (id: number, sign: number) =>
+      Math.abs(topology.vertices[id * 3] - sign * 2.12132025) < 0.00001 &&
+      Math.abs(topology.vertices[id * 3 + 1] - sign * 2.12132025) < 0.00001;
+    const boundary = topology.boundaryLoops.findIndex(
+      (loop) =>
+        loop.some((id) => target(id, -1)) && loop.some((id) => target(id, 1)),
+    );
+    const loop = topology.boundaryLoops[boundary];
+    const start = loop.findIndex((id) => target(id, 1));
+    const end = loop.findIndex((id) => target(id, -1));
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: "tangent",
+      indices: [boundary],
+      start,
+      end,
+      tolerance: 0.001,
+    } satisfies Omit<ScanEditRequest, "positions">;
+    const h = harness([entity({ positions })]);
+    vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+      const scanEdit = await runScanEditAsync(request as ScanEditRequest);
+      return { kind: "scanEdit", scanEdit, diagnostics: scanEdit.diagnostics };
+    });
+    await h.ops.mesh_process({ entityId: "mesh", operation }, h.context);
+    expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject(operation);
+    expect(h.host.commit).toHaveBeenCalledOnce();
+    expect(h.state.history).toHaveLength(1);
+    const result = h.state.entities[0].positions;
+    expect(result).toEqual(runScanEdit({ ...operation, positions }).positions);
+    expect(result.length / 9).toBe(partialTangentNative.nativeTriangles);
+  });
   it.each([undefined, 1])(
     "reports preview sampling consistently for accepted count %s",
     async (acceptedTriangles) => {

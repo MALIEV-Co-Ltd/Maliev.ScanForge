@@ -1622,6 +1622,15 @@ second surface projection or density refinement. Exact native comparisons
 require retaining the imported indexed topology; another weld order can change
 strict corner ties. See [native controls and remaining bounds](NATIVE_HOLE_FILL.md).
 
+Explicit partial Tangent uses the selected directed boundary arc, a sampled
+tangent chord and the shared spatial fill. Synthetic chord vertices start with
+zero normals; the operation rejects chords requiring more than 10,000 segments
+or overlapping an existing mesh edge. It also rejects patch intersections and
+new vertices within weld tolerance of retained geometry, including patches
+already produced in the same request. This behavior is exposed through the
+existing `mesh_process` scan-edit parameters and is shared with the GUI. The
+native comparison currently covers one manufactured curved-annulus selection.
+
 The observed native Automatic can extrapolate below a steep rim. Use explicit
 `algorithm: "surfaceRecovery"`, `mode: "entire"` (GUI **Recover surface**) for
 the former automatic collar-fitting behavior. This option
