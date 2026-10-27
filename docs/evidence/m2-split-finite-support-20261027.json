@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-27",
+  "scope": "Static candidate and manufactured finite-cutter failure. Neither is native runtime parity.",
+  "parentCommit": "cc578a04f5ff645935eb1786a46a3e0bdd051e9e",
+  "sourceSha256": "357933be47296221df75bbaf0214d216055831158a81207d3a066251a7c72485",
+  "testSha256": "ea546fc98c482cf97bbc2e86aad50c60100f4528bd8408fac474c2a8e175d4bb",
+  "finiteControl": {
+    "source": [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    "cutter": [0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1],
+    "sourceFloat32Sha256": "d8b87038ed2ace74ed183166f6b0a541eab77f7184d50e65edc4bca5ccb5445a",
+    "cutterFloat32Sha256": "51f95533d634aaa961c66fe7e98ca315887bba527a3a21ecf3d909783e8e685a",
+    "tolerance": 0.001,
+    "expectedIntersection": "x=0.5, y=0.1..0.2",
+    "observed": "Shared operation creates x=0.5 vertices at y=0 and y=0.5 outside the finite intersection.",
+    "rawTest": "failed on containment assertion; source preserved; GUI and public MCP replay not performed",
+    "status": "M2 blocker; tracked by one expected-failure regression",
+    "focusedValidation": {
+      "passed": 53,
+      "expectedFailures": 1,
+      "guardSha256": "a00b66c152b3c7d8411b847bf70c0a5d38b34f9e18633e91dc87cde86ed620c3",
+      "cleanupConfirmed": true
+    }
+  },
+  "staticCandidate": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "scope": "Read-only imported retained image, no execution or runtime reachability claim.",
+    "observations": [
+      "Candidate referencing the split status string calls a constructor and candidate 0x14032a500 with double registers loaded from image-backed 1e-5 and 0.001 constants.",
+      "At candidate 0x14032a500 the values are stored at object offsets 0x10 and 0x18. The first is converted to Float32 and multiplied by the image-backed Float32 value 10 before being passed by pointer to 0x1403342c0.",
+      "Ghidra decompilation of candidate 0x1403342c0 is consistent with a three-coordinate, squared-distance bounded nearest-point search; its instruction starts independently decode with Capstone.",
+      "A candidate 0x1403339b0 is consistent with insertion in a coordinate-ordered tree."
+    ],
+    "limits": [
+      "No input unit, precise semantic name, dynamic reachability, or behavioral equivalence established.",
+      "The decompiler types and object ownership are inferred; static instruction-start agreement does not establish full semantics.",
+      "These values do not establish the correct application tolerance or the missing finite-segment triangulation."
+    ]
+  },
+  "privateArtifactSha256": {
+    "m2-split-native-candidate-static-20261027-r1/evidence.json": "78d870b17a81e146dd48e93bc64d386903c7da670c6c0cd618d1d38f6dcba4da",
+    "m2-split-native-kernel-static-20261027-r1/evidence.json": "9b0ac4bfb8bf61b888573c043210847edd798639afe2a54c9ce28560201f4ff1",
+    "m2-split-native-point-search-static-20261027-r1/evidence.json": "3205c50f9d822b3bd8af4a4d8773927614653f34f043ba13d73c905811040f32",
+    "m2-split-native-point-provenance-20261027-r1.json": "cb4b894843a592084730df91a626192f078aaddecaa0c4e61b710bf35ea24e24",
+    "m2-split-finite-support-raw-red-20261027-r2-guard.json": "da06604ab5ad48875adc25e72acc8799bd266035e1081b7a550c38b140c0eaaa",
+    "m2-split-native-point-search-static-20261027-r1-guard.json": "1c931863b20fced9a88840db48e28e9eafcee7305a5b351874fc6f206ff01b1b"
+  }
+}
