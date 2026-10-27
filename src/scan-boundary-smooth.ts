@@ -74,6 +74,11 @@ function* boundarySteps(
       );
     anchors.add(inventory[anchor.boundary][anchor.point]);
   }
+  if (
+    r.anchors?.length === 2 &&
+    r.anchors[0].boundary >= t.boundaryLoops.length
+  )
+    throw new Error("Two anchors require a closed boundary.");
   const steps = 10 + Math.round(strength * 10);
   let vertices = Float64Array.from(t.vertices, Math.fround),
     fitted = 0,
@@ -93,123 +98,185 @@ function* boundarySteps(
       }));
     boundaries = Math.max(boundaries, walks.length);
     for (let index = 0; index < walks.length; index++) {
-      const walk = walks[index],
-        movable = Uint32Array.from(
-          walk.vertices.filter((id) => !anchors.has(id)),
-        );
-      const rings = smoothingRings(current);
-      for (let step = 0; step < steps; step++) {
-        checkProgress(
-          o,
-          (repetition + (index + step / steps) / Math.max(1, walks.length)) /
-            repetitions,
-          "Smoothing boundary vertices",
-        );
-        vertices = publishSmoothingTargets(
-          vertices,
-          movable,
-          smoothingTargets(
-            vertices,
-            current.triangles,
-            rings,
-            movable,
-            0.5,
-            o.signal,
-          ),
-        );
-      }
-      const points = new Float64Array((walk.vertices.length + 1) * 3);
-      walk.vertices.forEach((id, i) =>
-        points.set(vertices.subarray(id * 3, id * 3 + 3), i * 3),
+      const walk = walks[index];
+      const offsets = walk.vertices.flatMap((id, i) =>
+        anchors.has(id) ? [i] : [],
       );
-      points.set(points.subarray(0, 3), walk.vertices.length * 3);
-      let curve: BoundaryCurveFit;
-      try {
-        curve = fitBoundaryCurve(
-          points,
-          true,
-          0.05 + Math.fround(Math.round(strength * 10) / 10) * 0.05,
+      if (offsets.length === 2) {
+        const distance = offsets[1] - offsets[0];
+        if (Math.min(distance, walk.vertices.length - distance) < 3)
+          throw new Error(
+            "Two boundary anchors must leave at least two points between them on each side.",
+          );
+      }
+      const segments =
+        offsets.length > 1
+          ? offsets.map((start, i) => {
+              const end = offsets[(i + 1) % offsets.length];
+              const ids: number[] = [],
+                faces: number[] = [];
+              for (let at = start; ; at = (at + 1) % walk.vertices.length) {
+                ids.push(walk.vertices[at]);
+                if (at === end) break;
+                faces.push(walk.faces[at]);
+              }
+              return { ids, faces, open: true };
+            })
+          : [{ ids: walk.vertices, faces: walk.faces, open: false }];
+      let walkFitted = false,
+        walkUnfitted = false,
+        walkOutOfTolerance = false;
+      for (const [segmentIndex, segment] of segments.entries()) {
+        const movable = Uint32Array.from(
+          segment.ids.filter((id) => !anchors.has(id)),
+        );
+        const rings = smoothingRings(current);
+        for (let step = 0; step < steps; step++) {
+          checkProgress(
+            o,
+            (repetition +
+              (index +
+                (segmentIndex + (0.8 * step) / steps) / segments.length) /
+                Math.max(1, walks.length)) /
+              repetitions,
+            "Smoothing boundary vertices",
+          );
+          vertices = publishSmoothingTargets(
+            vertices,
+            movable,
+            smoothingTargets(
+              vertices,
+              current.triangles,
+              rings,
+              movable,
+              0.5,
+              o.signal,
+            ),
+          );
+        }
+        const points = new Float64Array(
+          (segment.ids.length + (segment.open ? 0 : 1)) * 3,
+        );
+        segment.ids.forEach((id, i) =>
+          points.set(vertices.subarray(id * 3, id * 3 + 3), i * 3),
+        );
+        if (!segment.open)
+          points.set(points.subarray(0, 3), segment.ids.length * 3);
+        let curve: BoundaryCurveFit;
+        try {
+          curve = fitBoundaryCurve(
+            points,
+            !segment.open,
+            0.05 + Math.fround(Math.round(strength * 10) / 10) * 0.05,
+            { ...o, onProgress: undefined },
+          );
+        } catch (error) {
+          if (
+            !(error instanceof Error) ||
+            !/singular or insufficient|coincident or degenerate/.test(
+              error.message,
+            )
+          )
+            throw error;
+          walkUnfitted = true;
+          continue;
+        }
+        const projectionIds = segment.open
+          ? segment.ids.slice(1, -1)
+          : [walk.vertices[0]];
+        for (
+          let projectionIndex = 0;
+          projectionIndex < projectionIds.length;
+          projectionIndex += 128
+        ) {
+          const chunk = projectionIds.slice(
+            projectionIndex,
+            projectionIndex + 128,
+          );
+          const point = new Float32Array(chunk.length * 3);
+          chunk.forEach((id, i) =>
+            point.set(vertices.subarray(id * 3, id * 3 + 3), i * 3),
+          );
+          const projected = yield {
+            curve,
+            point,
+          };
+          checkProgress(
+            o,
+            (repetition +
+              (index +
+                (segmentIndex +
+                  0.8 +
+                  (0.2 * (projectionIndex + chunk.length)) /
+                    projectionIds.length) /
+                  segments.length) /
+                Math.max(1, walks.length)) /
+              repetitions,
+            "Projecting fitted boundary",
+          );
+          if (
+            !(projected instanceof Float32Array) ||
+            projected.length !== point.length ||
+            projected.some((value) => !Number.isFinite(value))
+          )
+            throw new Error(
+              "Boundary curve returned invalid projected coordinates.",
+            );
+          chunk.forEach((id, i) =>
+            vertices.set(projected.subarray(i * 3, i * 3 + 3), id * 3),
+          );
+        }
+        const recordFaces = segment.faces.map((face) =>
+          faceSlots ? faceSlots[face] : face,
+        );
+        if (recordFaces.some((face) => face < 0))
+          throw new Error(
+            "Boundary smoothing invalidated a retained face; original geometry retained.",
+          );
+        const faces = new Uint8Array(current.triangles.length / 3);
+        if (recordFaces.length) faces[recordFaces[0]] = 1;
+        for (let ring = 0; ring < 2; ring++) {
+          const previous = faces.slice();
+          for (let f = 0; f < faces.length; f++) {
+            if (f % 4096 === 0 && o.signal?.aborted)
+              throw new DOMException("Mesh operation cancelled.", "AbortError");
+            if (previous[f])
+              for (const neighbor of current.neighbors[f]) faces[neighbor] = 1;
+          }
+        }
+        vertices = nativeNoiseVertices(
+          { ...current, vertices },
+          2,
+          faces,
+          false,
           { ...o, onProgress: undefined },
         );
-      } catch (error) {
-        if (
-          !(error instanceof Error) ||
-          !/singular or insufficient|coincident or degenerate/.test(
-            error.message,
-          )
-        )
-          throw error;
-        unfitted++;
-        continue;
+        const cleanup = cleanupBoundaryFacets(
+          { ...current, vertices },
+          recordFaces,
+          o.signal,
+        );
+        if (cleanup.retainedFaces) {
+          const previousOrder = faceOrder;
+          faceOrder = Uint32Array.from(cleanup.retainedFaces, (face) =>
+            previousOrder ? previousOrder[face] : face,
+          );
+          faceSlots = new Int32Array(t.triangles.length / 3).fill(-1);
+          for (let slot = 0; slot < faceOrder.length; slot++)
+            faceSlots[faceOrder[slot]] = slot;
+          current = analyzeIndexedMesh(vertices, cleanup.triangles, {
+            ...o,
+            onProgress: undefined,
+          });
+          removedFacets += cleanup.removed;
+        } else current = { ...current, vertices };
+        maxFitError = Math.max(maxFitError, curve.maxError);
+        if (!curve.toleranceMet) walkOutOfTolerance = true;
+        walkFitted = true;
       }
-      const projected = yield {
-        curve,
-        point: Float32Array.from(
-          vertices.subarray(walk.vertices[0] * 3, walk.vertices[0] * 3 + 3),
-        ),
-      };
-      checkProgress(
-        o,
-        (repetition + (index + 1) / Math.max(1, walks.length)) / repetitions,
-        "Projecting fitted boundary",
-      );
-      if (
-        !(projected instanceof Float32Array) ||
-        projected.length !== 3 ||
-        projected.some((value) => !Number.isFinite(value))
-      )
-        throw new Error(
-          "Boundary curve returned invalid projected coordinates.",
-        );
-      // Native whole-loop records keep local index zero and an unchanged point snapshot.
-      vertices.set(projected, walk.vertices[0] * 3);
-      const recordFaces = walk.faces.map((face) =>
-        faceSlots ? faceSlots[face] : face,
-      );
-      if (recordFaces.some((face) => face < 0))
-        throw new Error(
-          "Boundary smoothing invalidated a retained face; original geometry retained.",
-        );
-      const faces = new Uint8Array(current.triangles.length / 3);
-      if (recordFaces.length) faces[recordFaces[0]] = 1;
-      for (let ring = 0; ring < 2; ring++) {
-        const previous = faces.slice();
-        for (let f = 0; f < faces.length; f++) {
-          if (f % 4096 === 0 && o.signal?.aborted)
-            throw new DOMException("Mesh operation cancelled.", "AbortError");
-          if (previous[f])
-            for (const neighbor of current.neighbors[f]) faces[neighbor] = 1;
-        }
-      }
-      vertices = nativeNoiseVertices(
-        { ...current, vertices },
-        2,
-        faces,
-        false,
-        { ...o, onProgress: undefined },
-      );
-      const cleanup = cleanupBoundaryFacets(
-        { ...current, vertices },
-        recordFaces,
-        o.signal,
-      );
-      if (cleanup.retainedFaces) {
-        const previousOrder = faceOrder;
-        faceOrder = Uint32Array.from(cleanup.retainedFaces, (face) =>
-          previousOrder ? previousOrder[face] : face,
-        );
-        faceSlots = new Int32Array(t.triangles.length / 3).fill(-1);
-        for (let slot = 0; slot < faceOrder.length; slot++)
-          faceSlots[faceOrder[slot]] = slot;
-        current = analyzeIndexedMesh(vertices, cleanup.triangles, {
-          ...o,
-          onProgress: undefined,
-        });
-        removedFacets += cleanup.removed;
-      } else current = { ...current, vertices };
-      maxFitError = Math.max(maxFitError, curve.maxError);
-      if (!curve.toleranceMet) outOfTolerance++;
-      fitted++;
+      if (walkFitted) fitted++;
+      if (walkUnfitted) unfitted++;
+      if (walkOutOfTolerance) outOfTolerance++;
     }
   }
   checkProgress(o, 1, "Boundary smoothing complete");

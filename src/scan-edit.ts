@@ -255,8 +255,18 @@ function scanEdit(
     throw new Error(
       "Anchors are supported only for boundary smoothing and must be an array.",
     );
-  if (r.anchors && r.anchors.length > 1)
-    throw new Error("Only one boundary anchor is currently supported.");
+  if (r.anchors && r.anchors.length > 2)
+    throw new Error("At most two boundary anchors are currently supported.");
+  if (
+    r.anchors?.length === 2 &&
+    r.anchors[0] &&
+    r.anchors[1] &&
+    (r.anchors[0].boundary !== r.anchors[1].boundary ||
+      r.anchors[0].point === r.anchors[1].point)
+  )
+    throw new Error(
+      "Two anchors must identify distinct points on the same boundary.",
+    );
   if (
     r.batch !== undefined &&
     (typeof r.batch !== "boolean" || r.action !== "fillHoles")

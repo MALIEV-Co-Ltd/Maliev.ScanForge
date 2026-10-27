@@ -247,6 +247,8 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     [tolerance, setTolerance] = useState(0.05);
   const [anchorEnabled, setAnchorEnabled] = useState(false);
   const [anchorPoint, setAnchorPoint] = useState(0);
+  const [secondAnchorEnabled, setSecondAnchorEnabled] = useState(false);
+  const [secondAnchorPoint, setSecondAnchorPoint] = useState(1);
   const [planeId, setPlaneId] = useState("XY");
   const [transparent, setTransparent] = useState(false);
   useEffect(() => {
@@ -276,9 +278,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     current && section !== "components"
       ? inventory.boundaries[current.index]
       : undefined;
+  const anchorDistance = Math.abs(anchorPoint - secondAnchorPoint);
+  const anchorPointCount = (boundary?.points.length ?? 0) / 3;
+  const anchorPairTooClose =
+    Math.min(anchorDistance, anchorPointCount - anchorDistance) < 3;
   useEffect(() => {
     setAnchorEnabled(false);
     setAnchorPoint(0);
+    setSecondAnchorEnabled(false);
+    setSecondAnchorPoint(1);
     setStart(0);
     setEnd(Math.max(2, Math.floor((boundary?.points.length ?? 0) / 6)));
   }, [boundary?.points]);
@@ -738,6 +746,46 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   </span>
                 </label>
               )}
+              {anchorEnabled && boundary?.closed && (
+                <label className="scan-topology-check">
+                  <input
+                    type="checkbox"
+                    checked={secondAnchorEnabled}
+                    onChange={(event) =>
+                      setSecondAnchorEnabled(event.target.checked)
+                    }
+                  />
+                  Add a second anchor on this boundary
+                </label>
+              )}
+              {anchorEnabled && secondAnchorEnabled && boundary?.closed && (
+                <label>
+                  Second boundary point index (starts at 0)
+                  <input
+                    type="number"
+                    min="0"
+                    max={Math.max(0, boundary.points.length / 3 - 1)}
+                    step="1"
+                    value={secondAnchorPoint}
+                    onChange={(event) =>
+                      setSecondAnchorPoint(Number(event.target.value))
+                    }
+                  />
+                  <span>
+                    {boundary.points
+                      .slice(secondAnchorPoint * 3, secondAnchorPoint * 3 + 3)
+                      .map((v) => v.toFixed(3))
+                      .join(", ")}{" "}
+                    mm
+                  </span>
+                </label>
+              )}
+              {anchorEnabled && secondAnchorEnabled && anchorPairTooClose && (
+                <p className="scan-topology-summary">
+                  Leave at least two boundary points between anchors on each
+                  side.
+                </p>
+              )}
               <div className="scan-topology-actions">
                 <button
                   disabled={
@@ -745,7 +793,13 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                     (anchorEnabled &&
                       (!Number.isSafeInteger(anchorPoint) ||
                         anchorPoint < 0 ||
-                        anchorPoint >= (boundary?.points.length ?? 0) / 3))
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3 ||
+                        (secondAnchorEnabled &&
+                          (!boundary?.closed ||
+                            !Number.isSafeInteger(secondAnchorPoint) ||
+                            secondAnchorPoint < 0 ||
+                            secondAnchorPoint >= boundary.points.length / 3 ||
+                            anchorPairTooClose))))
                   }
                   onClick={() =>
                     run(
@@ -761,6 +815,14 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                                   boundary: current!.index,
                                   point: anchorPoint,
                                 },
+                                ...(secondAnchorEnabled
+                                  ? [
+                                      {
+                                        boundary: current!.index,
+                                        point: secondAnchorPoint,
+                                      },
+                                    ]
+                                  : []),
                               ],
                             }
                           : {}),
@@ -778,7 +840,13 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                       (!current ||
                         !Number.isSafeInteger(anchorPoint) ||
                         anchorPoint < 0 ||
-                        anchorPoint >= (boundary?.points.length ?? 0) / 3))
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3 ||
+                        (secondAnchorEnabled &&
+                          (!boundary?.closed ||
+                            !Number.isSafeInteger(secondAnchorPoint) ||
+                            secondAnchorPoint < 0 ||
+                            secondAnchorPoint >= boundary.points.length / 3 ||
+                            anchorPairTooClose))))
                   }
                   onClick={() =>
                     run(
@@ -794,6 +862,14 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                                   boundary: current!.index,
                                   point: anchorPoint,
                                 },
+                                ...(secondAnchorEnabled
+                                  ? [
+                                      {
+                                        boundary: current!.index,
+                                        point: secondAnchorPoint,
+                                      },
+                                    ]
+                                  : []),
                               ],
                             }
                           : {}),
