@@ -1,5 +1,10 @@
 import { Box3, Ray, Triangle, Vector3 } from "three";
 import type { Vec3 } from "./types";
+import {
+  appendSplitTriangle,
+  convexSplitBoundaryNormal,
+  SplitPrecisionError,
+} from "./scan-split-triangle";
 import { analyzeMesh, type MeshProcessingOptions } from "./mesh-processing";
 import {
   checkProgress,
@@ -25,6 +30,8 @@ interface Tree {
   right?: Tree;
 }
 const vec = (p: Vec3) => new Vector3(...p);
+const roundingBound = (...points: Vec3[]) =>
+  Number.EPSILON * 32 * Math.max(1, ...points.flatMap((p) => p.map(Math.abs)));
 function treeOf(faces: CutterFace[]): Tree {
   const box = new Box3();
   for (const face of faces) box.union(face.box);
@@ -85,7 +92,6 @@ function planeCrossings(
   normal: Vec3,
   origin: Vec3,
   other: Triangle,
-  epsilon: number,
 ): Vec3[] {
   const result: Vec3[] = [];
   for (let i = 0; i < 3; i++) {
@@ -94,7 +100,7 @@ function planeCrossings(
       da = dotProduct(subtract(a, origin), normal),
       db = dotProduct(subtract(b, origin), normal);
     const samples: Vec3[] = [];
-    if (Math.abs(da) <= epsilon) samples.push(a);
+    if (da === 0) samples.push(a);
     if (da * db < 0) {
       const fraction = da / (da - db);
       samples.push(a.map((v, axis) => v + fraction * (b[axis] - v)) as Vec3);
@@ -103,19 +109,23 @@ function planeCrossings(
       const v = vec(p),
         closest = other.closestPointToPoint(v, new Vector3());
       if (
-        closest.distanceTo(v) <= epsilon &&
-        !result.some((q) => Math.hypot(...subtract(p, q)) <= epsilon)
+        closest.distanceTo(v) <=
+          roundingBound(
+            p,
+            other.a.toArray() as Vec3,
+            other.b.toArray() as Vec3,
+            other.c.toArray() as Vec3,
+          ) &&
+        !result.some(
+          (q) => Math.hypot(...subtract(p, q)) <= roundingBound(p, q),
+        )
       )
         result.push(p);
     }
   }
   return result;
 }
-function intersection(
-  source: Vec3[],
-  face: CutterFace,
-  epsilon: number,
-): Vec3[] {
+function intersection(source: Vec3[], face: CutterFace): Vec3[] {
   const normal = crossProduct(
       subtract(source[1], source[0]),
       subtract(source[2], source[0]),
@@ -123,34 +133,26 @@ function intersection(
     length = Math.hypot(...normal);
   if (!length) return [];
   const n = normal.map((v) => v / length) as Vec3;
-  if (
-    source.every(
-      (p) =>
-        Math.abs(dotProduct(subtract(p, face.points[0]), face.normal)) <=
-        epsilon,
-    )
-  )
-    return [];
+  const distances = source.map((p) =>
+    dotProduct(subtract(p, face.points[0]), face.normal),
+  );
+  if (distances.every((d) => d === 0)) return [];
   const sourceTriangle = new Triangle(
     ...(source.map(vec) as [Vector3, Vector3, Vector3]),
   );
   const points = [
-    ...planeCrossings(
-      source,
-      face.normal,
-      face.points[0],
-      face.triangle,
-      epsilon,
-    ),
-    ...planeCrossings(face.points, n, source[0], sourceTriangle, epsilon),
+    ...planeCrossings(source, face.normal, face.points[0], face.triangle),
+    ...planeCrossings(face.points, n, source[0], sourceTriangle),
   ];
   const unique = points.filter(
     (p, i) =>
-      !points.slice(0, i).some((q) => Math.hypot(...subtract(p, q)) <= epsilon),
+      !points
+        .slice(0, i)
+        .some((q) => Math.hypot(...subtract(p, q)) <= roundingBound(p, q)),
   );
   if (unique.length < 2) return unique;
   let pair: Vec3[] = [];
-  let longest = epsilon;
+  let longest = roundingBound(...source, ...face.points);
   for (let i = 0; i < unique.length; i++)
     for (let j = i + 1; j < unique.length; j++) {
       const distance = Math.hypot(...subtract(unique[i], unique[j]));
@@ -161,26 +163,22 @@ function intersection(
     }
   return pair;
 }
-function clip(
-  poly: Vec3[],
-  face: CutterFace,
-  sign: number,
-  epsilon: number,
-): Vec3[] {
+function clip(poly: Vec3[], face: CutterFace, sign: number): Vec3[] {
   const output: Vec3[] = [];
   for (let i = 0; i < poly.length; i++) {
     const a = poly[i],
       b = poly[(i + 1) % poly.length],
       da = dotProduct(subtract(a, face.points[0]), face.normal) * sign,
       db = dotProduct(subtract(b, face.points[0]), face.normal) * sign;
-    if (da >= -epsilon) output.push(a);
-    if (da >= -epsilon !== db >= -epsilon) {
+    // A tolerance-shifted classification would extrapolate past the edge.
+    if (da >= 0) output.push(a);
+    if (da >= 0 !== db >= 0) {
       const fraction = da / (da - db);
       output.push(a.map((v, axis) => v + fraction * (b[axis] - v)) as Vec3);
     }
   }
   return output.filter(
-    (p, i) => i === 0 || Math.hypot(...subtract(p, output[i - 1])) > epsilon,
+    (p, i) => i === 0 || Math.hypot(...subtract(p, output[i - 1])) > 0,
   );
 }
 function addIntersectionPoints(
@@ -193,41 +191,112 @@ function addIntersectionPoints(
     const a = poly[i],
       b = poly[(i + 1) % poly.length],
       d = subtract(b, a),
-      length = dotProduct(d, d);
+      length = dotProduct(d, d),
+      rounding =
+        Number.EPSILON *
+        32 *
+        Math.max(1, ...a.map(Math.abs), ...b.map(Math.abs));
     output.push(a);
     const inserted = points
       .map((p) => ({ p, f: dotProduct(subtract(p, a), d) / length }))
       .filter(
         ({ p, f }) =>
-          f > epsilon &&
-          f < 1 - epsilon &&
+          f > 0 &&
+          f < 1 &&
           Math.hypot(
             ...subtract(p, a.map((v, axis) => v + f * d[axis]) as Vec3),
-          ) <= epsilon,
+          ) <= rounding,
       )
       .sort((a, b) => a.f - b.f);
-    for (const { p } of inserted)
-      if (Math.hypot(...subtract(p, output[output.length - 1])) > epsilon)
-        output.push(p);
+    for (const { f } of inserted) {
+      // Keep the source edge fixed when an intersection is only tolerance-close.
+      const projected = a.map((v, axis) => v + f * d[axis]) as Vec3;
+      if (Math.hypot(...subtract(projected, output[output.length - 1])) > 0)
+        output.push(projected);
+    }
   }
   return output;
 }
-function append(output: number[], poly: Vec3[], epsilon: number) {
+function append(output: number[], poly: Vec3[]) {
   if (poly.length < 3) return;
+  if (poly.length === 3) {
+    appendSplitTriangle(output, poly[0], poly[1], poly[2]);
+    return;
+  }
   // A center fan retains every intersection endpoint on the fragment boundary.
   const center = poly.reduce(
     (sum, p) => sum.map((v, a) => v + p[a] / poly.length) as Vec3,
     [0, 0, 0] as Vec3,
   );
-  for (let i = 0; i < poly.length; i++) {
-    const a = poly[i],
-      b = poly[(i + 1) % poly.length];
-    if (
-      Math.hypot(...crossProduct(subtract(a, center), subtract(b, center))) >
-      epsilon * epsilon
-    )
-      output.push(...center, ...a, ...b);
+  const triangles: number[] = [];
+  try {
+    for (let i = 0; i < poly.length; i++)
+      appendSplitTriangle(
+        triangles,
+        center,
+        poly[i],
+        poly[(i + 1) % poly.length],
+      );
+  } catch (error) {
+    if (!(error instanceof SplitPrecisionError)) throw error;
+    // A representable boundary vertex can be a better fan origin than a rounded centroid.
+    // Only accept a fallback that retains every boundary edge at output precision.
+    if (poly.length > 128) throw error;
+    const normal = convexSplitBoundaryNormal(poly);
+    if (!normal) throw error;
+    const key = (p: number[]) => JSON.stringify(p.map(Math.fround));
+    const edge = (a: number[], b: number[]) => {
+      const ka = key(a),
+        kb = key(b);
+      return ka < kb ? `${ka}|${kb}` : `${kb}|${ka}`;
+    };
+    const boundary = poly.map((p, i) => edge(p, poly[(i + 1) % poly.length]));
+    let found = false;
+    for (let pivot = 0; pivot < poly.length && !found; pivot++) {
+      const candidate: number[] = [];
+      try {
+        for (let i = 1; i + 1 < poly.length; i++)
+          appendSplitTriangle(
+            candidate,
+            poly[pivot],
+            poly[(pivot + i) % poly.length],
+            poly[(pivot + i + 1) % poly.length],
+          );
+      } catch (failure) {
+        if (!(failure instanceof SplitPrecisionError)) throw failure;
+        continue;
+      }
+      const edges = new Set<string>();
+      for (let i = 0; i < candidate.length; i += 9) {
+        const points = [
+          candidate.slice(i, i + 3),
+          candidate.slice(i + 3, i + 6),
+          candidate.slice(i + 6, i + 9),
+        ];
+        if (
+          dotProduct(
+            crossProduct(
+              subtract(points[1] as Vec3, points[0] as Vec3),
+              subtract(points[2] as Vec3, points[0] as Vec3),
+            ),
+            normal,
+          ) <= 0
+        ) {
+          edges.clear();
+          break;
+        }
+        for (let j = 0; j < 3; j++)
+          edges.add(edge(points[j], points[(j + 1) % 3]));
+      }
+      if (boundary.every((e) => edges.has(e))) {
+        triangles.length = 0;
+        for (const value of candidate) triangles.push(value);
+        found = true;
+      }
+    }
+    if (!found) throw error;
   }
+  for (const value of triangles) output.push(value);
 }
 function nearestSigned(tree: Tree, p: Vec3): number {
   const sample = vec(p);
@@ -321,7 +390,7 @@ export function splitGeneralCutter(
       nearby,
     );
     const hits = nearby
-      .map((face) => ({ face, points: intersection(triangle, face, epsilon) }))
+      .map((face) => ({ face, points: intersection(triangle, face) }))
       .filter((hit) => hit.points.length > 0);
     const crossing = hits.filter((hit) => hit.points.length === 2);
     let fragments = [
@@ -342,12 +411,9 @@ export function splitGeneralCutter(
         const distances = polygon.map((p) =>
           dotProduct(subtract(p, face.points[0]), face.normal),
         );
-        if (
-          distances.some((d) => d > epsilon) &&
-          distances.some((d) => d < -epsilon)
-        ) {
+        if (distances.some((d) => d > 0) && distances.some((d) => d < 0)) {
           for (const sign of [-1, 1]) {
-            const part = clip(polygon, face, sign, epsilon);
+            const part = clip(polygon, face, sign);
             if (part.length >= 3)
               refined.push(addIntersectionPoints(part, points, epsilon));
           }
@@ -374,7 +440,7 @@ export function splitGeneralCutter(
       } else isInside = nearestSigned(tree, center) < -epsilon;
       const output = isInside ? inside : outside;
       if (!hits.length) output.push(...triangle.flat());
-      else append(output, polygon, epsilon);
+      else append(output, polygon);
     }
   }
   checkProgress(o, 1, "General cutter split complete");

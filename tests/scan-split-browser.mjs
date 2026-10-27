@@ -293,6 +293,28 @@ try {
   };
   const cases = [
     {
+      name: "tolerance-shared-edge",
+      source: [
+        -0.00000075, 0, 0, 0.00000075, 0, 0, 1, 1, 0, 0.00000075, 0, 0,
+        -0.00000075, 0, 0, 0, -1, 0,
+      ],
+      target: [0, -2, -1, 0, 2, -1, 0, 2, 1, 0, -2, -1, 0, 2, 1, 0, -2, 1],
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      sharedEdge: true,
+    },
+    {
+      name: "near-plane-crossing",
+      source: [-0.0000005, 0, 0, 1, 0.4, 0, -0.000002, 1, 0],
+      target: planeMesh,
+      kind: "plane",
+      fit: planeFit,
+      parts: 2,
+      method: "infinite planar surface",
+      sourceYBounds: [0, 1],
+    },
+    {
       name: "infinite-plane",
       source: planeSource,
       target: planeMesh,
@@ -458,9 +480,9 @@ try {
             ...(c.kind === "plane"
               ? {
                   planeFrame: {
-                    center: [0, 0, 0],
-                    normal: [1, 0, 0],
-                    tangent: [0, 1, 0],
+                    center: c.planeCenter ?? [0, 0, 0],
+                    normal: c.planeNormal ?? [1, 0, 0],
+                    tangent: c.planeTangent ?? [0, 1, 0],
                   },
                 }
               : {}),
@@ -569,8 +591,33 @@ try {
       );
       assert.equal(p.metadata.kind, "mesh");
       assert(p.positions.length > 0);
+      if (c.sourceYBounds)
+        for (let i = 1; i < p.positions.length; i += 3) {
+          assert(p.positions[i] >= c.sourceYBounds[0] - 1e-6);
+          assert(p.positions[i] <= c.sourceYBounds[1] + 1e-6);
+        }
     }
     const areas = output.map((p) => area(p.positions));
+    if (c.sharedEdge) {
+      const edges = new Map();
+      for (const part of output)
+        for (let i = 0; i < part.positions.length; i += 9)
+          for (let j = 0; j < 3; j++) {
+            const a = i + j * 3,
+              b = i + ((j + 1) % 3) * 3;
+            if (part.positions[a + 1] === 0 && part.positions[b + 1] === 0) {
+              const key = [part.positions[a], part.positions[b]]
+                .sort((x, y) => x - y)
+                .join(",");
+              edges.set(key, (edges.get(key) ?? 0) + 1);
+            }
+          }
+      assert(edges.size > 0);
+      assert(
+        [...edges.values()].every((count) => count === 2),
+        `Shared edge has a T-junction: ${JSON.stringify([...edges])}`,
+      );
+    }
     assert(
       Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source)) <= 1e-5,
       "Split does not conserve independent triangle area",
@@ -765,6 +812,90 @@ try {
       binaryReopen: true,
       mcpHeldResultCancellation: true,
       guiCloseCancellation: true,
+    });
+  }
+  if (!inputDirectory) {
+    const precision = {
+      name: "float32-precision",
+      source: [100000000, 2, 0, 100000008, 0, 0, 100000008, 8, 0],
+      target: [100000000, 0, -10, 100000008, 80, -10, 100000000, 0, 10],
+      kind: "plane",
+      planeCenter: [100000000, 0, 0],
+      planeNormal: [10 / Math.sqrt(101), -1 / Math.sqrt(101), 0],
+      planeTangent: [0, 0, 1],
+      fit: {
+        ...planeFit,
+        center: [100000000, 0, 0],
+        axis: [10 / Math.sqrt(101), -1 / Math.sqrt(101), 0],
+      },
+    };
+    await load(precision);
+    const before = await call("project_get");
+    await open(precision);
+    await panel
+      .getByRole("button", { name: "Split mesh", exact: true })
+      .click();
+    await page
+      .getByText(/Float32 precision/)
+      .first()
+      .waitFor();
+    await idle();
+    const afterGui = await call("project_get");
+    assert.equal(afterGui.revision, before.revision);
+    assert.equal(afterGui.result.undo, before.result.undo);
+    assert.deepEqual(
+      stableObjects(afterGui.result.objects),
+      stableObjects(before.result.objects),
+    );
+    rawEqual(
+      await geometry(sourceId),
+      precision.source,
+      "GUI failure changed source",
+    );
+    rawEqual(
+      await geometry(cutterId),
+      precision.target,
+      "GUI failure changed cutter",
+    );
+    const failedJob = await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        targetId: cutterId,
+        operation: { kind: "scanEdit", action: "split" },
+      }),
+      "failed",
+    );
+    assert.match(JSON.stringify(failedJob.error), /Float32 precision/);
+    const afterMcp = await call("project_get");
+    assert.equal(afterMcp.revision, before.revision);
+    assert.equal(afterMcp.result.undo, before.result.undo);
+    assert.deepEqual(
+      stableObjects(afterMcp.result.objects),
+      stableObjects(before.result.objects),
+    );
+    rawEqual(
+      await geometry(sourceId),
+      precision.source,
+      "MCP failure changed source",
+    );
+    rawEqual(
+      await geometry(cutterId),
+      precision.target,
+      "MCP failure changed cutter",
+    );
+    await load(cases.find((c) => c.name === "infinite-plane"));
+    await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        targetId: cutterId,
+        operation: { kind: "scanEdit", action: "split" },
+      }),
+    );
+    results.push({
+      name: precision.name,
+      guiAndMcpFailure: true,
+      unchangedGeometryAndHistory: true,
+      retry: true,
     });
   }
   assert.deepEqual(errors, []);
