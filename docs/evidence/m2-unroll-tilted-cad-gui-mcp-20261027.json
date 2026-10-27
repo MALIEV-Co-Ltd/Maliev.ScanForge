@@ -1,0 +1,44 @@
+{
+  "scope": "One retained native oblique-cylinder Unroll export compared with current exact-CAD GUI and public MCP; other axes and native auxiliary-frame parity remain open.",
+  "applicationCommit": "9daf9a18be4a481ebe97b419fd6ad32a4187c198",
+  "input": {
+    "scanSha256": "b358d98ce67c63a59a90fecae3fd5b985550ded542842145c72c97f2d509ff86",
+    "stepSha256": "d862f2ce6c59b84fb7e8599a51b4f4745860e5ad7238ccfcf54d5f935c87651e",
+    "sourcePositionFloat32Sha256": "c72b00ea168ef0c3a7b1ee24418b46335f0e8b857ec7ec62691b37bf728cc05a",
+    "sourcePositionsMatchNativeFixture": true,
+    "center": [3, 4, 5],
+    "axis": [0.5773502691896258, 0.5773502691896258, 0.5773502691896258],
+    "radiusMm": 2,
+    "offsetDegrees": 0,
+    "instances": 1
+  },
+  "native": {
+    "exportSha256": "6999f4a62db8f33c7926c6c3ce1ea4aba0184ebab79b822a1ca61003c2412200",
+    "sourceFixture": "tests/fixtures/unroll-observed-tilted-cylinder.json",
+    "coordinates": 198,
+    "maxAbsoluteCoordinateDifferenceMm": 1.1102230246251565e-16,
+    "comparisonToleranceMm": 1e-12
+  },
+  "application": {
+    "outputPositionFloat32Sha256": "836dc16f7ee6d910f70ea6ba116986d2ef7f8d3c1983ecf44b7dca54c95bbdd8",
+    "outputTriangles": 22,
+    "guiAndPublicMcpFullGeometryEqual": true,
+    "rollFrameEqual": true,
+    "sketchEqual": true,
+    "sourceGeometryPreserved": true,
+    "undoRedoSucceeded": true,
+    "browserWarningsOrErrors": 0
+  },
+  "validation": {
+    "fixtureImportedThroughGui": true,
+    "exactCadReferenceQueriedThroughPublicMcp": true,
+    "guardBytes": 4294967296,
+    "jobCleaned": true,
+    "isolatedPortsClosed": true
+  },
+  "limitations": [
+    "The native export was previously captured; native UI was not rerun in this check.",
+    "This case has an equal-component positive axis; it does not establish negative-axis or Y/Z-seed native parity.",
+    "The GUI/MCP auxiliary frame comparison is internal and does not establish native frame equivalence."
+  ]
+}

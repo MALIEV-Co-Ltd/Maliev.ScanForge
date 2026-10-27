@@ -81,6 +81,8 @@ GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and
 
 Listed regression names identify coverage to run; they are not statements that every check has passed on the current candidate. Historical documentation retains its own input, digest and validation dates. In particular, do not apply old fixed input-limit descriptions to the current implementation without checking its schema and admission path.
 
+The retained oblique-cylinder native export now also has a current exact-CAD GUI/public-MCP comparison: all 198 output coordinates match within 1.2e-16 mm, and GUI/MCP geometry, frame, sketch, source preservation and Undo/Redo agree. This is one equal-component positive-axis control; negative-axis and Y/Z-seed native exports remain open. [Evidence](evidence/m2-unroll-tilted-cad-gui-mcp-20261027.json).
+
 ## Unroll and Average correction checkpoint
 
 The shared operation now integrates native seam removal, swap-last order, positive reference-angle rotation and bounded Unroll instances. Average integrates indexed native surface queries, boundary rejection, ordered Float32 accumulation, largest-facet base selection and new-owner publication. Both GUI commands invoke the same public MCP operation and preserve explicit replacement support. The original inputs remain intact by default.
