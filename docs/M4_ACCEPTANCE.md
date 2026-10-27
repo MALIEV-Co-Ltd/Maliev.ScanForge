@@ -132,6 +132,15 @@ case through history and project reopening. This guard does not implement
 reference duplication or complete native copy/transform policy. Required input
 families and other native acceptance gates remain open.
 
+The [fitted-plane duplicate checkpoint](evidence/m4-fitted-plane-duplicate-20261027.json)
+records a separate original-native fitted plane duplicated, saved and reopened,
+with the copy's displayed normal and offset retained. On the same PLY file,
+actual application GUI Duplicate and public MCP `object_duplicate` produced
+distinct objects with equal application fit and frame; undo and MCP-copy worker
+reopen passed. The original and application fit populations are not established
+as equivalent, and native copy links, other modes and semantic reference point
+or line duplication remain open.
+
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's
 15-significant-digit text roundtrip. The shared operation now models this stage

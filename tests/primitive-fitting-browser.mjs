@@ -379,6 +379,81 @@ try {
   assert.deepEqual(scanPlane.fit, actualFit.fit);
   assert.deepEqual(scanPlane.planeFrame.center, actualFit.fit.center);
   ledger.originalPlaneFit = actualFit;
+  // R37's original-native fitted-plane duplicate retained the displayed
+  // normal and offset after reopening. Compare the shared GUI/MCP action on
+  // this same scan, without claiming the native and application fit inputs
+  // or resulting planes are numerically identical.
+  const beforeDuplicate = (await call("project_get")).result.objects;
+  const planeIndex = beforeDuplicate.findIndex(
+    (row) => row.id === scanPlane.id,
+  );
+  assert(planeIndex >= 0);
+  await page
+    .locator(".objects-panel > .object-list > li")
+    .nth(planeIndex)
+    .getByRole("button", { name: scanPlane.name, exact: true })
+    .click({ button: "right" });
+  const objectMenu = page.getByRole("menu", {
+    name: "Object actions",
+    exact: true,
+  });
+  await objectMenu
+    .getByRole("menuitem", { name: "Duplicate", exact: true })
+    .click();
+  const afterGuiDuplicate = (await call("project_get")).result.objects;
+  const guiCopy = afterGuiDuplicate.find(
+    (row) => !beforeDuplicate.some((before) => before.id === row.id),
+  );
+  assert(guiCopy && guiCopy.id !== scanPlane.id);
+  assert.deepEqual(guiCopy.fit, scanPlane.fit);
+  assert.deepEqual(guiCopy.planeFrame, scanPlane.planeFrame);
+  await page.screenshot({
+    path: fileURLToPath(new URL("fitted-plane-gui-duplicate.png", artifactDir)),
+  });
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    (await call("project_get")).result.objects.map((row) => row.id),
+    beforeDuplicate.map((row) => row.id),
+  );
+  const agentCopyId = (
+    await mutate("object_duplicate", { entityId: scanPlane.id })
+  ).result.entityId;
+  const agentCopy = (await call("object_get", { entityId: agentCopyId }))
+    .result;
+  assert(agentCopyId !== scanPlane.id);
+  assert.deepEqual(agentCopy.fit, guiCopy.fit);
+  assert.deepEqual(agentCopy.planeFrame, guiCopy.planeFrame);
+  const duplicateProject = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: duplicateProject.artifactId,
+      replace: true,
+    }),
+  );
+  const reopenedCopy = (await call("object_get", { entityId: agentCopyId }))
+    .result;
+  assert.deepEqual(reopenedCopy.fit, scanPlane.fit);
+  assert.deepEqual(reopenedCopy.planeFrame, scanPlane.planeFrame);
+  assert.deepEqual(
+    (await call("object_get", { entityId: scanPlane.id })).result.planeFrame,
+    scanPlane.planeFrame,
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(
+    (await call("project_get")).result.objects.map((row) => row.id),
+    beforeDuplicate.map((row) => row.id),
+  );
+  ledger.fittedPlaneDuplicate = {
+    guiAndPublicMcpEqual: true,
+    distinctIdentity: true,
+    copiedFitAndFrame: true,
+    undoAndWorkerReopen: true,
+    nativeFixture: "R37",
+    nativeFitPopulationEquivalent: false,
+    nativeCopyLinkPolicyEstablished: false,
+  };
   await page.screenshot({
     path: fileURLToPath(new URL("original-scan-plane.png", artifactDir)),
   });

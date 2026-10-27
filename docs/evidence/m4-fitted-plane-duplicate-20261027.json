@@ -1,0 +1,37 @@
+{
+  "scope": "One original-native fitted-plane duplicate and separate application GUI/public-MCP duplicate on the same PLY file; not full M4 acceptance.",
+  "native": {
+    "version": "QuickSurface Pro 8.0.123",
+    "inputProjectSha256": "915a8c5684c4d82a5610a888b2f5526b2864253277b652a4e1462d8ef8226190",
+    "inputProjectUnchanged": true,
+    "operation": "Plane(1) history menu Duplicate created Plane(1)(1) and Planes(2).",
+    "displayedNormal": [0.4496712, -0.3367553, -0.8272797],
+    "displayedOffsetMm": 252.902158,
+    "beforeSave": "Original and duplicate showed the same displayed normal and offset in Type In mode.",
+    "reopen": "Both history items reopened; the duplicate editor retained those displayed values.",
+    "outputBytes": 4972592,
+    "outputProjectSha256": "398b8d2d8db3a3e73782b41e7c525914bfce27e5c97f51d4cbd3e62063115ebd",
+    "privateObservationSha256": "a47b03357f72999fe2fc190d453e723be5df5df6ea5d954f6f8386cb5281cb1b",
+    "privateCleanupReceiptSha256": "1725f943dd0ca76c534e3bf6ff4215b4280a1f89c974490344c9820eee88f32c",
+    "cleanup": "Authenticated owned finish, zero active processes, closed handles, no cleanup errors, released mutex; 100.06 seconds under 540-second outer lease."
+  },
+  "applicationAndMcp": {
+    "inputPlySha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "buildId": "scanforge-ef836f21c2055ee2",
+    "productionInputSha256": "1536c75004139ae4e04447cfe20d160cb48da82dd93132a8fc8335ee9a976bae",
+    "productionInputsMatched": 1055,
+    "driver": "tests/primitive-fitting-browser.mjs",
+    "driverSha256": "87757acc5cbe8d2d599343587d9607daf11001df19ab44b5dcb110a659654314",
+    "coverage": "Actual GUI menu Duplicate and public stdio MCP object_duplicate produced distinct identities and equal fit/frame to the original and each other; GUI undo and MCP-created copy project-worker reopen and undo passed.",
+    "privateBrowserReceiptSha256": "eb78e3c04598aa10d3614eaa8bfd195198f6ee9f2ccb85cf45349ba2b670d470",
+    "privateScreenshotSha256": "ace1d6828bb5d00b245817ad5f09786f65a6feb6ae72296f531fef8420a436b9",
+    "privateCleanupReceiptSha256": "70fe293324f23ea11009b265637ddc4d2f883f17dc16e4b4f8fbc63067d144a9",
+    "cleanup": "Private ephemeral ports closed, owned processes exited and mutex released; 23.28 seconds under 480-second outer lease."
+  },
+  "limitations": [
+    "The same input file does not establish matching native and application fit populations, weighting, residuals or frame conventions; no fit equivalence is claimed.",
+    "Native displayed decimals are not raw binary values. No source edits or dependency identity were tested; original plane properties were not reread after reopen.",
+    "The native case concerns a fitted plane, not semantic reference point or line duplication. Native undo, locks, transforms and other modes remain open.",
+    "This checkpoint does not complete M4 or authorize merge or milestone closure."
+  ]
+}
