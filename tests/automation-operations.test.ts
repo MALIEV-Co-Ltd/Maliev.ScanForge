@@ -27,6 +27,7 @@ import { reductionGrid } from "./helpers/reduction-grid";
 import { ScanPreviewSession } from "../src/scan-preview";
 import boundaryNative from "./fixtures/boundary-smooth-observed-annulus.json";
 import anchorNative from "./fixtures/boundary-smooth-anchor-inner-native.json";
+import twoAnchorNative from "./fixtures/boundary-smooth-two-anchors-native.json";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { indexedMeshMatches } from "../src/indexed-mesh";
@@ -601,6 +602,69 @@ describe("shared workspace operation contracts", () => {
           continue;
         expect(result[i], `native MCP coordinate ${i}`).toBe(
           anchorNative.output[i],
+        );
+      }
+    });
+  }, 30000);
+
+  it("routes two boundary inventory anchors through MCP and publishes the native result", async () => {
+    const positions = Float32Array.from(boundaryNative.source);
+    const indexedMesh = nativeStlTopology(positions);
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(indexedMesh.vertices),
+      indexedMesh.triangles,
+    );
+    const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+    const anchors = twoAnchorNative.anchorObservedPositions.map((position) => {
+      const boundary = boundaries.findIndex((ids) =>
+        ids.some((id) =>
+          position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+        ),
+      );
+      const point = boundaries[boundary].findIndex((id) =>
+        position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+      );
+      return { boundary, point };
+    });
+    const h = harness([entity({ positions, indexedMesh })]);
+    await withCurvatureKernel(async () => {
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        const scanEdit = await runScanEditAsync(request as ScanEditRequest, {
+          topologyCache: { positions, tolerance: 1e-6, topology },
+        });
+        return {
+          kind: "scanEdit",
+          scanEdit,
+          diagnostics: scanEdit.diagnostics,
+        };
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: {
+            kind: "scanEdit",
+            action: "boundarySmooth",
+            strength: 0.5,
+            anchors,
+          },
+        },
+        h.context,
+      );
+      expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject({
+        anchors,
+      });
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      expect(h.state.history).toHaveLength(1);
+      const result = h.state.entities[0].positions;
+      const zero = 16 * Number.EPSILON * 5;
+      for (let i = 0; i < result.length; i++) {
+        if (
+          Math.abs(result[i]) <= zero &&
+          Math.abs(twoAnchorNative.output[i]) <= zero
+        )
+          continue;
+        expect(result[i], `native MCP coordinate ${i}`).toBe(
+          twoAnchorNative.output[i],
         );
       }
     });

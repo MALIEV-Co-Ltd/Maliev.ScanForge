@@ -1262,8 +1262,8 @@
                 },
                 "anchors": {
                   "type": "array",
-                  "maxItems": 1,
-                  "description": "Boundary smoothing only: zero-based boundary and point indices from the current scanEdit inventory. At most one anchor is currently supported; obtain a fresh inventory after geometry changes.",
+                  "maxItems": 2,
+                  "description": "Boundary smoothing only: zero-based boundary and point indices from the current scanEdit inventory. Two anchors must be on the same closed boundary, with at least two points between them on each side. Obtain a fresh inventory after geometry changes.",
                   "items": {
                     "type": "object",
                     "properties": {

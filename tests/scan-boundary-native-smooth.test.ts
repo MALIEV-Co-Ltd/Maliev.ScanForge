@@ -6,6 +6,7 @@ import zeroStrengthFixture from "./fixtures/boundary-smooth-all-strength-zero-na
 import halfStrengthFixture from "./fixtures/boundary-smooth-all-strength-half-native.json";
 import anchorFixture from "./fixtures/boundary-smooth-anchor-inner-native.json";
 import headAnchorFixture from "./fixtures/boundary-smooth-anchor-head-native.json";
+import twoAnchorFixture from "./fixtures/boundary-smooth-two-anchors-native.json";
 import { runScanEditAsync } from "../src/scan-edit";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
@@ -178,7 +179,161 @@ it.each([anchorFixture, headAnchorFixture])(
   30000,
 );
 
-it("rejects invalid and multiple anchors before publishing geometry", async () => {
+it("matches the native two-anchor smoothing control", async () => {
+  const source = Float32Array.from(fixture.source);
+  const topology = importedTopology(source);
+  const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+  const anchors = twoAnchorFixture.anchorObservedPositions.map((position) => {
+    const boundary = boundaries.findIndex((ids) =>
+      ids.some((id) =>
+        position.every(
+          (value, axis) => topology.vertices[id * 3 + axis] === value,
+        ),
+      ),
+    );
+    expect(boundary).toBeGreaterThanOrEqual(0);
+    const point = boundaries[boundary].findIndex((id) =>
+      position.every(
+        (value, axis) => topology.vertices[id * 3 + axis] === value,
+      ),
+    );
+    return { boundary, point };
+  });
+  const expected = Float32Array.from(twoAnchorFixture.output);
+  expect(
+    createHash("sha256").update(new Uint8Array(expected.buffer)).digest("hex"),
+  ).toBe(twoAnchorFixture.nativeCoordinatesSha256);
+  const progress: number[] = [];
+  await withCurvatureKernel(async () => {
+    const result = await runScanEditAsync(
+      {
+        kind: "scanEdit",
+        action: "boundarySmooth",
+        positions: source,
+        strength: 0.5,
+        anchors,
+      },
+      {
+        topologyCache: { positions: source, tolerance: 1e-6, topology },
+        onProgress: (value) => progress.push(value),
+      },
+    );
+    expect(result.positions?.length).toBe(expected.length);
+    const tolerance =
+      16 * Number.EPSILON * Math.max(1, ...source.map(Math.abs));
+    for (let i = 0; i < expected.length; i++) {
+      const actual = result.positions![i];
+      if (Math.abs(actual) <= tolerance && Math.abs(expected[i]) <= tolerance)
+        continue;
+      expect(actual, `coordinate ${i}`).toBe(expected[i]);
+    }
+  });
+  expect(progress.at(-1)).toBe(1);
+  expect(
+    progress.every((value, i) => i === 0 || value >= progress[i - 1]),
+  ).toBe(true);
+}, 30000);
+
+it("cancels two-anchor projection without changing the input", async () => {
+  const source = Float32Array.from(fixture.source);
+  const before = source.slice();
+  const topology = importedTopology(source);
+  const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+  const anchors = twoAnchorFixture.anchorObservedPositions.map((position) => {
+    const boundary = boundaries.findIndex((ids) =>
+      ids.some((id) =>
+        position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+      ),
+    );
+    return {
+      boundary,
+      point: boundaries[boundary].findIndex((id) =>
+        position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+      ),
+    };
+  });
+  const controller = new AbortController();
+  await withCurvatureKernel(async () => {
+    await expect(
+      runScanEditAsync(
+        {
+          kind: "scanEdit",
+          action: "boundarySmooth",
+          positions: source,
+          strength: 0.5,
+          anchors,
+        },
+        {
+          topologyCache: { positions: source, tolerance: 1e-6, topology },
+          signal: controller.signal,
+          onProgress: (_, stage) => {
+            if (stage === "Projecting fitted boundary") controller.abort();
+          },
+        },
+      ),
+    ).rejects.toMatchObject({ name: "AbortError" });
+  });
+  expect(source).toEqual(before);
+}, 30000);
+
+it("cancels between bounded projection batches on a long boundary", async () => {
+  const count = 512;
+  const positions: number[] = [];
+  const point = (i: number, radius: number) => [
+    Math.fround(radius * Math.cos((i * 2 * Math.PI) / count)),
+    Math.fround(radius * Math.sin((i * 2 * Math.PI) / count)),
+    Math.fround(radius === 3 ? 0.27 : 0.75),
+  ];
+  for (let i = 0; i < count; i++) {
+    const next = (i + 1) % count;
+    positions.push(...point(i, 5), ...point(next, 5), ...point(next, 3));
+    positions.push(...point(i, 5), ...point(next, 3), ...point(i, 3));
+  }
+  const source = Float32Array.from(positions);
+  const before = source.slice();
+  const topology = importedTopology(source);
+  const boundary = topology.boundaryLoops.findIndex((ids) =>
+    ids.every(
+      (id) =>
+        Math.hypot(topology.vertices[id * 3], topology.vertices[id * 3 + 1]) <
+        4,
+    ),
+  );
+  expect(topology.boundaryLoops[boundary]).toHaveLength(count);
+  const controller = new AbortController();
+  let projectionCallbacks = 0;
+  await withCurvatureKernel(async () => {
+    await expect(
+      runScanEditAsync(
+        {
+          kind: "scanEdit",
+          action: "boundarySmooth",
+          positions: source,
+          strength: 0.5,
+          indices: [boundary],
+          anchors: [
+            { boundary, point: 0 },
+            { boundary, point: count / 2 },
+          ],
+        },
+        {
+          topologyCache: { positions: source, tolerance: 1e-6, topology },
+          signal: controller.signal,
+          onProgress: (_, stage) => {
+            if (stage === "Projecting fitted boundary") {
+              projectionCallbacks++;
+              controller.abort();
+            }
+          },
+        },
+      ),
+    ).rejects.toMatchObject({ name: "AbortError" });
+  });
+  expect(projectionCallbacks).toBe(1);
+  expect(source).toEqual(before);
+}, 30000);
+
+it("rejects invalid, duplicate, cross-boundary and excess anchors before publishing geometry", async () => {
   const source = Float32Array.from(fixture.source);
   const topology = importedTopology(source);
   for (const anchors of [
@@ -186,11 +341,24 @@ it("rejects invalid and multiple anchors before publishing geometry", async () =
     [{ boundary: 99, point: 0 }],
     [
       { boundary: 0, point: 0 },
+      { boundary: 0, point: 0 },
+    ],
+    [
+      { boundary: 0, point: 0 },
       { boundary: 0, point: 1 },
     ],
     [
       { boundary: 0, point: 0 },
+      { boundary: 0, point: 2 },
+    ],
+    [
+      { boundary: 0, point: 0 },
       { boundary: 1, point: 0 },
+    ],
+    [
+      { boundary: 0, point: 0 },
+      { boundary: 0, point: 1 },
+      { boundary: 0, point: 2 },
     ],
   ]) {
     await expect(
