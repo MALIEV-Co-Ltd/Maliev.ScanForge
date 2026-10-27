@@ -4,12 +4,12 @@
   "build": "scanforge-0b611305a24701f0",
   "nativeBasis": {
     "facetLoop": "Native captured facet loop swaps triangle vertices and XORs stored facet-normal signs, then invokes vertex-normal refresh in mode zero.",
-    "normalRefresh": "The retained original-instruction normal fixture includes a reversed triangle; computed output matches its Float32 normal bits. Full native Flip GUI with scanner normals was not run.",
+    "normalRefresh": "For 41 retained original-instruction facet-plus-vertex normal captures with triangle inputs, reversing each captured triangle order before the application Flip yields exactly the captured vertex-normal Float32 bits. The first run included one isolated-vertices-only case and correctly rejected it because Flip requires triangles; it is excluded from the 41. These are controlled kernel comparisons, not an end-to-end native Flip GUI run.",
     "fixture": "tests/fixtures/noise-normal-kernel.json"
   },
   "tests": {
     "focusedFiles": 5,
-    "passed": 163,
+    "passed": 204,
     "checks": [
       "shared GUI/MCP binding",
       "original indexed identities",
@@ -23,7 +23,9 @@
       "non-finite normal rejection"
     ],
     "memoryLimitBytes": 4294967296,
-    "ownedCleanupConfirmed": true
+    "ownedCleanupConfirmed": true,
+    "nativeCorpusTriangleCases": 41,
+    "excludedPointOnlyCases": 1
   },
   "guiMcp": {
     "manufacturedPlySha256": "2f7c825c1ffb7ece002cc07afd84536870eca6cf5a68f7ffe8211b378644cca5",
