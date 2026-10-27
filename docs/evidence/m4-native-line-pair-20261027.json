@@ -38,10 +38,22 @@
     "cleanup": "Owned browser, bridge and workers exited and private ports closed; zero active processes, closed handles and released mutex; 44.78 seconds under the 480-second lease.",
     "firstAttempt": "The first comparison failed on a test assertion expecting a nonexistent geometry.end field; its cleanup passed and the failed receipt is retained privately."
   },
+  "sourceEditFollowup": {
+    "native": "After reopening the pair, editing the first source endpoint from 10 to 20 mm refreshed the target from [5,0,0] to [5,4,0] into [7.5,0,0] to [7.5,4,0]. The constructed mode, source names, displayed endpoints and 4 mm length remained after saving to a separate QSF and reopening it.",
+    "inputProjectSha256": "c01a5ef88e231fe1cf4c429881f828d0821abdfae6ce3b341fcc993f085e2ec0",
+    "inputProjectUnchanged": true,
+    "outputProjectSha256": "f4e6fd55c1394bbe7e1b6dbe0bbe9bb725af99f0c19fe7cdb1b7ea5a6b920532",
+    "nativeCleanupReceiptSha256": "971b6d5a8057e8073348403c6d1ed508ffcdc8fcf77a58d8ac7a1619bf9ffe79",
+    "applicationAndMcp": "The GUI-created pair refreshed to the same displayed geometry after a public MCP source edit, preserved its definition, and passed public MCP undo/redo and project-worker reopen.",
+    "driverSha256": "fd4fde60a1a62a814a933e72b0e6b783bd90e6c06f6552109aeb278ed1e45a7b",
+    "browserReceiptSha256": "1708d381a21faa10547f699bbba502ff2e2a8bbeda22734617726971fd859f45",
+    "browserCleanupReceiptSha256": "dbd65a74e36223a1a558dc1c68622c76902c076b16dae33f4c3dc8537caa7111",
+    "cleanup": "Both owned jobs exited with zero active processes, closed handles, no cleanup errors or overrun, and released mutexes; native 74.98 seconds and browser 45.06 seconds."
+  },
   "limitations": [
     "The source choices came from native dropdowns; no viewport-picked locations were confirmed. The result is one parallel-line fixture and does not establish general native source-location rules.",
     "The native average picker remained at zero selected after a visible line click. The experiment was cancelled; no average result or persistence claim is made.",
-    "No source mutation or raw native binary geometry comparison was performed. The native dropdown selected sources without explicit fractions, while the application comparison supplied 0.5 for each; it does not establish identical acquisition semantics or equivalent fallback diagnostics.",
+    "No raw native binary geometry comparison was performed. The native dropdown selected sources without explicit fractions, while the application comparison supplied 0.5 for each; the single source edit does not establish identical acquisition semantics or equivalent fallback diagnostics.",
     "This checkpoint does not complete M4 or authorize merge or milestone closure."
   ]
 }

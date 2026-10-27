@@ -147,7 +147,10 @@ native editor displayed their midpoints as endpoints and retained both named
 sources and the result after QSF reopening. GUI and public MCP produced the same
 displayed geometry on the corresponding source endpoints with explicit 0.5
 fractions, retained source records and worker reopen; the GUI displayed a
-fallback notice. This one dropdown-selected native case does not establish
+fallback notice. A subsequent native source endpoint edit from 10 to 20 mm
+updated both displayed target X coordinates from 5 to 7.5 mm and survived QSF
+reopen. The GUI-created pair refreshed to the same geometry through a public MCP
+source edit, undo/redo and project-worker reopen. This one dropdown-selected native case does not establish
 general acquisition or fallback semantics. The native average picker did not
 confirm a source and remains unverified.
 
