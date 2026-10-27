@@ -232,8 +232,11 @@ binds a duplicate-related label to a UI registration value and a conditional
 indirect dispatch in byte-verified static listings. The destination handler,
 live receiver and reference-copy semantics remain unverified. A separate
 hidden owned-process slot observation and on-disk export lookup support a
-`SendMessageW` inference, with mapped-module identity not byte-verified. The
-initial unsuccessful import lookup is retained as a failed observation.
+`SendMessageW` inference, with mapped-module identity not byte-verified. A
+separate owned-process descriptor read identifies `CEditSketchDialog` RTTI for
+the nearby table starts, weakening this as a project-reference duplication
+lead without binding the command receiver. Failed import and carrier descriptor
+lookups remain retained.
 
 ## Verification and ownership
 

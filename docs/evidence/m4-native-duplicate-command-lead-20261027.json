@@ -9,14 +9,15 @@
     "tableConstruction": "Two byte-verified ranges store the candidate table addresses 0x1411b1778 and 0x1411b1b50 on the same object at offsets 0 and 0x130. Adjacent RTTI metadata alone does not establish full table extents or a live receiver.",
     "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The earlier captured pointer was from a previous Windows boot and was not matched to current system addresses.",
     "otherCandidates": "The byte candidate at 0x5c9256 falls inside an exact 1,319-byte exception range, but a bounded listing covered only 57 bytes and did not list that candidate. Its decompiler followed code outside the stated range, so neither the jump nor the decompiled paths establish the receiver. Three other value matches have been retained as metadata: two contexts resemble the known dispatch and one may be a call displacement. None is instruction-verified or establishes a handler.",
-    "tableCallers": "Two separately bounded listings verify all 142 bytes of caller entries 0x5c2ef0 and 0x5c3440. The first passes size 0xc430 to an indirect call and, on a nonzero result, calls the first table-store routine; the second calls the other table-store routine and conditionally calls one of two further targets. Their shapes suggest allocation and teardown wrappers but do not identify those indirect targets, a live receiver or a duplicate handler. An aligned pointer candidate to the second wrapper appears eight bytes after the first table start; table extent and runtime ownership remain unverified."
+    "tableCallers": "Two separately bounded listings verify all 142 bytes of caller entries 0x5c2ef0 and 0x5c3440. The first passes size 0xc430 to an indirect call and, on a nonzero result, calls the first table-store routine; the second calls the other table-store routine and conditionally calls one of two further targets. Their shapes suggest allocation and teardown wrappers but do not identify those indirect targets, a live receiver or a duplicate handler. An aligned pointer candidate to the second wrapper appears eight bytes after the first table start; table extent and runtime ownership remain unverified.",
+    "tableType": "Both previously identified locator candidates point to type descriptor 0x15ef958. A fresh hidden owned process read that fixed descriptor twice and observed the complete ASCII RTTI name .?AVCEditSketchDialog@@. This associates the two table starts with sketch-dialog RTTI metadata and makes the label/dispatch lead a weaker candidate for project-reference duplication. It does not bind the live command receiver or establish the full table extent. A second descriptor's name exceeded the fixed captured span and remains incomplete. The initial data-only carrier check failed because the descriptor address was outside its captured section map; its failure is retained."
   },
   "verification": {
     "labelRangeBytesVerified": 1273,
     "dispatchFragmentBytesVerified": 515,
     "tableReferenceRangeBytesVerified": 2008,
     "independentDecoder": false,
-    "nativeExecution": "Static listings did not execute native code. A separate hidden owned-process startup read only the exact 8-byte slot twice, without UI input or target ABI calls.",
+    "nativeExecution": "Static listings did not execute native code. Separate hidden owned-process startups read the exact 8-byte slot twice and two fixed 64-byte descriptors twice, without UI input or target ABI calls.",
     "ownedTemporaryProjectsRemovedAndProcessesExited": true
   },
   "sha256": {
@@ -46,7 +47,12 @@
     "tableCallerMetadata": "32a240951e2db24adb61c67e8b76a510073d53fa664d6448a288e5149b68d276",
     "tableCallerByteVerification": "c29840705191dcf4ff2601c166116164546711f474ad56e090ed2efe48cbb899",
     "tableCallerListingReceipt": "b9f9b9e6d63ca52a9763b78102edddd74be9dd46aedba6704e8c6dc67da76577",
-    "tableCallerVerificationReceipt": "6c1617775e1fa64daf3137b7c40bfd7b77cc4394aa84ccc67afe00bc037a10d8"
+    "tableCallerVerificationReceipt": "6c1617775e1fa64daf3137b7c40bfd7b77cc4394aa84ccc67afe00bc037a10d8",
+    "failedCarrierDescriptorReceipt": "a130d40492e4a688ce23cc425c52d30c36f71a536baa92444df38008de88440b",
+    "ownedDescriptorCapture": "5db5b147b78ca720b4b110dddb3c952e6657d956e7b9cc094c269f9e3e3ceeb4",
+    "ownedDescriptorCaptureReceipt": "49816595445eeb8508b6cbd6c43fe5b3ea514f619648ef75e01fb44cefa7cd4d",
+    "ownedDescriptorVerification": "3d906a9df9d7d477f02f3719a568ed81144ff504c43a92e2ac7f8a2c9ee2a8af",
+    "ownedDescriptorVerificationReceipt": "25a2843c93ce1f01d7b358137db9b5f5371b9f0454dc36e4d342c2598271a542"
   },
   "remaining": [
     "Bind the actual destination handler and runtime receiver without assuming table extent or mapped-module identity.",
