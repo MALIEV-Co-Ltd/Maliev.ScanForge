@@ -4,6 +4,41 @@ import {
   evaluateBoundaryCurve,
 } from "../src/scan-boundary-fit";
 import fixture from "./fixtures/boundary-smooth-observed-annulus.json";
+import nativeSketch from "../docs/evidence/native-boundary-3d-sketch-20261027.json";
+import { nativeStlTopology } from "../src/scan-native-stl-topology";
+import { analyzeIndexedMesh } from "../src/mesh-processing";
+import { nativeBoundaryWalks } from "../src/scan-hole-boundary-order";
+
+it("fits the selected original boundary to the native 3D sketch curve", () => {
+  const indexed = nativeStlTopology(Float32Array.from(fixture.source));
+  const topology = analyzeIndexedMesh(
+    Float64Array.from(indexed.vertices),
+    indexed.triangles,
+  );
+  const inner = nativeBoundaryWalks(topology).find((walk) =>
+    walk.vertices.every(
+      (id) =>
+        Math.hypot(topology.vertices[id * 3], topology.vertices[id * 3 + 1]) <
+        4,
+    ),
+  );
+  expect(inner?.closed).toBe(true);
+  const ids = [...inner!.vertices, inner!.vertices[0]];
+  const points = Float64Array.from(
+    ids.flatMap((id) =>
+      Array.from(topology.vertices.subarray(id * 3, id * 3 + 3)),
+    ),
+  );
+  const fitted = fitBoundaryCurve(points, true, 0.05);
+  const expected = nativeSketch.originalSelectedControl.curve;
+  expect(fitted.knots).toEqual(expected.knots);
+  expect(fitted.poles.length).toBe(expected.controlPoints.length * 3);
+  for (let i = 0; i < fitted.poles.length; i++)
+    expect(fitted.poles[i], `pole ${i}`).toBeCloseTo(
+      expected.controlPoints[Math.floor(i / 3)][i % 3],
+      6,
+    );
+});
 
 function outerLoop() {
   const points = new Map<string, number[]>();
