@@ -1205,6 +1205,7 @@
                     "fillHoles",
                     "boundarySmooth",
                     "boundaryProject",
+                    "boundarySpatialSketch",
                     "smoothSelected",
                     "defeature",
                     "split"
@@ -1317,7 +1318,8 @@
                 },
                 "fitTolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Positive boundary projection simplification tolerance or spatial-sketch fitting tolerance in mm. Spatial fitting defaults to 0.05 and is limited to 1024 closed boundaries and 200000 boundary points."
                 }
               },
               "required": ["kind", "action"],
@@ -3523,7 +3525,7 @@
   },
   {
     "name": "sketch_get",
-    "description": "Inspect current sketch, including frame, curves and constraints.",
+    "description": "Inspect the active planar draft and saved sketches. Spatial boundary sketches use kind:spatial and retain cubic poles, knots, periodic flags and fitting diagnostics in world millimetres; spatial editing is not yet available.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -4741,7 +4743,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch, or set its independent saved visibility with action:visibility and visible:boolean. Uses the same authoring state and display as the editor. Unset visibility is hidden; Unroll creates its auxiliary sketch visible without replacing the active edit session.",
+    "description": "Create/activate/rename/delete a saved sketch, or set its independent saved visibility with action:visibility and visible:boolean. Spatial sketches may be renamed, deleted or shown/hidden but cannot be activated in the planar editor. Uses the same authoring state and display as the editor. Unset visibility is hidden; Unroll creates its auxiliary sketch visible without replacing the active edit session.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

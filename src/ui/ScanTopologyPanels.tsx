@@ -7,6 +7,7 @@ import type { ScanBridgeSession } from "../scan-bridge-gesture";
 import { BridgePreviewController } from "../scan-bridge-preview";
 import { processMesh } from "../processing-client";
 import type { ScanEditRequest } from "../scan-edit";
+import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
 import type { Entity, Positions, Vec3 } from "../types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import "./scan-topology-panels.css";
@@ -42,6 +43,7 @@ export interface ScanTopologyPanelsProps {
     plane: { origin: Vec3; normal: Vec3 },
     label: string,
   ) => void;
+  onSpatial?: (curves: SpatialBoundaryCurve[], label: string) => void;
   onStatus: (message: string) => void;
   onError: (message: string) => void;
   onBusyChange?: (busy: boolean) => void;
@@ -58,7 +60,8 @@ type ScanAction =
   | "componentFlip"
   | "fillHoles"
   | "boundarySmooth"
-  | "boundaryProject";
+  | "boundaryProject"
+  | "boundarySpatialSketch";
 export interface ScanPanelOperation {
   action: ScanAction;
   indices?: number[];
@@ -134,6 +137,25 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       if (outcome.segments) props.onCreate(outcome.segments, label);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);
+      if (outcome.spatialCurves) {
+        const current = callbacks.current;
+        const source = current.entities.find(
+          (entity) => entity.id === current.selectedId,
+        );
+        if (
+          current.selectedId !== props.selectedId ||
+          current.positions !== props.positions ||
+          !source ||
+          source.positions !== current.positions ||
+          source.locked
+        )
+          throw new Error(
+            "The source mesh changed or is locked; no sketch was created.",
+          );
+        if (!current.onSpatial)
+          throw new Error("Spatial sketch publication unavailable.");
+        current.onSpatial(outcome.spatialCurves, label);
+      }
       if (operation.action !== "inventory")
         props.onStatus(
           operation.action === "fillHoles"
@@ -943,6 +965,41 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   }
                 >
                   Project all
+                </button>
+              </div>
+              <div className="scan-topology-actions">
+                <button
+                  disabled={!current || !boundary?.closed}
+                  onClick={() =>
+                    run(
+                      {
+                        action: "boundarySpatialSketch",
+                        indices: [current!.index],
+                        fitTolerance: tolerance,
+                      },
+                      "Create 3D sketch from selected boundary",
+                    )
+                  }
+                >
+                  3D sketch from selected
+                </button>
+                <button
+                  disabled={
+                    !items.length ||
+                    inventory.boundaries.some((item) => !item.closed)
+                  }
+                  onClick={() =>
+                    run(
+                      {
+                        action: "boundarySpatialSketch",
+                        indices: items.map((item) => item.index),
+                        fitTolerance: tolerance,
+                      },
+                      "Create 3D sketch from all boundaries",
+                    )
+                  }
+                >
+                  3D sketch from all
                 </button>
               </div>
             </>

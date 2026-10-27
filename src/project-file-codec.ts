@@ -130,6 +130,15 @@ export async function encodeProjectFileLocally(
   let deferredClouds = false;
   let cloudAttributes = false;
   let constructionMetadata = false;
+  const spatialMetadata =
+    !!session.project.authoring?.sketches?.some(
+      (row) => row.kind === "spatial",
+    ) ||
+    [...session.history, ...session.future].some((row) =>
+      row.sketchChanges?.some(
+        (change: ModelSketchChange) => change.value?.kind === "spatial",
+      ),
+    );
   let ownedModelMetadata =
     [...session.history, ...session.future].some(
       (row) => row.sketchChanges !== undefined,
@@ -330,15 +339,17 @@ export async function encodeProjectFileLocally(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: ownedModelMetadata
-          ? 6
-          : constructionMetadata
-            ? 5
-            : cloudAttributes
-              ? 4
-              : deferredClouds
-                ? 3
-                : 2,
+        version: spatialMetadata
+          ? 7
+          : ownedModelMetadata
+            ? 6
+            : constructionMetadata
+              ? 5
+              : cloudAttributes
+                ? 4
+                : deferredClouds
+                  ? 3
+                  : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -391,7 +402,7 @@ export async function decodeProjectContents(
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    ![2, 3, 4, 5, 6].includes(m.version) ||
+    ![2, 3, 4, 5, 6, 7].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -502,7 +513,7 @@ export async function decodeProjectContents(
         "f64",
         "u32",
         "text",
-        ...([4, 5, 6].includes(m.version) ? ["u8"] : []),
+        ...([4, 5, 6, 7].includes(m.version) ? ["u8"] : []),
       ].includes(ref.type)
     )
       return invalid();
@@ -581,7 +592,7 @@ export async function decodeProjectContents(
     if (
       (record.pointColors !== undefined ||
         record.ascAttributes !== undefined) &&
-      ![4, 5, 6].includes(m.version)
+      ![4, 5, 6, 7].includes(m.version)
     )
       return invalid();
     if (record.pointColors !== undefined && record.pointColors.type !== "u8")
@@ -590,10 +601,11 @@ export async function decodeProjectContents(
       (record.reference !== undefined ||
         record.coordinateFrame !== undefined ||
         record.constructionOrderKey !== undefined) &&
-      ![5, 6].includes(m.version)
+      ![5, 6, 7].includes(m.version)
     )
       return invalid();
-    if (record.rollMapping !== undefined && m.version !== 6) return invalid();
+    if (record.rollMapping !== undefined && ![6, 7].includes(m.version))
+      return invalid();
     const { cloudNormalsTyped: _normalCarrier, ...metadata } = record;
     const entity = {
       ...metadata,
@@ -639,7 +651,7 @@ export async function decodeProjectContents(
         : undefined,
     } as Entity;
     if (record.cloudPoseBits !== undefined) {
-      if (![3, 4, 5, 6].includes(m.version) || entity.kind !== "pointcloud")
+      if (![3, 4, 5, 6, 7].includes(m.version) || entity.kind !== "pointcloud")
         return invalid();
       return placedCloud(
         entity,
@@ -679,8 +691,13 @@ export async function decodeProjectContents(
     return items.map((item) => {
       if (!item || typeof item.label !== "string") return invalid();
       if (item.sketchChanges !== undefined) {
-        if (m.version !== 6) return invalid();
+        if (![6, 7].includes(m.version)) return invalid();
         validateModelSketchChanges(item.sketchChanges);
+        if (
+          m.version !== 7 &&
+          item.sketchChanges.some((change) => change.value?.kind === "spatial")
+        )
+          return invalid();
       }
       const ids = item.restoreVisibilityFor;
       if (
@@ -712,8 +729,13 @@ export async function decodeProjectContents(
     entities: state(m.current),
   });
   if (
-    m.version !== 6 &&
+    ![6, 7].includes(m.version) &&
     project.authoring?.sketches?.some((row) => row.visible !== undefined)
+  )
+    return invalid();
+  if (
+    m.version !== 7 &&
+    project.authoring?.sketches?.some((row) => row.kind === "spatial")
   )
     return invalid();
   return {

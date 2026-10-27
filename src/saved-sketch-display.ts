@@ -2,12 +2,17 @@ import * as THREE from "three";
 import { sampleSketchArc } from "./sketch";
 import { coordinateSketchFrame, sketchWorldPoint } from "./sketch-frame";
 import type { SavedSketch, Vec3 } from "./types";
+import { visitSpatialSegments } from "./spatial-sketch";
 
 /** A saved sketch can remain visible without replacing the user's active edit session. */
 function visitSavedSketchSegments(
   saved: SavedSketch,
   emit?: (a: Vec3, b: Vec3) => void,
 ) {
+  if (saved.kind === "spatial") {
+    visitSpatialSegments(saved.curves, emit);
+    return { origin: [0, 0, 0] as Vec3 };
+  }
   const sketch = saved.sketch,
     frame = sketch.frame ?? coordinateSketchFrame("OXY", 0);
   if (

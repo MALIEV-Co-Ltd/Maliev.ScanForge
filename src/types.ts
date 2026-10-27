@@ -130,13 +130,23 @@ export interface Project {
     activeSketchId?: string;
   };
 }
-export interface SavedSketch {
+type SavedSketchBase = {
   id: string;
   name: string;
-  sketch: Sketch;
   /** Saved display independent of the active sketch edit session; unset is hidden. */
   visible?: boolean;
-}
+};
+export type PlanarSavedSketch = SavedSketchBase & {
+  kind?: "planar";
+  sketch: Sketch;
+  curves?: never;
+};
+export type SpatialSavedSketch = SavedSketchBase & {
+  kind: "spatial";
+  curves: import("./scan-boundary-spatial").SpatialBoundaryCurve[];
+  sketch?: never;
+};
+export type SavedSketch = PlanarSavedSketch | SpatialSavedSketch;
 export type KernelPrimitive =
   | { kind: "box"; center: Vec3; size: Vec3 }
   | { kind: "sphere"; center: Vec3; radius: number }

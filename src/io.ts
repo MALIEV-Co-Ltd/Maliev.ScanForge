@@ -1,3 +1,4 @@
+import { validateSpatialCurves } from "./spatial-sketch";
 import { validateMeshFacetNormals } from "./mesh-geometry-normals";
 import { validateInspectionDefinitions } from "./inspection-definition";
 import { validateSavedSketchDisplay } from "./saved-sketch-display";
@@ -211,14 +212,14 @@ export function parseProject(text: string): Project {
   const input = JSON.parse(text);
   if (Array.isArray(input?.entities))
     input.entities = input.entities.map((entity: Entity) => {
-      if (entity?.rollMapping !== undefined && input.version !== 4)
+      if (entity?.rollMapping !== undefined && ![4, 5].includes(input.version))
         throw Error("Unroll mapping requires project JSON version 4.");
       if (
         entity?.reference !== undefined ||
         entity?.coordinateFrame !== undefined ||
         entity?.constructionOrderKey !== undefined
       ) {
-        if (![3, 4].includes(input.version))
+        if (![3, 4, 5].includes(input.version))
           throw new Error(
             "Construction metadata requires project JSON version 3.",
           );
@@ -238,9 +239,16 @@ export function parseProject(text: string): Project {
     input.authoring?.sketches?.some(
       (row: SavedSketch) => row.visible !== undefined,
     ) &&
-    input.version !== 4
+    ![4, 5].includes(input.version)
   )
     throw Error("Saved sketch visibility requires project JSON version 4.");
+  if (
+    input.authoring?.sketches?.some(
+      (row: SavedSketch) => row.kind === "spatial",
+    ) &&
+    input.version !== 5
+  )
+    throw Error("Spatial sketches require project JSON version 5.");
   return validateProject(input);
 }
 /** Validate decoded project data without expanding binary geometry into JSON. */
@@ -250,7 +258,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    ![1, 2, 3, 4].includes(input.version as number) ||
+    ![1, 2, 3, 4, 5].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -540,14 +548,25 @@ export function validateProject(value: unknown): Project {
       )
         throw new Error("Invalid saved sketch identity.");
       sketchIds.add(item.id);
-      validateSketch(item.sketch);
+      if (item.kind === "spatial") {
+        if ("sketch" in item)
+          throw Error("Spatial sketch cannot contain planar data.");
+        validateSpatialCurves(item.curves);
+      } else {
+        if (
+          (item.kind !== undefined && item.kind !== "planar") ||
+          "curves" in item
+        )
+          throw Error("Invalid planar sketch variant.");
+        validateSketch(item.sketch);
+      }
       if (item.visible) validateSavedSketchDisplay(item);
     }
   }
   if (
     input.authoring?.activeSketchId !== undefined &&
     !input.authoring.sketches?.some(
-      (s) => s.id === input.authoring!.activeSketchId,
+      (s) => s.id === input.authoring!.activeSketchId && s.kind !== "spatial",
     )
   )
     throw new Error("Active saved sketch is missing.");
@@ -594,9 +613,10 @@ export function serializeProject(
       );
   return JSON.stringify({
     format: "maliev-scanforge",
-    version:
-      entities.some((e) => e.rollMapping !== undefined) ||
-      authoring?.sketches?.some((row) => row.visible !== undefined)
+    version: authoring?.sketches?.some((row) => row.kind === "spatial")
+      ? 5
+      : entities.some((e) => e.rollMapping !== undefined) ||
+          authoring?.sketches?.some((row) => row.visible !== undefined)
         ? 4
         : entities.some(
               (e) =>
@@ -666,9 +686,10 @@ export async function serializeProjectBlob(
   }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
-  const version =
-    entities.some((e) => e.rollMapping !== undefined) ||
-    authoring?.sketches?.some((row) => row.visible !== undefined)
+  const version = authoring?.sketches?.some((row) => row.kind === "spatial")
+    ? 5
+    : entities.some((e) => e.rollMapping !== undefined) ||
+        authoring?.sketches?.some((row) => row.visible !== undefined)
       ? 4
       : entities.some(
             (e) =>

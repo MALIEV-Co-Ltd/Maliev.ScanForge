@@ -1,3 +1,7 @@
+import {
+  fitSpatialBoundaries,
+  type SpatialBoundaryCurve,
+} from "./scan-boundary-spatial";
 import { holeListOrder } from "./scan-hole-order";
 import { holeBoundaryDiameters } from "./scan-hole-diameter";
 import type { Positions, Vec3 } from "./types";
@@ -41,6 +45,7 @@ export interface ScanEditRequest {
     | "fillHoles"
     | "boundarySmooth"
     | "boundaryProject"
+    | "boundarySpatialSketch"
     | "smoothSelected"
     | "defeature"
     | "split";
@@ -83,6 +88,7 @@ export interface ScanEditResult {
   selection?: Uint8Array;
   inventory?: ScanEditInventory;
   curves?: number[][];
+  spatialCurves?: SpatialBoundaryCurve[];
   diagnostics: Record<string, number | string | boolean>;
 }
 export const pointAt = (p: ArrayLike<number>, i: number): Vec3 => [
@@ -284,6 +290,7 @@ function scanEdit(
       "fillHoles",
       "boundarySmooth",
       "boundaryProject",
+      "boundarySpatialSketch",
       "smoothSelected",
       "defeature",
       "split",
@@ -343,6 +350,22 @@ function scanEdit(
         method: "Selected vertex averaging with concave boundary relaxation",
       },
     };
+  if (r.action === "boundarySpatialSketch") {
+    if (r.selection)
+      throw new Error(
+        "Spatial boundary sketches use boundary indices, not triangle selection.",
+      );
+    const spatialCurves = fitSpatialBoundaries(
+      t,
+      r.indices,
+      r.fitTolerance ?? 0.05,
+      o,
+    );
+    return {
+      spatialCurves,
+      diagnostics: { fittedBoundaries: spatialCurves.length },
+    };
+  }
   if (r.action === "boundaryProject") {
     const inventory = inventoryOf(t, o.signal);
     if (!r.plane) throw new Error("Choose a projection plane.");

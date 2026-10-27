@@ -1,5 +1,6 @@
 import { validateSketch } from "./sketch";
 import { validateSavedSketchDisplay } from "./saved-sketch-display";
+import { validateSpatialCurves } from "./spatial-sketch";
 import type { Project, SavedSketch } from "./types";
 
 type Authoring = NonNullable<Project["authoring"]>;
@@ -42,7 +43,8 @@ export function validateModelSketchChanges(
       typeof value !== "object" ||
       Array.isArray(value) ||
       Object.keys(value).some(
-        (key) => !["id", "name", "sketch", "visible"].includes(key),
+        (key) =>
+          !["id", "name", "kind", "sketch", "curves", "visible"].includes(key),
       ) ||
       value.id !== item.id ||
       typeof value.name !== "string" ||
@@ -53,7 +55,18 @@ export function validateModelSketchChanges(
       item.index > 100000
     )
       throw Error("Invalid saved model sketch target.");
-    validateSketch(value.sketch);
+    if (value.kind === "spatial") {
+      if ("sketch" in value)
+        throw Error("Spatial sketch cannot contain planar data.");
+      validateSpatialCurves(value.curves);
+    } else {
+      if (
+        (value.kind !== undefined && value.kind !== "planar") ||
+        "curves" in value
+      )
+        throw Error("Invalid planar sketch variant.");
+      validateSketch(value.sketch);
+    }
     if (value.visible) validateSavedSketchDisplay(value);
   }
 }

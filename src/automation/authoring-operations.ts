@@ -197,8 +197,11 @@ export function createAuthoringOperations(
         authoring.activeSketchId = sketchId;
       } else {
         if (index < 0) throw new Error("Sketch does not exist");
-        if (a.action === "activate") authoring.activeSketchId = sketchId;
-        else if (a.action === "rename") {
+        if (a.action === "activate") {
+          if (sketches[index].kind === "spatial")
+            throw new Error("Spatial sketch editing is not available yet.");
+          authoring.activeSketchId = sketchId;
+        } else if (a.action === "rename") {
           if (!a.name) throw new Error("Sketch name required");
           sketches[index] = { ...sketches[index], name: a.name };
         } else if (a.action === "visibility") {

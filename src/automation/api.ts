@@ -468,7 +468,8 @@ export class ApplicationApi {
       sketches: next.authoring.sketches?.map((s) => [
         s.id,
         s.name,
-        identity(s.sketch),
+        s.kind === "spatial" ? identity(s.curves) : identity(s.sketch),
+        s.visible,
       ]),
       activeSketchId: next.authoring.activeSketchId,
       inspections: next.authoring.inspections,
