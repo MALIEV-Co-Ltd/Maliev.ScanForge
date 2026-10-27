@@ -1,0 +1,180 @@
+import assert from "node:assert/strict";
+import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
+import { createHash, webcrypto } from "node:crypto";
+import vm from "node:vm";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// PREPARED ONLY: root must grant the shared 20s / 4GiB / 25%-CPU lane.
+// Usage: node --max-old-space-size=768 THIS.mjs NATIVE_STEP SHA256 NEW_RECEIPT
+const root = fileURLToPath(new URL("../../", import.meta.url));
+const [nativePath, nativeHash, receiptArg] = process.argv.slice(2);
+assert(nativePath && /^[a-f0-9]{64}$/.test(nativeHash ?? "") && receiptArg,
+  "Require native STEP path, lowercase SHA256, and fresh receipt path");
+const receiptPath = resolve(receiptArg);
+assert(!existsSync(receiptPath), "Do not replace an existing receipt");
+const fixtureDir = ".resources/surface-fit/981bb857-a17c-4a1c-b2de-686e1fea30a4/";
+const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const pins = [
+  [fixtureDir + "sketch-surface-real-gui.step", "705c54384db0a013b84c46c7ecd77fe1cc25460590023219feb86180f7e784b1"],
+  [fixtureDir + "sketch-surface-real-scan.json", "55299042a52040cf81f0877b580f87c619414af9c6da70b6ecc6d7052747b93d"],
+  ["public/cad-worker.js", "ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5"],
+  ["public/kernel/opencascade.wasm.wasm", "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284"],
+  [resolve(nativePath), nativeHash],
+].map(([path, sha256]) => ({ path: resolve(root, path), sha256 }));
+assert(!pins.some((row) => row.path === receiptPath), "Receipt overlaps input");
+const started = Date.now(), deadline = started + 16000;
+const report = {
+  scope: "Native STEP interoperability and numeric roundtrip of the actual GUI-authored 16-line prism; not native construction equivalence or full-scan reconstruction",
+  status: "prepared", limits: { cooperativeWorkMs: 16000, requiredOuterMs: 20000, files: 2, maximumStepBytes: 2097152, edgeLimit: 128 },
+  tolerances: { profileAreaMm2: 1e-9, originalVolumeMm3: 1e-6, originalAreaMm2: 1e-6, coordinateMm: 1e-6, massAbsolute: 1e-6, massRelative: 1e-8 },
+  tolerancePolicy: "Fixed before native input; failures are retained, never automatically relaxed. Requested integration epsilon is not an accuracy guarantee.",
+  expected: { profileAreaMm2: 84.28827382618772, heightMm: 1.8, volumeMm3: 151.7188928871379 },
+  bodies: [], checks: [], errors: [], fileFences: [],
+  cleanup: { wrappersCreated: 0, wrappersDeleted: 0, errors: [] },
+};
+const files = new Map(), requests = new Map(), ids = [];
+let context, oc, requestId = 0;
+const expired = () => assert(Date.now() < deadline, "Cooperative 16-second work deadline");
+const check = (name, passed, details = {}) => { report.checks.push({ name, passed, ...details }); };
+const own = (list, wrapper) => { list.push(wrapper); report.cleanup.wrappersCreated++; return wrapper; };
+const release = (list) => { for (const wrapper of list.reverse()) try { wrapper.delete(); report.cleanup.wrappersDeleted++; } catch (e) { report.cleanup.errors.push(String(e)); } };
+const point = (p) => { const result = [p.X(), p.Y(), p.Z()]; assert(result.every(Number.isFinite)); return result; };
+const request = (operation, payload) => {
+  expired();
+  return new Promise((resolveRequest, reject) => {
+    const id = ++requestId; requests.set(id, { resolve: resolveRequest, reject });
+    context.self.onmessage({ data: { id, operation, payload } });
+  });
+};
+try {
+  for (const pin of pins) {
+    if (pin === pins[0] || pin === pins[4]) assert(statSync(pin.path).size <= report.limits.maximumStepBytes, "STEP exceeds 2MiB bound");
+    const bytes = readFileSync(pin.path);
+    files.set(pin.path, hash(bytes));
+    assert.equal(files.get(pin.path), pin.sha256, `Hash fence: ${pin.path}`);
+  }
+  files.set(fileURLToPath(import.meta.url), hash(readFileSync(new URL(import.meta.url))));
+  const fixture = JSON.parse(readFileSync(pins[1].path, "utf8"));
+  const profile = fixture.authoredGuiProfile;
+  assert.equal(profile.points.length, 16); assert.equal(profile.segments.length, 16);
+  const points = new Map(profile.points.map((p) => [p.id, p]));
+  let twiceArea = 0, perimeter = 0;
+  for (const segment of profile.segments) {
+    const a = points.get(segment.a), b = points.get(segment.b);
+    assert(a && b); twiceArea += a.x * b.y - b.x * a.y;
+    perimeter += Math.hypot(b.x - a.x, b.y - a.y);
+  }
+  const area = Math.abs(twiceArea) / 2, height = report.expected.heightMm;
+  report.expected = { ...report.expected, recomputedAreaMm2: area, perimeterMm: perimeter, surfaceAreaMm2: 2 * area + perimeter * height, frame: profile.frame };
+  assert(Math.abs(area - report.expected.profileAreaMm2) <= report.tolerances.profileAreaMm2, "Frozen profile analytic area");
+  assert(Math.abs(area * height - report.expected.volumeMm3) <= 1e-9, "Frozen analytic prism volume");
+  const worldPoints = profile.points.flatMap((p) => [0, height].map((z) => profile.frame.origin.map((n, i) => n + p.x * profile.frame.u[i] + p.y * profile.frame.v[i] + z * profile.frame.normal[i])));
+  const pointIndex = new Map(profile.points.map((p, i) => [p.id, i]));
+  const prismEdges = profile.points.map((_, i) => [worldPoints[2 * i], worldPoints[2 * i + 1]]);
+  for (const segment of profile.segments) for (const level of [0, 1])
+    prismEdges.push([worldPoints[2 * pointIndex.get(segment.a) + level], worldPoints[2 * pointIndex.get(segment.b) + level]]);
+  const onSegment = (p, [a, b]) => {
+    const d = a.map((n, i) => b[i] - n), lengthSquared = d.reduce((s, n) => s + n * n, 0);
+    const t = Math.max(0, Math.min(1, p.reduce((s, n, i) => s + (n - a[i]) * d[i], 0) / lengthSquared));
+    return Math.hypot(...p.map((n, i) => n - a[i] - t * d[i])) <= report.tolerances.coordinateMm;
+  };
+  const bounds = { min: [0, 1, 2].map((i) => Math.min(...worldPoints.map((p) => p[i]))), max: [0, 1, 2].map((i) => Math.max(...worldPoints.map((p) => p[i]))) };
+  report.expected.boundsMm = bounds;
+  const binary = readFileSync(pins[3].path);
+  context = vm.createContext({ console, WebAssembly, Uint8Array, ArrayBuffer, TextDecoder, TextEncoder, URL, crypto: webcrypto, setTimeout, clearTimeout,
+    self: { location: { href: new URL("../../public/cad-worker.js", import.meta.url).href }, postMessage(reply) {
+      if (reply.progress !== undefined) return;
+      const pending = requests.get(reply.id); requests.delete(reply.id);
+      if (pending) reply.error ? pending.reject(Error(reply.error)) : pending.resolve(reply.result);
+    } } });
+  context.importScripts = (url) => { vm.runInContext(readFileSync(new URL(url), "utf8"), context); const factory = context.opencascade; context.opencascade = (options) => factory({ ...options, wasmBinary: binary }); };
+  vm.runInContext(readFileSync(pins[2].path, "utf8"), context);
+  for (const [name, pin] of [["original-gui", pins[0]], ["native-roundtrip", pins[4]]]) {
+    expired(); assert(statSync(pin.path).size <= report.limits.maximumStepBytes);
+    const bytes = readFileSync(pin.path), text = bytes.toString("utf8");
+    const row = { name, path: pin.path, bytes: bytes.length, sha256: hash(bytes) }; report.bodies.push(row);
+    row.declaredMillimetres = /LENGTH_UNIT\(\)\s+NAMED_UNIT\(\*\)\s+SI_UNIT\(\.MILLI\.,\.METRE\.\)/.test(text);
+    check(`${name}: explicit millimetre length unit`, row.declaredMillimetres);
+    const imported = await request("import", { data: new Uint8Array(bytes), extension: "step" }); ids.push(imported.kernelId);
+    row.worker = await request("inspectBrep", { brep: imported.brep, edgeOffset: 0, edgeLimit: 128 });
+    check(`${name}: valid positive single solid`, row.worker.valid && row.worker.solids === 1 && row.worker.signedVolumeMm3 > 0);
+    row.observedTopology = Object.fromEntries(["solids", "shells", "faces", "edges", "vertices"].map((k) => [k, row.worker[k]]));
+    if (name === "original-gui") check("Original frozen topology regression", row.worker.shells === 1 && row.worker.faces === 18 && row.worker.edges === 48 && row.worker.vertices === 32);
+    oc ??= await vm.runInContext("kernel()", context);
+    const shape = context.getShape(imported.kernelId), before = hash(context.serializeBrep(oc, shape)), handles = [];
+    try {
+      expired();
+      const box = own(handles, new oc.Bnd_Box_1()); oc.BRepBndLib.Add(shape, box, false); assert(!box.IsVoid());
+      row.independent = { scope: "Direct OCCT queries on imported exact shape, independent of public inspector code; same OCCT engine", boundsMm: { min: point(own(handles, box.CornerMin())), max: point(own(handles, box.CornerMax())) } };
+      for (const kind of ["area", "volume"]) {
+        expired(); const props = own(handles, new oc.GProp_GProps_1());
+        const estimate = kind === "area" ? oc.BRepGProp.SurfaceProperties2(shape, props, 1e-9, true) : oc.BRepGProp.VolumeProperties2(shape, props, 1e-9, true, true);
+        const mass = props.Mass(); assert(Number.isFinite(mass));
+        row.independent[kind] = { mass, centroidMm: point(own(handles, props.CentreOfMass())), requestedEpsilon: 1e-9, returnedErrorEstimate: Number.isFinite(estimate) ? estimate : null };
+        check(`${name}: inspector/direct ${kind}`, Math.abs(mass - row.worker[kind === "area" ? "areaMm2" : "signedVolumeMm3"]) <= Math.max(report.tolerances.massAbsolute, Math.abs(mass) * report.tolerances.massRelative));
+      }
+      check(`${name}: world bounds`, ["min", "max"].every((side) => bounds[side].every((n, i) => Math.abs(n - row.independent.boundsMm[side][i]) <= report.tolerances.coordinateMm)));
+      const endpoints = row.worker.edgeReferences.items.flatMap((edge) => edge.endpoints ?? []);
+      const close = (a, b) => Math.hypot(...a.map((n, i) => n - b[i])) <= report.tolerances.coordinateMm;
+      row.frameCheck = { expectedCornerCount: worldPoints.length, observedEndpointCount: endpoints.length, allEndpointsOnExpectedPrismVertices: endpoints.length > 0 && endpoints.every((p) => worldPoints.some((q) => close(p, q))), allExpectedVerticesCovered: worldPoints.every((p) => endpoints.some((q) => close(p, q))), fullEdgePage: row.worker.edgeReferences.nextOffset === null };
+      if (name === "original-gui") {
+        check(`${name}: strict authored frame/endpoints`, row.frameCheck.allEndpointsOnExpectedPrismVertices && row.frameCheck.allExpectedVerticesCovered && row.frameCheck.fullEdgePage);
+      } else {
+        row.frameCheck.allEndpointsOnIndependentPrismBoundaryEdges = endpoints.length > 0 && endpoints.every((p) => prismEdges.some((edge) => onSegment(p, edge)));
+        row.frameCheck.allEdgesAreNondegenerateLines = row.worker.edgeReferences.items.length > 0 && row.worker.edgeReferences.items.every((edge) => edge.kind === "line" && !edge.degenerate && edge.endpoints?.length === 2 && prismEdges.some((boundary) => edge.endpoints.every((p) => onSegment(p, boundary))));
+        row.nativeFaceGeometry = [];
+        const explorer = own(handles, new oc.TopExp_Explorer_2(shape, oc.TopAbs_ShapeEnum.TopAbs_FACE, oc.TopAbs_ShapeEnum.TopAbs_SHAPE));
+        const enumValue = (value) => value?.value ?? value;
+        for (; explorer.More(); explorer.Next()) {
+          expired(); assert(row.nativeFaceGeometry.length < 128, "Native face geometry exceeds 128-face bound");
+          const local = [];
+          try {
+            const current = own(local, explorer.Current()), face = own(local, oc.TopoDS.Face_1(current));
+            const adaptor = own(local, new oc.BRepAdaptor_Surface_2(face, true));
+            const type = enumValue(adaptor.GetType());
+            row.nativeFaceGeometry.push({ index: row.nativeFaceGeometry.length, surfaceType: type, isPlane: type === enumValue(oc.GeomAbs_SurfaceType.GeomAbs_Plane) });
+          } finally { release(local); }
+        }
+        row.frameCheck.allNativeFacesArePlanes = row.nativeFaceGeometry.length > 0 && row.nativeFaceGeometry.every((face) => face.isPlane);
+        row.frameCheck.scope = "Native topology-neutral straight-edge subdivision permitted on independent prism boundary edges; all original corners must remain covered";
+        check(`${name}: authored boundary/frame with subdivision`, row.frameCheck.allExpectedVerticesCovered && row.frameCheck.fullEdgePage && row.frameCheck.allEndpointsOnIndependentPrismBoundaryEdges && row.frameCheck.allEdgesAreNondegenerateLines && row.frameCheck.allNativeFacesArePlanes);
+      }
+      row.queryPreservedBrep = before === hash(context.serializeBrep(oc, shape)); check(`${name}: queries preserve exact BREP`, row.queryPreservedBrep);
+    } finally { release(handles); }
+    if (name === "original-gui") {
+      check("Original analytic volume regression", Math.abs(row.independent.volume.mass - area * height) <= report.tolerances.originalVolumeMm3);
+      check("Original analytic area regression", Math.abs(row.independent.area.mass - report.expected.surfaceAreaMm2) <= report.tolerances.originalAreaMm2);
+    }
+  }
+  const [original, native] = report.bodies;
+  report.nativeComparison = {};
+  for (const kind of ["area", "volume"]) {
+    const a = original.independent[kind].mass, b = native.independent[kind].mass, relative = Math.abs(b - a) / Math.abs(a);
+    const tolerance = Math.max(report.tolerances.massAbsolute, Math.abs(a) * report.tolerances.massRelative);
+    report.nativeComparison[kind] = { original: a, native: b, difference: b - a, relativeDifference: relative, absoluteTolerance: tolerance, scope: "Existing STEP regression threshold; diagnostic only, no native-equivalence acceptance implied" };
+    check(`Native ${kind} diagnostic threshold`, Math.abs(b - a) <= tolerance);
+  }
+} catch (error) { report.errors.push(String(error.stack ?? error)); }
+finally {
+  // Release bypasses work admission so cleanup remains available after expiry.
+  try { if (context && ids.length) await new Promise((resolveRequest, reject) => { const id = ++requestId; requests.set(id, { resolve: resolveRequest, reject }); context.self.onmessage({ data: { id, operation: "release", payload: ids } }); }); } catch (e) { report.cleanup.errors.push(String(e)); }
+  try { report.cleanup.remainingKernelHandles = context ? vm.runInContext("shapes.size", context) : 0; } catch (e) { report.cleanup.remainingKernelHandles = null; report.cleanup.errors.push(String(e)); }
+  report.cleanup.pendingRequests = requests.size;
+  report.cleanup.temporaryHostFilesCreated = 0;
+  report.cleanup.remainingWorkerTemporaryFiles = [];
+  if (oc) for (const path of ["check.brp", "in.step", "s.brep", "out.step"]) try {
+    if (oc.FS.analyzePath(path).exists) {
+      report.cleanup.errors.push(`Worker left temporary file: ${path}`);
+      oc.FS.unlink(path);
+    }
+    if (oc.FS.analyzePath(path).exists) report.cleanup.remainingWorkerTemporaryFiles.push(path);
+  } catch (e) { report.cleanup.errors.push(String(e)); }
+  for (const [path, before] of files) try { const after = hash(readFileSync(path)); report.fileFences.push({ path, beforeSha256: before, afterSha256: after, unchanged: before === after }); } catch (e) { report.errors.push(`File fence ${path}: ${e}`); }
+  report.elapsedMs = Date.now() - started;
+  report.cleanup.passed = report.cleanup.wrappersCreated === report.cleanup.wrappersDeleted && !report.cleanup.errors.length && report.cleanup.remainingKernelHandles === 0 && report.cleanup.pendingRequests === 0 && !(report.cleanup.remainingWorkerTemporaryFiles?.length);
+  report.status = !report.errors.length && report.bodies.length === 2 && report.checks.every((row) => row.passed) && report.cleanup.passed && report.fileFences.every((row) => row.unchanged) && report.elapsedMs <= 16000 ? "passed-scoped-interop" : "failed-or-incomplete";
+  writeFileSync(receiptPath, JSON.stringify(report, null, 2), { flag: "wx" });
+  console.log(JSON.stringify({ receiptPath, status: report.status, elapsedMs: report.elapsedMs, failedChecks: report.checks.filter((row) => !row.passed), errors: report.errors, cleanup: report.cleanup }));
+}
+assert.equal(report.status, "passed-scoped-interop", "Inspect retained failure receipt; do not relax tolerances automatically");
