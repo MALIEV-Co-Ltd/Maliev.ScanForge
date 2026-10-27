@@ -1,0 +1,119 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 121157454066,
+      "run_id": 40189561001,
+      "workflow_name": "Validate browser CAD",
+      "head_branch": "codex/m1-verified-candidate",
+      "run_url": "https://api.github.com/repos/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40189561001",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVEgIjs8AAAAcNYwI8g",
+      "head_sha": "9958d8f3d00ce23440acc5efc1a3f8dc5f5249ca",
+      "url": "https://api.github.com/repos/MALIEV-Co-Ltd/Maliev.ScanForge/actions/jobs/121157454066",
+      "html_url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40189561001/job/121157454066",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-25T11:36:16Z",
+      "started_at": "2026-10-25T11:36:18Z",
+      "completed_at": "2026-10-25T11:45:30Z",
+      "name": "build",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-25T11:36:19Z",
+          "completed_at": "2026-10-25T11:36:20Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-25T11:36:20Z",
+          "completed_at": "2026-10-25T11:36:23Z"
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-25T11:36:23Z",
+          "completed_at": "2026-10-25T11:36:24Z"
+        },
+        {
+          "name": "Run npm ci --ignore-scripts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-25T11:36:24Z",
+          "completed_at": "2026-10-25T11:36:29Z"
+        },
+        {
+          "name": "Run npm run build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-25T11:36:29Z",
+          "completed_at": "2026-10-25T11:40:02Z"
+        },
+        {
+          "name": "Run npm test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-25T11:40:02Z",
+          "completed_at": "2026-10-25T11:44:29Z"
+        },
+        {
+          "name": "Run npm run test:cad",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-25T11:44:29Z",
+          "completed_at": "2026-10-25T11:44:41Z"
+        },
+        {
+          "name": "Run npm run format:check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-25T11:44:41Z",
+          "completed_at": "2026-10-25T11:45:27Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-10-25T11:45:27Z",
+          "completed_at": "2026-10-25T11:45:29Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-10-25T11:45:29Z",
+          "completed_at": "2026-10-25T11:45:29Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-10-25T11:45:29Z",
+          "completed_at": "2026-10-25T11:45:29Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/MALIEV-Co-Ltd/Maliev.ScanForge/check-runs/121157454066",
+      "labels": ["ubuntu-latest"],
+      "runner_id": 1000105465,
+      "runner_name": "GitHub Actions 1000105465",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

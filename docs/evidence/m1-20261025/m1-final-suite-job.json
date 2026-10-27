@@ -1,0 +1,11 @@
+{
+  "command": ["cmd", "/d", "/c", "npm", "test"],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 1042649088,
+  "totalProcesses": 819,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 288.8127156999544
+}

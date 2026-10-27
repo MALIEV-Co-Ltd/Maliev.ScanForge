@@ -1,0 +1,9 @@
+{
+  "scenario": "parent exits with failure after spawning an owned descendant",
+  "driverExitCode": 1,
+  "expectedFailure": true,
+  "ownedChildPid": 49512,
+  "ownedChildAbsentAfterJobClose": true,
+  "applicationMemoryCapBytes": 4294967296,
+  "acceptanceLeaseSeconds": 900
+}

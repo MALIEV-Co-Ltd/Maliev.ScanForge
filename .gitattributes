@@ -12,3 +12,6 @@ tests/fixtures/m6-sparse-cloud.asc -text -whitespace
 docs/evidence/m5-20261025/*.log -text -whitespace
 docs/evidence/m5-20261025/*.brep -text -whitespace
 docs/evidence/m5-20261025/*.step -text -whitespace
+
+# Retained acceptance receipts are hashed as exact bytes.
+docs/evidence/m1-20261025/** -text -whitespace

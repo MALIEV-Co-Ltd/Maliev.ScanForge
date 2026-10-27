@@ -1,0 +1,49 @@
+Resource admission: 14300 MiB available; 1536 MiB required.
+{"passed":"scan-1.stl","buffers":4}
+Resource admission: 14493 MiB available; 1536 MiB required.
+{"passed":"scan-2.stl","buffers":4}
+Resource admission: 11972 MiB available; 1536 MiB required.
+{"passed":"scan-3.stl","buffers":4}
+Resource admission: 14736 MiB available; 1536 MiB required.
+{"passed":"ply-1.ply","buffers":6}
+Resource admission: 14782 MiB available; 1536 MiB required.
+{"passed":"ply-2.ply","buffers":6}
+Resource admission: 14037 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"ok":false,"error":{"code":"BRIDGE_UNAVAILABLE","message":"Browser command timed out"}}
+    at call (file:///C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge/tests/m1-original-import-browser.mjs:190:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async job (file:///C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge/tests/m1-original-import-browser.mjs:201:22)
+    at async digest (file:///C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge/tests/m1-original-import-browser.mjs:244:6)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge/tests/m1-original-import-browser.mjs:484:34 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.0
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: ply-3.ply: original acceptance failed
+
+1 !== 0
+
+    at file:///C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge/tests/m1-original-import-browser.mjs:35:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0
+{"command": ["node", "--max-old-space-size=2048", "tests/m1-original-import-browser.mjs"], "jobLimitBytes": 4294967296, "leaseSeconds": 900, "exitCode": 1, "peakJobBytes": 4372418560, "totalProcesses": 97, "activeAfter": 0, "passed": false, "elapsedSeconds": 471.59082059998764}

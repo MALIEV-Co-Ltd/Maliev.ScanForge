@@ -1,0 +1,11 @@
+{
+  "command": ["node", "tests/m1-selection-browser.mjs"],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 900,
+  "exitCode": 0,
+  "peakJobBytes": 921833472,
+  "totalProcesses": 18,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 39.5948232000228
+}

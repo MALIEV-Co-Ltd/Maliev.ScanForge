@@ -1,0 +1,3 @@
+Resource admission: 15896 MiB available; 1536 MiB required.
+{"passed":"ply-3.ply","buffers":6}
+{"command": ["node", "--max-old-space-size=2048", "tests/m1-original-import-browser.mjs"], "jobLimitBytes": 4294967296, "leaseSeconds": 900, "exitCode": 0, "peakJobBytes": 3887632384, "totalProcesses": 20, "activeAfter": 0, "passed": true, "elapsedSeconds": 121.82311539998045}

@@ -1,0 +1,56 @@
+Resource admission: 13522 MiB available; 1536 MiB required.
+{"file":"scan-1.stl","stage":"oracle-ready"}
+{"file":"scan-1.stl","stage":"gui-imported"}
+{"file":"scan-1.stl","stage":"mcp-imported"}
+{"file":"scan-1.stl","stage":"gui-deleted"}
+{"passed":"scan-1.stl","buffers":4}
+Resource admission: 12621 MiB available; 1536 MiB required.
+{"file":"scan-2.stl","stage":"oracle-ready"}
+{"file":"scan-2.stl","stage":"gui-imported"}
+{"file":"scan-2.stl","stage":"mcp-imported"}
+{"file":"scan-2.stl","stage":"gui-deleted"}
+{"passed":"scan-2.stl","buffers":4}
+Resource admission: 12934 MiB available; 1536 MiB required.
+{"file":"scan-3.stl","stage":"oracle-ready"}
+{"file":"scan-3.stl","stage":"gui-imported"}
+{"file":"scan-3.stl","stage":"mcp-imported"}
+{"file":"scan-3.stl","stage":"gui-deleted"}
+{"passed":"scan-3.stl","buffers":4}
+Resource admission: 12840 MiB available; 1536 MiB required.
+{"file":"ply-1.ply","stage":"oracle-ready"}
+{"file":"ply-1.ply","stage":"gui-imported"}
+{"file":"ply-1.ply","stage":"mcp-imported"}
+{"file":"ply-1.ply","stage":"gui-deleted"}
+{"passed":"ply-1.ply","buffers":6}
+Resource admission: 13287 MiB available; 1536 MiB required.
+{"file":"ply-2.ply","stage":"oracle-ready"}
+{"file":"ply-2.ply","stage":"gui-imported"}
+{"file":"ply-2.ply","stage":"mcp-imported"}
+{"file":"ply-2.ply","stage":"gui-deleted"}
+{"passed":"ply-2.ply","buffers":6}
+Resource admission: 10401 MiB available; 1536 MiB required.
+{"file":"ply-3.ply","stage":"oracle-ready"}
+{"file":"ply-3.ply","stage":"gui-imported"}
+{"file":"ply-3.ply","stage":"mcp-imported"}
+{"file":"ply-3.ply","stage":"gui-deleted"}
+{"passed":"ply-3.ply","buffers":6}
+Resource admission: 12466 MiB available; 1536 MiB required.
+{"file":"asc-1.asc","stage":"oracle-ready"}
+{"file":"asc-1.asc","stage":"gui-imported"}
+{"file":"asc-1.asc","stage":"mcp-imported"}
+{"file":"asc-1.asc","stage":"gui-deleted"}
+{"passed":"asc-1.asc","buffers":2}
+Resource admission: 12465 MiB available; 1536 MiB required.
+{"file":"asc-2.asc","stage":"oracle-ready"}
+{"file":"asc-2.asc","stage":"gui-imported"}
+{"file":"asc-2.asc","stage":"mcp-imported"}
+{"file":"asc-2.asc","stage":"gui-deleted"}
+{"passed":"asc-2.asc","buffers":2}
+Resource admission: 12421 MiB available; 1536 MiB required.
+{"file":"asc-3.asc","stage":"oracle-ready"}
+{"file":"asc-3.asc","stage":"gui-imported"}
+{"file":"asc-3.asc","stage":"mcp-imported"}
+{"file":"asc-3.asc","stage":"gui-deleted"}
+{"passed":"asc-3.asc","buffers":2}
+{"passed":true,"originals":9}
+{"command": ["node", "--max-old-space-size=2048", "tests/m1-original-import-browser.mjs"], "jobLimitBytes": 4294967296, "leaseSeconds": 900, "exitCode": 0, "peakJobBytes": 3892289536, "totalProcesses": 149, "activeAfter": 0, "passed": true, "elapsedSeconds": 403.82021770003485}

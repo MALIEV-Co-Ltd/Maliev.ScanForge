@@ -1,0 +1,2 @@
+Typecheck 1/23: source (555 root files; 1536 MiB heap)
+src/__m1_typecheck_guard.ts(1,14): error TS2322: Type 'string' is not assignable to type 'number'.

@@ -1,0 +1,4 @@
+2026-10-25T11:15:27.3458525Z ##[error]tests/mcp-server.test.ts(195,7): error TS7006: Parameter 'callback' implicitly has an 'any' type.
+2026-10-25T11:15:27.3467941Z ##[error]tests/mcp-server.test.ts(196,7): error TS7006: Parameter 'delay' implicitly has an 'any' type.
+2026-10-25T11:15:27.3470103Z ##[error]tests/mcp-server.test.ts(197,7): error TS7019: Rest parameter 'args' implicitly has an 'any[]' type.
+2026-10-25T11:15:27.4221984Z ##[error]Process completed with exit code 2.

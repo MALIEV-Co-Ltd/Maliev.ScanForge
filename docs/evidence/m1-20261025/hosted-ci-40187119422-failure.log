@@ -1,0 +1,9 @@
+2026-10-25T11:06:46.9412385Z      × releases a pending waiter on expiry and allows a new owner 53ms
+2026-10-25T11:10:23.7373821Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-10-25T11:10:23.7375371Z  FAIL  tests/mcp-server.test.ts > opt-in bounded long polling > releases a pending waiter on expiry and allows a new owner
+2026-10-25T11:10:23.7376522Z AssertionError: expected 200 to be 409 // Object.is equality
+2026-10-25T11:10:23.7379424Z  ❯ tests/mcp-server.test.ts:180:29
+2026-10-25T11:10:23.7662728Z  Test Files  1 failed | 667 passed | 18 skipped (686)
+2026-10-25T11:10:23.7826469Z       Tests  1 failed | 48962 passed | 64 skipped (49027)
+2026-10-25T11:10:23.8067916Z ##[error]AssertionError: expected 200 to be 409 // Object.is equality
+ ❯ tests/mcp-server.test.ts:180:29

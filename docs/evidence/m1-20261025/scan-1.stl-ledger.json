@@ -1,0 +1,71 @@
+{
+  "owner": "point-cloud-edit-browser",
+  "pid": 42804,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-10-25T11:34:01.621Z",
+  "expiresAt": "2026-10-25T11:49:01.621Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 59231,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 28160,
+      "port": 59232,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 36596
+    }
+  ],
+  "malformedGuiMcpRecovery": true,
+  "result": {
+    "passed": true,
+    "results": [
+      {
+        "name": "scan-1.stl",
+        "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "bytes": 13657034,
+        "buffers": [
+          {
+            "path": "positions",
+            "encoding": "f32",
+            "elements": 2458251,
+            "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f32",
+            "elements": 418014,
+            "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 819417,
+            "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+          },
+          {
+            "path": "indexedMesh.geometryNormals",
+            "encoding": "f32",
+            "elements": 418014,
+            "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+          }
+        ],
+        "guiMcpEqual": true,
+        "undoRedoEqual": true,
+        "originalSlotDeleteGuiMcpEqual": true,
+        "mcpInFlightCancelRecovery": true,
+        "guiInFlightCancelRecovery": false,
+        "oracle": "retained native topology"
+      }
+    ],
+    "errors": []
+  },
+  "cleanedAt": "2026-10-25T11:34:09.999Z",
+  "passed": true
+}

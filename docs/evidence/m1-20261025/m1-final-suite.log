@@ -1,0 +1,22 @@
+
+> scanforge@0.1.0 test
+> vitest run --maxWorkers=1 --exclude **/.resources/**
+
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m1-verified-candidate/Maliev.ScanForge
+
+warning: in the working copy of '.resources/release-notes.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-plan.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-notes.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-plan.json', LF will be replaced by CRLF the next time Git touches it
+Switched to a new branch 'unreleased'
+
+ Test Files  668 passed | 18 skipped (686)
+      Tests  48964 passed | 64 skipped (49028)
+   Start at  18:34:01
+   Duration  287.70s (tests 76%, import 19%, transform 4%, worker 1%)
+
+    Isolate  686 workers spawned · ~90ms startup each (spawn + environment, per file)
+             at least ~61.42s faster with isolate: false — reuses workers across files instead of one per file
+
+{"command": ["cmd", "/d", "/c", "npm", "test"], "jobLimitBytes": 4294967296, "leaseSeconds": 900, "exitCode": 0, "peakJobBytes": 1042649088, "totalProcesses": 819, "activeAfter": 0, "passed": true, "elapsedSeconds": 288.8127156999544}
