@@ -144,10 +144,12 @@ or line duplication remain open.
 The [native line-pair observation](evidence/m4-native-line-pair-20261027.json)
 records a constructed line between two parallel numeric reference lines. The
 native editor displayed their midpoints as endpoints and retained both named
-sources and the result after QSF reopening. This is one dropdown-selected case;
-it does not establish general native location semantics or compare this exact
-fixture to GUI and MCP. The average picker did not confirm a source and remains
-unverified.
+sources and the result after QSF reopening. GUI and public MCP produced the same
+displayed geometry on the corresponding source endpoints with explicit 0.5
+fractions, retained source records and worker reopen; the GUI displayed a
+fallback notice. This one dropdown-selected native case does not establish
+general acquisition or fallback semantics. The native average picker did not
+confirm a source and remains unverified.
 
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's

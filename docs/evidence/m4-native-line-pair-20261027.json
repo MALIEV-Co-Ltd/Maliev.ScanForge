@@ -26,10 +26,22 @@
     "privateCleanupReceiptSha256": "e829b05ba08ce5950b31b63f22f9e06bb2fdbb171fcf958de58eb50136ea77af",
     "cleanup": "Authenticated owned finish; zero active processes, root exited, handles closed, no cleanup errors or overrun, and mutex released after cleanup; 195.50 seconds under the 540-second outer lease."
   },
+  "applicationAndMcp": {
+    "buildId": "scanforge-ef836f21c2055ee2",
+    "productionInputSha256": "1536c75004139ae4e04447cfe20d160cb48da82dd93132a8fc8335ee9a976bae",
+    "driver": "tests/reference-construction-browser.mjs",
+    "driverSha256": "21bebe29bcb6fa82927cf99bd825c9ba8f45ab5dd2499d23ec0e58b3535d3070",
+    "coverage": "Actual GUI and public stdio MCP preview matched the native displayed geometry using explicit 0.5 fractions on the same source endpoints; GUI Apply, retained source edit/Cancel and project-worker reopen passed. The application GUI displayed a fallback-geometry notice.",
+    "privateBrowserReceiptSha256": "cec8a50398b7e3fe4d8d0ba1bdf10183032a0b0bf62db9334303ebde2e777330",
+    "privateScreenshotSha256": "4a7a0efbf84352ad6fb019c902562bf78eaa175d1433679574f6e3fcf3cc3b39",
+    "privateCleanupReceiptSha256": "1e2ee9935eb988f475c53a9585047b3e80963e08f3906cccd7aeef651accfb39",
+    "cleanup": "Owned browser, bridge and workers exited and private ports closed; zero active processes, closed handles and released mutex; 44.78 seconds under the 480-second lease.",
+    "firstAttempt": "The first comparison failed on a test assertion expecting a nonexistent geometry.end field; its cleanup passed and the failed receipt is retained privately."
+  },
   "limitations": [
     "The source choices came from native dropdowns; no viewport-picked locations were confirmed. The result is one parallel-line fixture and does not establish general native source-location rules.",
     "The native average picker remained at zero selected after a visible line click. The experiment was cancelled; no average result or persistence claim is made.",
-    "No source mutation, raw binary geometry comparison, or application/public MCP comparison of this exact fixture was performed in this session. Existing application pair/average GUI and MCP coverage is a separate checkpoint.",
+    "No source mutation or raw native binary geometry comparison was performed. The native dropdown selected sources without explicit fractions, while the application comparison supplied 0.5 for each; it does not establish identical acquisition semantics or equivalent fallback diagnostics.",
     "This checkpoint does not complete M4 or authorize merge or milestone closure."
   ]
 }
