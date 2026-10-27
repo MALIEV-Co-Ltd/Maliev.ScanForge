@@ -53,6 +53,43 @@ it("fits the selected original inner boundary to the native spatial sketch", () 
   );
 });
 
+it.each([
+  [0.05, native.originalOuterControls.tolerance005],
+  [0.001, native.originalOuterControls.tolerance0001],
+])(
+  "fits the original outer boundary against native at %s mm",
+  (tolerance, expected) => {
+    const r = request();
+    const indexed = nativeStlTopology(Float32Array.from(r.positions));
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(indexed.vertices),
+      indexed.triangles,
+    );
+    const outer = topology.boundaryLoops.findIndex((ids) =>
+      ids.every(
+        (id) =>
+          Math.hypot(topology.vertices[id * 3], topology.vertices[id * 3 + 1]) >
+          4,
+      ),
+    );
+    expect(outer).toBeGreaterThanOrEqual(0);
+    const result = runScanEdit(
+      { ...r, indices: [outer], fitTolerance: tolerance },
+      { topologyCache: { positions: r.positions, tolerance: 1e-6, topology } },
+    );
+    expect(result.spatialCurves).toHaveLength(1);
+    const curve = result.spatialCurves![0];
+    expect(curve.knots).toEqual(expected.knots);
+    expect(curve.poles).toHaveLength(expected.controlPoints.length * 3);
+    curve.poles.forEach((value, i) =>
+      expect(value).toBeCloseTo(
+        expected.controlPoints[Math.floor(i / 3)][i % 3],
+        6,
+      ),
+    );
+  },
+);
+
 it("rejects an empty or invalid boundary selection before publishing", () => {
   expect(() => runScanEdit(request([]))).toThrow(/boundary/i);
   expect(() => runScanEdit(request([999]))).toThrow(/selection|boundary/i);
