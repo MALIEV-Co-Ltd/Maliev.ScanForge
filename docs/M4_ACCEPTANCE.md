@@ -143,10 +143,10 @@ or line duplication remain open.
 
 The [scan-plane sketch guard checkpoint](evidence/m4-scan-plane-sketch-guards-20261027.json)
 extends the original scan, fitted-plane and sketch workflow with GUI draft
-cancellation and GUI/public MCP conflicting-constraint rejection, scoped
-undo/redo, reopening both sketches and an unchanged scan geometry digest. This
-is application/public MCP evidence; native fit, frame and solver parity remain
-open.
+cancellation and GUI/public MCP conflicting-constraint rejection, GUI/public
+MCP scoped undo/redo, reopening both sketches and an unchanged scan geometry
+digest. This is application/public MCP evidence; native fit, frame and solver
+parity remain open.
 
 The [native line-pair observation](evidence/m4-native-line-pair-20261027.json)
 records a constructed line between two parallel numeric reference lines. The

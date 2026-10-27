@@ -240,6 +240,17 @@ try {
     }
     throw Error("Geometry job failed to settle");
   }
+  async function waitForSketch(expected) {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      try {
+        assert.deepEqual((await call("sketch_get")).result.sketch, expected);
+        return;
+      } catch (error) {
+        if (attempt === 119) throw error;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+  }
 
   const points = [
     0.000000001, 0, 5, 10.00000001, 0, 5, 0, 10.00000001, 5, 100, 100, 100, 110,
@@ -551,10 +562,14 @@ try {
     ),
   });
   await mutate("ui_set", { dismissError: true });
-  await mutate("history_undo", { scope: "sketch" });
-  assert.deepEqual((await call("sketch_get")).result.sketch, empty);
-  await mutate("history_redo", { scope: "sketch" });
-  assert.deepEqual((await call("sketch_get")).result.sketch, guiRectangle);
+  await sketchPanel
+    .getByRole("button", { name: "Undo sketch edit", exact: true })
+    .click();
+  await waitForSketch(empty);
+  await sketchPanel
+    .getByRole("button", { name: "Redo sketch edit", exact: true })
+    .click();
+  await waitForSketch(guiRectangle);
 
   await mutate("sketch_manage", {
     action: "activate",
@@ -589,7 +604,7 @@ try {
   ledger.scanPlaneSketchGuards = {
     guiCancel: true,
     guiAndMcpRejectedConflictAtomically: true,
-    bothSketchesScopedUndoRedoViaPublicMcp: true,
+    guiAndMcpScopedUndoRedo: true,
   };
   const profile = {
     ...empty,
