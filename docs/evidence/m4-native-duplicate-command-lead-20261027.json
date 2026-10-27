@@ -10,7 +10,8 @@
     "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The earlier captured pointer was from a previous Windows boot and was not matched to current system addresses.",
     "otherCandidates": "The byte candidate at 0x5c9256 falls inside an exact 1,319-byte exception range, but a bounded listing covered only 57 bytes and did not list that candidate. Its decompiler followed code outside the stated range, so neither the jump nor the decompiled paths establish the receiver. Three other value matches have been retained as metadata: two contexts resemble the known dispatch and one may be a call displacement. None is instruction-verified or establishes a handler.",
     "tableCallers": "Two separately bounded listings verify all 142 bytes of caller entries 0x5c2ef0 and 0x5c3440. The first passes size 0xc430 to an indirect call and, on a nonzero result, calls the first table-store routine; the second calls the other table-store routine and conditionally calls one of two further targets. Their shapes suggest allocation and teardown wrappers but do not identify those indirect targets, a live receiver or a duplicate handler. An aligned pointer candidate to the second wrapper appears eight bytes after the first table start; table extent and runtime ownership remain unverified.",
-    "tableType": "Both previously identified locator candidates point to type descriptor 0x15ef958. A fresh hidden owned process read that fixed descriptor twice and observed the complete ASCII RTTI name .?AVCEditSketchDialog@@. This associates the two table starts with sketch-dialog RTTI metadata and makes the label/dispatch lead a weaker candidate for project-reference duplication. It does not bind the live command receiver or establish the full table extent. A second descriptor's name exceeded the fixed captured span and remains incomplete. The initial data-only carrier check failed because the descriptor address was outside its captured section map; its failure is retained."
+    "tableType": "Both previously identified locator candidates point to type descriptor 0x15ef958. A fresh hidden owned process read that fixed descriptor twice and observed the complete ASCII RTTI name .?AVCEditSketchDialog@@. This associates the two table starts with sketch-dialog RTTI metadata and makes the label/dispatch lead a weaker candidate for project-reference duplication. It does not bind the live command receiver or establish the full table extent. A second descriptor's name exceeded the fixed captured span and remains incomplete. The initial data-only carrier check failed because the descriptor address was outside its captured section map; its failure is retained.",
+    "selectionSwitch": "A separate byte-verified switch at 0x7080d0 maps argument 0x8341 to 0x70ab30 when its entry guards pass. A bounded listing from that computed in-function target verified 632 listed bytes and reaches the duplicate-selection prompt at 0x70aca2 on zero-count paths. A nonzero path calls 0x6609b0, the same RVA recorded as sketch-duplicate activation in earlier evidence from a different image; equivalent code and runtime binding are not established by that address alone. This is a sketch-duplication lead, not proof of project reference-copy behavior."
   },
   "verification": {
     "labelRangeBytesVerified": 1273,
@@ -52,7 +53,13 @@
     "ownedDescriptorCapture": "5db5b147b78ca720b4b110dddb3c952e6657d956e7b9cc094c269f9e3e3ceeb4",
     "ownedDescriptorCaptureReceipt": "49816595445eeb8508b6cbd6c43fe5b3ea514f619648ef75e01fb44cefa7cd4d",
     "ownedDescriptorVerification": "3d906a9df9d7d477f02f3719a568ed81144ff504c43a92e2ac7f8a2c9ee2a8af",
-    "ownedDescriptorVerificationReceipt": "25a2843c93ce1f01d7b358137db9b5f5371b9f0454dc36e4d342c2598271a542"
+    "ownedDescriptorVerificationReceipt": "25a2843c93ce1f01d7b358137db9b5f5371b9f0454dc36e4d342c2598271a542",
+    "selectionRangeMetadata": "6bdd1998bca55e7fe4e36f346b963e6f1a62a004e806bfe1890acc9fbb5ebedd",
+    "selectionListingVerification": "064baad22acdd34b999ad28032a4cde750a25bddc362647dac40f55e21ae1b45",
+    "selectionSwitchCalculation": "2252db7af020c3c39c8738b0a6213c122c3bc95386511ad49892d28234520dc6",
+    "switchTargetByteVerification": "471b0b0f2a6a6a53880692bddfc552d27db1f3332dbdda99d0ded358c46d528e",
+    "switchTargetListingReceipt": "fb3e11d1d0cf98b8e9237fa0c39f0fea20247b54f3decfb30ad29e2d5ea00c34",
+    "switchTargetVerificationReceipt": "a2f92dc727e2a5fa231455e433e8142409b7d88025e21ffc5bea7493e2b0fa46"
   },
   "remaining": [
     "Bind the actual destination handler and runtime receiver without assuming table extent or mapped-module identity.",
