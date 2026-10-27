@@ -76,7 +76,34 @@
         "fieldLimitation": "The close receipt checks exitCode non-null; signal-terminated Vite can have a null exit code. The exit event was awaited, guarded descendants reached zero and listening port 5177 was closed."
       }
     },
-    "automationTestsPassed": 99
+    "automationTestsPassed": 99,
+    "finalBuild": {
+      "assetBuild": "scanforge-af70aba50cf73a0f",
+      "typecheckBatches": 13,
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "scope": "Includes updated MCP catalog description; evidence-only follow-up is subsequent."
+    },
+    "combinedPreview": {
+      "previewCommit": "b6a2934e545cbe0fd08e58d38487599281578d2d",
+      "port": 5173,
+      "fixture": "Same manufactured Y-seed STL and exact STEP as isolated candidate",
+      "outputPositionFloat32Sha256": "cd27ff2e19dc7a503bf84ba6dee30c62618f71fa4ff8e8f1f7148e2bb99f1194",
+      "guiMcpPositionsExactlyEqual": true,
+      "guiMcpFrameExactlyEqual": true,
+      "guiMcpSketchExactlyEqual": true,
+      "sourcePositionSha256BeforeAfter": "1180522435c8cc39c774fef910ba2960ab151834270370967b0177f8bc3eca12",
+      "undoRemovedOutputs": true,
+      "redoRestoredOutputDigest": true,
+      "browserWarningsErrors": 0,
+      "cleanup": {
+        "helperExitCode": 0,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "bridgePort5199Closed": true,
+        "userPreviewScenePreserved": true
+      }
+    }
   },
   "limitations": [
     "The new Y-seed control is manufactured from the inferred static algorithm, not a native export.",
