@@ -780,8 +780,8 @@ try {
       "pair",
       "Two primitives",
       [
-        { entityId: nativePairSource, parameter: 0.5 },
-        { entityId: extraLine, parameter: 0.5 },
+        { entityId: nativePairSource, selection: "object" },
+        { entityId: extraLine, selection: "object" },
       ],
       ["Native pair source", "Average source"],
       true,
@@ -862,6 +862,13 @@ try {
         .nth(i + 1)
         .click();
       await page.getByRole("option", { name: names[i], exact: true }).click();
+      if (picks[i].selection === "object")
+        await dialog
+          .getByRole("checkbox", {
+            name: `Select source ${i + 1} object without a position`,
+            exact: true,
+          })
+          .check();
       if (picks[i].parameter !== undefined)
         await dialog
           .getByLabel(`Source ${i + 1} fraction`, { exact: true })
@@ -888,6 +895,14 @@ try {
     const stored = (await call("object_get", { entityId: id })).result
       .reference;
     assert.deepEqual(stored.geometryEncoding, independent.geometryEncoding);
+    if (nativePair)
+      assert.deepEqual(
+        stored.definition.records.map((record) => record.coordinates),
+        [
+          [0, 0, 0],
+          [0, 0, 0],
+        ],
+      );
     await mutate("object_select", { entityId: id });
     await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
     await page
@@ -912,6 +927,28 @@ try {
       (await call("reference_construction_get")).result.geometryEncoding,
       stored.geometryEncoding,
     );
+    if (nativePair) {
+      await dialog.locator(".app-select > button").nth(2).click();
+      await page.getByRole("option", { name: "M4 line", exact: true }).click();
+      await dialog
+        .getByLabel("Source 2 fraction", { exact: true })
+        .fill("0.25");
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForFunction(
+        () =>
+          !document.querySelector(
+            '[role="dialog"] .button-row:last-child button:nth-child(2)',
+          )?.disabled,
+      );
+      const edited = (await call("reference_construction_get")).result;
+      assert.deepEqual(
+        edited.definition.records[0],
+        stored.definition.records[0],
+      );
+      assert.deepEqual(edited.definition.records[1].coordinates, [5, 0, 0]);
+    }
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await dialog.waitFor({ state: "detached" });
     ledger.derivedLines.push({

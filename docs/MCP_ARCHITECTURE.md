@@ -928,8 +928,13 @@ simulate a nonexistent legacy representation.
 
 Public source intents admit at most 1,000 records per operation. Scene admission
 and graph refresh use the existing atomic closure, cycle, lock, cancellation,
-work and history checks. Omitted `sourcePicks` preserves accepted records;
-explicit replacement resolves a complete acquisition list. Inspection exposes
+work and history checks. Omitted `sourcePicks` preserves accepted records.
+Explicit replacement resolves each new acquisition or reuses a server-owned
+record by index from the existing derived edit or current owned preview. Reuse
+checks the record's entity and current construction key, and never accepts
+caller-provided record bytes. Pair-mode object selection of a stored numeric
+reference line retains the native-observed zero pick suffix; explicit fraction
+acquisition remains available. Inspection exposes
 lossless definition encoding alongside geometry encoding. Required retained CAD
 and scan adapters and remaining primitive families are still release gates.
 Current sphere/cylinder/cone recipes already provide analytic sources. Fit-only

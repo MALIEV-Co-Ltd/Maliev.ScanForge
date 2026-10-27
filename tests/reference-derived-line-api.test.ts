@@ -19,7 +19,12 @@ import {
 } from "../src/project-file-codec";
 import type { Entity, Vec3 } from "../src/types";
 
-type LocatedSource = { entityId: string; parameter?: number };
+type LocatedSource = {
+  entityId: string;
+  parameter?: number;
+  selection?: "object";
+  retainedIndex?: number;
+};
 const apis: ApplicationApi[] = [];
 afterEach(() => {
   for (const api of apis.splice(0)) api.dispose();
@@ -222,7 +227,7 @@ it("discovers a located semantic source intent without accepting caller-authored
   });
   expect(
     Object.keys(schema.properties.sourcePicks.items.properties).sort(),
-  ).toEqual(["entityId", "parameter", "planeUV"]);
+  ).toEqual(["entityId", "parameter", "planeUV", "retainedIndex", "selection"]);
   for (const field of [
     "records",
     "constructionOrderKey",
@@ -350,6 +355,226 @@ it("derives a line hit from authoritative stored extent, consumes the fraction o
     length: 5,
   });
 });
+
+it("retains native dropdown zero records for numeric line pairs and preserves them across source refresh and history", async () => {
+  const h = fixture();
+  const discovery = await value(
+    h.api.invoke("reference_construction_sources", {
+      kind: "line",
+      mode: "pair",
+      limit: 100,
+    }),
+  );
+  expect(
+    discovery.sources.find((row: any) => row.entityId === "x1").objectSelection,
+  ).toBe(true);
+  expect(
+    discovery.sources.find((row: any) => row.entityId === "a").objectSelection,
+  ).toBeUndefined();
+  const p = await located(h, await seed(h), "pair", [
+    { entityId: "x1", selection: "object" },
+    { entityId: "x2", selection: "object" },
+  ]);
+  expect(p.definition.records.map((r: any) => r.coordinates)).toEqual([
+    [0, 0, 0],
+    [0, 0, 0],
+  ]);
+  expect(p.geometry.start).toEqual([5, 2, 0]);
+  expect(referenceLineEnd(p.geometry)).toEqual([5, 6, 0]);
+  const made = await apply(h, p);
+  const edited = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      entityId: "x1",
+      start: [0, 2, 0],
+      end: [20, 2, 0],
+    }),
+  );
+  await apply(h, edited);
+  expect(lineGeometry(h, made.entityId).start).toEqual([7.5, 2, 0]);
+  expect((find(h, made.entityId).reference!.definition as any).records).toEqual(
+    p.definition.records,
+  );
+  await history(h, "undo");
+  expect(lineGeometry(h, made.entityId).start).toEqual([5, 2, 0]);
+  await history(h, "redo");
+  expect(lineGeometry(h, made.entityId).start).toEqual([7.5, 2, 0]);
+  const saved = serializeProject(h.state.name, h.state.entities);
+  const restored = parseProject(saved);
+  expect(
+    (
+      restored.entities.find((row: Entity) => row.id === made.entityId)!
+        .reference!.definition as any
+    ).records,
+  ).toEqual(p.definition.records);
+});
+
+it("retains each dropdown and fraction intent independently", async () => {
+  const h = fixture();
+  const p = await located(h, await seed(h), "pair", [
+    { entityId: "x1", selection: "object" },
+    { entityId: "x2", parameter: 0.75 },
+  ]);
+  expect(p.definition.records.map((r: any) => r.coordinates)).toEqual([
+    [0, 0, 0],
+    [7.5, 6, 0],
+  ]);
+  await cancel(h, p);
+  expect(h.state.history).toHaveLength(0);
+});
+
+it("reuses one exact owned record while changing another source location", async () => {
+  const h = fixture();
+  const first = await located(h, await seed(h), "pair", [
+    { entityId: "x1", selection: "object" },
+    { entityId: "x2", parameter: 0.75 },
+  ]);
+  const made = await apply(h, first);
+  const changed = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      entityId: made.entityId,
+      mode: "pair",
+      sourcePicks: [
+        { entityId: "x1", retainedIndex: 0 },
+        { entityId: "x2", parameter: 0.25 },
+      ],
+    }),
+  );
+  expect(changed.definition.records[0]).toEqual(first.definition.records[0]);
+  expect(changed.definition.records[1].coordinates).toEqual([2.5, 6, 0]);
+  await cancel(h, changed);
+  expect((find(h, made.entityId).reference!.definition as any).records).toEqual(
+    first.definition.records,
+  );
+});
+
+it("rejects stale preview versions when reusing a retained record", async () => {
+  const h = fixture();
+  const initial = await located(h, await seed(h), "pair", [
+    { entityId: "x1", selection: "object" },
+    { entityId: "x2", parameter: 0.75 },
+  ]);
+  const current = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      mode: "pair",
+      sessionId: initial.sessionId,
+      version: initial.version,
+      sourcePicks: [
+        { entityId: "x1", retainedIndex: 0 },
+        { entityId: "x2", parameter: 0.25 },
+      ],
+    }),
+  );
+  const stale = await h.command({
+    action: "preview",
+    kind: "line",
+    mode: "pair",
+    sessionId: initial.sessionId,
+    version: initial.version,
+    sourcePicks: [
+      { entityId: "x1", retainedIndex: 0 },
+      { entityId: "x2", parameter: 0.5 },
+    ],
+  });
+  expect(stale.ok).toBe(false);
+  const live = await value(h.api.invoke("reference_construction_get", {}));
+  expect(live.version).toBe(current.version);
+  expect(live.definition).toEqual(current.definition);
+  await cancel(h, current);
+});
+
+it("rejects unowned or mismatched retained record indices without replacing preview", async () => {
+  const h = fixture(),
+    prior = await seed(h);
+  const reply = await h.command({
+    action: "preview",
+    kind: "line",
+    mode: "pair",
+    sessionId: prior.sessionId,
+    version: prior.version,
+    sourcePicks: [
+      { entityId: "x1", retainedIndex: 0 },
+      { entityId: "x2", parameter: 0.5 },
+    ],
+  });
+  expect(reply.ok).toBe(false);
+  expect(
+    (await value(h.api.invoke("reference_construction_get", {}))).version,
+  ).toBe(prior.version);
+  const made = await apply(
+    h,
+    await located(h, prior, "pair", [
+      { entityId: "x1", selection: "object" },
+      { entityId: "x2", parameter: 0.5 },
+    ]),
+  );
+  const mismatch = await h.command({
+    action: "preview",
+    kind: "line",
+    mode: "pair",
+    entityId: made.entityId,
+    sourcePicks: [
+      { entityId: "x2", retainedIndex: 0 },
+      { entityId: "x1", selection: "object" },
+    ],
+  });
+  expect(mismatch.ok).toBe(false);
+  const contradictory = await h.command({
+    action: "preview",
+    kind: "line",
+    mode: "pair",
+    entityId: made.entityId,
+    sourcePicks: [
+      { entityId: "x1", retainedIndex: 0, selection: "object" },
+      { entityId: "x2", parameter: 0.5 },
+    ],
+  });
+  expect(contradictory.ok).toBe(false);
+  find(h, "x1").constructionOrderKey = "aa".repeat(16);
+  const staleIdentity = await h.command({
+    action: "preview",
+    kind: "line",
+    mode: "pair",
+    entityId: made.entityId,
+    sourcePicks: [
+      { entityId: "x1", retainedIndex: 0 },
+      { entityId: "x2", parameter: 0.5 },
+    ],
+  });
+  expect(staleIdentity.ok).toBe(false);
+});
+
+it.each([
+  {
+    mode: "pair",
+    pick: { entityId: "x1", selection: "object", parameter: 0.5 },
+  },
+  { mode: "pair", pick: { entityId: "a", selection: "object" } },
+  { mode: "average", pick: { entityId: "x1", selection: "object" } },
+])(
+  "rejects unobserved or contradictory dropdown intent %j",
+  async ({ mode, pick }) => {
+    const h = fixture(),
+      prior = await seed(h);
+    const result = await h.command({
+      action: "preview",
+      kind: "line",
+      mode,
+      sourcePicks: [pick, { entityId: "x2", parameter: 0.5 }],
+      sessionId: prior.sessionId,
+      version: prior.version,
+    });
+    expect(result.ok).toBe(false);
+    expect(
+      (await value(h.api.invoke("reference_construction_get", {}))).version,
+    ).toBe(prior.version);
+  },
+);
 
 it("evaluates average from an explicit owned prior and preserves repeated weighting and independent hit suffixes", async () => {
   const h = fixture();

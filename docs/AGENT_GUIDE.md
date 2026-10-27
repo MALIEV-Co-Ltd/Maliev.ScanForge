@@ -2397,10 +2397,20 @@ the prepared numeric fields under the ordinary editor contract.
 ### Pair and average reference lines
 
 Use `reference_construct` with `kind:"line",mode:"pair"|"average"` and
-`sourcePicks:[{entityId,parameter?},...]`. Pair admits semantic reference points
+`sourcePicks:[{entityId,parameter?,selection?,retainedIndex?},...]`. Pair admits semantic reference points
 and lines plus validated sphere/cylinder/cone primitive recipes; average admits
 semantic lines or cylinder/cone recipes. A point forbids `parameter`;
-a line requires an explicit fraction from 0 to 1 along its finite stored extent.
+a line normally requires an explicit fraction from 0 to 1 along its finite stored extent.
+For pair mode, source discovery marks stored numeric reference lines with
+`objectSelection:true`. Supply `{entityId,selection:"object"}` without a
+fraction or plane coordinates to retain the zero Float32 pick record observed
+for native dropdown selection. This option is not available for average mode,
+derived lines, primitive recipes or other source families.
+When changing one row of an existing derived line or owned derived preview,
+`{entityId,retainedIndex}` reuses the exact server-owned record at that index.
+The entity and current source identity must match; omit other acquisition fields.
+Indices refer to the current edit definition or preview version, never to an
+arbitrary project object, and stale previews remain subject to revision checks.
 The application resolves the authoritative geometry and retains each acquired
 world location as Float32. This located-source adapter does not assert an
 unverified native viewport hit predicate. Numeric cloud picks use a different
@@ -2423,8 +2433,8 @@ scene/work limits, revision, cancellation and lock checks.
 Omit `sourcePicks` when editing an existing or owned derived preview to preserve
 its exact records. Returning from endpoints to a derived mode can reuse retained
 inactive records only while their sources remain valid. Explicit replacements
-must supply complete acquisition intents; do not invent fractions from old pick
-coordinates. Missing or unsupported sources reject. Apply publishes the exact
+must provide an acquisition or validated retained-record intent for each row;
+do not invent fractions from old pick coordinates. Missing or unsupported sources reject. Apply publishes the exact
 cached result and refreshes admitted descendants atomically in one history step;
 Cancel leaves geometry, keys and history unchanged. Inspect `outcome`, diagnostics,
 `geometryEncoding` and `definitionEncoding` to distinguish updated, fallback and

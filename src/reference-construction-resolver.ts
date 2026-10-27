@@ -25,6 +25,18 @@ export interface LocatedReferenceSourcePick {
   readonly entityId: string;
   readonly parameter?: number;
   readonly planeUV?: readonly [number, number];
+  readonly selection?: "object";
+}
+
+/** The observed native dropdown path is limited to stored numeric lines. */
+export function supportsReferenceLineObjectSelection(entity: Entity): boolean {
+  const data = validateReferenceEntity(entity);
+  return (
+    entity.kind === "referenceLine" &&
+    data?.definition.kind === "line" &&
+    data.definition.mode === "endpoints" &&
+    data.definition.sources.length === 0
+  );
 }
 
 /**
@@ -217,6 +229,25 @@ export function acquireLocatedReferenceLinePick(
   if (prototype !== Object.prototype && prototype !== null)
     throw new Error("Invalid located reference source pick prototype.");
   const primitive = resolveReferenceLineSource(entity, mode);
+  if (input.selection !== undefined) {
+    if (
+      input.selection !== "object" ||
+      mode !== "pair" ||
+      !supportsReferenceLineObjectSelection(entity) ||
+      Reflect.ownKeys(input).length !== 2 ||
+      !Object.hasOwn(input, "selection") ||
+      !Object.hasOwn(input, "entityId") ||
+      input.entityId !== entity.id
+    )
+      throw new Error(
+        "Object selection requires a stored numeric reference line in pair mode, without location fields.",
+      );
+    return {
+      entityId: entity.id,
+      storage: "native-pick-record-f32",
+      coordinates: [0, 0, 0],
+    };
+  }
   const fields =
     primitive.kind === "axis"
       ? ["entityId", "parameter"]
