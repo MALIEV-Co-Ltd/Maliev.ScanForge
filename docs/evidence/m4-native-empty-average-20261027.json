@@ -14,6 +14,14 @@
     "testsReceiptSha256": "f8a6d6d801084b0f2700cbf9389043fed0620d52c0bd8383a926828246a9cdc7",
     "buildReceiptSha256": "1189ac8ddc94f932a36f9c476f76132b6f88755c50eb37a9fe8b90faedd5fcc9"
   },
+  "realBackupCoverage": {
+    "scope": "Actual isolated browser GUI and public stdio MCP automatic-backup restore on build scanforge-e739fd14e9904232; three application derived-line fixtures, not native QSF import.",
+    "observation": "After the real interval backup captured the project, MCP restore and GUI Restore each replaced a subsequent source-name edit and restored all three derived-line definitions and lossless geometry. Each restored timeline matched its saved undo/redo counts; undo and redo were exercised and the definitions and geometry were checked again.",
+    "driverSha256": "ef96e7affe0d7c001931c1aae43cba26e64f1a7369253acb0d0dd9dbd3818985",
+    "browserReceiptSha256": "8df77c587d260e86c3e5afdf642c9b4c208cf3bfcf8734cf974baee485bf518c",
+    "boundedReceiptSha256": "67e0fa8182de5c02950319d5dcebca05774ab46e48e8f74f77ae780202a48d03",
+    "cleanup": "Owned browser and MCP processes exited, private ports closed and no cleanup errors or lease overrun occurred."
+  },
   "observation": "The fixture's constructed Ref. Line(3) displayed endpoints [5,0,0] and [5,4,0] mm and length 4 mm. Switching to average mode showed zero selected. An attempted viewport pick highlighted a line but the count stayed zero. After confirming and saving to a separate QSF, reopening showed average mode, zero selected and the same displayed endpoints and length. Editing the former first source endpoint from 10 to 20 mm in the reopened session left that average line's displayed endpoints and zero selection unchanged.",
   "applicationAndMcp": {
     "buildId": "scanforge-118f2aa272bf7d69",

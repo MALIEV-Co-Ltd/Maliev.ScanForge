@@ -1128,6 +1128,89 @@ try {
     assert.deepEqual(stored.geometryEncoding, row.geometryEncoding);
     assert.deepEqual(stored.definition, row.definition);
   }
+  // A real interval backup must restore these definitions through both entry points.
+  const backupStart = Date.now();
+  const backupProject = (await call("project_get")).result;
+  let derivedBackup;
+  while (Date.now() - backupStart < 70000) {
+    const rows = (await call("backup_list", { includeThumbnails: false }))
+      .result.backups;
+    derivedBackup = rows.find(
+      (row) =>
+        row.projectId === backupProject.projectId &&
+        !row.id.endsWith(":previous") &&
+        row.savedAt >= backupStart,
+    );
+    if (derivedBackup) break;
+    await page.waitForTimeout(1000);
+  }
+  assert(
+    derivedBackup,
+    "Automatic backup did not capture the derived references",
+  );
+  const beforeBackupRestore = (
+    await call("object_get", { entityId: nativePairSource })
+  ).result.name;
+  const assertDerivedAfterBackup = async () => {
+    for (const row of ledger.derivedLines) {
+      const reference = (await call("object_get", { entityId: row.entityId }))
+        .result.reference;
+      assert.deepEqual(reference.geometryEncoding, row.geometryEncoding);
+      assert.deepEqual(reference.definition, row.definition);
+    }
+  };
+  await mutate("object_update", {
+    entityId: nativePairSource,
+    patch: { name: "Changed before MCP backup restore" },
+  });
+  await job(
+    await mutate("backup_restore", {
+      backupId: derivedBackup.id,
+      replace: true,
+    }),
+  );
+  assert.equal(
+    (await call("object_get", { entityId: nativePairSource })).result.name,
+    beforeBackupRestore,
+  );
+  assert.equal((await call("project_get")).result.undo, backupProject.undo);
+  assert.equal((await call("project_get")).result.redo, backupProject.redo);
+  await assertDerivedAfterBackup();
+  await mutate("history_undo", {});
+  await mutate("history_redo", {});
+  await assertDerivedAfterBackup();
+  await mutate("object_update", {
+    entityId: nativePairSource,
+    patch: { name: "Changed before GUI backup restore" },
+  });
+  await page.getByRole("tab", { name: "Main", exact: true }).click();
+  await page.getByRole("button", { name: "Backup", exact: true }).click();
+  const recovery = page.getByRole("dialog", { name: "Project backups" });
+  await recovery.getByRole("radio", { name: /latest snapshot$/i }).check();
+  await recovery.getByRole("button", { name: "Restore", exact: true }).click();
+  await recovery.waitFor({ state: "hidden" });
+  let guiRestored = false;
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const current = await call("object_get", { entityId: nativePairSource });
+    if (current.result.name === beforeBackupRestore) {
+      guiRestored = true;
+      break;
+    }
+    await page.waitForTimeout(100);
+  }
+  assert(guiRestored, "GUI backup restore did not complete");
+  assert.equal((await call("project_get")).result.undo, backupProject.undo);
+  assert.equal((await call("project_get")).result.redo, backupProject.redo);
+  await assertDerivedAfterBackup();
+  await mutate("history_undo", {});
+  await mutate("history_redo", {});
+  await assertDerivedAfterBackup();
+  ledger.derivedBackupRestore = {
+    gui: true,
+    publicMcp: true,
+    restoredDefinitions: ledger.derivedLines.length,
+    undoRedo: true,
+  };
   console.log(
     "Pair/average GUI/public MCP, repeated retained records, edit Cancel and worker reopen passed",
   );
