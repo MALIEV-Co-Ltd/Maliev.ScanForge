@@ -33,6 +33,7 @@ export function flipSourceTopologySync(
 export async function flipSourceTopology(
   entity: Entity,
   check: () => void = () => {},
+  progress?: (fraction: number, stage: string) => void,
 ): Promise<IndexedMesh | undefined> {
   check();
   const mesh = sourceMesh(entity);
@@ -61,6 +62,8 @@ export async function flipSourceTopology(
   )
     return undefined;
 
+  let reported = false,
+    chunksSinceFairYield = 0;
   async function visit(
     length: number,
     run: (first: number, end: number) => boolean,
@@ -68,7 +71,15 @@ export async function flipSourceTopology(
     for (let first = 0; first < length; first += CHUNK) {
       check();
       if (!run(first, Math.min(first + CHUNK, length))) return false;
-      if (first + CHUNK < length) await yieldScanTask();
+      if (!reported) {
+        progress?.(0, "Validating indexed topology");
+        reported = true;
+      }
+      // Yield to ordinary browser tasks across fields, including bridge messages.
+      if (++chunksSinceFairYield === 4) {
+        chunksSinceFairYield = 0;
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      } else if (first + CHUNK < length) await yieldScanTask();
     }
     check();
     return true;

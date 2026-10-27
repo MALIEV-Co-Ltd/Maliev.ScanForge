@@ -2894,6 +2894,11 @@ export function App() {
     scanToolAbort.current = controller;
     setProcessingBusy(true);
     setError("");
+    if (parameters.kind === "flipNormals") {
+      setScanToolProgress("Preparing flip normals");
+      setScanToolFraction(0);
+      setMessage("Preparing flip normals · 0%");
+    }
     try {
       const checkScanSource = () => {
         controller.signal.throwIfAborted();
@@ -2912,12 +2917,20 @@ export function App() {
           entities,
           triangleMask,
           checkScanSource,
+          (fraction, stage) => {
+            setScanToolProgress(stage);
+            setScanToolFraction(fraction);
+            setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+          },
         ),
         {
           signal: controller.signal,
           reuseTopology: true,
-          onProgress: (fraction, stage) =>
-            setScanToolProgress(`${stage} · ${Math.round(fraction * 100)}%`),
+          onProgress: (fraction, stage) => {
+            setScanToolProgress(stage);
+            setScanToolFraction(fraction);
+            setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+          },
         },
       );
       if (controller.signal.aborted || !result.positions) return;
@@ -2929,11 +2942,17 @@ export function App() {
         result.indexedMesh,
       );
       scanToolOutput.current = result.positions;
-      setScanToolResult(
-        String(result.diagnostics.summary ?? "Mesh tool complete"),
+      const summary = String(
+        result.diagnostics.summary ?? "Mesh tool complete",
       );
+      setScanToolResult(summary);
+      setMessage(summary);
     } catch (error) {
-      if (!controller.signal.aborted) setError(errorText(error));
+      if (controller.signal.aborted) setMessage("Flip normals cancelled.");
+      else {
+        setMessage("Flip normals failed.");
+        setError(errorText(error));
+      }
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
@@ -7784,6 +7803,11 @@ export function App() {
                   : undefined
               }
               busy={busy}
+              onCancel={
+                processingBusy && !toolPanelOpen && scanToolAbort.current
+                  ? () => scanToolAbort.current?.abort()
+                  : undefined
+              }
             />
           )
         }
