@@ -1,4 +1,4 @@
-import type { MeshTopology } from "./mesh-processing";
+import type { EdgeUse, MeshTopology } from "./mesh-processing";
 import type { Vec3 } from "./types";
 import { edgeId, pointAt } from "./scan-edit";
 
@@ -63,11 +63,18 @@ export function partialTangentRim(
     );
   }
   const rim = [...arc, ...ids];
-  const edges = new Map(topology.edges);
+  // The spatial solver reads only the supplied rim's edges. Do not enumerate
+  // the full mesh edge index for a small partial-hole boundary.
+  const edges = new Map<string, EdgeUse[]>();
+  for (let i = 0; i < arc.length - 1; i++) {
+    const id = edgeId(arc[i], arc[i + 1]);
+    const uses = topology.edges.get(id);
+    if (uses) edges.set(id, uses);
+  }
   for (let i = arc.length - 1; i < rim.length; i++) {
     const from = rim[i],
       to = rim[(i + 1) % rim.length];
-    if (edges.has(edgeId(from, to)))
+    if (topology.edges.has(edgeId(from, to)) || edges.has(edgeId(from, to)))
       throw new Error("Partial hole chord overlaps an existing mesh edge.");
     edges.set(edgeId(from, to), [{ face: -1, from, to }]);
   }
