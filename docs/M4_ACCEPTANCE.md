@@ -217,9 +217,11 @@ edits and worker reopening; a separate shared API test covers a former-source
 edit. Pinned native saved-record readback also shows the former source links
 and ordered records cleared while the endpoint bits stayed unchanged. A
 mock-backed shared API test verifies project/backup restoration of an admitted
-average line with repeated records in current and undo/redo states. The native
-picker still reported zero selected, so successful average acquisition and
-general native parity remain unverified.
+average line with repeated records in current and undo/redo states. An isolated
+actual GUI/public-MCP replay also restores three derived lines from the real
+automatic backup and exercises undo/redo after both restores. The native picker
+still reported zero selected, so successful average acquisition and general
+native parity remain unverified.
 
 [Native reference history menus](evidence/m4-native-reference-history-menus-20261027.json)
 were inspected after reopening one numeric line and its dependent midpoint. Neither
