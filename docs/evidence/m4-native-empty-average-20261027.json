@@ -4,8 +4,19 @@
   "inputProjectSha256": "c01a5ef88e231fe1cf4c429881f828d0821abdfae6ce3b341fcc993f085e2ec0",
   "resultProjectSha256": "e0d2373003447de0a1b5885c5e36a35214c8a1c6a92d45e9797fa6ce40227a93",
   "observation": "The fixture's constructed Ref. Line(3) displayed endpoints [5,0,0] and [5,4,0] mm and length 4 mm. Switching to average mode showed zero selected. An attempted viewport pick highlighted a line but the count stayed zero. After confirming and saving to a separate QSF, reopening showed average mode, zero selected and the same displayed endpoints and length. Editing the former first source endpoint from 10 to 20 mm in the reopened session left that average line's displayed endpoints and zero selection unchanged.",
-  "applicationApi": "A shared ApplicationApi test starts from an explicit new line preview with the same endpoints, switches it to average with an empty source list, applies it, undoes and redoes creation, and verifies JSON reopening. All 49 tests in the derived-line API file pass. This is not the native edit sequence or rendered GUI/public stdio MCP verification.",
-  "limitations": "The source edit was not saved and reopened. No successful average selection, full dependency state, native pick semantics or GUI/MCP parity is established. The native source file was not overwritten. This observation alone does not establish general empty-input behavior.",
+  "applicationAndMcp": {
+    "buildId": "scanforge-118f2aa272bf7d69",
+    "driver": "tests/reference-construction-browser.mjs",
+    "driverSha256": "52a197e142f0137c542b88d0eaffb22a1e878c18fb920f63c4eb7b0f294787e4",
+    "coverage": "The same existing pair fixture is independently edited to average with no sources through public stdio MCP preview and the rendered GUI. Definitions and lossless geometry match, GUI Apply and project-worker reopen preserve them, and Undo restores the prior pair. The shared API test separately verifies a former source edit and JSON reopen. Four focused files pass 148 tests; all 13 type-check batches and production build pass.",
+    "browserReceiptSha256": "cfae0d4d9bb9f2e1a322642fc5cce54e80efd80f123a3ce3969db85afa001b63",
+    "browserCleanupReceiptSha256": "8b6b0a3edeeeda6491639d493b75a3c95ca7e1e8ac936de5f7bf1c56a7a14ad6",
+    "failedBeforeFix": "Before the GUI fix, the public MCP empty edit succeeded but the GUI did not produce an applicable preview. The timed-out run and its successful cleanup receipt are retained.",
+    "failedReceiptSha256": "acbad52c9047914017ab54622ecd1b58de9222d192c02908b982a88ef4df0fd0",
+    "buildReceiptSha256": "b6e48d6d8415e2d000de7f2a6a7bc522eaa7963a2698a41c033c8ac6ac807344",
+    "focusedReceiptSha256": "a2cc30140ad862dea2d6d6db79f4de867a1ff352489175fe90b03a9cf9135dc6"
+  },
+  "limitations": "The native source edit was not saved and reopened. No successful average selection, full native dependency state or general native pick semantics are established. The native source file was not overwritten. This observation alone does not establish general empty-input behavior.",
   "sessionReportSha256": "1598b82a4787e75788caffa967c60b5449acd6b1bca52934521f2445c0478048",
   "boundedReceiptSha256": "5113cc6ae4f86862b8ec00b8e94e9e8fbf7d4ccd6103b1d3a0ec060786475536",
   "cleanup": "Authenticated finish, owned root and descendants exited, zero active processes, handles closed, no cleanup errors or lease overrun; validation lane released."

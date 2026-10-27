@@ -2421,6 +2421,10 @@ new derived line, first preview explicit numeric endpoints, then update that
 owned preview using its `sessionId` and `version`. The GUI follows this same
 sequence. No entity or history entry is created by either preview. A direct new
 derived request fails because no native whole-scene default seed is assumed.
+For average mode, `sourcePicks:[]` explicitly clears the selected sources and
+evaluates from that prior; the GUI omits blank average source rows. One native
+edit with no selected sources retained its previous line through save/reopen,
+but successful native average acquisition and general parity remain open.
 
 Record order and repetitions are preserved independently of the canonical,
 deduplicated dependency set. Repeated average records retain their weighting.

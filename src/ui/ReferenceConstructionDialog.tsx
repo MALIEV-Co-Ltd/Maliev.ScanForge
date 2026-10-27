@@ -397,23 +397,29 @@ export function ReferenceConstructionDialog({
                           definition.records.length
                         )
                           ? {
-                              sourcePicks: sourceIds.map((entityId, index) => ({
-                                entityId,
-                                ...(retainedIndices[index] !== undefined
-                                  ? { retainedIndex: retainedIndices[index] }
-                                  : sourceOptions.find(
-                                        (row) => row.entityId === entityId,
-                                      )?.primitiveKind === "plane"
-                                    ? { planeUV: sourcePlaneUV[index] ?? [] }
-                                    : lineMode === "pair" &&
-                                        sourceObjectSelections[index]
-                                      ? { selection: "object" }
-                                      : sourceParameters[index] === undefined
-                                        ? {}
-                                        : {
-                                            parameter: sourceParameters[index],
-                                          }),
-                              })),
+                              sourcePicks: sourceIds
+                                .map((entityId, index) => ({
+                                  entityId,
+                                  ...(retainedIndices[index] !== undefined
+                                    ? { retainedIndex: retainedIndices[index] }
+                                    : sourceOptions.find(
+                                          (row) => row.entityId === entityId,
+                                        )?.primitiveKind === "plane"
+                                      ? { planeUV: sourcePlaneUV[index] ?? [] }
+                                      : lineMode === "pair" &&
+                                          sourceObjectSelections[index]
+                                        ? { selection: "object" }
+                                        : sourceParameters[index] === undefined
+                                          ? {}
+                                          : {
+                                              parameter:
+                                                sourceParameters[index],
+                                            }),
+                                }))
+                                .filter(
+                                  (pick) =>
+                                    lineMode !== "average" || pick.entityId,
+                                ),
                             }
                           : {}),
                       }

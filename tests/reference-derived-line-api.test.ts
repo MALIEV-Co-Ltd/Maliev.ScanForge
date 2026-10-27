@@ -257,6 +257,53 @@ it("retains an explicit prior when average mode has no selected sources", async 
   ).toEqual([5, 4, 0]);
 });
 
+it("clears pair dependencies when an existing line is edited to an empty average", async () => {
+  const h = fixture();
+  const pair = await located(h, await seed(h), "pair", [
+    { entityId: "x1", selection: "object" },
+    { entityId: "x2", selection: "object" },
+  ]);
+  const created = await apply(h, pair);
+  const average = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      entityId: created.entityId,
+      mode: "average",
+      sourcePicks: [],
+    }),
+  );
+  expect(average.definition).toMatchObject({
+    mode: "average",
+    sources: [],
+    records: [],
+  });
+  expect(average.geometryEncoding).toEqual(pair.geometryEncoding);
+  await apply(h, average);
+  const changed = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      entityId: "x1",
+      start: [0, 2, 0],
+      end: [20, 2, 0],
+    }),
+  );
+  await apply(h, changed);
+  expect(lineGeometry(h, created.entityId)).toEqual(pair.geometry);
+  const reopened = parseProject(
+    serializeProject(h.state.name, h.state.entities),
+  );
+  expect(
+    reopened.entities.find((row: Entity) => row.id === created.entityId)!
+      .reference?.definition,
+  ).toMatchObject({
+    mode: "average",
+    sources: [],
+    records: [],
+  });
+});
+
 it("discovers a located semantic source intent without accepting caller-authored records or identities", async () => {
   const h = fixture();
   const discovery = await value(
