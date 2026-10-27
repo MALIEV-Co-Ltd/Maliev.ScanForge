@@ -748,8 +748,25 @@ try {
   ).result.entityId;
   const sourcePointName = (await call("object_get", { entityId: pointId }))
     .result.name;
+  // Match the parallel-line fixture observed in the original native editor.
+  const nativePairSourcePreview = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      start: [0, 0, 0],
+      end: [10, 0, 0],
+      name: "Native pair source",
+    })
+  ).result;
+  const nativePairSource = (
+    await mutate("reference_construct", {
+      action: "apply",
+      sessionId: nativePairSourcePreview.sessionId,
+      version: nativePairSourcePreview.version,
+    })
+  ).result.entityId;
   ledger.derivedLines = [];
-  for (const [mode, label, picks, names] of [
+  for (const [mode, label, picks, names, nativePair] of [
     [
       "pair",
       "Two primitives",
@@ -758,6 +775,16 @@ try {
         { entityId: lineApplied.entityId, parameter: 0.25 },
       ],
       [sourcePointName, "M4 line"],
+    ],
+    [
+      "pair",
+      "Two primitives",
+      [
+        { entityId: nativePairSource, parameter: 0.5 },
+        { entityId: extraLine, parameter: 0.5 },
+      ],
+      ["Native pair source", "Average source"],
+      true,
     ],
     [
       "average",
@@ -774,8 +801,8 @@ try {
       await mutate("reference_construct", {
         action: "preview",
         kind: "line",
-        start: [0, 0, 0],
-        end: [10, 0, 0],
+        start: nativePair ? [2, -3, 0] : [0, 0, 0],
+        end: nativePair ? [8, -3, 0] : [10, 0, 0],
       })
     ).result;
     const independent = (
@@ -788,6 +815,11 @@ try {
         version: seed.version,
       })
     ).result;
+    if (nativePair) {
+      assert.deepEqual(independent.geometry.start, [5, 0, 0]);
+      assert.deepEqual(independent.geometry.direction, [0, 1, 0]);
+      assert.equal(independent.geometry.length, 4);
+    }
     await mutate("reference_construct", {
       action: "cancel",
       sessionId: independent.sessionId,
@@ -803,11 +835,11 @@ try {
       .click();
     dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
     for (const [field, value] of [
-      ["Start X", 0],
-      ["Start Y", 0],
+      ["Start X", nativePair ? 2 : 0],
+      ["Start Y", nativePair ? -3 : 0],
       ["Start Z", 0],
-      ["End X", 10],
-      ["End Y", 0],
+      ["End X", nativePair ? 8 : 10],
+      ["End Y", nativePair ? -3 : 0],
       ["End Z", 0],
     ])
       await dialog.getByLabel(field, { exact: true }).fill(String(value));
@@ -884,6 +916,7 @@ try {
     await dialog.waitFor({ state: "detached" });
     ledger.derivedLines.push({
       mode,
+      nativePairFixture: !!nativePair,
       entityId: id,
       geometryEncoding: stored.geometryEncoding,
       definition: stored.definition,
