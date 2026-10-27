@@ -1,9 +1,21 @@
 import type { CadAlignmentInput } from "./cad/alignment-reference";
 import { cylinderReference } from "./scan-tools-reference";
 import type { ScanToolOperation } from "./scan-tools";
-import type { Entity } from "./types";
+import type { Entity, Vec3 } from "./types";
 
 type UnrollOperation = Extract<ScanToolOperation, { kind: "unroll" }>;
+
+/** Apply the sign convention inferred from the native CAD extraction candidate. */
+function orientCadCylinderAxis(axis: Vec3): Vec3 {
+  const magnitudes = axis.map(Math.abs);
+  const dominant =
+    magnitudes[0] < Math.max(magnitudes[1], magnitudes[2])
+      ? magnitudes[1] < magnitudes[2]
+        ? 2
+        : 1
+      : 0;
+  return axis[dominant] < 0 ? (axis.map((value) => -value) as Vec3) : [...axis];
+}
 export type UnrollCommandInput =
   | UnrollOperation
   | {
@@ -49,7 +61,7 @@ export async function bindUnrollReference(
       );
     reference = {
       center: [...face.location],
-      axis: [...face.axis],
+      axis: orientCadCylinderAxis(face.axis),
       radius: face.radius,
     };
     faceIndex = face.faceIndex;
