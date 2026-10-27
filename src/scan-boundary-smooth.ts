@@ -59,7 +59,6 @@ function* boundarySteps(
   const selected = new Set(requested.flatMap((i) => inventory[i]));
   const anchors = new Set<number>();
   const requestedBoundaries = new Set(requested);
-  const anchoredBoundaries = new Set<number>();
   for (const anchor of r.anchors ?? []) {
     if (
       !anchor ||
@@ -73,9 +72,6 @@ function* boundarySteps(
       throw new Error(
         "Each anchor must identify a point on a selected boundary.",
       );
-    if (anchoredBoundaries.has(anchor.boundary))
-      throw new Error("Only one anchor per boundary is currently supported.");
-    anchoredBoundaries.add(anchor.boundary);
     anchors.add(inventory[anchor.boundary][anchor.point]);
   }
   const steps = 10 + Math.round(strength * 10);
