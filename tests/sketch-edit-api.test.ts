@@ -67,7 +67,7 @@ function setup() {
     state.sketchDraft = next;
     if (state.authoring.activeSketchId)
       state.authoring.sketches = state.authoring.sketches!.map((item) =>
-        item.id === state.authoring.activeSketchId
+        item.kind !== "spatial" && item.id === state.authoring.activeSketchId
           ? { ...item, sketch: next }
           : item,
       );

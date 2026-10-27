@@ -43,7 +43,7 @@ function setup() {
   const publish = (sketch: Sketch) => {
     state.sketchDraft = sketch;
     state.authoring.sketches = state.authoring.sketches!.map((item) =>
-      item.id === state.authoring.activeSketchId ? { ...item, sketch } : item,
+      item.kind !== "spatial" && item.id === state.authoring.activeSketchId ? { ...item, sketch } : item,
     );
   };
   const setSketch = vi.fn((next: Sketch) => {
