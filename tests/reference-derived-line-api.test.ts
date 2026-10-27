@@ -209,6 +209,54 @@ async function history(h: Fixture, direction: "undo" | "redo") {
   );
 }
 
+it("retains an explicit prior when average mode has no selected sources", async () => {
+  const h = fixture();
+  const prior = await value(
+    h.command({
+      action: "preview",
+      kind: "line",
+      start: [5, 0, 0],
+      end: [5, 4, 0],
+    }),
+  );
+  const average = await located(h, prior, "average", []);
+  expect(average.definition).toMatchObject({
+    mode: "average",
+    sources: [],
+    records: [],
+  });
+  expect(average.geometry.start).toEqual([5, 0, 0]);
+  expect(referenceLineEnd(average.geometry)).toEqual([5, 4, 0]);
+  const created = await apply(h, average);
+  expect(find(h, created.entityId).reference?.definition).toMatchObject({
+    mode: "average",
+    sources: [],
+    records: [],
+  });
+  expect(referenceLineEnd(lineGeometry(h, created.entityId))).toEqual([
+    5, 4, 0,
+  ]);
+  await history(h, "undo");
+  expect(h.state.entities.some((row) => row.id === created.entityId)).toBe(
+    false,
+  );
+  await history(h, "redo");
+  const reopened = parseProject(
+    serializeProject(h.state.name, h.state.entities),
+  );
+  const line = reopened.entities.find(
+    (row: Entity) => row.id === created.entityId,
+  )!;
+  expect(line.reference?.definition).toMatchObject({
+    mode: "average",
+    sources: [],
+    records: [],
+  });
+  expect(
+    referenceLineEnd(line.reference!.geometry as ReferenceLineGeometry),
+  ).toEqual([5, 4, 0]);
+});
+
 it("discovers a located semantic source intent without accepting caller-authored records or identities", async () => {
   const h = fixture();
   const discovery = await value(
