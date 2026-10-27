@@ -1,3 +1,11 @@
+import { validateProject } from "../src/io";
+import {
+  encodeProjectFileLocally,
+  decodeProjectContents,
+} from "../src/project-file-codec";
+import { indexedMeshMatches } from "../src/indexed-mesh";
+import { Buffer } from "node:buffer";
+import noiseCapture from "./fixtures/noise-normal-kernel.json";
 import { afterEach, expect, it, vi } from "vitest";
 import {
   analyzeMesh,
@@ -199,4 +207,200 @@ it("production worker retains canonical flipped topology across transferred resu
     expect(before.result.topology?.triangles).toBe(entry.inputBits.length / 72);
     expect(after.result.topology).toEqual(before.result.topology);
   }
+});
+
+it("returns indexed successor normals from the production worker without detaching source data", async () => {
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as
+      null | ((event: { data: ProcessingRequest }) => Promise<void>),
+    postMessage: (data: ProcessingResponse, transfers?: Transferable[]) =>
+      replies.push(structuredClone(data, { transfer: transfers ?? [] })),
+  };
+  vi.stubGlobal("self", scope);
+  vi.resetModules();
+  await import("../src/processing-worker");
+  const source = new Float32Array([
+    0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0,
+  ]);
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 0, 2, 3]);
+  await scope.onmessage!({
+    data: structuredClone({
+      kind: "scanTools" as const,
+      positions: source,
+      operation: {
+        kind: "flipNormals" as const,
+        sourceTopology: { vertices, triangles },
+      },
+    }),
+  });
+  const reply = replies.at(-1)!;
+  if (!("result" in reply) || !reply.result.indexedMesh)
+    throw new Error("Expected indexed output");
+  expect(Array.from(reply.result.indexedMesh.triangles)).toEqual([
+    0, 2, 1, 0, 3, 2,
+  ]);
+  expect(Array.from(reply.result.indexedMesh.geometryNormals!)).toEqual([
+    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+  ]);
+  expect(Array.from(triangles)).toEqual([0, 1, 2, 0, 2, 3]);
+  expect(vertices.length).toBe(12);
+});
+
+it("inverts retained facet-normal bits and uses them for vertex refresh", () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const facetNormals = new Float32Array([0, 1, -0]);
+  const beforeBits = Array.from(new Uint32Array(facetNormals.buffer));
+  const output = flipScanNormals(vertices, {
+    sourceTopology: { vertices, triangles, facetNormals },
+  });
+  expect(output.indexedMesh).toBeDefined();
+  const result = output.indexedMesh!;
+  expect(
+    Array.from(new Uint32Array((result.facetNormals as Float32Array).buffer)),
+  ).toEqual(beforeBits.map((bits) => (bits ^ 0x80000000) >>> 0));
+  expect(Array.from(result.geometryNormals!)).toEqual([
+    0, -1, 0, 0, -1, 0, 0, -1, 0,
+  ]);
+  expect(Array.from(new Uint32Array(facetNormals.buffer))).toEqual(beforeBits);
+});
+
+it("rejects non-finite refreshed normals atomically for extreme indexed coordinates", () => {
+  const vertices = new Float32Array([-3e38, 0, 0, 3e38, 0, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const before = vertices.slice();
+  expect(() =>
+    flipScanNormals(vertices, { sourceTopology: { vertices, triangles } }),
+  ).toThrow(/finite vertex normals/i);
+  expect(vertices).toEqual(before);
+  expect(Array.from(triangles)).toEqual([0, 1, 2]);
+});
+
+it("matches captured native reversed-triangle vertex normals when facet state is absent", () => {
+  const native = noiseCapture.cases.find(
+    (entry) => entry.label === "reversed-triangle",
+  )!;
+  const vertices = Float32Array.from(native.vertices);
+  const output = flipScanNormals(vertices, {
+    sourceTopology: { vertices, triangles: new Uint32Array([0, 1, 2]) },
+  });
+  const normals = output.indexedMesh!.geometryNormals as Float32Array;
+  expect(
+    Buffer.from(
+      normals.buffer,
+      normals.byteOffset,
+      normals.byteLength,
+    ).toString("hex"),
+  ).toBe(native.nativeNormalBits);
+});
+
+it("reports monotonic progress when flipping an indexed scan with a warm topology cache", () => {
+  const source = decode(capture.cases[0].inputBits);
+  const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const topology = analyzeMesh(source, {
+    tolerance: 0.001,
+    topologyCache: cache,
+  });
+  const indexed = {
+    vertices: Float32Array.from(topology.vertices),
+    triangles: topology.triangles,
+  };
+  const progress: number[] = [];
+  flipScanNormals(source, {
+    topologyCache: cache,
+    sourceTopology: indexed,
+    onProgress: (value) => progress.push(value),
+  });
+  expect(progress.length).toBeGreaterThan(1);
+  expect(progress.at(-1)).toBe(1);
+  expect(
+    progress.every((value, i) => i === 0 || value >= progress[i - 1]),
+  ).toBe(true);
+});
+
+it("retains the index when ordinary source coordinates require Float32 rounding", () => {
+  const vertices = [0.1, 0, 0, 1, 0, 0, 0, 1, 0];
+  const triangles = [0, 1, 2];
+  const output = flipScanNormals(vertices, {
+    sourceTopology: { vertices, triangles },
+  });
+  expect(indexedMeshMatches(output.indexedMesh, output.positions)).toBe(true);
+  expect(output.indexedMesh!.vertices[0]).toBe(Math.fround(0.1));
+  expect(vertices[0]).toBe(0.1);
+});
+
+it("retains rounded indexed Flip Normals state through binary project reopening", async () => {
+  const vertices = [0.1, 0, 0, 1, 0, 0, 0, 1, 0];
+  const triangles = [0, 1, 2];
+  const output = flipScanNormals(vertices, {
+    sourceTopology: { vertices, triangles },
+  });
+  const project = validateProject({
+    format: "maliev-scanforge",
+    version: 1,
+    units: "mm",
+    name: "Flip",
+    entities: [
+      {
+        id: "mesh",
+        name: "Scan",
+        kind: "mesh",
+        positions: output.positions,
+        indexedMesh: output.indexedMesh,
+        color: "#ffffff",
+        visible: true,
+        opacity: 1,
+      },
+    ],
+  });
+  const file = await encodeProjectFileLocally({
+    project,
+    history: [],
+    future: [],
+  });
+  const reopened = await decodeProjectContents(file);
+  const mesh = reopened.project.entities[0];
+  expect(indexedMeshMatches(mesh.indexedMesh, mesh.positions)).toBe(true);
+  expect(Array.from(mesh.indexedMesh!.triangles)).toEqual([0, 2, 1]);
+  expect(Array.from(mesh.indexedMesh!.geometryNormals!)).toEqual([
+    0, 0, -1, 0, 0, -1, 0, 0, -1,
+  ]);
+});
+
+it("preserves distinct signed-zero corner and indexed vertex bits through flip and binary reopen", async () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const positions = vertices.slice();
+  positions[0] = -0;
+  const output = flipScanNormals(positions, {
+    sourceTopology: { vertices, triangles: new Uint32Array([0, 1, 2]) },
+  });
+  expect(Object.is(output.positions[0], -0)).toBe(true);
+  expect(Object.is(output.indexedMesh!.vertices[0], 0)).toBe(true);
+  const project = validateProject({
+    format: "maliev-scanforge",
+    version: 1,
+    units: "mm",
+    name: "Zeros",
+    entities: [
+      {
+        id: "mesh",
+        name: "Scan",
+        kind: "mesh",
+        positions: output.positions,
+        indexedMesh: output.indexedMesh,
+        color: "#ffffff",
+        visible: true,
+        opacity: 1,
+      },
+    ],
+  });
+  const reopened = await decodeProjectContents(
+    await encodeProjectFileLocally({ project, history: [], future: [] }),
+  );
+  expect(Object.is(reopened.project.entities[0].positions[0], -0)).toBe(true);
+  expect(
+    Object.is(reopened.project.entities[0].indexedMesh!.vertices[0], 0),
+  ).toBe(true);
 });

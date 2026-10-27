@@ -157,6 +157,8 @@ cancellation/discard, history and binary reopening use the same shared operation
 Deviation measurement compares the published facets, including retained raw
 aliases, in both direct processing and preview comparison.
 
+Flip Normals retains valid indexed vertex identities while reversing each triangle and refreshing computed vertex normals. Existing computed facet normals have their Float32 sign bits inverted before refresh; scanner-supplied normals are not retained as computed geometry normals. Indexed sources above 27 million vertex coordinates reject before worker dispatch. This applies equally to the ribbon and `mesh_process` (`scanTools/flipNormals`). Native refresh equivalence for every stored-normal state remains unverified.
+
 ## Background mesh preparation
 
 GUI and MCP imports stream the packed little-endian PLY scanner schema (XYZ and

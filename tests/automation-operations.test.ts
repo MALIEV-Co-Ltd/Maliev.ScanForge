@@ -1,3 +1,4 @@
+import { scanToolRequest } from "../src/ui/scan-tool-request";
 import { describe, it, expect, vi } from "vitest";
 import { Buffer } from "node:buffer";
 import {
@@ -316,6 +317,81 @@ function harness(entities: Entity[] = [entity()]) {
   };
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
+it("retains indexed vertex identities and refreshes geometry normals when flipping a scan", async () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 0, 2, 3]);
+  const positions = Float32Array.from(
+    Array.from(triangles).flatMap((id) =>
+      Array.from(vertices.slice(id * 3, id * 3 + 3)),
+    ),
+  );
+  const indexedMesh = { vertices, triangles };
+  const h = harness([entity({ positions, indexedMesh })]);
+  vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+    if (request.kind !== "scanTools") throw new Error("Expected scan tools");
+    const result = runScanTool(request);
+    return {
+      kind: "scanTools",
+      positions: result.positions,
+      indexedMesh: result.indexedMesh,
+      diagnostics: { summary: result.summary },
+    };
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+    },
+    h.context,
+  );
+  const result = h.state.entities[0];
+  expect(result.indexedMesh).toBeDefined();
+  expect(Array.from(result.indexedMesh!.triangles)).toEqual([0, 2, 1, 0, 3, 2]);
+  expect(Array.from(result.indexedMesh!.vertices)).toEqual(
+    Array.from(vertices),
+  );
+  expect(Array.from(result.indexedMesh!.geometryNormals!)).toEqual([
+    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+  ]);
+  expect(Array.from(triangles)).toEqual([0, 1, 2, 0, 2, 3]);
+});
+
+it("binds the same indexed topology for the Flip Normals ribbon and MCP", () => {
+  const positions = Float32Array.from(triangle);
+  const mesh = {
+    vertices: positions,
+    triangles: new Uint32Array([0, 1, 2]),
+    facetNormals: new Float32Array([0, 0, 1]),
+  };
+  const source = entity({ positions, indexedMesh: mesh });
+  const request = scanToolRequest(source, { kind: "flipNormals" }, [source]);
+  expect(request.operation).toEqual({
+    kind: "flipNormals",
+    sourceTopology: mesh,
+  });
+});
+
+it("rejects oversized indexed vertices before starting Flip Normals", async () => {
+  const positions = Float32Array.from(triangle);
+  const indexedMesh = {
+    vertices: new Array<number>(27_000_001),
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  const h = harness([entity({ positions, indexedMesh })]);
+  const priorCalls = vi.mocked(processMesh).mock.calls.length;
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/indexed vertices exceed/i);
+  expect(vi.mocked(processMesh).mock.calls.length).toBe(priorCalls);
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+
 it("shares compact global reduction between GUI preview and MCP above the old admission boundary", async () => {
   const positions = reductionGrid(160, 128),
     before = positions.slice();

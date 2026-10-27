@@ -3,7 +3,8 @@ import type { MeshProcessingOptions } from "./mesh-processing";
 import type { IndexedMesh, Positions, Vec3 } from "./types";
 import { nativeAverageCoordinates } from "./scan-native-average";
 import { indexedMeshMatches } from "./indexed-mesh";
-import { meshGeometryNormals } from "./mesh-geometry-normals";
+import { meshFacetNormals, meshGeometryNormals } from "./mesh-geometry-normals";
+import { noiseNormals } from "./scan-native-noise";
 import { admitAverageInputs } from "./scan-average-request";
 import { flippedTopology } from "./scan-flip-topology";
 import { unrollRadialAxis } from "./scan-unroll-frame";
@@ -137,22 +138,71 @@ export function scaleScanMesh(
 }
 export function flipScanNormals(
   p: Positions,
-  o: MeshProcessingOptions = {},
+  o: MeshProcessingOptions & { sourceTopology?: IndexedMesh } = {},
 ): ScanTransformResult {
   validate(p, o);
+  const source = o.sourceTopology;
+  if (source && source.vertices.length > MAX_COORDINATES)
+    throw new Error(
+      "Indexed vertices exceed the Flip Normals processing limit.",
+    );
+  if (source && !indexedMeshMatches(source, p))
+    throw new Error("Indexed source does not match the scan geometry.");
   const out = new Float32Array(p);
   reverseWinding(out);
   const cache = o.topologyCache;
   const topology =
     cache?.positions === p && cache.topology
-      ? flippedTopology(cache.topology, o)
+      ? flippedTopology(cache.topology, {
+          ...o,
+          onProgress: (fraction, stage) =>
+            o.onProgress?.(0.05 * fraction, stage),
+        })
       : undefined;
+  let indexedMesh: IndexedMesh | undefined;
+  if (source) {
+    const triangles = Uint32Array.from(source.triangles);
+    for (let i = 0; i < triangles.length; i += 3) {
+      if (i % 12288 === 0 && o.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      [triangles[i + 1], triangles[i + 2]] = [
+        triangles[i + 2],
+        triangles[i + 1],
+      ];
+    }
+    indexedMesh = {
+      vertices:
+        source.vertices instanceof Float32Array
+          ? source.vertices
+          : Float32Array.from(source.vertices),
+      triangles,
+    };
+    const originalFacets = meshFacetNormals(source, o.signal, (fraction) =>
+      checkpoint(o, 0.05 + 0.25 * fraction, "Preparing facet normals"),
+    );
+    const facetNormals = Float32Array.from(originalFacets);
+    const bits = new Uint32Array(facetNormals.buffer);
+    for (let i = 0; i < bits.length; i++) {
+      if (i % 12288 === 0) checkpoint(o, 0.3, "Flipping facet normals");
+      bits[i] ^= 0x80000000;
+    }
+    indexedMesh.facetNormals = facetNormals;
+    indexedMesh.geometryNormals = noiseNormals(indexedMesh, {
+      facetNormals: indexedMesh.facetNormals,
+      signal: o.signal,
+      sharedReadonlyBuffers: true,
+      normalProgress: (fraction) =>
+        checkpoint(o, 0.3 + 0.65 * fraction, "Refreshing vertex normals"),
+    });
+    if (!indexedMesh.geometryNormals.every(Number.isFinite))
+      throw new Error("Flip Normals could not compute finite vertex normals.");
+  }
   const result = finish(out, "Flipped all triangle normals.", o);
   if (topology && cache) {
     cache.positions = out;
     cache.topology = topology;
   }
-  return result;
+  return { ...result, ...(indexedMesh ? { indexedMesh } : {}) };
 }
 export function mirrorScanMesh(
   p: Positions,

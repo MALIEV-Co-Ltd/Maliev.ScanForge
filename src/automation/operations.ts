@@ -1,3 +1,4 @@
+import { flipSourceTopology } from "../scan-flip-request";
 import { scanSplitCutter } from "../scan-split-cutter";
 import { scanSegmentPublication } from "../scan-segment-publication";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
@@ -1380,6 +1381,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           );
           op.operation.sourceTopology = average!.source.indexedMesh;
         }
+        if (op.operation.kind === "flipNormals")
+          op.operation.sourceTopology = flipSourceTopology(e);
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
         if (selection && op.operation.kind !== "reduceNoise")
