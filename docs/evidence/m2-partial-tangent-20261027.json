@@ -32,7 +32,27 @@
       "jobPeakBytes": 714674176,
       "cleanupConfirmed": true
     },
-    "existingSemiFlatBrowserControl": "Passed GUI/public MCP, native oriented geometry and lifecycle; job cleanup confirmed"
+    "existingSemiFlatBrowserControl": "Passed GUI/public MCP, native oriented geometry and lifecycle; job cleanup confirmed",
+    "originalScan": {
+      "sourceFileSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "sourceFacets": 273139,
+      "boundaryIndex": 0,
+      "displayRow": 1,
+      "startVertex": 0,
+      "endVertex": 4,
+      "toleranceMm": 0.001,
+      "outputFacets": 273143,
+      "sourceCoordinatesSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+      "outputCoordinatesSha256": "5d47cd39a2afc3005a5cdb72de5c1008f25fe7de27f195b95aeba159c8c9c2e1",
+      "guiPublicMcpEqual": true,
+      "sourceCornersAndUndoRedo": true,
+      "nativeComparison": false,
+      "jobPeakBytes": 1551011840,
+      "cleanupConfirmed": true,
+      "driver": "SCANFORGE_BRIDGE_CASES=original-partial and SCANFORGE_ORIGINAL_PARTIAL_SOURCE pointing to the pinned scan-1.stl",
+      "failedRuns": "The first driver selected by topology index rather than displayed order. The second selected correctly but exported while the workspace was busy. Both failed and cleaned up; the corrected driver passed.",
+      "mixedDriverRegression": "The native Semi/Tangent, original-scan partial Tangent and native Flat Bridge cases passed in one isolated run after resetting the test project and target between scenarios."
+    }
   },
   "limitations": [
     "One manufactured partial Tangent native control; no general native parity claim.",

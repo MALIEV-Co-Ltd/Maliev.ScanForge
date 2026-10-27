@@ -25,6 +25,12 @@ Semi/Flat browser control still passes. See
 This result does not establish parity for other selections or other partial
 and bridge algorithms, and does not close M2.
 
+An original 273,139-facet scan also passed a separate four-edge partial Tangent
+GUI/public-MCP comparison: both paths produced the same 273,143-facet geometry,
+retained all source corners, and passed Undo/Redo. This is a real-input application
+comparison, not a native export comparison. Source/output hashes, the selected
+boundary, failed driver attempts and resource evidence are in the same record.
+
 ## Manufactured cup controls, 2026-10-26
 
 Native reference build 8.0.123 imported binary STL cups with radius 2 mm, bottom
