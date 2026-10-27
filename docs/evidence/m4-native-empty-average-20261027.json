@@ -1,0 +1,12 @@
+{
+  "scope": "One native edit of an existing constructed line to average mode with zero selected inputs; not a successful average-source acquisition or general parity result.",
+  "nativeVersion": "QuickSurface Pro 8.0.123",
+  "inputProjectSha256": "c01a5ef88e231fe1cf4c429881f828d0821abdfae6ce3b341fcc993f085e2ec0",
+  "resultProjectSha256": "e0d2373003447de0a1b5885c5e36a35214c8a1c6a92d45e9797fa6ce40227a93",
+  "observation": "The fixture's constructed Ref. Line(3) displayed endpoints [5,0,0] and [5,4,0] mm and length 4 mm. Switching to average mode showed zero selected. An attempted viewport pick highlighted a line but the count stayed zero. After confirming and saving to a separate QSF, reopening showed average mode, zero selected and the same displayed endpoints and length. Editing the former first source endpoint from 10 to 20 mm in the reopened session left that average line's displayed endpoints and zero selection unchanged.",
+  "applicationApi": "A shared ApplicationApi test starts from an explicit new line preview with the same endpoints, switches it to average with an empty source list, applies it, undoes and redoes creation, and verifies JSON reopening. All 49 tests in the derived-line API file pass. This is not the native edit sequence or rendered GUI/public stdio MCP verification.",
+  "limitations": "The source edit was not saved and reopened. No successful average selection, full dependency state, native pick semantics or GUI/MCP parity is established. The native source file was not overwritten. This observation alone does not establish general empty-input behavior.",
+  "sessionReportSha256": "1598b82a4787e75788caffa967c60b5449acd6b1bca52934521f2445c0478048",
+  "boundedReceiptSha256": "5113cc6ae4f86862b8ec00b8e94e9e8fbf7d4ccd6103b1d3a0ec060786475536",
+  "cleanup": "Authenticated finish, owned root and descendants exited, zero active processes, handles closed, no cleanup errors or lease overrun; validation lane released."
+}

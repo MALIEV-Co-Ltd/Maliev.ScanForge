@@ -210,6 +210,11 @@ before R11 persistence; no QSF save/reopen or complete numeric parity is claimed
 
 ## Additional native checkpoints
 
+[One empty average-line edit](evidence/m4-native-empty-average-20261027.json)
+retained the prior displayed line after native save/reopen and after an unsaved
+edit of a former source. The native picker still reported zero selected; this
+does not establish successful average acquisition or GUI/MCP parity.
+
 [Native reference history menus](evidence/m4-native-reference-history-menus-20261027.json)
 were inspected after reopening one numeric line and its dependent midpoint. Neither
 history context menu showed Duplicate. This does not establish whether other native
