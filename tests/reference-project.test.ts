@@ -627,6 +627,87 @@ describe("MCP parity for reference persistence boundaries", () => {
     return { state, host, api };
   }
 
+  it.each(["project_import", "backup_restore"])(
+    "MCP %s restores admitted derived references in current, undo and redo states",
+    async (command) => {
+      const { api, host } = setup();
+      const source: Entity = {
+        ...mesh(),
+        kind: "referenceLine",
+        positions: [],
+        reference: {
+          version: 1,
+          definition: {
+            version: 1,
+            kind: "line",
+            mode: "endpoints",
+            start: [0, 0, 0],
+            end: [10, 0, 0],
+            sources: [],
+            records: [],
+          },
+          geometry: {
+            kind: "line",
+            start: [0, 0, 0],
+            direction: [1, 0, 0],
+            length: 10,
+          },
+          evaluation: { completionWord: 256 },
+        },
+      };
+      const average = line();
+      const entities = [source, average];
+      const saved: ProjectSession = {
+        project: project(entities),
+        history: [{ label: "Before", entities }],
+        future: [{ label: "After", entities }],
+      };
+      try {
+        const file = await encodeProjectFileLocally(saved);
+        vi.mocked(listBackups).mockResolvedValue([
+          { id: "references:previous", name: "References", savedAt: 1, file },
+        ]);
+        const upload = await api.invoke("artifact_put", {
+          name: "references.scanforge",
+          offset: 0,
+          base64: Buffer.from(await file.arrayBuffer()).toString("base64"),
+        });
+        if (!upload.ok) throw Error(upload.error.message);
+        const started = await api.invoke(command, {
+          ...(command === "backup_restore"
+            ? { backupId: "references:previous" }
+            : {
+                artifactId: (upload.result as { artifactId: string })
+                  .artifactId,
+              }),
+          replace: true,
+          requestId: "restore-derived",
+          expectedRevision: api.currentRevision(),
+        });
+        if (!started.ok) throw Error(started.error.message);
+        const jobId = (started.result as { jobId: string }).jobId;
+        await vi.waitFor(async () =>
+          expect(await api.invoke("job_get", { jobId })).toMatchObject({
+            ok: true,
+            result: { status: "succeeded" },
+          }),
+        );
+        const [restored, , revisions] = vi.mocked(host.replace).mock.calls[0];
+        for (const scene of [
+          restored.entities,
+          revisions!.history[0].entities,
+          revisions!.future[0].entities,
+        ]) {
+          expect(
+            scene.find((entity) => entity.id === "line")?.reference?.definition,
+          ).toEqual(average.reference!.definition);
+        }
+      } finally {
+        api.dispose();
+      }
+    },
+  );
+
   it("exposes immutable source identities and renews them through the shared duplicate command", async () => {
     const { api, state } = setup();
     try {
