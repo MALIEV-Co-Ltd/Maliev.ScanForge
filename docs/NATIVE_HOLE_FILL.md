@@ -31,6 +31,11 @@ retained all source corners, and passed Undo/Redo. This is a real-input applicat
 comparison, not a native export comparison. Source/output hashes, the selected
 boundary, failed driver attempts and resource evidence are in the same record.
 
+The pinned second original STL (2,547,405 facets) was analyzed under the 4 GiB
+job limit. At 0.001 mm tolerance it has one nonmanifold edge, so no partial fill
+was attempted; the opt-in `tests/original-partial-topology.test.ts` retains this
+topology-only control. It does not establish GUI/MCP or native parity.
+
 ## Manufactured cup controls, 2026-10-26
 
 Native reference build 8.0.123 imported binary STL cups with radius 2 mm, bottom
