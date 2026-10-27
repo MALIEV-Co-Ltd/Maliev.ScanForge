@@ -214,8 +214,12 @@ before R11 persistence; no QSF save/reopen or complete numeric parity is claimed
 retained the prior displayed line after native save/reopen and after an unsaved
 edit of a former source. GUI and public MCP now produce matching empty-average
 edits and worker reopening; a separate shared API test covers a former-source
-edit. The native picker still reported zero selected, so successful average
-acquisition and general native parity remain unverified.
+edit. Pinned native saved-record readback also shows the former source links
+and ordered records cleared while the endpoint bits stayed unchanged. A
+mock-backed shared API test verifies project/backup restoration of an admitted
+average line with repeated records in current and undo/redo states. The native
+picker still reported zero selected, so successful average acquisition and
+general native parity remain unverified.
 
 [Native reference history menus](evidence/m4-native-reference-history-menus-20261027.json)
 were inspected after reopening one numeric line and its dependent midpoint. Neither

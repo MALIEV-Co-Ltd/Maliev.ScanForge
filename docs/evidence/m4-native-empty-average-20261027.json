@@ -3,6 +3,17 @@
   "nativeVersion": "QuickSurface Pro 8.0.123",
   "inputProjectSha256": "c01a5ef88e231fe1cf4c429881f828d0821abdfae6ce3b341fcc993f085e2ec0",
   "resultProjectSha256": "e0d2373003447de0a1b5885c5e36a35214c8a1c6a92d45e9797fa6ce40227a93",
+  "savedRecordReadback": "A strict, pinned QSF readback shows the target changed from mode 3 with two ordered source records and two common sources to mode 5 with no ordered records or common sources. Both former source records no longer list the target among their saved dependents. The six stored endpoint values remain bit-identical in this fixture. The full report, script and receipt are retained locally rather than in this repository.",
+  "savedRecordReportSha256": "8d5b6bfc8ecdabaedd05da4fdc8b9072b5566f83d205c5049c6059087e9e0e4d",
+  "savedRecordReceiptSha256": "9bb865aa4558840c63e1049c5cedb53c41a3d8249a7d4f18b3b4584bd18ac739",
+  "savedRecordScriptSha256": "8090db6579581d8cf0e80553a690d50b2bacc2d11f05e9f123e41eefff252a28",
+  "restoreHandlerCoverage": {
+    "scope": "Mock-backed shared ApplicationApi handlers, not a rendered GUI or public stdio backup restore run.",
+    "observation": "Both project_import and backup_restore retained a semantic-line average with repeated ordered records in current, undo and redo states. The full reference-project and backup-automation files passed 80 tests.",
+    "buildId": "scanforge-e739fd14e9904232",
+    "testsReceiptSha256": "f8a6d6d801084b0f2700cbf9389043fed0620d52c0bd8383a926828246a9cdc7",
+    "buildReceiptSha256": "1189ac8ddc94f932a36f9c476f76132b6f88755c50eb37a9fe8b90faedd5fcc9"
+  },
   "observation": "The fixture's constructed Ref. Line(3) displayed endpoints [5,0,0] and [5,4,0] mm and length 4 mm. Switching to average mode showed zero selected. An attempted viewport pick highlighted a line but the count stayed zero. After confirming and saving to a separate QSF, reopening showed average mode, zero selected and the same displayed endpoints and length. Editing the former first source endpoint from 10 to 20 mm in the reopened session left that average line's displayed endpoints and zero selection unchanged.",
   "applicationAndMcp": {
     "buildId": "scanforge-118f2aa272bf7d69",
