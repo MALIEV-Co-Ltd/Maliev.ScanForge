@@ -8,7 +8,11 @@ import {
   type Sketch,
 } from "./sketch";
 import { validatePatch, type NurbsPatch } from "./surfaces";
-import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
+import {
+  coordinateSketchFrame,
+  validateSketchFrame,
+  type SketchFrame,
+} from "./sketch-frame";
 
 export interface FeatureRef {
   readonly featureId: string;
@@ -37,6 +41,7 @@ export type ParametricRecipe =
       readonly kind: "extrude";
       readonly profile: ParametricProfile;
       readonly height: number;
+      readonly oppositeDistance?: number;
     }
   | {
       readonly kind: "revolve";
@@ -282,7 +287,7 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     primitive: ["input"],
     importBrep: ["brep"],
     sketchSurface: ["sketch"],
-    extrude: ["profile", "height"],
+    extrude: ["profile", "height", "oppositeDistance"],
     revolve: ["points", "angleDegrees"],
     loft: ["profiles", "ruled"],
     sweep: ["points", "path"],
@@ -352,6 +357,20 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
         validateSketch(p.sketch);
       } else throw new Error("Unsupported profile kind.");
       requirePositive(value.height, "Extrusion height");
+      if (
+        value.oppositeDistance !== undefined &&
+        (!finite(value.oppositeDistance) || value.oppositeDistance < 0)
+      )
+        throw new Error(
+          "Opposite extrusion distance must be finite and nonnegative.",
+        );
+      if (
+        (value.oppositeDistance ?? 0) > 0 &&
+        value.height + (value.oppositeDistance ?? 0) > 1e9
+      )
+        throw new Error(
+          "Opposite extrusion distance must be finite and nonnegative, with a total height at most 1e9 mm.",
+        );
       break;
     }
     case "revolve":
@@ -831,6 +850,19 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
           break;
         }
         case "extrude": {
+          const opposite = r.oppositeDistance ?? 0;
+          const placedFrame = (frame: SketchFrame | undefined) => {
+            if (!opposite) return frame;
+            const original = frame ?? coordinateSketchFrame("OXY", 0);
+            const shifted: SketchFrame = {
+              ...original,
+              origin: original.origin.map(
+                (value, i) => value - opposite * original.normal[i],
+              ) as Vec3,
+            };
+            validateSketchFrame(shifted);
+            return shifted;
+          };
           if (r.profile.kind === "sketch-curves") {
             admitCadSketchSolve(r.profile.sketch);
             const solution = solveSketch(r.profile.sketch);
@@ -840,8 +872,8 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
               );
             output = await client.extrudeCurves(
               sketchCurveProfile(solution.sketch),
-              r.height,
-              solution.sketch.frame,
+              r.height + opposite,
+              placedFrame(solution.sketch.frame),
             );
             break;
           }
@@ -860,7 +892,11 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
             r.profile.kind === "polygon"
               ? r.profile.frame
               : r.profile.sketch.frame;
-          output = await client.extrude(points, r.height, frame);
+          output = await client.extrude(
+            points,
+            r.height + opposite,
+            placedFrame(frame),
+          );
           break;
         }
         case "revolve":

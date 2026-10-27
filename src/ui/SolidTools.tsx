@@ -18,7 +18,11 @@ export function SolidTools({
     operation: "union" | "subtract" | "intersect",
     otherId: string,
   ) => void;
-  onExtrude: (points: [number, number][], height: number) => void;
+  onExtrude: (
+    points: [number, number][],
+    height: number,
+    oppositeDistance?: number,
+  ) => void;
   onRevolve: (points: [number, number][], angle: number) => void;
 }) {
   const [operation, setOperation] = useState<
@@ -27,6 +31,9 @@ export function SolidTools({
   const [otherId, setOtherId] = useState("");
   const [sketch, setSketch] = useState("-20,-15\n20,-15\n20,15\n-20,15");
   const [height, setHeight] = useState(10);
+  const [oppositeText, setOppositeText] = useState("0");
+  const oppositeDistance =
+    oppositeText.trim() === "" ? NaN : Number(oppositeText);
   const [profile, setProfile] = useState("10,0\n20,0\n20,15\n10,15");
   const [angle, setAngle] = useState(360);
   const points = sketch
@@ -170,13 +177,28 @@ export function SolidTools({
             min={0.001}
             onChange={setHeight}
           />
+          <label>
+            Opposite extrusion distance (mm)
+            <input
+              type="number"
+              min="0"
+              value={oppositeText}
+              onChange={(event) => setOppositeText(event.target.value)}
+            />
+          </label>
           <button
             className="wide"
-            disabled={busy}
+            disabled={
+              busy ||
+              !Number.isFinite(oppositeDistance) ||
+              oppositeDistance < 0 ||
+              height + oppositeDistance > 1e9
+            }
             onClick={() => {
               const rows = sketch.trim().split("\n");
-              if (points.length !== rows.length) onExtrude([], height);
-              else onExtrude(points, height);
+              if (points.length !== rows.length)
+                onExtrude([], height, oppositeDistance);
+              else onExtrude(points, height, oppositeDistance);
             }}
           >
             Extrude sketch to CAD

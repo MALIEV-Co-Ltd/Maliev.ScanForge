@@ -14,10 +14,17 @@ it.each(["cad_create", "cad_rebuild"])(
       recipe: {
         kind: "extrude",
         height: 4,
+        oppositeDistance: 2,
         profile: { kind: "sketch-curves", sketch: rectangleSketch() },
       },
     };
     expect(() => validateInput(schema, args)).not.toThrow();
+    expect(() =>
+      validateInput(schema, {
+        ...args,
+        recipe: { ...args.recipe, oppositeDistance: -1 },
+      }),
+    ).toThrow();
     expect(() =>
       validateInput(schema, {
         ...args,

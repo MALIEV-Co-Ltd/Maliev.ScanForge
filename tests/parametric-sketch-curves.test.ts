@@ -41,6 +41,113 @@ const mesh = {
 };
 
 describe("analytic sketch extrusion recipes", () => {
+  it.each([undefined, 0])(
+    "preserves legacy model admission with default distance %s",
+    (oppositeDistance) => {
+      const item = {
+        ...feature({ kind: "sketch-curves", sketch: sketch() }),
+        recipe: {
+          kind: "extrude",
+          profile: { kind: "sketch-curves", sketch: sketch() },
+          height: 1e9 + 1,
+          ...(oppositeDistance === undefined ? {} : { oppositeDistance }),
+        },
+      };
+      expect(() =>
+        validateParametricModel({
+          format: "scanforge-parametric",
+          version: 1,
+          features: [item],
+        }),
+      ).not.toThrow();
+    },
+  );
+  it.each(["polygon", "sketch"] as const)(
+    "places two-sided %s profiles without changing authored data",
+    async (kind) => {
+      const input = sketch();
+      const profile =
+        kind === "polygon"
+          ? {
+              kind: "polygon" as const,
+              points: [
+                [0, 0],
+                [1, 0],
+                [0, 1],
+              ] as [number, number][],
+            }
+          : { kind: "sketch" as const, sketch: input, chordTolerance: 0.1 };
+      const recipe = {
+        kind: "extrude" as const,
+        profile,
+        height: 5,
+        oppositeDistance: 3,
+      };
+      const extrude = vi.fn(async (..._args: unknown[]) => mesh);
+      await createCadEvaluator({ extrude } as unknown as CadClient).evaluate(
+        { id: "profile", name: "Profile", recipe },
+        [],
+      );
+      expect(extrude.mock.calls[0][1]).toBe(8);
+      expect((extrude.mock.calls[0][2] as { origin: number[] }).origin).toEqual(
+        kind === "polygon" ? [0, 0, -3] : [4, 0, 0],
+      );
+      expect(input.frame?.origin).toEqual([7, 0, 0]);
+    },
+  );
+  it.each([-1, Infinity, NaN, 1e9])(
+    "rejects invalid opposite distance %s",
+    (oppositeDistance) => {
+      const item = {
+        ...feature({ kind: "sketch-curves", sketch: sketch() }),
+        recipe: {
+          kind: "extrude",
+          profile: { kind: "sketch-curves", sketch: sketch() },
+          height: 5,
+          oppositeDistance,
+        },
+      };
+      expect(() =>
+        validateParametricModel({
+          format: "scanforge-parametric",
+          version: 1,
+          features: [item],
+        }),
+      ).toThrow(/opposite extrusion/i);
+    },
+  );
+  it("extrudes on both sides of a placed sketch without changing the saved frame", async () => {
+    const input = sketch();
+    const recipe = {
+      kind: "extrude" as const,
+      profile: { kind: "sketch-curves" as const, sketch: input },
+      height: 5,
+      oppositeDistance: 3,
+    };
+    const item: ParametricFeature = {
+      id: "two-sided",
+      name: "Two sided",
+      recipe,
+    };
+    expect(() =>
+      validateParametricModel({
+        format: "scanforge-parametric",
+        version: 1,
+        features: [item],
+      }),
+    ).not.toThrow();
+    const extrudeCurves = vi.fn(async (..._args: unknown[]) => mesh);
+    await createCadEvaluator({
+      extrudeCurves,
+    } as unknown as CadClient).evaluate(item, []);
+    expect(extrudeCurves.mock.calls[0][1]).toBe(8);
+    expect(extrudeCurves.mock.calls[0][2]).toEqual({
+      ...input.frame,
+      origin: [4, 0, 0],
+    });
+    expect(input.frame?.origin).toEqual([7, 0, 0]);
+  });
+
   it("validates and routes the explicit curve recipe with its solved frame and exact arcs", async () => {
     const input = sketch(),
       profile = { kind: "sketch-curves", sketch: input };

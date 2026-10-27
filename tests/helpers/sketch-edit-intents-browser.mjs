@@ -417,6 +417,15 @@ export async function sketchSemanticEdits({
   const open = (await read()).sketch,
     openRevision = (await call("project_get")).revision;
   await panel.getByLabel("Extrusion height", { exact: true }).fill("4");
+  const oppositeInput = panel.getByLabel("Opposite extrusion distance (mm)", {
+    exact: true,
+  });
+  await oppositeInput.fill("");
+  await oppositeInput.pressSequentially("0.5");
+  assert.equal(await oppositeInput.inputValue(), "0.5");
+  await panel
+    .getByLabel("Opposite extrusion distance (mm)", { exact: true })
+    .fill("2");
   await panel
     .getByRole("button", { name: "Extrude solved profile", exact: true })
     .click();
@@ -467,16 +476,22 @@ export async function sketchSemanticEdits({
     await settled(
       await mutate("cad_create", {
         name: "Independent semantic profile extrusion",
-        recipe: { kind: "extrude", profile: prepared.profile, height: 4 },
+        recipe: {
+          kind: "extrude",
+          profile: prepared.profile,
+          height: 4,
+          oppositeDistance: 2,
+        },
         selectCreated: true,
       }),
     )
   ).entityIds[0];
-  async function body(id) {
+  async function body(id, opposite = 2) {
     const object = (
       await call("object_get", { entityId: id, includeGeometry: true })
     ).result;
     assert(object.exactCad);
+    assert.equal(object.parametric.feature.recipe.oppositeDistance, opposite);
     const profile = object.parametric.feature.recipe.profile;
     assert.deepEqual(profile.sketch.reference, section.reference);
     assert.deepEqual(profile.sketch.frame, closed.frame);
@@ -487,6 +502,8 @@ export async function sketchSemanticEdits({
         )
       : geometry.positions;
     let sixVolume = 0;
+    let minOffset = Infinity,
+      maxOffset = -Infinity;
     for (let index = 0; index < positions.length; index += 9) {
       const [ax, ay, az, bx, by, bz, cx, cy, cz] = positions.slice(
         index,
@@ -496,20 +513,48 @@ export async function sketchSemanticEdits({
         ax * (by * cz - bz * cy) +
         ay * (bz * cx - bx * cz) +
         az * (bx * cy - by * cx);
+      for (let vertex = 0; vertex < 3; vertex++) {
+        const offset = closed.frame.normal.reduce(
+          (sum, component, axis) =>
+            sum +
+            component *
+              (positions[index + vertex * 3 + axis] -
+                closed.frame.origin[axis]),
+          0,
+        );
+        minOffset = Math.min(minOffset, offset);
+        maxOffset = Math.max(maxOffset, offset);
+      }
     }
     return {
       volume: Math.abs(sixVolume / 6),
       profile: canonical(profile.sketch),
+      minOffset,
+      maxOffset,
     };
   }
   const guiSolid = await body(guiBody.id),
     mcpSolid = await body(mcpBodyId);
   assert.deepEqual(guiSolid.profile, mcpSolid.profile);
   assert(Math.abs(guiSolid.volume - mcpSolid.volume) < 1e-8);
+  for (const solid of [guiSolid, mcpSolid]) {
+    assert(Math.abs(solid.minOffset + 2) < 1e-4);
+    assert(Math.abs(solid.maxOffset - 4) < 1e-4);
+  }
   assert(
-    Math.abs(guiSolid.volume - Math.PI * 100 * 4) / (Math.PI * 100 * 4) < 0.03,
+    Math.abs(guiSolid.volume - Math.PI * 100 * 6) / (Math.PI * 100 * 6) < 0.03,
     "Tessellated circle extrusion volume must match the analytic fixture within3%; this is not exact kernel mass",
   );
+  await mutate("history_undo", {});
+  assert(
+    !(await call("project_get")).result.objects.some(
+      (item) => item.id === mcpBodyId,
+    ),
+  );
+  await mutate("history_redo", {});
+  const redone = await body(mcpBodyId);
+  assert(Math.abs(redone.minOffset + 2) < 1e-4);
+  assert(Math.abs(redone.maxOffset - 4) < 1e-4);
   const beforeReopen = await read(),
     modelBeforeReopen = (await call("project_get")).result;
   const exported = await settled(
@@ -531,6 +576,87 @@ export async function sketchSemanticEdits({
   assert(
     reopened.objects.some((item) => item.id === mcpBodyId && item.exactCad),
   );
+  for (const id of [guiBody.id, mcpBodyId]) {
+    const solid = await body(id);
+    assert(Math.abs(solid.minOffset + 2) < 1e-4);
+    assert(Math.abs(solid.maxOffset - 4) < 1e-4);
+  }
+  await settled(
+    await mutate("cad_rebuild", {
+      entityId: mcpBodyId,
+      recipe: {
+        kind: "extrude",
+        profile: prepared.profile,
+        height: 4,
+        oppositeDistance: 1,
+      },
+    }),
+  );
+  const rebuilt = await body(mcpBodyId, 1);
+  assert(Math.abs(rebuilt.minOffset + 1) < 1e-4);
+  assert(Math.abs(rebuilt.maxOffset - 4) < 1e-4);
+  await mutate("ui_set", { workspace: "extrude", toolPanelOpen: true });
+  const polygonOpposite = page.getByLabel("Opposite extrusion distance (mm)", {
+    exact: true,
+  });
+  await polygonOpposite.fill("");
+  await polygonOpposite.pressSequentially("0.5");
+  assert.equal(await polygonOpposite.inputValue(), "0.5");
+  await polygonOpposite.fill("2");
+  const beforePolygon = new Set(
+    (await call("project_get")).result.objects.map((item) => item.id),
+  );
+  await page
+    .getByRole("button", { name: "Extrude sketch to CAD", exact: true })
+    .click();
+  let polygonId;
+  await eventually(async () => {
+    const item = (await call("project_get")).result.objects.find(
+      (row) => !beforePolygon.has(row.id),
+    );
+    assert(item?.exactCad);
+    polygonId = item.id;
+  });
+  const polygon = (await call("object_get", { entityId: polygonId })).result;
+  assert.equal(polygon.parametric.feature.recipe.oppositeDistance, 2);
+  const mcpPolygonId = (
+    await settled(
+      await mutate("cad_create", {
+        name: "Two-sided polygon",
+        recipe: {
+          kind: "extrude",
+          profile: {
+            kind: "polygon",
+            points: [
+              [-20, -15],
+              [20, -15],
+              [20, 15],
+              [-20, 15],
+            ],
+          },
+          height: 10,
+          oppositeDistance: 2,
+        },
+      }),
+    )
+  ).entityIds[0];
+  for (const id of [polygonId, mcpPolygonId]) {
+    const object = (
+      await call("object_get", { entityId: id, includeGeometry: true })
+    ).result;
+    const geometry = await artifactJson(object.geometry);
+    const positions = geometry.indexedMesh
+      ? geometry.indexedMesh.vertices
+      : geometry.positions;
+    let min = Infinity,
+      max = -Infinity;
+    for (let i = 2; i < positions.length; i += 3) {
+      min = Math.min(min, positions[i]);
+      max = Math.max(max, positions[i]);
+    }
+    assert(Math.abs(min + 2) < 1e-4);
+    assert(Math.abs(max - 10) < 1e-4);
+  }
   ledger.sketchSemanticEdits = {
     steps,
     independentIntents: true,
@@ -542,6 +668,12 @@ export async function sketchSemanticEdits({
     failedProfileAtomicity: true,
     numericTypingFocusAndEscape: true,
     guiMcpExtrusion: true,
+    oppositeDistanceMm: 2,
+    forwardDistanceMm: 4,
+    extrusionUndoRedo: true,
+    extrusionRebuild: true,
+    polygonGuiMcp: true,
+    sequentialDecimalInput: true,
     triangleVolume: guiSolid.volume,
     projectWorkerReopen: true,
     nativeAcceptance: false,
