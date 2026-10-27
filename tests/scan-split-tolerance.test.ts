@@ -518,3 +518,26 @@ it.each([false, true])(
     ).not.toThrow();
   },
 );
+
+it.fails(
+  "known gap: a finite cutter must not extend an interior seam to the source boundary",
+  () => {
+    const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+    const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
+    const original = Array.from(source),
+      originalCutter = Array.from(cutter);
+    const result = splitGeneralCutter(
+      { kind: "scanEdit", action: "split", positions: source, target: cutter },
+      { tolerance: 0.001 },
+    );
+    const ys: number[] = [];
+    for (const segment of result.segments!)
+      for (let i = 0; i < segment.length; i += 3)
+        if (Math.abs(segment[i] - 0.5) < 1e-6) ys.push(segment[i + 1]);
+    expect(Array.from(source)).toEqual(original);
+    expect(Array.from(cutter)).toEqual(originalCutter);
+    expect(ys.some((y) => Math.abs(y - 0.1) < 1e-5)).toBe(true);
+    expect(ys.some((y) => Math.abs(y - 0.2) < 1e-5)).toBe(true);
+    expect(ys.every((y) => y >= 0.1 - 1e-5 && y <= 0.2 + 1e-5)).toBe(true);
+  },
+);
