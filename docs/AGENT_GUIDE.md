@@ -1089,7 +1089,7 @@ The browser test uses installed Chrome, a disposable profile, an isolated static
 
 ### Dedicated Split mesh command
 
-Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agent access is unchanged: use `mesh_process` with a `scanEdit` request, `action: "split"`, and a cutting `targetId` (or the existing plane parameters). Smooth selected area and Defeature remain in the quick tools; MCP exposes `smoothSelected` and `defeature` through the same processing operation. Selected-area smoothing defaults to six passes with strength 0.5 in both the quick action and MCP; supply `iterations` and `strength` explicitly to override this preset (the previous preset was two passes at 0.5). Boundary smoothing retains its three-pass, 0.3 preset. Both smoothing actions preserve raw corner coordinates for stationary vertices; a moved shared vertex updates its aliases on adjacent unselected facets. Tolerance-welded preparation does not normalize unrelated source corners. Selection tools, clear/invert, and cut/copy creation retain their existing selection operations; the new icons are presentation only.
+Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agent access is unchanged: use `mesh_process` with a `scanEdit` request, `action: "split"`, and a cutting `targetId` (or the existing plane parameters). Smooth selected area and Defeature remain in the quick tools; MCP exposes `smoothSelected` and `defeature` through the same processing operation. Selected-area smoothing defaults to six passes with strength 0.5 in both the quick action and MCP; supply `iterations` and `strength` explicitly to override this preset (the previous preset was two passes at 0.5). Boundary smoothing defaults to one complete command at strength 1; its native fitted-curve path is described below. Both smoothing actions preserve raw corner coordinates for stationary vertices; a moved shared vertex updates its aliases on adjacent unselected facets. Tolerance-welded preparation does not normalize unrelated source corners. Selection tools, clear/invert, and cut/copy creation retain their existing selection operations; the new icons are presentation only.
 
 Coordinate alignment also accepts optional `translation: [x, y, z]` in mm. These offsets follow the constructed reference frame axes and are applied before rigid inversion. They are not world-axis translation. Both preview and apply return the offsets alongside the resulting matrix; omission means no offset. The GUI uses the same shared operation through Frame translation (mm). Translation inputs must contain exactly three finite values within +/-1e9 mm. Editing them discards the current preview; apply remains one history transaction.
 
@@ -2402,6 +2402,28 @@ Keep the existing `expectedRevision`, unique `requestId`, lock/job/cancellation 
 
 `scanEdit/boundarySmooth` is a geometry edit. Locked objects and exact CAD/parametric bodies are rejected before processing starts; unlock a raw mesh or create an independent mesh copy first. Read-only `scanEdit/inventory` and boundary-curve reports remain available on protected sampled geometry. Rejection preserves geometry and history.
 
+Boundary smoothing uses the same fitted-boundary operation as the GUI buttons.
+`indices` restricts inventory boundaries; omission includes all, processed in
+native boundary order. `strength` defaults to `1` and maps `[0,1]` to integer
+slider positions `0–10` by rounding; the GUI offers increments of `0.1`.
+`iterations` defaults to `1` complete command repetition, not one vertex pass.
+Each repetition runs `10 + sliderPosition` native vertex passes, adaptive cubic
+curve fitting/projection, and boundary-preserving local correction. Strength
+zero selects minimum native strength (ten passes and a 0.05 mm fit tolerance);
+it does not disable the command. Selected-area `smoothSelected` retains its
+separate defaults of six vertex passes at strength 0.5.
+
+Diagnostics include `changed`, selected boundary count, `passesPerBoundary`,
+command repetitions, cumulative `fittedBoundaries`/`unfittedBoundaries` and
+`outOfTolerance` counts, `removedFacets` from native boundary-ear cleanup, and
+`maxFitError` in mm. Small or singular boundaries
+may have no fitted curve; their vertex stage is retained and the unavailable
+fit is reported. An unchanged operation keeps the canonical source and adds no
+successor geometry. Updated indexed identity is retained by GUI and MCP edits,
+so later commands and save/reopen preserve the boundary ordering. CAD curves
+are temporary and request-owned. Native
+acceptance scopes and remaining M2 gates are tracked in `M2_ACCEPTANCE.md`.
+
 ### Publish projected boundary sketches
 
 Run `mesh_process` with `operation:{kind:"scanEdit",action:"boundaryProject",indices:[boundaryIndex],plane:{origin:[0,0,0],normal:[0,0,1]},fitTolerance:0.05,createSketches:true}`. Indices refer to current boundary inventory; omission projects all boundaries. Plane origin is in world millimetres, the normal is nonzero, and fit tolerance is in millimetres. Omit `createSketches`, or pass false, to retain the existing read-only XYZ curve artifact without history or authoring changes. The option is boolean and applies only to boundary projection.
@@ -2413,3 +2435,5 @@ Explicit publication returns `sketchIds` and the curve artifact in the terminal 
 For `mesh_process` / `scanEdit/split`, `targetId` resolves the same cutting object as the GUI. A `kind:plane` reference uses its stored `planeFrame` as an infinite plane (or a legacy live plane fit if no stored frame exists). An ordinary mesh remains a finite cutter even if it has plane-fit metadata. Open/folded meshes and closed convex/concave cutters retain their existing fragment/grouping algorithms. Point clouds and semantic objects without triangle geometry are not mesh cutters. Explicit operation `plane` parameters remain authoritative when supplied. Output parts are uncapped; inspect diagnostics for the actual cutter path and inside/outside facet counts.
 
 Split, component extraction and segmentation publish independent visible mesh parts through one GUI/MCP helper. They retain raw source/cutter coordinates, hide the source, select the first created result and return its IDs in result order. New parts use normal opaque part appearance, names `Source name segment N`, and only their own classification fits. Source-file provenance is retained, while exact/parametric/construction identity is not inherited. Empty leading results do not shift classification lookup or original segment indices. No nonempty output means rejection without model/history mutation. Source visibility belongs to the modeling transaction: model Undo/Redo/Seek and binary reopening restore it while keeping unrelated display changes independent. The retained source can also be shown explicitly using `object_update`. Existing lock, revision/retry, cancellation, resource and history guards apply.
+
+Boundary smoothing rejects degenerate triangles, nonmanifold edges and nonmanifold vertices before fitting or publication. Use mesh diagnostics and repair the source first. This failure preserves geometry, canonical topology and history through both the GUI and MCP.

@@ -1871,6 +1871,112 @@ function surfaceShape(oc, patch, maximumControls = 16) {
   return importFile(oc, { data: surfaceStep(patch), extension: "step" });
 }
 
+function boundaryCurveProject(oc, { poles, knots, periodic, positions }) {
+  if (
+    !(poles instanceof Float64Array) ||
+    poles.length % 3 ||
+    poles.length < 12 ||
+    poles.length > 300 ||
+    !poles.every(Number.isFinite)
+  )
+    throw new Error(
+      "Boundary curve requires four through one hundred finite poles.",
+    );
+  const count = poles.length / 3;
+  if (
+    !Array.isArray(knots) ||
+    knots.length !== count + 4 ||
+    !knots.every(Number.isFinite) ||
+    knots.some((v, i) => i && v < knots[i - 1]) ||
+    !(knots[3] < knots[count]) ||
+    typeof periodic !== "boolean"
+  )
+    throw new Error("Boundary curve requires a valid cubic knot sequence.");
+  if (
+    !(positions instanceof Float32Array) ||
+    !positions.length ||
+    positions.length % 3 ||
+    !positions.every(Number.isFinite)
+  )
+    throw new Error("Boundary projection requires complete finite points.");
+  const handles = [],
+    keep = (h) => (handles.push(h), h);
+  let curve;
+  let pinned = false;
+  try {
+    const poleArray = keep(new oc.TColgp_Array1OfPnt_2(1, count));
+    for (let i = 0; i < count; i++) {
+      const point = new oc.gp_Pnt_3(...poles.subarray(i * 3, i * 3 + 3));
+      try {
+        poleArray.SetValue(i + 1, point);
+      } finally {
+        point.delete();
+      }
+    }
+    const unique = [],
+      multiplicities = [];
+    for (const knot of knots) {
+      if (unique.length && unique.at(-1) === knot)
+        multiplicities[multiplicities.length - 1]++;
+      else {
+        unique.push(knot);
+        multiplicities.push(1);
+      }
+    }
+    const knotArray = keep(new oc.TColStd_Array1OfReal_2(1, unique.length));
+    const multArray = keep(new oc.TColStd_Array1OfInteger_2(1, unique.length));
+    for (let i = 0; i < unique.length; i++) {
+      knotArray.SetValue(i + 1, unique[i]);
+      multArray.SetValue(i + 1, multiplicities[i]);
+    }
+    curve = new oc.Geom_BSplineCurve_1(
+      poleArray,
+      knotArray,
+      multArray,
+      3,
+      false,
+    );
+    // Keep the raw Embind owner alive until the temporary OCCT handle is gone.
+    curve.IncrementRefCounter();
+    pinned = true;
+    if (periodic) curve.SetPeriodic();
+    const handle = keep(new oc.Handle_Geom_Curve_2(curve));
+    const result = positions.slice();
+    for (let i = 0; i < result.length; i += 3) {
+      const local = [],
+        own = (h) => (local.push(h), h);
+      try {
+        const point = own(new oc.gp_Pnt_3(...result.subarray(i, i + 3)));
+        const projection = own(
+          new oc.GeomAPI_ProjectPointOnCurve_2(point, handle),
+        );
+        if (!projection.NbPoints())
+          throw new Error("Boundary curve projection has no solution.");
+        const nearest = own(projection.NearestPoint());
+        for (const [axis, value] of [
+          nearest.X(),
+          nearest.Y(),
+          nearest.Z(),
+        ].entries()) {
+          const next = Math.fround(value);
+          if (!Number.isFinite(next))
+            throw new Error("Boundary curve projection is nonfinite.");
+          result[i + axis] = next;
+        }
+      } finally {
+        cleanup(local);
+      }
+    }
+    return result;
+  } finally {
+    cleanup(handles);
+    if (curve) {
+      if (pinned) curve.DecrementRefCounter();
+      curve.delete();
+    }
+  }
+}
+
 function curvatureSurface(oc, { patch, matrix }) {
   if (
     !Array.isArray(matrix) ||
@@ -2375,6 +2481,8 @@ self.onmessage = (event) => {
         result = curvatureSurface(oc, payload);
       else if (operation === "curvatureEvaluate")
         result = curvatureEvaluate(oc, payload);
+      else if (operation === "boundaryCurveProject")
+        result = boundaryCurveProject(oc, payload);
       else if (operation === "shell")
         result = thicknessShape(oc, payload, true);
       else if (operation === "thicken")

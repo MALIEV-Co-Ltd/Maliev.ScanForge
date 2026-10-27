@@ -484,15 +484,17 @@ describe("patch and boundary edits", () => {
     ]);
     expect(result.positions).toBeUndefined();
   });
-  it("smooths boundary neighbors and repatches a selected cube top", () => {
+  it("retains a small convex boundary without a fitted curve and repatches a selected cube top", () => {
     const smooth = runScanEdit({
       kind: "scanEdit",
       action: "boundarySmooth",
       positions: openCube,
       iterations: 1,
       strength: 0.5,
-    }).positions!;
-    expect(smooth).not.toEqual(new Float32Array(openCube));
+    });
+    expect(smooth.positions).toEqual(new Float32Array(openCube));
+    expect(smooth.diagnostics.changed).toBe(false);
+    expect(smooth.diagnostics.unfittedBoundaries).toBe(1);
     const selection = new Uint8Array(12);
     selection.fill(1, 10);
     const patch = runScanEdit({

@@ -4,6 +4,7 @@ import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
 import type { CadAlignmentInput } from "./alignment-reference";
 import { nativeDatumInverseFrame } from "../scan-native-datum-apply";
+import type { BoundaryCurveFit } from "../scan-boundary-fit";
 
 export type CadPattern =
   | { kind: "linear"; count: number; step: Vec3 }
@@ -223,6 +224,19 @@ export class CadClient {
     return this.request("curvatureEvaluate", {
       kernelId,
       uvs,
+    }) as Promise<Float32Array>;
+  }
+
+  /** Request-owned boundary curve; no CAD handle is retained in the scene. */
+  boundaryCurveProject(
+    curve: BoundaryCurveFit,
+    positions: Float32Array,
+  ): Promise<Float32Array> {
+    return this.request("boundaryCurveProject", {
+      poles: curve.poles.slice(),
+      knots: curve.knots.slice(),
+      periodic: curve.periodic,
+      positions: positions.slice(),
     }) as Promise<Float32Array>;
   }
 

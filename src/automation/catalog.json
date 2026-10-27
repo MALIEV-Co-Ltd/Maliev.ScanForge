@@ -1261,13 +1261,13 @@
                   "description": "Native multiple-hole Tangent dispatch, entire holes only. Omit algorithm or specify tangent; selected-hole Flat/Automatic/Curvature and surfaceRecovery require batch omitted or false. Optional indices restrict the batch."
                 },
                 "strength": {
-                  "description": "Selected-area smoothing defaults to 0.5; boundary smoothing defaults to 0.3.",
+                  "description": "Selected-area smoothing defaults to 0.5 and requires (0,1]. Boundary smoothing defaults to 1; [0,1] maps to native slider positions 0–10, rounded to the nearest step. Zero selects minimum native strength, not a disabled operation.",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 "iterations": {
-                  "description": "Selected-area smoothing defaults to 6 passes; boundary smoothing defaults to 3. Explicit values override these defaults.",
+                  "description": "Selected-area smoothing defaults to 6 vertex passes. Boundary smoothing defaults to 1 complete command repetition, each with 10–20 vertex passes plus fitted-curve projection and boundary-preserving correction. Explicit values override these defaults.",
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 100

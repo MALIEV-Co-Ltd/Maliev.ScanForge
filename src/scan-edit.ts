@@ -12,6 +12,10 @@ import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 import {
+  runBoundarySmooth,
+  runBoundarySmoothAsync,
+} from "./scan-boundary-smooth";
+import {
   SELECTED_SMOOTHING_DEFAULTS,
   smoothSelectedVertices,
 } from "./scan-selected-smooth";
@@ -170,16 +174,8 @@ function smoothing(
   t: MeshTopology,
   o: ScanEditOptions,
 ): Float32Array {
-  const strength =
-      r.strength ??
-      (r.action === "smoothSelected"
-        ? SELECTED_SMOOTHING_DEFAULTS.strength
-        : 0.3),
-    iterations =
-      r.iterations ??
-      (r.action === "smoothSelected"
-        ? SELECTED_SMOOTHING_DEFAULTS.iterations
-        : 3);
+  const strength = r.strength ?? SELECTED_SMOOTHING_DEFAULTS.strength,
+    iterations = r.iterations ?? SELECTED_SMOOTHING_DEFAULTS.iterations;
   if (
     !Number.isFinite(strength) ||
     strength <= 0 ||
@@ -189,60 +185,30 @@ function smoothing(
     iterations > 100
   )
     throw new Error("Smoothing needs strength in (0,1] and 1–100 iterations.");
-  let vertices = t.vertices.slice();
-  const movable = new Set<number>(),
-    neighbors = new Map<number, Set<number>>();
-  if (r.action === "boundarySmooth") {
-    const all = [...t.boundaryLoops, ...t.boundaryChains];
-    for (const idx of selectedIndices(r.indices, all.length)) {
-      const ids = all[idx],
-        closed = idx < t.boundaryLoops.length;
-      ids.forEach((id, i) => {
-        if (closed || (i > 0 && i < ids.length - 1)) {
-          movable.add(id);
-          neighbors.set(
-            id,
-            new Set([
-              ids[(i + ids.length - 1) % ids.length],
-              ids[(i + 1) % ids.length],
-            ]),
-          );
-        }
-      });
-    }
-  } else {
-    if (!r.selection?.some(Boolean))
-      throw new Error("Select triangles to smooth.");
-    vertices = (o.selectedSmoothing ?? smoothSelectedVertices)(
-      t,
-      r.selection,
-      iterations,
-      strength,
-      o,
-    );
-  }
-  for (
-    let step = 0;
-    r.action === "boundarySmooth" && step < iterations;
-    step++
-  ) {
-    checkProgress(o, step / iterations, "Smoothing selected vertices");
-    const next = vertices.slice();
-    for (const id of movable) {
-      const adjacent = neighbors.get(id)!;
-      if (!adjacent.size) continue;
-      for (let a = 0; a < 3; a++) {
-        let sum = 0;
-        for (const n of adjacent) sum += vertices[n * 3 + a];
-        next[id * 3 + a] +=
-          strength * (sum / adjacent.size - vertices[id * 3 + a]);
-      }
-    }
-    vertices = next;
-  }
-  const expanded = new Float32Array(t.triangles.length * 3);
-  for (let corner = 0; corner < t.triangles.length; corner++) {
-    const vertex = t.triangles[corner] * 3;
+  if (!r.selection?.some(Boolean))
+    throw new Error("Select triangles to smooth.");
+  const vertices = (o.selectedSmoothing ?? smoothSelectedVertices)(
+    t,
+    r.selection,
+    iterations,
+    strength,
+    o,
+  );
+  return publishSmoothedVertices(r, t, vertices, o);
+}
+
+/** Shared raw-corner and topology publication for both smoothing operations. */
+export function publishSmoothedVertices(
+  r: ScanEditRequest,
+  t: MeshTopology,
+  vertices: Float64Array,
+  o: MeshProcessingOptions,
+  triangles: Uint32Array = t.triangles,
+  sourceCorners?: Uint32Array,
+): Float32Array {
+  const expanded = new Float32Array(triangles.length * 3);
+  for (let corner = 0; corner < triangles.length; corner++) {
+    const vertex = triangles[corner] * 3;
     const moved =
       Math.fround(vertices[vertex]) !== Math.fround(t.vertices[vertex]) ||
       Math.fround(vertices[vertex + 1]) !==
@@ -252,17 +218,21 @@ function smoothing(
     for (let axis = 0; axis < 3; axis++)
       expanded[corner * 3 + axis] = moved
         ? vertices[vertex + axis]
-        : r.positions[corner * 3 + axis];
+        : r.positions[(sourceCorners?.[corner] ?? corner) * 3 + axis];
   }
   const positions = finiteOutput(expanded);
   // Moving vertices preserves their indexed connectivity. Refresh geometric
   // diagnostics at output precision without rewelding the successor mesh.
-  if (o.topologyCache) {
+  if (
+    o.topologyCache &&
+    (positions.length !== r.positions.length ||
+      positions.some((value, index) => !Object.is(value, r.positions[index])))
+  ) {
     const topology = analyzeIndexedMesh(
       Float64Array.from(vertices, Math.fround),
-      t.triangles,
+      triangles,
       { ...o, onProgress: undefined },
-      t.edges,
+      triangles === t.triangles ? t.edges : undefined,
     );
     o.topologyCache.positions = positions;
     o.topologyCache.tolerance = o.tolerance ?? 1e-6;
@@ -274,6 +244,7 @@ function scanEdit(
   r: ScanEditRequest,
   options: ScanEditOptions,
   fill: typeof runHoleFill | typeof runHoleFillAsync,
+  boundarySmooth: typeof runBoundarySmooth | typeof runBoundarySmoothAsync,
 ): ScanEditResult | Promise<ScanEditResult> {
   if (
     r.batch !== undefined &&
@@ -343,14 +314,12 @@ function scanEdit(
   }
   if (r.action === "fillHoles") return fill(r, t, o);
   if (r.action === "split") return splitByPlane(r, o);
-  if (r.action === "smoothSelected" || r.action === "boundarySmooth")
+  if (r.action === "boundarySmooth") return boundarySmooth(r, t, o);
+  if (r.action === "smoothSelected")
     return {
       positions: smoothing(r, t, o),
       diagnostics: {
-        method:
-          r.action === "smoothSelected"
-            ? "Selected vertex averaging with concave boundary relaxation"
-            : "Boundary-preserving Laplacian smoothing",
+        method: "Selected vertex averaging with concave boundary relaxation",
       },
     };
   if (r.action === "boundaryProject") {
@@ -426,12 +395,12 @@ export function runScanEdit(
   r: ScanEditRequest,
   options: ScanEditOptions = {},
 ): ScanEditResult {
-  return scanEdit(r, options, runHoleFill) as ScanEditResult;
+  return scanEdit(r, options, runHoleFill, runBoundarySmooth) as ScanEditResult;
 }
 
 export async function runScanEditAsync(
   r: ScanEditRequest,
   options: ScanEditOptions = {},
 ): Promise<ScanEditResult> {
-  return scanEdit(r, options, runHoleFillAsync);
+  return scanEdit(r, options, runHoleFillAsync, runBoundarySmoothAsync);
 }

@@ -16,11 +16,23 @@ import type { ParametricRecipe } from "../src/parametric";
 import { processMesh } from "../src/processing-client";
 import { extractSketchSection } from "../src/sketch-section";
 import { createGridPatch } from "../src/surfaces";
-import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
+import {
+  runScanEdit,
+  runScanEditAsync,
+  type ScanEditRequest,
+} from "../src/scan-edit";
 import smoothingInput from "./fixtures/defeature-annular.json";
 import { runScanTool } from "../src/scan-tools";
 import { reductionGrid } from "./helpers/reduction-grid";
 import { ScanPreviewSession } from "../src/scan-preview";
+import boundaryNative from "./fixtures/boundary-smooth-observed-annulus.json";
+import { nativeStlTopology } from "../src/scan-native-stl-topology";
+import { indexedMeshMatches } from "../src/indexed-mesh";
+import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
+import type {
+  ProcessingRequest,
+  ProcessingResponse,
+} from "../src/processing-client";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
@@ -499,6 +511,97 @@ describe("shared workspace operation contracts", () => {
       expect(h.host.commit).toHaveBeenCalledOnce();
     }
   });
+
+  it("rejects degenerate boundary smoothing through the shared operation without MCP publication", async () => {
+    const positions = Float32Array.from([
+        0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 10, 0, 0, 10, 0,
+        0, 10, 0, 0,
+      ]),
+      before = positions.slice();
+    const h = harness([entity({ positions })]);
+    h.state.selection = new Uint8Array(3);
+    vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+      if (request.kind !== "scanEdit") throw new Error("Unexpected operation");
+      const scanEdit = await runScanEditAsync(request);
+      return { kind: "scanEdit", scanEdit, diagnostics: scanEdit.diagnostics };
+    });
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "boundarySmooth" },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow(/degenerate/i);
+    expect(h.host.commit).not.toHaveBeenCalled();
+    expect(h.state.history).toHaveLength(0);
+    expect(h.state.entities[0].positions).toBe(positions);
+    expect(positions).toEqual(before);
+  });
+
+  it("routes MCP boundary smoothing defaults through the actual worker and pinned CAD kernel", async () => {
+    const positions = Float32Array.from(boundaryNative.source),
+      before = positions.slice();
+    const indexedMesh = nativeStlTopology(positions);
+    const h = harness([entity({ positions, indexedMesh })]);
+    h.state.selection = new Uint8Array(positions.length / 9);
+    await withCurvatureKernel(async () => {
+      let reply: Exclude<ProcessingResponse, { progress: number }> | undefined;
+      const scope = {
+        location: self.location,
+        onmessage: null as
+          null | ((event: { data: ProcessingRequest }) => Promise<void>),
+        postMessage: (
+          response: ProcessingResponse,
+          transfer: Transferable[] = [],
+        ) => {
+          if (!("progress" in response))
+            reply = structuredClone(response, { transfer });
+        },
+      };
+      vi.stubGlobal("self", scope);
+      await import("../src/processing-worker");
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        await scope.onmessage!({ data: request });
+        if (!reply)
+          throw new Error("Worker did not publish a terminal response.");
+        if ("error" in reply) throw new Error(reply.error);
+        return reply.result;
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "boundarySmooth" },
+        },
+        h.context,
+      );
+      if (!reply || !("result" in reply))
+        throw new Error("Worker did not publish a result.");
+      expect(reply.result.scanEdit!.diagnostics).toMatchObject({
+        passesPerBoundary: 20,
+        iterations: 1,
+        strength: 1,
+        fittedBoundaries: 2,
+        changed: true,
+      });
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      expect(h.state.history).toHaveLength(1);
+      const successor = h.state.entities[0];
+      expect(successor.indexedMesh!.triangles).toEqual(indexedMesh.triangles);
+      expect(
+        indexedMeshMatches(successor.indexedMesh, successor.positions),
+      ).toBe(true);
+      const zero = 16 * Number.EPSILON * 5;
+      for (let i = 0; i < successor.positions.length; i++) {
+        const actual = successor.positions[i],
+          expected = boundaryNative.output[i];
+        if (Math.abs(actual) <= zero && Math.abs(expected) <= zero) continue;
+        expect(actual, `native MCP coordinate ${i}`).toBe(expected);
+      }
+      expect(positions).toEqual(before);
+    });
+  }, 30000);
 
   it("passes ordered fixed mesh targets through shared refinement without changing them", async () => {
     const indexedMesh = {

@@ -27,7 +27,11 @@ export interface ScanTopologyPanelsProps {
   entities: Entity[];
   selectedId: string;
   selection?: Uint8Array | null;
-  onReplace: (positions: Float32Array, label: string) => void;
+  onReplace: (
+    positions: Float32Array,
+    label: string,
+    indexedMesh?: Entity["indexedMesh"],
+  ) => void;
   onCreate: (segments: Float32Array[], label: string) => void;
   onSelection: (mask: Uint8Array) => void;
   onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
@@ -121,8 +125,11 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       if (!outcome) throw new Error("Scan editing worker returned no result.");
       if (outcome.inventory) setInventory(outcome.inventory);
       if (outcome.selection) props.onSelection(outcome.selection);
-      if (outcome.positions && outcome.diagnostics.changed !== false)
-        props.onReplace(outcome.positions, label);
+      if (outcome.positions && outcome.diagnostics.changed !== false) {
+        if (result.indexedMesh)
+          props.onReplace(outcome.positions, label, result.indexedMesh);
+        else props.onReplace(outcome.positions, label);
+      }
       if (outcome.segments) props.onCreate(outcome.segments, label);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);
@@ -235,7 +242,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
   const [diameter, setDiameter] = useState(0);
   const [cleanup, setCleanup] = useState("triangles"),
     [threshold, setThreshold] = useState(10);
-  const [strength, setStrength] = useState(0.3),
+  const [strength, setStrength] = useState(1),
     [tolerance, setTolerance] = useState(0.05);
   const [planeId, setPlaneId] = useState("XY");
   const [transparent, setTransparent] = useState(false);
@@ -686,7 +693,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   type="range"
                   min="0"
                   max="1"
-                  step="0.05"
+                  step="0.1"
                   value={strength}
                   onChange={(event) => setStrength(Number(event.target.value))}
                 />
@@ -700,7 +707,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                         action: "boundarySmooth",
                         indices: [current!.index],
                         strength,
-                        iterations: 3,
+                        iterations: 1,
                       },
                       "Smooth selected boundary",
                     )
@@ -716,7 +723,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                         action: "boundarySmooth",
                         indices: items.map((item) => item.index),
                         strength,
-                        iterations: 3,
+                        iterations: 1,
                       },
                       "Smooth all boundaries",
                     )

@@ -1729,6 +1729,7 @@ export function App() {
     positions: Float32Array,
     label: string,
     retainFacetSelection = false,
+    indexedMesh?: Entity["indexedMesh"],
   ) {
     if (!selected || !sampledSelected) return;
     if (!positions.length) {
@@ -1757,7 +1758,8 @@ export function App() {
       surfaceScanId: undefined,
       fit: undefined,
       parametric: undefined,
-      normals: undefined,
+      normals: indexedRenderNormals(indexedMesh),
+      indexedMesh,
       meshSelection: retainSelection ? selected.meshSelection : undefined,
       scanSource: undefined,
     });
@@ -1889,6 +1891,7 @@ export function App() {
           result.scanEdit.positions,
           label,
           operation.action === "smoothSelected",
+          result.indexedMesh,
         );
       if (result.scanEdit?.segments)
         createSegments(result.scanEdit.segments, label);
@@ -2891,6 +2894,7 @@ export function App() {
         result.positions,
         scanToolTitles[parameters.kind],
         false,
+        result.indexedMesh,
       );
       scanToolOutput.current = result.positions;
       setScanToolResult(
@@ -6084,7 +6088,9 @@ export function App() {
                 entities={entities}
                 selectedId={selected.id}
                 selection={triangleMask}
-                onReplace={replaceScanPositions}
+                onReplace={(positions, label, indexedMesh) =>
+                  replaceScanPositions(positions, label, false, indexedMesh)
+                }
                 onCreate={createSegments}
                 onSelection={changeSelection}
                 onBoundaryHighlight={setScanBoundaryPaths}

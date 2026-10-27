@@ -27,6 +27,16 @@ Connectivity does not change. The successor retains indexed adjacency and refres
 
 The recovered edit handler is `0x1405b6280`, reached by command `0x838d` and control 1052. Although it reads a stored algorithm setting with default 3, assembly resets that dispatch variable to zero before choosing a kernel. The actual path calls `0x140a83c00`, which computes per-vertex targets through `0x140a827b0` and publishes them synchronously. The unused setting-3 kernel was rejected after its output failed the numerical comparison.
 
+The boundary investigation on 2026-10-27 corrected the endpoint distance used by
+this shared target kernel. Native helper `0x14017b820` multiplies each Double
+coordinate difference by its Float32 copy, sums Y then X then Z in Double, and
+returns the Double square root. Rounding a Euclidean distance to Float32 changes
+the weighted endpoint target. The new 32-point inner-rim control matches every
+unprojected native Float32 coordinate after twenty passes exactly; the later
+curve-projected head is checked separately. GUI, MCP and smoothing workers use
+the same corrected helper. This stage result does not close whole-boundary
+smoothing or M2; see `docs/evidence/native-boundary-smoothing-20261027.json`.
+
 REA analysis Evidence IDs:
 
 - Handler: `ev_6dfb699e85ab13cfa34c8a398c402a883165ff75e8dc4ea3b993ffeed0676f4d`.

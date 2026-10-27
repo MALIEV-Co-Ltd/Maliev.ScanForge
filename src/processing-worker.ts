@@ -305,6 +305,22 @@ scope.onmessage = async ({ data: incoming }) => {
           : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
+      if (
+        (request.action === "boundarySmooth" ||
+          request.action === "smoothSelected") &&
+        result.scanEdit.positions &&
+        result.scanEdit.diagnostics.changed !== false &&
+        topologyCache.positions === result.scanEdit.positions &&
+        topologyCache.topology
+      ) {
+        // Scene/history arrays must not detach the worker's canonical topology.
+        const indexed = {
+          vertices: Float32Array.from(topologyCache.topology.vertices),
+          triangles: Uint32Array.from(topologyCache.topology.triangles),
+        };
+        if (indexedMeshMatches(indexed, result.scanEdit.positions))
+          result.indexedMesh = indexed;
+      }
       // An unchanged source stays canonical in this worker. No scene/history
       // successor exists, so do not allocate or transfer a duplicate buffer.
       if (result.scanEdit.diagnostics.changed === false)

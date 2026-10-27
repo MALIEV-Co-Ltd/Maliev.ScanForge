@@ -162,8 +162,13 @@ it("projects every boundary to the actual origin XY plane and forwards smoothing
   );
   click(tree, "Smooth selected");
   expect(props.onOperation).toHaveBeenLastCalledWith(
-    { action: "boundarySmooth", indices: [0], strength: 0.3, iterations: 3 },
+    { action: "boundarySmooth", indices: [0], strength: 1, iterations: 1 },
     "Smooth selected boundary",
+  );
+  click(tree, "Smooth all");
+  expect(props.onOperation).toHaveBeenLastCalledWith(
+    { action: "boundarySmooth", indices: [0, 1], strength: 1, iterations: 1 },
+    "Smooth all boundaries",
   );
 });
 it("blocks geometry operations for empty input and during processing while preserving cancellation", () => {
