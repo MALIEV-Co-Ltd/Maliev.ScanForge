@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -252,6 +252,11 @@ try {
       "utf8",
     ),
   );
+  const sourceBits = Buffer.from(new Float32Array(observed.source).buffer);
+  assert.equal(
+    createHash("sha256").update(sourceBits).digest("hex"),
+    "d4997b7678deb95c9540cd45414f86927063b5ea88ee5bebb479f25bacc73c2c",
+  );
   const first = mesh("source", "Cylinder scan", observed.source);
   const base = first;
   let reference;
@@ -278,15 +283,18 @@ try {
     }),
   );
   // Same cylindrical side used in the native seam-tangent discrimination run.
+  const referenceBytes = await readFile(
+    new URL("./fixtures/unroll-reference-frame90.step", import.meta.url),
+  );
+  assert.equal(
+    createHash("sha256").update(referenceBytes).digest("hex"),
+    "6abeecf9c9b322687d334199654aba14c7adeb4851ddfaf369cfa6c00871c52f",
+  );
   const referenceUpload = (
     await call("artifact_put", {
       name: "reference-cylinder-frame90.step",
       offset: 0,
-      base64: (
-        await readFile(
-          new URL("./fixtures/unroll-reference-frame90.step", import.meta.url),
-        )
-      ).toString("base64"),
+      base64: referenceBytes.toString("base64"),
     })
   ).result;
   const cylinder = await job(
@@ -562,6 +570,186 @@ try {
   }
   await mutate("history_undo", {});
 
+  // Compare the same zero-offset, one-turn auxiliary records captured natively.
+  const nativeFrame = JSON.parse(
+    await readFile(
+      new URL("./fixtures/unroll-native-roll-frame.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const nativeControl = JSON.parse(
+    await readFile(
+      new URL(
+        "../docs/evidence/m2-unroll-frame-control-20261026.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(nativeControl.settings, {
+    offsetDegrees: 0,
+    instances: 1,
+    radius: 2,
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    importedSurfaceSeamTangent: [0, 1, 0],
+  });
+  assert.equal(
+    nativeControl.files["source-cylinder.stl"],
+    "99bd87ca47cc4d09da5cd59c4765f080cc7ab41f70503a8adc64308f4279575e",
+  );
+  assert.equal(
+    nativeControl.files["reference-cylinder-frame90.step"],
+    "e6665a64a82901930d593fbc74054da999d5ae88ff9fbe0485d08bb89fb164c7",
+  );
+  assert.equal(
+    nativeControl.files["native-frame90-auxiliary-sketch.iges"],
+    "27de9da740ba86571c283b1dea441280ce550edfb313efc7185917ce1999467b",
+  );
+  const matrix = Buffer.from(nativeFrame.matrixBytesHex, "hex");
+  assert.equal(
+    createHash("sha256").update(matrix).digest("hex"),
+    nativeFrame.matrixBytesSha256,
+  );
+  assert.equal(
+    nativeFrame.sourceSha256,
+    nativeControl.files["native-frame90-unroll0.qsf"],
+  );
+  assert.deepEqual(nativeFrame.settings, {
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    radius: 2,
+    offsetDegrees: 0,
+    instances: 1,
+  });
+  const nativeCase = observed.cases.find(
+    (c) => c.offsetDegrees === 0 && c.instances === 1,
+  );
+  assert.equal(
+    nativeCase.exportSha256,
+    nativeControl.files["native-frame90-unroll0.stl"],
+  );
+  const expectedMesh = nativeCase.positions;
+  const compareNativeAuxiliary = (frame, sketch) => {
+    const f = frame.coordinateFrame.frame;
+    const columns = [f.u, f.v, f.normal, f.origin];
+    let maxFrameDifference = 0,
+      maxSketchDifference = 0;
+    for (let row = 0; row < 3; row++)
+      for (let column = 0; column < 4; column++)
+        maxFrameDifference = Math.max(
+          maxFrameDifference,
+          Math.abs(
+            columns[column][row] - matrix.readDoubleLE((row * 4 + column) * 8),
+          ),
+        );
+    assert(maxFrameDifference <= 1e-15);
+    assert.equal(frame.rollMapping.radius, 2);
+    assert.equal(frame.rollMapping.offsetDegrees, 0);
+    assert.equal(frame.rollMapping.instances, 1);
+    assert.equal(frame.visible, false);
+    assert.equal(sketch.visible, true);
+    assert.deepEqual(sketch.sketch.frame, {
+      origin: [0, 0, 0],
+      u: [1, 0, 0],
+      v: [0, 1, 0],
+      normal: [0, 0, 1],
+    });
+    assert.equal(sketch.sketch.points.length, 2);
+    assert.equal(sketch.sketch.segments.length, 1);
+    assert.equal(sketch.sketch.segments[0].a, sketch.sketch.points[0].id);
+    assert.equal(sketch.sketch.segments[0].b, sketch.sketch.points[1].id);
+    for (const [index, endpoint] of [
+      nativeControl.ownership.exportedSketchLine.start,
+      nativeControl.ownership.exportedSketchLine.end,
+    ].entries()) {
+      maxSketchDifference = Math.max(
+        maxSketchDifference,
+        Math.abs(sketch.sketch.points[index].x - endpoint[0]),
+        Math.abs(sketch.sketch.points[index].y - endpoint[1]),
+      );
+      assert.equal(endpoint[2], 0);
+    }
+    assert(maxSketchDifference <= 5e-10);
+    return { maxFrameDifference, maxSketchDifference };
+  };
+  const beforeNativeIds = new Set(
+    (await call("project_get")).result.objects.map((o) => o.id),
+  );
+  await mutate("object_select", { entityId: first.id });
+  await page.getByRole("button", { name: "Unroll", exact: true }).click();
+  await panel.waitFor();
+  await panel.locator("button[aria-haspopup='listbox']").click();
+  await page
+    .getByRole("option", { name: "Cylinder reference", exact: true })
+    .click();
+  await panel.getByLabel("Instances", { exact: true }).fill("1");
+  await panel.getByLabel("Angular offset (degrees)", { exact: true }).fill("0");
+  await panel.getByRole("button", { name: "Apply", exact: true }).click();
+  let nativeGuiObjects;
+  for (let i = 0; i < 150; i++) {
+    nativeGuiObjects = (await call("project_get")).result.objects.filter(
+      (o) => !beforeNativeIds.has(o.id),
+    );
+    if (nativeGuiObjects.length === 2) break;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  const nativeGuiMesh = nativeGuiObjects.find((o) => o.kind === "mesh");
+  const nativeGuiFrame = nativeGuiObjects.find(
+    (o) => o.kind === "referenceFrame",
+  );
+  assert(nativeGuiMesh && nativeGuiFrame);
+  const nativeGuiSketch = (await savedSketches()).sketches.find(
+    (row) => row.id === nativeGuiFrame.rollMapping.sketchId,
+  );
+  const nativeGuiAux = compareNativeAuxiliary(nativeGuiFrame, nativeGuiSketch);
+  const nativeGuiCoordinates = (await geometry(nativeGuiMesh.id)).positions;
+  assert.equal(nativeGuiCoordinates.length, expectedMesh.length);
+  for (let i = 0; i < expectedMesh.length; i++)
+    assert(Math.abs(nativeGuiCoordinates[i] - expectedMesh[i]) <= 1e-12);
+  await mutate("history_undo", {});
+  const nativeMcp = await job(
+    await mutate("mesh_process", {
+      entityId: first.id,
+      operation: {
+        kind: "scanTools",
+        operation: {
+          kind: "unroll",
+          cylinderId: reference.id,
+          offsetDegrees: 0,
+          instances: 1,
+        },
+      },
+    }),
+  );
+  const nativeMcpFrame = (
+    await call("object_get", {
+      entityId: nativeMcp.result.unroll.frameEntityId,
+    })
+  ).result;
+  const nativeMcpSketch = (await savedSketches()).sketches.find(
+    (row) => row.id === nativeMcp.result.unroll.sketchId,
+  );
+  const nativeMcpAux = compareNativeAuxiliary(nativeMcpFrame, nativeMcpSketch);
+  assert.deepEqual(
+    nativeMcpFrame.coordinateFrame,
+    nativeGuiFrame.coordinateFrame,
+  );
+  assert.deepEqual(nativeMcpSketch.sketch, nativeGuiSketch.sketch);
+  for (const [frame, meshId, sketchId] of [
+    [nativeGuiFrame, nativeGuiMesh.id, nativeGuiSketch.id],
+    [nativeMcpFrame, nativeMcp.result.entityIds[0], nativeMcpSketch.id],
+  ]) {
+    assert.equal(frame.rollMapping.sourceEntityId, first.id);
+    assert.equal(frame.rollMapping.meshEntityId, meshId);
+    assert.equal(frame.rollMapping.sketchId, sketchId);
+  }
+  assert.deepEqual(
+    (await geometry(nativeMcp.result.entityIds[0])).positions,
+    nativeGuiCoordinates,
+  );
+  await mutate("history_undo", {});
+
   for (const input of inputs)
     await mutate("object_update", {
       entityId: input.id,
@@ -732,6 +920,7 @@ try {
   ledger.result = {
     guiMcpEqual: true,
     observedExportEqual: true,
+    oneTurnNativeFrameAndSketchGuiMcp: { gui: nativeGuiAux, mcp: nativeMcpAux },
     twoInstances: true,
     sourcePreserved: true,
     undoRedo: true,
