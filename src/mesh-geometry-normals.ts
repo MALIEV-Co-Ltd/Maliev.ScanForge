@@ -44,6 +44,7 @@ export function validateMeshFacetNormals(
 export function meshFacetNormals(
   mesh: IndexedMesh,
   signal?: AbortSignal,
+  onProgress?: (fraction: number) => void,
 ): Float32Array {
   signal?.throwIfAborted();
   validateMeshFacetNormals(mesh, signal);
@@ -65,7 +66,10 @@ export function meshFacetNormals(
       ? mesh.triangles
       : Uint32Array.from(mesh.triangles);
   for (let face = 0; face < triangles.length / 3; face++) {
-    if (face % 4096 === 0) signal?.throwIfAborted();
+    if (face % 4096 === 0) {
+      signal?.throwIfAborted();
+      onProgress?.(face / (triangles.length / 3));
+    }
     nativeGlobalFacetNormal(vertices, triangles, face, output, face * 3);
   }
   if (!output.every(Number.isFinite))

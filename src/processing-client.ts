@@ -660,7 +660,8 @@ function runProcessingRequest(
         copied.operation = { ...copied.operation };
         if (
           copied.operation.kind === "averageMesh" ||
-          copied.operation.kind === "repolygonize"
+          copied.operation.kind === "repolygonize" ||
+          copied.operation.kind === "flipNormals"
         ) {
           const cloneTopology = (
             mesh: import("./types").IndexedMesh | undefined,
@@ -684,8 +685,9 @@ function runProcessingRequest(
           copied.operation.sourceTopology = cloneTopology(
             copied.operation.sourceTopology,
           );
-          copied.operation.targetTopology =
-            copied.operation.targetTopology?.map(cloneTopology);
+          if (copied.operation.kind !== "flipNormals")
+            copied.operation.targetTopology =
+              copied.operation.targetTopology?.map(cloneTopology);
         }
         if (
           copied.operation.kind === "averageMesh" ||

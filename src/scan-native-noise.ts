@@ -12,7 +12,11 @@ function check(options: MeshProcessingOptions, index = 0) {
 /** Angle-weighted normals with the original single-precision accumulation. */
 export function noiseNormals(
   t: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
-  options: MeshProcessingOptions & { sharedReadonlyBuffers?: boolean } = {},
+  options: MeshProcessingOptions & {
+    sharedReadonlyBuffers?: boolean;
+    normalProgress?: (fraction: number) => void;
+    facetNormals?: ArrayLike<number>;
+  } = {},
 ) {
   const out = new Float32Array(
     allocateImportedReadonlyBuffer(
@@ -21,32 +25,47 @@ export function noiseNormals(
     ),
   );
   const v = t.vertices;
+  if (
+    options.facetNormals &&
+    options.facetNormals.length !== t.triangles.length
+  )
+    throw new Error("Facet normals must match indexed triangles.");
   const ids = new Uint32Array(3);
   const p = new Float64Array(9);
   const face = new Float64Array(3);
   for (let i = 0; i < t.triangles.length; i += 3) {
     check(options, i / 3);
+    if (i % 49152 === 0)
+      options.normalProgress?.((0.9 * i) / t.triangles.length);
     for (let corner = 0; corner < 3; corner++) {
       ids[corner] = t.triangles[i + corner];
       for (let axis = 0; axis < 3; axis++)
         p[corner * 3 + axis] = v[ids[corner] * 3 + axis];
     }
-    const ax = p[3] - p[0],
-      ay = p[4] - p[1],
-      az = p[5] - p[2];
-    const bx = p[6] - p[0],
-      by = p[7] - p[1],
-      bz = p[8] - p[2];
-    face[0] = ay * bz - az * by;
-    face[1] = az * bx - ax * bz;
-    face[2] = ax * by - ay * bx;
-    const length = Math.sqrt(
-      face[0] * face[0] + face[1] * face[1] + face[2] * face[2],
-    );
-    if (length > Number.EPSILON) {
-      const denominator = f32(length);
-      for (let axis = 0; axis < 3; axis++)
-        face[axis] = f32(face[axis] / denominator);
+    if (options.facetNormals) {
+      for (let axis = 0; axis < 3; axis++) {
+        face[axis] = options.facetNormals[i + axis];
+        if (!Number.isFinite(face[axis]))
+          throw new Error("Facet normals must be finite.");
+      }
+    } else {
+      const ax = p[3] - p[0],
+        ay = p[4] - p[1],
+        az = p[5] - p[2];
+      const bx = p[6] - p[0],
+        by = p[7] - p[1],
+        bz = p[8] - p[2];
+      face[0] = ay * bz - az * by;
+      face[1] = az * bx - ax * bz;
+      face[2] = ax * by - ay * bx;
+      const length = Math.sqrt(
+        face[0] * face[0] + face[1] * face[1] + face[2] * face[2],
+      );
+      if (length > Number.EPSILON) {
+        const denominator = f32(length);
+        for (let axis = 0; axis < 3; axis++)
+          face[axis] = f32(face[axis] / denominator);
+      }
     }
     for (let corner = 0; corner < 3; corner++) {
       const origin = corner * 3;
@@ -73,6 +92,7 @@ export function noiseNormals(
   }
   for (let i = 0; i < out.length; i += 3) {
     check(options, i / 3);
+    if (i % 49152 === 0) options.normalProgress?.(0.9 + (0.1 * i) / out.length);
     const length = f32(
       Math.sqrt(
         f32(

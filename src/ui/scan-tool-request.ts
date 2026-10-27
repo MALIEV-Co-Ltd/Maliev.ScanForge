@@ -1,3 +1,4 @@
+import { flipSourceTopology } from "../scan-flip-request";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import {
   reconstructionTargets,
@@ -128,6 +129,12 @@ export function scanToolRequest(
       };
       break;
     }
+    case "flipNormals":
+      operation = {
+        kind: "flipNormals",
+        sourceTopology: flipSourceTopology(source),
+      };
+      break;
     case "reduceNoise":
       if (
         parameters.selectionOnly &&

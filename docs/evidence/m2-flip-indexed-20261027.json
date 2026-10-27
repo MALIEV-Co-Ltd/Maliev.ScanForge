@@ -1,0 +1,56 @@
+{
+  "scope": "Indexed Flip Normals identity and normal-state correction; native equivalence is established only for the retained finite kernel controls.",
+  "baseCommit": "f01f7eaa96c2ce67fa1196354eca64ef1b3bd8c4",
+  "build": "scanforge-0b611305a24701f0",
+  "nativeBasis": {
+    "facetLoop": "Native captured facet loop swaps triangle vertices and XORs stored facet-normal signs, then invokes vertex-normal refresh in mode zero.",
+    "normalRefresh": "The retained original-instruction normal fixture includes a reversed triangle; computed output matches its Float32 normal bits. Full native Flip GUI with scanner normals was not run.",
+    "fixture": "tests/fixtures/noise-normal-kernel.json"
+  },
+  "tests": {
+    "focusedFiles": 5,
+    "passed": 163,
+    "checks": [
+      "shared GUI/MCP binding",
+      "original indexed identities",
+      "stored facet-normal sign bits",
+      "native reversed-triangle normal bits",
+      "ordinary array Float32 rounding",
+      "binary reopen and signed-zero preservation",
+      "warm-cache monotonic progress",
+      "worker transfer and source ownership",
+      "oversized vertex admission",
+      "non-finite normal rejection"
+    ],
+    "memoryLimitBytes": 4294967296,
+    "ownedCleanupConfirmed": true
+  },
+  "guiMcp": {
+    "manufacturedPlySha256": "2f7c825c1ffb7ece002cc07afd84536870eca6cf5a68f7ffe8211b378644cca5",
+    "manufacturedTriangles": 2,
+    "manufacturedVertices": 4,
+    "originalPlySha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "originalTriangles": 274154,
+    "originalVertices": 140113,
+    "initialPositionSha256": "e8ed34ac5238c4daa4fdf35ea4e1f3f2bb0bd083fd30dc6cbbb1216c54249ce7",
+    "originalIndexedVertexSha256": "84cd79ee8c9788ec0981608fe1d19497802cb85fb607543fe126077851f790d9",
+    "flippedPositionSha256": "f7de77fb5bd4a759db7844f09303ab066c9f70509a070f079e9e1950160485da",
+    "flippedIndexedTriangleSha256": "d28aabbed71a3ca6ba8b3b439bb964f21cb99080f53c23632068e9546b8c17e2",
+    "flippedGeometryNormalSha256": "511f3c3bcba8ca3f84af9c375c178e4f91c7f4f666612137b4eab31ba5b29e58",
+    "flippedFacetNormalSha256": "78ca8dc4d7224f12a428c231b11c5fbe9d0bcce66c77a4ed34af499114fed493",
+    "allPublishedGeometryBufferDigestsMatch": true,
+    "originalIndexedVerticesUnchanged": true,
+    "undoRestoresOriginalScannerAndGeometryDigests": true,
+    "smallControlRedoRestoresResult": true,
+    "observedRendering": "Flipped surfaces displayed in the separate browser; screenshot was viewed but not retained.",
+    "browserWarningsOrErrors": 0,
+    "ownedHelperCleanupConfirmed": true,
+    "helperPeakJobBytes": 493121536,
+    "memoryScope": "Owned helper and bridge only; browser memory is outside this Job and is not included."
+  },
+  "remaining": [
+    "Native GUI comparison for the original scan and scanner-normal metadata remains open.",
+    "Synchronous source-index validation on very large inputs has not been benchmarked for UI responsiveness.",
+    "Other M2 acceptance gates remain open."
+  ]
+}

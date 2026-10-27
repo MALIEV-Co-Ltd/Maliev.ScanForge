@@ -47,7 +47,7 @@ export type ScanToolOperation =
       selection?: Uint8Array;
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
-  | { kind: "flipNormals" }
+  | { kind: "flipNormals"; sourceTopology?: IndexedMesh }
   | {
       kind: "repolygonize";
       resolution?: number;
@@ -128,7 +128,7 @@ export function runScanTool(
     case "scaleMesh":
       return scaleScanMesh(positions, { ...operation, ...options });
     case "flipNormals":
-      return flipScanNormals(positions, options);
+      return flipScanNormals(positions, { ...operation, ...options });
     case "averageMesh":
       return averageScanMesh(positions, { ...operation, ...options });
     case "mirrorMesh":
