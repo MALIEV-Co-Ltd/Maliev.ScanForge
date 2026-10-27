@@ -42,5 +42,21 @@
     "Public MCP cancellation delivery during large staged admission has not been directly observed in a real browser.",
     "Full-operation responsiveness, later synchronous buffer copies and publication, and concurrent React update behavior are not established by admission-only timings.",
     "Installed-native original-scan post-Flip comparison and other M2 acceptance remain open."
-  ]
+  ],
+  "originalScanBrowserMcp": {
+    "candidateCommit": "d2c5c5ee6195e69990c8caaaf28cbcd58cce3244",
+    "fixtureSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "facets": 274154,
+    "indexedVertices": 140113,
+    "guiMcpAllOutputBufferDigestsEqual": true,
+    "undoRestoredAllInputBufferDigestsIncludingScannerNormals": true,
+    "immediatePublicMcpCancel": "cancelled at reported progress 0; original input digests unchanged; actual admission stage was not observed",
+    "subsequentPublicMcpFlip": "succeeded and matched GUI output buffer digests",
+    "helperPeakJobBytes": 481996800,
+    "memoryScope": "Owned helper and bridge only; browser memory is outside the job.",
+    "cleanupConfirmed": true,
+    "browserConsole": "Two errors from password-manager extension autofill overlay; no application errors observed.",
+    "screenshot": "Viewed; not retained.",
+    "nativeComparison": "No native post-Flip result captured."
+  }
 }
