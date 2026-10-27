@@ -1,4 +1,5 @@
 import nativeRollFrame from "./fixtures/unroll-native-roll-frame.json";
+import nativeFrameControl from "../docs/evidence/m2-unroll-frame-control-20261026.json";
 import { expect, it } from "vitest";
 import fixture from "./fixtures/unroll-observed-cylinder.json";
 import tilted from "./fixtures/unroll-observed-tilted-cylinder.json";
@@ -37,6 +38,28 @@ function auxiliary(offsetDegrees = 0, instances = 1) {
     },
   );
 }
+
+it("matches the retained native auxiliary IGES line on the cylinder control", () => {
+  const { sketch } = auxiliary();
+  const nativeLine = nativeFrameControl.ownership.exportedSketchLine;
+  const points = sketch.sketch.points;
+  expect(points).toHaveLength(2);
+  expect(sketch.sketch.segments).toMatchObject([
+    { a: points[0].id, b: points[1].id },
+  ]);
+  expect(sketch.sketch.frame).toEqual({
+    origin: [0, 0, 0],
+    u: [1, 0, 0],
+    v: [0, 1, 0],
+    normal: [0, 0, 1],
+  });
+  const expected = [nativeLine.start, nativeLine.end];
+  for (let i = 0; i < 2; i++) {
+    expect(Math.abs(points[i].x - expected[i][0])).toBeLessThanOrEqual(5e-10);
+    expect(Math.abs(points[i].y - expected[i][1])).toBeLessThanOrEqual(5e-10);
+    expect(expected[i][2]).toBe(0);
+  }
+});
 
 it("matches the retained native Roll frame matrix on the original cylinder control", async () => {
   const bytes = Uint8Array.from(
