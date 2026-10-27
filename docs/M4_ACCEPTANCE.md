@@ -139,7 +139,12 @@ actual application GUI Duplicate and public MCP `object_duplicate` produced
 distinct objects with equal application fit and frame; undo and MCP-copy worker
 reopen passed. The original and application fit populations are not established
 as equivalent, and native copy links, other modes and semantic reference point
-or line duplication remain open.
+or line duplication remain open. Strict saved-file readback confirms the four
+original record spans are unchanged and a fifth plane-type span is appended;
+excluding its name and two changing 16-byte fields leaves one unexplained byte
+difference across 304 compared bytes. Native displayed normal and application
+axis differ by approximately 0.014° ignoring sign, but their sampled populations
+are not known to match. These observations do not establish link or fit parity.
 
 The [scan-plane sketch guard checkpoint](evidence/m4-scan-plane-sketch-guards-20261027.json)
 extends the original scan, fitted-plane and sketch workflow with GUI draft
