@@ -215,6 +215,12 @@ and endpoint topology; both sketch undos remove their line. The rendered capture
 shows the GUI line against the scan. The line is undone before the separate
 rectangle/reopen checks, and no native drawing equivalence is claimed.
 
+The [entity routine investigation](evidence/m4-native-entity-slot-candidates-20261027.json)
+verifies two candidate pointer locations and the bytes of their bounded native
+listings. The listings compute projected point and line-midpoint candidates;
+they do not establish a duplicate factory or its link policy. This static result
+does not replace the required original-native duplication and lifecycle checks.
+
 ## Verification and ownership
 
 The original isolated candidate started at `e367262fc46b2fee8588c7b3c84ccd41fa7424fa`.

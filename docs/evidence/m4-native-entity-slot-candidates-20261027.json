@@ -1,0 +1,37 @@
+{
+  "scope": "Static bounded entity routine investigation; not original UI or duplicate acceptance",
+  "carrierSha256": "7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849",
+  "binding": {
+    "lineEntityTableRva": "0x117cdf8",
+    "linePointerRva": "0x117d078",
+    "lineRoutineRva": "0x40d190",
+    "pointEntityTableRva": "0x117e220",
+    "pointPointerRva": "0x117e4a0",
+    "pointRoutineRva": "0x41ab00",
+    "candidateOffset": "0x280",
+    "limitation": "Both aligned pointers are at the same offset from previously identified RTTI-bound tables; complete table extent and runtime dispatch are not independently established."
+  },
+  "staticObservation": {
+    "line": "The exact 422-byte listing reads the line payload and computes its midpoint, transforms the point into two window coordinates, and returns either Float32 midpoint coordinates or a maximum-Float32 sentinel.",
+    "point": "The exact 277-byte listing projects the point payload into two window coordinates and returns Float32 point coordinates or a maximum-Float32 sentinel.",
+    "callsOrAllocationInListedRanges": false,
+    "interpretation": "These listed routines are geometric candidate computations, not evidence of a clone factory. Native duplicate eligibility and source-link lifecycle remain unresolved."
+  },
+  "verification": {
+    "listedInstructions": 154,
+    "listedBytesMatchCapturedRanges": 699,
+    "completeListedByteCoverageWithinBothExactPdataRanges": true,
+    "independentDecoder": false,
+    "nativeExecution": false,
+    "ownedProjectRemovedAndProcessesExited": true
+  },
+  "sha256": {
+    "metadata": "709d7daef2154e3b7322367c385e5d9bff25cdd5c57807c1edc2371e637a53c7",
+    "listingSummary": "13a7cc6ced38f9f860762f299c52289e076046fdae9ba846a5bec3fbc6b63208",
+    "lineDecompilation": "5eb04e886ed24c252cbbdf32320146a771b8fff2ab496dd1fd6ee92dbd36ac77",
+    "pointDecompilation": "a5b2958cdbb1a98007800b96d9e205bdeb79a21bd1d1f20ecb4b6617562dc510",
+    "byteProvenance": "18722e562244800a38c2ca5e2ccaa16aa859ded6b499339f622fa7924d7e4cbc",
+    "listingReceipt": "5d4409b4b02bebdd0f98801b15e53b026d4a4a72c7b598c938665e75b2dd230a",
+    "verificationReceipt": "e6a5e357a1d1affd039f5b612cf233221f69247e759526fbc038c15a81fc6463"
+  }
+}
