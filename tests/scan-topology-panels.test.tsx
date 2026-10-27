@@ -171,6 +171,15 @@ it("projects every boundary to the actual origin XY plane and forwards smoothing
     "Smooth all boundaries",
   );
 });
+it("requests a spatial sketch for the selected closed boundary", () => {
+  const props = { ...defaults(), section: "boundaries" as const };
+  const tree = ScanTopologyControls(props);
+  click(tree, "3D sketch from selected");
+  expect(props.onOperation).toHaveBeenCalledWith(
+    { action: "boundarySpatialSketch", indices: [0], fitTolerance: 0.05 },
+    "Create 3D sketch from selected boundary",
+  );
+});
 it("blocks geometry operations for empty input and during processing while preserving cancellation", () => {
   const props = {
     ...defaults(),

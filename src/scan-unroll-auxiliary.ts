@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import type { Entity, Positions, SavedSketch, Vec3 } from "./types";
+import type { Entity, Positions, PlanarSavedSketch, Vec3 } from "./types";
 import type { ScanToolOperation } from "./scan-tools";
 import {
   createReferenceFrameEntity,
@@ -71,7 +71,7 @@ export function createUnrollAuxiliaries(
     sourceEntityId: string;
     meshEntityId: string;
   },
-): { frame: Entity; sketch: SavedSketch } {
+): { frame: Entity; sketch: PlanarSavedSketch } {
   if (!output.length || output.length % 9)
     throw Error(
       "Unroll produced no complete facets; no objects were published.",

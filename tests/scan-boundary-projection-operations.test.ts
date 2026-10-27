@@ -196,6 +196,7 @@ it.each([[0], undefined])(
       created.map((_, i) => `Projected boundary ${i + 1}`),
     );
     for (const row of created) {
+      if (row.kind === "spatial") throw Error("Expected planar sketch");
       expect(row.sketch.points).toHaveLength(4);
       expect(row.sketch.segments).toHaveLength(4);
       expect(row.sketch.segments.at(-1)!.b).toBe(row.sketch.points[0].id);
@@ -315,6 +316,87 @@ it("rejects a nonboolean publication option before worker dispatch", async () =>
       h.context,
     ),
   ).rejects.toThrow(/boolean/);
+  expect(processMesh).not.toHaveBeenCalled();
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+
+it("publishes one spatial boundary sketch through the shared MCP operation", async () => {
+  const source = Float32Array.from(
+    (await import("./fixtures/boundary-smooth-observed-annulus.json")).default
+      .source,
+  );
+  const h = harness([entity({ positions: source })]);
+  const operation = {
+    kind: "scanEdit",
+    action: "boundarySpatialSketch",
+    fitTolerance: 0.05,
+  };
+  const schema = catalog.find((t) => t.name === "mesh_process")!.inputSchema;
+  expect(() =>
+    validateInput(schema, {
+      entityId: "mesh",
+      operation,
+      expectedRevision: 0,
+      requestId: "spatial",
+    }),
+  ).not.toThrow();
+  const result = (await h.ops.mesh_process(
+    { entityId: "mesh", operation },
+    h.context,
+  )) as { sketchIds: string[] };
+  expect(result.sketchIds).toHaveLength(1);
+  const saved = h.state.authoring.sketches![0];
+  expect(saved.kind).toBe("spatial");
+  if (saved.kind !== "spatial") throw Error("Expected spatial sketch");
+  expect(saved.curves).toHaveLength(2);
+  expect(saved.visible).toBe(true);
+  expect(h.state.entities[0].positions).toBe(source);
+  expect(h.state.history).toHaveLength(1);
+  const undo = seekModelRevision(
+    h.state.history,
+    h.state.entities,
+    [],
+    0,
+    h.state.authoring,
+  );
+  expect(undo.authoring!.sketches).toEqual([]);
+  const redo = seekModelRevision(
+    undo.history,
+    undo.entities,
+    undo.future,
+    1,
+    undo.authoring,
+  );
+  expect(redo.authoring!.sketches).toEqual([saved]);
+});
+
+it("rejects spatial sketch publication from a locked mesh before dispatch", async () => {
+  const h = harness([entity({ locked: true })]);
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: { kind: "scanEdit", action: "boundarySpatialSketch" },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/unlock|locked/i);
+  expect(processMesh).not.toHaveBeenCalled();
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+
+it("rejects selectionOnly for spatial boundary sketches before dispatch", async () => {
+  const h = harness();
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        selectionOnly: true,
+        operation: { kind: "scanEdit", action: "boundarySpatialSketch" },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/selectionOnly/i);
   expect(processMesh).not.toHaveBeenCalled();
   expect(h.host.commit).not.toHaveBeenCalled();
 });

@@ -5,6 +5,7 @@ import {
   refreshReferenceConstructions,
   assertReferenceConstructionSceneAdmission,
 } from "../reference-construction-lifecycle";
+import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
 import { geometryArtifact } from "./geometry-artifact";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { createInspectionOperations } from "./inspection-operations";
@@ -1139,8 +1140,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           "createSketches is boolean and supported only for boundary projection (boundaryProject).",
         );
       const publishBoundarySketches = op.createSketches === true;
+      const publishSpatialSketch =
+        kind === "scanEdit" && op.action === "boundarySpatialSketch";
+      if (publishSpatialSketch && a.selectionOnly)
+        throw Error(
+          "Spatial boundary sketches use boundary indices; omit selectionOnly.",
+        );
       delete op.createSketches;
-      if (publishBoundarySketches) editable(e);
+      if (publishBoundarySketches || publishSpatialSketch) editable(e);
       let unroll: Awaited<ReturnType<typeof bindUnrollReference>> | undefined;
       let average: ReturnType<typeof bindAverageMeshes> | undefined;
       const reconstruction =
@@ -1498,7 +1505,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const edit = result.scanEdit;
       const boundarySketches = publishBoundarySketches
         ? projectedBoundarySketches(edit?.curves ?? [], op.plane)
-        : undefined;
+        : publishSpatialSketch
+          ? [spatialBoundarySketch(edit?.spatialCurves ?? [])]
+          : undefined;
       if (bridgePreview) return bridgePreviewResponse(e.positions, result, c);
       const pointEdit = result.pointCloudEdit;
       const positions =
@@ -1663,13 +1672,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         topology: result.topology,
         registration: result.registration,
         refinement: result.refinement,
-        ...(edit?.inventory || edit?.curves || result.sketchSection
+        ...(edit?.inventory ||
+        edit?.curves ||
+        edit?.spatialCurves ||
+        result.sketchSection
           ? {
               artifact: json(
                 c,
                 {
                   inventory: edit?.inventory,
                   curves: edit?.curves,
+                  spatialCurves: edit?.spatialCurves,
                   sketchSection: result.sketchSection,
                 },
                 "mesh-report.json",
@@ -1928,7 +1941,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const saved = state.authoring.sketches?.find(
         (row) => row.id === state.authoring.activeSketchId,
       );
-      if (saved?.visible)
+      if (saved?.visible && saved.kind !== "spatial")
         validateSavedSketchDisplay({
           ...saved,
           sketch: solution?.sketch ?? a.sketch,

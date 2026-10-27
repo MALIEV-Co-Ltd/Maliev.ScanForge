@@ -184,6 +184,8 @@ import {
 } from "../automation/scan-selection-operations";
 import type { ScanEditRequest } from "../scan-edit";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
+import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
+import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { ScanTopologyPanels } from "./ScanTopologyPanels";
 import type { ScanBridgeSession } from "../scan-bridge-gesture";
@@ -2165,6 +2167,19 @@ export function App() {
       operationLabel.current = null;
     }
     setMessage(`${created.length} projected boundary sketch(es) created`);
+  }
+  function createSpatialBoundarySketch(
+    curves: SpatialBoundaryCurve[],
+    label: string,
+  ) {
+    const created = spatialBoundarySketch(curves);
+    operationLabel.current = label;
+    try {
+      commit(entities, undefined, { newModelSketches: [created] });
+    } finally {
+      operationLabel.current = null;
+    }
+    setMessage("3D boundary sketch created");
   }
   function selectionUndo(redo = false, owned = false) {
     wandRegion.current = null;
@@ -4370,7 +4385,8 @@ export function App() {
 
   function updateSketchDraft(sketch: Sketch) {
     const saved = savedSketches.find((row) => row.id === activeSketchId);
-    if (saved?.visible) validateSavedSketchDisplay({ ...saved, sketch });
+    if (saved?.visible && saved.kind !== "spatial")
+      validateSavedSketchDisplay({ ...saved, sketch });
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     let session = sketchUndoSessions.current.get(key);
     if (!session) {
@@ -4404,7 +4420,11 @@ export function App() {
     if (!activeSketchId) legacySketch.current = sketch;
     if (activeSketchId)
       setSavedSketches((previous) =>
-        previous.map((s) => (s.id === activeSketchId ? { ...s, sketch } : s)),
+        previous.map((s) =>
+          s.id === activeSketchId && s.kind !== "spatial"
+            ? { ...s, sketch }
+            : s,
+        ),
       );
     setDirty(true);
   }
@@ -5892,6 +5912,12 @@ export function App() {
                     <button
                       className="object-name"
                       onClick={() => {
+                        if (item.kind === "spatial") {
+                          setMessage(
+                            "Spatial sketch editing is not available yet.",
+                          );
+                          return;
+                        }
                         setSelectedId(null);
                         setActiveSketchId(item.id);
                         setSketchDraft(item.sketch);
@@ -6434,6 +6460,7 @@ export function App() {
                 onBridgeSession={setScanBridgeSession}
                 onBridgeDisplay={displayScanBridge}
                 onProject={projectScanBoundaries}
+                onSpatial={createSpatialBoundarySketch}
                 onStatus={setMessage}
                 onError={setError}
                 onBusyChange={setProcessingBusy}

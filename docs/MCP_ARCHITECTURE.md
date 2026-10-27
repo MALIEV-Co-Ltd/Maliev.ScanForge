@@ -309,7 +309,7 @@ to that same operation. Native ownership transfers before camera/presentation
 work, so later display failures cannot dispose the active restored CAD client.
 
 Adaptive point display adds `pointAutoDensity` (default true) and `pointDensity`
-(10–100 percent, default 100) to the existing shared `object_update` contract.
+(10â€“100 percent, default 100) to the existing shared `object_update` contract.
 The inspector invokes this handler directly. Codecs, validation, workspace
 revision keys and display preservation during modeling undo include both fields.
 `AdaptivePointDisplay` updates a shader uniform from projected bounds with bounded
@@ -325,7 +325,7 @@ retain original coordinates. Adaptive display is a projected-bounds sampling
 heuristic, not a spatial LOD hierarchy or a reduction in submitted source vertices.
 
 Point-cloud display controls call `object_update` from both GUI and MCP.
-`pointSize` (1–10 screen pixels) and `pointColorMode` (`source` or `solid`)
+`pointSize` (1â€“10 screen pixels) and `pointColorMode` (`source` or `solid`)
 are validated display metadata, tracked by workspace revisions, saved by the
 project codecs and preserved across modeling undo. `object_get` reports the
 effective defaults of 1 px and source mode. The viewport changes materials
@@ -979,7 +979,7 @@ counts and scope travel through the existing processing diagnostics contract.
 ## Public Global Fine Align preview boundary
 
 The earlier private scan-set groundwork now has a bounded public workflow for
-2–32 visible, unlocked raw triangle meshes. The Global fine align panel and MCP
+2â€“32 visible, unlocked raw triangle meshes. The Global fine align panel and MCP
 call `createGlobalAlignmentOperations` in
 `src/automation/global-alignment-operations.ts`; they share the input factory in
 `src/global-alignment-input.ts` and the existing scan-set controller. Point-cloud
@@ -2172,7 +2172,7 @@ fitted/CAD metadata, nonrigid bases and out-of-bounds display endpoints.
 normalizing or converting them to Float32. JSON project version 3 and binary
 manifest version 5 store twelve little-endian Float64 values as hexadecimal
 `frameBits`, ordered origin, U, V, normal, plus positive `displaySize`. Existing
-JSON versions and binary manifests 2–4 remain readable. Both project codecs
+JSON versions and binary manifests 2â€“4 remain readable. Both project codecs
 validate current, history and future entities. Frame-only changes participate
 in model history, geometry digests, API revision identity and construction
 preview bindings. Inspection returns detached structured frame data and its
@@ -2189,3 +2189,5 @@ the source at the requested revision. `sketch_manage` consumes a frame's
 XY/YZ/XZ placement as a detached copy; later datum edits do not move that sketch.
 See [reference datum usage and limits](REFERENCE_DATUMS.md). Native acceptance
 of additional relational construction modes remains a separate gate.
+
+Spatial boundary sketch creation uses `scanEdit/boundarySpatialSketch` through the same processing worker and owned `newModelSketches` commit path. The saved-sketch discriminant retains either a planar sketch or ordered spatial cubic curves, never a planar approximation of those curves. `sketch_get` exposes spatial poles, knots, periodic flags and fitting diagnostics; `sketch_manage` rejects planar activation of spatial sketches. JSON project version 5 and binary version 7 signal the new representation, including retained history records; older version labels cannot carry it. GUI publication rechecks the selected source and lock after worker completion; MCP retains its revision, retry, cancellation and lock checks. Both paths reject unsupported triangle-mask selection. The display is derived from validated curves with bounded segment and basis/knot work admission before sampling.

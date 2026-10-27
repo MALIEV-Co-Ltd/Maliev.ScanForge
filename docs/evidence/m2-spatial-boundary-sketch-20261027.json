@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-27",
+  "fixture": "curved-annulus-32.stl, original inner boundary, tolerance 0.05 mm",
+  "nativeEvidence": "native-boundary-3d-sketch-20261027.json",
+  "nativeIgesSha256": "6b5f64eadb993aa0f549df59d0c4518ebd99b6d59e617a4231b69b7cd88a4955",
+  "guiSketchId": "3b5d46aa-9b7d-4718-b8b3-5f34034d5601",
+  "mcpSketchId": "81dd5089-f9b2-40e1-84f7-5c1447caeaaf",
+  "guiMcpCurvesExactlyEqual": true,
+  "nativeDegreeAndKnotsMatch": true,
+  "nativeMaxPoleDifferenceMm": 1.2006621474824897e-8,
+  "undoAfterGuiSketchCount": 0,
+  "undoAfterMcpSketchCount": 0,
+  "redoRestoresMcpSketch": true,
+  "productionBuild": "scanforge-e2c4a30b0ea645eb",
+  "focusedTests": "49 passed in 6 files",
+  "regressionTests": "906 passed in 81 files",
+  "limits": "One selected closed annulus boundary; native control points are rounded IGES text. Browser test does not establish public binary reopen or spatial editing.",
+  "cleanup": "Owned validation exited 0, childJobFinalActive 0, no cleanup errors; 4 GiB job limit."
+}
