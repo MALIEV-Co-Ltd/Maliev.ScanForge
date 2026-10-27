@@ -1,0 +1,15 @@
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ✓ tests/backup-automation.test.ts > project_import refreshes CAD handles without replacing saved geometry or BREP in any history state 98ms
+ ✓ tests/backup-automation.test.ts > backup_restore refreshes CAD handles without replacing saved geometry or BREP in any history state 60ms
+ ✓ tests/backup-automation.test.ts > exposes backup metadata, interval policy and downloadable thumbnail artifacts 1ms
+ ✓ tests/backup-automation.test.ts > guards deletion by revision and request receipt while retaining the open model 1ms
+ ✓ tests/backup-automation.test.ts > restores complete backup history through the shared import operation and keeps its identity 60ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  07:32:32
+   Duration  1.29s (transform 63%, import 18%, tests 18%)
+
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=768", "node_modules/vitest/vitest.mjs", "run", "--maxWorkers=1", "tests/backup-automation.test.ts", "--reporter=verbose"], "jobLimitBytes": 4294967296, "leaseSeconds": 600, "exitCode": 0, "peakJobBytes": 386772992, "totalProcesses": 8, "activeAfter": 0, "passed": true, "elapsedSeconds": 1.713979299995117}
