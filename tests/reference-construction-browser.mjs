@@ -949,6 +949,33 @@ try {
       );
       assert.deepEqual(edited.definition.records[1].coordinates, [5, 0, 0]);
     }
+    if (mode === "average") {
+      await dialog.locator(".app-select > button").nth(1).click();
+      await page
+        .getByRole("option", { name: "Select a source", exact: true })
+        .click();
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForFunction(
+        () =>
+          !document.querySelector(
+            '[role="dialog"] .button-row:last-child button:nth-child(2)',
+          )?.disabled,
+      );
+      const gap = (await call("reference_construction_get")).result;
+      assert.deepEqual(
+        gap.definition.records,
+        stored.definition.records.slice(1),
+      );
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForTimeout(300);
+      const gapAgain = (await call("reference_construction_get")).result;
+      assert.equal(gapAgain.version, gap.version + 1);
+      assert.deepEqual(gapAgain.definition.records, gap.definition.records);
+    }
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await dialog.waitFor({ state: "detached" });
     ledger.derivedLines.push({
@@ -964,6 +991,97 @@ try {
   const nativePairRow = ledger.derivedLines.find(
     (row) => row.nativePairFixture,
   );
+  // Compare the native zero-selection edit through GUI and public MCP.
+  const emptyAverageMcp = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      entityId: nativePairRow.entityId,
+      mode: "average",
+      sourcePicks: [],
+    })
+  ).result;
+  assert.deepEqual(emptyAverageMcp.definition.records, []);
+  assert.deepEqual(emptyAverageMcp.definition.sources, []);
+  await mutate("reference_construct", {
+    action: "cancel",
+    sessionId: emptyAverageMcp.sessionId,
+    version: emptyAverageMcp.version,
+  });
+  await mutate("object_select", { entityId: nativePairRow.entityId });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  await page
+    .getByRole("button", { name: "Edit reference", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference line", exact: true });
+  await dialog.locator(".app-select > button").first().click();
+  await page
+    .getByRole("option", { name: "Average lines", exact: true })
+    .click();
+  await dialog.locator(".app-select > button").nth(1).click();
+  await page
+    .getByRole("option", { name: "Select a source", exact: true })
+    .click();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  const oneAverageSource = (await call("reference_construction_get")).result;
+  assert.equal(oneAverageSource.definition.records.length, 1);
+  assert.equal(oneAverageSource.definition.records[0].entityId, extraLine);
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForTimeout(300);
+  const repeatedPreview = (await call("reference_construction_get")).result;
+  assert.equal(repeatedPreview.version, oneAverageSource.version + 1);
+  assert.deepEqual(
+    repeatedPreview.definition.records,
+    oneAverageSource.definition.records,
+  );
+  await dialog.locator(".app-select > button").nth(2).click();
+  await page
+    .getByRole("option", { name: "Select a source", exact: true })
+    .click();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  const emptyAverageGui = (await call("reference_construction_get")).result;
+  assert.deepEqual(emptyAverageGui.definition, emptyAverageMcp.definition);
+  assert.deepEqual(
+    emptyAverageGui.geometryEncoding,
+    emptyAverageMcp.geometryEncoding,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const emptyAverageArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: emptyAverageArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  const emptyAverageReopened = (
+    await call("object_get", { entityId: nativePairRow.entityId })
+  ).result.reference;
+  assert.deepEqual(emptyAverageReopened.definition, emptyAverageMcp.definition);
+  assert.deepEqual(
+    emptyAverageReopened.geometryEncoding,
+    emptyAverageMcp.geometryEncoding,
+  );
+  await mutate("history_undo", {});
+  ledger.emptyAverageEdit = {
+    guiMcpEqual: true,
+    workerReopen: true,
+    undo: true,
+  };
   const inspectNativePair = async () =>
     (await call("object_get", { entityId: nativePairRow.entityId })).result
       .reference;

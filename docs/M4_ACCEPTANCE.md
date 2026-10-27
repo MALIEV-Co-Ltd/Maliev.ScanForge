@@ -210,6 +210,18 @@ before R11 persistence; no QSF save/reopen or complete numeric parity is claimed
 
 ## Additional native checkpoints
 
+[One empty average-line edit](evidence/m4-native-empty-average-20261027.json)
+retained the prior displayed line after native save/reopen and after an unsaved
+edit of a former source. GUI and public MCP now produce matching empty-average
+edits and worker reopening; a separate shared API test covers a former-source
+edit. The native picker still reported zero selected, so successful average
+acquisition and general native parity remain unverified.
+
+[Native reference history menus](evidence/m4-native-reference-history-menus-20261027.json)
+were inspected after reopening one numeric line and its dependent midpoint. Neither
+history context menu showed Duplicate. This does not establish whether other native
+routes can duplicate references or determine their copy/link behavior.
+
 [Original native R6/R8/R9 observations](evidence/reference-native-acceptance-20261026.json)
 record plane and section-sketch QSF reopening, a persisted 6 mm circle, and an
 accepted 1.8 mm solid exported as STEP. The real application CAD worker imports

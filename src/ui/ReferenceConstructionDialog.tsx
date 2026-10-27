@@ -397,23 +397,29 @@ export function ReferenceConstructionDialog({
                           definition.records.length
                         )
                           ? {
-                              sourcePicks: sourceIds.map((entityId, index) => ({
-                                entityId,
-                                ...(retainedIndices[index] !== undefined
-                                  ? { retainedIndex: retainedIndices[index] }
-                                  : sourceOptions.find(
-                                        (row) => row.entityId === entityId,
-                                      )?.primitiveKind === "plane"
-                                    ? { planeUV: sourcePlaneUV[index] ?? [] }
-                                    : lineMode === "pair" &&
-                                        sourceObjectSelections[index]
-                                      ? { selection: "object" }
-                                      : sourceParameters[index] === undefined
-                                        ? {}
-                                        : {
-                                            parameter: sourceParameters[index],
-                                          }),
-                              })),
+                              sourcePicks: sourceIds
+                                .map((entityId, index) => ({
+                                  entityId,
+                                  ...(retainedIndices[index] !== undefined
+                                    ? { retainedIndex: retainedIndices[index] }
+                                    : sourceOptions.find(
+                                          (row) => row.entityId === entityId,
+                                        )?.primitiveKind === "plane"
+                                      ? { planeUV: sourcePlaneUV[index] ?? [] }
+                                      : lineMode === "pair" &&
+                                          sourceObjectSelections[index]
+                                        ? { selection: "object" }
+                                        : sourceParameters[index] === undefined
+                                          ? {}
+                                          : {
+                                              parameter:
+                                                sourceParameters[index],
+                                            }),
+                                }))
+                                .filter(
+                                  (pick) =>
+                                    lineMode !== "average" || pick.entityId,
+                                ),
                             }
                           : {}),
                       }
@@ -457,12 +463,22 @@ export function ReferenceConstructionDialog({
           definition?: typeof definition;
         };
         setSession({ sessionId, version });
-        setRetainedIndices(
+        if (
           previewDefinition?.kind === "line" &&
-            previewDefinition.mode !== "endpoints"
-            ? previewDefinition.records.map((_, index) => index)
-            : [],
-        );
+          previewDefinition.mode === "average"
+        ) {
+          let recordIndex = 0;
+          setRetainedIndices(
+            sourceIds.map((id) => (id ? recordIndex++ : undefined)),
+          );
+        } else {
+          setRetainedIndices(
+            previewDefinition?.kind === "line" &&
+              previewDefinition.mode !== "endpoints"
+              ? previewDefinition.records.map((_, index) => index)
+              : [],
+          );
+        }
         setDirty(false);
         setPreviewOutcome(
           outcome === "unchanged"
