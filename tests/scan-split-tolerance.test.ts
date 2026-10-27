@@ -362,13 +362,17 @@ it("preserves an on-plane shared edge when only one adjacent face is tolerance-n
   expect([...edges.values()].every((count) => count === 2)).toBe(true);
 });
 
-it.fails(
-  "known gap: exactly coplanar neighboring face receives the same shared-edge subdivision",
-  () => {
+it.each([false, true])(
+  "exactly coplanar neighboring face receives the same shared-edge subdivision (reversed cutter: %s)",
+  (reversed) => {
     const source = new Float32Array([
       0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0,
     ]);
-    const cutter = new Float32Array([0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1]);
+    const cutter = new Float32Array(
+      reversed
+        ? [0, 0.5, 1, 0, 0.9, -1, 0, 0.1, -1]
+        : [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1],
+    );
     const result = splitGeneralCutter(
       { kind: "scanEdit", action: "split", positions: source, target: cutter },
       { tolerance: 0.001 },
@@ -391,7 +395,126 @@ it.fails(
             edges.set(key, (edges.get(key) ?? 0) + 1);
           }
         }
-    expect(edges.size).toBeGreaterThan(0);
+    expect(edges.size).toBe(3);
     expect([...edges.values()].every((count) => count === 2)).toBe(true);
+    const endpoints = [...edges.keys()].flatMap((key) =>
+      key.split(",").map(Number),
+    );
+    expect(endpoints.some((value) => Math.abs(value - 0.3) < 1e-6)).toBe(true);
+    expect(endpoints.some((value) => Math.abs(value - 0.7) < 1e-6)).toBe(true);
+  },
+);
+
+it("leaves a coplanar face unchanged when the cutter is wholly inside it", () => {
+  const source = new Float32Array([0, 0, 0, 2, 0, 0, 0, 2, 0]);
+  const cutter = new Float32Array([0.3, 0.3, 0, 0.7, 0.3, 0, 0.3, 0.7, 0]);
+  const result = splitGeneralCutter(
+    { kind: "scanEdit", action: "split", positions: source, target: cutter },
+    { tolerance: 1e-6 },
+  );
+  expect(result.segments!.flatMap((segment) => Array.from(segment))).toEqual(
+    Array.from(source),
+  );
+});
+
+it("subdivides an exactly coplanar shared edge at the default tolerance", () => {
+  const source = new Float32Array([
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+  ]);
+  const cutter = new Float32Array([0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1]);
+  const result = splitGeneralCutter(
+    { kind: "scanEdit", action: "split", positions: source, target: cutter },
+    {},
+  );
+  const edges = new Map<string, number>();
+  for (const segment of result.segments!)
+    for (let i = 0; i < segment.length; i += 9)
+      for (let j = 0; j < 3; j++) {
+        const a = i + 3 * j,
+          b = i + 3 * ((j + 1) % 3);
+        if (
+          segment[a] === 0 &&
+          segment[b] === 0 &&
+          segment[a + 2] === 0 &&
+          segment[b + 2] === 0
+        ) {
+          const key = [segment[a + 1], segment[b + 1]]
+            .sort((x, y) => x - y)
+            .join(",");
+          edges.set(key, (edges.get(key) ?? 0) + 1);
+        }
+      }
+  expect(edges.size).toBe(3);
+  expect([...edges.values()].every((count) => count === 2)).toBe(true);
+});
+
+it("public split operation handles the coplanar shared-edge control", () => {
+  const source = new Float32Array([
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+  ]);
+  const cutter = new Float32Array([0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1]);
+  const request = {
+    kind: "scanEdit" as const,
+    action: "split" as const,
+    positions: source,
+    target: cutter,
+  };
+  const expected = splitGeneralCutter(request, {});
+  const actual = runScanEdit(request, {});
+  expect(actual.segments!.map((p) => Array.from(p))).toEqual(
+    expected.segments!.map((p) => Array.from(p)),
+  );
+});
+
+it("GUI request tolerance handles the coplanar shared-edge control", () => {
+  const source = new Float32Array([
+    0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+  ]);
+  const cutter = new Float32Array([0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1]);
+  expect(() =>
+    runScanEdit({
+      kind: "scanEdit",
+      action: "split",
+      positions: source,
+      target: cutter,
+      tolerance: 0.001,
+    }),
+  ).not.toThrow();
+});
+
+it("JSON-number inputs preserve a coplanar shared-edge subdivision", () => {
+  const source = [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0];
+  const cutter = [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1];
+  expect(() =>
+    runScanEdit({
+      kind: "scanEdit",
+      action: "split",
+      positions: source,
+      target: cutter,
+      tolerance: 0.001,
+    }),
+  ).not.toThrow();
+});
+
+it.each([false, true])(
+  "ignores a numerically identical coplanar endpoint in either source edge direction (%s)",
+  (reverse) => {
+    const source = reverse
+      ? [1, 0, 0, 0, 0, 0, 0, 1, 0]
+      : [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    const cutter = [
+      0.9999999999999999, -1, 0, 0.9999999999999999, 1, 0, 2, 0, 0,
+    ];
+    expect(() =>
+      splitGeneralCutter(
+        {
+          kind: "scanEdit",
+          action: "split",
+          positions: source,
+          target: cutter,
+        },
+        { tolerance: 0.001 },
+      ),
+    ).not.toThrow();
   },
 );

@@ -293,6 +293,15 @@ try {
   };
   const cases = [
     {
+      name: "coplanar-shared-edge",
+      source: [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+      target: [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1],
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      coplanarSharedEdge: true,
+    },
+    {
       name: "tolerance-shared-edge",
       source: [
         -0.00000075, 0, 0, 0.00000075, 0, 0, 1, 1, 0, 0.00000075, 0, 0,
@@ -535,7 +544,9 @@ try {
       }
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
-    throw Error("GUI split did not publish expected parts");
+    throw Error(
+      `GUI split did not publish expected parts: ${(await page.locator("body").innerText()).slice(-2000)}`,
+    );
   };
   const stableObjects = (objects) =>
     objects.map(({ meshPreparation, ...object }) => object);
@@ -617,6 +628,36 @@ try {
         [...edges.values()].every((count) => count === 2),
         `Shared edge has a T-junction: ${JSON.stringify([...edges])}`,
       );
+    }
+    if (c.coplanarSharedEdge) {
+      const edges = new Map();
+      for (const part of output)
+        for (let i = 0; i < part.positions.length; i += 9)
+          for (let j = 0; j < 3; j++) {
+            const a = i + 3 * j,
+              b = i + 3 * ((j + 1) % 3);
+            if (
+              part.positions[a] === 0 &&
+              part.positions[b] === 0 &&
+              part.positions[a + 2] === 0 &&
+              part.positions[b + 2] === 0
+            ) {
+              const key = [part.positions[a + 1], part.positions[b + 1]]
+                .sort((x, y) => x - y)
+                .join(",");
+              edges.set(key, (edges.get(key) ?? 0) + 1);
+            }
+          }
+      assert.equal(edges.size, 3);
+      assert(
+        [...edges.values()].every((count) => count === 2),
+        `Coplanar shared edge has a T-junction: ${JSON.stringify([...edges])}`,
+      );
+      const endpoints = [...edges.keys()].flatMap((key) =>
+        key.split(",").map(Number),
+      );
+      assert(endpoints.some((value) => Math.abs(value - 0.3) < 1e-6));
+      assert(endpoints.some((value) => Math.abs(value - 0.7) < 1e-6));
     }
     assert(
       Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source)) <= 1e-5,
