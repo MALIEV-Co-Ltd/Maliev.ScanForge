@@ -5,6 +5,7 @@ import selectedFixture from "./fixtures/boundary-smooth-selected-inner-native.js
 import zeroStrengthFixture from "./fixtures/boundary-smooth-all-strength-zero-native.json";
 import halfStrengthFixture from "./fixtures/boundary-smooth-all-strength-half-native.json";
 import anchorFixture from "./fixtures/boundary-smooth-anchor-inner-native.json";
+import headAnchorFixture from "./fixtures/boundary-smooth-anchor-head-native.json";
 import { runScanEditAsync } from "../src/scan-edit";
 import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
@@ -104,46 +105,78 @@ it.each([zeroStrengthFixture, halfStrengthFixture])(
   30000,
 );
 
-it("matches native smoothing with an inner boundary anchor", async () => {
-  const source = Float32Array.from(fixture.source);
-  const topology = importedTopology(source);
-  const anchorPosition = anchorFixture.anchorObservedPosition;
-  const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
-  const boundary = boundaries.findIndex((ids) =>
-    ids.some((i) =>
-      anchorPosition.every((v, axis) => topology.vertices[i * 3 + axis] === v),
-    ),
-  );
-  expect(boundary).toBeGreaterThanOrEqual(0);
-  const point = boundaries[boundary].findIndex((i) =>
-    anchorPosition.every((v, axis) => topology.vertices[i * 3 + axis] === v),
-  );
-  const expected = Float32Array.from(anchorFixture.output);
-  expect(
-    createHash("sha256").update(new Uint8Array(expected.buffer)).digest("hex"),
-  ).toBe(anchorFixture.nativeCoordinatesSha256);
-  await withCurvatureKernel(async () => {
-    const result = await runScanEditAsync(
-      {
-        kind: "scanEdit",
-        action: "boundarySmooth",
-        positions: source,
-        strength: 0.5,
-        anchors: [{ boundary, point }],
-      },
-      { topologyCache: { positions: source, tolerance: 1e-6, topology } },
-    );
-    const tolerance =
-      16 * Number.EPSILON * Math.max(1, ...source.map(Math.abs));
-    expect(result.positions?.length).toBe(expected.length);
-    for (let i = 0; i < expected.length; i++) {
-      const actual = result.positions![i];
-      if (Math.abs(actual) <= tolerance && Math.abs(expected[i]) <= tolerance)
-        continue;
-      expect(actual, `coordinate ${i}`).toBe(expected[i]);
+it.each([anchorFixture, headAnchorFixture])(
+  "matches native smoothing with anchor $anchorObservedPosition",
+  async (nativeAnchor) => {
+    const source = Float32Array.from(fixture.source);
+    const topology = importedTopology(source);
+    const anchorPosition = nativeAnchor.anchorObservedPosition;
+    if (nativeAnchor === headAnchorFixture) {
+      expect(
+        nativeHoleBoundaryWalks(topology).some((walk) =>
+          anchorPosition.every(
+            (v, axis) => topology.vertices[walk[0] * 3 + axis] === v,
+          ),
+        ),
+      ).toBe(true);
     }
-  });
-}, 30000);
+    const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+    const boundary = boundaries.findIndex((ids) =>
+      ids.some((i) =>
+        anchorPosition.every(
+          (v, axis) => topology.vertices[i * 3 + axis] === v,
+        ),
+      ),
+    );
+    expect(boundary).toBeGreaterThanOrEqual(0);
+    const point = boundaries[boundary].findIndex((i) =>
+      anchorPosition.every((v, axis) => topology.vertices[i * 3 + axis] === v),
+    );
+    const expected = Float32Array.from(nativeAnchor.output);
+    expect(
+      createHash("sha256")
+        .update(new Uint8Array(expected.buffer))
+        .digest("hex"),
+    ).toBe(nativeAnchor.nativeCoordinatesSha256);
+    await withCurvatureKernel(async () => {
+      const result = await runScanEditAsync(
+        {
+          kind: "scanEdit",
+          action: "boundarySmooth",
+          positions: source,
+          strength: 0.5,
+          anchors: [{ boundary, point }],
+        },
+        { topologyCache: { positions: source, tolerance: 1e-6, topology } },
+      );
+      const tolerance =
+        16 * Number.EPSILON * Math.max(1, ...source.map(Math.abs));
+      expect(result.positions?.length).toBe(expected.length);
+      if (nativeAnchor === headAnchorFixture) {
+        const corner = Array.from(
+          { length: source.length / 3 },
+          (_, i) => i,
+        ).find((i) =>
+          anchorPosition.every((v, axis) => source[i * 3 + axis] === v),
+        )!;
+        const movement = Math.hypot(
+          ...anchorPosition.map(
+            (v, axis) => result.positions![corner * 3 + axis] - v,
+          ),
+        );
+        expect(movement).toBeGreaterThan(0.11);
+        expect(movement).toBeLessThan(0.12);
+      }
+      for (let i = 0; i < expected.length; i++) {
+        const actual = result.positions![i];
+        if (Math.abs(actual) <= tolerance && Math.abs(expected[i]) <= tolerance)
+          continue;
+        expect(actual, `coordinate ${i}`).toBe(expected[i]);
+      }
+    });
+  },
+  30000,
+);
 
 it("rejects invalid and multiple anchors before publishing geometry", async () => {
   const source = Float32Array.from(fixture.source);

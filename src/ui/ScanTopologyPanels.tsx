@@ -711,6 +711,11 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                 />
                 Anchor a point on the selected boundary
               </label>
+              {anchorEnabled && (
+                <p className="scan-topology-summary">
+                  Fitting can move an anchored point in some cases.
+                </p>
+              )}
               {anchorEnabled && boundary && (
                 <label>
                   Boundary point index (starts at 0)
