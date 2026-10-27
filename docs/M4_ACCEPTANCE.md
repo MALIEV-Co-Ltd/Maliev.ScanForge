@@ -208,6 +208,13 @@ from 274,154 eligible scan triangles; source geometry hashes remain unchanged
 through reopen. This is application/MCP evidence, not a native section or solver
 comparison. Other release gates above remain open.
 
+The [real-scan canvas follow-up](evidence/m4-real-scan-canvas-20261027.json)
+aims the viewport at that section and draws a line with an actual GUI gesture.
+An independent public MCP `sketch_draw` request produces the same coordinates
+and endpoint topology; both sketch undos remove their line. The rendered capture
+shows the GUI line against the scan. The line is undone before the separate
+rectangle/reopen checks, and no native drawing equivalence is claimed.
+
 ## Verification and ownership
 
 The original isolated candidate started at `e367262fc46b2fee8588c7b3c84ccd41fa7424fa`.
