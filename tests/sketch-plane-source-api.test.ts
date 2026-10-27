@@ -83,7 +83,9 @@ it("creates a detached empty sketch from the stored plane tangent, retries once 
         },
       },
     });
-    const sketch = h.state.authoring.sketches![0].sketch;
+    const saved = h.state.authoring.sketches![0];
+    if (saved.kind === "spatial") throw Error("Expected a planar sketch");
+    const sketch = saved.sketch;
     expect(sketch.points).toEqual([]);
     expect(sketch.segments).toEqual([]);
     expect(sketch.constraints).toEqual([]);
