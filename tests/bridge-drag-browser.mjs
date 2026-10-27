@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -228,7 +228,7 @@ try {
     throw Error(`Workspace did not settle before ${name}`);
   };
   const job = async (receipt, expected = "succeeded") => {
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 1200; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
       if (state.status !== "running") {
@@ -260,11 +260,12 @@ try {
     await call("artifact_delete", { artifactId: artifact.artifactId });
     return result;
   };
+  let targetId = "rim";
   const runEdit = async (operation, previewOnly) =>
     (
       await job(
         await mutate("mesh_process", {
-          entityId: "rim",
+          entityId: targetId,
           operation,
           ...(previewOnly ? { previewOnly: true } : {}),
         }),
@@ -309,9 +310,10 @@ try {
       ),
   );
   const semiCase = requestedCases?.includes("native-semi-flat");
+  const realPartial = requestedCases?.includes("original-partial");
   const convergenceCase = process.env.SCANFORGE_HOLE_CONVERGENCE === "1";
   assert(
-    cases.length > 0 || convergenceCase || semiCase,
+    cases.length > 0 || convergenceCase || semiCase || realPartial,
     "No requested browser cases matched",
   );
   if (convergenceCase) {
@@ -621,7 +623,184 @@ try {
       saveReopen: true,
     });
   }
+  if (realPartial) {
+    await mutate("project_new", { discard: true });
+    const sourcePath = process.env.SCANFORGE_ORIGINAL_PARTIAL_SOURCE;
+    assert(
+      sourcePath,
+      "Set SCANFORGE_ORIGINAL_PARTIAL_SOURCE to the original STL",
+    );
+    const sourceBytes = await readFile(sourcePath);
+    assert.equal(
+      createHash("sha256").update(sourceBytes).digest("hex"),
+      "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    );
+    const sourceCount = sourceBytes.readUInt32LE(80);
+    assert.equal(sourceCount, 273139);
+    await page
+      .locator('input[type=file][accept*=".stl"]')
+      .setInputFiles(sourcePath);
+    await page.getByRole("button", { name: "Import", exact: true }).click();
+    await page
+      .getByRole("button", { name: "scan-1.stl", exact: true })
+      .waitFor({ timeout: 120000 });
+    const object = (await call("project_get")).result.objects.find(
+      (o) => o.name === "scan-1.stl",
+    );
+    assert(object);
+    targetId = object.id;
+    await mutate("object_select", { entityId: targetId });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    const hashGeometry = async () => {
+      for (let i = 0; i < 1200; i++) {
+        const state = (await call("session_get")).result;
+        if (!state.busy && state.activeJobId === null) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (i === 1199) throw Error("Workspace remained busy before export");
+      }
+      const exported = (
+        await job(
+          await call("project_export", { format: "stl", visible: true }),
+        )
+      ).result;
+      const all = createHash("sha256"),
+        original = createHash("sha256");
+      let at = 84,
+        faces = 0;
+      try {
+        while (at < exported.bytes) {
+          const part = (
+            await call("artifact_read", {
+              artifactId: exported.artifactId,
+              offset: at,
+              length: 262100,
+            })
+          ).result;
+          const bytes = Buffer.from(part.base64, "base64");
+          assert(bytes.length > 0 && bytes.length % 50 === 0);
+          for (let i = 0; i < bytes.length; i += 50) {
+            const coords = bytes.subarray(i + 12, i + 48);
+            all.update(coords);
+            if (faces < sourceCount) original.update(coords);
+            faces++;
+          }
+          at = part.nextOffset;
+        }
+        return {
+          faces,
+          all: all.digest("hex"),
+          original: original.digest("hex"),
+        };
+      } finally {
+        await call("artifact_delete", { artifactId: exported.artifactId });
+      }
+    };
+    const before = await hashGeometry(),
+      beforeHistory = await history();
+    assert.equal(before.faces, sourceCount);
+    assert.equal(
+      before.all,
+      "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    );
+    const inventory = await artifactJson(
+      (
+        await runEdit({
+          kind: "scanEdit",
+          action: "inventory",
+          tolerance: 0.001,
+        })
+      ).artifact,
+    );
+    const hole = inventory.inventory.boundaries.findIndex(
+      (b) => b.closed && b.points.length / 3 === 899,
+    );
+    assert(hole >= 0, "Expected original 899-point boundary");
+    const displayIndex = inventory.inventory.holeOrder.indexOf(hole);
+    assert(displayIndex >= 0);
+    console.log(
+      JSON.stringify({
+        hole,
+        displayIndex,
+        holeOrder: inventory.inventory.holeOrder,
+      }),
+    );
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: "tangent",
+      indices: [hole],
+      start: 0,
+      end: 4,
+      tolerance: 0.001,
+    };
+    const mcpResult = await runEdit(operation);
+    const expected = await hashGeometry();
+    assert.equal(mcpResult.diagnostics.filledHoles, 1);
+    assert.equal(expected.original, before.all);
+    assert.equal(
+      expected.all,
+      "5d47cd39a2afc3005a5cdb72de5c1008f25fe7de27f195b95aeba159c8c9c2e1",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(await hashGeometry(), before);
+    assert.equal(await history(), beforeHistory);
+    await page.getByRole("button", { name: "Edit holes", exact: true }).click();
+    const controls = page.locator(".scan-topology-panel");
+    await controls.locator(".app-select > button").first().click();
+    await page.getByRole("option", { name: "Semi hole", exact: true }).click();
+    await controls.locator(".app-select > button").nth(1).click();
+    await page.getByRole("option", { name: "Tangent", exact: true }).click();
+    await controls
+      .locator(".scan-topology-list button")
+      .nth(displayIndex)
+      .click();
+    console.log(
+      "Selected hole",
+      await controls
+        .locator(".scan-topology-list button[aria-pressed=true]")
+        .innerText(),
+    );
+    await controls
+      .getByRole("spinbutton", { name: "Start vertex", exact: true })
+      .fill("0");
+    await controls
+      .getByRole("spinbutton", { name: "End vertex", exact: true })
+      .fill("4");
+    await controls
+      .getByRole("button", { name: "Fill selected hole", exact: true })
+      .click();
+    for (let i = 0; i < 200 && (await history()) === beforeHistory; i++)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    console.log("Panel status", await controls.innerText());
+    await page.screenshot({
+      path: fileURLToPath(new URL("original-partial-status.png", out)),
+    });
+    assert.equal(await history(), beforeHistory + 1);
+    const gui = await hashGeometry();
+    assert.deepEqual(gui, expected);
+    await mutate("history_undo", {});
+    assert.deepEqual(await hashGeometry(), before);
+    await mutate("history_redo", {});
+    assert.deepEqual(await hashGeometry(), gui);
+    reports.push({
+      scenario: "original-scan-partial-tangent",
+      sourceFacets: sourceCount,
+      outputFacets: gui.faces,
+      addedFacets: gui.faces - sourceCount,
+      boundary: hole,
+      start: 0,
+      end: 4,
+      guiMcpEqual: true,
+      sourceCornersPreserved: true,
+      undoRedo: true,
+      sourceDigest: before.all,
+      outputDigest: gui.all,
+      nativeComparison: false,
+    });
+  }
   for (const { curved, separate, fragmented, native } of cases) {
+    targetId = "rim";
     const scenario = native
       ? "native-flat"
       : fragmented
