@@ -12,6 +12,7 @@ export interface BoundaryCurveFit {
   knots: number[];
   parameters: Float64Array;
   maxError: number;
+  meanError: number;
   refinements: number;
   toleranceMet: boolean;
   periodic: boolean;
@@ -121,6 +122,7 @@ function fitAtCount(
     knots,
     parameters,
     maxError: 0,
+    meanError: 0,
     refinements: 0,
     toleranceMet: false,
     periodic: closed,
@@ -131,11 +133,11 @@ function fitAtCount(
     const dx = p[0] - points[row * 3],
       dy = p[1] - points[row * 3 + 1],
       dz = p[2] - points[row * 3 + 2];
-    curve.maxError = Math.max(
-      curve.maxError,
-      Math.sqrt(dx * dx + dy * dy + dz * dz),
-    );
+    const error = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    curve.maxError = Math.max(curve.maxError, error);
+    curve.meanError += error;
   }
+  curve.meanError /= parameters.length;
   return curve;
 }
 
@@ -246,7 +248,8 @@ export function fitBoundaryCurve(
       if ((previous - curve.maxError) / Math.max(curve.maxError, 1e-6) <= 0.001)
         break;
     }
-    curve.toleranceMet = curve.maxError <= tolerance;
+    // Native candidate admission uses mean error; refinement still uses maximum error.
+    curve.toleranceMet = curve.meanError <= tolerance;
     last = curve;
     if (curve.toleranceMet) break;
   }
