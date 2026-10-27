@@ -125,18 +125,71 @@ function planeCrossings(
   }
   return result;
 }
-function intersection(source: Vec3[], face: CutterFace): Vec3[] {
+
+/** Find contacts on the source boundary without cutting the coplanar face interior. */
+function coplanarBoundaryContacts(source: Vec3[], face: CutterFace): Vec3[] {
+  const axis = face.normal
+    .map(Math.abs)
+    .indexOf(Math.max(...face.normal.map(Math.abs)));
+  const axes = [0, 1, 2].filter((i) => i !== axis);
+  const orient = (a: Vec3, b: Vec3, p: Vec3) =>
+    (b[axes[0]] - a[axes[0]]) * (p[axes[1]] - a[axes[1]]) -
+    (b[axes[1]] - a[axes[1]]) * (p[axes[0]] - a[axes[0]]);
+  const sign = Math.sign(
+    orient(face.points[0], face.points[1], face.points[2]),
+  );
+  if (!sign) return [];
+  const contacts: Vec3[] = [];
+  for (let i = 0; i < 3; i++) {
+    const a = source[i],
+      b = source[(i + 1) % 3];
+    let lo = 0,
+      hi = 1;
+    for (let j = 0; j < 3 && lo <= hi; j++) {
+      const c = face.points[j],
+        d = face.points[(j + 1) % 3];
+      const da = orient(c, d, a) * sign,
+        db = orient(c, d, b) * sign;
+      if (da < 0 && db < 0) {
+        lo = 1;
+        hi = 0;
+        break;
+      }
+      if (da < 0 || db < 0) {
+        const t = da / (da - db);
+        if (da < 0) lo = Math.max(lo, t);
+        else hi = Math.min(hi, t);
+      }
+    }
+    if (lo > hi) continue;
+    for (const t of [lo, hi]) {
+      const p = a.map((v, k) => v + t * (b[k] - v)) as Vec3;
+      if (
+        !contacts.some(
+          (q) => Math.hypot(...subtract(p, q)) <= roundingBound(p, q),
+        )
+      )
+        contacts.push(p);
+    }
+  }
+  return contacts;
+}
+function intersection(
+  source: Vec3[],
+  face: CutterFace,
+): { points: Vec3[]; coplanar: boolean } {
   const normal = crossProduct(
       subtract(source[1], source[0]),
       subtract(source[2], source[0]),
     ),
     length = Math.hypot(...normal);
-  if (!length) return [];
+  if (!length) return { points: [], coplanar: false };
   const n = normal.map((v) => v / length) as Vec3;
   const distances = source.map((p) =>
     dotProduct(subtract(p, face.points[0]), face.normal),
   );
-  if (distances.every((d) => d === 0)) return [];
+  if (distances.every((d) => d === 0))
+    return { points: coplanarBoundaryContacts(source, face), coplanar: true };
   const sourceTriangle = new Triangle(
     ...(source.map(vec) as [Vector3, Vector3, Vector3]),
   );
@@ -150,7 +203,7 @@ function intersection(source: Vec3[], face: CutterFace): Vec3[] {
         .slice(0, i)
         .some((q) => Math.hypot(...subtract(p, q)) <= roundingBound(p, q)),
   );
-  if (unique.length < 2) return unique;
+  if (unique.length < 2) return { points: unique, coplanar: false };
   let pair: Vec3[] = [];
   let longest = roundingBound(...source, ...face.points);
   for (let i = 0; i < unique.length; i++)
@@ -161,7 +214,7 @@ function intersection(source: Vec3[], face: CutterFace): Vec3[] {
         pair = [unique[i], unique[j]];
       }
     }
-  return pair;
+  return { points: pair, coplanar: false };
 }
 function clip(poly: Vec3[], face: CutterFace, sign: number): Vec3[] {
   const output: Vec3[] = [];
@@ -211,7 +264,11 @@ function addIntersectionPoints(
     for (const { f } of inserted) {
       // Keep the source edge fixed when an intersection is only tolerance-close.
       const projected = a.map((v, axis) => v + f * d[axis]) as Vec3;
-      if (Math.hypot(...subtract(projected, output[output.length - 1])) > 0)
+      if (
+        Math.hypot(...subtract(projected, b)) > roundingBound(projected, b) &&
+        Math.hypot(...subtract(projected, output[output.length - 1])) >
+          roundingBound(projected, output[output.length - 1])
+      )
         output.push(projected);
     }
   }
@@ -390,9 +447,11 @@ export function splitGeneralCutter(
       nearby,
     );
     const hits = nearby
-      .map((face) => ({ face, points: intersection(triangle, face) }))
+      .map((face) => ({ face, ...intersection(triangle, face) }))
       .filter((hit) => hit.points.length > 0);
-    const crossing = hits.filter((hit) => hit.points.length === 2);
+    const crossing = hits.filter(
+      (hit) => !hit.coplanar && hit.points.length === 2,
+    );
     let fragments = [
       addIntersectionPoints(
         triangle,
