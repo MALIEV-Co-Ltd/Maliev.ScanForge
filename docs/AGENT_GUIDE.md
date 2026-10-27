@@ -2402,6 +2402,8 @@ Keep the existing `expectedRevision`, unique `requestId`, lock/job/cancellation 
 
 `scanEdit/boundarySmooth` is a geometry edit. Locked objects and exact CAD/parametric bodies are rejected before processing starts; unlock a raw mesh or create an independent mesh copy first. Read-only `scanEdit/inventory` and boundary-curve reports remain available on protected sampled geometry. Rejection preserves geometry and history.
 
+For boundary smoothing, optional `anchors` is an array of `{ "boundary": 0, "point": 3 }` references using zero-based indices from the current `scanEdit/inventory` result. Each point indexes triples in that boundary's `points` array. At most one anchor per selected boundary is currently supported; invalid, unselected or multiple anchors on one boundary reject without publishing. Obtain a new inventory after geometry changes. The GUI currently provides one anchor by selecting a boundary and entering its point index. A single anchored annulus has a native coordinate comparison; multiple anchors on the same boundary and other native geometries remain unverified.
+
 Boundary smoothing uses the same fitted-boundary operation as the GUI buttons.
 `indices` restricts inventory boundaries; omission includes all, processed in
 native boundary order. `strength` defaults to `1` and maps `[0,1]` to integer

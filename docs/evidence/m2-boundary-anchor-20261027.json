@@ -1,0 +1,37 @@
+{
+  "scope": "Single inner-boundary anchor on the retained 64-facet annulus; one native and GUI/public-MCP comparison. Not general anchor parity or M2 closure.",
+  "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+  "nativeExportSha256": "838300ceea71e6f3448c233d14f1b4b9b4645bc05a7a2badb52cdb3c370b0b49",
+  "nativeCoordinatesSha256": "c48fe64d9e981180338c201f13b89910e32e22078715f6ee28210e2c795e21b2",
+  "settings": {
+    "strength": 0.5,
+    "repetitions": 1,
+    "guiAndMcpBoundary": 1,
+    "guiAndMcpPoint": 29,
+    "observedPositionMm": [
+      2.1213202476501465, 2.1213202476501465, 0.27000001072883606
+    ]
+  },
+  "nativeBinding": "The anchor location is inferred from the visible marker and the only unchanged inner vertex in the exported result; native internal identity was not independently decoded.",
+  "geometry": {
+    "guiAndMcpFloat32Sha256": "68026c57d4bcf70efdcda3cb39744416b6ea54c590bca0f282713847c3d757a2",
+    "guiMcpExact": true,
+    "nativeMismatchOutsideZeroTolerance": 0,
+    "zeroTolerance": "16 * Number.EPSILON * input scale",
+    "undoOriginalExact": true,
+    "redoResultExact": true
+  },
+  "validation": {
+    "focusedTests": "84 passed in 6 files",
+    "buildId": "scanforge-5f9d5d6395b3f0aa",
+    "browser": "Rendered GUI at 5175, public MCP SDK bridge, one operation and undo/redo; no browser warnings or errors.",
+    "cleanup": "Owned public-MCP runner and child jobs closed with zero active children and no cleanup errors; port 5199 released."
+  },
+  "limitations": [
+    "One anchor per boundary supported; multiple anchors on the same boundary are rejected.",
+    "Native multiple-anchor, open, folded and other meshes remain unverified.",
+    "GUI uses a point index, not native viewport click placement.",
+    "Binary reopen and active nested-CAD cancellation are not revalidated by this anchored case.",
+    "M2 and exact final-head CI remain open."
+  ]
+}

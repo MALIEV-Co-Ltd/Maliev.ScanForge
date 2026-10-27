@@ -70,6 +70,7 @@ export interface ScanPanelOperation {
   diameter?: number;
   batch?: boolean;
   strength?: number;
+  anchors?: ScanEditRequest["anchors"];
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
   tolerance?: number;
@@ -244,6 +245,8 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     [threshold, setThreshold] = useState(10);
   const [strength, setStrength] = useState(1),
     [tolerance, setTolerance] = useState(0.05);
+  const [anchorEnabled, setAnchorEnabled] = useState(false);
+  const [anchorPoint, setAnchorPoint] = useState(0);
   const [planeId, setPlaneId] = useState("XY");
   const [transparent, setTransparent] = useState(false);
   useEffect(() => {
@@ -274,6 +277,8 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       ? inventory.boundaries[current.index]
       : undefined;
   useEffect(() => {
+    setAnchorEnabled(false);
+    setAnchorPoint(0);
     setStart(0);
     setEnd(Math.max(2, Math.floor((boundary?.points.length ?? 0) / 6)));
   }, [boundary?.points]);
@@ -698,9 +703,45 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   onChange={(event) => setStrength(Number(event.target.value))}
                 />
               </label>
+              <label className="scan-topology-check">
+                <input
+                  type="checkbox"
+                  checked={anchorEnabled}
+                  onChange={(event) => setAnchorEnabled(event.target.checked)}
+                />
+                Anchor a point on the selected boundary
+              </label>
+              {anchorEnabled && boundary && (
+                <label>
+                  Boundary point index (starts at 0)
+                  <input
+                    type="number"
+                    min="0"
+                    max={Math.max(0, boundary.points.length / 3 - 1)}
+                    step="1"
+                    value={anchorPoint}
+                    onChange={(event) =>
+                      setAnchorPoint(Number(event.target.value))
+                    }
+                  />
+                  <span>
+                    {boundary.points
+                      .slice(anchorPoint * 3, anchorPoint * 3 + 3)
+                      .map((v) => v.toFixed(3))
+                      .join(", ")}{" "}
+                    mm
+                  </span>
+                </label>
+              )}
               <div className="scan-topology-actions">
                 <button
-                  disabled={!current}
+                  disabled={
+                    !current ||
+                    (anchorEnabled &&
+                      (!Number.isSafeInteger(anchorPoint) ||
+                        anchorPoint < 0 ||
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3))
+                  }
                   onClick={() =>
                     run(
                       {
@@ -708,6 +749,16 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                         indices: [current!.index],
                         strength,
                         iterations: 1,
+                        ...(anchorEnabled
+                          ? {
+                              anchors: [
+                                {
+                                  boundary: current!.index,
+                                  point: anchorPoint,
+                                },
+                              ],
+                            }
+                          : {}),
                       },
                       "Smooth selected boundary",
                     )
@@ -716,7 +767,14 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   Smooth selected
                 </button>
                 <button
-                  disabled={!items.length}
+                  disabled={
+                    !items.length ||
+                    (anchorEnabled &&
+                      (!current ||
+                        !Number.isSafeInteger(anchorPoint) ||
+                        anchorPoint < 0 ||
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3))
+                  }
                   onClick={() =>
                     run(
                       {
@@ -724,6 +782,16 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                         indices: items.map((item) => item.index),
                         strength,
                         iterations: 1,
+                        ...(anchorEnabled
+                          ? {
+                              anchors: [
+                                {
+                                  boundary: current!.index,
+                                  point: anchorPoint,
+                                },
+                              ],
+                            }
+                          : {}),
                       },
                       "Smooth all boundaries",
                     )

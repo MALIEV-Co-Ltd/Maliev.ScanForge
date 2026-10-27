@@ -46,6 +46,10 @@ QuickSurface 8.0.123 imported the 64-facet curved annulus in millimetres. With t
 
 The preceding candidate `434c86594c092e3004f89fac447361a8b6815a1e` passed 49,955 tests with 64 conditional skips in the full local suite, under the 4 GiB job limit with clean owned-process cleanup. The new native fixture and focused comparison are subsequent test/evidence changes; hosted checks and remaining native gates are separate.
 
+## Anchored boundary prototype (2026-10-27)
+
+On the original curved annulus, QuickSurface placed one visible anchor on the inner boundary and applied Smooth all at observed strength 50. The [sanitized output](../tests/fixtures/boundary-smooth-anchor-inner-native.json) retains the source/export hashes and coordinate stream. The sole inner source vertex retained exactly matches the visible anchor location; this position is inferred from the exported coordinates, not an independently decoded native anchor identity. The initial shared implementation failed that oracle. Excluding the identified anchor from the boundary vertex passes reproduces the finite native output outside the existing mathematical-zero tolerance. The [comparison record](evidence/m2-boundary-anchor-20261027.json) also verifies identical GUI/public-MCP Float32 geometry and undo/redo on this case. Native multiple-anchor segmentation, open and folded boundaries, viewport picking, anchored binary reopening and active-kernel cancellation remain separate acceptance gates.
+
 ## Operation and evidence inventory
 
 GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and the shared worker implementation. Agent binding/validation is in `src/automation/operations.ts`; discovery and schemas are in `src/automation/catalog.json`. Existing revision, retry, lock, cancellation, resource and history checks remain required. Read [the agent guide](AGENT_GUIDE.md) for request syntax.
