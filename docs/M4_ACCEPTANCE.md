@@ -200,6 +200,14 @@ valid, their volumes differ by less than 1e-7 cubic millimetres, and their bound
 match within 1e-6 mm. This verifies representative geometry and placement; it
 does not establish topology identity or all required construction modes.
 
+The [real-scan sketch checkpoint](evidence/m4-real-scan-sketch-20261027.json)
+extends the original PLY section workflow through independent GUI and public MCP
+sketch edits, conflicting-constraint rejection, GUI draft cancellation, scoped
+undo/redo and project-worker reopening. Its 661 unsampled section segments come
+from 274,154 eligible scan triangles; source geometry hashes remain unchanged
+through reopen. This is application/MCP evidence, not a native section or solver
+comparison. Other release gates above remain open.
+
 ## Verification and ownership
 
 The original isolated candidate started at `e367262fc46b2fee8588c7b3c84ccd41fa7424fa`.

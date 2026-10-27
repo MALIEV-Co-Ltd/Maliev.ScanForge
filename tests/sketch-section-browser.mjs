@@ -890,6 +890,7 @@ try {
     }
   }
   ledger.originalAttempts = attempted;
+  assert(originalSection, "The original PLY must provide a nonempty section");
   if (originalSection) {
     const { options, section } = originalSection;
     const preview = await guiPreview(scan.id, options, "original-preview.png");
@@ -900,6 +901,102 @@ try {
     );
     const mcpOriginal = await mcpAccept(section, "MCP original scan section");
     assert.deepEqual(acceptedOriginal.sketch, mcpOriginal.sketch);
+    const scanDigest = await digest(scan.id);
+    await mutate("sketch_manage", {
+      action: "activate",
+      sketchId: acceptedOriginal.id,
+    });
+    await mutate("ui_set", {
+      workspace: "sketch",
+      ribbonTab: "sketch",
+      toolPanelOpen: true,
+      dismissError: true,
+    });
+    const panel = page.getByRole("region", {
+      name: "Parametric sketch",
+      exact: true,
+    });
+    await panel.waitFor();
+    const empty = (await sketchState()).sketch;
+    await panel
+      .getByRole("button", { name: "Reset rectangle", exact: true })
+      .click();
+    await eventually(async () =>
+      assert.notDeepEqual((await sketchState()).sketch, empty),
+    );
+    const guiRectangle = (await sketchState()).sketch;
+    assert.deepEqual(guiRectangle.reference, section.reference);
+    const beforeCancel = await sketchState();
+    const beforeCancelRevision = (await call("project_get")).revision;
+    const draft = panel.getByLabel("p2 x", { exact: true });
+    await draft.click();
+    await draft.press("ControlOrMeta+A");
+    await draft.pressSequentially("-12.5");
+    assert.equal(await draft.inputValue(), "-12.5");
+    await draft.press("Escape");
+    assert.equal(await draft.inputValue(), "40");
+    assert.deepEqual(await sketchState(), beforeCancel);
+    assert.equal((await call("project_get")).revision, beforeCancelRevision);
+    for (const [control, option] of [
+      ["Constraint", "distance"],
+      ["First reference", "p1"],
+      ["Second reference", "p2"],
+    ]) {
+      await panel.getByRole("button", { name: control, exact: true }).click();
+      await page.getByRole("option", { name: option, exact: true }).click();
+    }
+    await panel.getByLabel("Dimension", { exact: true }).fill("10");
+    const beforeConflict = await sketchState();
+    const conflictRevision = (await call("project_get")).revision;
+    await panel
+      .getByRole("button", { name: "Add constraint", exact: true })
+      .click();
+    await panel.getByText(/Conflicting or unsolved constraints:/).waitFor();
+    assert.deepEqual(await sketchState(), beforeConflict);
+    assert.equal((await call("project_get")).revision, conflictRevision);
+    await mutate("ui_set", { dismissError: true });
+    await panel
+      .getByRole("button", { name: "Undo sketch edit", exact: true })
+      .click();
+    await eventually(async () =>
+      assert.deepEqual((await sketchState()).sketch, empty),
+    );
+    await mutate("history_redo", { scope: "sketch" });
+    assert.deepEqual((await sketchState()).sketch, guiRectangle);
+    await page.screenshot({
+      path: fileURLToPath(new URL("original-sketch-edits.png", artifactDir)),
+    });
+
+    await mutate("sketch_manage", {
+      action: "activate",
+      sketchId: mcpOriginal.id,
+    });
+    await mutate("sketch_edit", { kind: "preset", profile: "rectangle" });
+    assert.deepEqual((await sketchState()).sketch, guiRectangle);
+    const mcpBeforeConflict = await sketchState();
+    const revision = (await call("project_get")).revision;
+    const response = await client.callTool({
+      name: "sketch_edit",
+      arguments: {
+        kind: "constraintAdd",
+        constraint: { kind: "distance", a: "p1", b: "p2", value: 10 },
+        expectedRevision: revision,
+        requestId: randomUUID(),
+      },
+    });
+    const rejected =
+      response.structuredContent ?? JSON.parse(response.content[0].text);
+    assert.equal(rejected.ok, false);
+    assert.equal(rejected.error.code, "OPERATION_FAILED");
+    assert.deepEqual(await sketchState(), mcpBeforeConflict);
+    assert.equal((await call("project_get")).revision, revision);
+    await mutate("history_undo", { scope: "sketch" });
+    assert.deepEqual((await sketchState()).sketch, empty);
+    await mutate("history_redo", { scope: "sketch" });
+    assert.deepEqual((await sketchState()).sketch, guiRectangle);
+    acceptedOriginal.sketch = guiRectangle;
+    mcpOriginal.sketch = guiRectangle;
+    assert.deepEqual(await digest(scan.id), scanDigest);
     ledger.originalExtraction = {
       status: "passed",
       options,
@@ -908,10 +1005,19 @@ try {
       guiSketchId: acceptedOriginal.id,
       mcpSketchId: mcpOriginal.id,
       sampled: section.reference.sampled,
-      reopen: await workerReopen([acceptedOriginal, mcpOriginal], scan.id),
+      independentGuiMcpSketchEdits: true,
+      failedConstraintAtomicity: true,
+      canceledNumericDraft: true,
+      scopedUndoRedo: true,
+      sourceDigestUnchanged: true,
+      reopen: await workerReopen(
+        [acceptedOriginal, mcpOriginal],
+        scan.id,
+        scanDigest,
+      ),
     };
     ledger.steps.push(
-      "unmodified original PLY GUI import/extraction/Cancel/Accept equals MCP section and worker reopen; SHA recorded, no native claim",
+      "unmodified original PLY GUI import/extraction/Cancel/Accept, independent GUI/MCP sketch edits, failed constraint, draft cancellation, scoped undo/redo and worker reopen; SHA recorded, no native claim",
     );
   } else {
     ledger.originalExtraction = {
