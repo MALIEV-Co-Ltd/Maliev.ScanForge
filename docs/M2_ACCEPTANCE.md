@@ -40,6 +40,12 @@ viewport readiness after history restoration. No application behavior or
 geometry assertion was changed to obtain these passes. Native partial/bridge
 output comparison remains separate and open.
 
+## Boundary smoothing minimum-strength control (2026-10-27)
+
+QuickSurface 8.0.123 imported the 64-facet curved annulus in millimetres. With the Boundaries strength control visibly set to 0, one Smooth all operation was exported as STL. The sanitized [coordinate fixture](../tests/fixtures/boundary-smooth-all-strength-zero-native.json) records the original and export SHA-256 identities, settings and all 576 Float32 coordinates. The shared scan-edit operation matches every coordinate outside its documented mathematical-zero roundoff neighborhood with the native importer topology. This finite control does not establish parity for arbitrary boundaries or intermediate strength settings. The same shared operation is used by GUI and `mesh_process`; this comparison is a worker-level test, not a new public-MCP or rendered equivalence run.
+
+The preceding candidate `434c86594c092e3004f89fac447361a8b6815a1e` passed 49,955 tests with 64 conditional skips in the full local suite, under the 4 GiB job limit with clean owned-process cleanup. The new native fixture and focused comparison are subsequent test/evidence changes; hosted checks and remaining native gates are separate.
+
 ## Operation and evidence inventory
 
 GUI mesh processing and public `mesh_process` use `src/processing-client.ts` and the shared worker implementation. Agent binding/validation is in `src/automation/operations.ts`; discovery and schemas are in `src/automation/catalog.json`. Existing revision, retry, lock, cancellation, resource and history checks remain required. Read [the agent guide](AGENT_GUIDE.md) for request syntax.
