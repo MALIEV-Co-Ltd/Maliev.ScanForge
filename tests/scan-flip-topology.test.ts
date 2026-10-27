@@ -404,3 +404,32 @@ it("preserves distinct signed-zero corner and indexed vertex bits through flip a
     Object.is(reopened.project.entities[0].indexedMesh!.vertices[0], 0),
   ).toBe(true);
 });
+
+it.each(noiseCapture.cases.filter((entry) => entry.triangles.length > 0))(
+  "matches captured normal refresh after indexed flip: $label",
+  (entry) => {
+    const vertices = Float32Array.from(entry.vertices);
+    const triangles = Uint32Array.from(entry.triangles);
+    for (let i = 0; i < triangles.length; i += 3)
+      [triangles[i + 1], triangles[i + 2]] = [
+        triangles[i + 2],
+        triangles[i + 1],
+      ];
+    const positions = Float32Array.from(
+      Array.from(triangles).flatMap((id) =>
+        Array.from(vertices.slice(id * 3, id * 3 + 3)),
+      ),
+    );
+    const result = flipScanNormals(positions, {
+      sourceTopology: { vertices, triangles },
+    });
+    const normals = result.indexedMesh!.geometryNormals as Float32Array;
+    expect(
+      Buffer.from(
+        normals.buffer,
+        normals.byteOffset,
+        normals.byteLength,
+      ).toString("hex"),
+    ).toBe(entry.nativeNormalBits);
+  },
+);
