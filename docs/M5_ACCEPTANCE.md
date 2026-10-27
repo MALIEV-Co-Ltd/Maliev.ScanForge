@@ -2,6 +2,27 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
+On 2026-10-27, the supported Windows controller launched a fresh QuickSurface
+8.0.123 session and accepted menu and file-dialog input. Its earlier intermittent
+GetCursorPos access denial has not been explained or proven permanently fixed.
+The final GUI-authored STEP (`705c54384db0a013b84c46c7ecd77fe1cc25460590023219feb86180f7e784b1`)
+imported as one visible solid. QuickSurface exported [AP214 STEP](evidence/m5-20261025/native-real-solid-roundtrip-20261027.stp)
+with Z-to-Y mapping unchecked (65,455 bytes, SHA-256
+`8f9ff6a788ab46e15abb64ffc0e273b020f8f180f4e71ec36e7baa7577cf5c0b`),
+and the imported scene was saved as [QSF](evidence/m5-20261025/native-real-solid-roundtrip-20261027.qsf)
+(13,754 bytes, SHA-256 `32d526a68e5a9b01845581e059b249121747284331d2f3ffb1a0465208f6b8d5`).
+The [independent comparison](evidence/m5-20261025/native-real-solid-interop-r1.json)
+passed its frozen millimetre, positive-solid, boundary/frame, bounds, area and volume
+checks; the area difference was 5.03e-11 mm² and volume difference 1.23e-11 mm³.
+The [bounded job receipt](evidence/m5-20261025/native-real-solid-interop-r1-job.json)
+records 1.682 s, 705,363,968 peak bytes, exit 0, active zero and handle/mutex cleanup.
+This establishes scoped exchange of that prism; it does not establish native
+construction equivalence, general blend/trim parity or whole-scan acceptance.
+The [comparison source](evidence/m5-20261025/native-real-solid-interop-comparison.mjs.txt)
+is archived byte-for-byte (SHA-256 `2834cff4abdf76390983836e8f683724d129c0ea5b0812dfa0f5e2a73a77e0ea`);
+its relative paths refer to its original location in `.resources/m5`.
+The M5 native operation matrix and M4 acceptance remain open.
+
 The integration of M5 `d5eb684` with main `57c77aa`, committed as `b6c2453`, passes the
 [local pre-commit integration runtime](evidence/m5-20261025/main-integration-r1-ledger.json),
 build `scanforge-6df43e18c921f0bd`. All seven phases exit 0: formatting the
@@ -21,7 +42,7 @@ historical. This follow-up changes receipts only; the worker and build identity
 are unchanged. Native M4 acceptance is still open, and the PR/milestone remain
 unmerged/unclosed. Earlier evidence retains its historical scope.
 
-Current native viability remains unproven. [R1](evidence/m5-20261025/native-blank-viability-r1-operator.json)
+Earlier native viability attempts did not establish input. [R1](evidence/m5-20261025/native-blank-viability-r1-operator.json)
 expired its 24-second operator window before binding or input. [R2](evidence/m5-20261025/native-blank-viability-r2-operator.json)
 authenticated live identity and exposed normal accessibility controls, but its
 capture was black except for the pointer; no input was attempted. It finished

@@ -12,3 +12,6 @@ tests/fixtures/m6-sparse-cloud.asc -text -whitespace
 docs/evidence/m5-20261025/*.log -text -whitespace
 docs/evidence/m5-20261025/*.brep -text -whitespace
 docs/evidence/m5-20261025/*.step -text -whitespace
+docs/evidence/m5-20261025/*.stp -text -whitespace
+docs/evidence/m5-20261025/*.qsf -text
+docs/evidence/m5-20261025/*.mjs.txt -text -whitespace
