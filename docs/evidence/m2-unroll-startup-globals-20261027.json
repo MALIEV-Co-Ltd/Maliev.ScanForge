@@ -279,5 +279,16 @@
   "limitations": [
     "The candidate code and captured initial values do not establish behavior after user input or across all reference orientations.",
     "No GUI comparison or native Unroll command was performed in this capture."
-  ]
+  ],
+  "focusedCandidate": {
+    "address": "0x140691270",
+    "ghidraSelectedBody": "0x140691270 through 0x140691aea, inferred without default auto-analysis",
+    "ghidraEvidenceSha256": "0dc900402bda8126ea4503c107aabbb62d4e49fc5c90bde5cb59ea1c69f65a71",
+    "independentCapstoneMnemonicStartsMatched": 507,
+    "instructionStartsSha256": "19fbb0435dc63ba2528c6617881c22b78e3458bfacd8f909e68c41ead3828afb",
+    "decoderAliases": "Normalized equivalent jump mnemonics such as jz/je",
+    "initialCheck": "First comparison rejected equivalent jz/je spelling; bounded job terminated its owned child and reported zero remaining processes.",
+    "observedSequence": "Decompiled candidate applies an inverse local frame to source coordinates, narrows two radial coordinates to Float32 before normalizing, evaluates the first captured global against normalized coordinates, then uses the second in a sign comparison. Exact local-frame construction and called math helper semantics are not proven by this trace alone.",
+    "limits": "A byte-backed mnemonic match at selected starts does not prove function boundaries, operands, reachability or that captured globals remain stable during a command."
+  }
 }
