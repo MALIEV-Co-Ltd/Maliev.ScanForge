@@ -5,16 +5,16 @@
     "label": "Duplicate selected entities",
     "labelRva": "0x11b1440",
     "registration": "In the byte-verified exact 0x5c99c0 range, a reference to the label precedes a virtual call with 0x1f1 and 0x8341 as arguments. The full receiver and argument semantics are not established.",
-    "dispatchCandidate": "In five byte-verified unwind-linked fragments rooted at 0x5c89c0, a conditional path calls an indirect target with values 0x111 and 0x8341 and a window-like pointer. The exact imported function and destination handler remain unclassified.",
+    "dispatchCandidate": "In five byte-verified unwind-linked fragments rooted at 0x5c89c0, a conditional path calls an indirect target with values 0x111 and 0x8341 and a window-like pointer. A fresh hidden owned-process capture observed the exact slot twice and mapped it within the child's USER32.dll module snapshot. The same module-relative offset matches the on-disk SendMessageW export; the disk image was not compared byte-for-byte with the mapped module. This supports a SendMessageW dispatch inference, not identification of the destination handler.",
     "tableConstruction": "Two byte-verified ranges store the candidate table addresses 0x1411b1778 and 0x1411b1b50 on the same object at offsets 0 and 0x130. Adjacent RTTI metadata alone does not establish full table extents or a live receiver.",
-    "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The captured pointer is from an earlier Windows boot and was not identified using current system addresses."
+    "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The earlier captured pointer was from a previous Windows boot and was not matched to current system addresses."
   },
   "verification": {
     "labelRangeBytesVerified": 1273,
     "dispatchFragmentBytesVerified": 515,
     "tableReferenceRangeBytesVerified": 2008,
     "independentDecoder": false,
-    "nativeExecution": false,
+    "nativeExecution": "Static listings did not execute native code. A separate hidden owned-process startup read only the exact 8-byte slot twice, without UI input or target ABI calls.",
     "ownedTemporaryProjectsRemovedAndProcessesExited": true
   },
   "sha256": {
@@ -27,10 +27,14 @@
     "labelListingReceipt": "506c00736be8bc9bd862423287421d21d5891c3113f37716a67cc9a61b20c68a",
     "dispatchListingReceipt": "2d443895aa680261148d8e7e903a25b4ad4f5e114a874867c2facf3ee0234195",
     "tableListingReceipt": "b372880ecde879ff896dc6e31e3e33928936c0da328c58fecdb2e3d467a8e24a",
-    "failedImportReceipt": "6cb7737f736da680eaa7b1c1169401cec43391cff3fa2bc15e54ccd2e8686aba"
+    "failedImportReceipt": "6cb7737f736da680eaa7b1c1169401cec43391cff3fa2bc15e54ccd2e8686aba",
+    "ownedPointerReport": "5bf1f00f0cc9b647926e28e3b7a2b97715ca096edac8455cc85ba0831095434f",
+    "ownedPointerReceipt": "c823018e1eb2df4c164bc7b21f690206d315561e4837e91f72f1a7ed225d61c3",
+    "user32ExportMetadata": "ae0e81d7905beaa81dbaa60cae55d7ed964ac360afe1834a25d34f5382d56a4e",
+    "exportLookupReceipt": "352fdcde6005a0b4f07398a8f2fb294433ba3b5e0085cfb504e170f5eb30cc98"
   },
   "remaining": [
-    "Bind the actual destination handler and runtime receiver without assuming table extent or import identity.",
+    "Bind the actual destination handler and runtime receiver without assuming table extent or mapped-module identity.",
     "Observe original reference duplication eligibility, identity, links, history and save/reopen before claiming native parity."
   ]
 }
