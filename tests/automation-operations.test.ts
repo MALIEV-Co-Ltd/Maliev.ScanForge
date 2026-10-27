@@ -1,4 +1,7 @@
-import { scanToolRequest } from "../src/ui/scan-tool-request";
+import {
+  scanToolRequest,
+  stagedScanToolRequest,
+} from "../src/ui/scan-tool-request";
 import { describe, it, expect, vi } from "vitest";
 import { Buffer } from "node:buffer";
 import {
@@ -369,6 +372,50 @@ it("binds the same indexed topology for the Flip Normals ribbon and MCP", () => 
     kind: "flipNormals",
     sourceTopology: mesh,
   });
+});
+
+it("cancels GUI and MCP Flip admission without starting the worker or changing the model", async () => {
+  const vertices = new Float32Array(300_000);
+  const triangles = new Uint32Array(300_000);
+  const positions = new Float32Array(900_000);
+  const source = entity({ positions, indexedMesh: { vertices, triangles } });
+  const h = harness([source]);
+  const priorCalls = vi.mocked(processMesh).mock.calls.length;
+  const timer = setTimeout(() => h.controller.abort(), 0);
+  try {
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow();
+  } finally {
+    clearTimeout(timer);
+  }
+  expect(vi.mocked(processMesh).mock.calls.length).toBe(priorCalls);
+  expect(h.host.commit).not.toHaveBeenCalled();
+  expect(h.state.entities[0]).toBe(source);
+
+  const guiController = new AbortController();
+  const guiTimer = setTimeout(() => guiController.abort(), 0);
+  try {
+    await expect(
+      stagedScanToolRequest(
+        source,
+        { kind: "flipNormals" },
+        [source],
+        undefined,
+        () => guiController.signal.throwIfAborted(),
+      ),
+    ).rejects.toThrow();
+  } finally {
+    clearTimeout(guiTimer);
+  }
+  expect(source.positions).toBe(positions);
+  expect(source.indexedMesh?.triangles).toBe(triangles);
 });
 
 it("rejects oversized indexed vertices before starting Flip Normals", async () => {

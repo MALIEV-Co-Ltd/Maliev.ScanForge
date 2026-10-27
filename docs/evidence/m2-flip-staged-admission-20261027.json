@@ -1,0 +1,46 @@
+{
+  "scope": "Staged indexed Flip admission; small indexed PLY GUI/public MCP parity, not a native comparison or a large-scan cancellation timing proof.",
+  "baseCommit": "9bb9d1cfaadd0642a061fdd43682aedd6f05b653",
+  "implementation": "GUI and MCP validate indexed topology in bounded chunks, checking cancellation and workspace state between tasks. Worker still validates the transferred topology. Later transport and publication checks can remain synchronous.",
+  "tests": {
+    "focusedPassed": 216,
+    "fullPassed": 50054,
+    "fullSkipped": 64,
+    "fullFilesPassed": 732,
+    "fullFilesSkipped": 18,
+    "build": "scanforge-85feef91a9461d30",
+    "buildScope": "Production build passed before a subsequent formatting-only change to App.tsx and guide wording update.",
+    "memoryLimitBytes": 4294967296,
+    "fullPeakJobBytes": 1315704832,
+    "cleanupConfirmed": true
+  },
+  "benchmark": {
+    "scope": "Headless Chrome synthetic indexed input with stored normals; admission step only",
+    "nearLimitFacets": 3000000,
+    "previousSynchronousMs": [140.47, 128.81],
+    "stagedTotalMs": 154.82,
+    "sampledFrames": 2,
+    "maxSampledFrameGapMs": 104.485,
+    "interpretation": "Frames occurred during the staged check; frame gaps include other rendering activity and do not prove a maximum task duration. The 9M-facet synthetic test exceeds the separate 27M position-coordinate processing limit."
+  },
+  "browserMcp": {
+    "fixtureSha256": "2f7c825c1ffb7ece002cc07afd84536870eca6cf5a68f7ffe8211b378644cca5",
+    "facets": 2,
+    "vertices": 4,
+    "server": "isolated Vite development candidate",
+    "guiMcpFullGeometryEqual": true,
+    "undoRestoredFullGeometry": true,
+    "redoRestoredFullGeometry": true,
+    "resultPositionSha256": "6804e8d2a8944d1a8d6f4dcac0172854fefe038b6782d7cae953d1a92b835fe1",
+    "helperPeakJobBytes": 495439872,
+    "memoryScope": "Owned helper and bridge; browser memory is outside the job.",
+    "cleanupConfirmed": true,
+    "browserConsole": "One error came from a password-manager extension autofill overlay; no application error observed.",
+    "screenshotRetained": false
+  },
+  "remaining": [
+    "Public MCP cancellation delivery during large staged admission has not been directly observed in a real browser.",
+    "Full-operation responsiveness, later synchronous buffer copies and publication, and concurrent React update behavior are not established by admission-only timings.",
+    "Installed-native original-scan post-Flip comparison and other M2 acceptance remain open."
+  ]
+}

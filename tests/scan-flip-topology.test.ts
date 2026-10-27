@@ -4,6 +4,10 @@ import {
   decodeProjectContents,
 } from "../src/project-file-codec";
 import { indexedMeshMatches } from "../src/indexed-mesh";
+import {
+  flipSourceTopology,
+  flipSourceTopologySync,
+} from "../src/scan-flip-request";
 import { Buffer } from "node:buffer";
 import noiseCapture from "./fixtures/noise-normal-kernel.json";
 import { afterEach, expect, it, vi } from "vitest";
@@ -25,6 +29,48 @@ const decode = (hex: string) =>
   new Float32Array(
     Uint8Array.from(hex.match(/../g)!, (byte) => parseInt(byte, 16)).buffer,
   );
+
+it("lets cancellation interrupt large indexed Flip admission before worker dispatch", async () => {
+  const vertices = new Float32Array(300_000);
+  const triangles = new Uint32Array(300_000);
+  const positions = new Float32Array(900_000);
+  const source = { indexedMesh: { vertices, triangles }, positions };
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 0);
+  try {
+    const result = await flipSourceTopology(source as never, () =>
+      controller.signal.throwIfAborted(),
+    ).then(
+      () => "completed",
+      () => "cancelled",
+    );
+    expect(result).toBe("cancelled");
+  } finally {
+    clearTimeout(timer);
+  }
+});
+
+it("preserves the synchronous topology admission contract across invalid and sparse inputs", async () => {
+  const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const valid = { vertices: Array.from(positions), triangles: [0, 1, 2] };
+  const sparse = [0, 0, 0, 1, 0, 0, 0, 1, 0, , ,];
+  const cases = [
+    valid,
+    { ...valid, triangles: [0, 2, 1] },
+    { ...valid, triangles: [0, 1, 99] },
+    { ...valid, vertices: [NaN, ...valid.vertices.slice(1)] },
+    { ...valid, normals: new Array(9) },
+    { ...valid, geometryNormals: new Array(9) },
+    { ...valid, facetNormals: [0, 0, Infinity] },
+    { ...valid, vertices: sparse },
+  ];
+  for (const indexedMesh of cases) {
+    const source = { positions, indexedMesh } as never;
+    expect(await flipSourceTopology(source)).toEqual(
+      flipSourceTopologySync(source),
+    );
+  }
+});
 afterEach(() => vi.unstubAllGlobals());
 
 it.each(capture.cases)(
