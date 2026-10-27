@@ -949,6 +949,33 @@ try {
       );
       assert.deepEqual(edited.definition.records[1].coordinates, [5, 0, 0]);
     }
+    if (mode === "average") {
+      await dialog.locator(".app-select > button").nth(1).click();
+      await page
+        .getByRole("option", { name: "Select a source", exact: true })
+        .click();
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForFunction(
+        () =>
+          !document.querySelector(
+            '[role="dialog"] .button-row:last-child button:nth-child(2)',
+          )?.disabled,
+      );
+      const gap = (await call("reference_construction_get")).result;
+      assert.deepEqual(
+        gap.definition.records,
+        stored.definition.records.slice(1),
+      );
+      await dialog
+        .getByRole("button", { name: "Preview", exact: true })
+        .click();
+      await page.waitForTimeout(300);
+      const gapAgain = (await call("reference_construction_get")).result;
+      assert.equal(gapAgain.version, gap.version + 1);
+      assert.deepEqual(gapAgain.definition.records, gap.definition.records);
+    }
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await dialog.waitFor({ state: "detached" });
     ledger.derivedLines.push({
@@ -991,12 +1018,32 @@ try {
   await page
     .getByRole("option", { name: "Average lines", exact: true })
     .click();
-  for (const index of [1, 2]) {
-    await dialog.locator(".app-select > button").nth(index).click();
-    await page
-      .getByRole("option", { name: "Select a source", exact: true })
-      .click();
-  }
+  await dialog.locator(".app-select > button").nth(1).click();
+  await page
+    .getByRole("option", { name: "Select a source", exact: true })
+    .click();
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  const oneAverageSource = (await call("reference_construction_get")).result;
+  assert.equal(oneAverageSource.definition.records.length, 1);
+  assert.equal(oneAverageSource.definition.records[0].entityId, extraLine);
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForTimeout(300);
+  const repeatedPreview = (await call("reference_construction_get")).result;
+  assert.equal(repeatedPreview.version, oneAverageSource.version + 1);
+  assert.deepEqual(
+    repeatedPreview.definition.records,
+    oneAverageSource.definition.records,
+  );
+  await dialog.locator(".app-select > button").nth(2).click();
+  await page
+    .getByRole("option", { name: "Select a source", exact: true })
+    .click();
   await dialog.getByRole("button", { name: "Preview", exact: true }).click();
   await page.waitForFunction(
     () =>

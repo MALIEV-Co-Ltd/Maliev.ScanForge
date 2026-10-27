@@ -463,12 +463,22 @@ export function ReferenceConstructionDialog({
           definition?: typeof definition;
         };
         setSession({ sessionId, version });
-        setRetainedIndices(
+        if (
           previewDefinition?.kind === "line" &&
-            previewDefinition.mode !== "endpoints"
-            ? previewDefinition.records.map((_, index) => index)
-            : [],
-        );
+          previewDefinition.mode === "average"
+        ) {
+          let recordIndex = 0;
+          setRetainedIndices(
+            sourceIds.map((id) => (id ? recordIndex++ : undefined)),
+          );
+        } else {
+          setRetainedIndices(
+            previewDefinition?.kind === "line" &&
+              previewDefinition.mode !== "endpoints"
+              ? previewDefinition.records.map((_, index) => index)
+              : [],
+          );
+        }
         setDirty(false);
         setPreviewOutcome(
           outcome === "unchanged"

@@ -14,7 +14,17 @@
     "failedBeforeFix": "Before the GUI fix, the public MCP empty edit succeeded but the GUI did not produce an applicable preview. The timed-out run and its successful cleanup receipt are retained.",
     "failedReceiptSha256": "acbad52c9047914017ab54622ecd1b58de9222d192c02908b982a88ef4df0fd0",
     "buildReceiptSha256": "b6e48d6d8415e2d000de7f2a6a7bc522eaa7963a2698a41c033c8ac6ac807344",
-    "focusedReceiptSha256": "a2cc30140ad862dea2d6d6db79f4de867a1ff352489175fe90b03a9cf9135dc6"
+    "focusedReceiptSha256": "a2cc30140ad862dea2d6d6db79f4de867a1ff352489175fe90b03a9cf9135dc6",
+    "retainedIndexCorrection": {
+      "buildId": "scanforge-07e877bede68c401",
+      "coverage": "After clearing an earlier average row, repeated previews retain the remaining records in the correct order, including a repeated source. The same replay passes the empty edit, public MCP comparison, worker reopen and undo. A review found the index mismatch in the earlier fix; its failing browser receipt is retained. The reviewer found no further actionable issues after the correction.",
+      "driverSha256": "a4ed8513083a5d5b933474902944b3e37cc30f0792fa9a37c5bcb66a71bc9980",
+      "browserReceiptSha256": "d17e776bf2fd5481bf270299cd9ae5d99036a627e9759021cb74be448ac2a5fb",
+      "browserCleanupReceiptSha256": "e60560a730c58a708d238b26c76cf5ac10725af9999c5f22654e81252cc0a0f5",
+      "failedReceiptSha256": "c003745a9f2d32ec78a34064c8efdd46924f8f52e1e470af1a5539aa4fbbad55",
+      "buildReceiptSha256": "e8b54415962ef66ff55d7e0b1ee22972ae1223a1346c99f5b2485be4a7657e73",
+      "focusedReceiptSha256": "41ff1b65e264df06e480834642c4d0769230bbbc82228d0cc26ae76775758fc6"
+    }
   },
   "limitations": "The native source edit was not saved and reopened. No successful average selection, full native dependency state or general native pick semantics are established. The native source file was not overwritten. This observation alone does not establish general empty-input behavior.",
   "sessionReportSha256": "1598b82a4787e75788caffa967c60b5449acd6b1bca52934521f2445c0478048",
