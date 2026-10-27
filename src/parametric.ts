@@ -32,6 +32,7 @@ export type ParametricProfile =
 export type ParametricRecipe =
   | { readonly kind: "primitive"; readonly input: KernelPrimitive }
   | { readonly kind: "importBrep"; readonly brep: string }
+  | { readonly kind: "sketchSurface"; readonly sketch: Sketch }
   | {
       readonly kind: "extrude";
       readonly profile: ParametricProfile;
@@ -53,6 +54,13 @@ export type ParametricRecipe =
       readonly path: Vec3[];
     }
   | { readonly kind: "surface"; readonly patch: NurbsPatch }
+  | {
+      readonly kind: "trimSurfaces";
+      readonly source: FeatureRef;
+      readonly cutters: FeatureRef[];
+      readonly keepPoints: Vec3[];
+      readonly toleranceMm?: number;
+    }
   | {
       readonly kind: "closedShell";
       readonly patches: NurbsPatch[];
@@ -150,6 +158,8 @@ export interface RebuildResult extends ParametricState {
 export interface RebuildOptions {
   signal?: AbortSignal;
   forceFeatureIds?: readonly string[];
+  /** Explicit recipe submissions require admission even when identical to cached recipes. */
+  admitFeatureIds?: readonly string[];
   preserveKernelIds?: ReadonlySet<string>;
 }
 export class ParametricRebuildError extends Error {
@@ -219,8 +229,50 @@ export function featureDependencies(
 ): readonly FeatureRef[] {
   if (recipe.kind === "boolean") return [recipe.first, recipe.second];
   if (recipe.kind === "split") return [recipe.source, recipe.cutter];
+  if (recipe.kind === "trimSurfaces") return [recipe.source, ...recipe.cutters];
   if (recipe.kind === "sew") return recipe.sources;
   return "source" in recipe ? [recipe.source] : [];
+}
+
+/** Bound CAD consumers before detailed validation or the synchronous dense solver. */
+function admitCadSketchSolve(input: unknown) {
+  if (!record(input)) return;
+  const points = Array.isArray(input.points) ? input.points : [],
+    constraints = Array.isArray(input.constraints) ? input.constraints : [],
+    segments = Array.isArray(input.segments) ? input.segments : [],
+    arcs = Array.isArray(input.arcs) ? input.arcs : [];
+  const limit = (actual: number, maximum: number, label: string) => {
+    if (actual > maximum)
+      throw new Error(
+        `CAD sketch solver ${label} limit exceeded: ${actual} > ${maximum}.`,
+      );
+  };
+  limit(points.length, 128, "authored point count");
+  limit(constraints.length, 256, "constraint count");
+  limit(segments.length + arcs.length, 10000, "stored curve count");
+  const arcIds = new Set(arcs.filter(record).map((arc) => arc.id));
+  const residuals = constraints.reduce<number>((count, constraint) => {
+    if (!record(constraint)) return count + 1;
+    if (["fixed", "coincident", "collinear"].includes(String(constraint.kind)))
+      return count + 2;
+    if (constraint.kind === "symmetric")
+      return count + (arcIds.has(constraint.first) ? 6 : 4);
+    return count + 1;
+  }, arcs.length);
+  const variables = 2 * points.length,
+    denseCells = variables * variables;
+  limit(residuals, 512, "residual row count");
+  limit(denseCells, 65536, "dense matrix cell count");
+  // Final finite differences run even without residuals; only nonempty rows can iterate.
+  const finalWork =
+      denseCells * residuals + 4 * variables * residuals + denseCells,
+    iterativeWork = residuals
+      ? 100 *
+        (2 * variables ** 3 +
+          denseCells * residuals +
+          4 * variables * residuals)
+      : 0;
+  limit(iterativeWork + finalWork, 250000000, "estimated work budget");
 }
 
 function validateRecipe(value: unknown): asserts value is ParametricRecipe {
@@ -229,11 +281,13 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
   const fields: Record<string, string[]> = {
     primitive: ["input"],
     importBrep: ["brep"],
+    sketchSurface: ["sketch"],
     extrude: ["profile", "height"],
     revolve: ["points", "angleDegrees"],
     loft: ["profiles", "ruled"],
     sweep: ["points", "path"],
     surface: ["patch"],
+    trimSurfaces: ["source", "cutters", "keepPoints", "toleranceMm"],
     closedShell: ["patches", "tolerance"],
     pattern: ["source", "pattern"],
     mirror: ["source", "planeOrigin", "normal"],
@@ -278,6 +332,9 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     case "importBrep":
       if (typeof value.brep !== "string" || !value.brep.trim())
         throw new Error("Static BREP source is empty.");
+      break;
+    case "sketchSurface":
+      validateSketch(value.sketch);
       break;
     case "extrude": {
       const p = value.profile;
@@ -327,6 +384,39 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
     case "surface":
       validatePatch(value.patch as NurbsPatch);
       break;
+    case "trimSurfaces": {
+      requireRef(value.source);
+      if (
+        !Array.isArray(value.cutters) ||
+        !value.cutters.length ||
+        value.cutters.length > 16
+      )
+        throw new Error("Surface trim requires 1 to 16 cutter references.");
+      value.cutters.forEach(requireRef);
+      const key = (ref: FeatureRef) => `${ref.featureId}:${ref.output ?? 0}`;
+      const refs = [value.source, ...value.cutters] as FeatureRef[];
+      if (new Set(refs.map(key)).size !== refs.length)
+        throw new Error("Surface trim source and cutters must be distinct.");
+      if (
+        !Array.isArray(value.keepPoints) ||
+        !value.keepPoints.length ||
+        value.keepPoints.length > 128
+      )
+        throw new Error("Surface trim requires 1 to 128 retained points.");
+      for (const point of value.keepPoints) {
+        requireVector(point, "Retained point");
+        if (point.some((n) => Math.abs(n) > 1e9))
+          throw new Error("Retained point exceeds world coordinate limits.");
+      }
+      if (value.toleranceMm !== undefined) {
+        requirePositive(value.toleranceMm, "Surface trim tolerance");
+        if (value.toleranceMm > 1e6)
+          throw new Error(
+            "Surface trim tolerance exceeds one million millimetres.",
+          );
+      }
+      break;
+    }
     case "closedShell":
       if (!Array.isArray(value.patches) || value.patches.length < 2)
         throw new Error("Closed shell requires at least two patches.");
@@ -419,6 +509,7 @@ function validateRecipe(value: unknown): asserts value is ParametricRecipe {
 
 export function validateParametricModel(
   input: unknown,
+  options: { admitFeatureIds?: readonly string[] } = {},
 ): asserts input is ParametricModel {
   if (
     !record(input) ||
@@ -427,6 +518,26 @@ export function validateParametricModel(
     !Array.isArray(input.features)
   )
     throw new Error("Unsupported parametric model structure.");
+  // Stored recipes stay structurally readable; admit only execution/submission candidates.
+  const admitted = new Set(options.admitFeatureIds);
+  for (const feature of input.features) {
+    if (
+      !record(feature) ||
+      typeof feature.id !== "string" ||
+      !admitted.has(feature.id)
+    )
+      continue;
+    const recipe = feature.recipe;
+    if (!record(recipe)) continue;
+    if (recipe.kind === "sketchSurface") admitCadSketchSolve(recipe.sketch);
+    else if (
+      recipe.kind === "extrude" &&
+      record(recipe.profile) &&
+      (recipe.profile.kind === "sketch" ||
+        recipe.profile.kind === "sketch-curves")
+    )
+      admitCadSketchSolve(recipe.profile.sketch);
+  }
   const features = new Map<string, ParametricFeature>();
   for (const value of input.features) {
     if (
@@ -522,6 +633,17 @@ const handles = (results: Readonly<Record<string, readonly KernelMesh[]>>) =>
     ),
   );
 
+function hasCachedOutputs(recipe: unknown, outputs?: readonly KernelMesh[]) {
+  const count = record(recipe) && recipe.kind === "split" ? 2 : 1;
+  return (
+    outputs?.length === count &&
+    Array.from({ length: count }, (_, index) => outputs?.[index]).every(
+      (output) =>
+        output && typeof output.kernelId === "string" && !!output.kernelId,
+    )
+  );
+}
+
 /** Evaluate affected descendants privately. Cancellation waits for an in-flight evaluator so new handles can be released. */
 export async function rebuildParametric(
   previous: ParametricState | undefined,
@@ -529,14 +651,34 @@ export async function rebuildParametric(
   evaluator: ParametricEvaluator,
   options: RebuildOptions = {},
 ): Promise<RebuildResult> {
-  validateParametricModel(next);
+  const previousFeatures = Array.isArray(previous?.model?.features)
+    ? previous.model.features
+    : [];
+  const oldFeatures = new Map(
+    previousFeatures
+      .filter((feature) => feature && typeof feature.id === "string")
+      .map((feature) => [feature.id, feature]),
+  );
+  const admissionIds = new Set([
+    ...(options.forceFeatureIds ?? []),
+    ...(options.admitFeatureIds ?? []),
+  ]);
+  if (record(next) && Array.isArray(next.features))
+    for (const feature of next.features) {
+      if (!record(feature) || typeof feature.id !== "string") continue;
+      const old = oldFeatures.get(feature.id);
+      if (
+        !old ||
+        !hasCachedOutputs(feature.recipe, previous?.results[feature.id]) ||
+        canonical(old.recipe) !== canonical(feature.recipe)
+      )
+        admissionIds.add(feature.id);
+    }
+  validateParametricModel(next, { admitFeatureIds: [...admissionIds] });
   if (previous) validateParametricModel(previous.model);
   abort(options.signal);
   const model = freezeTree(structuredClone(next)),
-    ordered = topologicalFeatures(model),
-    oldFeatures = new Map(
-      previous?.model.features.map((feature) => [feature.id, feature]) ?? [],
-    );
+    ordered = topologicalFeatures(model);
   const dirty = new Set(options.forceFeatureIds ?? []);
   for (const id of dirty)
     if (!ordered.some((feature) => feature.id === id))
@@ -550,14 +692,7 @@ export async function rebuildParametric(
       cached = previous?.results[feature.id];
     if (
       !old ||
-      cached?.length !== (feature.recipe.kind === "split" ? 2 : 1) ||
-      !Array.from(
-        { length: feature.recipe.kind === "split" ? 2 : 1 },
-        (_, index) => cached?.[index],
-      ).every(
-        (output) =>
-          output && typeof output.kernelId === "string" && !!output.kernelId,
-      ) ||
+      !hasCachedOutputs(feature.recipe, cached) ||
       canonical(old.recipe) !== canonical(feature.recipe) ||
       featureDependencies(feature.recipe).some((ref) =>
         dirty.has(ref.featureId),
@@ -682,8 +817,22 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
             "brep",
           );
           break;
+        case "sketchSurface": {
+          admitCadSketchSolve(r.sketch);
+          const solution = solveSketch(r.sketch);
+          if (!solution.converged)
+            throw new Error(
+              `Sketch conflicts: ${solution.conflictingConstraintIds.join(", ")}`,
+            );
+          output = await client.sketchSurface(
+            sketchCurveProfile(solution.sketch),
+            solution.sketch.frame,
+          );
+          break;
+        }
         case "extrude": {
           if (r.profile.kind === "sketch-curves") {
+            admitCadSketchSolve(r.profile.sketch);
             const solution = solveSketch(r.profile.sketch);
             if (!solution.converged)
               throw new Error(
@@ -699,6 +848,7 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
           let points: [number, number][];
           if (r.profile.kind === "polygon") points = r.profile.points;
           else {
+            admitCadSketchSolve(r.profile.sketch);
             const solution = solveSketch(r.profile.sketch);
             if (!solution.converged)
               throw new Error(
@@ -724,6 +874,14 @@ export function createCadEvaluator(client: CadClient): ParametricEvaluator {
           break;
         case "surface":
           output = await client.surface(r.patch);
+          break;
+        case "trimSurfaces":
+          output = await client.trimSurfaces(
+            first,
+            inputs.slice(1).map((input) => input.kernelId),
+            r.keepPoints,
+            r.toleranceMm,
+          );
           break;
         case "closedShell":
           output = await client.closedShell(r.patches, r.tolerance);

@@ -1,0 +1,14 @@
+
+> scanforge@0.1.0 test:cad
+> node --max-old-space-size=768 tests/kernel-smoke.mjs
+
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/kernel-smoke.mjs:748
+  assert.equal(boxEdges.edgeReferences.total,12);
+                                       ^
+
+TypeError: Cannot read properties of undefined (reading 'total')
+    at file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/kernel-smoke.mjs:748:40
+
+Node.js v22.22.0

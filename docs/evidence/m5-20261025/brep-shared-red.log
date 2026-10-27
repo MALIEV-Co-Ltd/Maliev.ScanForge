@@ -1,0 +1,30 @@
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/project-decoding-reuse.test.ts (7 tests | 1 failed) 174ms
+   × restores BREP text with the browser decoder while retaining shared numeric backing 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/project-decoding-reuse.test.ts > restores BREP text with the browser decoder while retaining shared numeric backing
+TypeError: The provided ArrayBufferView value must not be shared.
+ ❯ TextDecoder.<anonymous> tests/project-decoding-reuse.test.ts:45:13
+     43|   const browserDecoder = vi.spyOn(TextDecoder.prototype, "decode").moc…
+     44|     if (ArrayBuffer.isView(input) && input.buffer instanceof SharedArr…
+     45|       throw new TypeError("The provided ArrayBufferView value must not…
+       |             ^
+     46|     return originalDecode.call(this, input, options);
+     47|   });
+ ❯ read src/project-file-codec.ts:458:58
+ ❯ src/project-file-codec.ts:551:27
+ ❯ decodeProjectContents src/project-file-codec.ts:513:48
+ ❯ tests/project-decoding-reuse.test.ts:50:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  21:58:18
+   Duration  581ms (transform 47%, tests 36%, import 16%, worker 1%)
+

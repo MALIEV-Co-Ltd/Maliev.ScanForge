@@ -1,0 +1,38 @@
+{
+  "headRevision": "0b409ae01db4e8e9e8a048ab4f1c96ebc06128b2",
+  "runtimeCandidate": "e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71",
+  "workflowRunId": 40250473273,
+  "jobId": 121341036512,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40250473273",
+  "status": "completed",
+  "conclusion": "success",
+  "build": "scanforge-c869395b41d3f42a",
+  "typecheckBatches": 12,
+  "unit": {
+    "passed": 49050,
+    "skipped": 64,
+    "filesPassed": 680,
+    "filesSkipped": 18,
+    "durationSeconds": 320.15
+  },
+  "cadSmoke": "passed",
+  "format": "passed",
+  "scope": "Hosted build/typecheck/unit/CAD smoke/format only; not full native operation matrix or milestone acceptance.",
+  "logExcerpts": [
+    "2026-10-26T00:40:26.0918872Z Typecheck 1/12: source (563 root files; 1536 MiB heap)",
+    "2026-10-26T00:40:41.0287623Z Typecheck 2/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:41:03.7550652Z Typecheck 3/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:41:21.7434698Z Typecheck 4/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:41:40.7296061Z Typecheck 5/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:41:58.1248663Z Typecheck 6/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:42:13.9560167Z Typecheck 7/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:42:31.1007117Z Typecheck 8/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:42:49.4091206Z Typecheck 9/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:43:09.1858870Z Typecheck 10/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:43:26.9507561Z Typecheck 11/12: source and test batch (627 root files; 1536 MiB heap)",
+    "2026-10-26T00:43:43.9995662Z Typecheck 12/12: source and test batch (623 root files; 1536 MiB heap)",
+    "2026-10-26T00:44:12.9063718Z Offline manifest generated: 273 local assets, scanforge-c869395b41d3f42a",
+    "2026-10-26T00:49:49.4117579Z CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
+    "2026-10-26T00:50:43.9628694Z All matched files use Prettier code style!"
+  ]
+}

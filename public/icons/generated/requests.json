@@ -148,6 +148,10 @@
     "name": "fitSurface"
   },
   {
+    "id": "ribbon-trimSurfaces",
+    "name": "trimSurfaces"
+  },
+  {
     "id": "ribbon-newFreeform",
     "name": "newFreeform"
   },

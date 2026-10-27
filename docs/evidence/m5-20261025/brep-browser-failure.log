@@ -1,0 +1,23 @@
+Resource admission: 5433 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"jobId":"091c1c74-4250-4212-8440-892ab37af9b4","command":"project_import","status":"failed","progress":0,"stage":"Failed to execute 'decode' on 'TextDecoder': The provided ArrayBufferView value must not be shared.","error":{"code":"OPERATION_FAILED","message":"Failed to execute 'decode' on 'TextDecoder': The provided ArrayBufferView value must not be shared."}}
++ actual - expected
+
++ 'failed'
+- 'succeeded'
+
+    at job (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:209:16)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:558:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'failed',
+  expected: 'succeeded',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

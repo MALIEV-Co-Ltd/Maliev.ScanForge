@@ -1,0 +1,23 @@
+Resource admission: 5771 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   "The script has an unsupported MIME type ('text/html')."
++ ]
+- []
+
+    at file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1958:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [ "The script has an unsupported MIME type ('text/html')." ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "Final coordinator formatting run only; no additional geometry execution or runtime acceptance is inferred.",
+  "jobReceipt": "cad-final-format-r1-job.json",
+  "jobReceiptSha256": "25de787766a19d2848b42d8547a6cee69ac3773a9745b53afd0b5765fc8b085f",
+  "sourceJobReceipt": ".resources/m5/cad-final-format-r1-job.json",
+  "sourceJobReceiptSha256": "46760820bb143bb1587f94a37ba05154a732d1b31162fffb52b28a5e6967bee9",
+  "sourceVerboseLog": ".resources/m5/cad-final-format-r1-job.log",
+  "sourceVerboseLogSha256": "5ea9f3f7282af9e63bc387c63e991c4f46195ea88a79484918d490ff4423aca9",
+  "archiveFormat": "Two-space JSON with CRLF replaced by LF and one final LF before archive hashing. Original runtime receipt and verbose log remain intact.",
+  "observedWrapperExitCode": 0,
+  "terminalObservationSource": "Coordinator reported actual wrapper terminal 0 and complete cleanup.",
+  "elapsedSecondsBeforeReceipt": 0.963299700000789,
+  "peakJobBytes": 234512384,
+  "totalProcesses": 11,
+  "activeAfter": 0,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "errors": [],
+  "cleanupErrors": []
+}

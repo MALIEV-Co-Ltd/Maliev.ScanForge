@@ -2,6 +2,10 @@ import type { ApplicationApi } from "../automation/api";
 
 export interface ApplicationJobOptions {
   signal?: AbortSignal;
+  readOnly?: boolean;
+  expectedRevision?: number;
+  /** Preserve a caller's shorter observation lease, such as GUI extrusion. */
+  leaseMs?: number;
   onProgress?: (fraction: number, stage: string) => void;
 }
 
@@ -18,8 +22,12 @@ export async function runApplicationJobCommand(
   options.signal?.throwIfAborted();
   const receipt = await api.invoke(command, {
     ...args,
-    expectedRevision: api.currentRevision(),
-    requestId: crypto.randomUUID(),
+    ...(!options.readOnly
+      ? {
+          expectedRevision: options.expectedRevision ?? api.currentRevision(),
+          requestId: crypto.randomUUID(),
+        }
+      : {}),
   });
   if (!receipt.ok) throw Error(receipt.error.message);
   const { jobId } = receipt.result as { jobId: string };
@@ -43,10 +51,13 @@ export async function runApplicationJobCommand(
       options.signal?.reason ?? new DOMException("Aborted", "AbortError"),
     );
   };
-  const lease = setTimeout(() => {
-    cancel();
-    rejectStop(Error(options.leaseMessage));
-  }, 15 * 60_000);
+  const lease = setTimeout(
+    () => {
+      cancel();
+      rejectStop(Error(options.leaseMessage));
+    },
+    options.leaseMs ?? 15 * 60_000,
+  );
   options.signal?.addEventListener("abort", abort, { once: true });
   let pollTimer: ReturnType<typeof setTimeout> | undefined;
   try {

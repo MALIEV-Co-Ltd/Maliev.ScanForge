@@ -1,0 +1,53 @@
+Starting scoped-format
+docs/AGENT_GUIDE.md 328ms (unchanged)
+docs/M5_ACCEPTANCE.md 74ms (unchanged)
+docs/MCP_ARCHITECTURE.md 128ms (unchanged)
+public/cad-worker.js 140ms
+tests/kernel-smoke.mjs 81ms (unchanged)
+tests/surface-fit-browser.mjs 78ms (unchanged)
+docs/evidence/m5-20261025/boolean-ownership-kernel-green-job.json 1ms (unchanged)
+docs/evidence/m5-20261025/boolean-source-mutation-red-job.json 1ms (unchanged)
+docs/evidence/m5-20261025/boolean-source-mutation-red.json 71ms (unchanged)
+docs/evidence/m5-20261025/cad-all-input-ownership-red-job.json 1ms
+docs/evidence/m5-20261025/cad-all-input-ownership-red.json 15ms
+docs/evidence/m5-20261025/cad-cache-ownership-green-r2-job.json 1ms
+docs/evidence/m5-20261025/cad-cache-ownership-green-r2-ledger.json 1ms
+docs/evidence/m5-20261025/cad-cache-ownership-red-r1-job.json 1ms
+docs/evidence/m5-20261025/cad-cache-ownership-red-r1-ledger.json 1ms
+docs/evidence/m5-20261025/cad-cache-stage-isolation-red-r1-job.json 1ms
+docs/evidence/m5-20261025/cad-cache-stage-isolation-red-r1-ledger.json 1ms (unchanged)
+docs/evidence/m5-20261025/cad-cache-stage-isolation-red-r1.json 2ms
+docs/evidence/m5-20261025/cad-cancellation-hosted-ci.json 0ms (unchanged)
+docs/evidence/m5-20261025/datum-pattern-cache-consumer-red-job.json 1ms
+docs/evidence/m5-20261025/datum-pattern-cache-consumer-red.json 325ms
+docs/evidence/m5-20261025/edge-shell-ownership-kernel-green-job.json 1ms (unchanged)
+docs/evidence/m5-20261025/edge-shell-source-mutation-red-job.json 0ms (unchanged)
+docs/evidence/m5-20261025/edge-shell-source-mutation-red.json 79ms (unchanged)
+docs/evidence/m5-20261025/native-entity-tolerances-static.json 1ms (unchanged)
+docs/evidence/m5-20261025/native-sidewall-distances-r1-job.json 0ms (unchanged)
+docs/evidence/m5-20261025/native-sidewall-distances-r1.json 58ms (unchanged)
+docs/evidence/m5-20261025/planar-thicken-edge-red-job.json 1ms (unchanged)
+docs/evidence/m5-20261025/planar-thicken-edge-red.json 86ms (unchanged)
+docs/evidence/m5-20261025/planar-thicken-orientation-green-job.json 0ms (unchanged)
+docs/evidence/m5-20261025/planar-thicken-orientation-green.json 11ms (unchanged)
+docs/evidence/m5-20261025/planar-thickening-kernel-green-job.json 0ms (unchanged)
+docs/evidence/m5-20261025/real-cad-matrix-first-failure-job.json 0ms (unchanged)
+docs/evidence/m5-20261025/real-cad-matrix-first-failure-runner.json 1ms (unchanged)
+docs/evidence/m5-20261025/real-cad-matrix-first-failure.json 102ms (unchanged)
+tests/boolean-brep-diagnostic.mjs 8ms (unchanged)
+tests/boolean-ownership-kernel.mjs 2ms (unchanged)
+tests/cad-cache-ownership-kernel.mjs 2ms
+tests/edge-shell-ownership-kernel.mjs 2ms (unchanged)
+tests/helpers/boolean-ownership-kernel.mjs 5ms (unchanged)
+tests/helpers/cad-cache-ownership-kernel.mjs 7ms
+tests/helpers/edge-shell-ownership-kernel.mjs 9ms (unchanged)
+tests/helpers/planar-thickening-kernel.mjs 7ms (unchanged)
+tests/helpers/real-cad-matrix-browser.mjs 39ms (unchanged)
+tests/planar-thickening-kernel.mjs 3ms (unchanged)
+Starting standard-cad
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+{"nativeInputBrepChecks":{"thicken":25,"transform":8,"boolean":18,"split":11,"edges":11,"shell":4,"datumTransform":341,"pattern":5,"offset":1,"sew":1,"mirror":3},"nativeInputBrepMutations":[]}
+CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.
+Exact sketch surface geometry, thickening direction, validation, ownership and extrusion regression checks passed.
+Starting diff-check

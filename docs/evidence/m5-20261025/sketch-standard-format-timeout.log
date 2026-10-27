@@ -1,0 +1,25 @@
+Shared bounded validation mutex acquired (wait status 0).
+Starting standard-cad-smoke
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.
+Exact sketch surface geometry, thickening direction, validation, ownership and extrusion regression checks passed.
+Starting format-check
+Checking formatting...
+[warn] .superpowers/sdd/2026-10-26-m5-compatible-surface-blend/progress.md
+[warn] .superpowers/sdd/2026-10-26-m5-compatible-surface-blend/task-1-brief.md
+[warn] .superpowers/sdd/2026-10-26-m5-compatible-surface-blend/task-2-brief.md
+[warn] .superpowers/sdd/2026-10-26-m5-sketch-surface/progress.md
+[warn] .superpowers/sdd/2026-10-26-m5-sketch-surface/task-1-brief.md
+[warn] .superpowers/sdd/2026-10-26-m5-sketch-surface/task-2-brief.md
+Shared bounded validation mutex released after guard cleanup.
+Traceback (most recent call last):
+  File "C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\.resources\m5\bounded-validation-standard.py", line 31, in <module>
+    runpy.run_path(guard, run_name="__main__")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/.resources/m5/bounded-standard-55s.py", line 116, in <module>
+    raise TimeoutError("M5 browser execution lease expired; owned Job terminated")
+TimeoutError: M5 browser execution lease expired; owned Job terminated

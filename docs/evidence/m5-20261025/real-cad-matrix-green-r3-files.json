@@ -1,0 +1,62 @@
+[
+  {
+    "file": "real-cad-matrix-green-r3.json",
+    "sha256": "ba1e67bd8faea3a247822a08a13914f49e52983f10d5e3d1c8eae355cc705800"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-session-ledger.json",
+    "sha256": "7a316f6e745259328ba2fe6103d6f0b0f188d5250f73eedb8cf91442acfd4703"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-job.json",
+    "sha256": "160ff662cdd8b29b442440f22a77e4f8f69ca13953736a27c7ed1f92b07cd857"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-job.log",
+    "sha256": "038283e7102967d6e73f03f302727ef730924a23dfbca15855cd0d34af49d319"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-runner.json",
+    "sha256": "ad21137decf3b4a73ba9aacce5f74de535bde9ae93e54c1fc874390ee64881bd"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-browser.log",
+    "sha256": "d33001ab49063a4e6b4ad35e46a442a09e272c560993f6592d5d9f6e2d9c1be5"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-loft.png",
+    "sha256": "f9434a225ec5d78c2252efbd915fe0b2ce37582f82f224244740745bf7258655"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-sweep.png",
+    "sha256": "cefcb5a40c12fecf4b2733d019c74cb99deb02419b5ed7f7821e44d64b2ac4bd"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-revolve.png",
+    "sha256": "d965a6f147f2d563764c7df087612f6144710de5daab7f697638d088748a4925"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-boolean-subtract.png",
+    "sha256": "ec6bdb062364b7f0c2a93abc321052922ffa718d102842ad236de8ac2ff17108"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-boolean-intersect.png",
+    "sha256": "2fb725e59c986ca14c3b1311ac746c9d221bee339c5ad8fdc10ed1008ffb1e19"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-boolean-union.png",
+    "sha256": "2f7e65888625de487a3d49d8d20d97bfb11300940b427944dfa8b2ca70c59e54"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-fillet.png",
+    "sha256": "2b18df14f91a198a1f0566910e5930515f03c0eedb92ee93c388e6a68ea1d626"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-chamfer.png",
+    "sha256": "012fd5c285e0f6bddf2562d21b86b07216f75580b94290e1f739cf2aa5993178"
+  },
+  {
+    "file": "real-cad-matrix-green-r3-shell.png",
+    "sha256": "36b1305e1dc4ce6d15b0cb1f5308fb923e411e94bfcb3b7c581542dde92f29cd"
+  }
+]

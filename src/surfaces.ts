@@ -277,6 +277,95 @@ export function joinPatchBoundary(
   return next;
 }
 
+/** Creates an independent exact bridge; U is transverse and V follows the target seam.
+ * C1 matches outward reference and inward target homogeneous normalized derivatives.
+ */
+export function blendPatchBoundaries(
+  reference: NurbsPatch,
+  target: NurbsPatch,
+  options: PatchJoinOptions,
+): NurbsPatch {
+  validatePatch(reference);
+  validatePatch(target);
+  if (options.continuity !== "C0" && options.continuity !== "C1")
+    throw new Error("Choose C0 or C1 continuity.");
+  const a = edgeDescription(reference, options.referenceEdge),
+    b = edgeDescription(target, options.targetEdge);
+  const alongKnots = options.reverse
+    ? [...a.normalizedKnots].reverse().map((knot) => 1 - knot)
+    : a.normalizedKnots;
+  if (
+    a.alongCount !== b.alongCount ||
+    a.alongDegree !== b.alongDegree ||
+    alongKnots.length !== b.normalizedKnots.length ||
+    alongKnots.some((knot, i) => Math.abs(knot - b.normalizedKnots[i]) > 1e-12)
+  )
+    throw new Error(
+      "Patch seam control counts, degrees and normalized knots must be compatible.",
+    );
+  const cubic = options.continuity === "C1",
+    countU = cubic ? 4 : 2;
+  const points: Vec3[] = [],
+    weights: number[] = [];
+  const appendBoundary = (patch: NurbsPatch, index: number) => {
+    points.push([...patch.points[index]]);
+    weights.push(patch.weights[index]);
+  };
+  const appendInner = (
+    patch: NurbsPatch,
+    boundary: number,
+    inner: number,
+    derivativeFactor: number,
+  ) => {
+    const edgeWeight = patch.weights[boundary],
+      innerWeight = patch.weights[inner],
+      factor = derivativeFactor / 3;
+    const weight = edgeWeight + factor * (edgeWeight - innerWeight);
+    if (!Number.isFinite(weight) || weight <= 0)
+      throw new Error(
+        "C1 blend would produce nonpositive or overflowing rational weights. Adjust boundary weights or transverse spans first.",
+      );
+    const point = patch.points[boundary].map((coordinate, axis) => {
+      const homogeneous = coordinate * edgeWeight;
+      return (
+        (homogeneous +
+          factor * (homogeneous - patch.points[inner][axis] * innerWeight)) /
+        weight
+      );
+    }) as Vec3;
+    points.push(point);
+    weights.push(weight);
+  };
+  for (let i = 0; i < b.alongCount; i++) {
+    const source = options.reverse ? a.alongCount - 1 - i : i;
+    appendBoundary(reference, a.boundary[source]);
+    if (cubic) {
+      appendInner(
+        reference,
+        a.boundary[source],
+        a.inner[source],
+        a.derivativeFactor,
+      );
+      appendInner(target, b.boundary[i], b.inner[i], b.derivativeFactor);
+    }
+    appendBoundary(target, b.boundary[i]);
+  }
+  const blend: NurbsPatch = {
+    format: "scanforge-nurbs",
+    version: 1,
+    countU,
+    countV: b.alongCount,
+    degreeU: cubic ? 3 : 1,
+    degreeV: b.alongDegree,
+    knotsU: clampedKnots(countU, cubic ? 3 : 1),
+    knotsV: [...b.normalizedKnots],
+    points,
+    weights,
+  };
+  validatePatch(blend);
+  return blend;
+}
+
 function integer(value: number, min: number, max: number, label: string) {
   if (!Number.isInteger(value) || value < min || value > max)
     throw new Error(`${label} must be an integer from ${min} to ${max}.`);

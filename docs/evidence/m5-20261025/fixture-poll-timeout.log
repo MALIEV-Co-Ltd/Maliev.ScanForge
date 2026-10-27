@@ -1,0 +1,10 @@
+Resource admission: 8282 MiB available; 1536 MiB required.
+file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:214
+    throw Error("Surface browser job did not settle");
+          ^
+
+Error: Surface browser job did not settle
+    at job (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:214:11)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:839:5
+
+Node.js v22.22.0

@@ -1,0 +1,97 @@
+{
+  "scope": "Actual current-build browser/shared-MCP datum regression, including imported exact sphere CAD GUI Apply/MCP Preview, dependency discovery, authoring identity/history and BREP save/reopen. Does not establish live raw UV/D1 immutability; that has separate kernel proof.",
+  "status": "passed-scoped-datum-browser",
+  "observedWrapperTerminalExitCode": 0,
+  "observedTerminalWallSeconds": 8.674,
+  "terminalEvidenceScope": "Wrapper terminal exit and wall time supplied by root coordinator; archived Job receipt remains explicitly provisional and is not alone final acceptance.",
+  "guard": {
+    "elapsedSecondsBeforeReceipt": 8.532647900050506,
+    "peakJobBytes": 1805025280,
+    "totalProcesses": 16,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true
+  },
+  "actualResources": [
+    {
+      "kind": "http-server",
+      "pid": 48076,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T18:05:43.89Z",
+      "port": 59692,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 61384,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T18:05:44.086Z",
+      "port": 59693,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 26012,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-26T18:05:44.227Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "actualCleanup": [
+    {
+      "port": 59692,
+      "closed": true
+    },
+    {
+      "port": 59693,
+      "closed": true
+    },
+    {
+      "pid": 61384,
+      "exited": true
+    },
+    {
+      "pid": 26012,
+      "exited": true
+    }
+  ],
+  "steps": [
+    "real sphere/plane segmentation retains classified fits through MCP",
+    "native nontrivial rotation preserves fitted parameters in Preview",
+    "GUI Apply equals shared MCP fit and plane-frame output",
+    "GUI reference inspection sees moved fitted parameters",
+    "MCP Undo/Redo restores fitted parameters",
+    "Exact CAD alignment retains source-scan dependency through GUI Apply and MCP Preview",
+    "GUI dependent-target inclusion equals shared MCP discovery",
+    "Authoring identities and links survive GUI Apply, Undo/Redo and actual BRep project save/reopen"
+  ],
+  "rawUvD1LiveImmutabilityEstablished": false,
+  "artifacts": [
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r2-job.json",
+      "sourceSha256": "e1c24ead5df16769a24451740ca54d434cef015233218523c7af28384ca2aaec",
+      "archive": "datum-metadata-browser-green-r2-job.json",
+      "archiveSha256": "f953f248ef5fb13dbf1e878eaf1768fe65b654d2dbe0ea3a3f685a343c0a8082",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r2/browser-validation.json",
+      "sourceSha256": "551db3c8fe0e7236ec6d9e12cc7cc53c833617f9d1d35b4f5645323a89066b62",
+      "archive": "datum-metadata-browser-green-r2.json",
+      "archiveSha256": "191ef9b21d2af7dd6091af21e5fada0b12d623aeb06964274491cd4703495fa3",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": ".resources/m5/datum-metadata-browser-green-r2-job.log",
+      "sourceSha256": "03c6564b275b9d4e20e357f5858f3faa4d1f0a55483381b0e00eb41a436e3981",
+      "archive": "datum-metadata-browser-green-r2-job.log",
+      "archiveSha256": "03c6564b275b9d4e20e357f5858f3faa4d1f0a55483381b0e00eb41a436e3981",
+      "format": "Raw bytes preserved; existing .gitattributes -text -whitespace"
+    }
+  ],
+  "originalResourcesPreserved": true
+}

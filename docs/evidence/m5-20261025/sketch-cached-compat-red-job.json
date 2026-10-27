@@ -1,0 +1,21 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--maxWorkers=1",
+    "tests/parametric-sketch-surface.test.ts",
+    "tests/sketch-surface-api.test.ts",
+    "-t",
+    "cached legacy"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 1,
+  "peakJobBytes": 351465472,
+  "totalProcesses": 9,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 1.673291800019797
+}

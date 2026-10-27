@@ -1,0 +1,25 @@
+{
+  "candidate": "82f65f45f47db75674b8b3be949c7e1da0956c1c",
+  "workflowRun": 40260277191,
+  "job": 121370953061,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40260277191",
+  "conclusion": "failure",
+  "reached": "Standard build/typecheck batch12 of12; source batch and preceding batches passed",
+  "unrun": ["full unit suite", "CAD smoke", "format check"],
+  "diagnostics": [
+    "2026-10-26T02:42:56.7638711Z ##[error]tests/surface-blend-api.test.ts(243,39): error TS2540: Cannot assign to 'recipe' because it is a read-only property.",
+    "2026-10-26T02:42:56.7646013Z ##[error]tests/surface-blend-api.test.ts(270,43): error TS2540: Cannot assign to 'recipe' because it is a read-only property."
+  ],
+  "fixScope": "Replace whole test fixture feature objects preserving fields and supplying recipe, instead of assigning readonly recipe; no production changes",
+  "firstScopedRetry": {
+    "job": ".resources/m5/blend-fixture-fix-r1-job.json",
+    "exitCode": 1,
+    "activeAfter": 0,
+    "elapsedSeconds": 3.078070299990941,
+    "peakJobBytes": 367804416,
+    "mutexReleased": true,
+    "reason": "Private one-test scoped TypeScript config omitted Node timer ambient types present in full build; API tests not reached",
+    "correction": "Include vite/client and node types in private check config; no application change"
+  },
+  "correctedVerification": "Pending separately coordinated retry"
+}

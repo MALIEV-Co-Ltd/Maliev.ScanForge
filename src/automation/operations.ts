@@ -14,6 +14,7 @@ import { bindAverageMeshes } from "../scan-average-request";
 import { bindUnrollReference } from "../scan-unroll-reference";
 import { createUnrollAuxiliaries } from "../scan-unroll-auxiliary";
 import { validateSavedSketchDisplay } from "../saved-sketch-display";
+import { createCadInspectionOperation } from "./cad-inspection";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
@@ -170,7 +171,7 @@ export async function createCadFeature(
     ...previous.model,
     features: [...previous.model.features, feature],
   };
-  validateParametricModel(model);
+  validateParametricModel(model, { admitFeatureIds: [feature.id] });
   const rebuilt = await rebuildParametric(
     previous,
     model,
@@ -182,7 +183,11 @@ export async function createCadFeature(
     ...mesh,
     id: id(),
     name:
-      rebuilt.results[feature.id].length > 1 ? `${name} ${output + 1}` : name,
+      recipe.kind === "split"
+        ? `${name} ${output === 0 ? "inside" : "outside"}`
+        : rebuilt.results[feature.id].length > 1
+          ? `${name} ${output + 1}`
+          : name,
     kind: "cad",
     color: DEFAULT_PART_COLOR,
     visible: true,
@@ -191,7 +196,9 @@ export async function createCadFeature(
     surfacePatch: recipe.kind === "surface" ? recipe.patch : undefined,
   }));
   const inputIds = new Set(
-    featureDependencies(recipe).map((ref) => ref.featureId),
+    featureDependencies(recipe).map(
+      (ref) => `${ref.featureId}:${ref.output ?? 0}`,
+    ),
   );
   return {
     created,
@@ -199,7 +206,7 @@ export async function createCadFeature(
       ...entities.map((e) =>
         options.hideInputs &&
         e.parametric &&
-        inputIds.has(e.parametric.feature.id)
+        inputIds.has(`${e.parametric.feature.id}:${e.parametric.output}`)
           ? { ...e, visible: false }
           : e,
       ),
@@ -263,7 +270,7 @@ export async function rebuildCadFeature(
     previous,
     model,
     createCadEvaluator(cad),
-    { signal, preserveKernelIds: preserved },
+    { signal, preserveKernelIds: preserved, admitFeatureIds: [featureId] },
   );
   const features = new Map(rebuilt.model.features.map((f) => [f.id, f]));
   const changedFeatures = new Set(rebuilt.rebuiltFeatureIds);
@@ -415,6 +422,75 @@ function meshEdited(e: Entity, positions: Positions): Entity {
 }
 
 /** The UI and MCP call these same operation handlers; geometry always comes from the owning workspace. */
+function commitEntities(
+  host: WorkspaceHost,
+  c: CommandContext,
+  entities: Entity[],
+  label: string,
+) {
+  const write = () => {
+    const next = entities.map(retainIndexedMesh);
+    assertReferenceConstructionSceneAdmission(next);
+    host.commit(next, label);
+  };
+  if (c.mutate) c.mutate(write);
+  else {
+    c.check();
+    write();
+  }
+}
+
+/** One context-aware creation publication path for MCP and compound application operations. */
+export function createCadCreateOperation(host: WorkspaceHost) {
+  return async (a: Parameters<Handler>[0], c: CommandContext) => {
+    const s = host.snapshot(),
+      cad = host.cad(),
+      result = await createCadFeature(cad, s.entities, a.recipe, a.name, {
+        hideInputs: a.hideInputs,
+        signal: c.signal,
+      });
+    try {
+      commitEntities(host, c, result.entities, "Create CAD feature");
+    } catch (error) {
+      await releaseCreated(cad, result.entities, s.entities);
+      throw error;
+    }
+    if (a.selectCreated === true) host.select(result.created[0].id);
+    return {
+      entityIds: result.created.map((e) => e.id),
+      featureId: result.created[0].parametric!.feature.id,
+    };
+  };
+}
+
+/** One context-aware rebuild publication path for MCP and compound application operations. */
+export function createCadRebuildOperation(host: WorkspaceHost) {
+  return async (a: Parameters<Handler>[0], c: CommandContext) => {
+    const s = host.snapshot(),
+      cad = host.cad();
+    const result = await rebuildCadFeature(
+      cad,
+      s.entities,
+      s.history,
+      s.future,
+      a.entityId,
+      a.recipe,
+      c.signal,
+    );
+    try {
+      c.check();
+      const rebuilt = new Set(result.rebuiltFeatureIds);
+      const roots = result.entities.filter((entity) => entity.parametric && rebuilt.has(entity.parametric.feature.id)).map((entity) => entity.id);
+      const refreshed = refreshReferenceConstructions(result.entities, roots, { check: () => c.check() });
+      commitEntities(host, c, refreshed.entities, "Rebuild CAD feature");
+      return { rebuiltFeatureIds: result.rebuiltFeatureIds, cleanupFailures: result.cleanupFailures, refreshedEntityIds: refreshed.refreshedEntityIds, evaluations: refreshed.evaluations };
+    } catch (error) {
+      await releaseCreated(cad, result.entities, s.entities);
+      throw error;
+    }
+  };
+}
+
 export function createOperations(host: WorkspaceHost): Record<string, Handler> {
   const finishSelectionEdit = (
     source: Entity,
@@ -437,16 +513,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       host.select(source.kind === "pointcloud" ? null : (next[0]?.id ?? null));
   };
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
-    const write = () => {
-      const next = entities.map(retainIndexedMesh);
-      assertReferenceConstructionSceneAdmission(next);
-      host.commit(next, label);
-    };
-    if (c.mutate) c.mutate(write);
-    else {
-      c.check();
-      write();
-    }
+    commitEntities(host, c, entities, label);
   };
   const fitSelection = (
     state: WorkspaceSnapshot,
@@ -609,6 +676,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     return publishImportedEntity(entity, a, c, fit);
   }
   const operations: Record<string, Handler> = {
+    cad_inspect: createCadInspectionOperation(host),
     scan_preview: createScanPreviewOperation(host),
     ...createAlignmentOperations(host),
     ...createDatumOperations(host),
@@ -1806,69 +1874,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     ...createInspectionOperations(host),
     analysis_measure: (a) =>
       measureGeometry(a as import("../inspection").MeasurementInput),
-    cad_create: async (a, c) => {
-      const s = host.snapshot(),
-        cad = host.cad(),
-        result = await createCadFeature(cad, s.entities, a.recipe, a.name, {
-          hideInputs: a.hideInputs,
-          signal: c.signal,
-        });
-      try {
-        commit(c, result.entities, "Create CAD feature");
-      } catch (error) {
-        await releaseCreated(cad, result.entities, s.entities);
-        throw error;
-      }
-      if (a.selectCreated === true) host.select(result.created[0].id);
-      return {
-        entityIds: result.created.map((e) => e.id),
-        featureId: result.created[0].parametric!.feature.id,
-      };
-    },
-    cad_rebuild: async (a, c) => {
-      const s = host.snapshot(),
-        cad = host.cad(),
-        result = await rebuildCadFeature(
-          cad,
-          s.entities,
-          s.history,
-          s.future,
-          a.entityId,
-          a.recipe,
-          c.signal,
-        );
-      try {
-        c.check();
-        const rebuilt = new Set(result.rebuiltFeatureIds);
-        const roots = result.entities
-          .filter(
-            (entity) =>
-              entity.parametric && rebuilt.has(entity.parametric.feature.id),
-          )
-          .map((entity) => entity.id);
-        const refreshed = refreshReferenceConstructions(
-          result.entities,
-          roots,
-          {
-            check: () => c.check(),
-          },
-        );
-        commit(c, refreshed.entities, "Rebuild CAD feature");
-        return {
-          rebuiltFeatureIds: result.rebuiltFeatureIds,
-          cleanupFailures: result.cleanupFailures,
-          refreshedEntityIds: refreshed.refreshedEntityIds,
-          evaluations: refreshed.evaluations,
-        };
-      } catch (error) {
-        await releaseCreated(cad, result.entities, [
-          ...s.entities,
-          ...s.history.flatMap((row) => row.entities),
-          ...s.future.flatMap((row) => row.entities),
-        ]);
-        throw error;
-      }
-    },
+    cad_create: createCadCreateOperation(host),
+    cad_rebuild: createCadRebuildOperation(host),
     sketch_get: () => {
       const s = host.snapshot();
       return {
@@ -2011,6 +2018,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     surface_set: (a, c) => {
       const s = host.snapshot();
+      if (a.scanId !== undefined) {
+        const source = object(s, a.scanId);
+        if (source.kind !== "mesh" && source.kind !== "pointcloud")
+          throw new Error("Surface source must be a mesh or point cloud.");
+      }
       const e = a.entityId
         ? object(s, a.entityId)
         : ({
@@ -2033,12 +2045,18 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 ? {
                     ...meshEdited(e, positions),
                     surfacePatch: structuredClone(a.patch),
+                    surfaceScanId: a.scanId ?? e.surfaceScanId,
                   }
                 : x,
             )
           : [
               ...s.entities,
-              { ...e, positions, surfacePatch: structuredClone(a.patch) },
+              {
+                ...e,
+                positions,
+                surfacePatch: structuredClone(a.patch),
+                surfaceScanId: a.scanId,
+              },
             ],
         "Update surface",
       );
@@ -2128,12 +2146,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return result;
     },
     project_export: async (a, c) => {
+      if (a.cadOnly !== undefined && a.format !== "step")
+        throw Error("cadOnly is supported only for STEP export.");
       const s = host.snapshot(),
         entities =
           a.visible === false
             ? s.entities
             : s.entities.filter((e) => e.visible);
       let data: Blob | Uint8Array, name: string, mime: string;
+      let excludedEntityIds: string[] | undefined;
       if (a.format === "project") {
         data = await encodeProjectFile(
           {
@@ -2154,10 +2175,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {
-        const shapes = selectStepExportEntities(
-          s.entities,
-          a.visible !== false,
-        );
+        const shapes = a.cadOnly === false ? entities : selectStepExportEntities(s.entities, a.visible !== false);
+        if (a.cadOnly === false && (!shapes.length || shapes.some((entity) => !entity.kernelId)))
+          throw new Error("STEP export requires exact CAD for every exported object.");
+        if (a.cadOnly === true) excludedEntityIds = entities.filter((entity) => !entity.kernelId).map((entity) => entity.id);
         data = await host.cad().exportStep(shapes.map((e) => e.kernelId!));
         name = `${s.name}.step`;
         mime = "application/step";
@@ -2168,7 +2189,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         mime = "model/stl";
       }
       c.check();
-      return c.artifact(data, name, mime);
+      return {
+        ...c.artifact(data, name, mime),
+        ...(excludedEntityIds ? { excludedEntityIds } : {}),
+      };
     },
     history_undo: (a, c) => {
       c.check();

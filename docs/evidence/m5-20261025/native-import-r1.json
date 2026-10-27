@@ -1,0 +1,47 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "ownedPid": 33172,
+  "ownedWindowId": 114756374,
+  "creationTimeFiletime": "134374451000052103",
+  "startedUtc": "2026-10-25T23:38:20.024811+00:00",
+  "finishedUtc": "2026-10-25T23:45:25.550071+00:00",
+  "job": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 685514752,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 425.79392799997004
+  },
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "authenticated-finish",
+    "watchdogStopped": true,
+    "ownedProcessExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "fixture": {
+    "path": "C:/repo/alignment-example-files/m5-native-validation-20261026-01a1737c-r3/real-region-input.stl",
+    "sha256": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
+    "nativeImportedTriangles": 200,
+    "modelUnits": "Millimetres"
+  },
+  "savedNativeProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r1/native-output/m5-imported-connected-region.qsf",
+    "bytes": 5322,
+    "sha256": "836c76432e9ade6a00ce4cf61036f8b2de279dbf34c25a6a95168e9bb243fc48"
+  },
+  "nativeSurfaceFitAccepted": false,
+  "nativeGeometryEquivalenceEstablished": false,
+  "scope": "Native connected-region STL import, explicit millimetre units, actual QSF save and owned bounded process lifecycle only.",
+  "retainedAutomationFailures": [
+    "AX element indices unavailable in cached state after immediate refresh, including the documented direct runtime API.",
+    "Initial coordinate mapping was affected by an offscreen window; only the owned window was moved fully onscreen.",
+    "Floating fitting-panel coordinate selection opened a transient slider; no surface fit was accepted."
+  ],
+  "nextAction": "Use a later explicitly released native slot to verify documented screenshot-region metadata and stable coordinate routing; do not infer fitting or STEP parity from this import receipt.",
+  "preservedExistingNativeWindows": [5115682, 11667504, 131075094]
+}

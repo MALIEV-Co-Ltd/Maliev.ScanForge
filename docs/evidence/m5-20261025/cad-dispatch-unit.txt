@@ -1,0 +1,21 @@
+
+> scanforge@0.1.0 test
+> vitest run --maxWorkers=1 --exclude **/.resources/**
+
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+warning: in the working copy of '.resources/release-notes.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-plan.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-notes.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.resources/release-plan.json', LF will be replaced by CRLF the next time Git touches it
+Switched to a new branch 'unreleased'
+
+ Test Files  672 passed | 18 skipped (690)
+      Tests  48983 passed | 64 skipped (49047)
+   Start at  00:20:31
+   Duration  283.26s (tests 78%, import 18%, transform 3%, worker 1%)
+
+    Isolate  690 workers spawned · ~84ms startup each (spawn + environment, per file)
+             at least ~58.01s faster with isolate: false — reuses workers across files instead of one per file
+

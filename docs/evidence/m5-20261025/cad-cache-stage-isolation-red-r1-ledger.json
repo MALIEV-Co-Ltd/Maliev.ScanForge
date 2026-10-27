@@ -1,0 +1,31 @@
+{
+  "status": "RED",
+  "passed": false,
+  "scope": "Actual worker stage isolation of datum source raw BREP mutation; no cache-only exception or complete geometry classification is inferred.",
+  "workerSha256": "09d5cfaa56233acd5033f8102d3ad3cf4685a4ed83ab1877f339915e87538f37",
+  "entrySha256": "be0f583623f1796e3d0ea1f3f18e477ec2bd7e515949df79f68e744415a56e0d",
+  "originalDirectory": ".resources/m5/cad-cache-stage-isolation-r1/",
+  "retainedFiles": {
+    "cad-cache-stage-isolation-red-r1.json": "cdcf5048cdfb5ea26924988f464140b6914858146021a91ed1c0b162b15a00a0",
+    "cad-cache-stage-isolation-red-r1-job.json": "9d9949b6b4efe10fca71294effe820ee02f117843ad71c64c57cddaa7dcfdfb3",
+    "cad-cache-stage-isolation-red-r1.log": "8758edd3240d0d4c6195c40ff01141b596947c9d30f176f79b9e20b8239160e8",
+    "cad-cache-stage-isolation-red-r1-before.brep": "c11c077a96a91f28bc9c888dd048125bdc451a8949cd98bca670c3e0aebeccf1",
+    "cad-cache-stage-isolation-red-r1-after.brep": "72dcdb206b97f9d06af8e27784e296c65032bc8d51b11081377ad778c95b5aff"
+  },
+  "stableBoundary": "013-request-5-datumTransform-register-before",
+  "firstChangedBoundary": "014-request-5-datumTransform-mesh-before",
+  "interval": "register geometric validation and IsPartner predicate, before mesh extraction and before post-call readers",
+  "beforeBytes": 49068,
+  "afterBytes": 49068,
+  "firstDifference": 48890,
+  "observedRawDifference": "Face flags 0101000 became 0111000",
+  "attributionInconclusive": false,
+  "observerStable": true,
+  "instrumentationFailures": [],
+  "finalLiveHandles": 0,
+  "elapsedSecondsBeforeReceipt": 0.8736038,
+  "peakJobBytes": 485023744,
+  "activeAfter": 0,
+  "cleanupConfirmed": true,
+  "nextStep": "Source-reviewed prepared-partner validation on owned geometry, followed by a separately admitted focused regression. No result is claimed for that unexecuted patch."
+}

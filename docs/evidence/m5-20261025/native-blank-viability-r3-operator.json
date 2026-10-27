@@ -1,0 +1,65 @@
+{
+  "scope": "Actual owned blank QuickSurface session with authenticated live binding and one official CUA Raise attempt. Raise failed before subsequent AX/screenshot; no native input/CAD viability established.",
+  "status": "raise-access-denied-lifecycle-clean",
+  "actualNativeIdentity": {
+    "pid": 34192,
+    "creationTimeFiletime": "134375139360193395",
+    "toolReturnedWindowId": 32837142,
+    "title": "QUICKSURFACE Pro 8.0.123",
+    "liveCreationTimeVerified": true,
+    "bindingReceipt": "native-blank-viability-r3-binding.json"
+  },
+  "observations": {
+    "freshRootRaiseActionObserved": true,
+    "attemptedAction": "cuaApp.performSecondaryAction(0, 'Raise')",
+    "officialCuaRaiseAttemptCount": 1,
+    "failure": "GetCursorPos AccessDenied",
+    "hresult": "0x80070005",
+    "postRaiseAxReached": false,
+    "postRaiseScreenshotReached": false,
+    "raiseSucceeded": false,
+    "menuPerformed": false,
+    "escapePerformed": false,
+    "keyboardInputPerformed": false,
+    "cadOrFileLoaded": false,
+    "securityPromptInteraction": false,
+    "userWindowInputPerformed": false,
+    "scopeSource": "Authorized root coordinator actual CUA tool observation"
+  },
+  "finish": {
+    "method": "Immediate authenticated finish after Raise denial",
+    "allCuaBindingsRetired": true
+  },
+  "guard": {
+    "observedWrapperTerminalExitCode": 0,
+    "elapsedSecondsBeforeReceipt": 57.139600199996494,
+    "peakJobBytes": 706125824,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true,
+    "terminalObservationSource": "Authorized root coordinator",
+    "jobReceiptAcceptance": "Provisional receipt combined with observed actual wrapper terminal result"
+  },
+  "artifacts": [
+    {
+      "source": ".resources/m5/native-blank-viability-r3-job.json",
+      "sourceSha256": "9c4c8fac40ee0dd4a7c496b03dbd54db3e1105c192fe95ca5bca99aabd98f2ff",
+      "archive": "native-blank-viability-r3-job.json",
+      "archiveSha256": "fb8725c0f4e816bbeb8fae74d36d15b5e38785455365ec6d23f24f1a5ebcb98f",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-blank-viability-r3/window-blank-viability-r3.json",
+      "sourceSha256": "28081ab19141390bf27acc40c6692af984b0afd70ef72501fcccf636424ea8f7",
+      "archive": "native-blank-viability-r3-binding.json",
+      "archiveSha256": "c70c0713c02c2c04480dea88fa1bd013587f2a92de114d644e69cfb596cb22e3",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    }
+  ],
+  "privateReadyAndLauncherArchived": false,
+  "originalResourcesPreserved": true,
+  "nextAction": "Read-only desktop metadata diagnosis has separate source review/grant and awaits coordinator resource lane; this note authorizes no probe or retry"
+}

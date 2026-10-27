@@ -1,0 +1,30 @@
+Resource admission: 7477 MiB available; 1536 MiB required.
+distance Distance
+Angle
+Radius
+Diameter
+4.03 mm
+Save
+Export
+angle Distance
+Angle
+Radius
+Diameter
+90 deg
+Save
+Export
+radius Distance
+Angle
+Radius
+Diameter
+2.428 mm
+Save
+Export
+diameter Distance
+Angle
+Radius
+Diameter
+4.857 mm
+Save
+Export
+PASS: public MCP and GUI distance/angle/radius/diameter export equality; rendered three-point measurement controls; public MCP signed analytic deviation statistics; read-only analysis preserves history; reference comparison GUI/public-MCP report equality and shared show/clear heatmap; saved inspection metadata preserves history and binary project save/reopen reproduces GUI report; retained report tolerance controls legend and heatmap independently of GUI input; indexed source corner mapping, hidden face filtering, stale rejection, alignment transform, edit and Undo/Redo

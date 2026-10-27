@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=256",
+    ".resources/m5/run-native-fit-comparison.mjs",
+    "native-comparison-r4"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 600,
+  "exitCode": 0,
+  "peakJobBytes": 2704715776,
+  "totalProcesses": 35,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 12.971059400006197
+}

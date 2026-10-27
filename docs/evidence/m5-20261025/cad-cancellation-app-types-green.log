@@ -1,0 +1,3 @@
+Shared bounded validation mutex acquired (wait status 0).
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=1536", "node_modules/typescript/bin/tsc", "--noEmit", "--project", ".resources/m5/tsconfig-cad-app.json", "--pretty", "false"], "jobLimitBytes": 4294967296, "leaseSeconds": 16, "exitCode": 0, "peakJobBytes": 512208896, "totalProcesses": 2, "activeAfter": 0, "passed": true, "elapsedSeconds": 6.512848899990786}
+Shared bounded validation mutex released after guard cleanup.

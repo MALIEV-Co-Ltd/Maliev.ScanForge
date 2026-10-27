@@ -1,0 +1,62 @@
+{
+  "owner": "scanforge-datum-metadata-validation",
+  "startedAt": "2026-10-26T18:05:43.89Z",
+  "expiresAt": "2026-10-26T18:08:43.89Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 48076,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T18:05:43.89Z",
+      "port": 59692,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 61384,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "startedAt": "2026-10-26T18:05:44.086Z",
+      "port": 59693,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 26012,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-26T18:05:44.227Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "cleanup": [
+    {
+      "port": 59692,
+      "closed": true
+    },
+    {
+      "port": 59693,
+      "closed": true
+    },
+    {
+      "pid": 61384,
+      "exited": true
+    },
+    {
+      "pid": 26012,
+      "exited": true
+    }
+  ],
+  "steps": [
+    "real sphere/plane segmentation retains classified fits through MCP",
+    "native nontrivial rotation preserves fitted parameters in Preview",
+    "GUI Apply equals shared MCP fit and plane-frame output",
+    "GUI reference inspection sees moved fitted parameters",
+    "MCP Undo/Redo restores fitted parameters",
+    "Exact CAD alignment retains source-scan dependency through GUI Apply and MCP Preview",
+    "GUI dependent-target inclusion equals shared MCP discovery",
+    "Authoring identities and links survive GUI Apply, Undo/Redo and actual BRep project save/reopen"
+  ],
+  "passed": true
+}

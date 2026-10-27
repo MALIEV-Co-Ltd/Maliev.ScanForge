@@ -215,6 +215,8 @@ export interface ArtifactInfo {
   bytes: number;
 }
 export interface CommandContext {
+  /** Revision of the owned snapshot; changes only after an owned mutation. */
+  readonly revision?: number;
   /** API-owned operation identity; retained previews may outlive the job receipt. */
   jobId?: string;
   /** Captured gateway revision, including for read-only job results. */
@@ -450,6 +452,12 @@ export class ApplicationApi {
   private checkOwner(epoch: number) {
     if (this.disposed || this.ownerDetached || epoch !== this.ownerEpoch)
       throw new ApiError("DISCONNECTED", "Workspace owner closed.");
+  }
+
+  /** Immutable local GUI delivery of the same leased artifact exposed by artifact_read. */
+  readArtifactBlob(id: string): Blob {
+    this.checkOwner(this.ownerEpoch);
+    return this.getArtifact(id).blob;
   }
 
   currentRevision() {
@@ -955,6 +963,9 @@ export class ApplicationApi {
       };
       const createdArtifacts: string[] = [];
       const context: CommandContext = {
+        get revision() {
+          return startRevision;
+        },
         jobId: job.jobId,
         startRevision,
         retainPrivateJobData: (value) => {

@@ -9,6 +9,31 @@ import { VisualCaptureError } from "../src/automation/visual-capture";
 import { CommandRepeat } from "../src/command-repeat";
 import { coordinateAlignmentInterface } from "../src/automation/workflow-operations";
 
+it("opens and closes the dedicated sketch surface workspace through MCP", async () => {
+  const { api, mutate, ui } = setup();
+  try {
+    expect(
+      await mutate("ui_set", {
+        workspace: "sketchSurface",
+        toolPanelOpen: true,
+      }),
+    ).toMatchObject({ ok: true });
+    expect(ui).toMatchObject({
+      workspace: "sketchSurface",
+      toolPanelOpen: true,
+    });
+    expect(await mutate("ui_set", { toolPanelOpen: false })).toMatchObject({
+      ok: true,
+    });
+    expect(ui).toMatchObject({
+      workspace: "sketchSurface",
+      toolPanelOpen: false,
+    });
+  } finally {
+    api.dispose();
+  }
+});
+
 it("opens a specific settings category through the shared interface operation", async () => {
   const { api, mutate, ui } = setup();
   try {

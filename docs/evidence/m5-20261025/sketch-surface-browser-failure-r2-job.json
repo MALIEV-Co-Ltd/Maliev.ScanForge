@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/run-sketch-browser.mjs",
+    "sketch-browser-green-r2"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 200,
+  "exitCode": 1,
+  "peakJobBytes": 2589511680,
+  "totalProcesses": 43,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 60.70511889999034
+}

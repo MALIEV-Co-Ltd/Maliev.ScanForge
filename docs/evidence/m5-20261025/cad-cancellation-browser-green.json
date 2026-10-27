@@ -1,0 +1,724 @@
+{
+  "creation": {
+    "command": "cad_create",
+    "jobId": "924aa2d3-a191-4c36-bda8-4043e3cf3d20",
+    "proof": {
+      "created": [
+        {
+          "requestId": 3,
+          "operation": "loft",
+          "kernelId": "cad-5d976d5b-ef74-43eb-a84a-f9c13d8792a4-3"
+        }
+      ],
+      "releaseAcknowledgements": [
+        {
+          "requestId": 4,
+          "kernelIds": ["cad-5d976d5b-ef74-43eb-a84a-f9c13d8792a4-3"],
+          "result": true
+        }
+      ]
+    },
+    "modelAndAuthoringUnchanged": true,
+    "sourceBuffersAndStoredBrepsUnchanged": true
+  },
+  "rebuild": {
+    "command": "cad_rebuild",
+    "jobId": "493a6036-5cf9-45c8-9366-dd713626a7ec",
+    "proof": {
+      "created": [
+        {
+          "requestId": 7,
+          "operation": "loft",
+          "kernelId": "cad-5d976d5b-ef74-43eb-a84a-f9c13d8792a4-6"
+        }
+      ],
+      "releaseAcknowledgements": [
+        {
+          "requestId": 8,
+          "kernelIds": ["cad-5d976d5b-ef74-43eb-a84a-f9c13d8792a4-6"],
+          "result": true
+        }
+      ]
+    },
+    "modelAndAuthoringUnchanged": true,
+    "sourceBuffersAndStoredBrepsUnchanged": true
+  },
+  "createRecovery": {
+    "report": {
+      "entityId": "dfb2b2c5-2f55-4ac1-afe1-5e8c02bbfd7c",
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 122,
+      "signedVolumeMm3": 84,
+      "volumeMm3": 84,
+      "topologyVisits": 80,
+      "edgeReferences": {
+        "offset": 0,
+        "total": 12,
+        "nextOffset": null,
+        "items": [
+          {
+            "index": 0,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 2],
+              [4, 0, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [4.0000001, 1e-7, 2.0000001]
+            }
+          },
+          {
+            "index": 1,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 2],
+              [4, 0, 9]
+            ],
+            "lengthMm": 7,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 1.9999999],
+              "max": [4.0000001, 1e-7, 9.0000001]
+            }
+          },
+          {
+            "index": 2,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 9],
+              [4, 0, 9]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 8.9999999],
+              "max": [4.0000001, 1e-7, 9.0000001]
+            }
+          },
+          {
+            "index": 3,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 2],
+              [0, 0, 9]
+            ],
+            "lengthMm": 7,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [1e-7, 1e-7, 9.0000001]
+            }
+          },
+          {
+            "index": 4,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 2],
+              [4, 3, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 1.9999999],
+              "max": [4.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 5,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 2],
+              [4, 3, 9]
+            ],
+            "lengthMm": 7,
+            "boundsMm": {
+              "min": [3.9999999, 2.9999999, 1.9999999],
+              "max": [4.0000001, 3.0000001, 9.0000001]
+            }
+          },
+          {
+            "index": 6,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 9],
+              [4, 3, 9]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 8.9999999],
+              "max": [4.0000001, 3.0000001, 9.0000001]
+            }
+          },
+          {
+            "index": 7,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 2],
+              [0, 3, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 1.9999999],
+              "max": [4.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 8,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 2],
+              [0, 3, 9]
+            ],
+            "lengthMm": 7,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 1.9999999],
+              "max": [1e-7, 3.0000001, 9.0000001]
+            }
+          },
+          {
+            "index": 9,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 9],
+              [0, 3, 9]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 8.9999999],
+              "max": [4.0000001, 3.0000001, 9.0000001]
+            }
+          },
+          {
+            "index": 10,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 2],
+              [0, 0, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [1e-7, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 11,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 9],
+              [0, 0, 9]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 8.9999999],
+              "max": [1e-7, 3.0000001, 9.0000001]
+            }
+          }
+        ]
+      },
+      "inspectedRevision": 37
+    },
+    "placement": {
+      "frame": {
+        "origin": [0, 0, 2],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "thicknessMm": 7,
+      "expectedBounds": {
+        "min": [0, 0, 2],
+        "max": [4, 3, 9]
+      },
+      "actualBounds": {
+        "min": [-1e-7, -1e-7, 1.9999999],
+        "max": [4.0000001, 3.0000001, 9.0000001]
+      },
+      "normalRangeMm": [0, 7],
+      "endpointToleranceMm": 1e-7,
+      "boundsToleranceMm": 0.000001,
+      "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+    }
+  },
+  "rebuildRecovery": {
+    "report": {
+      "entityId": "dfb2b2c5-2f55-4ac1-afe1-5e8c02bbfd7c",
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 150,
+      "signedVolumeMm3": 108,
+      "volumeMm3": 108,
+      "topologyVisits": 80,
+      "edgeReferences": {
+        "offset": 0,
+        "total": 12,
+        "nextOffset": null,
+        "items": [
+          {
+            "index": 0,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 2],
+              [4, 0, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [4.0000001, 1e-7, 2.0000001]
+            }
+          },
+          {
+            "index": 1,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 2],
+              [4, 0, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 1.9999999],
+              "max": [4.0000001, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 2,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 11],
+              [4, 0, 11]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 10.9999999],
+              "max": [4.0000001, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 3,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [0, 0, 2],
+              [0, 0, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [1e-7, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 4,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 2],
+              [4, 3, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 1.9999999],
+              "max": [4.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 5,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 2],
+              [4, 3, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [3.9999999, 2.9999999, 1.9999999],
+              "max": [4.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 6,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 0, 11],
+              [4, 3, 11]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [3.9999999, -1e-7, 10.9999999],
+              "max": [4.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 7,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 2],
+              [0, 3, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 1.9999999],
+              "max": [4.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 8,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 2],
+              [0, 3, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 1.9999999],
+              "max": [1e-7, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 9,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [4, 3, 11],
+              [0, 3, 11]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [-1e-7, 2.9999999, 10.9999999],
+              "max": [4.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 10,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 2],
+              [0, 0, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 1.9999999],
+              "max": [1e-7, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 11,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [0, 3, 11],
+              [0, 0, 11]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [-1e-7, -1e-7, 10.9999999],
+              "max": [1e-7, 3.0000001, 11.0000001]
+            }
+          }
+        ]
+      },
+      "inspectedRevision": 42
+    },
+    "placement": {
+      "frame": {
+        "origin": [0, 0, 2],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "thicknessMm": 9,
+      "expectedBounds": {
+        "min": [0, 0, 2],
+        "max": [4, 3, 11]
+      },
+      "actualBounds": {
+        "min": [-1e-7, -1e-7, 1.9999999],
+        "max": [4.0000001, 3.0000001, 11.0000001]
+      },
+      "normalRangeMm": [0, 9],
+      "endpointToleranceMm": 1e-7,
+      "boundsToleranceMm": 0.000001,
+      "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+    }
+  },
+  "dependentRecovery": {
+    "report": {
+      "entityId": "604c75ce-3656-4613-a95c-bbd3f61d55be",
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 150,
+      "signedVolumeMm3": 108,
+      "volumeMm3": 108,
+      "topologyVisits": 80,
+      "edgeReferences": {
+        "offset": 0,
+        "total": 12,
+        "nextOffset": null,
+        "items": [
+          {
+            "index": 0,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [10, 0, 2],
+              [14, 0, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [9.9999999, -1e-7, 1.9999999],
+              "max": [14.0000001, 1e-7, 2.0000001]
+            }
+          },
+          {
+            "index": 1,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [14, 0, 2],
+              [14, 0, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [13.9999999, -1e-7, 1.9999999],
+              "max": [14.0000001, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 2,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [10, 0, 11],
+              [14, 0, 11]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [9.9999999, -1e-7, 10.9999999],
+              "max": [14.0000001, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 3,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [10, 0, 2],
+              [10, 0, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [9.9999999, -1e-7, 1.9999999],
+              "max": [10.0000001, 1e-7, 11.0000001]
+            }
+          },
+          {
+            "index": 4,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [14, 0, 2],
+              [14, 3, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [13.9999999, -1e-7, 1.9999999],
+              "max": [14.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 5,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [14, 3, 2],
+              [14, 3, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [13.9999999, 2.9999999, 1.9999999],
+              "max": [14.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 6,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [14, 0, 11],
+              [14, 3, 11]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [13.9999999, -1e-7, 10.9999999],
+              "max": [14.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 7,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [14, 3, 2],
+              [10, 3, 2]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [9.9999999, 2.9999999, 1.9999999],
+              "max": [14.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 8,
+            "kind": "bezier",
+            "curveType": 5,
+            "degenerate": false,
+            "endpoints": [
+              [10, 3, 2],
+              [10, 3, 11]
+            ],
+            "lengthMm": 9,
+            "boundsMm": {
+              "min": [9.9999999, 2.9999999, 1.9999999],
+              "max": [10.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 9,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [14, 3, 11],
+              [10, 3, 11]
+            ],
+            "lengthMm": 4,
+            "boundsMm": {
+              "min": [9.9999999, 2.9999999, 10.9999999],
+              "max": [14.0000001, 3.0000001, 11.0000001]
+            }
+          },
+          {
+            "index": 10,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [10, 3, 2],
+              [10, 0, 2]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [9.9999999, -1e-7, 1.9999999],
+              "max": [10.0000001, 3.0000001, 2.0000001]
+            }
+          },
+          {
+            "index": 11,
+            "kind": "line",
+            "curveType": 0,
+            "degenerate": false,
+            "endpoints": [
+              [10, 3, 11],
+              [10, 0, 11]
+            ],
+            "lengthMm": 3,
+            "boundsMm": {
+              "min": [9.9999999, -1e-7, 10.9999999],
+              "max": [10.0000001, 3.0000001, 11.0000001]
+            }
+          }
+        ]
+      },
+      "inspectedRevision": 42
+    },
+    "placement": {
+      "frame": {
+        "origin": [10, 0, 2],
+        "u": [1, 0, 0],
+        "v": [0, 1, 0],
+        "normal": [0, 0, 1]
+      },
+      "thicknessMm": 9,
+      "expectedBounds": {
+        "min": [10, 0, 2],
+        "max": [14, 3, 11]
+      },
+      "actualBounds": {
+        "min": [9.9999999, -1e-7, 1.9999999],
+        "max": [14.0000001, 3.0000001, 11.0000001]
+      },
+      "normalRangeMm": [0, 9],
+      "endpointToleranceMm": 1e-7,
+      "boundsToleranceMm": 0.000001,
+      "scope": "Exact public native edge endpoints/bounds versus independent authored UV-to-world placement"
+    }
+  },
+  "normalOutputSelectionSucceeded": true,
+  "retainedNativeHandleAfterCancellation": true,
+  "scope": "Actual GUI generic CAD create/rebuild cancellation and recovery via shared application jobs; no native application equivalence claim"
+}

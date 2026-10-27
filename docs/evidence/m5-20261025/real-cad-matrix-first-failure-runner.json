@@ -1,0 +1,41 @@
+{
+  "startedAt": "2026-10-26T12:01:04.694Z",
+  "children": [
+    {
+      "label": "build",
+      "pid": 19876,
+      "startedAt": "2026-10-26T12:01:04.704Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T12:01:11.415Z"
+    },
+    {
+      "label": "manifest",
+      "pid": 40516,
+      "startedAt": "2026-10-26T12:01:11.422Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T12:01:12.093Z"
+    },
+    {
+      "label": "preview",
+      "pid": 58060,
+      "startedAt": "2026-10-26T12:01:12.100Z",
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "finishedAt": "2026-10-26T12:01:50.685Z"
+    },
+    {
+      "label": "browser",
+      "pid": 53596,
+      "startedAt": "2026-10-26T12:01:12.347Z",
+      "exitCode": 1,
+      "signal": null,
+      "finishedAt": "2026-10-26T12:01:50.679Z"
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Real CAD matrix browser replay failed\n\n1 !== 0\n",
+  "passed": false,
+  "previewPortClosed": true,
+  "finishedAt": "2026-10-26T12:01:50.685Z"
+}

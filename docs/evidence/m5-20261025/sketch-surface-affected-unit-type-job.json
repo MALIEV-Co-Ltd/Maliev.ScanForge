@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/check-sketch-admission-green.mjs",
+    "green-r2"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 456536064,
+  "totalProcesses": 22,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 8.22454300004756
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/check-sketch-standard-r1.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 55,
+  "exitCode": 124,
+  "passed": false,
+  "timedOut": true,
+  "activeAfter": 0,
+  "peakJobBytes": 862502912,
+  "totalProcesses": 4,
+  "elapsedSeconds": 55.27110220002942
+}

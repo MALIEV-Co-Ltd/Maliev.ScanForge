@@ -1,0 +1,23 @@
+{
+  "ownedPid": 28716,
+  "creationTimeFiletime": "134375134695819158",
+  "expectedCreationTimeFiletime": "134375134695819158",
+  "liveCreationTimeVerified": true,
+  "processRunningAtObservation": true,
+  "toolReturnedWindowId": 25624726,
+  "windowTitle": "QUICKSURFACE Pro 8.0.123",
+  "visible": true,
+  "minimized": false,
+  "ownedWindowRect": [-8, -8, 1928, 1160],
+  "windowDpi": 96,
+  "rootOwnerWindowId": 25624726,
+  "rootOwnerPid": 28716,
+  "foregroundWindowId": 0,
+  "foregroundPid": 0,
+  "foregroundMatchesOwnedWindow": false,
+  "foregroundBelongsToOwnedProcess": false,
+  "uiInputPerformed": false,
+  "activationPerformed": false,
+  "capturePerformed": false,
+  "processQueryHandleClosed": true
+}

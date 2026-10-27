@@ -1,0 +1,18 @@
+{
+  "scope": "Actual classic-worker/WASM regressions; standalone native numeric probe; full GUI/real workflow unrun",
+  "workerSha256": "d6852fee026346e56eb74cf9108605c62feabd9ca99973acad37a258c12802aa",
+  "testSha256": "931ecad84357dfe463d2f405621848f1bc93f1678197cdae87b81b2dda2e3236",
+  "analyticCases": 8,
+  "winding": ["CCW", "CW"],
+  "frames": ["offset OXY", "rotated"],
+  "thicknessMm": [1.8, -1.8],
+  "signedFaceNormalAligned": true,
+  "exactSourceBrepPreserved": true,
+  "validSingleSolids": true,
+  "positiveSignedAnalyticVolume": true,
+  "curvedOffsetSignsVerified": true,
+  "nativeComparisonAbsoluteVolumeGapResolved": false,
+  "kernelHandlesAfter": 0,
+  "independentSourceReview": "No concrete P1/P2 defects in kernel fix scope",
+  "jobReceipt": "sketch-surface-kernel-green-job.json"
+}

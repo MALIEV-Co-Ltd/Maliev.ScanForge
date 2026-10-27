@@ -1,0 +1,4 @@
+Shared bounded validation mutex acquired (wait status 0).
+{"booleanOwnershipKernel":{"modes":[{"operation":"subtract","expectedVolumeMm3":75.85944644356896,"repeatedGeometryEqual":true},{"operation":"intersect","expectedVolumeMm3":75.85944644356896,"repeatedGeometryEqual":true},{"operation":"union","expectedVolumeMm3":227.57833933070685,"repeatedGeometryEqual":true}],"repeatedSplitAndSiblingOwnership":true,"atomicSplitRollback":true,"retainedLiveSourceHandle":true,"scope":"Actual bundled worker/WASM; exact live BREP ownership and analytic masses, not native-application parity"},"releasedAllHandles":true}
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=768", "tests/boolean-ownership-kernel.mjs"], "jobLimitBytes": 4294967296, "leaseSeconds": 16, "exitCode": 0, "peakJobBytes": 471969792, "totalProcesses": 2, "activeAfter": 0, "passed": true, "elapsedSeconds": 2.7392814999911934}
+Shared bounded validation mutex released after guard cleanup.

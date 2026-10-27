@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    ".resources/m5/run-native-sidewall-distances.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 517685248,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 0.9728198000229895
+}

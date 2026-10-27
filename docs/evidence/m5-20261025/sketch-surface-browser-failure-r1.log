@@ -1,0 +1,34 @@
+Resource admission: 12140 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   'c425972e-775c-4510-b8f9-7b1aacfe2797',
+-   '0562fb01-37ea-4d94-8fcf-a88900fb9284',
+    '54c23afa-f3d9-47be-8993-6be8a8927ca1'
+  ]
+
+    at replayRealSketchSurface (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/sketch-surface-real-browser.mjs:472:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async completeSketchSurfaceAcceptance (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/sketch-surface-acceptance.mjs:914:3)
+    at async replaySketchSurface (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/sketch-surface-browser.mjs:205:3)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1165:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'c425972e-775c-4510-b8f9-7b1aacfe2797',
+    '54c23afa-f3d9-47be-8993-6be8a8927ca1'
+  ],
+  expected: [
+    '0562fb01-37ea-4d94-8fcf-a88900fb9284',
+    '54c23afa-f3d9-47be-8993-6be8a8927ca1'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

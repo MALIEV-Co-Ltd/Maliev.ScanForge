@@ -1,0 +1,63 @@
+
+> scanforge@0.1.0 prebuild
+> node scripts/resource-check.mjs && node scripts/prepare-kernel.mjs
+
+Resource admission: 7353 MiB available; 1536 MiB required.
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+public/kernel/sketch-backend.js  118.75 kB │ gzip: 22.62 kB
+✓ built in 215ms
+Local CAD kernel prepared at C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\public\kernel\
+
+> scanforge@0.1.0 build
+> node scripts/typecheck.mjs && vite build
+
+Typecheck 1/12: source (556 root files; 1536 MiB heap)
+Typecheck 2/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 3/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 4/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 5/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 6/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 7/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 8/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 9/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 10/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 11/12: source and test batch (620 root files; 1536 MiB heap)
+Typecheck 12/12: source and test batch (605 root files; 1536 MiB heap)
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 500 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                            0.76 kB │ gzip:   0.41 kB
+dist/assets/scan-noise-worker-Bj2yl9jW.js                  1.37 kB
+dist/assets/scan-smoothing-worker-BiJz00c-.js              1.39 kB
+dist/assets/datum-transform-worker-DSJ-VX6g.js             1.60 kB
+dist/assets/scan-alignment-worker-BeIrQg-V.js              5.83 kB
+dist/assets/global-alignment-input-worker-CVm4OTFi.js      7.16 kB
+dist/assets/interactive-bounds-worker-BLfFs376.js          8.00 kB
+dist/assets/scan-global-scene-worker-CXEyabhO.js           8.76 kB
+dist/assets/surface-worker-O-OueH5t.js                    14.95 kB
+dist/assets/project-encoding-worker-BDLCmz8G.js           47.04 kB
+dist/assets/scan-global-query-worker-DI7V5UFy.js          64.52 kB
+dist/assets/scan-global-controller-worker-SFvwMn01.js    103.66 kB
+dist/assets/project-decoding-worker-DOp3XRwl.js          127.20 kB
+dist/assets/viewport-picking-worker-C1t_UCCA.js          136.86 kB
+dist/assets/screen-selection-worker-DOxtAEg_.js          151.66 kB
+dist/assets/import-worker-C4iASMCp.js                    165.90 kB
+dist/assets/processing-worker-Bauvwfsd.js                449.78 kB
+dist/assets/index-G-jwGuEZ.css                            77.84 kB │ gzip:  15.26 kB
+dist/assets/global-alignment-input-FtnGoKGd.js             7.93 kB │ gzip:   3.03 kB
+dist/assets/index-DoLiZPBX.js                             12.93 kB │ gzip:   5.17 kB
+dist/assets/scan-global-registration-C0-bwv8n.js          92.65 kB │ gzip:  35.08 kB
+dist/assets/index-BOZVd6s9.js                            776.60 kB │ gzip: 233.57 kB
+dist/assets/agent-api-OoInwzD0.js                      1,100.13 kB │ gzip: 300.38 kB
+✓ built in 6.98s
+
+> scanforge@0.1.0 postbuild
+> node scripts/offline-manifest.mjs
+
+Offline manifest generated: 272 local assets, scanforge-b3dd01c1e92112e4

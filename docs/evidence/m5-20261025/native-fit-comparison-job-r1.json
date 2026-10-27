@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=256",
+    "C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/.resources/m5/run-native-fit-comparison.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 600,
+  "exitCode": 1,
+  "peakJobBytes": 1963884544,
+  "totalProcesses": 32,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 9.488151300000027
+}

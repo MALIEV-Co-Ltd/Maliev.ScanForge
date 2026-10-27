@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/format-cad-cancellation.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 218902528,
+  "totalProcesses": 5,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 1.402323999966029
+}

@@ -1,0 +1,55 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro8.0.123",
+  "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "ownedPid": 54016,
+  "ownedWindowId": 72356652,
+  "creationTimeFiletime": "134374500724266054",
+  "startedUtc": "2026-10-26T01:01:12.449805+00:00",
+  "finishedUtc": "2026-10-26T01:08:42.616206+00:00",
+  "inputProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r2/native-output/m5-native-simple-4x4-oxy.qsf",
+    "bytes": 125981,
+    "sha256": "52eb44acd578b188d714cd2715797f599b9044dc1d7a8b6f353d8cc918a20043",
+    "lastWriteUtc": "2026-10-25T23:58:48.731Z"
+  },
+  "savedNativeProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r4/native-output/m5-native-thickened-0p1.qsf",
+    "bytes": 139145,
+    "sha256": "d60588900e6720e9acb641489db9363753c1bd214c87f8dfe4f7ffea74bf223c",
+    "lastWriteUtc": "2026-10-26T01:08:28.660Z"
+  },
+  "thicken": {
+    "accepted": true,
+    "depth1Mm": 0.1,
+    "depth2Enabled": false,
+    "direction": "Middle of three direction icons selected; signed-normal interpretation awaits STEP comparison",
+    "observedTree": "Solids(1) / [1] Thicken(1)",
+    "observedHistory": "Thicken(1) (Solid)",
+    "inputFaceSelection": "Viewport face click; tree focus alone did not enable Thicken",
+    "sourceScanHidden": true
+  },
+  "nativeStepExported": false,
+  "analyticSolidComparisonVerified": false,
+  "plannedUiStopUtc": "2026-10-26T01:08:27Z",
+  "timingScope": "QSF save completed at01:08:28.660UTC, slightly after planned15-second reserve. Session scheduled finish remained bounded. Later CAD-tab input attempt reported foreground window had no PID; no further input followed.",
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "scheduled-owned-finish",
+    "watchdogStopped": true,
+    "ownedProcessExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "job": {
+    "limitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "peakBytes": 669134848,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 450.4305667000008
+  },
+  "scope": "Actual native thicken acceptance and saved QSF only; STEP/topology/mass-property comparison remains unrun.",
+  "preservedExistingNativeWindows": [5115682, 11667504, 131075094]
+}

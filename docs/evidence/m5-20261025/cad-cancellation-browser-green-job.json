@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/run-cad-cancel-browser.mjs",
+    "cad-cancel-browser-green-r1"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 110,
+  "exitCode": 0,
+  "peakJobBytes": 2551500800,
+  "totalProcesses": 41,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 18.3128555000294
+}

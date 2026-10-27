@@ -1,0 +1,54 @@
+Shared bounded validation mutex acquired (wait status 0).
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/sketch-surface-api.test.ts (19 tests | 1 failed | 18 skipped) 21ms
+   ❯ shared sketch surface CAD API (19)
+     × preserves cached legacy extrusion BREP and display buffers while creating and rebuilding an unrelated face 20ms
+ ❯ tests/parametric-sketch-surface.test.ts (21 tests | 1 failed | 20 skipped) 9ms
+   ❯ editable analytic sketch surface recipes (21)
+     × retains cached legacy CAD sketch recipes through project reopen and model binding without solving 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > retains cached legacy CAD sketch recipes through project reopen and model binding without solving
+Error: CAD sketch solver authored point count limit exceeded: 129 > 128.
+ ❯ limit src/parametric.ts:244:13
+    242|   const limit = (actual: number, maximum: number, label: string) => {
+    243|     if (actual > maximum)
+    244|       throw new Error(
+       |             ^
+    245|         `CAD sketch solver ${label} limit exceeded: ${actual} > ${maxi…
+    246|       );
+ ❯ admitCadSketchSolve src/parametric.ts:248:3
+ ❯ validateRecipe src/parametric.ts:352:9
+ ❯ validateParametricModel src/parametric.ts:531:5
+ ❯ entityFeatureModel src/parametric-entities.ts:40:3
+ ❯ tests/parametric-sketch-surface.test.ts:114:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves cached legacy extrusion BREP and display buffers while creating and rebuilding an unrelated face
+AssertionError: {"jobId":"7885aca8-4c01-4289-8cd5-70a1514e23a5","command":"cad_create","status":"failed","progress":0,"stage":"CAD sketch solver authored point count limit exceeded: 129 > 128.","error":{"code":"OPERATION_FAILED","message":"CAD sketch solver authored point count limit exceeded: 129 > 128."}}: expected 'failed' to be 'succeeded' // Object.is equality
+
+Expected: "succeeded"
+Received: "failed"
+
+ ❯ tests/sketch-surface-api.test.ts:185:55
+    183|     try {
+    184|       const created = await settle(h.api, await h.api.invoke("cad_crea…
+    185|       expect(created.status, JSON.stringify(created)).toBe("succeeded"…
+       |                                                       ^
+    186|       expect(h.state.entities[1]).toBe(legacy);
+    187|       const edited = structuredClone(h.input);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 38 skipped (40)
+   Start at  16:36:47
+   Duration  1.27s (transform 70%, import 27%, tests 3%, worker 1%)
+
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=768", "node_modules/vitest/vitest.mjs", "run", "--maxWorkers=1", "tests/parametric-sketch-surface.test.ts", "tests/sketch-surface-api.test.ts", "-t", "cached legacy"], "jobLimitBytes": 4294967296, "leaseSeconds": 16, "exitCode": 1, "peakJobBytes": 351465472, "totalProcesses": 9, "activeAfter": 0, "passed": false, "elapsedSeconds": 1.673291800019797}
+Shared bounded validation mutex released after guard cleanup.

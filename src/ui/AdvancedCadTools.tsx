@@ -4,6 +4,8 @@ import { useState, useContext } from "react";
 import type { Entity, Vec3 } from "../types";
 import { Field, VectorField } from "./controls";
 import type { CadPattern } from "../cad/client";
+import type { ApplicationApi } from "../automation/api";
+import { CadEdgePicker } from "./CadEdgePicker";
 export function AdvancedCadTools({
   entities,
   selected,
@@ -19,6 +21,8 @@ export function AdvancedCadTools({
   onMirror,
   onSplit,
   onError,
+  api,
+  active = true,
 }: {
   entities: Entity[];
   selected?: Entity;
@@ -32,6 +36,7 @@ export function AdvancedCadTools({
     indices: number[],
     amount: number,
     operation: "fillet" | "chamfer",
+    inspectedRevision?: number,
   ) => void;
   onOffset: (distance: number) => void;
   onSew: (ids: string[], tolerance: number) => void;
@@ -41,6 +46,8 @@ export function AdvancedCadTools({
   onMirror?: (origin: Vec3, normal: Vec3) => void;
   onSplit?: (cutterEntityId: string) => void;
   onError: (error: string) => void;
+  api: Pick<ApplicationApi, "invoke" | "currentRevision">;
+  active?: boolean;
 }) {
   const workspace = useContext(ToolWorkspace);
   const [profiles, setProfiles] = useState(
@@ -50,6 +57,9 @@ export function AdvancedCadTools({
   const [path, setPath] = useState("[[0,0,0],[0,0,40]]");
   const [ruled, setRuled] = useState(true);
   const [edges, setEdges] = useState("0");
+  const [edgeRevision, setEdgeRevision] = useState<number | undefined>();
+  const staleEdges =
+    edgeRevision !== undefined && edgeRevision !== api.currentRevision();
   const [amount, setAmount] = useState(1);
   const [offset, setOffset] = useState(1);
   const [tolerance, setTolerance] = useState(0.001);
@@ -270,9 +280,33 @@ export function AdvancedCadTools({
           <input
             aria-label="CAD edge indices"
             value={edges}
-            onChange={(event) => setEdges(event.target.value)}
+            onChange={(event) => {
+              setEdges(event.target.value);
+              setEdgeRevision(undefined);
+            }}
           />
         </label>
+        {active && selected?.kernelId && (
+          <CadEdgePicker
+            key={selected.kernelId}
+            entityId={selected.id}
+            api={api}
+            disabled={disabled}
+            indices={edges
+              .split(",")
+              .filter((v) => v.trim())
+              .map(Number)}
+            onChange={(indices, revision) => {
+              setEdges(indices.join(","));
+              setEdgeRevision(revision);
+            }}
+          />
+        )}
+        {staleEdges && (
+          <p role="status">
+            Selected edge references are stale. Inspect and select edges again.
+          </p>
+        )}
         <Field
           label={
             workspace === "chamfer"
@@ -285,10 +319,18 @@ export function AdvancedCadTools({
         />
         <ToolSection tools={["fillet", "advancedCad"]}>
           <button
-            disabled={disabled || !selected?.kernelId}
+            disabled={disabled || !selected?.kernelId || staleEdges}
             onClick={() =>
               attempt(() =>
-                onEdges(edges.split(",").map(Number), amount, "fillet"),
+                onEdges(
+                  edges
+                    .split(",")
+                    .filter((v) => v.trim())
+                    .map(Number),
+                  amount,
+                  "fillet",
+                  edgeRevision,
+                ),
               )
             }
           >
@@ -297,10 +339,18 @@ export function AdvancedCadTools({
         </ToolSection>
         <ToolSection tools={["chamfer", "advancedCad"]}>
           <button
-            disabled={disabled || !selected?.kernelId}
+            disabled={disabled || !selected?.kernelId || staleEdges}
             onClick={() =>
               attempt(() =>
-                onEdges(edges.split(",").map(Number), amount, "chamfer"),
+                onEdges(
+                  edges
+                    .split(",")
+                    .filter((v) => v.trim())
+                    .map(Number),
+                  amount,
+                  "chamfer",
+                  edgeRevision,
+                ),
               )
             }
           >

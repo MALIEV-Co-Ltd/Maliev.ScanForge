@@ -1,0 +1,64 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "ownedPid": 12700,
+  "ownedWindowId": 8066416,
+  "creationTimeFiletime": "134374459985685887",
+  "startedUtc": "2026-10-25T23:53:18.587285+00:00",
+  "finishedUtc": "2026-10-26T00:00:20.064380+00:00",
+  "job": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 706473984,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 421.7274949999992,
+    "cpuRatePercent": 25
+  },
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "authenticated-finish",
+    "watchdogStopped": true,
+    "ownedProcessExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "fixture": {
+    "sha256": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
+    "triangles": 200,
+    "modelUnits": "Millimetres"
+  },
+  "acceptedFit": {
+    "method": "Simple",
+    "uLabel": 4,
+    "vLabel": 4,
+    "explicitDegree": 3,
+    "orientation": "OXY",
+    "expand": 0,
+    "smoothness": 0,
+    "analysisDisplayLimitMm": 1,
+    "numericNativeUiRmsCaptured": false
+  },
+  "serializedControlNet": {
+    "countU": 5,
+    "countV": 5,
+    "degreeU": 3,
+    "degreeV": 3,
+    "rational": false
+  },
+  "savedNativeProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r2/native-output/m5-native-simple-4x4-oxy.qsf",
+    "bytes": 125981,
+    "sha256": "52eb44acd578b188d714cd2715797f599b9044dc1d7a8b6f353d8cc918a20043"
+  },
+  "nativeStep": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r2/native-output/m5-native-simple-4x4-oxy.stp",
+    "bytes": 10513,
+    "sha256": "1c7bf1331f1294b387f4b059cbd60ed66671abe9e629b3b16307f6d2c6bfdfd7"
+  },
+  "nativeSurfaceFitAccepted": true,
+  "nativeGeometryEquivalenceEstablished": false,
+  "scope": "Actual native fit acceptance and QSF/STEP AP214 export on the connected scan fixture. UI counts differ from serialized control counts. Numerical comparison and ScanForge replay are separate receipts; this does not certify the remaining native operation matrix.",
+  "preservedExistingNativeWindows": [5115682, 11667504, 131075094]
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    "--max-old-space-size=768",
+    ".resources/m5/run-planar-thicken-orientation-diagnostic.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 494510080,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 2.3300671000033617
+}

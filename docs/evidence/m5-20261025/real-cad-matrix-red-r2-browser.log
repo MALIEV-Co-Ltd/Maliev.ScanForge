@@ -1,0 +1,21 @@
+Resource admission: 9684 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Exact min bounds {"min":[-56.416283780947985,-16.538193372694113,-323.2705536888672],"max":[-46.12248210405977,-5.9320345063781055,-321.4695535888672]} != {"min":[-56.41528388094799,-16.537193472694113,-323.2705536888672],"max":[-46.12348200405977,-5.9330344063781055,-321.47055348886715]}
+    at assertBounds (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:92:5)
+    at Object.verify (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:1314:9)
+    at runPair (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:805:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async replayRealCadMatrix (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:1291:5)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1193:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

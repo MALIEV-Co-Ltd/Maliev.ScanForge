@@ -1,0 +1,45 @@
+{
+  "headRevision": "1594c78a98937911b90bd001f95f51b3fd94dfab",
+  "checks": [
+    {
+      "id": 121273818481,
+      "name": "build",
+      "head_sha": "1594c78a98937911b90bd001f95f51b3fd94dfab",
+      "status": "completed",
+      "conclusion": "failure",
+      "details_url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807/job/121273818481",
+      "output": {
+        "title": null,
+        "summary": null,
+        "text": null,
+        "annotations_count": 2
+      }
+    }
+  ],
+  "statuses": [],
+  "annotations": [
+    {
+      "path": ".github",
+      "start_line": 1,
+      "end_line": 1,
+      "annotation_level": "failure",
+      "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings",
+      "title": "",
+      "raw_details": ""
+    },
+    {
+      "path": ".github",
+      "start_line": 1,
+      "end_line": 1,
+      "annotation_level": "notice",
+      "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+      "title": "",
+      "raw_details": ""
+    }
+  ],
+  "hasMore": false,
+  "job": null,
+  "jobs": [],
+  "log": null,
+  "logTruncated": false
+}

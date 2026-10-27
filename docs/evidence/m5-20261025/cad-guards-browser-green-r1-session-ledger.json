@@ -1,0 +1,407 @@
+{
+  "owner": "surface-fit-browser",
+  "applicationOrigin": "http://127.0.0.1:5206",
+  "expiresAt": "2026-10-26T17:45:10.260Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "pid": 55828,
+      "startedAt": "2026-10-26T17:42:09.7964252Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "port-reservation",
+      "port": 55175,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 23980,
+      "startedAt": "2026-10-26T17:42:10.6159640Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "mcp-server",
+      "port": 55175,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 53440,
+      "startedAt": "2026-10-26T17:42:11.1469281Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "kind": "browser",
+      "persistentData": false
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "mcp-server",
+      "pid": 23980,
+      "originalStart": "2026-10-26T17:42:10.6159640Z",
+      "absent": true
+    },
+    {
+      "kind": "browser",
+      "pid": 53440,
+      "originalStart": "2026-10-26T17:42:11.1469281Z",
+      "absent": true
+    },
+    {
+      "port": 55175,
+      "closed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "guiLaunch": "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
+      "hiddenState": "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
+      "requestedTriangles": 288,
+      "fittedTriangles": 287,
+      "selectedIds": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+        57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+        93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+        109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+        137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150,
+        151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+        165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+        179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+        221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+        235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+        249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+        263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287
+      ],
+      "sourceId": "3713f808-3b03-4b1e-8fc4-5ff1feadc41b",
+      "guiId": "e35abd41-cd0f-458e-8fde-77fe825c6804",
+      "mcpId": "0e20bacf-f50c-45c1-9c8f-720cf20a68a5",
+      "options": {
+        "countU": 4,
+        "countV": 4,
+        "degree": 3,
+        "projection": "xy",
+        "sampleLimit": 10000
+      },
+      "previewNoCommit": true,
+      "guiOneHistoryStep": true,
+      "mcpOneHistoryStep": true,
+      "exactPatchEquality": true,
+      "exactRenderGeometryEquality": true,
+      "sourceGeometryPreserved": true,
+      "mcpResult": {
+        "entityId": "0e20bacf-f50c-45c1-9c8f-720cf20a68a5",
+        "samples": 861,
+        "rms": 1.2518105224974623e-14,
+        "maxError": 1.0302869668521453e-13,
+        "projection": "xy",
+        "solverBytes": 22968
+      },
+      "limitations": [
+        "Hidden-selected filtering is checked by GUI region count and the MCP fit sample count; the planar fixture does not prove behavior on unrestricted surfaces.",
+        "Authored planar fixture establishes GUI/MCP refactor equality, not native numerical parity, unrestricted input sizes or point-cloud browser behavior."
+      ]
+    },
+    {
+      "controlEdit": "GUI Z control and public surface_set",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true
+    },
+    {
+      "exactSurface": "GUI control edit and public cad_rebuild",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true,
+      "stepExport": 5997,
+      "projectReopenExactCad": true
+    },
+    {
+      "exactInspectionGuiMcpEquality": true,
+      "unchangedRevision": true,
+      "report": {
+        "entityId": "859a53dc-d80c-4034-85f5-2eb688f0a8ce",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 148.67578360074663,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      }
+    },
+    {
+      "guardedCadLoft": {
+        "sharedGuiJob": "5e7f6d3f-6658-4d92-bab5-3632b9930842",
+        "guiMcpGeometryEquality": true,
+        "report": {
+          "entityId": "6acf5de3-29db-4b32-937d-a24dd760538c",
+          "units": "mm",
+          "valid": true,
+          "solids": 1,
+          "shells": 1,
+          "faces": 6,
+          "edges": 12,
+          "vertices": 8,
+          "areaMm2": 3200,
+          "signedVolumeMm3": 12000,
+          "volumeMm3": 12000,
+          "topologyVisits": 80
+        },
+        "entry": "actual ribbon entry with matching command_get availability"
+      }
+    },
+    {
+      "guardedCadMatrix": {
+        "entry": "actual CAD ribbon with optional exact edge discovery",
+        "matrix": [
+          {
+            "workspace": "sweep",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "10bd540f-f707-42b7-8d0d-7afe96494da3",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "7308b406-bfef-4f5f-a9f8-829aa5dfd689",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 1032,
+                "signedVolumeMm3": 1440,
+                "volumeMm3": 1440,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Sweep"]
+          },
+          {
+            "workspace": "revolve",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "cec6cf87-4a78-4fa3-911f-2c0cee6dd75a",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "8d41c30b-2c2c-426e-bc12-a89978edf53a",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 4,
+                "edges": 6,
+                "vertices": 4,
+                "areaMm2": 4712.388980384692,
+                "signedVolumeMm3": 14137.166941154075,
+                "volumeMm3": 14137.166941154075,
+                "topologyVisits": 42
+              }
+            ],
+            "outputNames": ["Revolved solid"]
+          },
+          {
+            "workspace": "boolean",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "00242519-442c-492a-b4e0-c88237dac94f",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "c6a8ab1a-27b6-473f-bf4b-a01963cc015f",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["subtract result"]
+          },
+          {
+            "workspace": "splitSolid",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "8a9ee6ac-982d-4a75-b0b0-d4184455cf6a",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "0d11e5fb-06b5-41cf-a42e-f68d511914c7",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              },
+              {
+                "entityId": "d7ffe82c-43bd-4cbd-810c-6bf78e8148ef",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Split inside", "Split outside"]
+          },
+          {
+            "workspace": "boolean",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "dca221aa-c033-42ee-a0b8-f32b0d1e69ff",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "bb9f69a1-2cc1-4db4-b157-303232957b3e",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 10,
+                "edges": 20,
+                "vertices": 12,
+                "areaMm2": 599.9999999999999,
+                "signedVolumeMm3": 999.9999999999998,
+                "volumeMm3": 999.9999999999998,
+                "topologyVisits": 132
+              }
+            ],
+            "outputNames": ["union result"]
+          },
+          {
+            "unusedSplitSiblingPreserved": true
+          },
+          {
+            "workspace": "fillet",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "035bcab0-b97e-434f-9f2d-41a2e7bb73e2",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "8a054158-a277-4ef4-89cf-10aeb0935d09",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 7,
+                "edges": 15,
+                "vertices": 10,
+                "areaMm2": 595.2787595947437,
+                "signedVolumeMm3": 997.8539816339743,
+                "volumeMm3": 997.8539816339743,
+                "topologyVisits": 99
+              }
+            ],
+            "outputNames": ["fillet"]
+          },
+          {
+            "workspace": "chamfer",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "4cfff409-991a-4258-af82-ca12862b3eaf",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "6d39a117-c2aa-4ac1-a2e8-669111b847b9",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 7,
+                "edges": 15,
+                "vertices": 10,
+                "areaMm2": 593.1421356237308,
+                "signedVolumeMm3": 994.9999999999998,
+                "volumeMm3": 994.9999999999998,
+                "topologyVisits": 99
+              }
+            ],
+            "outputNames": ["chamfer"]
+          },
+          {
+            "workspace": "shell",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "44cff457-a133-4b4a-9212-8c20fa067b54",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "c0f8c936-a90e-4dfa-8a88-b5136591cd8f",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 11,
+                "edges": 24,
+                "vertices": 16,
+                "areaMm2": 887.9999999999999,
+                "signedVolumeMm3": 423.99999999999983,
+                "volumeMm3": 423.99999999999983,
+                "topologyVisits": 157
+              }
+            ],
+            "outputNames": ["Shell"]
+          },
+          {
+            "workspace": "extrude",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "6331a9d9-c705-4787-98f2-19e77d6205a4",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "1959794a-2aa6-4d92-a374-64701e0bff10",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 3800,
+                "signedVolumeMm3": 12000,
+                "volumeMm3": 12000,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Polygon extrusion"]
+          }
+        ]
+      }
+    }
+  ],
+  "runner": {
+    "pid": 55828,
+    "startedAt": "2026-10-26T17:42:09.7964252Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "fixture": {
+    "provenance": "Authored planar binary STL, not native application output",
+    "planarFacets": 288,
+    "outlierFacets": 1,
+    "bytes": 14534
+  },
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "browserErrors": [],
+  "existingApplicationPreserved": true,
+  "finishedAt": "2026-10-26T17:42:25.348Z",
+  "passed": true
+}

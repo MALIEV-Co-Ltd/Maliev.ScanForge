@@ -1,0 +1,24 @@
+{
+  "completed": false,
+  "firstChange": {
+    "stage": "014-request-5-datumTransform-mesh-before",
+    "kernelId": "cad-995cb3a1-a757-4d74-a297-f8afa7489ee3-1",
+    "sha256": "72dcdb206b97f9d06af8e27784e296c65032bc8d51b11081377ad778c95b5aff",
+    "bytes": 49068,
+    "initialSha256": "c11c077a96a91f28bc9c888dd048125bdc451a8949cd98bca670c3e0aebeccf1",
+    "previousSha256": "c11c077a96a91f28bc9c888dd048125bdc451a8949cd98bca670c3e0aebeccf1",
+    "changed": true,
+    "quiescentRepeatSha256": "72dcdb206b97f9d06af8e27784e296c65032bc8d51b11081377ad778c95b5aff",
+    "observerStable": true,
+    "difference": {
+      "offset": 48890,
+      "beforeContext": "5 1 0\n6  6 3 0\n0\n\n0101000\n+11 0 -11 0 *\nWi\n\n0101100\n-12 0 +10 0 +9 0 -10 0 *\nFa\n0  1e-07 1 0\n2  1\n0101000\n+8 0 *\nWi\n\n0101100\n+12 0 *\nFa\n0  1e-07 2 0\n2  2\n0101000\n+6 0 *\nWi\n\n0101100\n-9 0 *\nFa\n0  1e-07 3 0\n2  3\n0101000\n-4 0 *\nSh\n\n0101100\n+7 0",
+      "afterContext": "5 1 0\n6  6 3 0\n0\n\n0101000\n+11 0 -11 0 *\nWi\n\n0101100\n-12 0 +10 0 +9 0 -10 0 *\nFa\n0  1e-07 1 0\n2  1\n0111000\n+8 0 *\nWi\n\n0101100\n+12 0 *\nFa\n0  1e-07 2 0\n2  2\n0111000\n+6 0 *\nWi\n\n0101100\n-9 0 *\nFa\n0  1e-07 3 0\n2  3\n0111000\n-4 0 *\nSh\n\n0101100\n+7 0"
+    }
+  },
+  "attributionInconclusive": false,
+  "instrumentationFailures": [],
+  "finalLiveHandles": 0,
+  "failure": "AssertionError [ERR_ASSERTION]: {\"stage\":\"first datum native return before post-call readers\",\"kernelId\":\"cad-995cb3a1-a757-4d74-a297-f8afa7489ee3-1\",\"beforeSha256\":\"c11c077a96a91f28bc9c888dd048125bdc451a8949cd98bca670c3e0aebeccf1\",\"afterSha256\":\"72dcdb206b97f9d06af8e27784e296c65032bc8d51b11081377ad778c95b5aff\",\"firstDifference\":48890,\"beforeBytes\":49068,\"afterBytes\":49068,\"beforeContext\":\"5 1 0\\n6  6 3 0\\n0\\n\\n0101000\\n+11 0 -11 0 *\\nWi\\n\\n0101100\\n-12 0 +10 0 +9 0 -10 0 *\\nFa\\n0  1e-07 1 0\\n2  1\\n0101000\\n+8 0 *\\nWi\\n\\n0101100\\n+12 0 *\\nFa\\n0  1e-07 2 0\\n2  2\\n0101000\\n+6 0 *\\nWi\\n\\n0101100\\n-9 0 *\\nFa\\n0  1e-07 3 0\\n2  3\\n0101000\\n-4 0 *\\nSh\\n\\n0101100\\n+7 0\",\"afterContext\":\"5 1 0\\n6  6 3 0\\n0\\n\\n0101000\\n+11 0 -11 0 *\\nWi\\n\\n0101100\\n-12 0 +10 0 +9 0 -10 0 *\\nFa\\n0  1e-07 1 0\\n2  1\\n0111000\\n+8 0 *\\nWi\\n\\n0101100\\n+12 0 *\\nFa\\n0  1e-07 2 0\\n2  2\\n0111000\\n+6 0 *\\nWi\\n\\n0101100\\n-9 0 *\\nFa\\n0  1e-07 3 0\\n2  3\\n0111000\\n-4 0 *\\nSh\\n\\n0101100\\n+7 0\"}\n    at preserved (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/cad-cache-ownership-kernel.mjs:25:16)\n    at checkCadCacheOwnership (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/cad-cache-ownership-kernel.mjs:87:5)\n    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/.resources/m5/run-cad-cache-stage-isolation.mjs:110:20",
+  "receipt": "file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/.resources/m5/cad-cache-stage-isolation-r1/diagnostic.json"
+}

@@ -1,0 +1,78 @@
+Resource admission: 9350 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
+    {
+      elements: 13860,
+      encoding: 'f64',
+      path: 'positions',
+      rawBytes: 110880,
++     sha256: 'b8c74f8f12a73aa596e85e2766c9cca5e6e7b6851f532c58f2077b16fccfe716'
+-     sha256: '3e1ac7ef7184cb01cccd0c5fbc318ab7c360b857f4f053d99c63ed3d1ec3e1ff'
+    },
+    {
+      elements: 13860,
+      encoding: 'f64',
+      path: 'normals',
+
+    at replayNativeFit (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/native-fit-browser.mjs:144:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:721:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      path: 'positions',
+      encoding: 'f64',
+      elements: 13860,
+      rawBytes: 110880,
+      sha256: 'b8c74f8f12a73aa596e85e2766c9cca5e6e7b6851f532c58f2077b16fccfe716'
+    },
+    {
+      path: 'normals',
+      encoding: 'f64',
+      elements: 13860,
+      rawBytes: 110880,
+      sha256: 'e41ebfe241a382b5481cc155b8a9ff6e6a335d04e45c7ce4448105a4352fd12c'
+    },
+    {
+      path: 'edgePositions',
+      encoding: 'f64',
+      elements: 576,
+      rawBytes: 4608,
+      sha256: 'c68a6edc52686906fc9b8a5c6f3e8f68fa00613b038a4bcd77a75e797d286f7a'
+    }
+  ],
+  expected: [
+    {
+      path: 'positions',
+      encoding: 'f64',
+      elements: 13860,
+      rawBytes: 110880,
+      sha256: '3e1ac7ef7184cb01cccd0c5fbc318ab7c360b857f4f053d99c63ed3d1ec3e1ff'
+    },
+    {
+      path: 'normals',
+      encoding: 'f64',
+      elements: 13860,
+      rawBytes: 110880,
+      sha256: 'e41ebfe241a382b5481cc155b8a9ff6e6a335d04e45c7ce4448105a4352fd12c'
+    },
+    {
+      path: 'edgePositions',
+      encoding: 'f64',
+      elements: 576,
+      rawBytes: 4608,
+      sha256: 'c68a6edc52686906fc9b8a5c6f3e8f68fa00613b038a4bcd77a75e797d286f7a'
+    }
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

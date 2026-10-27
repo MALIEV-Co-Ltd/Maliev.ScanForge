@@ -1,0 +1,219 @@
+{
+  "recordedAt": "2026-10-26T02:36:19.924Z",
+  "baseCommit": "78f84d4b37a531345a7ee368e4dd98d295cc1ac9",
+  "build": "scanforge-88f56117136cbb52",
+  "sources": {
+    "src/surfaces.ts": "414ce7fbb97d02be4ea6ff891a2e78dc6d99201c2fde700b1d24fb4ca7125a7c",
+    "src/automation/operations.ts": "69d0f001fddd4ba50a8a897886ca260576a8ad6382342046532825c611faa98e",
+    "src/automation/authoring-operations.ts": "2d12856581ec00526bba5d14edd87202d7f982a268bdcc648c667634e4cb085d",
+    "src/automation/catalog.json": "e67f2a4e60456eaf3fa1efdc0d42037d9c18f74a2588198e7696416b1bc01c05",
+    "src/ui/SurfaceTools.tsx": "0526b973282740706aded666df96fc31730d12e13ee5a674fdc994f29b3e9330",
+    "src/ui/App.tsx": "3474ab811311ae5c772575982ff1787c53778c99faafd05559afe3db2c1d46ab",
+    "tests/surface-blend.test.ts": "9546e58faa8d1273ebdeddeb274193bd2a8d7b0d507faf67abae74350c5e622c",
+    "tests/surface-blend-api.test.ts": "ee585de9a35f1c76be288498b4046bed9ef0c2d057b611b98890964ab65bdd18",
+    "tests/helpers/surface-blend-browser.mjs": "cd213735e1552deed75aa7cbb6e04637df5096a998fe1f2b39afd31ab9868dc2",
+    "tests/surface-fit-browser.mjs": "261d965ef82cd14b43bfc4bcc0b27a0357e53e4a75c886d4cf128558a6de63d9"
+  },
+  "jobs": {
+    "blend-math-red": {
+      "path": ".resources/m5/blend-math-red-job.json",
+      "sha256": "f4676986efcde3e4de37eeae2db04e89fe6e12b1ae5d415a6a56400760162f59",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/surface-blend.test.ts",
+          "--reporter=verbose"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 1,
+        "peakJobBytes": 306249728,
+        "totalProcesses": 8,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 0.8923886999837123
+      }
+    },
+    "blend-math-green": {
+      "path": ".resources/m5/blend-math-green-job.json",
+      "sha256": "5e451655ccb0c2ab12442f349cbe998c3b95922f2f2f3d69fe8eb28a21d92ecc",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/surface-blend.test.ts",
+          "tests/surfaces.test.ts",
+          "--reporter=verbose"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 0,
+        "peakJobBytes": 290406400,
+        "totalProcesses": 9,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 0.7881753999972716
+      }
+    },
+    "blend-api-red": {
+      "path": ".resources/m5/blend-api-red-job.json",
+      "sha256": "c0320172f079004d39ed7ed081e43cdb4e6d218724621f83f6404ec6f1761392",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/surface-blend-api.test.ts",
+          "--reporter=verbose"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 1,
+        "peakJobBytes": 352579584,
+        "totalProcesses": 8,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 1.5728184999898076
+      }
+    },
+    "blend-api-green": {
+      "path": ".resources/m5/blend-api-green-job.json",
+      "sha256": "dd185625147ebddbeb283e66aa87abf94107006ddc8d48b66d4ced529e0b6c57",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/surface-blend-api.test.ts",
+          "tests/cad-create-selection.test.ts",
+          "tests/surface-join-api.test.ts",
+          "tests/automation-operations.test.ts",
+          "tests/surface-trim-api.test.ts",
+          "--reporter=verbose"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 1,
+        "peakJobBytes": 389713920,
+        "totalProcesses": 12,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 3.80499619996408
+      }
+    },
+    "blend-api-green-r2": {
+      "path": ".resources/m5/blend-api-green-r2-job.json",
+      "sha256": "75bc0192e91df1d416fdc109355bbddd086800602487f4117dd707ffca841273",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "--max-old-space-size=768",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/surface-blend-api.test.ts",
+          "--reporter=verbose"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 0,
+        "peakJobBytes": 405045248,
+        "totalProcesses": 8,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 4.846858000033535
+      }
+    },
+    "blend-browser-red-r1": {
+      "path": ".resources/m5/blend-browser-red-r1-job.json",
+      "sha256": "f8e7ef93785f7bcf592ba1fcb68e5e6c7437c7fb7fcef3d718495391a68c69a8",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          ".resources/m5/run-blend-browser.mjs",
+          "blend-browser-red-r1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 1,
+        "peakJobBytes": 1992695808,
+        "totalProcesses": 41,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 17.204191399971023
+      }
+    },
+    "blend-browser-red-r2": {
+      "path": ".resources/m5/blend-browser-red-r2-job.json",
+      "sha256": "eca6d1f54e912aa9cee39990adf4a98fc7c0a162d69f505489c66c12e487711b",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          ".resources/m5/run-blend-browser.mjs",
+          "blend-browser-red-r2"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 1,
+        "peakJobBytes": 2490093568,
+        "totalProcesses": 41,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 25.594708600023296
+      }
+    },
+    "blend-browser-green-r1": {
+      "path": ".resources/m5/blend-browser-green-r1-job.json",
+      "sha256": "dab154ef6860451eb63c7bfad11e709265b6e28fb149146555d79e8051a82a53",
+      "receipt": {
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          ".resources/m5/run-blend-browser.mjs",
+          "blend-browser-green-r1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 600,
+        "exitCode": 0,
+        "peakJobBytes": 2936479744,
+        "totalProcesses": 43,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 61.61203479999676
+      }
+    }
+  },
+  "browserLedger": {
+    "path": "docs/evidence/m5-20261025/compatible-blend-browser-ledger.json",
+    "sha256": "f47149c961e1ff85898e2ea7e91ba945b3d3cc7a66561abb8bb2029b8a70e83a"
+  },
+  "screenshot": {
+    "path": "docs/evidence/m5-20261025/compatible-blend-exact-c1.png",
+    "sha256": "af641aca853969d4f7016b73bc8be2454e5b9e1fc057331699682d1139c58b50",
+    "visuallyInspected": true
+  },
+  "scope": {
+    "math": "96 passed:77 new rational/edge/reversal/non-unit-domain cases and19existing surface tests",
+    "api": "18 focused passed after fixture corrections;64 affected CAD/join/automation/trim regressions passed in the earlier79pass3fixturefail run on unchanged production source",
+    "browser": "GUI and public MCP mesh/exact C0/C1, raw/referenceId equality, one history, immutable inputs, invalid reference parity, project bit-exact and STEP strict area roundtrip, explicit cancel and late native handle release plus retained-handle transform",
+    "realScan": "Connected200-facet scan1 region,5x5degree3XY GUI/MCP fit equality, native exactface and valid thicken/STEP, scan-derived C1bridge",
+    "notEstablished": [
+      "General CAD-edge/G2/persistent constraints",
+      "Native-reference blend/seam/normal equivalence",
+      "Complete scan-to-sketch-to-surface-to-solid chain",
+      "Selection-change/close/unmount blend-specific runtime cancellation",
+      "M4 dependency acceptance",
+      "Final integrated candidate full checks/CI"
+    ]
+  }
+}

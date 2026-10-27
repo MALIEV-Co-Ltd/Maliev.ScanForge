@@ -1,0 +1,48 @@
+{
+  "status": "RED",
+  "passed": false,
+  "scope": "Partial real scan-derived GUI/public-MCP matrix: eight cases completed, last shell GUI geometry verification failed. No nine-case matrix pass, shell completion, final source consumption or project reopen claim.",
+  "workerSha256": "ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5",
+  "artifactDirectory": ".resources/surface-fit/607c5ada-fdb2-4b68-ab5c-17e558289784/",
+  "originalRunnerDirectory": ".resources/m5/real-cad-matrix-browser-green-r2/",
+  "originalNamingCaveat": "The original green-r2 prefix labels an attempt; its observed result is failure. All originals remain intact.",
+  "retainedFiles": [
+    "real-cad-matrix-red-r2.json",
+    "real-cad-matrix-red-r2-job.json",
+    "real-cad-matrix-red-r2-job.log",
+    "real-cad-matrix-red-r2-runner.json",
+    "real-cad-matrix-red-r2-browser.log"
+  ],
+  "completedCases": [
+    "loft",
+    "sweep",
+    "revolve",
+    "boolean-subtract",
+    "boolean-intersect",
+    "boolean-union",
+    "fillet",
+    "chamfer"
+  ],
+  "completedCaseScope": "Each retained case passed paired GUI/MCP geometry/BREP equality, independent geometry, error/recovery, history and STEP checks. Eight rendered result PNGs remain in the original artifact directory; coordinator visually observed visible coherent bodies without clipping, with small edge treatments subtle at wide framing.",
+  "failedCase": "shell",
+  "failure": "The oracle compared public tolerance-inclusive native edge boxes to base boxes as exact physical extrema. Shell mass and area passed first; shell endpoint and plane oracles had not run.",
+  "observedBounds": {
+    "min": [-56.416283780947985, -16.538193372694113, -323.2705536888672],
+    "max": [-46.12248210405977, -5.9320345063781055, -321.4695535888672]
+  },
+  "sourceDiagnosis": "cad_inspect edge bounds use BRepBndLib.Add(edge,bounds,false), documented as including kernel tolerance. Shell construction explicitly supplies 1e-6; no inferred 1e-3 default or actual endpoint displacement is claimed.",
+  "preparedOracleCorrection": "Require all shell edges analytic line; derive physical extrema from exact curve endpoints and independently authored outer/inner vertices at unchanged 1e-7 mm. Preserve every bidirectional endpoint, plane, mass/area and GUI/MCP exact equality assertion. Record native tolerance-inclusive boxes separately and require endpoint enclosure.",
+  "preparedHelperSha256": "bf17ac4b705b3649a5a8828ee22912f444a2ad10122b6161dfc8e3e8409041d8",
+  "preparedCorrectionExecuted": false,
+  "observedExitCode": 1,
+  "elapsedSecondsBeforeReceipt": 90.76273610000499,
+  "peakJobBytes": 2792837120,
+  "totalProcesses": 43,
+  "activeAfter": 0,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "previewPort5206Closed": true,
+  "errors": [],
+  "cleanupErrors": [],
+  "nextStep": "Review the source-only shell oracle correction and admit a fresh complete browser matrix. Current evidence does not establish shell or full-matrix completion, native equivalence or milestone closure."
+}

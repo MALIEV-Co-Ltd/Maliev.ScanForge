@@ -1,0 +1,64 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro8.0.123",
+  "ownedPid": 62104,
+  "ownedWindowId": 303041090,
+  "creationTimeFiletime": "134374746890062495",
+  "startedUtc": "2026-10-26T07:51:29.027663+00:00",
+  "finishedUtc": "2026-10-26T07:55:51.824786+00:00",
+  "ownedIdentityVerified": true,
+  "foregroundIdentityVerified": true,
+  "nativePixelsVerified": true,
+  "ownedWindowMaximized": true,
+  "inputProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r4/native-output/m5-native-thickened-0p1.qsf",
+    "bytes": 139145,
+    "sha256": "d60588900e6720e9acb641489db9363753c1bd214c87f8dfe4f7ffea74bf223c"
+  },
+  "sourceProjectUnchanged": true,
+  "exportedStep": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r6/native-output/m5-native-thickened-0p1.stp",
+    "bytes": 47505,
+    "sha256": "6e2a1ded4afd3b644b4cb64675d9b9f6bebfbfb9097eb327c14a70feedfabdbe",
+    "format": "STEP AP214 International Standard",
+    "mapZToYAxis": false,
+    "headerSchema": "AUTOMOTIVE_DESIGN"
+  },
+  "actualSavedSolidReopened": true,
+  "visibleScene": "Only Solids(1)/[1]Thicken(1) visible; Mesh and Fit Surface hidden",
+  "nativeSolidStepExported": true,
+  "stepReimportedOrNumericallyCompared": false,
+  "scope": "Actual native export through verified owned GUI. Numerical topology/geometry comparison remains a separate gate.",
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "authenticated-finish",
+    "ownedProcessExited": true,
+    "watchdogStopped": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "job": {
+    "command": [
+      "C:/Python314/python.exe",
+      "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/run_owned_ui_session.py",
+      "--authorized-owned-ui-session",
+      "--output-name",
+      "owned-fit-exchange-r6",
+      "--lease-seconds",
+      "480",
+      "--finish-after-seconds",
+      "450",
+      "--interactive-window"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 600,
+    "exitCode": 0,
+    "peakJobBytes": 668844032,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 263.05267529998673
+  },
+  "mutexReleased": true,
+  "existingNativeWindowsOperated": false
+}

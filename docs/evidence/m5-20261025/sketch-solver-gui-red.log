@@ -1,0 +1,76 @@
+Shared bounded validation mutex acquired (wait status 0).
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ❯ tests/sketch-surface-api.test.ts (18 tests | 3 failed) 314ms
+   ❯ shared sketch surface CAD API (18)
+     × rejects oversized sketchSurface solver input before solving or mutating shared model/authoring 39ms
+     × rejects oversized sketch-curves solver input before solving or mutating shared model/authoring 9ms
+     × rejects oversized sketch solver input before solving or mutating shared model/authoring 15ms
+ ❯ tests/parametric-sketch-surface.test.ts (17 tests | 3 failed) 24ms
+   ❯ editable analytic sketch surface recipes (17)
+     × admits solver work before sketchSurface CAD sketch solving 8ms
+     × admits solver work before sketch-curves CAD sketch solving 2ms
+     × admits solver work before sketch CAD sketch solving 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketchSurface CAD sketch solving
+ FAIL  tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketch-curves CAD sketch solving
+ FAIL  tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketch CAD sketch solving
+AssertionError: expected [Function] to throw error matching /CAD sketch solver.*(?:budget|limit)/i but got 'VALIDATION_ADMISSION_TRAP: detailed v…'
+
+- Expected:
+/CAD sketch solver.*(?:budget|limit)/i
+
++ Received:
+"VALIDATION_ADMISSION_TRAP: detailed validation must not start"
+
+ ❯ tests/parametric-sketch-surface.test.ts:175:56
+    173|           });
+    174|         try {
+    175|           expect(() => validateParametricModel(graph)).toThrow(
+       |                                                        ^
+    176|             /CAD sketch solver.*(?:budget|limit)/i,
+    177|           );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketchSurface solver input before solving or mutating shared model/authoring
+ FAIL  tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketch-curves solver input before solving or mutating shared model/authoring
+ FAIL  tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketch solver input before solving or mutating shared model/authoring
+AssertionError: expected { …(6) } to match object { status: 'failed', error: { …(1) } }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "error": {
+-     "message": StringMatching /CAD sketch solver.*(?:budget|limit)/i,
++     "message": "SOLVER_ADMISSION_TRAP: dense solver must not start",
+    },
+    "status": "failed",
+  }
+
+ ❯ tests/sketch-surface-api.test.ts:203:24
+    201|           await h.api.invoke("cad_create", h.request("oversized", reci…
+    202|         );
+    203|         expect(result).toMatchObject({
+       |                        ^
+    204|           status: "failed",
+    205|           error: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  2 failed | 8 passed (10)
+      Tests  6 failed | 130 passed (136)
+   Start at  16:16:11
+   Duration  3.08s (transform 44%, tests 27%, import 27%, worker 1%)
+
+    Isolate  10 workers spawned · ~81ms startup each (spawn + environment, per file)
+             at least ~733ms faster with isolate: false — reuses workers across files instead of one per file
+
+{"command": ["C:/Program Files/nodejs/node.exe", "--max-old-space-size=768", "node_modules/vitest/vitest.mjs", "run", "--maxWorkers=1", "tests/ribbon-model.test.ts", "tests/ribbon-command-availability.test.ts", "tests/ribbon-verification.test.tsx", "tests/tool-panel-isolation.test.tsx", "tests/workflow-operations.test.ts", "tests/command-repeat.test.ts", "tests/reconstruction-ui-command.test.ts", "tests/parametric-sketch-surface.test.ts", "tests/sketch-surface-api.test.ts", "tests/cad-client.test.ts"], "jobLimitBytes": 4294967296, "leaseSeconds": 16, "exitCode": 1, "peakJobBytes": 360841216, "totalProcesses": 17, "activeAfter": 0, "passed": false, "elapsedSeconds": 3.559397400007583}
+Shared bounded validation mutex released after guard cleanup.
