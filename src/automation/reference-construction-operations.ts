@@ -25,6 +25,8 @@ import {
   resolveStoredReferenceConstructionInputs,
   resolveReferencePointSource,
   resolveReferenceLineSource,
+  supportsReferenceLineObjectSelection,
+  acquireLocatedReferenceLinePick,
 } from "../reference-construction-resolver";
 import { resolveConstructionIdentities } from "../reference-construction-identity";
 import { datumEntityDependencies } from "../datum-dependencies";
@@ -637,6 +639,7 @@ function sourceEligibility(
   eligible: boolean;
   reason?: string;
   planeUVBounds?: { min: number[]; max: number[]; units: "mm" };
+  objectSelection?: boolean;
 } {
   if (kind === "line") {
     try {
@@ -647,6 +650,9 @@ function sourceEligibility(
       return {
         primitiveKind: primitive.kind,
         eligible: true,
+        ...(mode === "pair" && supportsReferenceLineObjectSelection(entity)
+          ? { objectSelection: true }
+          : {}),
         ...(primitive.kind === "plane"
           ? {
               planeUVBounds: {
@@ -780,7 +786,71 @@ function lineDefinition(
           "A reference cannot depend on itself or create a dependency cycle.",
         );
     }
-    definition = buildReferenceLineDefinition(scene, mode, picks).definition;
+    if (picks.some((pick) => pick?.retainedIndex !== undefined)) {
+      if (picks.length > REFERENCE_CONSTRUCTION_LINE_RECORD_LIMIT)
+        throw new Error("Reference line record resource limit exceeded.");
+      if (previous?.kind !== "line" || previous.mode === "endpoints")
+        throw new Error(
+          "Retained records require an existing derived line or owned preview.",
+        );
+      const identities = resolveConstructionIdentities(
+        scene,
+        picks.map((pick) => pick?.entityId),
+      );
+      const byId = new Map(scene.map((entity) => [entity.id, entity]));
+      const previousKeys = new Map(
+        previous.sources.map((source) => [
+          source.id,
+          source.constructionOrderKey,
+        ]),
+      );
+      const currentKeys = new Map(
+        identities.orderedSources.map((source) => [
+          source.id,
+          source.constructionOrderKey,
+        ]),
+      );
+      const records = picks.map((pick) => {
+        check();
+        if (pick?.retainedIndex === undefined)
+          return acquireLocatedReferenceLinePick(
+            byId.get(pick?.entityId)!,
+            pick,
+            mode,
+          );
+        if (
+          Reflect.ownKeys(pick).length !== 2 ||
+          !Object.hasOwn(pick, "entityId") ||
+          !Object.hasOwn(pick, "retainedIndex") ||
+          !Number.isSafeInteger(pick.retainedIndex)
+        )
+          throw new Error(
+            "Retained record intent accepts only entityId and retainedIndex.",
+          );
+        const retained = previous.records[pick.retainedIndex];
+        const oldKey = previousKeys.get(pick.entityId);
+        const currentKey = currentKeys.get(pick.entityId);
+        if (
+          !retained ||
+          retained.entityId !== pick.entityId ||
+          !oldKey ||
+          !currentKey ||
+          oldKey !== currentKey
+        )
+          throw new Error(
+            "Retained record does not match its current source identity.",
+          );
+        return retained;
+      });
+      definition = copyReferenceConstruction({
+        version: 1,
+        kind: "line",
+        mode,
+        records,
+        sources: identities.orderedSources,
+      });
+    } else
+      definition = buildReferenceLineDefinition(scene, mode, picks).definition;
   } else {
     if (previous?.kind !== "line" || previous.records.length === 0)
       throw new Error(

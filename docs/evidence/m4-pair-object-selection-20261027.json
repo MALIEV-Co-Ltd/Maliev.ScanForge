@@ -1,0 +1,27 @@
+{
+  "scope": "Observed native numeric-line pair object-selection fixture; not general native acquisition acceptance",
+  "build": "scanforge-8d14a572c53c5924",
+  "referenceTests": { "files": 63, "passed": 1388 },
+  "buildTypecheckBatchesPassed": 13,
+  "browser": {
+    "publicMcpAndGuiEqual": true,
+    "nativeFixtureRecords": [
+      [0, 0, 0],
+      [0, 0, 0]
+    ],
+    "retainedSourceEditAndCancel": true,
+    "sourceEditHistoryAndWorkerReopen": true,
+    "privatePortsClosed": true,
+    "ownedProcessesExited": true
+  },
+  "receiptSha256": {
+    "browserEvidence": "8b25f4a62df7c22203727dde6fdd56d9fd90124e571d085ff98882c52bc3e5e4",
+    "browserBoundedJob": "0e192987aef0d510ae185534f28ad54a5c2e0ee622437c437803d8e82cf93b07",
+    "buildBoundedJob": "29f5abf422bbfed3165d967285f8910eefd280f9a4d23dfc51b37419236a317b",
+    "referenceBoundedJob": "43cff5c25b1c9b0660cf581ae90e4c188e11acd64a04f7f0fe2a246c61f33771"
+  },
+  "remaining": [
+    "Native average source selection",
+    "General native acquisition and remaining M4 acceptance gates"
+  ]
+}

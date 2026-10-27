@@ -158,8 +158,15 @@ Strict saved-record readback of the two native pair projects confirms reciprocal
 source/dependent identities, mode 3, ordered source identities and zero-valued
 pick suffixes before and after the source edit. The tested application midpoint
 fraction route retains nonzero midpoint coordinates for these same sources.
-The matching displayed result does not close this native dropdown acquisition
-and persisted-record parity gap.
+The subsequent [object-selection checkpoint](evidence/m4-pair-object-selection-20261027.json)
+uses zero-valued records for this specific pair of numeric endpoint sources.
+On build `scanforge-8d14a572c53c5924`,
+the isolated GUI/public-MCP run matched those records and geometry, retained an
+unchanged source record while editing another, and passed Cancel, source refresh,
+undo/redo and project-worker reopen. The 63-file reference suite passed 1,388
+tests and all 13 build type-check batches passed. This closes the observed
+record discrepancy for that fixture only; native average selection, general
+acquisition and other native acceptance gates remain open.
 
 Original native R10 cloud-pick acceptance exposed a four-ULP precision difference:
 the saved point contains `6.80000019073486` after the native numeric control's

@@ -51,6 +51,16 @@ export function ReferenceConstructionDialog({
   const [sourceParameters, setSourceParameters] = useState<
     (number | undefined)[]
   >([]);
+  const [sourceObjectSelections, setSourceObjectSelections] = useState<
+    boolean[]
+  >([]);
+  const [retainedIndices, setRetainedIndices] = useState<
+    (number | undefined)[]
+  >(() =>
+    definition?.kind === "line" && definition.mode !== "endpoints"
+      ? definition.records.map((_, index) => index)
+      : [],
+  );
   const [sourcePlaneUV, setSourcePlaneUV] = useState<
     ([number | undefined, number | undefined] | undefined)[]
   >([]);
@@ -60,6 +70,7 @@ export function ReferenceConstructionDialog({
     eligible: boolean;
     reason?: string;
     primitiveKind?: string;
+    objectSelection?: boolean;
     planeUVBounds?: {
       min: [number, number];
       max: [number, number];
@@ -314,6 +325,20 @@ export function ReferenceConstructionDialog({
             onClose();
             return;
           }
+          if (
+            kind === "line" &&
+            lineMode !== "endpoints" &&
+            retainedIndices.some((index) => index !== undefined)
+          ) {
+            setRetainedIndices([]);
+            setSourceObjectSelections([]);
+            setSourceParameters([]);
+            setSourcePlaneUV([]);
+            setLinePicksChanged(true);
+            throw new Error(
+              "The preview expired or changed. Choose each source again before previewing.",
+            );
+          }
         } else if (action === "cancel" && current.version !== undefined) {
           owner = { sessionId: owner.sessionId, version: current.version };
         } else if (current.cleanupPending) {
@@ -374,13 +399,20 @@ export function ReferenceConstructionDialog({
                           ? {
                               sourcePicks: sourceIds.map((entityId, index) => ({
                                 entityId,
-                                ...(sourceOptions.find(
-                                  (row) => row.entityId === entityId,
-                                )?.primitiveKind === "plane"
-                                  ? { planeUV: sourcePlaneUV[index] ?? [] }
-                                  : sourceParameters[index] === undefined
-                                    ? {}
-                                    : { parameter: sourceParameters[index] }),
+                                ...(retainedIndices[index] !== undefined
+                                  ? { retainedIndex: retainedIndices[index] }
+                                  : sourceOptions.find(
+                                        (row) => row.entityId === entityId,
+                                      )?.primitiveKind === "plane"
+                                    ? { planeUV: sourcePlaneUV[index] ?? [] }
+                                    : lineMode === "pair" &&
+                                        sourceObjectSelections[index]
+                                      ? { selection: "object" }
+                                      : sourceParameters[index] === undefined
+                                        ? {}
+                                        : {
+                                            parameter: sourceParameters[index],
+                                          }),
                               })),
                             }
                           : {}),
@@ -411,13 +443,26 @@ export function ReferenceConstructionDialog({
       });
       if (!result.ok) throw new Error(result.error.message);
       if (action === "preview") {
-        const { sessionId, version, outcome, diagnostics } = result.result as {
+        const {
+          sessionId,
+          version,
+          outcome,
+          diagnostics,
+          definition: previewDefinition,
+        } = result.result as {
           sessionId: string;
           version: number;
           outcome?: string;
           diagnostics?: { reason?: string };
+          definition?: typeof definition;
         };
         setSession({ sessionId, version });
+        setRetainedIndices(
+          previewDefinition?.kind === "line" &&
+            previewDefinition.mode !== "endpoints"
+            ? previewDefinition.records.map((_, index) => index)
+            : [],
+        );
         setDirty(false);
         setPreviewOutcome(
           outcome === "unchanged"
@@ -567,10 +612,10 @@ export function ReferenceConstructionDialog({
             <>
               {kind === "line" && linePicksChanged && (
                 <p>
-                  Choose a position from 0 to 1 for every selected line, or
-                  local U/V millimetres within the authored plane extent.
-                  Accepted picks keep their world coordinates when sources
-                  change.
+                  Choose a position from 0 to 1 for each selected line, select
+                  an eligible source object, or use local U/V millimetres within
+                  the authored plane extent. Accepted picks keep their world
+                  coordinates when sources change.
                 </p>
               )}
               {Array.from({ length: sourceCount }, (_, index) => (
@@ -590,6 +635,16 @@ export function ReferenceConstructionDialog({
                         });
                         if (kind === "line") {
                           setLinePicksChanged(true);
+                          setRetainedIndices((previous) => {
+                            const next = [...previous];
+                            next[index] = undefined;
+                            return next;
+                          });
+                          setSourceObjectSelections((previous) => {
+                            const next = [...previous];
+                            next[index] = false;
+                            return next;
+                          });
                           setSourceParameters((previous) => {
                             const next = [...previous];
                             next[index] = undefined;
@@ -633,6 +688,35 @@ export function ReferenceConstructionDialog({
                     </AppSelect>
                   </label>
                   {kind === "line" &&
+                    lineMode === "pair" &&
+                    sourceOptions.find(
+                      (row) => row.entityId === sourceIds[index],
+                    )?.objectSelection && (
+                      <label>
+                        <input
+                          type="checkbox"
+                          disabled={busy || closing}
+                          checked={!!sourceObjectSelections[index]}
+                          onChange={(event) => {
+                            const checked = event.target.checked;
+                            setSourceObjectSelections((previous) => {
+                              const next = [...previous];
+                              next[index] = checked;
+                              return next;
+                            });
+                            setLinePicksChanged(true);
+                            setRetainedIndices((previous) => {
+                              const next = [...previous];
+                              next[index] = undefined;
+                              return next;
+                            });
+                            setDirty(true);
+                          }}
+                        />
+                        Select source {index + 1} object without a position
+                      </label>
+                    )}
+                  {kind === "line" &&
                     sourceOptions.find(
                       (row) => row.entityId === sourceIds[index],
                     )?.primitiveKind === "axis" && (
@@ -641,6 +725,10 @@ export function ReferenceConstructionDialog({
                         <input
                           aria-label={`Source ${index + 1} fraction`}
                           type="number"
+                          disabled={
+                            lineMode === "pair" &&
+                            !!sourceObjectSelections[index]
+                          }
                           min="0"
                           max="1"
                           step="any"
@@ -655,6 +743,11 @@ export function ReferenceConstructionDialog({
                               return next;
                             });
                             setLinePicksChanged(true);
+                            setRetainedIndices((previous) => {
+                              const next = [...previous];
+                              next[index] = undefined;
+                              return next;
+                            });
                             setDirty(true);
                           }}
                         />
@@ -705,6 +798,11 @@ export function ReferenceConstructionDialog({
                                       return next;
                                     });
                                     setLinePicksChanged(true);
+                                    setRetainedIndices((previous) => {
+                                      const next = [...previous];
+                                      next[index] = undefined;
+                                      return next;
+                                    });
                                     setDirty(true);
                                   }}
                                 />
@@ -760,6 +858,7 @@ export function ReferenceConstructionDialog({
                       disabled={busy || closing}
                       onClick={() => {
                         setSourceIds((previous) => previous.slice(0, -1));
+                        setRetainedIndices((previous) => previous.slice(0, -1));
                         if (kind === "line") setLinePicksChanged(true);
                         setDirty(true);
                       }}
