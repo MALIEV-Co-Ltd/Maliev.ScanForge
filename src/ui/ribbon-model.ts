@@ -48,6 +48,11 @@ export const RIBBON_ACTION_IDS = [
   "autoFreeform",
   "quadObj",
   "sketch2d",
+  "referencePlane",
+  "coordinateSystem",
+  "referencePoint",
+  "referenceLine",
+  "referenceAxis",
   "sketchFromSection",
   "reducePolygons",
   "reduceNoise",
@@ -190,9 +195,9 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
             planned("symmetryPlane", "Symmetry plane", "plane"),
             planned("cadPlane", "Plane from CAD", "plane"),
           ),
-          planned("referenceAxis", "Axis", "align"),
-          planned("referencePoint", "Point", "select"),
-          planned("coordinateSystem", "Coordinate system", "align"),
+          tool("referenceAxis", "Reference axis (finite)", "align"),
+          tool("referencePoint", "Point", "select"),
+          tool("coordinateSystem", "Coordinate system", "align"),
         ),
         compact: true,
       },
@@ -241,7 +246,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("right", "Right", "view"),
         tool("front", "Front", "view"),
         tool("back", "Back", "view"),
-        planned("coordinateSystem", "Coordinate system", "align"),
+        tool("coordinateSystem", "Coordinate system", "align"),
         tool("wireframe", "Wireframe", "wireframe"),
       ),
       group(
@@ -317,10 +322,11 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("fitCone", "Cone", "cone", true),
         tool("fitSphere", "Sphere", "sphere", true),
         planned("symmetryPlane", "Symmetry plane", "plane"),
-        planned("referenceLine", "Reference line", "curve"),
-        planned("referencePoint", "Reference point", "select"),
-        planned("referenceAxis", "Axis", "align"),
-        planned("coordinateSystem", "Coordinate system", "align"),
+        tool("referencePlane", "Reference plane", "plane"),
+        tool("referenceLine", "Reference line", "curve"),
+        tool("referencePoint", "Reference point", "select"),
+        tool("referenceAxis", "Reference axis (finite)", "align"),
+        tool("coordinateSystem", "Coordinate system", "align"),
       ),
       group(
         "From CAD",
@@ -528,6 +534,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
 
 export interface RibbonState {
   selectionKind?: Entity["kind"];
+  referenceTransformEligibility?: { eligible: boolean; reason?: string };
   landmarkSourceId?: string | null;
   interactiveTargetError?: string | null;
   globalAlignmentError?: string | null;
@@ -549,7 +556,29 @@ export function ribbonToolAvailability(
   actions: RibbonActions,
 ): { available: boolean; reason: string } {
   const verification = ribbonVerification(tool.id, !!tool.action);
-  if (verification.status !== "verified")
+  const semanticTransform =
+    tool.action === "transform" &&
+    ["transform", "scaleBody"].includes(tool.id) &&
+    ["referencePoint", "referenceLine", "referenceFrame"].includes(
+      state.selectionKind ?? "",
+    );
+  const numericTransform =
+    semanticTransform &&
+    state.selectionKind !== "referenceFrame" &&
+    state.referenceTransformEligibility?.eligible === true;
+  if (
+    semanticTransform &&
+    state.referenceTransformEligibility?.eligible === false
+  )
+    return {
+      available: false,
+      reason:
+        state.referenceTransformEligibility.reason ??
+        "This reference cannot be transformed.",
+    };
+  // The broader CAD transform workflow keeps its existing verification gate.
+  // Only the selected, validated numeric-reference shared path is admitted.
+  if (verification.status !== "verified" && !numericTransform)
     return { available: false, reason: verification.reason };
   if (
     !tool.action ||
@@ -594,7 +623,8 @@ export function ribbonToolAvailability(
         "decimateMesh",
         "prepareScan",
       ].includes(tool.action)) &&
-    !["measure", "objectColor", "wireframe", "delete"].includes(tool.action)
+    !["measure", "objectColor", "wireframe", "delete"].includes(tool.action) &&
+    !numericTransform
   )
     return {
       available: false,

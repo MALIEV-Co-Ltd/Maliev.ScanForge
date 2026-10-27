@@ -20,7 +20,12 @@ export function validatePlaneFrame(
     !vector(frame.normal) ||
     !vector(frame.tangent) ||
     Math.abs(Math.hypot(...frame.normal) - 1) > 1e-9 ||
-    Math.hypot(...frame.tangent) === 0
+    Math.hypot(...frame.tangent) === 0 ||
+    (frame.displaySize !== undefined &&
+      (typeof frame.displaySize !== "number" ||
+        !Number.isFinite(frame.displaySize) ||
+        frame.displaySize <= 0 ||
+        frame.displaySize > 2e9))
   )
     throw new Error("Invalid construction plane frame.");
   for (let i = 0; i < positions.length; i += 3) {
@@ -31,6 +36,25 @@ export function validatePlaneFrame(
     if (!Number.isFinite(distance) || Math.abs(distance) > 0.001)
       throw new Error("Construction plane frame does not match its geometry.");
   }
+}
+
+/** The stored tangent can be nonunit and need not be perpendicular to the normal. */
+export function planeFrameBasis(frame: NonNullable<Entity["planeFrame"]>) {
+  const n = frame.normal;
+  const dot = frame.tangent.reduce((sum, value, i) => sum + value * n[i], 0);
+  const tangent = frame.tangent.map((value, i) => value - dot * n[i]) as Vec3;
+  const length = Math.hypot(...tangent);
+  if (!Number.isFinite(length) || length < 1e-9)
+    throw new Error(
+      "Construction plane tangent must not be parallel to its normal.",
+    );
+  const u = tangent.map((value) => value / length) as Vec3;
+  const v: Vec3 = [
+    n[1] * u[2] - n[2] * u[1],
+    n[2] * u[0] - n[0] * u[2],
+    n[0] * u[1] - n[1] * u[0],
+  ];
+  return { u, v };
 }
 
 /** Positive uniform transforms retain a plane's stored tangent orientation. */
@@ -56,5 +80,8 @@ export function transformPlaneFrame(
     center,
     normal: axes.slice(0, 3) as Vec3,
     tangent: axes.slice(3, 6) as Vec3,
+    ...(frame.displaySize === undefined
+      ? {}
+      : { displaySize: frame.displaySize * scale }),
   };
 }

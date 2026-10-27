@@ -1,0 +1,348 @@
+{
+  "date": "2026-10-25",
+  "scope": "Shared plane-to-sketch placement, retained internal child state and readable sketch overlays",
+  "milestoneComplete": false,
+  "committed": false,
+  "merged": false,
+  "candidate": {
+    "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "sourceManifestSha256": "f1fa0441beb4f007aceedff67cc04e84a0a6fcb855c46af735167e1f36ba276f",
+    "applicationInputs": 1027,
+    "buildIdentity": "scanforge-1c793ce77471a5c1"
+  },
+  "verification": {
+    "build": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2630041600,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 36.37887240003329
+    },
+    "focused": {
+      "passed": 94,
+      "files": 9,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/sketch-plane-source.test.ts",
+          "tests/sketch-plane-source-api.test.ts",
+          "tests/sketch-plane-dialog.test.tsx",
+          "tests/sketch-authoring-host-history.test.ts",
+          "tests/sketch-child-state.test.ts",
+          "tests/sketch-child-collection.test.ts",
+          "tests/sketch-line-child.test.ts",
+          "tests/reference-construction-api.test.ts",
+          "tests/origin.test.tsx",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 428654592,
+        "totalProcesses": 16,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 4.730298899987247
+      }
+    },
+    "publicBrowser": {
+      "command": ["node", "tests/primitive-fitting-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1827209216,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 11.615928900020663
+    },
+    "browserData": {
+      "owner": "scanforge-m4-primitive-validation",
+      "startedAt": "2026-10-25T16:24:54.874Z",
+      "expiresAt": "2026-10-25T16:28:54.875Z",
+      "persistentData": false,
+      "resources": [
+        {
+          "kind": "http-server",
+          "pid": 56892,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T16:24:54.874Z",
+          "port": 60482,
+          "bind": "127.0.0.1",
+          "purpose": "isolated built application"
+        },
+        {
+          "kind": "mcp-stdio-child",
+          "pid": 56240,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T16:24:55.134Z",
+          "port": 60483,
+          "bind": "127.0.0.1",
+          "purpose": "actual stdio SDK and browser bridge"
+        },
+        {
+          "kind": "disposable-browser",
+          "pid": 15076,
+          "executable": "installed Chrome",
+          "startedAt": "2026-10-25T16:24:55.323Z",
+          "purpose": "isolated profile and UI validation"
+        }
+      ],
+      "cleanup": [
+        {
+          "port": 60482,
+          "closed": true
+        },
+        {
+          "port": 60483,
+          "closed": true
+        },
+        {
+          "pid": 56240,
+          "exited": true
+        },
+        {
+          "pid": 15076,
+          "exited": true
+        }
+      ],
+      "originalInput": {
+        "path": "C:/repo/alignment-example-files/ply-1.ply",
+        "bytes": 6926970,
+        "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+      },
+      "originalPlaneFit": {
+        "fit": {
+          "kind": "plane",
+          "center": [
+            24.317468102409546, 19.326076248154635, -300.4169847525105
+          ],
+          "axis": [
+            -0.4498839210802536, 0.33666408758993643, 0.8272011543032879
+          ],
+          "rms": 2.5177831922908473,
+          "maxError": 5.218941069637449
+        },
+        "samples": 19583,
+        "totalVertices": 822462
+      },
+      "sketchCurveCoverage": {
+        "light": 1,
+        "dark": 1
+      },
+      "scanPlaneSketch": {
+        "sourceEntityId": "2b2ee048-5499-42a6-b362-d8da4e1a0154",
+        "frame": {
+          "origin": [
+            23.192758299708913, 20.167736467129476, -298.34898186675224
+          ],
+          "u": [0.8892319315966516, 0.08289167257538108, 0.4498839210802536],
+          "v": [0.08289167257538113, 0.9379692227066363, -0.33666408758993643],
+          "normal": [
+            -0.4498839210802536, 0.33666408758993643, 0.8272011543032879
+          ]
+        },
+        "constraints": 7,
+        "closedProfile": true,
+        "reopened": true
+      },
+      "solidFits": [
+        {
+          "kind": "sphere",
+          "fit": {
+            "kind": "sphere",
+            "center": [
+              -4.735795089416683e-16, -2.1684043449710643e-18,
+              2.98372437868011e-16
+            ],
+            "radius": 5,
+            "axis": [0, 0, 1],
+            "rms": 5.351930849751783e-16,
+            "maxError": 1.7763568394002505e-15
+          },
+          "entityId": "156590e9-6ed7-47aa-8cb4-f09ee78b4e50",
+          "exactCad": true
+        },
+        {
+          "kind": "cylinder",
+          "fit": {
+            "kind": "cylinder",
+            "center": [-9.796192898012309e-17, -4.144708848156939e-17, 5],
+            "axis": [0, 0, 1],
+            "radius": 3.0000000000000058,
+            "height": 9.999999999999998,
+            "rms": 5.776005752245401e-15,
+            "maxError": 6.217248937900877e-15
+          },
+          "entityId": "f0e72ab3-6be9-48c9-b54a-a6d12a9dadd0",
+          "exactCad": true
+        },
+        {
+          "kind": "cone",
+          "fit": {
+            "kind": "cone",
+            "center": [-1.6759861162204478e-16, -7.325063995084446e-17, 10],
+            "axis": [1.019073382802799e-17, -5.2710471385812275e-18, -1],
+            "radius": 4,
+            "topRadius": 2.0000000000000004,
+            "height": 10,
+            "rms": 3.1064413215324337e-16,
+            "maxError": 8.709305949236424e-16
+          },
+          "entityId": "67b7a61d-b7cc-4e6b-b859-3c8d642ad7b0",
+          "exactCad": true
+        }
+      ],
+      "steps": [
+        "actual stdio SDK discovery and pairing",
+        "analytic whole and local region fitting",
+        "Construct ribbon GUI fitting and shared plane creation",
+        "exact GUI/MCP fit/frame equality",
+        "Undo and MCP recreation",
+        "fit diagnostics/frame through real project worker reopen",
+        "original unmodified ply-1.ply GUI import and same GUI/MCP plane fit/materialization",
+        "original scan plane to equal GUI/MCP sketch frame, constrained closed profile, sketch Undo/Redo and worker reopen",
+        "sphere/cylinder/cone analytic GUI fits, actual CAD creation and worker reopen",
+        "WebGL and process/port cleanup"
+      ],
+      "passed": true
+    },
+    "fullSuite": {
+      "passed": 49084,
+      "skipped": 65,
+      "failed": 1,
+      "filesPassed": 683,
+      "filesSkipped": 19,
+      "filesFailed": 1,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "--exclude",
+          "**/.resources/**"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 1,
+        "peakJobBytes": 979173376,
+        "totalProcesses": 831,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 294.07569799997145
+      },
+      "failure": "Old ribbon-model negative inventory still expected sketch2d disabled; corrected after real browser acceptance. This full run remains a failed receipt."
+    },
+    "correctedRibbonAndDisplay": {
+      "passed": 23,
+      "files": 4,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/ribbon-model.test.ts",
+          "tests/ribbon-verification.test.tsx",
+          "tests/ribbon-help-availability.test.ts",
+          "tests/viewport-display.test.ts",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 331546624,
+        "totalProcesses": 11,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 1.7570467999903485
+      }
+    },
+    "constructionRendering": {
+      "receipt": {
+        "command": ["node", "tests/sketch-construction-browser.mjs"],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 967942144,
+        "totalProcesses": 13,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 2.7012811999884434
+      },
+      "scope": "Actual public stdio MCP, GUI construction toggle and Undo; ordinary lines/arcs remain continuous, construction curves retain pixel gaps after overlay rendering change",
+      "ordinaryCoverage": 1,
+      "constructionLineCoverage": 0.58,
+      "constructionLineTransitions": 27,
+      "constructionArcCoverage": 0.6025
+    }
+  },
+  "mcpCoverage": [
+    "sketch_manage create/activate shares GUI authoring publication and selection clearing",
+    "planeSourceId and normalOffset expose reference-plane placement; explicit rigid sketch frames expose custom/origin placement",
+    "Shared revision, retry and reference-preview admission; invalid sources/frames reject before publication",
+    "sketch_get, sketch_set, history_undo/history_redo scope sketch and real project export/import preserve placement and constraints",
+    "settings_set theme updates the same rendered ordinary/construction curve materials as GUI settings"
+  ],
+  "nativeStaticRecovery": {
+    "sourceSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "carrierSha256": "7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849",
+    "capture": {
+      "command": [
+        "python",
+        ".resources/m4/native-capture/capture_owned_static.py",
+        "--capture",
+        "--authorized-owned-capture",
+        "--output-name",
+        "owned-static-r1",
+        "--startup-seconds",
+        "3",
+        "--lease-seconds",
+        "25"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 904192000,
+      "totalProcesses": 4,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 3.6295507999602705
+    },
+    "analysis": {
+      "command": [
+        "python",
+        ".resources/m4/native-capture/run_focused_static.py",
+        "--authorized-static-analysis",
+        "--output-name",
+        "focused-point-static-r3"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 750182400,
+      "totalProcesses": 6,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 6.6603502000216395
+    },
+    "scope": "Private static code recovery only; no native numerical, rendered editor or save/reopen comparison claimed"
+  },
+  "remaining": [
+    "Full ordered SketchV2, exact project child-state codec and complete curve/editor integration",
+    "Source-derived reference public admission and complete dependency lifecycle",
+    "Remaining construction modes and native equivalence/functional/save-reopen acceptance",
+    "Final reviewed M4 commit dependency set, main merge and milestone closure"
+  ]
+}

@@ -15,6 +15,7 @@ import {
   releaseReferenceConstructionPreview,
 } from "../src/automation/reference-construction-preview";
 import { applyReferenceConstructionToWorkspace } from "../src/automation/reference-construction-apply";
+import { datumEntityDependencies } from "../src/datum-dependencies";
 const apis: ApplicationApi[] = [];
 const mesh = (id: string, locked = false): Entity => ({
   id,
@@ -160,7 +161,7 @@ afterEach(() => {
   expect(vi.getTimerCount()).toBe(0);
   vi.useRealTimers();
 });
-it("publishes cached geometry and only selected source keys in one history change", async () => {
+it("publishes cached numeric geometry without retaining or migrating inactive sources", async () => {
   const { apply, state, commit, preview, host } = setup();
   const [source, unselected] = state.entities;
   const response = await apply();
@@ -174,15 +175,17 @@ it("publishes cached geometry and only selected source keys in one history chang
   expect(source.constructionOrderKey).toBeUndefined();
   expect(state.entities[0].locked).toBe(true);
   expect(state.entities[0].positions).toBe(source.positions);
-  expect(state.entities[0].constructionOrderKey).toBe(
-    preview.definition.sources[0].constructionOrderKey,
-  );
+  expect(state.entities[0]).toBe(source);
+  expect(state.entities[0].constructionOrderKey).toBeUndefined();
+  expect(preview.definition.sources).toHaveLength(1);
+  expect(response).toMatchObject({ result: { assignedSources: [] } });
   expect(state.entities[1]).toBe(unselected);
   expect(unselected.constructionOrderKey).toBeUndefined();
   const created = state.entities[2];
   expect(created.kind).toBe("referencePoint");
   expect(created.positions.length).toBe(0);
   expect(created.reference?.geometry).toEqual(preview.preview.geometry);
+  expect(created.reference?.definition.sources).toEqual([]);
   const geometry = created.reference!.geometry;
   if (geometry.kind !== "point") throw Error("Expected point");
   expect(Object.is(geometry.position[0], -0)).toBe(true);
@@ -190,6 +193,96 @@ it("publishes cached geometry and only selected source keys in one history chang
     active: false,
     reason: "applied",
   });
+});
+it("removes old accepted links when an existing derived point becomes numeric", async () => {
+  const source = { ...mesh("source"), constructionOrderKey: "02".repeat(16) };
+  const original = referencePoint();
+  original.reference!.definition = {
+    version: 1,
+    kind: "point",
+    mode: "center",
+    sources: [
+      { id: source.id, constructionOrderKey: source.constructionOrderKey },
+    ],
+  };
+  const f = setup([original, source], {
+    definition: {
+      version: 1,
+      kind: "point",
+      mode: "coordinates",
+      position: [1, 2, 3],
+      sources: original.reference!.definition.sources,
+    },
+  });
+  f.setTarget({ kind: "edit", id: original.id });
+  expect((await f.apply()).ok).toBe(true);
+  expect(
+    datumEntityDependencies(f.state.entities).find(
+      (row) => row.id === original.id,
+    )?.references,
+  ).toEqual([]);
+  expect(
+    f.state.history[0].entities[0].reference!.definition.sources,
+  ).toHaveLength(1);
+  expect(f.state.entities[1]).toBe(source);
+});
+it("finalizes numeric point state without recomputing its cached geometry", async () => {
+  const f = setup(undefined, {
+    evaluationAllowed: false,
+    prior: {
+      geometry: { kind: "point", position: [7, 8, 9] },
+      state: { completionWord: 0x324 },
+    },
+  });
+  expect(f.preview.preview.state.completionWord).toBe(0x324);
+  expect((await f.apply()).ok).toBe(true);
+  expect(f.state.entities[2].reference!.geometry).toEqual(
+    f.preview.preview.geometry,
+  );
+  expect(f.state.entities[2].reference!.evaluation.completionWord).toBe(0x100);
+});
+it("clears numeric line dependencies but retains ordered inactive picks and cached geometry", async () => {
+  const entities = [mesh("locked-source", true)];
+  const sources = resolveConstructionIdentities(entities, [
+    entities[0].id,
+  ]).orderedSources;
+  const records = [0, 1].map(() => ({
+    entityId: entities[0].id,
+    storage: "native-pick-record-f32" as const,
+    coordinates: [-0, 2, 3] as const,
+  }));
+  const f = setup(entities, {
+    definition: {
+      version: 1,
+      kind: "line",
+      mode: "endpoints",
+      start: [1, 2, 3],
+      end: [4, 6, 3],
+      sources,
+      records,
+    },
+    evaluationAllowed: false,
+    prior: {
+      geometry: {
+        kind: "line",
+        start: [0, 0, 0],
+        direction: [1, 0, 0],
+        length: 10,
+      },
+      state: { completionWord: 0x324 },
+    },
+  });
+  expect((await f.apply()).ok).toBe(true);
+  const data = f.state.entities[1].reference!;
+  expect(data.definition.sources).toEqual([]);
+  if (data.definition.kind !== "line") throw Error("Expected line");
+  expect(data.definition.records).toEqual(records);
+  expect(Object.is(data.definition.records[0].coordinates[0], -0)).toBe(true);
+  expect(data.geometry).toEqual(f.preview.preview.geometry);
+  expect(data.evaluation.completionWord).toBe(0x100);
+  expect(f.state.entities[0]).toBe(entities[0]);
+  expect(entities[0].constructionOrderKey).toBeUndefined();
+  expect(f.preview.definition.sources).toHaveLength(1);
 });
 it("returns the exact retry receipt without publishing twice", async () => {
   const { api, args, commit } = setup();

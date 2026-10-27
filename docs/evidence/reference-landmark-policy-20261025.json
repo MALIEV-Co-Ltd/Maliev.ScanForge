@@ -1,0 +1,285 @@
+{
+  "date": "2026-10-25",
+  "scope": "Semantic reference point/line dependency exemptions in the existing shared landmark refinement-target inventory.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "Uncommitted; not shipped or pushed"
+  },
+  "milestone": {
+    "issue": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4",
+    "stateObserved": "open",
+    "milestone": 5,
+    "acceptanceClosed": false
+  },
+  "problem": "A retained source link from a semantic point or line gave that consumer a higher DAG level. The published collector omitted both reference kinds from its native primitive exemption list, incorrectly suppressing the CAD parent even when the consumer was hidden.",
+  "change": "Use the central semantic-reference kind predicate alongside plane/cylinder/cone/sphere exemptions. Preserve other consumer suppression, original ordering, cycle checks, input ownership and refinement-surface eligibility.",
+  "sources": [
+    {
+      "path": "src/native-landmark-roots.ts",
+      "sha256": "86f79e0f99eb702b2a084b9259e936870f1c7003ff5b373b26c9fbc02ab71c6b"
+    },
+    {
+      "path": "tests/reference-landmark-roots.test.ts",
+      "sha256": "c7289d3cbacf784fb90a93ff55d32cf5bbd47d2d6eb8c4947ac9aa502f7fc576"
+    },
+    {
+      "path": "src/landmark-alignment.ts",
+      "sha256": "1b0cb4f8c57941a534f15e463817b644e4100903ae515436b11980243670bd8f"
+    },
+    {
+      "path": "src/automation/workflow-operations.ts",
+      "sha256": "93c19e70ebde111bf353be4dd9cd411252e352310b5c897660f26fa5720eef76"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "a55b7b1992deaeec94f8694a288b1abcaa32a0e1717370ede323ce9c26d26fb4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "10b893c5134faa81e29f4b036e2637e0d465b6abc344f24e80d84436bd564fa4"
+    }
+  ],
+  "nativeEvidence": {
+    "scope": "Existing retained original-query/type captures and newly checked retained static policy. No new native execution.",
+    "historicalImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "currentRetainedImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "matchingPrimitiveIdentities": 6,
+    "historicalMatchingQueryCases": 18,
+    "historicalFixture": "landmark-root-interface-types-native.json",
+    "historicalFixtureSha256": "fd1e981f31cd84f6cde43e2ba57d279e35f47b17191284c84f71ac8c4c9b425e",
+    "staticIdentityBridgeSha256": "3a29a30134caf65237e50c295528a5654b03d57ffbc8b82d705b17cc53265685",
+    "identityReceipt": {
+      "exitCode": 0,
+      "elapsedSeconds": 0.25893640000140294,
+      "childPeakJobMemoryBytes": 81420288,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "policyTrace": "reference-scene-contexts-20261025.json"
+  },
+  "mcp": {
+    "sharedOperation": "publishedLandmarkRoots -> visibleLandmarkTargets -> landmarkState, used by the same App landmark session for GUI and agent operations.",
+    "tools": ["landmark_edit", "landmark_get", "preview_discard"],
+    "catalogUpdated": true,
+    "schemaChanged": false,
+    "guideUpdated": true,
+    "publicReferenceConstructionActivated": false,
+    "retryRevisionCancellationHistoryPreserved": true
+  },
+  "validation": {
+    "red": "Four regressions reproduced incorrect source suppression for visible/hidden semantic points/lines before the fix.",
+    "build": {
+      "command": "npm run build",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 36.14411499997368,
+        "childPeakJobMemoryBytes": 2528407552,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "identitySha256": "247ddf5168147142d660dd3d83982732826deefa3e1346d4cc097310fbe10508",
+      "inputsStableDuringThatBuild": true,
+      "policySourceAndTestStillMatch": true,
+      "currentEntireWorkingTreeFullyBuildBound": false,
+      "laterCompletedBuilds": [
+        {
+          "attempt": "r3",
+          "receipt": {
+            "exitCode": 0,
+            "elapsedSeconds": 59.35180760000367,
+            "childPeakJobMemoryBytes": 2516692992,
+            "rootExited": true,
+            "childJobActive": 0,
+            "outerJobClosed": true,
+            "childJobClosed": true,
+            "processHandleClosed": true,
+            "threadHandleClosed": true,
+            "cleanupErrors": []
+          },
+          "inputsStable": false,
+          "changedDuringBuild": [
+            "src/automation/operations.ts",
+            "src/processing-worker.ts"
+          ],
+          "candidateIdentityAccepted": false
+        },
+        {
+          "attempt": "r4",
+          "receipt": {
+            "exitCode": 0,
+            "elapsedSeconds": 59.92754599999171,
+            "childPeakJobMemoryBytes": 2573201408,
+            "rootExited": true,
+            "childJobActive": 0,
+            "outerJobClosed": true,
+            "childJobClosed": true,
+            "processHandleClosed": true,
+            "threadHandleClosed": true,
+            "cleanupErrors": []
+          },
+          "inputsStable": false,
+          "changedDuringBuild": [
+            "src/fine-registration.ts",
+            "src/ui/MeshTools.tsx",
+            "tests/fine-alignment-browser.mjs"
+          ],
+          "candidateIdentityAccepted": false
+        }
+      ],
+      "intermediateFailure": "A concurrent registration refactor changed processing-worker types during rebuild R2. That snapshot failed TypeScript and source-stability checks. No failed or changing snapshot is counted as stable candidate validation."
+    },
+    "focused": {
+      "passed": 135,
+      "failed": 0,
+      "files": 7,
+      "newCases": 4,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.0874123999965377,
+        "childPeakJobMemoryBytes": 359112704,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48963,
+      "failed": 0,
+      "skipped": 64,
+      "canonicalFiles": 686,
+      "inputsStable": false,
+      "changedDuringRun": ["src/registration.ts"],
+      "candidateClaim": "Completed test process had zero failures, but registration.ts changed during the run. This is not complete full-suite validation of the rebuilt candidate. Fresh build, focused and real-App checks are recorded separately.",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 278.16018720000284,
+        "childPeakJobMemoryBytes": 980746240,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "browser": {
+      "passed": true,
+      "cases": [
+        {
+          "kind": "point",
+          "visible": true,
+          "guiTargetIds": ["cad-parent"],
+          "apiTargetIds": ["cad-parent"],
+          "historyUnchanged": true,
+          "sourceBufferUnchanged": true,
+          "retryMatched": true
+        },
+        {
+          "kind": "point",
+          "visible": false,
+          "guiTargetIds": ["cad-parent"],
+          "apiTargetIds": ["cad-parent"],
+          "historyUnchanged": true,
+          "sourceBufferUnchanged": true,
+          "retryMatched": true
+        },
+        {
+          "kind": "line",
+          "visible": true,
+          "guiTargetIds": ["cad-parent"],
+          "apiTargetIds": ["cad-parent"],
+          "historyUnchanged": true,
+          "sourceBufferUnchanged": true,
+          "retryMatched": true
+        },
+        {
+          "kind": "line",
+          "visible": false,
+          "guiTargetIds": ["cad-parent"],
+          "apiTargetIds": ["cad-parent"],
+          "historyUnchanged": true,
+          "sourceBufferUnchanged": true,
+          "retryMatched": true
+        }
+      ],
+      "viewport": [1450, 960],
+      "engine": "Owned headless Chromium with software WebGL",
+      "browserPlugin": "Not listed; isolated fixture uses the existing Playwright dependency. Live Codex browser checked separately.",
+      "flow": "Actual GUI Main/Align options/Between scans: point pairs -> one CAD target -> GUI Cancel; then public landmark_edit begin -> landmark_get -> exact retry -> preview_discard.",
+      "disclosure": "Real App copy with module path relocation and a captured real API hook only. No handler replacement. Internal semantic entities are seeded through the host; a synthetic kernel identity is used for inventory only and is never sent to a kernel operation. This is not a CAD refinement solve or public construction-creation test.",
+      "sourceBuffersAndHistoryUnchanged": true,
+      "inputsMatchedR1BuildAndStableDuringThatRun": true,
+      "policySourceAndTestStillMatch": true,
+      "unmountCanvasCount": 0,
+      "errors": [],
+      "warnings": [],
+      "failedResponses": [],
+      "resultSha256": "216e10acfa672b3b70c8da137e7d25154882d8b41fe13e83c4d150f640d018a9",
+      "screenshotSha256": "a9f6443962913cc214d26bc61bfee3b8d6db545d4ac92260f78bfa3a1b98947b",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.387459699995816,
+        "childPeakJobMemoryBytes": 701550592,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "laterAttempt": "R2 was interrupted after two cases by Vite navigation when concurrent fine-registration.ts edits reloaded the application. Its source-stability guard rejected it. It is not counted as a passing run."
+    },
+    "format": {
+      "passed": true,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.20800690003670752,
+        "childPeakJobMemoryBytes": 79716352,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "resources": {
+    "aggregateJobBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "buildHeapMiB": 3072,
+    "testHeapMiB": 1024,
+    "nativeAnalysisHeapMiB": 1536,
+    "allListedJobsTerminalAndClean": true
+  },
+  "remaining": [
+    "Public reference editor, source/provider admission and save/reopen/dependency acceptance remain incomplete.",
+    "Original three-scan alignment/reconstruction comparison is still open; no matched native reconstruction export is available.",
+    "This integration fix does not complete M3, M4 or the broader reconstruction objective."
+  ],
+  "liveApplication": {
+    "url": "http://127.0.0.1:5173/",
+    "serverPid": 28864,
+    "browserTab": 5,
+    "keptOpen": true,
+    "backupRestoredOrDeleted": false
+  }
+}

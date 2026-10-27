@@ -1,0 +1,191 @@
+{
+  "date": "2026-10-25",
+  "scope": "Single semantic stored-line midpoint with shared dependent refresh and persistence",
+  "milestoneComplete": false,
+  "committed": false,
+  "merged": false,
+  "candidate": {
+    "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "applicationInputs": 1028,
+    "sourceManifestSha256": "8c6f34f0d4f303f0b4ef4554ea6a8a7639cf2636d6434cc199fdc45d6d7ab4df",
+    "buildIdentity": "scanforge-96b74cd91e240c8d"
+  },
+  "verification": {
+    "build": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2631864320,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 36.807526600023266
+    },
+    "focused": {
+      "passed": 159,
+      "files": 8,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/reference-midpoint.test.ts",
+          "tests/reference-midpoint-api.test.ts",
+          "tests/reference-midpoint-dialog.test.tsx",
+          "tests/reference-construction-api.test.ts",
+          "tests/reference-project.test.ts",
+          "tests/reference-dependencies.test.ts",
+          "tests/automation-api.test.ts",
+          "tests/ribbon-model.test.ts",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 506478592,
+        "totalProcesses": 15,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 5.442526600032579
+      }
+    },
+    "publicBrowser": {
+      "command": ["node", "tests/reference-construction-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 922832896,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 4.377821700007189
+    },
+    "browserData": {
+      "owner": "scanforge-m4-reference-validation",
+      "startedAt": "2026-10-25T16:53:02.902Z",
+      "expiresAt": "2026-10-25T16:57:02.902Z",
+      "persistentData": false,
+      "resources": [
+        {
+          "kind": "http-server",
+          "pid": 31244,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T16:53:02.902Z",
+          "port": 50462,
+          "bind": "127.0.0.1",
+          "purpose": "isolated built application"
+        },
+        {
+          "kind": "mcp-stdio-child",
+          "pid": 27016,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T16:53:03.147Z",
+          "port": 50463,
+          "bind": "127.0.0.1",
+          "purpose": "actual stdio SDK and browser bridge"
+        },
+        {
+          "kind": "disposable-browser",
+          "pid": 59396,
+          "executable": "installed Chrome",
+          "startedAt": "2026-10-25T16:53:03.298Z",
+          "purpose": "isolated profile and UI validation"
+        }
+      ],
+      "cleanup": [
+        {
+          "port": 50462,
+          "closed": true
+        },
+        {
+          "port": 50463,
+          "closed": true
+        },
+        {
+          "pid": 27016,
+          "exited": true
+        },
+        {
+          "pid": 59396,
+          "exited": true
+        }
+      ],
+      "midpoint": {
+        "sourceEntityId": "5c813d28-14df-4ed6-b1e5-b3fcd8a2e1cb",
+        "entityId": "e9ab9db1-9585-4285-8ddd-6bb76b1628fd",
+        "guiMcpPreviewEqual": true,
+        "atomicRefresh": true,
+        "history": true,
+        "reopened": true,
+        "lockedRollback": true,
+        "deletionRejected": true
+      },
+      "steps": [
+        "actual SDK stdio discovery and pairing",
+        "MCP point Preview/Cancel",
+        "equal GUI/MCP numeric point preview",
+        "GUI Apply and MCP object inspection",
+        "MCP Undo/Redo",
+        "MCP finite line Preview/Apply",
+        "actual project worker export/import preserving semantic IDs and history",
+        "GUI line edit Preview/Cancel",
+        "GUI/MCP stored-line midpoint with atomic source refresh, history, worker reopen and lock/delete rollback",
+        "rendered WebGL screenshots and clean page errors",
+        "injected WebGL retirement failure retains applied dialog and owner-scoped cleanup retry",
+        "GUI expiry/invalidation restart preserves coordinates and foreign preview ownership"
+      ],
+      "passed": true
+    },
+    "fullSuite": {
+      "passed": 49112,
+      "skipped": 65,
+      "failed": 0,
+      "filesPassed": 687,
+      "filesSkipped": 19,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "--exclude",
+          "**/.resources/**"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 950743040,
+        "totalProcesses": 834,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 296.0449098999961
+      }
+    }
+  },
+  "mcpCoverage": [
+    "reference_construct preview mode midpoint/sourceEntityId shares GUI source admission and exact cached Apply",
+    "Source edits publish the numeric line and all affected supported midpoints in one checked history step; Apply returns refreshedEntityIds",
+    "Locked/unsupported descendants, cycles, stale identities, work limits, prospective creation limits and cancellation reject before publication",
+    "Numeric-only operations and current/history/future project admission do not inherit a global object-count cap",
+    "Project worker export/import preserves recipes, precise coordinates and active source keys; changing to coordinates unlinks",
+    "Existing preview expiry, foreign ownership, retry, Cancel and cleanup-pending recovery remain tested through public stdio MCP/browser"
+  ],
+  "evidenceLimits": [
+    "Only one semantic stored endpoints referenceLine is admitted; CAD/fitted/scan/sketch/provider sources remain gated",
+    "Arithmetic and finalization follow retained native static contracts; no native construction numerical or native save/reopen fixture is claimed here",
+    "Semantic transform/duplicate/delete remain gated; deletion with surviving midpoint dependents has an explicit error",
+    "The current candidate includes copied pending foundations; final M4 commit dependency selection and review are still required"
+  ],
+  "remainingMilestoneGates": [
+    "Remaining construction modes and source families",
+    "Authoritative ordered SketchV2 and complete curve/editor integration",
+    "Original native GUI/numerical/save-reopen acceptance",
+    "Final reviewed commit, main merge and milestone closure"
+  ]
+}

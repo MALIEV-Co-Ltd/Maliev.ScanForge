@@ -146,6 +146,10 @@ export class ReferencePreviewDisplay {
     if (!this.owner) return { active: false };
     const data = this.current?.data,
       bounds = this.current?.bounds;
+    if (data && !("geometry" in data))
+      throw new Error(
+        "Reference construction previews require point or line geometry.",
+      );
     return {
       active: true,
       ownerId: this.owner,

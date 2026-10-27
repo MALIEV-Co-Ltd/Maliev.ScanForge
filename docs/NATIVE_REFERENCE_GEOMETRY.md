@@ -1,7 +1,12 @@
 # Reference point and line reconstruction contract
 
-Reference points and reference lines remain unimplemented construction objects.
-The ribbon entries are placeholders, and no MCP tool advertises their creation.
+Typed point and finite-line construction now has shared GUI/MCP creation, editing,
+preview/Apply/Cancel, history and project reopening. Midpoint, center, pair and
+three-plane points share dependent refresh and project admission for admitted
+semantic and numeric-plane sources. The current candidate also implements
+located semantic pair/average lines; its final API, rendered and persistence
+checks are still in progress. Required CAD/scan acquisition, additional source
+families and native lifecycle acceptance remain open.
 This document records the native evidence and the shared application work needed
 for [M4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4). It does not
 establish numerical equivalence or completion of that milestone.
@@ -10,7 +15,7 @@ establish numerical equivalence or completion of that milestone.
 
 The installed manual, SHA-256
 `acaeb787431300f8fbeaf0f12845d35008f0732b6d938e011c9798db014a6018`,
-documents these workflows on PDF pages 40–42 (printed pages 34–36). The extracted
+documents these workflows on PDF pages 40â€“42 (printed pages 34â€“36). The extracted
 text and rendered pages were inspected privately. No manual assets are included
 in this repository.
 
@@ -174,6 +179,24 @@ identifier occupies 16 bytes. Its load path clears each destination set and
 inserts the saved identifiers. The separate name method at `0x14046f820` retains
 counted UTF-16 code units. This establishes that the format retains links; it
 does not by itself prove every live edit, deletion or broken-link recovery rule.
+
+The [numeric acceptance correction](evidence/reference-numeric-acceptance-20261025.json)
+distinguishes draft/storage retention from accepted links. Both acceptance
+handlers remove old reverse links and clear the common input set. Numeric mode
+skips derived-mode reinsertion, so accepted typed points/endpoints have no common
+dependencies; line pick records are nevertheless copied and retained. Marking
+the object dirty and dispatching its specialized numeric refresh finishes with
+state word `0x100` without recomputing its copied geometry. Static checks cover
+the two mode branches, clear/getter/dirty/refresh table bindings and both numeric
+state stores. They are not a new native runtime comparison or an Apply-eligibility
+gate inferred from the generic validity getter.
+
+The shared numeric Apply helper now follows these rules: validate the draft's
+identity binding, publish cached geometry with empty common sources and final
+state, and preserve ordered line picks. It no longer assigns keys to inactive
+sources. Preview/storage still retain their collections for mode switching;
+history records the accepted canonical definition. The earlier cached-Apply
+checkpoint's numeric source-key migration claim is superseded by this correction.
 
 The existing [generic scene-refresh evidence](NATIVE_DATUM_ALIGNMENT.md#generic-scene-refresh-execution)
 establishes update propagation through dependent references and update levels.
@@ -414,6 +437,46 @@ the authoritative scene-bound provider gated on those mappings; the numeric
 initializer's explicit six-value snapshot is not itself scene admission. This
 checkpoint changes no application or MCP behavior and makes no new native
 numerical/runtime acceptance claim.
+
+Further [scene-context tracing](evidence/reference-scene-contexts-20261025.json)
+identifies the special source as a sketch object by matching the retained
+interface/type evidence. Its bounds path combines stored record bounds and
+child geometry bounds, then expands XY using the other scene bounds under the
+inverse sketch frame while flattening Z to zero. An invalid result is expanded
+to include the local `[-1,-1,0]` to `[1,1,0]` box. This does not establish how every
+application sketch record or active-sketch state maps into that native source.
+
+The ordinary collector iterates ordered categories, screens object predicates
+and special mesh/cloud caches, follows substituted render-object bounds where
+present, and performs an additional ordered pass for such substitutions. Its
+enabled transformed-region path computes a box from eight corners and
+intersects the aggregate: lower bounds use scalar maximum and upper bounds
+use scalar minimum, with source-operand ties. Replacing this with visible
+viewport bounds or a union with the region would change command seeding.
+The same region state also appears in a point-in-region predicate. UI flag
+ownership, all type/category projections and exact placement remain open.
+
+This tracing also found an application integration gap in the existing shared
+landmark collector: its primitive exemption list lacked semantic reference
+points and lines. The retained native policy and interface-identity evidence
+include both alongside planes, cylinders, cones and spheres. The application
+now preserves a CAD source's target eligibility when its consumer is such a
+reference, including a hidden reference. The reference itself is not a
+refinement surface. The [policy regression evidence](evidence/reference-landmark-policy-20261025.json)
+separates target-inventory GUI/shared API checks from any CAD refinement solve.
+
+The [stored source-binding checkpoint](evidence/reference-stored-source-binding-20261025.json)
+connects already refreshed semantic points and lines to the existing direct
+primitive extractor and construction evaluator. It validates common identities
+against the entire scene before reading geometry, retains canonical common-set
+order and distinct ordered line records, and preserves Double coordinates rather
+than deriving sources from display buffers. Numeric modes and an average with
+an empty common set do not extract inactive records. Active missing IDs, stale
+keys, malformed semantic objects and unbound source families reject explicitly.
+The real-App check covers displayed point/line previews, existing `viewport_get`
+inspection, source-change invalidation and cleanup. This is not dependency
+reevaluation, derived Apply, public construction admission or new native output
+acceptance; those gates remain open.
 
 The virtual endpoint setter at `0x140a93410` computes
 `sqrt((dy*dy + dx*dx) + dz*dz)` and writes start, unit direction and length only
@@ -2444,3 +2507,66 @@ the canvas. No console warnings/errors were recorded. This is a fixture-host
 viewport check, not native rendering parity or the full React construction/
 import/history lifecycle. All build inputs remained pinned. See
 `evidence/reference-rendered-viewport-20261024.json`.
+
+## Fresh point initializer and acceptance branch audit
+
+A fresh owned-process passive capture was imported as static data with automatic
+analysis disabled. The carrier SHA256 is
+`7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849`,
+with image base `0x140000000`; its executable-image bit remains cleared. The
+focused run recovered eleven selected functions. All 2,085 listed instruction
+byte sequences match the carrier. Point controller and specialized evaluator
+instruction digests exactly match the historical point-outcome evidence. No
+independent instruction decoder or original construction invocation/replay ran.
+
+The outer point constructor at `0x14041a780` calls the payload initializer
+`0x14041c6f0`. That initializer's exact advertised range is
+`[0x14041c6f0,0x14041c929)`, with 126 instructions occupying 569 bytes. After its
+base initializer call, the successful allocation branch writes inner offsets
+`0x38`, `0x40`, `0x48` as **promoted positive FLT_MAX, zero, zero**. The first
+coordinate's Float64 bits are `0x47efffffe0000000`, representing
+`3.4028234663852886e38`. The controller's numeric XYZ stores independently use
+the same three offsets. This recovers raw constructor storage; it does not
+establish final dialog defaults, sentinel display or sentinel Apply admission.
+Existing-object edits still require their retained geometry and state.
+
+The selected point acceptance range is
+`[0x14057fcd0,0x14058028f)`, with 340 instructions occupying 1,471 bytes. After
+controller refresh and cached geometry/mode copying, acceptance removes old
+resolvable reverse links and clears common inputs. Mode 3 independently checks
+the two selector identities at controller offsets `0x4c8` and `0x4d8`. Each must
+resolve to an object and pass the existing common-feature interface query before
+the handler inserts both its reverse link and the accepted input identity.
+There is **no submode test in this reinsertion branch**. Single-source evaluation
+consuming only the first sorted common identity does not permit discarding a
+second admitted selector during acceptance.
+
+Mode 4 instead walks the preview object's complete common-input set and inserts
+each identity into the accepted set. That selected loop contains no per-identity
+scene lookup/common-interface check, exactly-three admission gate or explicit
+reverse insertion. The evaluator's exactly-three rule is separate. Later
+propagation/scene callbacks remain distinct; this loop does not prove that no
+other enclosing code ever changes reverse links. Numeric mode bypasses both
+reinsertion alternatives and keeps the accepted common set empty.
+
+Acceptance then dispatches the common dirty setter with byte true and invokes
+reference propagation and scene refresh. The setter writes `[1,0]`, the word
+`0x0001`; ordinary specialized refresh writes `0x0100`. Point axis/plane rejection
+branches skip both coordinate and completion-word stores. Composing these
+established branches means accepted derived refresh can retain cached geometry
+and dirty word `0x0001`. The application must not copy a clean preview word or
+force every derived acceptance to `0x0100`. This remains static composition,
+not an original derived-Apply numerical result.
+
+The common dirty setter is sixteen bytes (`[0x140406460,0x140406470)`), matching
+the historical lifecycle digest. The earlier NATIVE_DATUM_ALIGNMENT prose calling
+it a fifteen-byte leaf should be corrected without changing its behavioral claim.
+
+The focused run retained the aggregate 4 GiB/25 percent CPU Job, used a 1.5 GiB
+Java heap and one analysis CPU, completed in 6.66 seconds at 750,182,400 peak Job
+bytes, and retired all six owned processes plus its temporary project. Failed
+bootstrap/project-path receipts remain preserved. Static source recovery does
+not close native numerical/save-reopen, rendered GUI/MCP, source admission,
+dependency lifecycle or M4 acceptance gates.
+
+See the [digest-bound static record](evidence/reference-point-acceptance-seed-20261025.json) for exact instruction anchors and limitations.

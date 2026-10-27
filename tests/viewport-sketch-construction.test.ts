@@ -26,7 +26,8 @@ function fixture() {
         tool: "navigate",
         constraints: true,
         showControlPoints,
-        onChange: change,
+        beginDraw: () => 17,
+        onDraw: change,
         onError: error,
       });
     },

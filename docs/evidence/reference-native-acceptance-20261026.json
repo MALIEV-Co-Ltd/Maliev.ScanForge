@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "status": "original-native GUI observations retained; partial representative acceptance, full M4 open",
+  "applicationBehaviorChanged": false,
+  "mcpContractChanged": false,
+  "nativeApplication": {
+    "versionObserved": "QUICKSURFACE Pro 8.0.123",
+    "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d"
+  },
+  "method": {
+    "freshOwnedInstalledProcessPerSession": true,
+    "actualCuaWindowIdCorrelatedToPidAndCreationBeforeInput": true,
+    "documentedCuaOnlyForGui": true,
+    "independentReadOnlyForegroundVerificationInR8R9": true,
+    "staticCarrierExecutedOrNativeCodeInjected": false,
+    "otherNativeWindowsOperated": false,
+    "globalPreferencesOrSecurityUiChanged": false,
+    "rawNativeCodeAssetsOrScreenshotsPublished": false
+  },
+  "privateReports": [
+    {
+      "artifact": "owned-ui-fit-frame-r6/acceptance-report.json",
+      "sha256": "6fab60a4a889572cc459e3ae6cdfa437559c500d9645a087ccc9ed73a78ae4bb",
+      "cleanup": "authenticated-finish",
+      "outerJob": {
+        "elapsedSeconds": 405.0186,
+        "peakJobBytes": 691290112,
+        "totalProcesses": 4,
+        "activeAfter": 0,
+        "passed": true
+      }
+    },
+    {
+      "artifact": "owned-ui-sketch-r8/acceptance-report.json",
+      "sha256": "862b3adf650e743a1cf12da62606c3d782a5e4481ad2fd65d97e510d10165872",
+      "cleanup": "scheduled-owned-finish",
+      "outerJob": {
+        "stopReason": "scheduled-owned-finish",
+        "elapsedSeconds": 420.3787,
+        "peakJobBytes": 684740608,
+        "totalProcesses": 4,
+        "activeAfter": 0,
+        "passed": true,
+        "authenticatedFinishRequestArrivedAfterScheduledBackstop": true
+      }
+    },
+    {
+      "artifact": "owned-ui-sketch-r9/acceptance-report.json",
+      "sha256": "32fce612cbbcfeb8ce76ba6650d1b6d59e07c687915d985bb08b6ef1e4888b06",
+      "cleanup": "authenticated-finish",
+      "outerJob": {
+        "elapsedSeconds": 425.3022,
+        "peakJobBytes": 668602368,
+        "totalProcesses": 4,
+        "activeAfter": 0,
+        "passed": true,
+        "stopReason": "authenticated-finish"
+      }
+    }
+  ],
+  "observations": {
+    "originalScanPlaneAndSection": {
+      "session": "R6",
+      "inputFile": "ply-1.ply",
+      "inputSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "inputBytes": 6926970,
+      "importUnitsObserved": "Millimetres",
+      "triangleCountDisplayed": 274154,
+      "originalSourceUnchanged": true,
+      "nativePlaneAccepted": true,
+      "planeConstraint": "Not constrained; Auto constrain unchecked",
+      "normalDisplayedStrings": ["0.4496712", "-0.3367553", "-0.8272797"],
+      "offsetFromOriginDisplayedString": "252.902158",
+      "offsetUnit": "mm",
+      "actualQsfReopenAndPlaneEditorReadback": true,
+      "selectionMembership": "Unknown exact selection/backface membership; blue pixels and enabled Deselect All do not prove full population",
+      "rmsOrMaximumResidualReadback": false,
+      "nativeWeightingAndBrowserSamplePopulationMatched": false,
+      "normalEquationSignOrFullPlaneFrameRecovered": false,
+      "sketchSourcePickedInViewport": "Plane(1)",
+      "sketchOffsetAppliedMm": "2.5",
+      "createSketchOnSlicingPlaneChecked": true,
+      "ignoreScanDataChecked": false,
+      "nativeScanSectionReferenceContourCreatedAndAccepted": true,
+      "actualSavedQsfReopenedAndSketchEditorContourObserved": true,
+      "persistedSourceOffsetNumericallyRead": false,
+      "igesExport": "738byte402-only group; no authored curve/frame evidence",
+      "sourceScope": "Observed native scan-section workflow, distinct from empty detached application sketch placement"
+    },
+    "analyticCircleAndCancelledPreview": {
+      "session": "R8",
+      "createSketchPlacementLabel": "Parallel to OXY",
+      "offsetTypedAndAppliedMm": "5",
+      "ignoreScanDataChecked": true,
+      "createSketchOnSlicingPlane": "Remained checked but disabled after Ignore Scan Data",
+      "circleCreatedBy": "Actual center/radius tool, two viewport clicks and numeric popup",
+      "diameterDisplayed": "Diameter 6 mm",
+      "sketchAcceptedAndInMemoryEditorReopened": true,
+      "nativeQsfSaved": true,
+      "igesAuthoredCircleRadiusMm": 3,
+      "igesEntityTypes": [100, 124],
+      "igesTransformTranslation": [0.21002993, 0.06886227429, 0],
+      "igesWorldFrameConventionEstablished": false,
+      "extrudedSolidPreview": "Full depth1.8mm, Depth1=1.8mm, Depth2=0, Solid checked",
+      "extrudedPreviewCancelledAndProvisionalSolidRemoved": true,
+      "rectangleAccepted": false
+    },
+    "persistedCircleAcceptedSolidAndWorldPlacement": {
+      "session": "R9",
+      "actualPriorCircleQsfOpened": "R8 m4-analytic-circle-6mm.qsf",
+      "priorQsfHashReverifiedUnchanged": "9495d032b1ef103dbaa58d1d4a7f01f89eb668e329676235277f5e186761a0c8",
+      "actualReopenedSketchDimension": "Diameter 6 mm",
+      "extrudedSolidAcceptedByOk": true,
+      "acceptedDepthMm": {
+        "full": "1.8",
+        "depth1": "1.8",
+        "depth2": "0"
+      },
+      "acceptedTree": "Solids(1)/[1] Extruded(1); History Extruded(1)(Solid)",
+      "renderedCappedCylinderAndSideWallObservedAfterDialogClosed": true,
+      "freshSolidQsfSaved": true,
+      "actualStepExportFormat": "STEP AP214 International Standard (*.stp)",
+      "mapZToYAxis": "Unchecked, unchanged",
+      "exportedSolidInterpretation": {
+        "method": "Read-only STEP text and entity references",
+        "manifoldSolidBrepEntity": 15,
+        "millimetreUnitEntity": 186,
+        "radiusMm": 3,
+        "xyCenterMm": [0.210029929876, 0.06886227428913],
+        "capPlaneEntities": [44, 98],
+        "capPlaneOriginPointEntities": [46, 100],
+        "capWorldZValuesMm": [6.8, 5],
+        "worldExtentMm": [5, 6.8],
+        "conclusion": "Accepted exported solid supports analytic OXY world offset5 and positive depth1.8; prior local IGES Z0 alone did not establish this."
+      },
+      "freshAcceptedSolidQsfActuallyReopened": false,
+      "stepActuallyReimported": false
+    }
+  },
+  "nativeApplicationNumericalEquivalenceEstablished": false,
+  "rawNativeFloat64Captured": false,
+  "fullM4Completed": false,
+  "files": [
+    {
+      "artifact": "owned-ui-fit-frame-r6/native-output/m4-ply-1-fitted-plane.qsf",
+      "bytes": 4972206,
+      "sha256": "915a8c5684c4d82a5610a888b2f5526b2864253277b652a4e1462d8ef8226190",
+      "role": "Early accepted original scan plus fitted plane handoff; actually reopened with exact displayed normal/offset readback"
+    },
+    {
+      "artifact": "owned-ui-fit-frame-r6/native-output/m4-ply-1-plane-and-sketch.qsf",
+      "bytes": 5018098,
+      "sha256": "b88839fd480da47e7c802da8905e232757b56cae2de3ed2b34e53160529d2cc1",
+      "role": "Accepted original scan, plane and scan-section sketch; actually reopened including actual Sketch(1) editor"
+    },
+    {
+      "artifact": "owned-ui-fit-frame-r6/native-output/m4-ply-1-native-sketch.iges",
+      "bytes": 738,
+      "sha256": "29e7308667d41a5ca8e3fe2ea01f0563ed8a156d80f48e7c7fa32db152e66a9d",
+      "role": "Actual native Edit Sketch Export in IGES submission; file exists but contains only402,0 group payload and no authored curve geometry; not frame/curve evidence"
+    },
+    {
+      "artifact": "owned-ui-sketch-r8/native-output/m4-analytic-circle-6mm.qsf",
+      "bytes": 1259,
+      "sha256": "9495d032b1ef103dbaa58d1d4a7f01f89eb668e329676235277f5e186761a0c8",
+      "role": "Fresh saved native accepted circle handoff; actual file reopen not performed"
+    },
+    {
+      "artifact": "owned-ui-sketch-r8/native-output/m4-analytic-circle-6mm.iges",
+      "bytes": 984,
+      "sha256": "31f9d92be1aaa8beed0f41940da1f57292355bcf302960c6f0eca4e194fc8230",
+      "role": "Actual authored native circle geometry, unlike R6 empty402 group"
+    },
+    {
+      "artifact": "owned-ui-sketch-r9/native-output/m4-circle-solid.qsf",
+      "bytes": 4032,
+      "sha256": "b562acc9757124bfdbb4d664812b165e2236eb9f1e0b40e5a7839d50bcd08db2",
+      "role": "Saved accepted circle-solid native handoff"
+    },
+    {
+      "artifact": "owned-ui-sketch-r9/native-output/m4-circle-solid.stp",
+      "bytes": 11714,
+      "sha256": "acc7522d082692299a49b6cb288bb94185349c6cf537610de5beac567c534cae",
+      "role": "Actual native accepted solid exported STEP AP214"
+    }
+  ],
+  "limits": [
+    "Plane selection membership, sampling/weighting, residual RMS/max and full numeric scan-derived frame remain unestablished; no native/browser equivalence inferred from shared source file.",
+    "Native display strings and ordinary export precision are not raw binary64 capture or bitwise equivalence.",
+    "R8 circle QSF was actually reopened in R9; R9 accepted-solid QSF was saved but not reopened.",
+    "No authored sketch line/arc, successful rectangle, numerical post-creation dimension edit, actual contradiction/rejection or Undo/Redo result is established by R6/R8/R9.",
+    "Required typed/picked reference points/endpoints, primitive center/pair/average/three-plane and CAD vertex/curve/face/scan input-resolution matrix and complete lifecycle/native comparison remain M4 obligations.",
+    "Closed-circle downstream acceptance is a representative core observation; it does not establish all fitting families, full sketch solver or milestone completion."
+  ],
+  "mcpCoverage": "Evidence-only checkpoint changes no application capability or API. Shared GUI/MCP parity and rendered application comparisons remain separately required for every implementation.",
+  "milestoneComplete": false,
+  "independentApplicationKernelGeometryComparison": {
+    "scope": "Actual native accepted STEP imported through application classic worker and real OCCT versus equivalent analytic arc-profile extrusion; geometric comparison, not BREP/topology identity",
+    "nativeStep": {
+      "bytes": 11714,
+      "sha256": "acc7522d082692299a49b6cb288bb94185349c6cf537610de5beac567c534cae"
+    },
+    "centerXY": [0.210029929876, 0.06886227428913],
+    "radiusMm": 3,
+    "depthMm": 1.8,
+    "frameOrigin": [0, 0, 5],
+    "expectedVolumeMm3": 50.89380098815465,
+    "native": {
+      "valid": true,
+      "volumeMm3": 50.89380098815688,
+      "bounds": {
+        "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+        "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+      },
+      "displayTriangles": 500
+    },
+    "application": {
+      "valid": true,
+      "volumeMm3": 50.89380098815465,
+      "bounds": {
+        "min": [-2.789970170124, -2.93113782571087, 4.9999999],
+        "max": [3.2100300298759996, 3.0688623742891297, 6.8000001]
+      },
+      "displayTriangles": 500
+    },
+    "nativeReferenceKinds": {
+      "cylinder": 2,
+      "plane": 2
+    },
+    "applicationReferenceKinds": {
+      "cylinder": 2,
+      "plane": 2
+    },
+    "tolerances": {
+      "volumeMm3": 1e-7,
+      "boundsMm": 1e-6
+    },
+    "workerSha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa",
+    "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+    "cleanup": {
+      "ownedShapesReleased": 2,
+      "remainingShapes": 0,
+      "pendingRequests": 0,
+      "virtualFiles": [".", "..", "tmp", "home", "dev", "proc"]
+    },
+    "passed": true
+  }
+}

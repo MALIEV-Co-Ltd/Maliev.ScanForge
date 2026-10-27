@@ -34,13 +34,18 @@ function setup(
   } as unknown as WorkspaceHost);
   const context = { check: vi.fn() } as unknown as CommandContext;
   return {
+    state,
     source,
-    fit: (selectionOnly?: boolean) =>
+    fit: (
+      selectionOnly?: boolean,
+      region?: { center: [number, number, number]; radius: number },
+    ) =>
       operations.analysis_fit(
         {
           entityId: source.id,
           kind: "plane",
           ...(selectionOnly === undefined ? {} : { selectionOnly }),
+          ...(region ? { region } : {}),
         },
         context,
       ),
@@ -94,7 +99,7 @@ it("preserves existing mask membership, hidden metadata, facet order and local f
 });
 
 it.each(["mesh", "pointcloud"] as const)(
-  "freezes selected %s MCP Float32 extraction without changing GUI arithmetic",
+  "preserves the same selected %s Float64 samples in GUI and MCP",
   async (kind) => {
     const xyz = [
       0.000000001, 0, 0, 1.00000001, 0, 0, 0, 1.00000001, 0.100000001,
@@ -109,20 +114,52 @@ it.each(["mesh", "pointcloud"] as const)(
     expect(gui).toEqual(xyz);
     expect(gui).not.toEqual(narrowed);
     expect(await fit(true)).toEqual({
-      fit: fitPlane(narrowed),
+      fit: fitPlane(gui),
       samples: 3,
       totalVertices: 3,
     });
-    // Existing omitted/false selectionOnly fits raw whole source, including hidden metadata.
+    // Omitted selection follows the GUI's active mask; false explicitly fits the whole source.
     const whole = {
       fit: fitPlane(positions),
       samples: positions.length / 3,
       totalVertices: positions.length / 3,
     };
-    expect(await fit()).toEqual(whole);
+    expect(await fit()).toEqual({
+      fit: fitPlane(gui),
+      samples: 3,
+      totalVertices: 3,
+    });
     expect(await fit(false)).toEqual(whole);
   },
 );
+
+it("does not use another object's selection when selectionOnly is omitted", async () => {
+  const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5, 5];
+  const { state, fit } = setup(
+    "pointcloud",
+    positions,
+    new Uint8Array([1, 1, 1, 0]),
+  );
+  state.selectedId = null;
+  expect(await fit()).toEqual({
+    fit: fitPlane(positions),
+    samples: 4,
+    totalVertices: 4,
+  });
+});
+
+it("exposes the same local fitting region through the shared MCP operation", async () => {
+  const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 100, 100];
+  const region = { center: [0, 0, 0] as [number, number, number], radius: 2 };
+  const { source, fit } = setup("pointcloud", positions, new Uint8Array(4));
+  const gui = primitiveFitSamples(source, undefined, region);
+  expect(await fit(false, region)).toEqual({
+    fit: fitPlane(gui),
+    samples: 3,
+    totalVertices: 3,
+  });
+  expect(() => fit(false, { ...region, radius: 0 })).toThrow(/radius/i);
+});
 
 it("retains existing GUI empty-mask fallback and MCP explicit-empty rejection", () => {
   const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);

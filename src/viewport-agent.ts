@@ -133,7 +133,7 @@ export function pickCamera(
             hit.object instanceof THREE.Mesh ||
             hit.object instanceof THREE.Points ||
             (hit.object instanceof THREE.Line &&
-              hit.object.userData.referenceKind === "line")
+              ["line", "frame"].includes(hit.object.userData.referenceKind))
           )
         )
           return false;
@@ -154,7 +154,7 @@ export function pickCamera(
         ...(hit.object.userData.referenceKind
           ? {
               referenceKind: hit.object.userData.referenceKind as
-                "point" | "line",
+                "point" | "line" | "frame",
             }
           : {}),
         ...(hit.object instanceof THREE.Points &&
@@ -164,6 +164,6 @@ export function pickCamera(
       })),
     coordinates: { x, y },
     units: "mm",
-    note: "Triangle indices refer to rendered tessellation; pointIndex refers to a point-cloud vertex. referenceKind identifies a semantic point or line without triangle or cloud indices. These are not native CAD edge/face references.",
+    note: "Triangle indices refer to rendered tessellation; pointIndex refers to a point-cloud vertex. referenceKind identifies a semantic point, finite line or coordinate frame without triangle or cloud indices. These are not native CAD edge/face references.",
   };
 }

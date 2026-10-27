@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 detached numeric-reference transform checkpoint; derived, duplicate and original-native gates remain open",
+  "baseCommit": "d0353e99d2a3f5c43a2668e622f8ff604449fa5c",
+  "productionBuild": "scanforge-c6fcc0fb53c79136",
+  "runtimeSourceSnapshot": {
+    "scope": "production build inputs",
+    "count": 1040,
+    "sha256": "e7de35c5ec4a40ad6372ffa9cc11465556b78d3d05ff36be04c4f5e959c1e719",
+    "capturedAfterReviewCorrectionAndFormatting": true,
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.44517560000531375,
+      "peakJobBytes": 48816128,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T03:42:01.527326+00:00",
+      "finishedUtc": "2026-10-26T03:42:01.972511+00:00"
+    }
+  },
+  "build": {
+    "passed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 120.3479282000335,
+    "peakJobBytes": 1572302848,
+    "totalProcesses": 36,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "startedUtc": "2026-10-26T03:38:17.863636+00:00",
+    "finishedUtc": "2026-10-26T03:40:18.211630+00:00"
+  },
+  "typecheckBatchesPassed": 13,
+  "buildAdvisory": "Agent API chunk exceeds configured1200kB advisory; build succeeded",
+  "focused": {
+    "passedTests": 205,
+    "failedTests": 0,
+    "files": 9,
+    "includesNewNumericTransformCases": 64,
+    "overlapNotAdditionalTestCount": true,
+    "scope": "Pure payload, shared API, rendered ribbon/public interface plus existing plane/reference/dependency/workflow contracts",
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 3.9342487000394613,
+      "peakJobBytes": 369893376,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T03:45:14.830328+00:00",
+      "finishedUtc": "2026-10-26T03:45:18.764586+00:00"
+    }
+  },
+  "actualGuiPublicStdioMcp": {
+    "passed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 30.203161599987652,
+    "peakJobBytes": 1737129984,
+    "totalProcesses": 16,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "startedUtc": "2026-10-26T03:41:04.278469+00:00",
+    "finishedUtc": "2026-10-26T03:41:34.481642+00:00"
+  },
+  "browserReportSha256": "49cbbf9c3bf7a54aab1cbe8cf496038b19d920bd315611fa97f4b0254d7fe223",
+  "numericReferenceTransforms": {
+    "guiMcpPointEqual": true,
+    "guiMcpLineEqual": true,
+    "rawNonunitDirection": true,
+    "storedLengthUnchanged": true,
+    "descendantRefresh": true,
+    "oneHistoryStep": true,
+    "numericEditCancelPreservedPayload": true,
+    "workerReopenWithFuture": true,
+    "nativeToolbarReplay": false
+  },
+  "preservedBrowserCoverage": {
+    "fittedPlanePointSource": {
+      "actualPrimitiveFitCreate": true,
+      "initialFrameAndDiagnosticsRetained": true,
+      "guiMcpCenterEqual": true,
+      "centerOutcome": "origin",
+      "sourceTransformRefresh": true,
+      "fitClearedOnTransform": true,
+      "undoRedo": true,
+      "workerReopenWithFuture": true
+    },
+    "cadCoordinateAcquisition": {
+      "exactDoubleVertex": true,
+      "parameterFraction": true,
+      "guiVertexMcpEqual": true,
+      "readOnlyHistory": true,
+      "sourceDeleted": true,
+      "undoRedo": true,
+      "workerReopen": true,
+      "numericOnly": true
+    },
+    "surfaceCancelOwnership": {
+      "controlledTransportDelay": true,
+      "realKernelQueryReleased": true,
+      "cancellationTerminalBeforeParentRestored": true,
+      "unchangedModelHistory": true,
+      "maximumHoldMs": 5000
+    },
+    "surfaceCoordinateAcquisition": {
+      "sharedNormalizedScreen": true,
+      "guiMcpEqual": true,
+      "originalSourceTriangles": true,
+      "sourceDeleted": true,
+      "workerReopen": true,
+      "numericOnly": true,
+      "nativeViewportEquivalence": false
+    }
+  },
+  "visualInspection": [
+    "Rendered numeric reference transform panel, fields, Apply control and scene"
+  ],
+  "sharedContracts": [
+    "mesh_transform and GUI Move/Scale share numeric-only eligibility and executor",
+    "ui_set transform entry shares the same actual selected-entity rule; other sampled panels remain gated",
+    "Point coordinates and line endpoints modes require empty sources; line records must also be empty",
+    "Binary64 supplied-matrix arithmetic preserves raw direction and exact stored length; numeric authoring fields synchronize with resulting geometry",
+    "Existing positive-scale XYZ-degree application conversion is distinct from original-native toolbar behavior",
+    "One guarded commit refreshes admitted descendants; locks, invalid bounds, revision/retry, pre-publication cancellation, history and persistence are covered",
+    "object_get exposes exact geometryEncoding and definitionEncoding; editor Cancel retains transformed payload"
+  ],
+  "unsupportedRequiredPolicies": [
+    "Derived reference transforms",
+    "Numeric lines with inactive retained picks",
+    "Semantic duplicate identity/source mapping",
+    "Original-native transform/controller acceptance"
+  ],
+  "priorFailuresRetained": [
+    {
+      "receipt": "numeric-reference-transform-red-r1.json",
+      "scope": "Missing helper collection failure plus25failed17passed API/interface checks before implementation"
+    },
+    {
+      "receipt": "build-numeric-transform-r1.json",
+      "scope": "TypeScript caught readonly records assignment in a new test fixture after6 completed batches; fixture replaced its definition immutably; fresh full build passed"
+    },
+    {
+      "scope": "Review restored existing plane-specific transform status before Vite emission; numeric point/line status remains separate"
+    },
+    {
+      "scope": "Acquisition checkpoint0a320dd hosted49679tests/build/CADsmoke passed; worker chained-call formatting failed, corrected separately in d0353e9 with an independent format check"
+    }
+  ],
+  "nativeEvidenceBoundary": "Static point/line supplied-matrix payload arithmetic recovered from the identified original artifact. Browser fixtures prove application/GUI/MCP equality, not original-native toolbar conversion, dynamic callback policies or native persistence acceptance.",
+  "remainingRequiredGates": [
+    "Derived/inactive-pick transform and semantic duplication policies",
+    "Remaining source-family and original-native mode/frame/fit/curve/constraint acceptance",
+    "Fresh exact-commit hosted checks, final review, merge, merged-main verification and issue4/milestone5 closure"
+  ],
+  "milestoneComplete": false,
+  "merged": false,
+  "hostedNumericCheckpoint": {
+    "commit": "df8e0015a92cfedc42514b8794c7229b6dc6adc3",
+    "runId": 40266232577,
+    "jobId": 121389165609,
+    "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40266232577",
+    "conclusion": "failure",
+    "passedTests": 49742,
+    "failedTests": 1,
+    "skippedTests": 64,
+    "build": true,
+    "failure": "Preexisting derived-line test still expected numeric semantic source transforms to reject after this supported capability was implemented.",
+    "replacementRegression": "The test now verifies source and linked-line refresh, exact retained hits, one commit/history step and unchanged selection. It passed in the protected112-test focused run; fresh hosted checks are required for the correction.",
+    "correctionHostedChecks": {
+      "commit": "f8c94720de79b9bce6e252b3456f7178040f83e9",
+      "runId": 40269732059,
+      "jobId": 121399735222,
+      "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40269732059",
+      "conclusion": "success",
+      "passedTests": 49743,
+      "skippedTests": 64,
+      "passedFiles": 711,
+      "build": true,
+      "cadSmoke": true,
+      "repositoryFormatting": true,
+      "scope": "Fresh numeric-transform correction checkpoint; later sketch source needs its own hosted checks"
+    }
+  }
+}

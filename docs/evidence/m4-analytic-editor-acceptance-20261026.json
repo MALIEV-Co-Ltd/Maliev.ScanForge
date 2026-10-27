@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 analytic-source and numeric-editor checkpoint; final milestone gates open",
+  "baseCommit": "04c70264c55a32264cf2caac6fe131ae71bbaf53",
+  "productionBuild": "scanforge-e36c99758d1515a0",
+  "buildInputs": {
+    "count": 2840,
+    "sha256": "9fdf054e9680a5484ec528894f189f24efc7c78ccb347dfb341f71bb75a1a74c"
+  },
+  "build": {
+    "passed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 123.55597220000345,
+    "peakJobBytes": 1846927360,
+    "totalProcesses": 33,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "startedUtc": "2026-10-26T01:33:51.547352+00:00",
+    "finishedUtc": "2026-10-26T01:35:55.103394+00:00"
+  },
+  "typecheckBatchesPassed": 13,
+  "buildAdvisories": [
+    "dist/assets/agent-api-DN12bgGo.js                      1,227.37 kB \u2502 gzip: 336.23 kB",
+    "Vite configured1200kB chunk advisory; no build errors"
+  ],
+  "focused": {
+    "files": 3,
+    "passedTests": 73,
+    "failedTests": 0,
+    "scope": "34 analytic-input/rebuild cases plus39 numeric-editor cases",
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 1.903733299986925,
+      "peakJobBytes": 450981888,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T01:33:48.468772+00:00",
+      "finishedUtc": "2026-10-26T01:33:50.372520+00:00"
+    }
+  },
+  "actualGuiPublicStdioMcp": {
+    "passed": true,
+    "exitCode": 0,
+    "elapsedSeconds": 22.332611499994528,
+    "peakJobBytes": 1706053632,
+    "totalProcesses": 16,
+    "activeAfter": 0,
+    "jobLimitBytes": 4294967296,
+    "startedUtc": "2026-10-26T01:37:17.106330+00:00",
+    "finishedUtc": "2026-10-26T01:37:39.438954+00:00"
+  },
+  "browserReportSha256": "d91dc5035402a569346aaea9319f213a96f88c572f14f498b01f5ba77c9f23fb",
+  "analyticRecipeInputs": {
+    "realCadWorker": true,
+    "lockedSphereReadAndKeyMigration": true,
+    "averageGuiMcpEqual": true,
+    "mixedDescendantRebuild": true,
+    "guiRebuildSharedClosure": true,
+    "undoRedo": true,
+    "workerReopen": true
+  },
+  "numericEditInitialization": [
+    {
+      "kind": "point",
+      "guiMcpEqual": true,
+      "cancelPreservedOriginal": true,
+      "undoRedo": true,
+      "geometryEncoding": {
+        "version": 1,
+        "kind": "point",
+        "bits": "000000000000f03f00000000000000003333333333331b40"
+      }
+    },
+    {
+      "kind": "line",
+      "guiMcpEqual": true,
+      "cancelPreservedOriginal": true,
+      "undoRedo": true,
+      "geometryEncoding": {
+        "version": 1,
+        "kind": "line",
+        "bits": "000000000000f03f00000000000000803333333333331b40b960d90d2188e93f00000000000000006ff95f9e684ae3bf6910b374658f2640"
+      }
+    }
+  ],
+  "browserCoverage": [
+    "Real CAD worker sphere/cylinder current-recipe source resolution through GUI and independent public MCP",
+    "Locked sphere source read and key-only migration; finite-cylinder average",
+    "MCP and actual GUI CAD rebuild refresh mixed reference point/line descendants in one history step",
+    "Unrelated locked CAD source remains unchanged",
+    "Native-style numeric editor initialization, unchanged Preview, Cancel/Apply, exact history and worker reopen",
+    "Existing point, midpoint, derived line, cloud-pick, ownership, expiry and cleanup-retry checks remain passing"
+  ],
+  "deferredReactRace": {
+    "scope": "Actual dialog with deferred fake API; distinct from production geometry/MCP/native comparison",
+    "cases": 3,
+    "passed": true,
+    "receipt": {
+      "passed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 2.113817300007213,
+      "peakJobBytes": 249479168,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "jobLimitBytes": 4294967296,
+      "startedUtc": "2026-10-26T01:37:48.760550+00:00",
+      "finishedUtc": "2026-10-26T01:37:50.874376+00:00"
+    },
+    "cleanup": {
+      "browserClosed": true,
+      "serverClosed": true,
+      "ownedTempRemoved": true
+    },
+    "sourceHashes": {
+      "src/ui/ReferenceConstructionDialog.tsx": "2a9a14e0a70a91f7a9b88f83f74d58860d593eb33755d73eec12ef6bed899892",
+      "src/ui/AppSelect.tsx": "07e09897752cb62bb33cee1eaf53c64d16fd8df7fdcb8b3c756ca084b25ac9ef",
+      "src/ui/controls.tsx": "cf3e44cc3993c9d333d671164a613746eabb9a4af8bd93c2ec6803fa483f73ae",
+      "src/ui/AppSelect.css": "02a9451d8bf1656097a2d7979438d52bb1e166658cd9e0f27cb6c493cea6a677"
+    }
+  },
+  "priorFailuresRetained": [
+    {
+      "receipt": "gui-rebuild-browser-red-r1.json",
+      "actualFailure": "Rebuilding cylinder rejected unrelated locked sphere because unchanged CAD entities were rewrapped",
+      "fix": "Shared helper returns unrebuilt CAD entities unchanged; lock validation retained; two regression cases added"
+    },
+    {
+      "receipt": "gui-rebuild-browser-red-r2.json",
+      "actualFailure": "GUI changed cylinder toY8 while linked center remainedY6",
+      "fix": "GUI submits sharedcad_rebuild job; no raw helper or duplicate GUI commit"
+    },
+    {
+      "receipt": "reference-analytic-input-green-r1.json",
+      "actualFailure": "Binary history fixture used #fff instead of six-digit color",
+      "fix": "Fixture-only correction;32case rerun passed before two new regressions"
+    }
+  ],
+  "nativeAcceptance": {
+    "r10AcceptedPointQsfExactBitsPassed": true,
+    "r11Scope": "Positive G15 and fixed-six editor observations; no save/reopen",
+    "r12": "UNRUN: owned-window Raise denied cursor access twice including one reset; no modeling/fileinput",
+    "r12AcceptanceReportSha256": "2e43786ef41acc73fb3d6f2e1253044dff5bb79c9ecca1cfd29c5e0c69c828a7",
+    "r12OwnedCleanup": {
+      "passed": true,
+      "activeAfter": 0,
+      "totalProcesses": 4,
+      "elapsedSeconds": 98.2417315
+    },
+    "osDiagnostic": "Standalone read-only Python also received GetCursorPos AccessDenied; no desktop/permission changes"
+  },
+  "remainingRequiredGates": [
+    "Required CAD vertex/curve/face and scan input resolution",
+    "Remaining source-family and semantic duplicate/transform lifecycle",
+    "Original-native mode acceptance/persistence",
+    "Fresh full current-head suite, final review, merge and issue/milestone closure"
+  ],
+  "milestoneComplete": false,
+  "merged": false,
+  "laterFullRegression": {
+    "passedTests": 49590,
+    "skippedTests": 64,
+    "failedTests": 15,
+    "receipt": {
+      "peakJobBytes": 1010528256,
+      "totalProcesses": 853,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 298.2534537999891,
+      "finishedUtc": "2026-10-26T01:54:06.822496+00:00"
+    },
+    "failures": "13 old numeric-common-source rejection assertions, one repeated-record primitive alias regression, one more precise invalid common-set diagnostic",
+    "fix": "Precise negative admission fixtures retained; small resolved primitive/vectors detached per ordered record without cloning scene/SAB buffers",
+    "focusedAfterFix": {
+      "passedTests": 198,
+      "failedTests": 0,
+      "files": 5
+    },
+    "freshFullRerun": {
+      "commit": "8a95c9748685f25717318665dcaa72fce8020119",
+      "runId": 40257603548,
+      "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40257603548",
+      "conclusion": "success",
+      "passedTests": 49605,
+      "skippedTests": 64,
+      "failedTests": 0,
+      "passedFiles": 705,
+      "skippedFiles": 18,
+      "build": true,
+      "cadSmoke": true,
+      "repositoryFormatting": true,
+      "scope": "Hosted Linux checkpoint only; later acquisition source changes require fresh verification."
+    },
+    "scope": "The failed local full receipt is retained. The corrected checkpoint passed hosted full CI; the production browser receipt above predates per-record detachment and subsequent acquisition changes."
+  }
+}

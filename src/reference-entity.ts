@@ -4,6 +4,11 @@ import {
   validateReferenceFrameEntity,
 } from "./reference-frame";
 import type { ProjectSession } from "./project-file-codec";
+import { assertReferenceConstructionSceneAdmission } from "./reference-construction-lifecycle";
+import {
+  referenceNumericEditFields,
+  type ReferenceNumericEditFields,
+} from "./reference-numeric-edit-fields";
 import {
   copyReferenceConstruction,
   encodeReferenceConstruction,
@@ -253,6 +258,13 @@ export function inspectReferenceEntity(
 ) {
   const data = validateReferenceEntity(entity);
   if (!data) return undefined;
+  let editorInputs: ReferenceNumericEditFields | undefined;
+  let editorInputsError: string | undefined;
+  try {
+    editorInputs = referenceNumericEditFields(entity);
+  } catch (error) {
+    editorInputsError = error instanceof Error ? error.message : String(error);
+  }
   const objects = new Map(scene.map((row) => [row.id, row]));
   return {
     ...geometrySummary(data.geometry),
@@ -262,6 +274,7 @@ export function inspectReferenceEntity(
       geometryEncoding: encodeReferenceGeometry(data.geometry),
       definition: data.definition,
       definitionEncoding: encodeReferenceConstruction(data.definition),
+      ...(editorInputs ? { editorInputs } : { editorInputsError }),
       // The retained word alone cannot distinguish updated/fallback/unchanged.
       evaluation: { status: "stored" as const, outcome: null },
       sourceBindings: data.definition.sources.map((source) => {
@@ -288,17 +301,14 @@ export function inspectReferenceEntity(
     },
   };
 }
-/** Shared temporary publication gate until viewport and operation eligibility exist. */
+/** Validate current and undo/redo states without changing retained evaluation state. */
 export function assertReferenceWorkspaceAdmission(
   session: ProjectSession,
 ): void {
-  const states = [
+  for (const entities of [
     session.project.entities,
     ...session.history.map((row) => row.entities),
     ...session.future.map((row) => row.entities),
-  ];
-  if (states.some((entities) => entities.some(isReferenceEntity)))
-    throw new Error(
-      "Reference construction objects are not yet supported in this workspace.",
-    );
+  ])
+    assertReferenceConstructionSceneAdmission(entities);
 }

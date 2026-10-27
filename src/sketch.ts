@@ -1,5 +1,9 @@
 import { validateSketchFrame, type SketchFrame } from "./sketch-frame";
 import {
+  createSketchSolverBudget,
+  SketchSolverResourceLimit,
+} from "./sketch-solver-budget";
+import {
   validateSketchReference,
   type SketchReference,
 } from "./sketch-reference";
@@ -440,6 +444,7 @@ export function solveSketch(
   tolerance = 1e-6,
   maxIterations = 100,
 ): SketchSolution {
+  const budget = createSketchSolverBudget(input);
   validateSketch(input);
   if (!(tolerance > 0) || !Number.isFinite(tolerance))
     throw new Error("Solver tolerance must be positive.");
@@ -662,6 +667,7 @@ export function solveSketch(
     r.some(violated);
     iterations++
   ) {
+    budget.iteration();
     const j = jacobian(x, r),
       n = x.length;
     const a = Array.from({ length: n }, (_, i) =>
@@ -699,6 +705,7 @@ export function solveSketch(
   [...arcs.values()].forEach((arc, i) => {
     if (violated(r[cursor + i])) conflictingConstraintIds.push(`arc:${arc.id}`);
   });
+  budget.diagnostics();
   const finalJacobian = jacobian(x, r);
   return {
     sketch: {
@@ -726,6 +733,30 @@ export function solveSketch(
     ),
     iterations,
   };
+}
+
+export type SketchDiagnostics =
+  | { available: true; solution: SketchSolution }
+  | {
+      available: false;
+      code: "RESOURCE_LIMIT" | "INVALID_SKETCH";
+      message: string;
+    };
+
+/** Read-only render diagnostics: large admitted graphs remain available to edit/export. */
+export function inspectSketchDiagnostics(input: Sketch): SketchDiagnostics {
+  try {
+    return { available: true, solution: solveSketch(input) };
+  } catch (error) {
+    return {
+      available: false,
+      code:
+        error instanceof SketchSolverResourceLimit
+          ? "RESOURCE_LIMIT"
+          : "INVALID_SKETCH",
+      message: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 /** Sample a circular edge without its end point, using a maximum chord sag in mm. */

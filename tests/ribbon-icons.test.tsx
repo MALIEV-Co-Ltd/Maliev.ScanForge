@@ -35,8 +35,19 @@ describe("complete ribbon artwork", () => {
       expect(markup).not.toContain("<use");
       expect(markup).toContain('data-icon-style="generated-technical"');
       expect(markup).toContain('alt=""');
-      expect(markup).toContain(`/icons/generated/ribbon-${command}.png`);
+      expect(markup).toContain(
+        `/icons/generated/${RIBBON_ICON_ARTWORK[command]}.png`,
+      );
     }
+  });
+  it("reuses plane artwork for the numeric reference-plane result", () => {
+    expect(RIBBON_ICON_ARTWORK.referencePlane).toBe(
+      RIBBON_ICON_ARTWORK.fitPlane,
+    );
+    const markup = renderToStaticMarkup(
+      <RibbonCommandIcon command="referencePlane" />,
+    );
+    expect(markup).toContain('data-palette="reference"');
   });
   it("distinguishes operations with different geometric results", () => {
     for (const group of [

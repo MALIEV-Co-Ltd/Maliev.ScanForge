@@ -21,6 +21,32 @@ export interface CurvatureSurfaceMesh extends IndexedMesh {
   kernelId: string;
   uvs: Float64Array;
 }
+export type CadReferenceFeatureFamily = "vertices" | "edges" | "faces";
+export type CadReferenceCoordinateSelection =
+  | { kind: "vertex"; vertexIndex: number }
+  | { kind: "edge-endpoint"; edgeIndex: number; endpoint: "start" | "end" }
+  | { kind: "edge-fraction"; edgeIndex: number; fraction: number };
+export interface CadReferenceFeatureRow {
+  index: number;
+  eligible: boolean;
+  reason?: string;
+  position?: Vec3;
+  degenerate?: boolean;
+  firstParameter?: number;
+  lastParameter?: number;
+  faceIndex?: number;
+  firstTriangle?: number;
+  triangleCount?: number;
+  kind?: string;
+}
+export interface CadReferenceFeaturePage {
+  total: number;
+  nextOffset: number | null;
+  rows: CadReferenceFeatureRow[];
+}
+export interface CadReferenceCoordinate {
+  position: Vec3;
+}
 type Result =
   | KernelMesh
   | KernelMesh[]
@@ -29,7 +55,9 @@ type Result =
   | CadAlignmentInput[]
   | IndexedMesh
   | CurvatureSurfaceMesh
-  | Float32Array;
+  | Float32Array
+  | CadReferenceFeaturePage
+  | CadReferenceCoordinate;
 type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -48,6 +76,35 @@ export class CadClient {
   >();
   private queue: Promise<unknown> = Promise.resolve();
   private generation = 0;
+
+  /** Witness only: resetting/replacing this worker invalidates acquired topology. */
+  get referenceGeneration(): number {
+    return this.generation;
+  }
+
+  referenceFeatures(
+    kernelId: string,
+    options: {
+      family: CadReferenceFeatureFamily;
+      offset?: number;
+      limit?: number;
+    },
+  ): Promise<CadReferenceFeaturePage> {
+    return this.request("referenceFeatures", {
+      ...options,
+      kernelId,
+    }) as Promise<CadReferenceFeaturePage>;
+  }
+
+  referenceCoordinate(
+    kernelId: string,
+    selection: CadReferenceCoordinateSelection,
+  ): Promise<CadReferenceCoordinate> {
+    return this.request("referenceCoordinate", {
+      kernelId,
+      selection,
+    }) as Promise<CadReferenceCoordinate>;
+  }
 
   importFile(
     data: Uint8Array,
@@ -76,10 +133,14 @@ export class CadClient {
   }
 
   /** Acquire the cached exact-face triangulations without changing the BRep. */
-  alignmentMesh(kernelId: string): Promise<IndexedMesh> {
+  alignmentMesh(
+    kernelId: string,
+    options?: { referenceAcquisition: true },
+  ): Promise<IndexedMesh> {
     return this.request("alignmentMesh", {
       kernelId,
       includeUVs: false,
+      ...(options?.referenceAcquisition ? { referenceAcquisition: true } : {}),
     }) as Promise<IndexedMesh>;
   }
 

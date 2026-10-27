@@ -1,11 +1,34 @@
 import type { Entity, Vec3 } from "./types";
 
-/** GUI primitive-fit samples; preserve existing mask, precision and stride semantics. */
+export interface PrimitiveFitRegion {
+  center: Vec3;
+  radius: number;
+}
+/** Shared primitive-fit samples; preserve source precision, membership and stride. */
 export function primitiveFitSamples(
   source: Pick<Entity, "kind" | "positions">,
   selection?: Uint8Array | null,
-  region?: { center: Vec3; radius: number },
+  region?: PrimitiveFitRegion,
 ): number[] {
+  return primitiveFitInput(source, selection, region).positions;
+}
+
+export function primitiveFitInput(
+  source: Pick<Entity, "kind" | "positions">,
+  selection?: Uint8Array | null,
+  region?: PrimitiveFitRegion,
+): { positions: number[]; totalVertices: number } {
+  if (
+    region &&
+    (!Array.isArray(region.center) ||
+      region.center.length !== 3 ||
+      !region.center.every(Number.isFinite) ||
+      !Number.isFinite(region.radius) ||
+      region.radius <= 0)
+  )
+    throw new Error(
+      "Fitting region requires a finite center and positive radius.",
+    );
   const positions = source.positions;
   const slotWidth = source.kind === "pointcloud" ? 3 : 9;
   const hasSelection = selection?.some(Boolean) ?? false;
@@ -30,5 +53,5 @@ export function primitiveFitSamples(
         positions[offset + 1],
         positions[offset + 2],
       );
-  return sampled;
+  return { positions: sampled, totalVertices: count };
 }

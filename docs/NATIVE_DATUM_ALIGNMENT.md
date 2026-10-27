@@ -973,7 +973,7 @@ and its mapped image was released.
 ## Shared change flags and empty update consumption
 
 All six retained primitive vtables bind slot `0x1f0` to `0x140406460`.
-This complete 15-byte leaf routine writes the supplied byte at object offset
+This complete 16-byte leaf routine writes the supplied byte at object offset
 `0x2b0` and that byte XOR 1 at `0x2b1`. It makes no calls. It neither releases
 geometry nor directly purges a topology/cache allocation. REA Evidence:
 `ev_70357e0200897c1ba5e872e1f1ffac8467b0394f46a5f4a13c1c9d0b8d73c14c`.

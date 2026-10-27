@@ -8,6 +8,7 @@ import {
 } from "./reference-frame";
 import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import * as THREE from "three";
+import { copyFitResult } from "./fitted-primitive";
 import {
   validatePointCloudDisplay,
   DEFAULT_POINT_CLOUD_COLOR,
@@ -40,6 +41,7 @@ import {
   validateConstructionOrderKeys,
   encodeReferenceEntityData,
   decodeReferenceEntityData,
+  supportsSampledGeometry,
 } from "./reference-entity";
 
 /** Validate imported cloud attributes before converting untrusted JSON bytes. */
@@ -398,6 +400,7 @@ export function validateProject(value: unknown): Project {
         ? { ascAttributes: entity.ascAttributes }
         : {}),
       edgePositions: entity.edgePositions,
+      ...(entity.fit !== undefined ? { fit: copyFitResult(entity.fit) } : {}),
       planeFrame:
         entity.planeFrame === undefined
           ? undefined
@@ -405,6 +408,9 @@ export function validateProject(value: unknown): Project {
               center: [...entity.planeFrame.center],
               normal: [...entity.planeFrame.normal],
               tangent: [...entity.planeFrame.tangent],
+              ...(entity.planeFrame.displaySize === undefined
+                ? {}
+                : { displaySize: entity.planeFrame.displaySize }),
             },
       color: entity.color,
       ...(entity.pointAutoDensity !== undefined
@@ -614,8 +620,9 @@ export function serializeProject(
     name,
     units: "mm",
     authoring,
-    entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
+    entities: entities.map(({ kernelId: _kernelId, ...entity }) => ({
       ...entity,
+      ...(entity.fit !== undefined ? { fit: copyFitResult(entity.fit) } : {}),
       ...(entity.reference !== undefined
         ? { reference: encodeReferenceEntityData(entity.reference) }
         : {}),
@@ -689,7 +696,6 @@ export async function serializeProjectBlob(
   for (let index = 0; index < entities.length; index++) {
     const {
       kernelId: _kernelId,
-      fit: _fit,
       positions,
       normals,
       pointColors,
@@ -697,6 +703,7 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
+    if (metadata.fit !== undefined) metadata.fit = copyFitResult(metadata.fit);
     if (!isReferenceEntity(metadata) && metadata.kind !== "referenceFrame")
       validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
@@ -800,7 +807,11 @@ export async function serializeProjectBlob(
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();
   for (const entity of entities) {
-    if (entity.kind === "pointcloud" || entity.kind === "referenceFrame")
+    if (entity.kind === "referenceFrame") {
+      validateReferenceFrameEntity(entity);
+      continue;
+    }
+    if (entity.kind === "pointcloud" || !supportsSampledGeometry(entity))
       continue;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(

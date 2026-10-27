@@ -1,0 +1,139 @@
+{
+  "checkpoint": "M4 shared reference duplication availability and native midpoint source edit",
+  "date": "2026-10-26",
+  "baseCommit": "4027ebe1c3c765bbbb5ced95e541c474ce3c3657",
+  "scope": "Fixes an enabled unsupported GUI action; does not add reference duplication or close M4.",
+  "sharedBehavior": {
+    "gui": "Duplicate is disabled for semantic reference points and lines, including source-derived points.",
+    "operation": "objectDuplicateSupported is used by both GUI menu availability and duplicateObject.",
+    "mcpTool": "object_duplicate",
+    "mcpSchemaChanged": false,
+    "catalogDescriptionAlreadyReportsReferenceDuplicationUnsupported": true,
+    "error": {
+      "code": "OPERATION_FAILED",
+      "message": "Reference construction duplication is not yet supported."
+    },
+    "modelRevisionAndHistoryPreservedOnRejection": true,
+    "ordinaryObjectDuplicationPolicyUnchanged": true
+  },
+  "production": {
+    "inputCount": 1055,
+    "sourceSha256": "1536c75004139ae4e04447cfe20d160cb48da82dd93132a8fc8335ee9a976bae",
+    "preAndPostPinsMatch": true,
+    "buildId": "scanforge-ef836f21c2055ee2",
+    "assets": 273,
+    "viteModules": 531,
+    "warnings": 0,
+    "affectedTypecheckPassed": true,
+    "affectedTypecheckRoots": [
+      "src/object-operations.ts",
+      "src/ui/object-context-actions.ts",
+      "tests/object-operations.test.ts",
+      "tests/reference-midpoint-api.test.ts",
+      "vite.config.ts"
+    ],
+    "fullRepositoryTypecheckRunLocallyForThisCheckpoint": false
+  },
+  "focused": {
+    "files": 5,
+    "passed": 158,
+    "failed": 0
+  },
+  "browser": {
+    "actualGuiAndPublicStdioMcp": true,
+    "targets": [
+      "numeric reference point",
+      "numeric endpoints line",
+      "derived midpoint after edited-source project reopen"
+    ],
+    "disabledMenuItemsVerified": true,
+    "structuredMcpRejectionsVerified": true,
+    "revisionHistoryAndObjectsUnchanged": true,
+    "duplicateDisplayNamesHandledByPublicSceneOrderAndSelectedIdentity": true,
+    "sourceEndXBeforeMm": 10,
+    "sourceEndXAfterMm": 20,
+    "midpointXBeforeMm": 5,
+    "midpointXAfterMm": 10,
+    "historyReopenLocksAndDeletionGuardsPassed": true,
+    "consolePageErrors": 0,
+    "closedPorts": [51368, 51369],
+    "mcpAndBrowserPidsExited": true,
+    "sourceStartXYZ": [0, 0, 0]
+  },
+  "nativeMatch": {
+    "evidence": "m4-native-runtime-recovery-20261026.json",
+    "session": "R16",
+    "outputQsfSha256": "c0400357e1d74c7cc9b326ae7c3153804e6b4a9a3d61ad825b221683cd84a4cd",
+    "case": "Endpoint 10 to 20 mm; retained midpoint 5 to 10 mm; edited save/reopen preserves mode/source.",
+    "matchedGuiAndMcpCoordinates": true,
+    "toleranceMmForThisExactAnalyticCase": 0,
+    "fullNativeModeOrLifecycleEquivalence": false
+  },
+  "validation": {
+    "red": {
+      "artifact": "reference-duplicate-menu-red-r1.json",
+      "exitCode": 1,
+      "elapsedSeconds": 4.045261699997354,
+      "peakJobBytes": 504254464,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "passed": false
+    },
+    "build": {
+      "artifact": "reference-duplicate-menu-build-r2.json",
+      "exitCode": 0,
+      "elapsedSeconds": 11.540737400006037,
+      "peakJobBytes": 1501671424,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "passed": true
+    },
+    "focused": {
+      "artifact": "reference-duplicate-menu-green-r1.json",
+      "exitCode": 0,
+      "elapsedSeconds": 6.017357500037178,
+      "peakJobBytes": 450453504,
+      "totalProcesses": 12,
+      "activeAfter": 0,
+      "passed": true
+    },
+    "browser": {
+      "artifact": "reference-duplicate-menu-browser-r2.json",
+      "exitCode": 0,
+      "elapsedSeconds": 44.82664099999238,
+      "peakJobBytes": 1788268544,
+      "totalProcesses": 18,
+      "activeAfter": 0,
+      "passed": true
+    }
+  },
+  "retainedFailures": [
+    {
+      "artifact": "reference-duplicate-menu-build-r1.json",
+      "reason": "Reduced validation configuration omitted the normal Vite root and Node ambient context; archived configuration corrected without changing production code."
+    },
+    {
+      "artifact": "reference-duplicate-menu-browser-r1.json",
+      "reason": "Test selected by a duplicated display name; corrected to public scene order with selected-ID verification. Entire failed receipt retained."
+    }
+  ],
+  "resourceLimits": {
+    "jobBytes": 4294967296,
+    "cpuPercent": 25,
+    "sequentialNamedMutex": true,
+    "allOwnedProcessesExited": true
+  },
+  "screenshot": {
+    "path": "m4-reference-duplicate-unavailable-20261026.png",
+    "bytes": 115632,
+    "sha256": "0538138e0e030e1bcb08c71235d1fadd72dafde9ad40393876cc2a21a5499ba7",
+    "visuallyInspected": true
+  },
+  "remainingGates": [
+    "Retained general CAD/scan source/provider resolution.",
+    "Native-derived and inactive-pick transforms and positive duplication/link policy.",
+    "Remaining native frame/fit/curve/constraint and source-family comparisons.",
+    "Final exact-head hosted verification/review, merge and merged-main verification before milestone closure."
+  ],
+  "milestoneComplete": false
+}

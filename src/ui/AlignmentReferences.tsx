@@ -77,11 +77,12 @@ export function AlignmentReferences({
                     value={item.id}
                     disabled={item.kind === "unsupported"}
                   >
-                    {item.source === "cadFace"
-                      ? `Face ${(item.faceIndex ?? 0) + 1}`
-                      : item.source === "referenceConstruction"
-                        ? "Construction reference"
-                        : "Fitted primitive"}{" "}
+                    {item.label ??
+                      (item.source === "cadFace"
+                        ? `Face ${(item.faceIndex ?? 0) + 1}`
+                        : item.source === "referenceConstruction"
+                          ? "Construction reference"
+                          : "Fitted primitive")}{" "}
                     · {item.kind}
                     {item.surfaceKind && item.surfaceKind !== item.kind
                       ? ` (${item.surfaceKind})`

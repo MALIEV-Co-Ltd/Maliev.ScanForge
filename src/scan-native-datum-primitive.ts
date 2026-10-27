@@ -107,6 +107,9 @@ export function datumFeatureMetadata(
       matrix,
     );
     planeFrame = {
+      ...(planeFrame.displaySize === undefined
+        ? {}
+        : { displaySize: planeFrame.displaySize }),
       center: moved.center,
       normal: moved.direction!,
       tangent: moved.tangent!,

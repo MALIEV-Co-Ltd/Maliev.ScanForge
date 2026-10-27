@@ -1,0 +1,313 @@
+{
+  "date": "2026-10-25",
+  "scope": "Typed reference recovery, shared primitive fitting/materialization/persistence and MCP poll deadline correction",
+  "milestoneComplete": false,
+  "committed": false,
+  "merged": false,
+  "candidate": {
+    "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workspace": "C:\\Users\\Shoung\\.codex\\worktrees\\m4-construction\\Maliev.ScanForge",
+    "applicationInputs": 1026,
+    "sourceManifestSha256": "ad30484fcbe5b259125e29c68ecedd9419d2feb22a6710571562b672bf157fa3",
+    "buildIdentity": "scanforge-6100e730e5906a64"
+  },
+  "verification": {
+    "build": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2626306048,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 36.86493199999677
+    },
+    "focused": {
+      "passed": 141,
+      "files": 7,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/primitive-fit-create-api.test.ts",
+          "tests/primitive-fit-samples.test.ts",
+          "tests/fitted-primitive.test.ts",
+          "tests/automation-api.test.ts",
+          "tests/project-file.test.ts",
+          "tests/reference-construction-api.test.ts",
+          "tests/reference-project.test.ts",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 397930496,
+        "totalProcesses": 14,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 4.328249699959997
+      }
+    },
+    "mcpBridge": {
+      "passed": 21,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/mcp-server.test.ts",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 334307328,
+        "totalProcesses": 8,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 1.736584900005255
+      }
+    },
+    "fullSuite": {
+      "passed": 49049,
+      "skipped": 65,
+      "failed": 0,
+      "filesPassed": 680,
+      "filesSkipped": 19,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "--exclude",
+          "**/.resources/**"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 952365056,
+        "totalProcesses": 827,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 297.75935489998665
+      }
+    },
+    "cadSmoke": {
+      "command": ["node", "--max-old-space-size=768", "tests/kernel-smoke.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 762044416,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 9.779524000012316
+    },
+    "typedBrowser": {
+      "command": ["node", "tests/reference-construction-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 924311552,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 3.121508999960497
+    },
+    "primitiveBrowser": {
+      "command": ["node", "tests/primitive-fitting-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1702559744,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 8.957416599965654
+    },
+    "primitiveData": {
+      "owner": "scanforge-m4-primitive-validation",
+      "startedAt": "2026-10-25T15:31:28.909Z",
+      "expiresAt": "2026-10-25T15:35:28.909Z",
+      "persistentData": false,
+      "resources": [
+        {
+          "kind": "http-server",
+          "pid": 30484,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T15:31:28.909Z",
+          "port": 65116,
+          "bind": "127.0.0.1",
+          "purpose": "isolated built application"
+        },
+        {
+          "kind": "mcp-stdio-child",
+          "pid": 27376,
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "startedAt": "2026-10-25T15:31:29.150Z",
+          "port": 65117,
+          "bind": "127.0.0.1",
+          "purpose": "actual stdio SDK and browser bridge"
+        },
+        {
+          "kind": "disposable-browser",
+          "pid": 60432,
+          "executable": "installed Chrome",
+          "startedAt": "2026-10-25T15:31:29.299Z",
+          "purpose": "isolated profile and UI validation"
+        }
+      ],
+      "cleanup": [
+        {
+          "port": 65116,
+          "closed": true
+        },
+        {
+          "port": 65117,
+          "closed": true
+        },
+        {
+          "pid": 27376,
+          "exited": true
+        },
+        {
+          "pid": 60432,
+          "exited": true
+        }
+      ],
+      "originalInput": {
+        "path": "C:/repo/alignment-example-files/ply-1.ply",
+        "bytes": 6926970,
+        "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+      },
+      "originalPlaneFit": {
+        "fit": {
+          "kind": "plane",
+          "center": [
+            24.317468102409546, 19.326076248154635, -300.4169847525105
+          ],
+          "axis": [
+            -0.4498839210802536, 0.33666408758993643, 0.8272011543032879
+          ],
+          "rms": 2.5177831922908473,
+          "maxError": 5.218941069637449
+        },
+        "samples": 19583,
+        "totalVertices": 822462
+      },
+      "solidFits": [
+        {
+          "kind": "sphere",
+          "fit": {
+            "kind": "sphere",
+            "center": [
+              -4.735795089416683e-16, -2.1684043449710643e-18,
+              2.98372437868011e-16
+            ],
+            "radius": 5,
+            "axis": [0, 0, 1],
+            "rms": 5.351930849751783e-16,
+            "maxError": 1.7763568394002505e-15
+          },
+          "entityId": "63e43f3c-c11d-45b7-8a9d-92f474467890",
+          "exactCad": true
+        },
+        {
+          "kind": "cylinder",
+          "fit": {
+            "kind": "cylinder",
+            "center": [-9.796192898012309e-17, -4.144708848156939e-17, 5],
+            "axis": [0, 0, 1],
+            "radius": 3.0000000000000058,
+            "height": 9.999999999999998,
+            "rms": 5.776005752245401e-15,
+            "maxError": 6.217248937900877e-15
+          },
+          "entityId": "ba2813a2-98fb-45c1-8dcb-1f7c12632c72",
+          "exactCad": true
+        },
+        {
+          "kind": "cone",
+          "fit": {
+            "kind": "cone",
+            "center": [-1.6759861162204478e-16, -7.325063995084446e-17, 10],
+            "axis": [1.019073382802799e-17, -5.2710471385812275e-18, -1],
+            "radius": 4,
+            "topRadius": 2.0000000000000004,
+            "height": 10,
+            "rms": 3.1064413215324337e-16,
+            "maxError": 8.709305949236424e-16
+          },
+          "entityId": "27a1a42d-92a3-4f64-b2ea-fd682e36830f",
+          "exactCad": true
+        }
+      ],
+      "steps": [
+        "actual stdio SDK discovery and pairing",
+        "analytic whole and local region fitting",
+        "keyboard GUI fitting and shared plane creation",
+        "exact GUI/MCP fit/frame equality",
+        "Undo and MCP recreation",
+        "fit diagnostics/frame through real project worker reopen",
+        "original unmodified ply-1.ply GUI import and same GUI/MCP plane fit/materialization",
+        "sphere/cylinder/cone analytic GUI fits, actual CAD creation and worker reopen",
+        "WebGL and process/port cleanup"
+      ],
+      "passed": true
+    },
+    "repositoryFormatting": {
+      "passed": false,
+      "warnings": 125,
+      "scope": "Inherited pending baseline files; scoped owned-file check recorded separately",
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "."
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 1,
+        "peakJobBytes": 971313152,
+        "totalProcesses": 2,
+        "activeAfter": 0,
+        "passed": false,
+        "elapsedSeconds": 27.048606899974402
+      }
+    }
+  },
+  "review": {
+    "agent": "review_m4_integration",
+    "addressed": [
+      "pointcloud plane sizing must use pointcloud-aware bounds",
+      "accepted Apply with pending GPU cleanup must retain dialog ownership and retry UI",
+      "expired/stale GUI preview must restart preserving draft coordinates",
+      "omitted fit selection must match GUI active mask",
+      "guide limits bullet must match updated precision/defaults"
+    ],
+    "transportReview": "No actionable findings in early timer rescheduling/expiry correction"
+  },
+  "native": {
+    "sourceExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "newNativeFunctionalReplay": false,
+    "computerUse": "Both available runtimes fail kernel-assets initialization; no native window input sent",
+    "staticCapture": "Owned hidden-process capture helper is being prepared for review; not run"
+  },
+  "openGates": [
+    "Source-derived reference acceptance and shared dependency refresh",
+    "Exact CAD/sketch/scan provider integration and missing native constructor/acceptance evidence",
+    "Axes/custom coordinate systems and remaining plane/curve inventory",
+    "Authoritative ordered sketch document and source provenance across every edit/history/file boundary",
+    "Complete real scan-to-reference-to-sketch GUI/MCP and native lifecycle acceptance",
+    "Clean integration candidate, hosted validation, merge and tracker/milestone closure"
+  ]
+}

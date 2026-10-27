@@ -44,4 +44,40 @@ Persisted feature recipes cover primitives, immutable BREP seeds, polygon/chorda
 
 Construction lines and circular arcs display dashed in the main 3D sketch editor, matching their reference role in the SVG preview. Ordinary curves and transient drawing previews remain solid. Rendering preserves the shared sketch coordinates, construction flags and endpoint picking. Symmetry-related markers include arc centers and axis endpoints; solver diagnostics, rather than marker color, report local degrees of freedom.
 
-Two straight sketch lines can be trimmed or extended to a shared analytic corner through GUI endpoint selectors or MCP `sketch_corner_trim`. Unrelated geometry and placement are preserved; constrained/shared-endpoint edits reject atomically. Sketch history and saved projects retain the joined topology. This does not implement general paint trimming, arc corners or fillets; see [corner evidence](NATIVE_SKETCH_CORNERS.md).
+Two straight sketch lines can be trimmed or extended to a shared analytic corner through GUI endpoint selectors or MCP `sketch_corner_trim`. Unrelated geometry and placement are preserved; constrained/shared-endpoint edits reject atomically. Sketch history and saved projects retain the joined topology. `sketch_corner_trim` itself handles straight-line junctions, not arc corners. Fillet and paint-trim use separate shared commands; their extended GUI/public MCP browser checks pass. See [corner evidence](NATIVE_SKETCH_CORNERS.md).
+
+## M4 integration checkpoint (2026-10-25)
+
+The Construct ribbon now supports typed semantic reference points/finite lines
+through the same `reference_construct` operation used by MCP. A point can also
+retain the midpoint of one stored semantic endpoint line. Source edits refresh
+supported dependent midpoints atomically; other source-derived modes remain gated.
+Typed project/history reopen, precise inspection,
+preview ownership, expiry and retryable cleanup are covered by public browser
+checks. See [typed construction evidence](evidence/m4-typed-construction-20261025.json).
+
+GUI primitive fitting and `analysis_fit` share source precision, selection and
+spherical-region filtering. `primitive_fit_create` materializes the same fit as a
+persistent reference plane or exact sphere/cylinder/cone with fit diagnostics.
+Actual GUI/MCP analytic fixtures, original PLY plane fitting and CAD project
+reopen are tested. Native numerical equivalence, remaining construction/sketch
+modes and full M4 acceptance are still open. Earlier table entries are historical
+baselines where superseded by this checkpoint and the current agent guide.
+
+Reference-plane sketch creation preserves its stored tangent through shared
+`sketch_manage`, with an explicit detached placement and signed normal offset.
+Original-scan GUI/MCP frame parity, constrained closed profiles, sketch history
+and worker reopen pass. Sketch curves remain readable over translucent planes
+in both themes, while construction curves retain their dashed display.
+The [midpoint checkpoint](evidence/m4-midpoint-integration-20261025.json) records
+its historical full suite: 49,112 passed, 65 skipped and no failures. These results
+do not close the [remaining M4 gates](M4_ACCEPTANCE.md).
+
+The [integrated M4 checkpoint](evidence/m4-integrated-acceptance-20261026.json)
+records newer numeric planes and coordinate frames, finite reference axes, shared
+canvas/MCP drawing intents, source-frame sketch placement, exact CAD primitive
+creation and mixed-scene STEP export parity. The production build and 49,254 unit
+tests pass; 64 conditional owner-fixture/example tests are skipped. Actual GUI/public
+MCP checks cover original-scan workflows, rendering, errors, cancellation, history
+and worker reopen. Native and final release gates remain explicitly listed in
+[M4 acceptance](M4_ACCEPTANCE.md).

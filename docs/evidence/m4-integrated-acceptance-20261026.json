@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "scope": "Integrated M4 application and public MCP verification; native and merge closure are separate gates",
+  "baseCommit": "0aba2b6a19f09b369af7eaea4d3bb9ccea4a651d",
+  "buildIdentity": "scanforge-3eb2603ffcf27d68",
+  "sourceInputsAtBuild": {
+    "count": 2817,
+    "sha256": "ae251566f9fd88257465a1fa00d1354a49bf895d64d0158c6bd6b683dc889071",
+    "state": "uncommitted candidate; later edits are test-driver/docs only"
+  },
+  "reviewedRuntimePatch": {
+    "sha256": "ffe7e5557d0fd5c7ecf51c4ffb31185007074d5c7245ae08ec84602827481c12",
+    "bytes": 232918,
+    "files": 43,
+    "independentReview": "No new release-blocking findings; hash verified unchanged before/after and after full suite"
+  },
+  "suite": {
+    "passed": 49254,
+    "skipped": 64,
+    "failed": 0,
+    "passedFiles": 692,
+    "skippedFiles": 18,
+    "totalFiles": 710,
+    "skipBoundary": "Conditional owner/native-fixture and optional example gates; no newly skipped M4 core tests"
+  },
+  "checks": {
+    "build-step-r1": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1703542784,
+      "totalProcesses": 33,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 119.47143090004101
+    },
+    "final-sketch-canvas-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-canvas-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 937340928,
+      "totalProcesses": 26,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 8.926027000008617
+    },
+    "primitive-step-browser-r2": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/primitive-fitting-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2481811456,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 20.269748399965465
+    },
+    "final-reference-construction-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/reference-construction-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 962686976,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 5.744035699986853
+    },
+    "final-sketch-section-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-section-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1626607616,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 10.705413099960424
+    },
+    "final-sketch-symmetry-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-symmetry-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 915808256,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 4.954240299994126
+    },
+    "final-analytic-extrusion-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/analytic-extrusion-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1309081600,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 2.9321210000198334
+    },
+    "final-sketch-corner-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-corner-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 915468288,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 3.4058595999958925
+    },
+    "final-sketch-history-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-history-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1120100352,
+      "totalProcesses": 24,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 6.283743399952073
+    },
+    "final-sketch-construction-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-construction-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 948252672,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 4.174970899999607
+    },
+    "final-m6-inspection-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/m6-inspection-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1628860416,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 8.37881040002685
+    },
+    "final-m1-selection-browser": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/m1-selection-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 893546496,
+      "totalProcesses": 18,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 49.698298799979966
+    },
+    "final-kernel-smoke": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/kernel-smoke.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 732385280,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 6.315730799979065
+    },
+    "final-sketch-child-state-kernel": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-child-state-kernel.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 439119872,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 0.6370497000170872
+    },
+    "final-suite": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 989913088,
+      "totalProcesses": 838,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 285.1037463999819
+    },
+    "sketch-editing-browser-r1": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/sketch-editing-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1628884992,
+      "totalProcesses": 23,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 13.635709299996961
+    }
+  },
+  "limits": {
+    "rootHeavyJobsSequential": true,
+    "jobBytes": 4294967296,
+    "cpuPercent": 25,
+    "finiteLeases": true,
+    "privateBrowserPorts": true,
+    "disposableBrowserProfiles": true,
+    "existingUserSceneReplaced": false
+  },
+  "correctedFailures": [
+    "Actual Construct ribbon crash from missing reference-plane artwork",
+    "Actual stale datum form overwrote concurrent MCP edit",
+    "Actual no-selection New Sketch global command rejection",
+    "Large-origin plane GPU position and normal precision",
+    "MCP STEP rejected mixed scenes accepted by GUI",
+    "Browser driver read chunk exceeded published 256 KiB limit; corrected without runtime change"
+  ],
+  "additionalBoundaryTests": {
+    "sketch-editing-browser.mjs": "Passed actual GUI/public MCP mirror, junction, fillet and canvas paint trim, failures, Escape, scoped history and worker reopen"
+  },
+  "nativeEvidence": "m4-native-gui-checkpoint-20261026.json",
+  "openGates": [
+    "Native numeric plane/frame and fit residual readback, saved scan-plane-sketch handoff, representative curves/constraints/closed profiles and edit/reopen",
+    "Candidate commit, reviewed PR, merge and merged-main verification",
+    "Issue 4 and milestone 5 closure"
+  ],
+  "fullRepositoryFormattingPassed": true,
+  "fullRepositoryFormattingElapsedSeconds": 28.55107250000583,
+  "milestoneComplete": false
+}

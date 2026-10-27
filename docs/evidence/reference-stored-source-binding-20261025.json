@@ -1,0 +1,252 @@
+{
+  "date": "2026-10-25",
+  "scope": "Internal identity-bound stored semantic point/line source inputs for shared reference construction evaluation and preview.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "Uncommitted; not shipped or pushed"
+  },
+  "sources": [
+    {
+      "path": "src/reference-construction-resolver.ts",
+      "sha256": "8ed9168859cc324cd7bfc47248fd8797206d7f4cae8d8a95690a65ce2d1b1752"
+    },
+    {
+      "path": "tests/reference-stored-source-binding.test.ts",
+      "sha256": "9cb31f8497ccd45934a98d94451ee370f7d6929fc7b9da612592720dadc5ef4c"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "425b2ec86e0964ac94784906b20a456fca970e4034e3cb184641bb1649a4df88"
+    },
+    {
+      "path": "src/reference-construction-evaluation.ts",
+      "sha256": "dd3ae08f06af9eb1155dc5b0805f3b6dbdda99ceb2b84686bf3603c9b24503f9"
+    },
+    {
+      "path": "src/automation/reference-construction-preview.ts",
+      "sha256": "6d92efab36a5f08e402a29a433db24602eb2639597e3aea867464cd2dc88ed55"
+    },
+    {
+      "path": "src/automation/reference-construction-binding.ts",
+      "sha256": "166edf477f2fd97ebf2203dd1766beae384a3e6400e8b3b29ba23da59eb373c1"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "a55b7b1992deaeec94f8694a288b1abcaa32a0e1717370ede323ce9c26d26fb4"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "5479d515f8e3701405b9b2c576a1f58c2e01057bf69e2b70843c4c968ff28be0"
+    }
+  ],
+  "behavior": [
+    "Validate whole-scene unique IDs and stored/provisional key collisions, then require exact common source identities and canonical order.",
+    "Validate and detach authoritative semantic point/line geometry through the existing direct extractor. Preserve Double coordinates, stored direction scale, signed zero and endpoint arithmetic; do not fit display buffers.",
+    "Bind point inputs in canonical common-set order. Bind line inputs in retained-record order, preserving duplicate records and independent weighting.",
+    "Read already refreshed source geometry only. The host still owns dependency refresh, eligibility/authorization, revisions, cancellation and admission limits.",
+    "Skip geometry extraction for inactive numeric modes and an average with no common inputs, retaining the definition collections unchanged. Common identities remain validated.",
+    "Reject active missing records, missing common sources, stale keys, malformed semantic geometry and unbound source families. Do not fabricate failed extraction or a CAD/sketch/scan fallback."
+  ],
+  "nativeEvidence": {
+    "newOriginalExecution": false,
+    "newOriginalNumericalComparison": false,
+    "basis": "Reuses the previously established direct semantic primitive extraction and native arithmetic helpers. This checkpoint adds binding/integration checks, not native numeric or GUI equivalence.",
+    "fullSourceProviderComplete": false
+  },
+  "mcp": {
+    "catalogChanged": false,
+    "schemaChanged": false,
+    "newPublicConstructionTools": false,
+    "coverage": "The internal bridge composes the existing shared evaluator and host preview owner. Existing public viewport_get reports rendered precise point/line previews; source changes retire them through the existing workspace binding. No GUI-only feature is published.",
+    "stillRequired": "Complete source/provider admission, dependency refresh, derived Apply and the common GUI/MCP editor before exposing construction actions.",
+    "guideUpdated": true
+  },
+  "validation": {
+    "red": "Nine cases first failed because the new resolver export did not exist.",
+    "build": {
+      "command": "npm run build",
+      "inputsStableDuringBuild": true,
+      "identitySha256": "88e8af6988b476d5c017f0ab21590d9daa20eaf4fd5fa4e7560157b27631072e",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 58.51083539996762,
+        "childPeakJobMemoryBytes": 2579750912,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "focused": {
+      "passed": 136,
+      "failed": 0,
+      "files": 7,
+      "newCases": 9,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 1.9291040999814868,
+        "childPeakJobMemoryBytes": 325386240,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "format": {
+      "passed": true,
+      "files": [
+        "src/reference-construction-resolver.ts",
+        "tests/reference-stored-source-binding.test.ts"
+      ],
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.20867640001233667,
+        "childPeakJobMemoryBytes": 89083904,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "browser": {
+      "passed": true,
+      "engine": "Owned headless Chromium with software WebGL",
+      "viewport": [1400, 950],
+      "browserPlugin": "Not listed; existing Playwright dependency used for an isolated real-App fixture.",
+      "fixtureDisclosure": "Actual App source copied with module paths relocated and real API hook captured. Internal resolver/preview registry are imported statically. No production handler replacement or public construction creation is claimed. HMR is isolated only in this test page via a connected-state test socket; user live HMR is unchanged.",
+      "checks": [
+        "Stored semantic pair resolves to expected point preview",
+        "Existing viewport_get reports the displayed point geometry",
+        "Source geometry publication makes the preview stale and clears its display",
+        "Fresh ordered source records resolve to expected reversed line preview",
+        "Existing viewport_get reports the displayed line geometry",
+        "Previews add no model history or entities; only the explicit source change adds one step",
+        "Fixture mesh buffer identity and source negative zero remain unchanged",
+        "Release and unmount retire previews and leave zero canvases",
+        "No browser errors, warnings or failed responses"
+      ],
+      "pointGeometry": {
+        "kind": "point",
+        "position": [2, 0, 0]
+      },
+      "staleReason": "stale",
+      "lineGeometry": {
+        "kind": "line",
+        "start": [8, 0, 0],
+        "direction": [-1, 0, 0],
+        "length": 8
+      },
+      "before": {
+        "history": 1,
+        "entityCount": 3
+      },
+      "after": {
+        "history": 2,
+        "entityCount": 3,
+        "sameSource": true,
+        "pointSignedZero": true,
+        "active": false
+      },
+      "inputsMatchedBuildAndStable": true,
+      "resultSha256": "29c7a5daee9a9bf20f0712831ba17e9561fb40b5c30a43d077dfeee29b5f5491",
+      "screenshotSha256": "8ffb9c4707f04bcae59ff235d67dfe3521c3ffde51715704fd55f79ad55a629c",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 3.5450498000136577,
+        "childPeakJobMemoryBytes": 565669888,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "initialHarnessFailure": "R1 passed behavior assertions but immediate closure of its intentionally intercepted HMR socket produced a Vite connection error. R2 keeps a connected-state test socket and passed with unchanged product code."
+    },
+    "fullSuiteRun": true,
+    "reason": "The stable build, expanded affected suites, full test process and real-App preview check are separate evidence. None establishes the remaining native, source/provider or public construction acceptance gates.",
+    "buildInputsChangedByEvidenceRecordTime": [],
+    "affectedIncludingExistingSketchPaths": {
+      "passed": 246,
+      "failed": 0,
+      "files": 13,
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 2.9884327000472695,
+        "childPeakJobMemoryBytes": 341377024,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    "full": {
+      "command": "vitest run --dir tests --maxWorkers=1 --exclude **/.resources/**",
+      "passed": 48984,
+      "failed": 0,
+      "skipped": 64,
+      "canonicalFiles": 690,
+      "applicationInputsReenumeratedAndStable": true,
+      "inputManifestSha256": "edb82db5705f32199efef0d6cee384ec243392f0c640fea349ab3e2b43ac68cf",
+      "receipt": {
+        "exitCode": 0,
+        "elapsedSeconds": 307.2756093000062,
+        "childPeakJobMemoryBytes": 999886848,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "documentationRepair": "One invalid CP1252 dash in the agent guide fitting-point range was re-encoded as UTF-8; other text and line endings were preserved before the new paragraph was added.",
+  "resources": {
+    "aggregateJobBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "buildHeapMiB": 3072,
+    "testHeapMiB": 1024,
+    "allListedJobsTerminalAndClean": true
+  },
+  "remaining": [
+    "Host-owned dependency refresh and specialized source-change propagation.",
+    "Exact CAD, sketch, scan, primitive/provider and whole-scene bindings.",
+    "Derived acceptance/finalization, common public GUI/MCP editor and project admission.",
+    "Save/reopen, complete original numerical/rendered acceptance and original three-scan native comparison.",
+    "M3/M4 and the complete reconstruction objective remain active."
+  ],
+  "liveApplication": {
+    "url": "http://127.0.0.1:5173/",
+    "serverPid": 28864,
+    "HmrUnchanged": true,
+    "browserTab": 5,
+    "keptOpen": true,
+    "servedSourcesMatchCurrentDisk": [
+      "src/ui/App.tsx",
+      "src/automation/api.ts",
+      "src/reference-construction-resolver.ts"
+    ],
+    "browserErrors": [],
+    "browserWarnings": [],
+    "backupRestoredOrDeleted": false
+  }
+}

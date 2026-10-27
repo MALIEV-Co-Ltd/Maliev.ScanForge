@@ -50,6 +50,8 @@ vi.mock("../src/project-backup", async (original) => ({
 }));
 
 const key = "01".repeat(16);
+const numericCommonSourceError =
+  "Stored coordinate references cannot retain common-source dependencies.";
 const mesh = (): Entity => ({
   id: "source",
   name: "Source",
@@ -493,7 +495,7 @@ describe("shared reference import admission", () => {
   });
 
   it.each(["current", "history", "future"])(
-    "decoder worker refuses %s references before returning a display packet",
+    "decoder worker refuses invalid %s numeric common-source links before returning a display packet",
     async (placement) => {
       vi.resetModules();
       const source: ProjectSession = {
@@ -505,7 +507,7 @@ describe("shared reference import admission", () => {
       else
         source[placement as "history" | "future"].push({
           label: "Reference",
-          entities: [point()],
+          entities: [mesh(), point()],
         });
       const scope = {
         onmessage: null as
@@ -519,16 +521,17 @@ describe("shared reference import admission", () => {
         data: { file: await encodeProjectFileLocally(source) },
       } as MessageEvent<{ file: Blob }>);
       expect(scope.postMessage).toHaveBeenCalledWith({
-        error: expect.stringMatching(/reference.*not yet supported/i),
+        error: numericCommonSourceError,
       });
+      expect(scope.postMessage).toHaveBeenCalledOnce();
       expect(scope.close).toHaveBeenCalledOnce();
     },
   );
 
-  it("browser-side admission also rejects reference history returned by a decoder", async () => {
+  it("browser-side admission also rejects invalid numeric common-source links in decoded history", async () => {
     const source: ProjectSession = {
       project: project([mesh()]),
-      history: [{ label: "Reference", entities: [point()] }],
+      history: [{ label: "Reference", entities: [mesh(), point()] }],
       future: [],
     };
     const transport = await packProjectTransport({
@@ -549,11 +552,11 @@ describe("shared reference import admission", () => {
     vi.stubGlobal("document", {});
     vi.stubGlobal("Worker", WorkerStub);
     await expect(decodeProjectFile(new Blob())).rejects.toThrow(
-      /reference.*not yet supported/i,
+      numericCommonSourceError,
     );
   });
   it.each(["current", "history", "future"])(
-    "rejects an unsupported reference in %s before publication",
+    "rejects invalid numeric common-source links in %s before publication",
     async (placement) => {
       const source: ProjectSession = {
         project: project([mesh()]),
@@ -564,14 +567,14 @@ describe("shared reference import admission", () => {
       else
         source[placement as "history" | "future"].push({
           label: "Reference",
-          entities: [point()],
+          entities: [mesh(), point()],
         });
       expect(() => assertReferenceWorkspaceAdmission(source)).toThrow(
-        /reference.*not yet supported/i,
+        numericCommonSourceError,
       );
       await expect(
         decodeProjectFile(await encodeProjectFileLocally(source)),
-      ).rejects.toThrow(/reference.*not yet supported/i);
+      ).rejects.toThrow(numericCommonSourceError);
     },
   );
 
@@ -692,10 +695,12 @@ describe("MCP parity for reference persistence boundaries", () => {
       })),
     ),
   )(
-    "MCP $command rejects $placement references without replacing or committing",
+    "MCP $command rejects invalid $placement numeric common-source links without replacing or committing",
     async ({ command, placement }) => {
       const { api, state, host } = setup();
       try {
+        const before = state.entities,
+          revision = api.currentRevision();
         const source: ProjectSession = {
           project: project([mesh()]),
           history: [],
@@ -705,7 +710,7 @@ describe("MCP parity for reference persistence boundaries", () => {
         else
           source[placement as "history" | "future"].push({
             label: "Reference",
-            entities: [point()],
+            entities: [mesh(), point()],
           });
         const file = await encodeProjectFileLocally(source);
         vi.mocked(listBackups).mockResolvedValue([
@@ -741,14 +746,17 @@ describe("MCP parity for reference persistence boundaries", () => {
             result: {
               status: "failed",
               error: {
-                message: expect.stringMatching(/reference.*not yet supported/i),
+                message: numericCommonSourceError,
               },
             },
           });
         });
         expect(host.replace).not.toHaveBeenCalled();
+        expect(state.entities).toBe(before);
         expect(state.history).toHaveLength(0);
+        expect(state.future).toHaveLength(0);
         expect(state.entities).toHaveLength(1);
+        expect(api.currentRevision()).toBe(revision);
       } finally {
         api.dispose();
       }

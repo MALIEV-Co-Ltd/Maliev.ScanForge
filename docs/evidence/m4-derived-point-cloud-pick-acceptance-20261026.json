@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "status": "Partial M4 reference-family checkpoint; remaining required input families, native lifecycle and final release gates open",
+  "baseCommit": "04c70264c55a32264cf2caac6fe131ae71bbaf53",
+  "productionBuild": "scanforge-5e63abfd85df5fab",
+  "buildInputs": {
+    "count": 2828,
+    "sha256": "2b308387355356ea070232abd21fb7c5b0f16594881233f84f2cf9277cca1c17"
+  },
+  "coverage": [
+    "Shared center/pair/three-plane points using semantic point/line sources and numeric-plane equations",
+    "Read-only paged reference_construction_sources with canonical identity, eligibility and cycle guards",
+    "Read-only point-cloud vertex acquisition and native startup-mm/N6 float-pick quantization",
+    "Server-side positionPick/startPick/endPick intents and lossless encoding preserve signed zero through public JSON",
+    "Picked numeric point/line publication retains no source dependency",
+    "Numeric-plane edit/transform stages dependent closure and locked-descendant failure atomically",
+    "Other mesh writers reject invalidating a linked numeric-plane source before geometry/history/selection publication",
+    "GUI acquisition cancels pending sketch/trim gestures, preserves active authoring and restores ordinary interaction"
+  ],
+  "build": {
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 1658085376,
+    "totalProcesses": 33,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 122.96018209995236
+  },
+  "buildDiagnostics": {
+    "typecheckBatchesPassed": 13,
+    "errors": 0,
+    "advisories": [
+      "Vite agent API chunk1212.88kB exceeds configured1200kB advisory threshold"
+    ]
+  },
+  "focusedChecks": {
+    "referenceCheckpoint": {
+      "files": 48,
+      "passedTests": 953,
+      "failedTests": 3,
+      "receipt": "reference-regression-picks-r1.json",
+      "failure": "Legacy callback arity assertions; fixed by emitting cloud pointIndex only during new coordinate acquisition"
+    },
+    "callbackAndApiAfterFix": {
+      "passedTests": 93,
+      "files": 3,
+      "receipt": "reference-viewport-picks-green-r1.json"
+    },
+    "gestureIsolationAfterFix": {
+      "passedTests": 22,
+      "files": 1,
+      "receipt": "reference-pick-gesture-green-r1.json"
+    },
+    "cloudAdapterAndInitialApi": {
+      "passedTests": 81,
+      "files": 2,
+      "receipt": "reference-coordinate-pick-api-green-r1.json"
+    },
+    "wholeCurrentReferenceSuiteRerun": false
+  },
+  "actualBrowserPublicStdioMcp": {
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 951074816,
+    "totalProcesses": 16,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 11.719107699987944
+  },
+  "browserAssertions": [
+    "Independent MCP and GUI derived point intents agree",
+    "Retained center/pair/three-plane selectors survive editing",
+    "Plane source edit, Undo/Redo and worker project reopen",
+    "Actual cloud vertex canvas picks equal independent source-index MCP intents for point and line",
+    "Exact encoding retains negative zero across public JSON",
+    "Cancel picking restores the construction form",
+    "Active sketch line tool cannot consume coordinate picks or mutate its draft",
+    "Baked numeric objects survive source deletion and worker project reopen",
+    "Existing owner expiry, foreign preview and renderer-cleanup retry checks remain passing"
+  ],
+  "priorFailureRetained": {
+    "receipt": "reference-cloud-pick-browser-r1.json",
+    "scope": "Harness issued viewport_control before imported-project presentation finished; driver now waits application_inspect.busy=false"
+  },
+  "nativeAcceptance": {
+    "status": "R10 completed; exact accepted geometry comparison exposes an unresolved numeric-control roundtrip",
+    "nativeVersion": "QuickSurfacePro 8.0.123",
+    "acceptedPointQsfSha256": "5d0d610175d0ad7c466149e718e328e171692be730aa9e48e1959ef1d252a88b",
+    "acceptedPointQsfBytes": 402,
+    "acceptedPositionBitsLE": "000000000000f03f0000000000000080fcffff3f33331b40",
+    "observation": "Picked point survives source cloud deletion, QSF save/open and editor readback. Strict forward QSF decoding shows Z=6.80000019073486, four binary64 ULPs below the current application float-pick result.",
+    "regression": "R10 exact accepted QSF bits now pass through read-only pick, Preview, Get, Apply and object inspection after the shared15digit numeric-control roundtrip fix.",
+    "staticBoundary": "Digest-bound point and line dialog exchange handlers call the same double numeric-control helper with precision15. The helper formats general decimal text then parses it back. Native halfway rounding and edit-control initialization remain under verification.",
+    "nativeParityPassed": false,
+    "r10ExactSharedApiPassed": true
+  },
+  "nativePrecisionR11": {
+    "acceptanceReportSha256": "4d690e978cabe9b124a759bd6507ae59ea212ab7f9433639ad0c178f37924251",
+    "pickedPositiveHalfwayX": "1000.00024414063",
+    "pickedZ": "6.80000019073486",
+    "typedYOnly": "0.0078125",
+    "reopenedEditorFieldsBeforeCancel": ["1000.000244", "0.007812", "6.8"],
+    "scope": "Original native cloud vertex pick, point acceptance, editor readback and Cancel. G15 positive tie rounds up; fixed-six editor Y tie rounds down. Distinct numeric phases must not share a blanket rounding policy.",
+    "incomplete": "Desktop input failed activation, then GetCursorPos AccessDenied after owned-window refresh and one retry. Input stopped; no cloud deletion, QSF save, unchanged EditOK or file reopen occurred.",
+    "ownedCleanup": {
+      "passed": true,
+      "elapsedSeconds": 317.0764438,
+      "peakJobBytes": 685092864,
+      "totalProcesses": 4,
+      "activeAfter": 0
+    }
+  },
+  "laterFullSuite": {
+    "passedTests": 49406,
+    "skippedTests": 64,
+    "failedTests": 2,
+    "failure": "Two plane-transform receipt assertions omitted new dependent-refresh fields. Assertions corrected; focused suite passed7 tests. A subsequent all-pass full suite is pending.",
+    "allPassRerunComplete": false
+  },
+  "milestoneComplete": false,
+  "merged": false,
+  "remainingRequiredScope": [
+    "Required CAD vertex/curve/face numeric acquisition",
+    "Remaining primitive and retained scan line-input adapters",
+    "Original-native mode/lifecycle acceptance, including pair/average persistence and semantic copy/transform behavior",
+    "Shared native numeric-editor initialization and final current-head full suite/review/merge/closure"
+  ],
+  "latestLineCheckpoint": {
+    "productionBuild": "scanforge-9dfaedad90e869ce",
+    "buildInputs": {
+      "count": 2836,
+      "sha256": "14bda41c7b6c50f0cc270d688b73cf9377eb7f3cac40b1793899faf11feac2f5"
+    },
+    "focused": {
+      "files": 11,
+      "passedTests": 249,
+      "failedTests": 0,
+      "receipt": {
+        "command": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/reference-derived-line-lifecycle.test.ts",
+          "tests/reference-derived-line-api.test.ts",
+          "tests/reference-derived-line-dialog.test.tsx",
+          "tests/reference-derived-lifecycle.test.ts",
+          "tests/reference-derived-api.test.ts",
+          "tests/reference-derived-dialog.test.tsx",
+          "tests/reference-coordinate-pick-api.test.ts",
+          "tests/reference-native-pick-ddx.test.ts",
+          "tests/reference-picked-decimal.test.ts",
+          "tests/reference-viewport.test.ts",
+          "tests/plane-transform-api.test.ts",
+          "--reporter=dot"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 769683456,
+        "totalProcesses": 18,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 2.1623592999530956
+      }
+    },
+    "build": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1745113088,
+      "totalProcesses": 33,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 119.65036979998695
+    },
+    "buildAdvisory": "Vite agent API chunk1220.20kB exceeds configured1200kB advisory threshold; all13 typecheck batches passed.",
+    "actualBrowserPublicStdioMcp": {
+      "command": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "tests/reference-construction-browser.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 969400320,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 14.736614599998575
+    },
+    "browserReportSha256": "84db587769b5096253ac1778cf92f0fddc0b9f6cd4123a9706112faf8082c07f",
+    "browserChecks": [
+      "Independent GUI/public MCP pair and explicit-prior average geometry/definitions match",
+      "Ordered and repeated F32 records remain separate from canonical source dependencies",
+      "Editing retains record order; Preview/Cancel preserves accepted geometry",
+      "Worker project reopen retains exact definitions and geometry",
+      "Native R10 cloud-pick precision encoding passes over real public JSON",
+      "Existing point, midpoint, source edit, history, preview ownership and cleanup-retry checks remain passing"
+    ],
+    "deferredDialogRace": {
+      "scope": "Actual React component with deferred fake API; separate from production geometry/MCP/native checks",
+      "cases": [
+        "pair fractions",
+        "numeric line endpoints",
+        "numeric point coordinates"
+      ],
+      "receipt": {
+        "command": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          ".resources/m4/dialog-race-browser/run.mjs",
+          "--run"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 249167872,
+        "totalProcesses": 9,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 2.732084000017494
+      },
+      "checks": [
+        "Editable controls and Apply disabled while Preview is pending",
+        "Real attempted edits time out and preserve displayed values",
+        "Resolved Apply uses matching captured session/version and no replacement geometry"
+      ],
+      "cleanup": {
+        "browserClosed": true,
+        "serverClosed": true,
+        "ownedTempRemoved": true
+      }
+    },
+    "priorFailuresRetained": [
+      "reference-lines-green-r1:243pass5invalidtestfixtures corrected without weakening entity validation",
+      "build-lines-r1:missingundo/redo mocks in new regression fixture; fixed before complete build rerun"
+    ],
+    "nativeBoundary": "No original-native pair/average acceptance claim from these application checks. Native input families, lifecycle and editor initialization remain separate gates."
+  }
+}

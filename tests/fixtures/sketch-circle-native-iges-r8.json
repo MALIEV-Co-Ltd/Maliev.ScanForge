@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "scope": "One captured native circle's exported metric and closure; not native world sketch placement or solver equivalence",
+  "provenance": {
+    "format": "IGES",
+    "sourceBytes": 984,
+    "sourceSha256": "31f9d92be1aaa8beed0f41940da1f57292355bcf302960c6f0eca4e194fc8230",
+    "units": "mm",
+    "unitScale": 1,
+    "nativeAcceptedDiameterMm": 6,
+    "sameEditorReopened": true,
+    "nativeProjectFileOpenReopenVerified": false,
+    "nativeWorldSketchPlacementVerified": false,
+    "actualSolidValidityVerified": false,
+    "originalNativeFloat64BitsCaptured": false
+  },
+  "type100": {
+    "directoryEntityId": 1,
+    "transformationEntityId": 3,
+    "rawParameterTokens": ["100", "0.", "0.", "0.", "3.", "0.", "3.", "0."],
+    "zPlane": 0,
+    "center": [0, 0],
+    "start": [3, 0],
+    "end": [3, 0],
+    "radiusMm": 3,
+    "diameterMm": 6,
+    "closed": true
+  },
+  "type124": {
+    "directoryEntityId": 3,
+    "rawParameterTokens": [
+      "124",
+      "1.",
+      "0.",
+      "0.",
+      "0.21002993",
+      "0.",
+      "1.",
+      "0.",
+      "6.886227429E-02",
+      "0.",
+      "0.",
+      "1.",
+      "0."
+    ],
+    "matrixRows": [
+      [1, 0, 0, 0.21002993],
+      [0, 1, 0, 0.06886227429],
+      [0, 0, 1, 0]
+    ]
+  },
+  "exportSpace": {
+    "label": "Transformed IGES entity coordinates; the native sketch's actual world placement is unknown",
+    "center": [0.21002993, 0.06886227429, 0],
+    "start": [3.21002993, 0.06886227429, 0],
+    "end": [3.21002993, 0.06886227429, 0]
+  },
+  "primaryDocumentation": [
+    "https://occt3d.com/dev/doc/refman/html/class_i_g_e_s_geom___circular_arc.html",
+    "https://occt3d.com/dev/doc/refman/html/_i_g_e_s_geom___transformation_matrix_8hxx.html"
+  ]
+}

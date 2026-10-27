@@ -202,7 +202,6 @@ export async function encodeProjectFileLocally(
       if (id === undefined) {
         const {
           kernelId: _kernel,
-          fit: _fit,
           positions,
           edgePositions,
           brep,
