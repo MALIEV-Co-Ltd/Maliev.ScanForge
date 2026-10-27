@@ -1,0 +1,91 @@
+{
+  "scope": "Native static frame-selection candidates and application correction; no native Unroll runtime on a Y- or Z-seed cylinder",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "candidateProvenance": [
+    {
+      "candidate": "14068fbc0",
+      "mismatches": [],
+      "count": 246,
+      "startsSha256": "381e115353ba546363928a41375183ea8e7e7baf0a4edb899ae316dc721b2007",
+      "evidenceSha256": "12adb89d40df4500637eb6fe8c3c4a293a9cf9bf61ac52c3af257a8903e9af93",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "140690040",
+      "mismatches": [],
+      "count": 244,
+      "startsSha256": "7d94c1bfc0b5413949895c8bb0a958cf83fe955cd1389d2fc4b57beffe8db5e3",
+      "evidenceSha256": "12adb89d40df4500637eb6fe8c3c4a293a9cf9bf61ac52c3af257a8903e9af93",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "1402137d0",
+      "mismatches": [],
+      "count": 16,
+      "startsSha256": "8c8923feb21dce9b3c930260656495712d1e94886729f86136fb17353bacdd96",
+      "evidenceSha256": "e43b2d32fe6082dd2eff8dd2426eb43101d9d4faaa592ddbf2a47a6c152f07d0",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "140365fe0",
+      "mismatches": [],
+      "count": 184,
+      "startsSha256": "e14d8c53f55beb569dc2383b2fb6d31ee4e50cb98349dd1db024242e831e0eb4",
+      "evidenceSha256": "e43b2d32fe6082dd2eff8dd2426eb43101d9d4faaa592ddbf2a47a6c152f07d0",
+      "decompileCompleted": true
+    }
+  ],
+  "inference": "Two caller candidates compute the least absolute component of the cylinder direction, choose the corresponding world basis axis with X/Y/Z tie priority, project it into the radial plane, and use it in frame construction. The retained candidate boundaries, selected-input paths and inferred types require runtime confirmation.",
+  "application": "One shared least-aligned radial-axis calculation is used by the mesh operation and published Roll frame; the existing GUI and public MCP command both invoke that shared operation.",
+  "validation": {
+    "red": "The manufactured Y-seed control produced 2.6318373680114746 rad where the statically inferred control expects pi/4 before correction.",
+    "focusedTestsPassed": 31,
+    "focusedTestFiles": 4,
+    "retainedNativeControls": "Existing +Z and tilted [1,1,1] Unroll controls continue to pass.",
+    "resourceLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "build": {
+      "assetBuild": "scanforge-8332732dbfe12fef",
+      "typecheckBatches": 13,
+      "passed": true,
+      "jobLimitBytes": 4294967296
+    },
+    "guiPublicMcp": {
+      "fixture": "Manufactured 24-facet rotated cylinder and rotated exact STEP reference",
+      "sourceFileSha256": "06d2151f2c58b6eb4bf505a07ec6e220c9aa6a8cbc4337eeb700695bedbdc1a8",
+      "referenceFileSha256": "7d229a2dedfcbb28bc234e84259d8b87b2a24b7bf252597740357d099479b4d5",
+      "axis": [0.8, 0.2, 0.565685424949238],
+      "referenceKind": "exact-cad",
+      "outputFacets": 22,
+      "outputPositionFloat32Sha256": "cd27ff2e19dc7a503bf84ba6dee30c62618f71fa4ff8e8f1f7148e2bb99f1194",
+      "guiMcpPositionsExactlyEqual": true,
+      "guiMcpFrameExactlyEqual": true,
+      "guiMcpSketchExactlyEqual": true,
+      "sourcePositionSha256BeforeAfter": "1180522435c8cc39c774fef910ba2960ab151834270370967b0177f8bc3eca12",
+      "undoRedoRestoredOutputDigest": true,
+      "browserWarningsErrors": 0,
+      "renderedScreenshotViewed": true,
+      "renderedScreenshotRetained": false,
+      "scope": "Isolated 5177 Vite candidate and public MCP, browser process outside helper Job",
+      "cleanup": {
+        "helperExitCode": 0,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "ports5177and5198Closed": true,
+        "closedReceiptViteExitedField": false,
+        "fieldLimitation": "The close receipt checks exitCode non-null; signal-terminated Vite can have a null exit code. The exit event was awaited, guarded descendants reached zero and listening port 5177 was closed."
+      }
+    },
+    "automationTestsPassed": 99
+  },
+  "limitations": [
+    "The new Y-seed control is manufactured from the inferred static algorithm, not a native export.",
+    "Ghidra candidate bounds, operand meanings and runtime reachability are not established by independent mnemonic checks alone.",
+    "Native QuickSurface export comparison for Y- and Z-seed cylinders remains required.",
+    "Negative-Z native direction handling differs between candidate paths and remains unverified."
+  ],
+  "review": {
+    "finding": "No actionable defect in shared least-aligned-axis selection or tie priority.",
+    "remainingUncertainty": "One native construction-reference candidate reverses a negative-Z direction; the exact-CAD upstream path is not established. Negative-Z parity remains unverified."
+  }
+}
