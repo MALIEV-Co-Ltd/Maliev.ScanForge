@@ -33,6 +33,20 @@
       "cleanupConfirmed": true
     },
     "existingSemiFlatBrowserControl": "Passed GUI/public MCP, native oriented geometry and lifecycle; job cleanup confirmed",
+    "secondOriginalTopology": {
+      "sourceFileSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "facets": 2547405,
+      "toleranceMm": 0.001,
+      "nonManifoldEdges": 1,
+      "inconsistentEdges": 0,
+      "closedBoundaries": 31,
+      "optInTest": "tests/original-partial-topology.test.ts",
+      "jobPeakBytes": 1342070784,
+      "jobLimitBytes": 4294967296,
+      "nodeOldSpaceLimitMiB": 3072,
+      "cleanupConfirmed": true,
+      "scope": "Topology analysis only; no hole fill, GUI/MCP or native comparison. The nonmanifold edge prevents the existing partial-fill admission."
+    },
     "originalScan": {
       "sourceFileSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
       "sourceFacets": 273139,
