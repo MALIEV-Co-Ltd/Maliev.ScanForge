@@ -40,9 +40,10 @@ repeated mapped vertex identities. The opt-in
 A subsequent isolated partial Tangent fill on boundary 3, vertices 255–263,
 added 13 facets with the source unchanged. Replacing a complete edge-map copy
 with an immutable overlay reduced the matched owned-job peak from 3,907,825,664
-to 2,352,549,888 bytes under the 4 GiB limit. This measurement does not include
-full cache serialization or establish rendered GUI/MCP or native parity for
-that scan. The opt-in `tests/original-partial-cache-memory.test.ts` pins this
+to 2,352,549,888 bytes under the 4 GiB limit. A separate isolated fill, topology packing and hydration probe peaked at
+2,504,290,304 bytes, with a 158,647,600-byte packed cache. These measurements
+do not establish full project save/reopen or rendered GUI/MCP or native parity
+for that scan. The opt-in `tests/original-partial-cache-memory.test.ts` pins this
 selection and output; selection details and hashes are in the evidence record.
 
 On the pinned 3,326,910-facet third STL, partial Tangent previously copied

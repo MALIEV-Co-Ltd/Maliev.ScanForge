@@ -69,7 +69,14 @@
         "jobLimitBytes": 4294967296,
         "nodeOldSpaceLimitMiB": 3072,
         "cleanupConfirmed": true,
-        "scope": "Matched isolated indexed worker fill with topology cache; no GUI, public MCP, native comparison, or full serialization memory measurement."
+        "scope": "Matched isolated indexed worker fill with topology cache; no GUI, public MCP, native comparison, or full serialization memory measurement.",
+        "serialization": {
+          "packedBytes": 158647600,
+          "jobPeakBytes": 2504290304,
+          "cleanupConfirmed": true,
+          "scope": "Isolated fill, topology packing and hydration under the same 4 GiB job; not a full project or browser save/reopen.",
+          "optInTest": "tests/original-partial-cache-serialization.test.ts"
+        }
       }
     },
     "thirdOriginalMemory": {
