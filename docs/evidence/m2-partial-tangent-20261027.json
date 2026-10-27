@@ -47,6 +47,32 @@
       "cleanupConfirmed": true,
       "scope": "Topology analysis only; no hole fill, GUI/MCP or native comparison. The nonmanifold edge prevents the existing partial-fill admission."
     },
+    "thirdOriginalMemory": {
+      "sourceFileSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "facets": 3326910,
+      "toleranceMm": 0.001,
+      "sourceEdges": 5009433,
+      "rimAllocationProbe": {
+        "oldJobPeakBytes": 3660705792,
+        "newJobPeakBytes": 1722908672,
+        "oldRimMs": 5534.7754,
+        "newRimMs": 9.8956,
+        "selectedArcVertices": 5,
+        "newRimEdgeEntries": 7
+      },
+      "sixPartialAttempts": {
+        "boundaryIndices": [0, 1, 2],
+        "startVertex": 0,
+        "endVertices": [4, 8],
+        "oldJobPeakBytes": 3817005056,
+        "newJobPeakBytes": 1756082176,
+        "allSkippedAndSourceUnchanged": true
+      },
+      "jobLimitBytes": 4294967296,
+      "nodeOldSpaceLimitMiB": 3072,
+      "cleanupConfirmed": true,
+      "scope": "Worker-level isolated diagnostics; all six tested arcs were skipped. Not a successful large-scan fill or a GUI/MCP/native comparison."
+    },
     "originalScan": {
       "sourceFileSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
       "sourceFacets": 273139,
