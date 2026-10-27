@@ -51,7 +51,7 @@ export function bridgeIntersectsMesh(
       checkProgress(
         options,
         face / Math.max(1, topology.triangles.length / 3),
-        "Checking bridge surface intersections",
+        "Checking patch surface intersections",
       );
     const sourceIds = [
       topology.triangles[face * 3],
