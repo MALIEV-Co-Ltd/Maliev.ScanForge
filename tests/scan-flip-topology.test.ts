@@ -9,6 +9,14 @@ import {
   flipSourceTopologySync,
 } from "../src/scan-flip-request";
 import { Buffer } from "node:buffer";
+import {
+  estimatedPackedTopologyBytes,
+  packTopology,
+  packedTopologyBytes,
+  unpackTopology,
+} from "../src/topology-cache-codec";
+import { appendMeshEdges, MeshEdgeIndex } from "../src/mesh-edge-index";
+import { flippedTopology } from "../src/scan-flip-topology";
 import noiseCapture from "./fixtures/noise-normal-kernel.json";
 import { afterEach, expect, it, vi } from "vitest";
 import {
@@ -127,6 +135,144 @@ it.each(capture.cases)(
     expect([...twice.edges]).toEqual([...before.edges]);
   },
 );
+
+it("flips cached edges without enumerating the full source and serializes their order", () => {
+  const positions = decode(capture.cases[0].inputBits);
+  const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const source = analyzeMesh(positions, { topologyCache: cache });
+  const originalEdges = [...source.edges];
+  const edges = source.edges;
+  source.edges = new Proxy(edges, {
+    get(target, property) {
+      if (property === Symbol.iterator) throw new Error("full edge copy");
+      const value = Reflect.get(target, property, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  const output = flipScanNormals(positions, { topologyCache: cache });
+  const flipped = cache.topology!;
+  const expected = originalEdges.map(([key, uses]) => [
+    key,
+    uses.map(({ face, from, to }) => ({ face, from: to, to: from })),
+  ]);
+  expect([...flipped.edges]).toEqual(expected);
+  expect(flipped.edges.size).toBe(originalEdges.length);
+  const restored = unpackTopology(
+    packTopology(flipped),
+    output.positions.length,
+  )!;
+  expect(restored).toBeDefined();
+  expect([...restored.edges]).toEqual(expected);
+  expect([...edges]).toEqual(originalEdges);
+});
+
+it("composes reversed and appended edge snapshots without changing order or old incidence", () => {
+  const source = analyzeMesh(decode(capture.cases[0].inputBits));
+  const reversed = flippedTopology(source);
+  const original = [...source.edges],
+    reversedSnapshot = [...reversed.edges];
+  const extra = new Uint32Array([...reversed.triangles, 0, 1, 2]);
+  const appended = appendMeshEdges(
+    reversed.edges,
+    extra,
+    reversed.triangles.length,
+  );
+  const expected = new Map(reversed.edges);
+  for (let i = reversed.triangles.length; i < extra.length; i++) {
+    const from = extra[i],
+      to = extra[i - (i % 3) + ((i + 1) % 3)];
+    const key = from < to ? `${from}:${to}` : `${to}:${from}`;
+    expected.set(key, [
+      ...(expected.get(key) ?? []),
+      { face: Math.floor(i / 3), from, to },
+    ]);
+  }
+  expect([...appended]).toEqual([...expected]);
+  const again = flippedTopology({
+    ...reversed,
+    triangles: extra,
+    edges: appended,
+  });
+  expect([...again.edges]).toEqual(
+    [...expected].map(([key, uses]) => [
+      key,
+      uses.map(({ face, from, to }) => ({ face, from: to, to: from })),
+    ]),
+  );
+  expect([...reversed.edges]).toEqual(reversedSnapshot);
+  expect([...source.edges]).toEqual(original);
+  const calls: unknown[] = [];
+  again.edges.forEach((uses, key, map) =>
+    calls.push([key, uses, map === again.edges]),
+  );
+  expect(calls).toEqual(
+    [...again.edges].map(([key, uses]) => [key, uses, true]),
+  );
+});
+
+it("keeps repeated flip and append compositions bounded", () => {
+  let topology = analyzeMesh(decode(capture.cases[0].inputBits));
+  const expected = [...topology.edges];
+  for (let i = 0; i < 3000; i++) {
+    topology = flippedTopology(topology);
+    topology = {
+      ...topology,
+      edges: appendMeshEdges(
+        topology.edges,
+        topology.triangles,
+        topology.triangles.length,
+      ),
+    };
+  }
+  expect([...topology.edges]).toEqual(expected);
+});
+
+it("preserves incidence through repeated nonempty flip and append edits", () => {
+  let topology = analyzeMesh(decode(capture.cases[0].inputBits));
+  let reference = new Map(topology.edges);
+  const original = [...topology.edges];
+  for (let n = 0; n < 200; n++) {
+    topology = flippedTopology(topology);
+    reference = new Map(
+      [...reference].map(([key, uses]) => [
+        key,
+        uses.map(({ face, from, to }) => ({ face, from: to, to: from })),
+      ]),
+    );
+    const start = topology.triangles.length;
+    const triangles = new Uint32Array([...topology.triangles, 0, 1, 2]);
+    for (let k = 0; k < 3; k++) {
+      const from = triangles[start + k],
+        to = triangles[start + ((k + 1) % 3)];
+      const key = from < to ? `${from}:${to}` : `${to}:${from}`;
+      reference.set(key, [
+        ...(reference.get(key) ?? []),
+        { face: start / 3, from, to },
+      ]);
+    }
+    topology = {
+      ...topology,
+      triangles,
+      edges: appendMeshEdges(topology.edges, triangles, start),
+    };
+  }
+  expect([...topology.edges]).toEqual([...reference]);
+  expect(original.length).toBeGreaterThan(0);
+});
+
+it("packs flipped compact edges using the compact index", () => {
+  const topology = analyzeMesh(decode(capture.cases[0].inputBits));
+  expect(topology.edges).toBeInstanceOf(MeshEdgeIndex);
+  const pack = vi.spyOn(topology.edges as MeshEdgeIndex, "packCorners");
+  const flipped = flippedTopology(topology);
+  const packed = packTopology(flipped);
+  expect(estimatedPackedTopologyBytes(flipped)).toBe(
+    packedTopologyBytes(packed),
+  );
+  const restored = unpackTopology(packed, flipped.triangles.length * 3)!;
+  expect(pack).toHaveBeenCalledOnce();
+  expect([...restored.edges]).toEqual([...flipped.edges]);
+});
 
 it("does not publish a changed cache on cancellation or progress callback failure", () => {
   const positions = decode(capture.cases[0].inputBits);

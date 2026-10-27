@@ -157,6 +157,47 @@ export class MeshEdgeIndex implements ReadonlyMap<string, EdgeUse[]> {
   }
 }
 
+/** A read-only reversed incidence view retaining the original key order. */
+export class ReversedMeshEdges implements ReadonlyMap<string, EdgeUse[]> {
+  readonly [Symbol.toStringTag] = "ReversedMeshEdges";
+  constructor(readonly source: ReadonlyMap<string, EdgeUse[]>) {}
+  get size() {
+    return this.source.size;
+  }
+  has(key: string) {
+    return this.source.has(key);
+  }
+  get(key: string) {
+    const uses = this.source.get(key);
+    return uses && reverseUses(uses);
+  }
+  keys(): MapIterator<string> {
+    return this.source.keys();
+  }
+  *entries(): MapIterator<[string, EdgeUse[]]> {
+    for (const [key, uses] of this.source.entries())
+      yield [key, reverseUses(uses)];
+  }
+  *values(): MapIterator<EdgeUse[]> {
+    for (const [, uses] of this.entries()) yield uses;
+  }
+  [Symbol.iterator](): MapIterator<[string, EdgeUse[]]> {
+    return this.entries();
+  }
+  forEach(
+    callback: (
+      value: EdgeUse[],
+      key: string,
+      map: ReadonlyMap<string, EdgeUse[]>,
+    ) => void,
+    thisArg?: unknown,
+  ) {
+    for (const [key, uses] of this) callback.call(thisArg, uses, key, this);
+  }
+}
+const reverseUses = (uses: EdgeUse[]) =>
+  uses.map(({ face, from, to }) => ({ face, from: to, to: from }));
+
 /** An immutable insertion-ordered edge overlay for appended triangles. */
 class AppendedMeshEdges implements ReadonlyMap<string, EdgeUse[]> {
   readonly [Symbol.toStringTag] = "AppendedMeshEdges";
@@ -202,6 +243,28 @@ class AppendedMeshEdges implements ReadonlyMap<string, EdgeUse[]> {
   }
 }
 
+/** Reverse an overlay without stacking views across alternating edits. */
+export function reverseMeshEdges(
+  previous: ReadonlyMap<string, EdgeUse[]>,
+  signal?: AbortSignal,
+): ReadonlyMap<string, EdgeUse[]> {
+  if (signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  if (previous instanceof ReversedMeshEdges) return previous.source;
+  if (previous instanceof AppendedMeshEdges) {
+    const overrides = new Map<string, EdgeUse[]>();
+    let i = 0;
+    for (const [key, uses] of previous.overrides) {
+      if (i++ % 4096 === 0 && signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      overrides.set(key, reverseUses(uses));
+    }
+    const base = reverseMeshEdges(previous.base, signal);
+    return overrides.size ? new AppendedMeshEdges(base, overrides) : base;
+  }
+  return new ReversedMeshEdges(previous);
+}
+
 /** Append directed corners without copying the entire existing edge index. */
 export function appendMeshEdges(
   previous: ReadonlyMap<string, EdgeUse[]>,
@@ -210,6 +273,7 @@ export function appendMeshEdges(
   end = triangles.length,
   signal?: AbortSignal,
 ): ReadonlyMap<string, EdgeUse[]> {
+  if (start === end) return previous;
   const base = previous instanceof AppendedMeshEdges ? previous.base : previous;
   const overrides = new Map(
     previous instanceof AppendedMeshEdges ? previous.overrides : [],

@@ -1,5 +1,5 @@
 import type { MeshTopology } from "./mesh-processing";
-import { MeshEdgeIndex } from "./mesh-edge-index";
+import { MeshEdgeIndex, ReversedMeshEdges } from "./mesh-edge-index";
 
 /** Versioned binary topology snapshot. Buffer positions are part of the format. */
 export interface PackedTopology {
@@ -40,6 +40,17 @@ export function packTopology(topology: MeshTopology): PackedTopology {
     const packed = topology.edges.packCorners();
     offsets = packed.offsets;
     useData = packed.corners;
+  } else if (
+    topology.edges instanceof ReversedMeshEdges &&
+    topology.edges.source instanceof MeshEdgeIndex
+  ) {
+    const packed = topology.edges.source.packCorners();
+    offsets = packed.offsets;
+    useData = packed.corners;
+    for (let i = 0; i < useData.length; i++) {
+      const corner = useData[i];
+      useData[i] = corner - (corner % 3) + (2 - (corner % 3));
+    }
   } else {
     let useCount = 0;
     for (const uses of topology.edges.values()) useCount += uses.length;
@@ -103,6 +114,11 @@ export function estimatedPackedTopologyBytes(topology: MeshTopology): number {
     diagnosticKeys.length * 8;
   if (topology.edges instanceof MeshEdgeIndex)
     bytes += topology.edges.useCount * 4;
+  else if (
+    topology.edges instanceof ReversedMeshEdges &&
+    topology.edges.source instanceof MeshEdgeIndex
+  )
+    bytes += topology.edges.source.useCount * 4;
   else for (const uses of topology.edges.values()) bytes += uses.length * 4;
   for (const rows of [
     topology.neighbors,
