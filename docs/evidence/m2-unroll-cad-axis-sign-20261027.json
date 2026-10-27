@@ -49,16 +49,8 @@
   ],
   "guiMcpValidation": {
     "fixture": "Manufactured rotated exact CAD cylinder and 24-facet scan",
-    "rawCadAxis": [
-      0,
-      0,
-      -1
-    ],
-    "resolvedAxis": [
-      0,
-      0,
-      1
-    ],
+    "rawCadAxis": [0, 0, -1],
+    "resolvedAxis": [0, 0, 1],
     "guiAndMcpGeometrySha256": "30458253e3b83a86125fcd647e7a2eba7d13c72660f25461f9e8bd6992e6f5cf",
     "fullGeometryEqual": true,
     "frameEqual": true,
@@ -73,5 +65,20 @@
     "assetManifest": "scanforge-696bd3e544a07e54",
     "jobMemoryLimitBytes": 4294967296,
     "cleanupConfirmed": true
+  },
+  "frameThresholds": {
+    "source": "Digest-bound captured file-backed image; no runtime mutation established",
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "crossProductSquaredFallback": {
+      "address": "0x14126ae90",
+      "hex": "2d431cebe2361a3f",
+      "value": 0.0001
+    },
+    "determinantFallback": {
+      "address": "0x14126ad40",
+      "hex": "000000000000b03c",
+      "value": 2.220446049250313e-16
+    },
+    "interpretation": "For an exactly unit, finite direction and a nonparallel seed, the two normalized cross-product basis vectors form a right-handed orthonormal frame with determinant 1 in exact arithmetic. This does not bound floating-point errors or prove the runtime seed and direction inputs, nor establish that the fallback is unreachable."
   }
 }
