@@ -293,6 +293,23 @@ try {
   };
   const cases = [
     {
+      name: "original-scan-face-7207",
+      source: [
+        19.898012161254883, 47.31754684448242, -315.9837341308594,
+        20.04651641845703, 47.50707244873047, -315.9645080566406,
+        20.04990005493164, 47.18638610839844, -315.8510437011719,
+      ],
+      target: [
+        19.9250431060791, -149.8528594970703, -442.96917724609375,
+        19.9250431060791, -149.8528594970703, 72.22071838378906,
+        19.9250431060791, 406.9168701171875, -442.96917724609375,
+      ],
+      kind: "mesh",
+      parts: 2,
+      method: "open surface signed nearest grouping",
+      originalFaceWinding: true,
+    },
+    {
       name: "coplanar-shared-edge",
       source: [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
       target: [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1],
@@ -380,13 +397,31 @@ try {
       method: "closed mesh ray parity",
     },
   ];
-  const area = (positions) => {
+  const sourceNormal = (p) => {
+    const u = [0, 1, 2].map((i) => p[i + 3] - p[i]);
+    const v = [0, 1, 2].map((i) => p[i + 6] - p[i]);
+    return [
+      u[1] * v[2] - u[2] * v[1],
+      u[2] * v[0] - u[0] * v[2],
+      u[0] * v[1] - u[1] * v[0],
+    ];
+  };
+  const area = (positions, reference) => {
     let result = 0;
     for (let i = 0; i < positions.length; i += 9) {
       const u = [0, 1, 2].map((a) => positions[i + 3 + a] - positions[i + a]),
         v = [0, 1, 2].map((a) => positions[i + 6 + a] - positions[i + a]);
       const z = u[0] * v[1] - u[1] * v[0];
-      assert(z >= -1e-8, "Split reversed source winding");
+      const normal = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], z];
+      if (reference)
+        assert(
+          normal.reduce(
+            (sum, value, axis) => sum + value * reference[axis],
+            0,
+          ) > 0,
+          "Split reversed source winding",
+        );
+      else assert(z >= -1e-8, "Split reversed source winding");
       result +=
         Math.hypot(u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], z) *
         0.5;
@@ -608,7 +643,10 @@ try {
           assert(p.positions[i] <= c.sourceYBounds[1] + 1e-6);
         }
     }
-    const areas = output.map((p) => area(p.positions));
+    const reference = c.originalFaceWinding
+      ? sourceNormal(c.source)
+      : undefined;
+    const areas = output.map((p) => area(p.positions, reference));
     if (c.sharedEdge) {
       const edges = new Map();
       for (const part of output)
@@ -660,7 +698,8 @@ try {
       assert(endpoints.some((value) => Math.abs(value - 0.7) < 1e-6));
     }
     assert(
-      Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source)) <= 1e-5,
+      Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source, reference)) <=
+        1e-5,
       "Split does not conserve independent triangle area",
     );
     if (c.areas)
@@ -843,8 +882,16 @@ try {
       cutterCoordinateSha256: digest(c.target),
       parts: c.parts,
       outputCoordinateSha256: mcp.map((p) => digest(p.positions)),
-      areas: mcp.map((p) => area(p.positions)),
-      sourceArea: area(c.source),
+      areas: mcp.map((p) =>
+        area(
+          p.positions,
+          c.originalFaceWinding ? sourceNormal(c.source) : undefined,
+        ),
+      ),
+      sourceArea: area(
+        c.source,
+        c.originalFaceWinding ? sourceNormal(c.source) : undefined,
+      ),
       method: done.result.diagnostics.cutter,
       guiMcpGeometryAndMetadata: true,
       sourceAndCutterRetained: true,
