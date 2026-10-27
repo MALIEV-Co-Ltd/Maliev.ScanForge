@@ -45,7 +45,17 @@
       "jobLimitBytes": 4294967296,
       "nodeOldSpaceLimitMiB": 3072,
       "cleanupConfirmed": true,
-      "scope": "Topology analysis only; no hole fill, GUI/MCP or native comparison. The nonmanifold edge prevents the existing partial-fill admission."
+      "scope": "Position-welded topology analysis only; no hole fill, GUI/MCP or native comparison. This topology reports a nonmanifold edge; it is not the application's imported indexed representation.",
+      "indexedImport": {
+        "acceptedFacets": 2547403,
+        "mappedRepeatedVertexFacetsRejected": 2,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "closedBoundaries": 42,
+        "jobPeakBytes": 1351397376,
+        "cleanupConfirmed": true,
+        "scope": "Shared indexed importer and topology analysis; no fill, rendered GUI/MCP or native comparison."
+      }
     },
     "thirdOriginalMemory": {
       "sourceFileSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",

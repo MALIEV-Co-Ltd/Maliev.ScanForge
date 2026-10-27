@@ -32,9 +32,12 @@ comparison, not a native export comparison. Source/output hashes, the selected
 boundary, failed driver attempts and resource evidence are in the same record.
 
 The pinned second original STL (2,547,405 facets) was analyzed under the 4 GiB
-job limit. At 0.001 mm tolerance it has one nonmanifold edge, so no partial fill
-was attempted; the opt-in `tests/original-partial-topology.test.ts` retains this
-topology-only control. It does not establish GUI/MCP or native parity.
+job limit. Position welding at 0.001 mm reports one nonmanifold edge; the
+application's indexed STL import representation instead reports none and has
+42 closed boundaries. Its importer accepts 2,547,403 facets, rejecting two with
+repeated mapped vertex identities. No partial fill was attempted; the opt-in
+`tests/original-partial-topology.test.ts` retains both topology controls. These
+do not establish rendered GUI/MCP or native parity.
 
 On the pinned 3,326,910-facet third STL, partial Tangent previously copied
 5,009,433 source edge records to construct a small synthetic rim. The solver
