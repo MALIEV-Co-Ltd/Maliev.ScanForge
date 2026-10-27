@@ -14,6 +14,19 @@
     "privateObservationSha256": "a47b03357f72999fe2fc190d453e723be5df5df6ea5d954f6f8386cb5281cb1b",
     "privateCleanupReceiptSha256": "1725f943dd0ca76c534e3bf6ff4215b4280a1f89c974490344c9820eee88f32c",
     "cleanup": "Authenticated owned finish, zero active processes, closed handles, no cleanup errors, released mutex; 100.06 seconds under 540-second outer lease.",
+    "displayDirectionComparison": {
+      "scope": "Same input PLY, native displayed decimals versus the existing application/public MCP fit receipt; native selection and sampling membership are unknown.",
+      "nativeDisplayedNormal": [0.4496712, -0.3367553, -0.8272797],
+      "applicationAxis": [
+        -0.4498839210802536, 0.33666408758993643, 0.8272011543032879
+      ],
+      "unorientedAngleDegrees": 0.0140040294440894,
+      "applicationSamples": 19583,
+      "applicationRmsMm": 2.5177831922908473,
+      "limitations": "The angle uses rounded native UI text and ignores axis sign. Native fit membership, weighting, residual and plane equation convention are not established; this is not a matched-fit parity claim. Candidate matching 64-bit values in both saved records are not identified as authoritative fields without serializer evidence.",
+      "reportSha256": "730471117cd596fef433de97e3201d8c5b5ae81cfd2a0fdc21eea557bbc39837",
+      "boundedReceiptSha256": "b71b8350fc8636a4fa6ba1133bc94b0ac7769c1b9dc59b379c8af6e8fc6a3be6"
+    },
     "storedReadback": {
       "scope": "Strict, data-only index and bounded field comparison of the two pinned QSF v4 files; no native execution or reference-point/line copy-policy claim.",
       "observation": "The four original record spans are byte-identical after duplication; a fifth type-0x8 record is appended. The two type-0x8 records contain the observed Plane(1) and Plane(1)(1) strings and each repeats a different 16-byte value in two positions. Excluding those two 16-byte fields and string count/value leaves 304 compared bytes, with one differing byte at normalized offset 4. Its four-byte little-endian values are 4 and 5, matching these records' one-based positions; that field's meaning and source/dependent links are not established.",
