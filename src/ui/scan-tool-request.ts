@@ -1,4 +1,7 @@
-import { flipSourceTopology } from "../scan-flip-request";
+import {
+  flipSourceTopology,
+  flipSourceTopologySync,
+} from "../scan-flip-request";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import {
   reconstructionTargets,
@@ -7,7 +10,7 @@ import {
   bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
 import { bindAverageMeshes } from "../scan-average-request";
-import type { Entity } from "../types";
+import type { Entity, IndexedMesh } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
 import type { ScanToolParameters } from "./ScanToolsPanel";
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
@@ -18,6 +21,7 @@ export function scanToolRequest(
   parameters: ScanToolParameters,
   entities: Entity[],
   selection?: Uint8Array | null,
+  preparedFlip?: { topology: IndexedMesh | undefined },
 ): ScanToolsRequest {
   if (
     (source.kind !== "mesh" &&
@@ -132,7 +136,9 @@ export function scanToolRequest(
     case "flipNormals":
       operation = {
         kind: "flipNormals",
-        sourceTopology: flipSourceTopology(source),
+        sourceTopology: preparedFlip
+          ? preparedFlip.topology
+          : flipSourceTopologySync(source),
       };
       break;
     case "reduceNoise":
@@ -156,4 +162,20 @@ export function scanToolRequest(
       operation = parameters;
   }
   return { kind: "scanTools", positions, operation };
+}
+
+/** Yield while binding large indexed Flip inputs before processing begins. */
+export async function stagedScanToolRequest(
+  source: Entity,
+  parameters: ScanToolParameters,
+  entities: Entity[],
+  selection: Uint8Array | null | undefined,
+  check: () => void,
+): Promise<ScanToolsRequest> {
+  const preparedFlip =
+    parameters.kind === "flipNormals"
+      ? { topology: await flipSourceTopology(source, check) }
+      : undefined;
+  check();
+  return scanToolRequest(source, parameters, entities, selection, preparedFlip);
 }

@@ -126,7 +126,7 @@ import {
 import { mirrorReference } from "../scan-tools-reference";
 import { isUnrollReferenceCandidate } from "../scan-unroll-reference";
 import { transformPlaneFrame } from "../plane-frame";
-import { scanToolRequest } from "./scan-tool-request";
+import { stagedScanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -2895,8 +2895,24 @@ export function App() {
     setProcessingBusy(true);
     setError("");
     try {
+      const checkScanSource = () => {
+        controller.signal.throwIfAborted();
+        if (
+          parameters.kind === "flipNormals" &&
+          entitiesRef.current !== entities
+        )
+          throw new Error(
+            "The workspace changed while Flip Normals was running.",
+          );
+      };
       const result = await processMesh(
-        scanToolRequest(selected, parameters, entities, triangleMask),
+        await stagedScanToolRequest(
+          selected,
+          parameters,
+          entities,
+          triangleMask,
+          checkScanSource,
+        ),
         {
           signal: controller.signal,
           reuseTopology: true,
@@ -2905,6 +2921,7 @@ export function App() {
         },
       );
       if (controller.signal.aborted || !result.positions) return;
+      checkScanSource();
       replaceScanPositions(
         result.positions,
         scanToolTitles[parameters.kind],

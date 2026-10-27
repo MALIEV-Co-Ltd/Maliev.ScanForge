@@ -1382,7 +1382,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           op.operation.sourceTopology = average!.source.indexedMesh;
         }
         if (op.operation.kind === "flipNormals")
-          op.operation.sourceTopology = flipSourceTopology(e);
+          op.operation.sourceTopology = await flipSourceTopology(e, () =>
+            c.check(),
+          );
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
         if (selection && op.operation.kind !== "reduceNoise")
