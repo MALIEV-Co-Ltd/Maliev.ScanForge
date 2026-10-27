@@ -1,0 +1,35 @@
+{
+  "scope": "Application and public MCP scan-section-to-sketch workflow; not native numerical acceptance",
+  "applicationCommit": "ac49960af71885408d94a991dabb3e18d16bc76c",
+  "build": "scanforge-8d14a572c53c5924",
+  "scan": {
+    "fixture": "ply-1.ply",
+    "bytes": 6926970,
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "eligibleTriangles": 274154,
+    "sectionSegments": 661,
+    "sampled": false,
+    "plane": "OXZ",
+    "offsetMm": 17.17806053161621
+  },
+  "verification": {
+    "guiAndPublicMcpSectionEqual": true,
+    "independentGuiAndPublicMcpSketchEditsEqual": true,
+    "conflictingConstraintsRejectedAtomically": true,
+    "guiNumericDraftCanceled": true,
+    "scopedUndoRedo": true,
+    "projectWorkerReopen": true,
+    "sourceGeometryDigestUnchangedBeforeAndAfterReopen": true,
+    "privatePortsAndProcessesClosed": true
+  },
+  "sha256": {
+    "driver": "2adc4b104bf5b3f15ebaf7261b22e05bcadef1d9ec2bef753783afe624c2fd2b",
+    "browserEvidence": "8cd014f7f762af9b314e0421990cad2677289c00844f81796b6ddd19236c7d8b",
+    "boundedReceipt": "d8cfb4755d0e0402cf6125ac51c5227ca56262774f5aa47ddbb096dcb3ebfab9",
+    "editorScreenshot": "3bf420ca4eb895288002ee6c8426a42cf8e4131bffd81d8d73bf84512fa1f85e"
+  },
+  "limitations": [
+    "The scan section is an application extraction; no equivalent native section or solver comparison is claimed.",
+    "The screenshot shows the active sketch panel and scan; it does not establish rendered curve geometry parity."
+  ]
+}
