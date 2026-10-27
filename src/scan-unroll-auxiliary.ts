@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import type { Entity, Positions, PlanarSavedSketch, Vec3 } from "./types";
 import type { ScanToolOperation } from "./scan-tools";
+import { unrollRadialAxis } from "./scan-unroll-frame";
 import {
   createReferenceFrameEntity,
   validateReferenceFrameEntity,
@@ -77,12 +78,7 @@ export function createUnrollAuxiliaries(
       "Unroll produced no complete facets; no objects were published.",
     );
   const axis = new Vector3(...operation.axis).normalize();
-  const u = new Vector3(
-    Math.abs(axis.x) < 0.9 ? 1 : 0,
-    Math.abs(axis.x) < 0.9 ? 0 : 1,
-    0,
-  );
-  u.addScaledVector(axis, -u.dot(axis)).normalize();
+  const u = unrollRadialAxis(axis);
   const v = new Vector3().crossVectors(axis, u);
   const angle = (((operation.offsetDegrees ?? 0) % 360) * Math.PI) / 180;
   const radial = u

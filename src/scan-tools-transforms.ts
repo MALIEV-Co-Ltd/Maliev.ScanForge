@@ -6,6 +6,7 @@ import { indexedMeshMatches } from "./indexed-mesh";
 import { meshGeometryNormals } from "./mesh-geometry-normals";
 import { admitAverageInputs } from "./scan-average-request";
 import { flippedTopology } from "./scan-flip-topology";
+import { unrollRadialAxis } from "./scan-unroll-frame";
 import {
   inverseMirrorFrame,
   mirrorFramePoint,
@@ -254,12 +255,7 @@ export function unrollScanMesh(
     throw new Error("Unroll instances must be a positive whole number.");
   if (instances > Math.floor(MAX_COORDINATES / p.length))
     throw new Error("Unroll instances exceed the processing limit.");
-  const u = new Vector3(
-    Math.abs(axis.x) < 0.9 ? 1 : 0,
-    Math.abs(axis.x) < 0.9 ? 0 : 1,
-    0,
-  );
-  u.addScaledVector(axis, -u.dot(axis)).normalize();
+  const u = unrollRadialAxis(axis);
   const v = new Vector3().crossVectors(axis, u),
     rotation = ((offset % 360) * Math.PI) / 180,
     cosine = Math.cos(rotation),
