@@ -356,6 +356,9 @@ try {
     });
   await waitForImportPresentation();
   const scan = (await call("project_get")).result.objects[0];
+  const scanDigest = (
+    await job(await call("object_geometry_digest", { entityId: scan.id }))
+  ).buffers;
   await mutate("object_select", { entityId: scan.id });
   const actualFit = await job(
     await call("analysis_fit", { entityId: scan.id, kind: "plane" }),
@@ -491,6 +494,103 @@ try {
   assert.deepEqual(createdSketch.result.frame, guiFrame);
   const empty = (await call("sketch_get")).result.sketch;
   assert.deepEqual(empty.frame, guiFrame);
+  // Keep failure and cancellation checks on the same scan-derived plane.
+  await mutate("sketch_manage", {
+    action: "activate",
+    sketchId: guiSketch.activeSketchId,
+  });
+  await mutate("ui_set", {
+    workspace: "sketch",
+    ribbonTab: "sketch",
+    toolPanelOpen: true,
+    dismissError: true,
+  });
+  const sketchPanel = page.getByRole("region", {
+    name: "Parametric sketch",
+    exact: true,
+  });
+  await sketchPanel.waitFor();
+  await sketchPanel
+    .getByRole("button", { name: "Reset rectangle", exact: true })
+    .click();
+  const draft = sketchPanel.getByLabel("p2 x", { exact: true });
+  await draft.waitFor();
+  const guiRectangle = (await call("sketch_get")).result.sketch;
+  assert.deepEqual(guiRectangle.frame, guiFrame);
+  assert.equal(guiRectangle.segments.length, 4);
+  const guiBeforeCancel = (await call("sketch_get")).result;
+  const guiRevision = (await call("project_get")).revision;
+  await draft.click();
+  await draft.press("ControlOrMeta+A");
+  await draft.pressSequentially("-12.5");
+  assert.equal(await draft.inputValue(), "-12.5");
+  await draft.press("Escape");
+  assert.equal(await draft.inputValue(), "40");
+  assert.deepEqual((await call("sketch_get")).result, guiBeforeCancel);
+  assert.equal((await call("project_get")).revision, guiRevision);
+  for (const [control, option] of [
+    ["Constraint", "distance"],
+    ["First reference", "p1"],
+    ["Second reference", "p2"],
+  ]) {
+    await sketchPanel
+      .getByRole("button", { name: control, exact: true })
+      .click();
+    await page.getByRole("option", { name: option, exact: true }).click();
+  }
+  await sketchPanel.getByLabel("Dimension", { exact: true }).fill("10");
+  await sketchPanel
+    .getByRole("button", { name: "Add constraint", exact: true })
+    .click();
+  await sketchPanel.getByText(/Conflicting or unsolved constraints:/).waitFor();
+  assert.deepEqual((await call("sketch_get")).result, guiBeforeCancel);
+  assert.equal((await call("project_get")).revision, guiRevision);
+  await page.screenshot({
+    path: fileURLToPath(
+      new URL("scan-plane-conflicting-constraint.png", artifactDir),
+    ),
+  });
+  await mutate("ui_set", { dismissError: true });
+  await mutate("history_undo", { scope: "sketch" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, empty);
+  await mutate("history_redo", { scope: "sketch" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, guiRectangle);
+
+  await mutate("sketch_manage", {
+    action: "activate",
+    sketchId: createdSketch.result.sketchId,
+  });
+  await mutate("sketch_edit", { kind: "preset", profile: "rectangle" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, guiRectangle);
+  const mcpBeforeConflict = (await call("sketch_get")).result;
+  const mcpRevision = (await call("project_get")).revision;
+  const rejectedResult = await client.callTool({
+    name: "sketch_edit",
+    arguments: {
+      kind: "constraintAdd",
+      constraint: { kind: "distance", a: "p1", b: "p2", value: 10 },
+      expectedRevision: mcpRevision,
+      requestId: randomUUID(),
+    },
+  });
+  const rejected =
+    rejectedResult.structuredContent ??
+    JSON.parse(rejectedResult.content[0].text);
+  assert.equal(rejected.ok, false);
+  assert.equal(rejected.error.code, "OPERATION_FAILED");
+  assert.deepEqual((await call("sketch_get")).result, mcpBeforeConflict);
+  assert.equal((await call("project_get")).revision, mcpRevision);
+  await mutate("history_undo", { scope: "sketch" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, empty);
+  await mutate("history_redo", { scope: "sketch" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, guiRectangle);
+  await mutate("history_undo", { scope: "sketch" });
+  assert.deepEqual((await call("sketch_get")).result.sketch, empty);
+  ledger.scanPlaneSketchGuards = {
+    guiCancel: true,
+    guiAndMcpRejectedConflictAtomically: true,
+    bothSketchesScopedUndoRedoViaPublicMcp: true,
+  };
   const profile = {
     ...empty,
     points: [
@@ -604,6 +704,21 @@ try {
   const restoredSketch = (await call("sketch_get")).result;
   assert.deepEqual(restoredSketch.sketch, solvedSketch);
   assert.equal(restoredSketch.sketches.length, 2);
+  await mutate("sketch_manage", {
+    action: "activate",
+    sketchId: guiSketch.activeSketchId,
+  });
+  assert.deepEqual((await call("sketch_get")).result.sketch, guiRectangle);
+  await mutate("sketch_manage", {
+    action: "activate",
+    sketchId: createdSketch.result.sketchId,
+  });
+  assert.deepEqual((await call("sketch_get")).result.sketch, solvedSketch);
+  assert.deepEqual(
+    (await job(await call("object_geometry_digest", { entityId: scan.id })))
+      .buffers,
+    scanDigest,
+  );
   ledger.scanPlaneSketch = {
     sourceEntityId: scanPlane.id,
     frame: guiFrame,
