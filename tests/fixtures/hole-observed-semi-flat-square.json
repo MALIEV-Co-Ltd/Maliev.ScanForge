@@ -23,6 +23,6 @@
   "start": 1,
   "end": 3,
   "tolerance": 0.001,
-  "nativeVersion": "QUICKSURFACE Pro 8.0.123",
+  "nativeVersion": "native reference 8.0.123",
   "units": "mm"
 }

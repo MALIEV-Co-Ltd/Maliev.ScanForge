@@ -52,6 +52,6 @@
   },
   "limitations": [
     "This validates cancellation after reported fitting progress; it does not instrument the exact instruction executing when cancellation arrived.",
-    "This manufactured control is not a native QuickSurface comparison."
+    "This manufactured control is not a native reference comparison."
   ]
 }
