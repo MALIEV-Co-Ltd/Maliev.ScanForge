@@ -238,8 +238,6 @@ describe("ribbon command inventory", () => {
       "quadObj",
       "repairMesh",
       "segmentMesh",
-      "splitSolid",
-      "sketch2d",
       "circularPattern",
       "linearPattern",
       "mirrorBody",
@@ -252,6 +250,17 @@ describe("ribbon command inventory", () => {
         id,
       ).toBe(false);
     }
+    expect(getRibbonToolMetadata("splitSolid")?.action).toBe("splitSolid");
+    expect(
+      ribbonToolAvailability(getRibbonToolMetadata("splitSolid")!, ready, {
+        splitSolid: vi.fn(),
+      }).available,
+    ).toBe(true);
+    expect(
+      ribbonToolAvailability(getRibbonToolMetadata("sketch2d")!, ready, {
+        sketch2d: vi.fn(),
+      }).available,
+    ).toBe(true);
     for (const id of ["wrap", "pipe", "helix", "trim", "draft"]) {
       const metadata = getRibbonToolMetadata(id);
       expect(metadata, id).toBeDefined();

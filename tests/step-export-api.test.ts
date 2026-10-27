@@ -59,17 +59,19 @@ async function run(api: ApplicationApi, args: Record<string, unknown>) {
   }
   throw Error("Export did not settle");
 }
-it("retains strict STEP defaults and exposes the GUI's explicit exact-only subset without mutation", async () => {
+it("exports the exact CAD subset by default and supports strict selection without mutation", async () => {
   const h = setup(),
     revision = h.api.currentRevision();
   try {
-    expect(await run(h.api, { format: "step" })).toMatchObject({
+    expect(await run(h.api, { format: "step", cadOnly: false })).toMatchObject({
       status: "failed",
       error: {
         message: "STEP export requires exact CAD for every exported object.",
       },
     });
     expect(h.exportStep).not.toHaveBeenCalled();
+    expect((await run(h.api, { format: "step" })).status).toBe("succeeded");
+    expect(h.exportStep).toHaveBeenLastCalledWith(["exact-native"]);
     const job = await run(h.api, { format: "step", cadOnly: true });
     expect(job.status).toBe("succeeded");
     expect(job.result).toMatchObject({
@@ -119,7 +121,10 @@ it("rejects empty exact export and cadOnly on other formats before kernel work",
     h.state.entities = h.state.entities.filter((e) => e.kind === "mesh");
     expect(await run(h.api, { format: "step", cadOnly: true })).toMatchObject({
       status: "failed",
-      error: { message: "STEP export requires at least one exact CAD object." },
+      error: {
+        message:
+          "Create or import exact CAD first. Scan meshes cannot be exported as editable STEP solids.",
+      },
     });
     for (const format of ["stl", "project"])
       expect(await run(h.api, { format, cadOnly: true })).toMatchObject({
