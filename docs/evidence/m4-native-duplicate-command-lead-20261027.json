@@ -8,7 +8,8 @@
     "dispatchCandidate": "In five byte-verified unwind-linked fragments rooted at 0x5c89c0, a conditional path calls an indirect target with values 0x111 and 0x8341 and a window-like pointer. A fresh hidden owned-process capture observed the exact slot twice and mapped it within the child's USER32.dll module snapshot. The same module-relative offset matches the on-disk SendMessageW export; the disk image was not compared byte-for-byte with the mapped module. This supports a SendMessageW dispatch inference, not identification of the destination handler.",
     "tableConstruction": "Two byte-verified ranges store the candidate table addresses 0x1411b1778 and 0x1411b1b50 on the same object at offsets 0 and 0x130. Adjacent RTTI metadata alone does not establish full table extents or a live receiver.",
     "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The earlier captured pointer was from a previous Windows boot and was not matched to current system addresses.",
-    "otherCandidates": "The byte candidate at 0x5c9256 falls inside an exact 1,319-byte exception range, but a bounded listing covered only 57 bytes and did not list that candidate. Its decompiler followed code outside the stated range, so neither the jump nor the decompiled paths establish the receiver. Three other value matches have been retained as metadata: two contexts resemble the known dispatch and one may be a call displacement. None is instruction-verified or establishes a handler."
+    "otherCandidates": "The byte candidate at 0x5c9256 falls inside an exact 1,319-byte exception range, but a bounded listing covered only 57 bytes and did not list that candidate. Its decompiler followed code outside the stated range, so neither the jump nor the decompiled paths establish the receiver. Three other value matches have been retained as metadata: two contexts resemble the known dispatch and one may be a call displacement. None is instruction-verified or establishes a handler.",
+    "tableCallers": "Two separately bounded listings verify all 142 bytes of caller entries 0x5c2ef0 and 0x5c3440. The first passes size 0xc430 to an indirect call and, on a nonzero result, calls the first table-store routine; the second calls the other table-store routine and conditionally calls one of two further targets. Their shapes suggest allocation and teardown wrappers but do not identify those indirect targets, a live receiver or a duplicate handler. An aligned pointer candidate to the second wrapper appears eight bytes after the first table start; table extent and runtime ownership remain unverified."
   },
   "verification": {
     "labelRangeBytesVerified": 1273,
@@ -39,7 +40,13 @@
     "candidateJumpListingReceipt": "67f0b4c259fd0249fe3eaffd8cbb0cbcf9e4b71abdeb7083fa64c06842e70982",
     "candidateJumpByteCheckReceipt": "76437cdfcde554f61f4592941775af28f18b3fdc06299836cd19686792323ca3",
     "otherCandidateMetadata": "dc62278c15fc0487fb2c732d2eca18d02cf34948c1a9253f2c424f52d6f5d94e",
-    "otherCandidateReceipt": "a82b45362ec383a1cd4df75cd476c3ab5ec778b2f117b1f732f9b5911886fabd"
+    "otherCandidateReceipt": "a82b45362ec383a1cd4df75cd476c3ab5ec778b2f117b1f732f9b5911886fabd",
+    "tableCallerCandidates": "f7a4adb28f92825c57333f22eab39eb5c3a3db9635568d0e14bb2742153cdb85",
+    "outerCallerCandidates": "b20b7c288e58e6f6d1c3b44c879970151372d95dc811172f0eb227cf41306ff8",
+    "tableCallerMetadata": "32a240951e2db24adb61c67e8b76a510073d53fa664d6448a288e5149b68d276",
+    "tableCallerByteVerification": "c29840705191dcf4ff2601c166116164546711f474ad56e090ed2efe48cbb899",
+    "tableCallerListingReceipt": "b9f9b9e6d63ca52a9763b78102edddd74be9dd46aedba6704e8c6dc67da76577",
+    "tableCallerVerificationReceipt": "6c1617775e1fa64daf3137b7c40bfd7b77cc4394aa84ccc67afe00bc037a10d8"
   },
   "remaining": [
     "Bind the actual destination handler and runtime receiver without assuming table extent or mapped-module identity.",
