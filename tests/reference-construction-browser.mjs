@@ -924,6 +924,40 @@ try {
       retainedEditCancel: true,
     });
   }
+  const nativePairRow = ledger.derivedLines.find(
+    (row) => row.nativePairFixture,
+  );
+  const inspectNativePair = async () =>
+    (await call("object_get", { entityId: nativePairRow.entityId })).result
+      .reference;
+  const sourceEdit = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "line",
+      entityId: nativePairSource,
+      start: [0, 0, 0],
+      end: [20, 0, 0],
+    })
+  ).result;
+  const sourceApplied = await mutate("reference_construct", {
+    action: "apply",
+    sessionId: sourceEdit.sessionId,
+    version: sourceEdit.version,
+  });
+  assert(
+    sourceApplied.result.refreshedEntityIds.includes(nativePairRow.entityId),
+  );
+  const refreshedNativePair = await inspectNativePair();
+  assert.deepEqual(refreshedNativePair.geometry.start, [7.5, 0, 0]);
+  assert.deepEqual(refreshedNativePair.geometry.direction, [0, 1, 0]);
+  assert.equal(refreshedNativePair.geometry.length, 4);
+  assert.deepEqual(refreshedNativePair.definition, nativePairRow.definition);
+  await mutate("history_undo", {});
+  assert.deepEqual((await inspectNativePair()).geometry.start, [5, 0, 0]);
+  await mutate("history_redo", {});
+  assert.deepEqual((await inspectNativePair()).geometry.start, [7.5, 0, 0]);
+  nativePairRow.geometryEncoding = refreshedNativePair.geometryEncoding;
+  nativePairRow.sourceEditHistory = true;
   const lineArtifact = await job(
     await call("project_export", { format: "project" }),
   );
