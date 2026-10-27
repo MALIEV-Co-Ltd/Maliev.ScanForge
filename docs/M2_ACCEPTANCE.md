@@ -46,6 +46,19 @@ viewport readiness after history restoration. No application behavior or
 geometry assertion was changed to obtain these passes. Native partial/bridge
 output comparison remains separate and open.
 
+## Cached Flip resource control (2026-10-27)
+
+On the indexed second original scan, cached Flip now reverses edge incidences
+without materializing 3,846,354 edge records. Matched isolated worker probes
+preserved the source and produced the same output hash; the owned-job peak fell
+from 2,473,766,912 to 1,434,013,696 bytes. An opt-in test separately packed and
+hydrated the flipped cache under the 4 GiB limit. A rendered native-fixture
+GUI/public-MCP replay still matches, including history and project reopening.
+The [resource record](evidence/m2-flip-cache-memory-20261027.json) distinguishes
+these tests and the earlier test-assertion allocation artifact from full browser
+large-scan or native behavior. Native original-scan Flip and large-input MCP
+cancellation remain open.
+
 ## Boundary smoothing minimum-strength control (2026-10-27)
 
 The native reference 8.0.123 imported the 64-facet curved annulus in millimetres. With the Boundaries strength control visibly set to 0, one Smooth all operation was exported as STL. The sanitized [coordinate fixture](../tests/fixtures/boundary-smooth-all-strength-zero-native.json) records the original and export SHA-256 identities, settings and all 576 Float32 coordinates. The shared scan-edit operation matches every coordinate outside its documented mathematical-zero roundoff neighborhood with the native importer topology. A fresh original annulus at the visibly confirmed midpoint strength 50 also matched all coordinates under the same criterion; its [sanitized fixture](../tests/fixtures/boundary-smooth-all-strength-half-native.json) retains the export identity. These finite controls do not establish parity for arbitrary boundaries or every strength setting. The same shared operation is used by GUI and `mesh_process`; this comparison is a worker-level test, not a new public-MCP or rendered equivalence run.
