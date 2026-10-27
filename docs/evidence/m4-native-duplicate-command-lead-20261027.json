@@ -1,0 +1,36 @@
+{
+  "scope": "Static duplicate-label registration and dispatch lead; not a native reference-copy implementation or acceptance",
+  "carrierSha256": "7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849",
+  "observations": {
+    "label": "Duplicate selected entities",
+    "labelRva": "0x11b1440",
+    "registration": "In the byte-verified exact 0x5c99c0 range, a reference to the label precedes a virtual call with 0x1f1 and 0x8341 as arguments. The full receiver and argument semantics are not established.",
+    "dispatchCandidate": "In five byte-verified unwind-linked fragments rooted at 0x5c89c0, a conditional path calls an indirect target with values 0x111 and 0x8341 and a window-like pointer. The exact imported function and destination handler remain unclassified.",
+    "tableConstruction": "Two byte-verified ranges store the candidate table addresses 0x1411b1778 and 0x1411b1b50 on the same object at offsets 0 and 0x130. Adjacent RTTI metadata alone does not establish full table extents or a live receiver.",
+    "importInspection": "The initial standard-import lookup failed its expected-match assertion. A subsequent standard and delay import check found no matching entry and no delay directory; the failed receipt is retained. The captured pointer is from an earlier Windows boot and was not identified using current system addresses."
+  },
+  "verification": {
+    "labelRangeBytesVerified": 1273,
+    "dispatchFragmentBytesVerified": 515,
+    "tableReferenceRangeBytesVerified": 2008,
+    "independentDecoder": false,
+    "nativeExecution": false,
+    "ownedTemporaryProjectsRemovedAndProcessesExited": true
+  },
+  "sha256": {
+    "labelCandidates": "3c802a7686d948cd903be09874a3caf59dac0852b10394dd054c5eac6fe77dea",
+    "labelByteVerification": "7015c7fe1830f53b6acb8b26fcdac964323d96eb0dda850f271ef9249d52ac5d",
+    "dispatchByteVerification": "ce924021efc2f01b4763931a4679a8c649053db97224e0d546cce18745d1d84c",
+    "importMetadata": "c81f92ad58bcaab0c39e457dd8c0597d86ee2ab69bb4600fe64a804273e35a7d",
+    "tableCandidates": "f59fb9fc6e1a6593373048224553fa2aaf32ec3edb0b87ab55b0d9acea30603c",
+    "tableByteVerification": "fa038ae0980bdc373d0d08bc969a5a954dd9da02ac8588333fa142da47288691",
+    "labelListingReceipt": "506c00736be8bc9bd862423287421d21d5891c3113f37716a67cc9a61b20c68a",
+    "dispatchListingReceipt": "2d443895aa680261148d8e7e903a25b4ad4f5e114a874867c2facf3ee0234195",
+    "tableListingReceipt": "b372880ecde879ff896dc6e31e3e33928936c0da328c58fecdb2e3d467a8e24a",
+    "failedImportReceipt": "6cb7737f736da680eaa7b1c1169401cec43391cff3fa2bc15e54ccd2e8686aba"
+  },
+  "remaining": [
+    "Bind the actual destination handler and runtime receiver without assuming table extent or import identity.",
+    "Observe original reference duplication eligibility, identity, links, history and save/reopen before claiming native parity."
+  ]
+}
