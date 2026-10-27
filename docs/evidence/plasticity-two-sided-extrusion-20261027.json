@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-27",
+  "scope": "Application and public MCP two-sided extrusion; not Plasticity equivalence",
+  "reference": "https://plasticity-document-revisions.vercel.app/solid/extrude",
+  "build": "scanforge-c93f1146debf9ca0",
+  "behavior": "Optional oppositeDistance moves the working profile opposite its normal and extrudes by height plus oppositeDistance; the authored frame stays unchanged.",
+  "focusedTests": { "files": 3, "passed": 28 },
+  "focusedReceiptSha256": "7ac54432cc018a65d28b200e3cc39ca4f786820ccad9b2dd867b665a6cd67ad3",
+  "buildReceiptSha256": "cb5c7129f22193135643a8e92f444c9033f8055f0e0d13189cb7003d676c7314",
+  "browser": {
+    "ledgerSha256": "42f296344ae95a5cae7a140f77625470bfe8bd537962fdeff68ded4e34c18a86",
+    "driverSha256": "69bd3fc6c1c1a340ab05b4a34cfacc97eb508c899ebe258e6a150a9d2f6b82fe",
+    "receiptSha256": "1490caf114bb9505b34ea9cc6f9c00fc44d53583020a593c3e22da7f0124dd57",
+    "guiAndPublicMcp": true,
+    "analyticAndPolygonProfiles": true,
+    "forwardMm": 4,
+    "oppositeMm": 2,
+    "normalBoundsToleranceMm": 0.0001,
+    "modelUndoRedo": true,
+    "mcpRebuild": true,
+    "projectReopen": true,
+    "ownedChildrenAndPortsClosed": true
+  },
+  "limitations": [
+    "The installed Plasticity modeling workspace was not observed; its signed-distance, interaction and geometry behavior is unverified.",
+    "This does not implement the remaining Plasticity Extrude options or close M4 or M5."
+  ]
+}

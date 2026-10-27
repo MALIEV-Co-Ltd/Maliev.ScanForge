@@ -28,7 +28,11 @@ export interface SketchToolsProps {
   onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
   onCornerFillet?: (options: SketchFilletRequest) => void | Promise<void>;
   onMirror?: (options: SketchMirrorRequest) => void | Promise<void>;
-  onExtrude: (profile: ParametricProfile, height: number) => void;
+  onExtrude: (
+    profile: ParametricProfile,
+    height: number,
+    oppositeDistance?: number,
+  ) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
   onDrawingTool?: (tool: SketchDrawingTool) => void;
@@ -166,6 +170,7 @@ export function SketchTools({
     0,
   );
   const [height, setHeight] = useState(20);
+  const [oppositeText, setOppositeText] = useState("0");
   const [error, setError] = useState("");
   const [kind, setKind] = useState<SketchConstraint["kind"]>("distance");
   const [requestedFirst, setFirst] = useState("p1"),
@@ -1127,16 +1132,36 @@ export function SketchTools({
           onChange={(e) => setHeight(Number(e.target.value))}
         />
       </label>
+      <label>
+        Opposite extrusion distance (mm)
+        <input
+          type="number"
+          min="0"
+          value={oppositeText}
+          disabled={disabled}
+          onChange={(event) => setOppositeText(event.target.value)}
+        />
+      </label>
       <button
         disabled={disabled}
         onClick={() =>
           attempt(() => {
+            const oppositeDistance =
+              oppositeText.trim() === "" ? NaN : Number(oppositeText);
             if (!(height > 0) || !Number.isFinite(height))
               throw new Error("Extrusion height must be positive.");
+            if (
+              !Number.isFinite(oppositeDistance) ||
+              oppositeDistance < 0 ||
+              height + oppositeDistance > 1e9
+            )
+              throw new Error(
+                "Opposite extrusion distance must be nonnegative and the total at most 1e9 mm.",
+              );
             void edit({ kind: "solve", forProfile: true })
               .then((result) => {
                 if (result?.profile && mounted.current)
-                  onExtrude(result.profile, height);
+                  onExtrude(result.profile, height, oppositeDistance);
               })
               .catch(() => {});
           })

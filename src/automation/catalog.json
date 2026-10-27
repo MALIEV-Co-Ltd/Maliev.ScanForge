@@ -1881,6 +1881,11 @@
                 },
                 "height": {
                   "type": "number"
+                },
+                "oppositeDistance": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
               "required": ["kind", "profile", "height"],
@@ -2812,6 +2817,11 @@
                 },
                 "height": {
                   "type": "number"
+                },
+                "oppositeDistance": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
               "required": ["kind", "profile", "height"],

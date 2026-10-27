@@ -4543,10 +4543,19 @@ export function App() {
       );
     setDirty(true);
   }
-  function extrude(profile: ParametricProfile, height: number) {
+  function extrude(
+    profile: ParametricProfile,
+    height: number,
+    oppositeDistance?: number,
+  ) {
     void (async () => {
       const receipt = await uiCommand("cad_create", {
-        recipe: { kind: "extrude", profile, height },
+        recipe: {
+          kind: "extrude",
+          profile,
+          height,
+          ...(oppositeDistance ? { oppositeDistance } : {}),
+        },
         selectCreated: true,
         name:
           profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
@@ -7393,8 +7402,12 @@ export function App() {
                             selected={selected}
                             busy={busy}
                             onBoolean={boolean}
-                            onExtrude={(points, height) =>
-                              extrude({ kind: "polygon", points }, height)
+                            onExtrude={(points, height, oppositeDistance) =>
+                              extrude(
+                                { kind: "polygon", points },
+                                height,
+                                oppositeDistance,
+                              )
                             }
                             onRevolve={revolve}
                           />
