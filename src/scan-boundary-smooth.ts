@@ -57,6 +57,27 @@ function* boundarySteps(
   )
     throw new Error("Selection index is outside the mesh inventory.");
   const selected = new Set(requested.flatMap((i) => inventory[i]));
+  const anchors = new Set<number>();
+  const requestedBoundaries = new Set(requested);
+  const anchoredBoundaries = new Set<number>();
+  for (const anchor of r.anchors ?? []) {
+    if (
+      !anchor ||
+      typeof anchor !== "object" ||
+      !Number.isSafeInteger(anchor.boundary) ||
+      !requestedBoundaries.has(anchor.boundary) ||
+      !Number.isSafeInteger(anchor.point) ||
+      anchor.point < 0 ||
+      anchor.point >= inventory[anchor.boundary].length
+    )
+      throw new Error(
+        "Each anchor must identify a point on a selected boundary.",
+      );
+    if (anchoredBoundaries.has(anchor.boundary))
+      throw new Error("Only one anchor per boundary is currently supported.");
+    anchoredBoundaries.add(anchor.boundary);
+    anchors.add(inventory[anchor.boundary][anchor.point]);
+  }
   const steps = 10 + Math.round(strength * 10);
   let vertices = Float64Array.from(t.vertices, Math.fround),
     fitted = 0,
@@ -77,7 +98,9 @@ function* boundarySteps(
     boundaries = Math.max(boundaries, walks.length);
     for (let index = 0; index < walks.length; index++) {
       const walk = walks[index],
-        movable = Uint32Array.from(walk.vertices);
+        movable = Uint32Array.from(
+          walk.vertices.filter((id) => !anchors.has(id)),
+        );
       const rings = smoothingRings(current);
       for (let step = 0; step < steps; step++) {
         checkProgress(

@@ -57,6 +57,8 @@ export interface ScanEditRequest {
   /** Native multiple-hole Tangent path, separate from selected-hole algorithms. */
   batch?: boolean;
   strength?: number;
+  /** Zero-based boundary and point indices from the current scan inventory. */
+  anchors?: { boundary: number; point: number }[];
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
   target?: Positions;
@@ -246,6 +248,13 @@ function scanEdit(
   fill: typeof runHoleFill | typeof runHoleFillAsync,
   boundarySmooth: typeof runBoundarySmooth | typeof runBoundarySmoothAsync,
 ): ScanEditResult | Promise<ScanEditResult> {
+  if (
+    r.anchors !== undefined &&
+    (r.action !== "boundarySmooth" || !Array.isArray(r.anchors))
+  )
+    throw new Error(
+      "Anchors are supported only for boundary smoothing and must be an array.",
+    );
   if (
     r.batch !== undefined &&
     (typeof r.batch !== "boolean" || r.action !== "fillHoles")
