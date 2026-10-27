@@ -2416,7 +2416,10 @@ separate defaults of six vertex passes at strength 0.5.
 Diagnostics include `changed`, selected boundary count, `passesPerBoundary`,
 command repetitions, cumulative `fittedBoundaries`/`unfittedBoundaries` and
 `outOfTolerance` counts, `removedFacets` from native boundary-ear cleanup, and
-`maxFitError` in mm. Small or singular boundaries
+`maxFitError` in mm. Curve admission and `outOfTolerance` use the mean
+sample error; `maxFitError` remains the largest individual sample error and
+can exceed the fit tolerance even when the native candidate is accepted.
+Small or singular boundaries
 may have no fitted curve; their vertex stage is retained and the unavailable
 fit is reported. An unchanged operation keeps the canonical source and adds no
 successor geometry. Updated indexed identity is retained by GUI and MCP edits,
