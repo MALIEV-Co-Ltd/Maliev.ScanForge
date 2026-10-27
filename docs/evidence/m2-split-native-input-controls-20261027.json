@@ -62,5 +62,55 @@
     "Observe native command availability, settings, source/cutter selection and outputs from fresh original input for each case.",
     "Compare complete output geometry, topology and ownership and verify GUI/public MCP lifecycle on the same inputs.",
     "These manufactured controls do not establish native behavior until those comparisons are performed."
-  ]
+  ],
+  "applicationReplay": {
+    "candidateBaseCommit": "5565c142abd1c7aaed376f87480aad25222ccda7",
+    "build": "scanforge-f00172bd8f19929e",
+    "driver": "tests/scan-split-browser.mjs with SCANFORGE_SPLIT_INPUT_DIR set to the prepared directory",
+    "inputs": "Exact pinned STL files imported independently for each GUI and public MCP execution; millimetres, placeAtOrigin:false.",
+    "cases": [
+      {
+        "name": "finite-disjoint-plane",
+        "parts": 1,
+        "areasMm2": [1],
+        "outputFloat32Sha256": [
+          "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f"
+        ]
+      },
+      {
+        "name": "closed-convex",
+        "parts": 2,
+        "areasMm2": [1, 15],
+        "outputFloat32Sha256": [
+          "97832c9dad9136c7961a3686fdf09d2f06ec3e70ed5a1775784e9a35c5becb1e",
+          "cb2b33e628da053e78e162f19a37b166b3303f69cac5a42e6351447ebe3bfdd6"
+        ]
+      },
+      {
+        "name": "closed-concave",
+        "parts": 2,
+        "areasMm2": [3, 13],
+        "outputFloat32Sha256": [
+          "36af6f7e1414010e750af711a810ef441a30bffb6b5df74494fd7591f0488358",
+          "b9205faed1e6e7731ca5dada51073f730567c2ebdc2c8f6414a57ce37d92010c"
+        ]
+      }
+    ],
+    "guiPublicMcpGeometryAndMetadataEqual": true,
+    "sourceCutterPreserved": true,
+    "undoRedoReopenAndHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "pageErrors": [],
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 908431360,
+    "cleanupConfirmed": true,
+    "scope": "Manufactured input GUI/public-MCP lifecycle; no native Split execution or parity established.",
+    "defaultDriverRegression": {
+      "cases": 5,
+      "passed": true,
+      "peakJobBytes": 906301440,
+      "cleanupConfirmed": true,
+      "scope": "Existing project-fixture path, separate from the three pinned-STL import cases."
+    }
+  }
 }

@@ -437,7 +437,9 @@ All 143 affected contract/geometry/history/persistence tests in eight files and 
 
 The [prepared Split input record](evidence/m2-split-native-input-controls-20261027.json)
 pins the existing disjoint-plane, convex and concave application controls as
-binary STL inputs for later native runs. A fresh native session opened, but
+binary STL inputs for later native runs. The imported finite-plane, convex and
+concave cases now pass GUI/public-MCP geometry, ownership, cancellation, history
+and reopening checks using those exact files. A fresh native session opened, but
 Windows denied input before import; no native Split result is claimed. Equivalent
 native command settings, output geometry and ownership remain required.
 
