@@ -7,6 +7,7 @@ import { spawnSync } from "node:child_process";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+import { PerspectiveCamera, Vector3 } from "three";
 
 const root = new URL("../", import.meta.url);
 const admission = spawnSync(
@@ -917,7 +918,107 @@ try {
       exact: true,
     });
     await panel.waitFor();
+    await mutate("settings_set", {
+      patch: { automaticGrid: false, gridSpacing: 1, snapGrid: true },
+    });
+    await panel
+      .getByLabel("Constraints · snap origin, endpoints and axes", {
+        exact: true,
+      })
+      .uncheck();
+    const [u0, v0, u1, v1] = section.reference.segments;
+    const center = [Math.round((u0 + u1) / 2), Math.round((v0 + v1) / 2)];
+    const frame = section.frame;
+    const worldCenter = new Vector3(...frame.origin)
+      .addScaledVector(new Vector3(...frame.u), center[0])
+      .addScaledVector(new Vector3(...frame.v), center[1]);
+    const cameraPosition = worldCenter
+      .clone()
+      .addScaledVector(new Vector3(...frame.normal), 180);
+    await mutate("viewport_control", {
+      action: "camera",
+      position: cameraPosition.toArray(),
+      target: worldCenter.toArray(),
+      up: frame.v,
+      projection: "perspective",
+      zoom: 1,
+    });
+    const canvas = page.locator(".viewport canvas").first();
+    const project = async ([u, v]) => {
+      const view = (await call("viewport_get")).result;
+      const camera = new PerspectiveCamera();
+      camera.projectionMatrix.fromArray(view.projectionMatrix);
+      camera.matrixWorld.fromArray(view.cameraWorldMatrix);
+      camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+      const point = new Vector3(...frame.origin)
+        .addScaledVector(new Vector3(...frame.u), u)
+        .addScaledVector(new Vector3(...frame.v), v)
+        .project(camera);
+      const rect = await canvas.boundingBox();
+      assert(rect && point.z >= -1 && point.z <= 1);
+      return {
+        x: rect.x + ((point.x + 1) * rect.width) / 2,
+        y: rect.y + ((1 - point.y) * rect.height) / 2,
+      };
+    };
+    const drawing = [
+      [center[0] - 5, center[1]],
+      [center[0] + 5, center[1]],
+    ];
+    const a = await project(drawing[0]),
+      b = await project(drawing[1]);
+    await panel.getByRole("button", { name: "Line", exact: true }).click();
+    await page.mouse.move(a.x, a.y);
+    await page.mouse.down();
+    await page.mouse.move(b.x, b.y, { steps: 8 });
+    await page.mouse.up();
+    await eventually(async () =>
+      assert.equal((await sketchState()).sketch.segments.length, 1),
+    );
+    const guiDrawing = (await sketchState()).sketch;
+    assert.deepEqual(
+      guiDrawing.points.map(({ x, y }) => [x, y]),
+      drawing,
+    );
+    assert.deepEqual(guiDrawing.reference, section.reference);
+    await page.screenshot({
+      path: fileURLToPath(new URL("original-canvas-drawing.png", artifactDir)),
+    });
+    await mutate("sketch_manage", {
+      action: "activate",
+      sketchId: mcpOriginal.id,
+    });
+    await mutate("sketch_draw", {
+      kind: "line",
+      points: drawing,
+      autoConstraints: false,
+      snapToleranceMm: 0.5,
+    });
+    const mcpDrawing = (await sketchState()).sketch;
+    assert.deepEqual(
+      mcpDrawing.points.map(({ x, y }) => [x, y]),
+      drawing,
+    );
+    const topology = (sketch) =>
+      sketch.segments.map((line) => ({
+        a: sketch.points.findIndex((point) => point.id === line.a),
+        b: sketch.points.findIndex((point) => point.id === line.b),
+        construction: !!line.construction,
+      }));
+    assert.deepEqual(topology(guiDrawing), [
+      { a: 0, b: 1, construction: false },
+    ]);
+    assert.deepEqual(topology(mcpDrawing), topology(guiDrawing));
+    assert.deepEqual(mcpDrawing.reference, guiDrawing.reference);
+    await mutate("history_undo", { scope: "sketch" });
+    assert.equal((await sketchState()).sketch.segments.length, 0);
+    await mutate("sketch_manage", {
+      action: "activate",
+      sketchId: acceptedOriginal.id,
+    });
+    await mutate("history_undo", { scope: "sketch" });
     const empty = (await sketchState()).sketch;
+    assert.equal(empty.segments.length, 0);
     await panel
       .getByRole("button", { name: "Reset rectangle", exact: true })
       .click();
@@ -1010,6 +1111,7 @@ try {
       canceledNumericDraft: true,
       scopedUndoRedo: true,
       sourceDigestUnchanged: true,
+      actualCanvasAndMcpDrawingNearScan: true,
       reopen: await workerReopen(
         [acceptedOriginal, mcpOriginal],
         scan.id,

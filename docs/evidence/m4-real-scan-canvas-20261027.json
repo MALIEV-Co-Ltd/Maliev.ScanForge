@@ -1,0 +1,31 @@
+{
+  "scope": "Real-scan application canvas and public MCP drawing parity; not native numerical acceptance",
+  "applicationCommit": "a23869aec6c53c9e2bc061f5e30dd2b5d54eb070",
+  "build": "scanforge-8d14a572c53c5924",
+  "scanSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "section": {
+    "plane": "OXZ",
+    "offsetMm": 17.17806053161621,
+    "eligibleTriangles": 274154,
+    "segments": 661,
+    "sampled": false
+  },
+  "verification": {
+    "actualGuiCanvasLineNearScan": true,
+    "independentMcpLineMatchesCoordinatesAndEndpointTopology": true,
+    "bothSketchUndosRemoveLine": true,
+    "subsequentFailedConstraintsCancelHistoryAndReopenPass": true,
+    "sourceDigestUnchangedAfterReopen": true,
+    "privatePortsAndProcessesClosed": true
+  },
+  "sha256": {
+    "driver": "d20f2c6240d71959659af2880578cf6f7e92a294fe5d790dd3b6a78a07234a1d",
+    "browserEvidence": "9ec3886679b6d13c3315381810e3d96338edbe8e616ea2824830e461ab702e17",
+    "boundedReceipt": "f3234c1152f72bb29f44e19cb0e78d7b64163cff5f46aa753390534a4aecd5ce",
+    "canvasScreenshot": "6e9c7c46d0c3dcc714c93f3d5915a83688749a0e036755e3de9a1128b8dc72be"
+  },
+  "limitations": [
+    "The line is an application canvas gesture near an extracted scan section, not a native-picked line or native solver comparison.",
+    "The canvas line is undone before the subsequent rectangle and project-reopen checks."
+  ]
+}
