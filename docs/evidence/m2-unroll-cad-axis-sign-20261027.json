@@ -1,0 +1,77 @@
+{
+  "scope": "Static candidate tracing and application binding tests; no native negative-axis Unroll output",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "provenance": [
+    {
+      "candidate": "1408133a0",
+      "mismatches": [],
+      "count": 410,
+      "startsSha256": "88343216f470e17474ec755998bf34b5963e620112f8f59d14fa97b8cd4b3598",
+      "evidenceSha256": "693e00048d894f24093c33666f3183a1b44085a810d8137def914fc218848d6c",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "1402137d0",
+      "mismatches": [],
+      "count": 16,
+      "startsSha256": "8c8923feb21dce9b3c930260656495712d1e94886729f86136fb17353bacdd96",
+      "evidenceSha256": "693e00048d894f24093c33666f3183a1b44085a810d8137def914fc218848d6c",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "14038afa0",
+      "mismatches": [],
+      "count": 196,
+      "startsSha256": "5b39db621160ab589efc86be5e98671cb5d10b48119f5d7e5cc257ee8ce17069",
+      "evidenceSha256": "69c8642ce5a699d0220a8c54fc767c019d992c21ad7fa1319853e6c16acfb73b",
+      "decompileCompleted": true
+    },
+    {
+      "candidate": "14049d020",
+      "mismatches": [],
+      "count": 123,
+      "startsSha256": "b092a646c832d83ff0fb316db7adb39fc8c89678889c9e1399f24ae986c494ea",
+      "evidenceSha256": "69c8642ce5a699d0220a8c54fc767c019d992c21ad7fa1319853e6c16acfb73b",
+      "decompileCompleted": true
+    }
+  ],
+  "staticInference": "The qualifying branch of a CAD selection candidate selects the largest absolute direction component (X/Y/Z tie order) and flips the direction if that component is negative before constructing a frame. The caller also checks a flag and radius against a native constant; runtime reachability, matching axis semantics between kernels, and a determinant fallback in the frame helper remain unverified.",
+  "application": "Exact CAD cylinder reference binding uses the inferred sign convention without modifying the source face. Explicit numeric input and construction-cylinder sign are unchanged.",
+  "tests": {
+    "red": "Four of five direct exact-CAD axis cases failed before the correction; positive tie control passed.",
+    "green": "141 tests across eight focused and MCP files passed, including Y/Z and three-way ties.",
+    "jobMemoryLimitBytes": 4294967296,
+    "cleanupConfirmed": true
+  },
+  "remaining": [
+    "No native negative-axis Unroll export is available; equivalence remains unproven.",
+    "Construction-cylinder negative-Z candidate handling remains separate and unmodified."
+  ],
+  "guiMcpValidation": {
+    "fixture": "Manufactured rotated exact CAD cylinder and 24-facet scan",
+    "rawCadAxis": [
+      0,
+      0,
+      -1
+    ],
+    "resolvedAxis": [
+      0,
+      0,
+      1
+    ],
+    "guiAndMcpGeometrySha256": "30458253e3b83a86125fcd647e7a2eba7d13c72660f25461f9e8bd6992e6f5cf",
+    "fullGeometryEqual": true,
+    "frameEqual": true,
+    "sketchEqual": true,
+    "sourceGeometrySha256BeforeAndAfter": "8dbb5471cdd93434a100bd99c323235b54de84a6891a0da5bd7f83e623166a13",
+    "undoRedo": "succeeded",
+    "scope": "GUI and public MCP comparison only; no native result",
+    "cleanupConfirmed": true
+  },
+  "build": {
+    "status": "passed",
+    "assetManifest": "scanforge-696bd3e544a07e54",
+    "jobMemoryLimitBytes": 4294967296,
+    "cleanupConfirmed": true
+  }
+}
