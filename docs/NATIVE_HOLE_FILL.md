@@ -35,9 +35,15 @@ The pinned second original STL (2,547,405 facets) was analyzed under the 4 GiB
 job limit. Position welding at 0.001 mm reports one nonmanifold edge; the
 application's indexed STL import representation instead reports none and has
 42 closed boundaries. Its importer accepts 2,547,403 facets, rejecting two with
-repeated mapped vertex identities. No partial fill was attempted; the opt-in
-`tests/original-partial-topology.test.ts` retains both topology controls. These
-do not establish rendered GUI/MCP or native parity.
+repeated mapped vertex identities. The opt-in
+`tests/original-partial-topology.test.ts` retains both topology controls.
+A subsequent isolated partial Tangent fill on boundary 3, vertices 255–263,
+added 13 facets with the source unchanged. Replacing a complete edge-map copy
+with an immutable overlay reduced the matched owned-job peak from 3,907,825,664
+to 2,352,549,888 bytes under the 4 GiB limit. This measurement does not include
+full cache serialization or establish rendered GUI/MCP or native parity for
+that scan. The opt-in `tests/original-partial-cache-memory.test.ts` pins this
+selection and output; selection details and hashes are in the evidence record.
 
 On the pinned 3,326,910-facet third STL, partial Tangent previously copied
 5,009,433 source edge records to construct a small synthetic rim. The solver
