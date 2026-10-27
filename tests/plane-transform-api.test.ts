@@ -254,7 +254,7 @@ it.each([false, true])(
     );
     expect(restored.project.entities).toEqual(before);
     expect(restored.future[0].entities).toEqual(after);
-    expect(h.state.authoring.sketches![0].sketch.frame).toEqual(sketch.frame);
+    expect(h.state.authoring.sketches![0].sketch?.frame).toEqual(sketch.frame);
     await value(
       h.api.invoke("history_redo", {
         expectedRevision: h.api.currentRevision(),
