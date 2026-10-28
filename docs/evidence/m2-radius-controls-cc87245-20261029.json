@@ -197,6 +197,16 @@
     "No native Split output was captured; native point-radius semantics, routing and source/cutter binding remain unverified.",
     "This compares core geometry and calculated normal cache state for three tiny planar fixtures; initial cache presence differs after Redo.",
     "No pixel-level rendered comparison was requested in this run; cancellation holds the worker result before publication and does not prove active-kernel cancellation.",
-    "These controls do not establish large-input memory acceptance."
-  ]
+    "These controls do not establish large-input memory acceptance.",
+    "The default Split browser suite remains failing on its first legacy separate-parts expectation; later cases were not exercised by that suite."
+  ],
+  "defaultSuiteCheck": {
+    "passed": false,
+    "firstCase": "original-scan-face-7207",
+    "failure": "GUI split did not publish expected parts; two objects remained and the suite timed out waiting for additional objects.",
+    "comparison": "The test script from prior commit f371ad4 also failed at the same first-case expectation on the same application build.",
+    "interpretation": "The suite expects separate output objects. The precise current behavior and native ownership still require investigation; do not infer native equivalence.",
+    "newScriptCleanupConfirmed": true,
+    "priorScriptCleanupConfirmed": true
+  }
 }
