@@ -41,6 +41,33 @@ function mesh() {
   );
 }
 describe("background viewport picking", () => {
+  it("retains world-space hits for a locally indexed large-coordinate mesh", async () => {
+    vi.stubGlobal("Worker", TestWorker);
+    const m = mesh();
+    try {
+      const x = 100000000;
+      m.position.set(x, 0, 0);
+      m.userData.entityId = "scan";
+      m.updateMatrixWorld(true);
+      const ray = new THREE.Raycaster(
+        new THREE.Vector3(x + 0.25, 0.25, 2),
+        new THREE.Vector3(0, 0, -1),
+      );
+      const before = ray.intersectObject(m)[0];
+      expect(before.faceIndex).toBe(0);
+      expect(before.point.toArray()).toEqual([x + 0.25, 0.25, 0]);
+      const ready = prepareViewportPicking(m);
+      TestWorker.instances.at(-1)!.finish();
+      await ready;
+      const after = ray.intersectObject(m)[0];
+      expect(after.faceIndex).toBe(before.faceIndex);
+      expect(after.point.toArray()).toEqual(before.point.toArray());
+    } finally {
+      m.geometry.dispose();
+      m.material.dispose();
+      vi.unstubAllGlobals();
+    }
+  });
   it("keeps live buffers attached, preserves facet IDs and accelerates GUI and agent raycasts", async () => {
     vi.stubGlobal("Worker", TestWorker);
     try {

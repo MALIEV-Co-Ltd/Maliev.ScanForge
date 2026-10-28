@@ -81,6 +81,15 @@ Failed, cancelled or stale-revision jobs publish no selection. One successful
 selection change records one selection-history step. Obtain a fresh revision
 after camera/editor changes and use a new request ID after correcting a rejected
 request; exact retries retain the original receipt.
+For mesh positions stored as number arrays, the worker receives binary64 values
+and constructs its Float32 BVH relative to the mesh bounds center. Selection
+continues to use world-space camera and clipping coordinates. Worker parallelism
+accounts for the larger precise input; the BVH remains Float32 and its precision
+depends on the mesh's spatial extent.
+Precise number-array scan meshes also use a local display origin for viewport
+picking and selection overlays; `viewport_pick` continues to report world-space
+points and rendered triangle slots. The display buffer remains Float32 relative
+to that origin, so its precision likewise depends on mesh extent.
 
 The internal new-draft initializer now distinguishes constructor/scene seeding
 from typed input writes, including the native zero-span line behavior. It does

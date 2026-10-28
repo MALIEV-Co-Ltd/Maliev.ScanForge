@@ -13,6 +13,7 @@ export function createNoiseComparisonOverlay(
   positions: Positions,
   rgb: Uint8Array,
   hidden: readonly number[] = [],
+  origin?: readonly [number, number, number],
 ): THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial> {
   if (
     !positions.length ||
@@ -22,7 +23,9 @@ export function createNoiseComparisonOverlay(
     throw new Error(
       "Noise comparison colors must match complete original triangles.",
     );
-  const coordinates = new Float32Array(positions);
+  const coordinates = origin
+    ? Float32Array.from(positions, (value, index) => value - origin[index % 3])
+    : new Float32Array(positions);
   if (!coordinates.every(Number.isFinite))
     throw new Error("Noise comparison coordinates must be finite.");
   const geometry = new THREE.BufferGeometry();
@@ -66,6 +69,7 @@ export function createNoiseComparisonOverlay(
     toneMapped: false,
   });
   const mesh = new THREE.Mesh(geometry, material);
+  if (origin) mesh.position.set(...origin);
   mesh.name = "Original surface noise comparison";
   mesh.raycast = () => {}; // Read-only comparison, not a mesh-selection target.
   return mesh;

@@ -31,6 +31,7 @@ export class AsyncScreenSelectionIndex {
         ? 1
         : selectionWorkerCount(
             this.positions.length / (this.pointCloud ? 3 : 9),
+            !(this.positions instanceof Float32Array),
           );
       for (let part = 0; part < count; part++) {
         const worker = new Worker(
@@ -71,7 +72,10 @@ export class AsyncScreenSelectionIndex {
           this.stop();
         };
         // Each shard needs the entire mesh for correct cross-shard occlusion.
-        const positions = Float32Array.from(this.positions);
+        const positions =
+          this.positions instanceof Float32Array || this.pointCloud
+            ? Float32Array.from(this.positions)
+            : Float64Array.from(this.positions);
         worker.postMessage(
           {
             initialize: {
@@ -157,7 +161,10 @@ export class AsyncScreenSelectionIndex {
 }
 
 /** Keep small queries single-core and bound duplicated geometry/BVH memory. */
-export function selectionWorkerCount(triangles: number): number {
+export function selectionWorkerCount(
+  triangles: number,
+  precise = false,
+): number {
   const hardware = globalThis.navigator?.hardwareConcurrency ?? 2;
   const memory = (
     globalThis.navigator as (Navigator & { deviceMemory?: number }) | undefined
@@ -168,10 +175,14 @@ export function selectionWorkerCount(triangles: number): number {
     (memory !== undefined && memory < 8)
   )
     return 1;
-  // Conservative 4x position-buffer estimate for geometry, BVH and scratch per worker.
+  // Account for the retained Float64 positions and local Float32 BVH on precise meshes.
   const budget = 128 * 1024 * 1024;
   return Math.max(
     1,
-    Math.min(2, hardware - 1, Math.floor(budget / (triangles * 36 * 4))),
+    Math.min(
+      2,
+      hardware - 1,
+      Math.floor(budget / (triangles * 36 * (precise ? 6 : 4))),
+    ),
   );
 }
