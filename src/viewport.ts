@@ -3266,9 +3266,28 @@ export class Viewport {
       const renderPositions = placement?.sourcePositions ?? entity.positions;
       const renderTopology = placement ? undefined : entity.indexedMesh;
       const renderNormals = placement?.sourceNormals ?? entity.normals;
+      const prepared =
+        entity.kind === "pointcloud"
+          ? undefined
+          : scanRenderData(entity.positions);
+      const previousTopology = item.renderTopology;
+      const sameTopology =
+        previousTopology === renderTopology ||
+        (!!previousTopology &&
+          !!renderTopology &&
+          previousTopology.geometryNormals instanceof Float32Array &&
+          previousTopology.vertices === renderTopology.vertices &&
+          previousTopology.triangles === renderTopology.triangles &&
+          previousTopology.normals === renderTopology.normals &&
+          previousTopology.geometryNormals === renderTopology.geometryNormals &&
+          previousTopology.facetNormals === renderTopology.facetNormals &&
+          item.displayBuffers?.normals ===
+            (prepared?.indexedMesh === renderTopology
+              ? prepared.normals
+              : renderTopology.geometryNormals));
       if (
         item.renderPositions !== renderPositions ||
-        item.renderTopology !== renderTopology ||
+        !sameTopology ||
         item.hidden !== entity.meshSelection?.hidden
       ) {
         item.worldBounds = undefined;
@@ -3285,10 +3304,6 @@ export class Viewport {
           item.pointCloud = undefined;
           item.pointDisplay = undefined;
         }
-        const prepared =
-          entity.kind === "pointcloud"
-            ? undefined
-            : scanRenderData(entity.positions);
         const display = scanDisplayBuffers(
           renderPositions,
           renderTopology,
@@ -3424,6 +3439,7 @@ export class Viewport {
         item.displayBuffers = display;
         item.mesh.material.vertexColors = false;
       }
+      item.renderTopology = renderTopology;
       if (item.positions !== entity.positions) {
         item.selectionIndex?.dispose();
         item.selectionIndex = undefined;

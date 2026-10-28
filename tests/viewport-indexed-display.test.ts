@@ -647,3 +647,121 @@ it("rebuilds a same-position scene when its indexed topology identity changes", 
     view.setEntities([], null);
   }
 });
+
+it("keeps viewport geometry when an indexed wrapper changes but its stored buffers do not", () => {
+  const { view, entity, mesh, prepared, rendered } = setup();
+  const topology = {
+    ...mesh,
+    geometryNormals: prepared.normals,
+    facetNormals: new Float32Array(mesh.triangles.length),
+  };
+  try {
+    view.setEntities([{ ...entity, indexedMesh: topology }], entity.id);
+    const geometry = rendered.geometry;
+    const disposal = vi.spyOn(geometry, "dispose");
+    view.setEntities([{ ...entity, indexedMesh: { ...topology } }], entity.id);
+    expect(rendered.geometry).toBe(geometry);
+    expect(disposal).not.toHaveBeenCalled();
+    expect((view as any).objects.get(entity.id).renderTopology).not.toBe(
+      topology,
+    );
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("rebuilds when a replacement changes computed normals", () => {
+  const { view, entity, mesh, prepared, rendered } = setup();
+  const topology = { ...mesh, geometryNormals: prepared.normals };
+  try {
+    view.setEntities([{ ...entity, indexedMesh: topology }], entity.id);
+    const original = rendered.geometry;
+    const changed = {
+      ...topology,
+      geometryNormals: new Float32Array(prepared.normals!),
+    };
+    changed.geometryNormals[0] += 0.25;
+    view.setEntities([{ ...entity, indexedMesh: changed }], entity.id);
+    expect(rendered.geometry).not.toBe(original);
+    expect(rendered.geometry.getAttribute("normal").array).toBe(
+      changed.geometryNormals,
+    );
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("preserves hidden-face mapping and expanded deviation through an equivalent topology wrapper", () => {
+  const { view, entity, mesh, prepared, rendered, positions } = setup([0]);
+  const topology = { ...mesh, geometryNormals: prepared.normals };
+  try {
+    view.setEntities([{ ...entity, indexedMesh: topology }], entity.id);
+    view.setDeviation(entity.id, [-1, 0, 1, 0.5, 2, 1], 1);
+    const expanded = rendered.geometry;
+    view.setEntities([{ ...entity, indexedMesh: { ...topology } }], entity.id);
+    expect(rendered.geometry).toBe(expanded);
+    expect(Array.from(expanded.index!.array)).toEqual([3, 4, 5]);
+    expect(expanded.getAttribute("color").array).toEqual(
+      colors([-1, 0, 1, 0.5, 2, 1]),
+    );
+    expect(view.pickAgentView(0.75, 0.25, 10).hits[0].triangleIndex).toBe(0);
+    view.setDeviation(entity.id, null, 1);
+    expect((view as any).objects.get(entity.id).triangleSlots).toEqual([1]);
+    expect(expanded.getAttribute("position").array).toBe(positions);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("rebuilds when prepared display normals differ from stored topology normals", () => {
+  const { view, entity, mesh, positions, prepared, rendered } = setup();
+  const topology = {
+    ...mesh,
+    geometryNormals: new Float32Array(mesh.vertices.length).fill(1),
+  };
+  const displayNormals = new Float32Array(mesh.vertices.length).fill(2);
+  try {
+    cacheScanRenderData(positions, {
+      ...prepared,
+      indexedMesh: topology,
+      normals: displayNormals,
+    });
+    view.setEntities([{ ...entity, indexedMesh: topology }], entity.id);
+    const original = rendered.geometry;
+    expect(original.getAttribute("normal").array).toBe(displayNormals);
+    view.setEntities([{ ...entity, indexedMesh: { ...topology } }], entity.id);
+    expect(rendered.geometry).not.toBe(original);
+    expect(rendered.geometry.getAttribute("normal").array).toBe(
+      topology.geometryNormals,
+    );
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("rebuilds when a prepared cache selects different normals for the new wrapper", () => {
+  const { view, entity, mesh, positions, prepared, rendered } = setup();
+  const topology = {
+    ...mesh,
+    geometryNormals: new Float32Array(mesh.vertices.length).fill(1),
+  };
+  const replacement = { ...topology };
+  const nextNormals = new Float32Array(mesh.vertices.length).fill(2);
+  try {
+    view.setEntities([{ ...entity, indexedMesh: topology }], entity.id);
+    const original = rendered.geometry;
+    expect(original.getAttribute("normal").array).toBe(
+      topology.geometryNormals,
+    );
+    cacheScanRenderData(positions, {
+      ...prepared,
+      indexedMesh: replacement,
+      normals: nextNormals,
+    });
+    view.setEntities([{ ...entity, indexedMesh: replacement }], entity.id);
+    expect(rendered.geometry).not.toBe(original);
+    expect(rendered.geometry.getAttribute("normal").array).toBe(nextNormals);
+  } finally {
+    view.setEntities([], null);
+  }
+});
