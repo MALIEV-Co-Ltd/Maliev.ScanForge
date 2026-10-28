@@ -861,7 +861,55 @@ try {
     await panel
       .getByRole("button", { name: "Split mesh", exact: true })
       .click();
-    if (radiusDirectory || c.originalFaceWinding) {
+    if (c.unchangedPart) {
+      await idle();
+      let state = (await call("project_get")).result;
+      assert.equal(state.undo, baseline, "Unchanged GUI Split created history");
+      assert.equal(state.objects.length, 2);
+      rawEqual(
+        await geometry(sourceId),
+        c.source,
+        "Unchanged GUI Split changed source",
+      );
+      rawEqual(
+        await geometry(cutterId),
+        c.target,
+        "Unchanged GUI Split changed cutter",
+      );
+      const done = await job(
+        await mutate("mesh_process", {
+          entityId: sourceId,
+          targetId: cutterId,
+          operation: { kind: "scanEdit", action: "split" },
+        }),
+      );
+      assert.equal(done.result.diagnostics.changed, false);
+      state = (await call("project_get")).result;
+      assert.equal(state.undo, baseline, "Unchanged MCP Split created history");
+      assert.equal(state.objects.length, 2);
+      rawEqual(
+        await geometry(sourceId),
+        c.source,
+        "Unchanged MCP Split changed source",
+      );
+      rawEqual(
+        await geometry(cutterId),
+        c.target,
+        "Unchanged MCP Split changed cutter",
+      );
+      results.push({
+        name: c.name,
+        guiMcpNoChange: true,
+        unchangedHistory: true,
+      });
+      continue;
+    }
+    if (
+      radiusDirectory ||
+      c.originalFaceWinding ||
+      c.requiredPoint ||
+      (c.finiteInterior && !process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT)
+    ) {
       let state;
       for (let i = 0; i < 120; i++) {
         state = (await call("project_get")).result;
@@ -893,7 +941,19 @@ try {
           }));
       const guiDigest = await geometryDigest(sourceId);
       const guiPositions = await geometry(sourceId);
-      let facetPrecision;
+      if (c.requiredPoint)
+        assert(
+          guiPositions.some(
+            (_, index) =>
+              index % 3 === 0 &&
+              c.requiredPoint.every(
+                (value, axis) =>
+                  Math.abs(guiPositions[index + axis] - value) < 1e-6,
+              ),
+          ),
+          "Split omitted the finite sloped-edge crossing",
+        );
+      let facetPrecision, finiteSeamLength;
       const normalState = async () => {
         const data = await artifactJson(
           (
@@ -904,6 +964,44 @@ try {
           ).result.geometry,
         );
         const mesh = data.indexedMesh;
+        if (c.finiteInterior && !process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT) {
+          const edges = new Map();
+          for (let i = 0; i < mesh.triangles.length; i += 3)
+            for (let j = 0; j < 3; j++) {
+              const a = mesh.triangles[i + j];
+              const b = mesh.triangles[i + ((j + 1) % 3)];
+              const key = [a, b].sort((x, y) => x - y).join(":");
+              const edge = edges.get(key) ?? { a, b, count: 0 };
+              edge.count++;
+              edges.set(key, edge);
+            }
+          finiteSeamLength = 0;
+          for (const { a, b, count } of edges.values()) {
+            if (count !== 1) continue;
+            const ax = mesh.vertices[3 * a],
+              ay = mesh.vertices[3 * a + 1];
+            const bx = mesh.vertices[3 * b],
+              by = mesh.vertices[3 * b + 1];
+            const seam =
+              Math.abs(ax - 0.5) < 1e-8 &&
+              Math.abs(bx - 0.5) < 1e-8 &&
+              Math.min(ay, by) >= 0.1 - 1e-7 &&
+              Math.max(ay, by) <= 0.2 + 1e-7;
+            const perimeter =
+              (ax === 0 && bx === 0) ||
+              (ay === 0 && by === 0) ||
+              (Math.abs(ax + ay - 1) < 1e-8 && Math.abs(bx + by - 1) < 1e-8);
+            assert(
+              seam || perimeter,
+              "Split created a boundary outside the finite cutter or source perimeter",
+            );
+            if (seam) finiteSeamLength += Math.hypot(ax - bx, ay - by);
+          }
+          assert(
+            Math.abs(finiteSeamLength - 0.2) < 1e-6,
+            "Finite seam boundary length changed",
+          );
+        }
         const result = {};
         for (const [key, count] of [
           ["geometryNormals", mesh.vertices.length],
@@ -1131,6 +1229,7 @@ try {
         guiCloseCancellation: true,
         ...(initialImage ? { guiRedoCanvasPngIdentical: true } : {}),
         ...(facetPrecision ? { facetPrecision } : {}),
+        ...(finiteSeamLength !== undefined ? { finiteSeamLength } : {}),
         normalCaches: {
           initial: initialNormals,
           guiRedo: guiRedoNormals,
