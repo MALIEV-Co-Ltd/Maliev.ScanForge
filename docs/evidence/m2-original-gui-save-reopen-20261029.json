@@ -53,5 +53,17 @@
     "The run that reached matching reopened geometry within the limit failed later on a test locator; it does not establish a complete lifecycle pass.",
     "The final run crossed the job cap after reopen and before post-reopen Undo finished. Aggregate process peak does not identify a specific allocation.",
     "No native Split comparison was performed."
-  ]
+  ],
+  "separatedHistoryDiagnostic": {
+    "guardPassed": false,
+    "peakJobBytes": 4295946240,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1-guard.json",
+    "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1.log",
+    "samples": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1-samples.jsonl",
+    "harnessSha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4",
+    "observed": "Reopen geometry verified, Edit / View tab selected, and Undo clicked; the process sampler then failed with Windows error 1455. Guard peak exceeded 4 GiB and descendants required termination. Undo result was not verified.",
+    "limitations": "The failing interval is after the Undo click, but no specific allocation or component is established."
+  }
 }
