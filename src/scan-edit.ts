@@ -16,6 +16,10 @@ import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { runFiniteSplitCandidate } from "./scan-split-finite-candidate";
 import { indexedMeshMatches } from "./indexed-mesh";
+import {
+  compactComponentGroups,
+  COMPACT_COMPONENT_FACE_THRESHOLD,
+} from "./scan-component-groups";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 import {
   runBoundarySmooth,
@@ -134,48 +138,49 @@ export function finiteOutput(values: ArrayLike<number>): Float32Array {
   return output;
 }
 
-function componentOutput(values: number[]): Positions {
-  if (values.some((value) => !Number.isFinite(value)))
-    throw new Error("Component coordinates must be finite.");
-  return values.some((value) => !Object.is(value, Math.fround(value)))
-    ? values
-    : finiteOutput(values);
-}
-
 /** Preserve source vertex identity when publishing a selected face subset. */
 function componentIndex(
   source: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
-  faces: readonly number[],
-  flipped: ReadonlySet<number>,
+  faces: ArrayLike<number>,
+  flipped: Uint8Array | undefined,
   options: MeshProcessingOptions,
   float32: boolean,
 ): import("./types").IndexedMesh | undefined {
   if (!faces.length) return undefined;
-  const ids = new Map<number, number>(),
-    vertices: number[] = [];
+  checkProgress(options, 1, "Compacting component indices");
+  const ids = new Uint32Array(source.vertices.length / 3);
+  const capacity = Math.min(source.vertices.length, faces.length * 9);
+  const vertices: Positions = float32
+    ? new Float32Array(capacity)
+    : new Array<number>(capacity);
   const triangles = new Uint32Array(faces.length * 3);
-  let slot = 0;
-  for (const face of faces) {
+  let slot = 0,
+    vertexCount = 0;
+  for (let row = 0; row < faces.length; row++) {
+    const face = faces[row];
     if ((slot & 4095) === 0 && options.signal?.aborted)
       throw new DOMException("Mesh operation cancelled.", "AbortError");
-    const order = flipped.has(face) ? [0, 2, 1] : [0, 1, 2];
-    for (const corner of order) {
+    for (let i = 0; i < 3; i++) {
+      const corner = flipped?.[face] && i > 0 ? 3 - i : i;
       const sourceId = source.triangles[face * 3 + corner];
-      let id = ids.get(sourceId);
-      if (id === undefined) {
-        id = ids.size;
-        ids.set(sourceId, id);
-        vertices.push(
-          source.vertices[sourceId * 3],
-          source.vertices[sourceId * 3 + 1],
-          source.vertices[sourceId * 3 + 2],
-        );
+      let id = ids[sourceId];
+      if (!id) {
+        id = ++vertexCount;
+        ids[sourceId] = id;
+        const destination = (id - 1) * 3;
+        vertices[destination] = source.vertices[sourceId * 3];
+        vertices[destination + 1] = source.vertices[sourceId * 3 + 1];
+        vertices[destination + 2] = source.vertices[sourceId * 3 + 2];
       }
-      triangles[slot++] = id;
+      triangles[slot++] = id - 1;
     }
   }
+  if (Array.isArray(vertices)) vertices.length = vertexCount * 3;
   return {
-    vertices: float32 ? new Float32Array(vertices) : vertices,
+    vertices:
+      vertices instanceof Float32Array
+        ? vertices.subarray(0, vertexCount * 3)
+        : vertices,
     triangles,
   };
 }
@@ -320,6 +325,119 @@ export function publishSmoothedVertices(
   }
   return positions;
 }
+
+function componentEdit(
+  r: ScanEditRequest,
+  o: MeshProcessingOptions,
+  componentCount: number,
+  componentAt: (index: number) => ArrayLike<number>,
+  indexed:
+    { vertices: ArrayLike<number>; triangles: ArrayLike<number> } | undefined,
+): ScanEditResult {
+  const count = r.positions.length / 9;
+  const selectedComponents = selectedIndices(r.indices, componentCount);
+  const selected = new Uint8Array(count);
+  let selectedCount = 0;
+  for (const component of selectedComponents) {
+    const componentFaces = componentAt(component);
+    for (let i = 0; i < componentFaces.length; i++) {
+      const face = componentFaces[i];
+      if (!selected[face]) selectedCount++;
+      selected[face] = 1;
+    }
+  }
+  const privatePrecise = (r.positions as unknown) instanceof Float64Array;
+  const precise =
+    privatePrecise ||
+    (Array.isArray(r.positions) &&
+      r.positions.some((value) => !Object.is(value, Math.fround(value))));
+  const output = (faces: ArrayLike<number>, flip?: Uint8Array): Positions => {
+    checkProgress(o, 1, "Preparing component coordinates");
+    const positions: Positions =
+      privatePrecise && faces.length
+        ? (new Float64Array(faces.length * 9) as unknown as Positions)
+        : precise
+          ? new Array<number>(faces.length * 9)
+          : new Float32Array(faces.length * 9);
+    for (let row = 0; row < faces.length; row++) {
+      if ((row & 4095) === 0 && o.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      const face = faces[row];
+      for (let corner = 0; corner < 3; corner++) {
+        const sourceCorner = flip?.[face] && corner > 0 ? 3 - corner : corner;
+        for (let axis = 0; axis < 3; axis++)
+          positions[row * 9 + corner * 3 + axis] =
+            r.positions[face * 9 + sourceCorner * 3 + axis];
+      }
+    }
+    if (positions.some((value) => !Number.isFinite(value)))
+      throw new Error("Component coordinates must be finite.");
+    return positions;
+  };
+  if (r.action === "componentExtract") {
+    const groups = selectedComponents.map((i) =>
+      Uint32Array.from(componentAt(i)).sort(),
+    );
+    const segments = groups.map((faces) => output(faces));
+    return {
+      segments,
+      ...(indexed
+        ? {
+            segmentIndexedMeshes: groups.map((faces, index) =>
+              componentIndex(
+                indexed,
+                faces,
+                undefined,
+                o,
+                segments[index] instanceof Float32Array,
+              ),
+            ),
+          }
+        : {}),
+      diagnostics: {
+        extractedComponents: groups.length,
+      },
+    };
+  }
+  const outputCount =
+    r.action === "componentKeep"
+      ? selectedCount
+      : r.action === "componentRemove"
+        ? count - selectedCount
+        : count;
+  const faces = new Uint32Array(outputCount);
+  let faceCount = 0;
+  for (let f = 0; f < count; f++) {
+    if (
+      (r.action === "componentKeep" && !selected[f]) ||
+      (r.action === "componentRemove" && selected[f])
+    )
+      continue;
+    faces[faceCount++] = f;
+  }
+  const positions = output(
+    faces,
+    r.action === "componentFlip" ? selected : undefined,
+  );
+  const result = {
+    positions,
+    ...(indexed && faces.length
+      ? {
+          indexedMesh: componentIndex(
+            indexed,
+            faces,
+            r.action === "componentFlip" ? selected : undefined,
+            o,
+            positions instanceof Float32Array,
+          ),
+        }
+      : {}),
+    diagnostics: { triangles: faces.length },
+  };
+  checkProgress(o, 1, "Scan edit complete");
+  return result;
+}
+
 function scanEdit(
   r: ScanEditRequest,
   options: ScanEditOptions,
@@ -436,6 +554,38 @@ function scanEdit(
       },
     };
   }
+  if (
+    r.sourceIndexed &&
+    r.action.startsWith("component") &&
+    count >= COMPACT_COMPONENT_FACE_THRESHOLD
+  ) {
+    if (!indexedMeshMatches(r.sourceIndexed, r.positions))
+      throw new Error("Scan edit indices do not match the source geometry.");
+    checkProgress(o, 0, "Grouping indexed components");
+    const triangles =
+      r.sourceIndexed.triangles instanceof Uint32Array
+        ? r.sourceIndexed.triangles
+        : Uint32Array.from(r.sourceIndexed.triangles);
+    const grouped = compactComponentGroups(
+      r.sourceIndexed.vertices,
+      triangles,
+      { tolerance: o.tolerance, signal: o.signal },
+    );
+    const offsets = new Uint32Array(grouped.count + 1);
+    for (const group of grouped.groups) offsets[group + 1]++;
+    for (let i = 1; i < offsets.length; i++) offsets[i] += offsets[i - 1];
+    const cursors = offsets.slice(0, grouped.count);
+    const faces = new Uint32Array(grouped.groups.length);
+    for (let face = 0; face < grouped.groups.length; face++)
+      faces[cursors[grouped.groups[face]]++] = face;
+    return componentEdit(
+      r,
+      o,
+      grouped.count,
+      (index) => faces.subarray(offsets[index], offsets[index + 1]),
+      r.sourceIndexed,
+    );
+  }
   let t: MeshTopology;
   const cached = o.topologyCache?.topology;
   const cachedIndexMatches =
@@ -537,11 +687,6 @@ function scanEdit(
     checkProgress(options, 1, "Defeature complete");
     return result;
   }
-  const selected = new Set(
-    selectedIndices(r.indices, t.components.length).flatMap(
-      (i) => t.components[i],
-    ),
-  );
   let cachedMatches = t.triangles.length * 3 === r.positions.length;
   for (let slot = 0; cachedMatches && slot < t.triangles.length; slot++) {
     if ((slot & 4095) === 0 && o.signal?.aborted)
@@ -558,66 +703,13 @@ function scanEdit(
     : cachedMatches
       ? { vertices: t.vertices, triangles: t.triangles }
       : undefined;
-  if (r.action === "componentExtract") {
-    const groups = selectedIndices(r.indices, t.components.length).map((i) =>
-      [...t.components[i]].sort((a, b) => a - b),
-    );
-    const segments = groups.map((faces) =>
-      componentOutput(
-        faces.flatMap((f) => Array.from(r.positions.slice(f * 9, f * 9 + 9))),
-      ),
-    );
-    return {
-      segments,
-      ...(indexed
-        ? {
-            segmentIndexedMeshes: groups.map((faces, index) =>
-              componentIndex(
-                indexed,
-                faces,
-                new Set<number>(),
-                o,
-                segments[index] instanceof Float32Array,
-              ),
-            ),
-          }
-        : {}),
-      diagnostics: {
-        extractedComponents: groups.length,
-      },
-    };
-  }
-  const out: number[] = [],
-    faces: number[] = [];
-  for (let f = 0; f < count; f++) {
-    if (
-      (r.action === "componentKeep" && !selected.has(f)) ||
-      (r.action === "componentRemove" && selected.has(f))
-    )
-      continue;
-    const face = Array.from(r.positions.slice(f * 9, f * 9 + 9));
-    if (r.action === "componentFlip" && selected.has(f))
-      face.splice(3, 6, ...face.slice(6, 9), ...face.slice(3, 6));
-    out.push(...face);
-    faces.push(f);
-  }
-  checkProgress(o, 1, "Scan edit complete");
-  const positions = componentOutput(out);
-  return {
-    positions,
-    ...(indexed && faces.length
-      ? {
-          indexedMesh: componentIndex(
-            indexed,
-            faces,
-            r.action === "componentFlip" ? selected : new Set<number>(),
-            o,
-            positions instanceof Float32Array,
-          ),
-        }
-      : {}),
-    diagnostics: { triangles: out.length / 9 },
-  };
+  return componentEdit(
+    r,
+    o,
+    t.components.length,
+    (index) => t.components[index],
+    indexed,
+  );
 }
 
 export function runScanEdit(

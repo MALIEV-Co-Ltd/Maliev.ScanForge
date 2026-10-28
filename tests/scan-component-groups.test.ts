@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { compactComponentGroups } from "../src/scan-component-groups";
+import { runScanEdit } from "../src/scan-edit";
 
 describe("compact indexed components", () => {
   it.each([
@@ -62,4 +63,31 @@ describe("compact indexed components", () => {
     }
   });
 
+  it("uses compact indexed grouping for large component edits", () => {
+    const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0];
+    const faces = 65536;
+    const triangles = new Uint32Array(faces * 3);
+    const positions = new Float32Array(faces * 9);
+    for (let f = 0; f < faces; f++) {
+      const base = (f % 2) * 3;
+      triangles.set([base, base + 1, base + 2], f * 3);
+      positions.set(vertices.slice(base * 3, base * 3 + 9), f * 9);
+    }
+    const stages: string[] = [];
+    const result = runScanEdit(
+      {
+        kind: "scanEdit",
+        action: "componentKeep",
+        positions,
+        sourceIndexed: { vertices, triangles },
+        indices: [1],
+      },
+      { onProgress: (_fraction, stage) => stages.push(stage) },
+    );
+    expect(stages).toContain("Grouping indexed components");
+    expect(result.positions).toHaveLength((faces * 9) / 2);
+    expect(Array.from(result.positions!.slice(0, 9))).toEqual(
+      vertices.slice(9),
+    );
+  });
 });

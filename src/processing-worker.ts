@@ -14,6 +14,7 @@ import {
   type ScanToolResult,
 } from "./scan-tools-reduction";
 import { runScanEditAsync } from "./scan-edit";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { SELECTED_SMOOTHING_DEFAULTS } from "./scan-selected-smooth";
 import { morphTriangleSelection } from "./selection-morphology";
@@ -112,6 +113,68 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     return;
   }
+  let packedSource = (
+    incoming as ProcessingRequest & {
+      packedScanEditSource?: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+      };
+    }
+  ).packedScanEditSource;
+  if (packedSource) {
+    try {
+      if (
+        incoming.kind !== "scanEdit" ||
+        !incoming.action.startsWith("component")
+      )
+        throw new Error("Unexpected packed scan edit input.");
+      const unpack = (values: Float64Array) => {
+        const out = new Array<number>(values.length);
+        for (let i = 0; i < values.length; i++) out[i] = values[i];
+        return out;
+      };
+      const { positions, vertices } = packedSource;
+      if (
+        positions !== undefined &&
+        (!(positions instanceof Float64Array) ||
+          incoming.positions.length !== 0 ||
+          positions.length % 9)
+      )
+        throw new Error("Invalid packed scan positions.");
+      if (
+        vertices !== undefined &&
+        (!(vertices instanceof Float64Array) ||
+          !incoming.sourceIndexed ||
+          incoming.sourceIndexed.vertices.length !== 0 ||
+          vertices.length % 3)
+      )
+        throw new Error("Invalid packed scan vertices.");
+      const restoredPositions = positions
+        ? (positions as unknown as ProcessingRequest["positions"])
+        : incoming.positions;
+      incoming = {
+        ...incoming,
+        positions: restoredPositions,
+        ...(vertices && incoming.sourceIndexed
+          ? {
+              sourceIndexed: {
+                ...incoming.sourceIndexed,
+                vertices: unpack(vertices),
+              },
+            }
+          : {}),
+      };
+      delete (
+        incoming as ProcessingRequest & { packedScanEditSource?: unknown }
+      ).packedScanEditSource;
+      packedSource = undefined;
+    } catch (error) {
+      scope.postMessage({
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return;
+    }
+  }
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
@@ -187,7 +250,9 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     const tolerance = preparationTolerance(request);
     const persistent =
-      tolerance !== undefined && typeof indexedDB !== "undefined"
+      tolerance !== undefined &&
+      !(request.kind === "scanEdit" && request.sourceIndexed) &&
+      typeof indexedDB !== "undefined"
         ? await preparePersistentTopology(request.positions, {
             tolerance,
             topologyCache,
@@ -275,9 +340,13 @@ scope.onmessage = async ({ data: incoming }) => {
             "Scan edit indices do not match the source geometry.",
           );
         if (
-          request.action !== "split" ||
-          request.plane ||
-          request.targetIsNonMesh
+          !(
+            request.action.startsWith("component") &&
+            request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          ) &&
+          (request.action !== "split" ||
+            request.plane ||
+            request.targetIsNonMesh)
         ) {
           const topology = analyzeIndexedMesh(
             Float64Array.from(request.sourceIndexed.vertices),
@@ -727,8 +796,15 @@ scope.onmessage = async ({ data: incoming }) => {
       result.positions;
     const packPreciseSplit =
       request.kind === "scanEdit" &&
-      request.action === "split" &&
-      Array.isArray(result.scanEdit?.positions) &&
+      (request.action === "split" ||
+        (["componentKeep", "componentRemove", "componentFlip"].includes(
+          request.action,
+        ) &&
+          ((result.scanEdit?.positions?.length ?? 0) >= 65536 ||
+            (result.scanEdit?.positions as unknown) instanceof
+              Float64Array))) &&
+      (Array.isArray(result.scanEdit?.positions) ||
+        (result.scanEdit?.positions as unknown) instanceof Float64Array) &&
       Array.isArray(result.indexedMesh?.vertices);
     if (
       geometryKey !== undefined &&
@@ -817,9 +893,13 @@ scope.onmessage = async ({ data: incoming }) => {
     let packedScanEdit:
       { positions: Float64Array; vertices: Float64Array } | undefined;
     if (packPreciseSplit) {
+      progress(1, "Packing precise scan edit");
       const edit = result.scanEdit!,
         indexed = result.indexedMesh!;
-      const positions = Float64Array.from(edit.positions!);
+      const positions =
+        (edit.positions as unknown) instanceof Float64Array
+          ? (edit.positions as unknown as Float64Array)
+          : Float64Array.from(edit.positions!);
       const vertices =
         edit.positions === indexed.vertices
           ? positions

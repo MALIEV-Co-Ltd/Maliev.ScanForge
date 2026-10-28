@@ -21,6 +21,7 @@ import {
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
@@ -333,6 +334,7 @@ function runProcessingRequest(
       : undefined;
     const worker = session?.worker ?? createWorker();
     const job = beginWorkingJob(processingJobLabel(request));
+    let packedInputPositions = false;
     let settled = false,
       workerReleased = false,
       inactivity: ReturnType<typeof setTimeout>;
@@ -423,7 +425,7 @@ function runProcessingRequest(
         return;
       }
       if ("error" in event.data) {
-        fail(new Error(event.data.error), true);
+        fail(new Error(event.data.error), !packedInputPositions);
         return;
       }
       if (!event.data.result || event.data.result.kind !== request.kind) {
@@ -437,7 +439,12 @@ function runProcessingRequest(
             indexed = event.data.result.indexedMesh;
           if (
             request.kind !== "scanEdit" ||
-            request.action !== "split" ||
+            ![
+              "split",
+              "componentKeep",
+              "componentRemove",
+              "componentFlip",
+            ].includes(request.action) ||
             !edit ||
             !indexed ||
             edit.positions !== undefined ||
@@ -447,7 +454,7 @@ function runProcessingRequest(
             packed.positions.length % 9 !== 0 ||
             packed.vertices.length % 3 !== 0
           )
-            throw new Error("Unexpected packed Split response.");
+            throw new Error("Unexpected packed scan edit response.");
           // The result owns transferable buffers and this worker has no
           // reusable Split adjacency. Retire it before allocating restored
           // arrays so its private geometry can be reclaimed sooner.
@@ -548,6 +555,15 @@ function runProcessingRequest(
     try {
       // Transfer a dedicated copy. Scene geometry and undo history retain their original buffers.
       const transfers: Transferable[] = [];
+      const packedScanEditSource: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+      } = {};
+      const packComponentInput =
+        request.kind === "scanEdit" &&
+        ["componentKeep", "componentRemove", "componentFlip"].includes(
+          request.action,
+        );
       const borrowReconstruction =
         !session &&
         request.kind === "scanTools" &&
@@ -569,11 +585,22 @@ function runProcessingRequest(
         request.positions instanceof Float32Array &&
         typeof SharedArrayBuffer !== "undefined" &&
         request.positions.buffer instanceof SharedArrayBuffer;
-      const source = session?.initialized
-        ? new Float32Array(0)
-        : borrowedReportSource
-          ? request.positions
-          : clone(request.positions);
+      const packPositions =
+        packComponentInput &&
+        !session?.initialized &&
+        Array.isArray(request.positions) &&
+        request.positions.length >= 65536;
+      if (packPositions) {
+        packedInputPositions = true;
+        packedScanEditSource.positions = Float64Array.from(request.positions);
+        transfers.push(packedScanEditSource.positions.buffer);
+      }
+      const source =
+        session?.initialized || packPositions
+          ? new Float32Array(0)
+          : borrowedReportSource
+            ? request.positions
+            : clone(request.positions);
       const copied: ProcessingRequest =
         request.kind === "icp" ||
         request.kind === "global" ||
@@ -664,7 +691,11 @@ function runProcessingRequest(
         if (
           copied.kind === "scanEdit" &&
           session?.indexedSource === mesh &&
-          session.indexedTolerance === (copied.tolerance ?? 1e-6)
+          session.indexedTolerance === (copied.tolerance ?? 1e-6) &&
+          !(
+            copied.action.startsWith("component") &&
+            request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          )
         )
           delete copied.sourceIndexed;
         else {
@@ -678,8 +709,24 @@ function runProcessingRequest(
             : Uint32Array.from(mesh.triangles);
           if (triangles.buffer instanceof ArrayBuffer)
             transfers.push(triangles.buffer);
+          let vertices: Positions;
+          if (
+            packComponentInput &&
+            Array.isArray(mesh.vertices) &&
+            mesh.vertices.length >= 65536
+          ) {
+            const packed =
+              mesh.vertices === request.positions &&
+              packedScanEditSource.positions
+                ? packedScanEditSource.positions
+                : Float64Array.from(mesh.vertices);
+            packedScanEditSource.vertices = packed;
+            if (packed !== packedScanEditSource.positions)
+              transfers.push(packed.buffer);
+            vertices = [];
+          } else vertices = clone(mesh.vertices);
           copied.sourceIndexed = {
-            vertices: clone(mesh.vertices),
+            vertices,
             triangles,
             ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
             ...(mesh.geometryNormals
@@ -794,13 +841,14 @@ function runProcessingRequest(
         transfers.push(copied.sourceSeedVertices.buffer);
       }
       worker.postMessage(
-        session
-          ? {
-              ...copied,
-              geometryKey: session.key,
-              ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
-            }
-          : copied,
+        {
+          ...copied,
+          ...(session ? { geometryKey: session.key } : {}),
+          ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+          ...(packedScanEditSource.positions || packedScanEditSource.vertices
+            ? { packedScanEditSource }
+            : {}),
+        },
         transfers,
       );
     } catch (error) {

@@ -225,9 +225,28 @@ try {
     });
   };
   const job = async (receipt, expected = "succeeded") => {
+    let lastStage;
     for (let i = 0; i < 1800; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
+      if (
+        process.env.SCANFORGE_M2_LOG_JOB === "1" &&
+        state.stage !== lastStage
+      ) {
+        lastStage = state.stage;
+        (ledger.jobStages ??= []).push({
+          stage: state.stage,
+          status: state.status,
+          progress: state.progress,
+        });
+        console.log(
+          JSON.stringify({
+            jobStage: state.stage,
+            status: state.status,
+            progress: state.progress,
+          }),
+        );
+      }
       if (state.status !== "running") {
         assert.equal(state.status, expected, JSON.stringify(state));
         return state;
@@ -388,107 +407,167 @@ try {
   await page.screenshot({
     path: fileURLToPath(new URL("original-split-gui.png", out)),
   });
-  await mutate("history_undo", {});
-  assert.deepEqual(
-    await geometryDigest(sourceId),
-    inputDigest,
-    "Undo changed original buffers",
-  );
-  await stage("gui-undo-verified");
-  if (process.env.SCANFORGE_M2_GC_PROBE === "1") {
-    const cdp = await page.context().newCDPSession(page);
-    try {
-      await cdp.send("HeapProfiler.collectGarbage");
-    } finally {
-      await cdp.detach();
-    }
-    await stage("gui-undo-after-diagnostic-gc");
-  }
-  const mcp = await job(
-    await mutate("mesh_process", {
-      entityId: sourceId,
-      targetId: cutterId,
-      operation: { kind: "scanEdit", action: "split" },
-    }),
-  );
-  await stage("mcp-split-committed");
-  assert.deepEqual(mcp.result.entityIds, [sourceId]);
-  assert.deepEqual(
-    await geometryDigest(sourceId),
-    guiDigest,
-    "GUI and MCP geometry differ",
-  );
-  assert.deepEqual(
-    await geometryDigest(cutterId),
-    cutterDigest,
-    "MCP changed cutter",
-  );
-  await mutate("history_undo", {});
-  assert.deepEqual(
-    await geometryDigest(sourceId),
-    inputDigest,
-    "MCP Undo changed original buffers",
-  );
-  await mutate("history_redo", {});
-  const redoDigest = await geometryDigest(sourceId);
-  const core = (records) =>
-    records.filter((record) =>
-      ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
-        record.path,
-      ),
+  if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "1") {
+    const core = (records) =>
+      records.filter((record) =>
+        ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
+          record.path,
+        ),
+      );
+    const flipped = await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        operation: { kind: "scanEdit", action: "componentFlip", indices: [0] },
+      }),
     );
-  assert.deepEqual(
-    core(redoDigest),
-    core(guiDigest),
-    "MCP Redo changed positions or indices",
-  );
-  const extra = redoDigest.filter(
-    (record) => !guiDigest.some((prior) => prior.path === record.path),
-  );
-  assert.deepEqual(extra.map((record) => record.path).sort(), [
-    "indexedMesh.facetNormals",
-    "indexedMesh.geometryNormals",
-  ]);
-  assert.equal(
-    extra.find((record) => record.path === "indexedMesh.geometryNormals")
-      .elements,
-    core(redoDigest).find((record) => record.path === "indexedMesh.vertices")
-      .elements,
-  );
-  assert.equal(
-    extra.find((record) => record.path === "indexedMesh.facetNormals").elements,
-    core(redoDigest).find((record) => record.path === "indexedMesh.triangles")
-      .elements,
-  );
-  await stage("mcp-redo-digest");
-  await mutate("history_undo", {});
-  assert.deepEqual(
-    await geometryDigest(sourceId),
-    inputDigest,
-    "Second Undo changed original buffers",
-  );
-  await mutate("history_redo", {});
-  assert.deepEqual(
-    await geometryDigest(sourceId),
-    redoDigest,
-    "Repeated Redo changed the geometry or computed normals",
-  );
-  assert.deepEqual(errors, []);
-  assert.deepEqual(consoleErrors, []);
-  ledger.result = {
-    inputSha256: bounds.sha256,
-    inputFaces: initial.objects[0].triangles,
-    outputFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
-    diagnostics: mcp.result.diagnostics,
-    guiMcpDigestEqual: true,
-    sourceUndo: true,
-    cutterPreserved: true,
-    redo: true,
-    redoInitializedComputedNormals: extra,
-    pageErrors: errors,
-    consoleErrors,
-  };
-  console.log(JSON.stringify(ledger.result));
+    await stage("component-flip-committed");
+    const flippedDigest = await geometryDigest(sourceId);
+    assert.equal(
+      core(flippedDigest).length,
+      3,
+      "Component Flip lost indexed geometry",
+    );
+    assert.notEqual(
+      core(flippedDigest)[0].sha256,
+      core(guiDigest)[0].sha256,
+      "Component Flip did not change winding",
+    );
+    assert.deepEqual(
+      await geometryDigest(cutterId),
+      cutterDigest,
+      "Component Flip changed cutter",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(guiDigest),
+      "Component Undo changed Split geometry",
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(flippedDigest),
+      "Component Redo changed geometry",
+    );
+    await stage("component-redo-verified");
+    assert.deepEqual(errors, []);
+    assert.deepEqual(consoleErrors, []);
+    ledger.result = {
+      inputSha256: bounds.sha256,
+      inputFaces: initial.objects[0].triangles,
+      splitFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
+      diagnostics: flipped.result.diagnostics,
+      indexedResult: true,
+      cutterPreserved: true,
+      undoRedo: true,
+      pageErrors: errors,
+      consoleErrors,
+    };
+    console.log(JSON.stringify(ledger.result));
+  } else {
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometryDigest(sourceId),
+      inputDigest,
+      "Undo changed original buffers",
+    );
+    await stage("gui-undo-verified");
+    if (process.env.SCANFORGE_M2_GC_PROBE === "1") {
+      const cdp = await page.context().newCDPSession(page);
+      try {
+        await cdp.send("HeapProfiler.collectGarbage");
+      } finally {
+        await cdp.detach();
+      }
+      await stage("gui-undo-after-diagnostic-gc");
+    }
+    const mcp = await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        targetId: cutterId,
+        operation: { kind: "scanEdit", action: "split" },
+      }),
+    );
+    await stage("mcp-split-committed");
+    assert.deepEqual(mcp.result.entityIds, [sourceId]);
+    assert.deepEqual(
+      await geometryDigest(sourceId),
+      guiDigest,
+      "GUI and MCP geometry differ",
+    );
+    assert.deepEqual(
+      await geometryDigest(cutterId),
+      cutterDigest,
+      "MCP changed cutter",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometryDigest(sourceId),
+      inputDigest,
+      "MCP Undo changed original buffers",
+    );
+    await mutate("history_redo", {});
+    const redoDigest = await geometryDigest(sourceId);
+    const core = (records) =>
+      records.filter((record) =>
+        ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
+          record.path,
+        ),
+      );
+    assert.deepEqual(
+      core(redoDigest),
+      core(guiDigest),
+      "MCP Redo changed positions or indices",
+    );
+    const extra = redoDigest.filter(
+      (record) => !guiDigest.some((prior) => prior.path === record.path),
+    );
+    assert.deepEqual(extra.map((record) => record.path).sort(), [
+      "indexedMesh.facetNormals",
+      "indexedMesh.geometryNormals",
+    ]);
+    assert.equal(
+      extra.find((record) => record.path === "indexedMesh.geometryNormals")
+        .elements,
+      core(redoDigest).find((record) => record.path === "indexedMesh.vertices")
+        .elements,
+    );
+    assert.equal(
+      extra.find((record) => record.path === "indexedMesh.facetNormals")
+        .elements,
+      core(redoDigest).find((record) => record.path === "indexedMesh.triangles")
+        .elements,
+    );
+    await stage("mcp-redo-digest");
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometryDigest(sourceId),
+      inputDigest,
+      "Second Undo changed original buffers",
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      await geometryDigest(sourceId),
+      redoDigest,
+      "Repeated Redo changed the geometry or computed normals",
+    );
+    assert.deepEqual(errors, []);
+    assert.deepEqual(consoleErrors, []);
+    ledger.result = {
+      inputSha256: bounds.sha256,
+      inputFaces: initial.objects[0].triangles,
+      outputFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
+      diagnostics: mcp.result.diagnostics,
+      guiMcpDigestEqual: true,
+      sourceUndo: true,
+      cutterPreserved: true,
+      redo: true,
+      redoInitializedComputedNormals: extra,
+      pageErrors: errors,
+      consoleErrors,
+    };
+    console.log(JSON.stringify(ledger.result));
+  }
 } catch (error) {
   await page
     ?.screenshot({ path: fileURLToPath(new URL("failure.png", out)) })

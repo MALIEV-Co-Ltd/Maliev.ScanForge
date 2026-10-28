@@ -259,6 +259,32 @@ it("rejects a packed Split restoration failure after retiring its worker", async
   expect(worker.terminated).toBe(true);
 });
 
+it("restores packed precise component results and retires their worker", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentFlip",
+    positions,
+    indices: [0],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const values = new Float64Array([
+    100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0,
+  ]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: values, vertices: values },
+  });
+  const result = await pending;
+  expect(result.scanEdit!.positions).toEqual(Array.from(values));
+  expect(result.indexedMesh!.vertices).toBe(result.scanEdit!.positions);
+  expect(worker.terminated).toBe(true);
+});
+
 it("preserves aliased packed Split coordinates and rejects malformed responses", async () => {
   const pending = processMesh({
     kind: "scanEdit",
@@ -296,7 +322,7 @@ it("preserves aliased packed Split coordinates and rejects malformed responses",
       vertices: new Float64Array(),
     },
   });
-  await expect(bad).rejects.toThrow(/packed Split/);
+  await expect(bad).rejects.toThrow(/packed scan edit/);
 });
 it("releases a completed precise Split worker and starts a fresh worker for its successor", async () => {
   const pending = processMesh(
@@ -657,6 +683,113 @@ describe("processing worker resource ownership", () => {
     await next;
     expect(sourceIndexed.vertices.length).toBe(9);
     expect(sourceIndexed.triangles.length).toBe(3);
+  });
+  it("packs large precise component inputs without cloning scene arrays", async () => {
+    const source = Array.from({ length: 65538 }, (_, i) =>
+      i === 0 ? 100000004 : i / 8,
+    );
+    const sourceIndexed = {
+      vertices: source.slice(0, 9),
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "componentFlip",
+      positions: source,
+      sourceIndexed,
+      indices: [0],
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as ProcessingRequest & {
+      packedScanEditSource?: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+      };
+    };
+    expect(sent.packedScanEditSource?.positions).toBeInstanceOf(Float64Array);
+    expect(sent.packedScanEditSource!.positions![0]).toBe(100000004);
+    expect(sent.positions).toHaveLength(0);
+    expect(worker.transfers).toContain(
+      sent.packedScanEditSource!.positions!.buffer,
+    );
+    expect(source[0]).toBe(100000004);
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+  });
+  it("transfers aliased packed coordinates only once", async () => {
+    const source = Array.from({ length: 65538 }, (_, i) => i / 8);
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "componentFlip",
+      positions: source,
+      sourceIndexed: {
+        vertices: source,
+        triangles: new Uint32Array([0, 1, 2]),
+      },
+      indices: [0],
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as ProcessingRequest & {
+      packedScanEditSource: { positions: Float64Array; vertices: Float64Array };
+    };
+    expect(sent.packedScanEditSource.positions).toBe(
+      sent.packedScanEditSource.vertices,
+    );
+    expect(
+      worker.transfers!.filter(
+        (value) => value === sent.packedScanEditSource.positions.buffer,
+      ),
+    ).toHaveLength(1);
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+    expect(source).toHaveLength(65538);
+  });
+  it("retires a retained worker after a packed component request fails", async () => {
+    const source = Array.from({ length: 65538 }, (_, i) => i / 8);
+    const pending = processMesh(
+      {
+        kind: "scanEdit",
+        action: "componentFlip",
+        positions: source,
+        indices: [0],
+      },
+      { reuseTopology: true },
+    );
+    const worker = ProcessingWorkerDouble.latest;
+    worker.reply({ error: "Component failed" });
+    await expect(pending).rejects.toThrow("Component failed");
+    expect(worker.terminated).toBe(true);
+    const retry = processMesh(
+      {
+        kind: "scanEdit",
+        action: "componentFlip",
+        positions: source,
+        indices: [0],
+      },
+      { reuseTopology: true },
+    );
+    const fresh = ProcessingWorkerDouble.latest;
+    expect(fresh).not.toBe(worker);
+    fresh.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await retry;
   });
   it("disposes a geometry removed during processing when its active operation finishes", async () => {
     const pending = processMesh(request, { reuseTopology: true });

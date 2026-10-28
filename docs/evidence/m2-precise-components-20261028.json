@@ -10,9 +10,27 @@
     "browserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-components-browser-20261028-r5-guard.json",
     "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-components-typecheck-20261028-r2.json"
   },
+  "largeScanInvestigation": {
+    "input": "Original ply-3, 3,691,133 faces; GUI finite Split followed by public-MCP component Flip in a cross-origin-isolated browser.",
+    "baseline": "The component request failed while cloning worker input. The guarded job peaked at 4,834,553,856 bytes and cleaned up.",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-component-20261028-r1-guard.json",
+    "inputTransportPrototype": "A private transferable Float64 input prototype passed 90 focused tests and removed the original clone error, but the large replay still failed under the 4 GiB limit. An instrumented retry reached topology completion before the browser command timed out; both prototype runs cleaned up.",
+    "prototypeReceipts": [
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-component-20261028-r2-guard.json",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-component-20261028-r3-guard.json"
+    ],
+    "finalCandidate": "Compact edge-connected component grouping, bounded typed face/index buffers, private transferable coordinates, and worker-side display preparation replaced the full adjacency graph and repeated full-size cloning.",
+    "finalBuild": "scanforge-f5bc892374b41439",
+    "finalResult": "Public-MCP Flip completed after GUI Split, preserved the cutter and indexed output, and passed Undo/Redo. The 3,691,133-face original became 3,700,757 faces after Split; peak aggregate job use was 4,022,763,520 bytes, below the 4,294,967,296-byte cap. Processes and ports cleaned up.",
+    "finalReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-component-20261028-r12-guard.json",
+    "focused": "118 tests passed, including compact/full grouping comparisons, aliasing, empty removal and packed transport failure cleanup.",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-component-compact-focused-20261028-r10.json",
+    "smallBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-component-compact-browser-20261028-r2-guard.json",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-component-compact-typecheck-20261028-r3.json"
+  },
   "limitations": [
     "Native component output and indexed seam identity were not independently observed in this control.",
-    "Large original-scan component editing has not yet been measured under the 4 GiB aggregate limit.",
+    "The large original-scan check covers one public-MCP Flip after GUI Split, not GUI component execution, Extract, persistence, non-isolated mode or a native comparison.",
     "Other M2 acceptance gates remain open."
   ]
 }
