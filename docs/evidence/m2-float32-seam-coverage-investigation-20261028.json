@@ -27,6 +27,17 @@
     "expectedFailures": 1,
     "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-original-precise-20261028-r2.json"
   },
+  "originalEdgeGrid": {
+    "scope": "Exact representability of the single refined seam edge in the retained original-face fixture, after Float32 refinement; not a native comparison.",
+    "fixedX": 19.9250431060791,
+    "yGridSteps": 15162,
+    "zGridSteps": -659,
+    "gridStepGcd": 1,
+    "result": "Both endpoint intervals have constant Float32 spacing. The coprime grid differences prove no strictly interior point is both Float32-representable and exactly collinear with this edge.",
+    "implication": "A complete exact-coverage result for this edge must retain wider coordinates; selecting another Float32 midpoint cannot fix it.",
+    "validation": "21 tests passed with one expected failure; guarded job cleaned up.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-grid-assertion-20261028-r1-guard.json"
+  },
   "limitations": [
     "The Float32 helper defect remains unresolved. The current shared GUI/MCP finite mesh Split requests the separate precise-coordinate output mode.",
     "Native Split behavior, full M2 acceptance and merge remain open."
