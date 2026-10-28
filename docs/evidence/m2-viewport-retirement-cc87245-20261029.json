@@ -161,11 +161,12 @@
         "pid": 30504,
         "exited": true
       }
-    ]
+    ],
+    "failureBoundary": "After project import: the ledger does not distinguish artifact_delete, digest submission, or digest job polling."
   },
   "limitations": [
     "One manufactured rendered control and one camera state do not establish general visual equivalence.",
-    "The PLY-3 test exceeded the 4 GiB limit and timed out during post-import Extract digest, so post-reopen geometry and resource acceptance remain unverified.",
+    "The PLY-3 test exceeded the 4 GiB limit and a subsequent browser bridge command timed out after project import. The recorded stages do not identify the timed-out command, so post-reopen geometry and resource acceptance remain unverified.",
     "Separate runs cannot establish a controlled memory improvement.",
     "Native comparison remains open."
   ]
