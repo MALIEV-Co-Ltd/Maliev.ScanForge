@@ -178,6 +178,47 @@ it("preserves a tilted identical coplanar control", () => {
   expect(result.segments[0]).toEqual(source);
 });
 
+it("preserves original-face coverage through precise seam output", () => {
+  const source = new Float32Array([
+    19.898012161254883, 47.31754684448242, -315.9837341308594,
+    20.04651641845703, 47.50707244873047, -315.9645080566406, 20.04990005493164,
+    47.18638610839844, -315.8510437011719,
+  ]);
+  const cutter = new Float32Array([
+    19.9250431060791, -149.8528594970703, -442.96917724609375, 19.9250431060791,
+    -149.8528594970703, 72.22071838378906, 19.9250431060791, 406.9168701171875,
+    -442.96917724609375,
+  ]);
+  const result = runFiniteSplitCandidate(source, cutter, undefined, {
+    preciseCoordinates: true,
+  });
+  const normal = (p: ArrayLike<number>, i: number) => {
+    const a = [p[i + 3] - p[i], p[i + 4] - p[i + 1], p[i + 5] - p[i + 2]];
+    const b = [p[i + 6] - p[i], p[i + 7] - p[i + 1], p[i + 8] - p[i + 2]];
+    return [
+      a[1] * b[2] - a[2] * b[1],
+      a[2] * b[0] - a[0] * b[2],
+      a[0] * b[1] - a[1] * b[0],
+    ];
+  };
+  const reference = normal(source, 0);
+  const area = reference.reduce((sum, value) => sum + value * value, 0);
+  let covered = 0;
+  for (const part of result.segments) {
+    for (let i = 0; i < part.length; i += 9) {
+      const face = normal(part, i);
+      const dot = face.reduce(
+        (sum, value, axis) => sum + value * reference[axis],
+        0,
+      );
+      expect(dot).toBeGreaterThan(0);
+      covered += dot;
+    }
+  }
+  expect(result.segments).toHaveLength(2);
+  expect(covered / area).toBeCloseTo(1, 10);
+});
+
 it("retains the original scan face crossing with positive winding", () => {
   const source = new Float32Array([
     19.898012161254883, 47.31754684448242, -315.9837341308594,

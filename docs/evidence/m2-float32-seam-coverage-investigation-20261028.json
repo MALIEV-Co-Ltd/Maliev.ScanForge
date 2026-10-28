@@ -13,6 +13,20 @@
     "expectedFailures": 1,
     "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-coverage-reverted-20261028-r1.json"
   },
+  "strictCollinearityProbe": {
+    "method": "In the Float32-only path, reject rounded midpoints whose edge determinants differ beyond double-precision arithmetic error; leave precise-coordinate output unchanged.",
+    "observation": "The material-distortion regression passed, but the retained original-scan crossing failed: its rounded midpoint is not exactly collinear even though the complete source-face coverage test accepts it.",
+    "result": "Candidate removed because it rejects an existing valid original-scan case; 86 tests passed and one failed.",
+    "nextInvestigation": "Carry the original source-face identity and coverage budget into seam validation or preserve precise coordinates throughout; do not use a strict local collinearity test as a substitute.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-guard-candidate-20261028-r2.json"
+  },
+  "preciseOriginalFace": {
+    "scope": "The same original face and cutter through the precise finite candidate used by the shared operation, not a native comparison.",
+    "result": "Positive winding and total projected source-face coverage pass to ten decimal places; the Float32 expected failure remains.",
+    "focusedTestsPassed": 87,
+    "expectedFailures": 1,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-original-precise-20261028-r2.json"
+  },
   "limitations": [
     "The Float32 helper defect remains unresolved. The current shared GUI/MCP finite mesh Split requests the separate precise-coordinate output mode.",
     "Native Split behavior, full M2 acceptance and merge remain open."
