@@ -1,0 +1,91 @@
+{
+  "scope": "Diagnostic instrumentation of original PLY-3 in-place restore based on application commit 182a740a054009514a1a4d61e6f2bcfcc747acbd",
+  "diagnosticTransportSha256": "7fd6101b03b6916699aa066300678afc4948e03bf9d1ca92bd0c9458ec56af0c",
+  "build": "Instrumented isolated build scanforge-88c187ef9b234159; console tracing is not included in production source.",
+  "events": [
+    {
+      "event": "decoder-start",
+      "at": 97452.24000000954
+    },
+    {
+      "event": "decoder-message",
+      "at": 107439.53499999642,
+      "error": null,
+      "numericBuffers": 4,
+      "numericBytes": 461164920,
+      "numericSizes": [
+        {
+          "bytes": 266454504,
+          "shared": false
+        },
+        {
+          "bytes": 45011616,
+          "shared": false
+        },
+        {
+          "bytes": 128100312,
+          "shared": false
+        },
+        {
+          "bytes": 21598488,
+          "shared": false
+        }
+      ]
+    },
+    {
+      "event": "unpack-array-start",
+      "elements": 33306813,
+      "at": 107440.4850000143
+    },
+    {
+      "event": "unpack-array-end",
+      "elements": 33306813,
+      "at": 107618.46999999881
+    },
+    {
+      "event": "unpack-array-start",
+      "elements": 5626452,
+      "at": 107618.58500000834
+    },
+    {
+      "event": "unpack-array-end",
+      "elements": 5626452,
+      "at": 107644.59000000358
+    },
+    {
+      "event": "unpack-array-start",
+      "elements": 16012539,
+      "at": 107644.67000001669
+    },
+    {
+      "event": "unpack-array-end",
+      "elements": 16012539,
+      "at": 107725.90999999642
+    },
+    {
+      "event": "unpack-array-start",
+      "elements": 2699811,
+      "at": 107725.98000001907
+    },
+    {
+      "event": "unpack-array-end",
+      "elements": 2699811,
+      "at": 107738.54500001669
+    }
+  ],
+  "observation": "All four array reconstruction loops reported completion after decoder handoff. The next sampled job peak exceeded 4 GiB and the owned harness was stopped before project import completed.",
+  "guard": {
+    "passed": false,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4294995968,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true
+  },
+  "limitations": [
+    "A sampled aggregate peak after array completion does not establish the exact timing or responsible allocation.",
+    "Diagnostic instrumentation may change scheduling and is not acceptance evidence.",
+    "No post-reopen geometry or native Split comparison was obtained."
+  ]
+}
