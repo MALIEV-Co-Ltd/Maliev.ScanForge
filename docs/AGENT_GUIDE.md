@@ -1,5 +1,13 @@
 # ScanForge MCP agent guide
 
+Exact CAD Boolean, split, fillet/chamfer, shell and thickening makers use private
+input geometry so successful and rejected operations preserve source and earlier
+result BREP. Both split makers own separate copies. Datum placement reads prepared
+face triangulations without remeshing its shared source; missing triangulations
+fail safely and require recreating or reimporting the body. Patterns own their
+first instance's geometry and mesh. GUI and MCP use the same worker through the
+existing CAD and alignment operations, with unchanged parameters and history.
+
 ## Fine alignment accuracy
 
 `mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.

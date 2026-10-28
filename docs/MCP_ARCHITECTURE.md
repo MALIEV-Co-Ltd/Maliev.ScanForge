@@ -1,5 +1,11 @@
 # ScanForge shared application API and MCP
 
+The shared CAD worker owns construction inputs for Boolean/split, edge treatment,
+shell and thickening makers. Datum partners retain prepared source triangulations
+and patterns deep-copy their first instance before compound meshing. Existing GUI
+and MCP CAD/alignment operations share these fixes; revision, cancellation, output
+ownership, history and public edge/face indexing retain their current contracts.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates

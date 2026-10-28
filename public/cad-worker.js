@@ -244,7 +244,12 @@ function ensureDone(oc, status, action) {
   }
 }
 
-function mesh(oc, shape, onProgress = () => {}) {
+function mesh(
+  oc,
+  shape,
+  onProgress = () => {},
+  reusePreparedTriangulation = false,
+) {
   // Kernel bodies can share face data. Retessellation may replace those shared
   // triangulations, so prepared alignment records must be acquired again.
   alignmentMeshes.clear();
@@ -255,7 +260,7 @@ function mesh(oc, shape, onProgress = () => {}) {
     return handle;
   };
   try {
-    // Display tessellation is disposable; exact curves/surfaces remain in the BRep.
+    // Bounds/deflection also drive exact edge display on both read paths.
     const bounds = keep(new oc.Bnd_Box_1());
     oc.BRepBndLib.Add(shape, bounds, false);
     const minimum = keep(bounds.CornerMin()),
@@ -266,10 +271,14 @@ function mesh(oc, shape, onProgress = () => {}) {
       maximum.Z() - minimum.Z(),
     );
     const deflection = Math.max(0.0001, Math.min(0.025, diagonal * 0.00025));
-    oc.BRepTools.Clean(shape);
-    keep(
-      new oc.BRepMesh_IncrementalMesh_2(shape, deflection, false, 0.1, false),
-    );
+    if (!reusePreparedTriangulation) {
+      // A datum partner must keep shared source triangulations because
+      // alignment readers consume their exact UV slots.
+      oc.BRepTools.Clean(shape);
+      keep(
+        new oc.BRepMesh_IncrementalMesh_2(shape, deflection, false, 0.1, false),
+      );
+    }
     const explorer = keep(
       new oc.TopExp_Explorer_2(
         shape,
@@ -298,7 +307,11 @@ function mesh(oc, shape, onProgress = () => {}) {
           oc.BRep_Tool.Triangulation(face, location),
         );
         if (triangulationHandle.IsNull())
-          throw new Error("A CAD face could not be tessellated.");
+          throw new Error(
+            reusePreparedTriangulation
+              ? "Exact CAD alignment requires prepared face triangulations. Recreate or reimport this body."
+              : "A CAD face could not be tessellated.",
+          );
         // get() returns a borrowed native object; its owner is triangulationHandle.
         const triangulation = triangulationHandle.get();
         const transform = local(location.Transformation());
@@ -510,7 +523,7 @@ function cadEdgePositions(oc, shape, deflection) {
   }
 }
 
-function register(oc, shape, onProgress = () => {}) {
+function register(oc, shape, onProgress = () => {}, preparedPartner) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
@@ -518,6 +531,7 @@ function register(oc, shape, onProgress = () => {}) {
       oc,
       shape,
       onProgress,
+      !!preparedPartner && shape.IsPartner(preparedPartner),
     );
     const kernelId = `cad-${sessionId}-${++nextShape}`;
     const brep = serializeBrep(oc, shape);
@@ -957,6 +971,17 @@ function alignmentReferences(oc, input) {
   }
 }
 
+// Boolean construction and result meshing can add p-curves/triangulations to
+// their arguments. Each maker needs private topology and geometry, including
+// split's separate common/cut makers, so sources and earlier results stay exact.
+function copyBooleanInput(oc, shape, handles) {
+  const copier = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
+  handles.push(copier);
+  const copy = copier.Shape();
+  handles.push(copy);
+  return copy;
+}
+
 function booleanShape(oc, input) {
   const first = getShape(input.firstId),
     second = getShape(input.secondId);
@@ -968,13 +993,17 @@ function booleanShape(oc, input) {
   if (!Object.hasOwn(constructors, input.operation))
     throw new Error("Unsupported CAD boolean operation.");
   const Constructor = constructors[input.operation];
-  const maker = new Constructor(first, second);
+  const handles = [];
   try {
+    const firstCopy = copyBooleanInput(oc, first, handles),
+      secondCopy = copyBooleanInput(oc, second, handles),
+      maker = new Constructor(firstCopy, secondCopy);
+    handles.push(maker);
     if (!maker.IsDone())
       throw new Error("CAD boolean operation could not build a result.");
     return register(oc, maker.Shape());
   } finally {
-    maker.delete();
+    cleanup(handles);
   }
 }
 
@@ -1068,7 +1097,10 @@ function datumTransformShape(oc, input) {
     handles.push(maker);
     if (!maker.IsDone())
       throw new Error("Exact CAD alignment failed to build a result.");
-    return { ...register(oc, maker.Shape()), placementMatrix };
+    return {
+      ...register(oc, maker.Shape(), undefined, shape),
+      placementMatrix,
+    };
   } finally {
     cleanup(handles);
   }
@@ -1140,7 +1172,17 @@ function patternShape(oc, input) {
   let handedOff = false;
   try {
     builder.MakeCompound(compound);
-    builder.Add(compound, source);
+    // The first instance also needs independent mesh ownership before compound
+    // meshing. copyGeom=false can share triangulations even with copyMesh=true.
+    const copier = new oc.BRepBuilderAPI_Copy_2(source, true, true);
+    let first;
+    try {
+      first = copier.Shape();
+      builder.Add(compound, first);
+    } finally {
+      first?.delete();
+      copier.delete();
+    }
     for (let copy = 1; copy < input.count; copy++) {
       let matrix, translation;
       if (input.kind === "linear") {
@@ -1248,9 +1290,15 @@ function splitShape(oc, input) {
   if (!hasSolid(source) || !hasSolid(cutter))
     throw new Error("Split requires source and cutter solids.");
   try {
-    const common = new oc.BRepAlgoAPI_Common_3(source, cutter);
+    const common = new oc.BRepAlgoAPI_Common_3(
+      copyBooleanInput(oc, source, handles),
+      copyBooleanInput(oc, cutter, handles),
+    );
     handles.push(common);
-    const cut = new oc.BRepAlgoAPI_Cut_3(source, cutter);
+    const cut = new oc.BRepAlgoAPI_Cut_3(
+      copyBooleanInput(oc, source, handles),
+      copyBooleanInput(oc, cutter, handles),
+    );
     handles.push(cut);
     if (!common.IsDone() || !cut.IsDone())
       throw new Error("CAD split boolean construction failed.");
@@ -1633,6 +1681,11 @@ function thicknessShape(oc, input, hollow) {
     maker = new oc.BRepOffsetAPI_MakeThickSolid_1();
   handles.push(maker);
   try {
+    // Both makers and their result meshing must own their input geometry.
+    const copy = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
+    handles.push(copy);
+    const working = copy.Shape();
+    handles.push(working);
     if (hollow) {
       if (
         !Array.isArray(input.faceIndices) ||
@@ -1642,7 +1695,7 @@ function thicknessShape(oc, input, hollow) {
         throw new Error("Shell requires zero-based faces to remove.");
       const faces = [],
         explorer = new oc.TopExp_Explorer_2(
-          shape,
+          working,
           oc.TopAbs_ShapeEnum.TopAbs_FACE,
           oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
         );
@@ -1659,7 +1712,7 @@ function thicknessShape(oc, input, hollow) {
       for (const index of new Set(input.faceIndices))
         closing.Append_1(faces[index]);
       maker.MakeThickSolidByJoin(
-        shape,
+        working,
         closing,
         input.thickness,
         1e-6,
@@ -1669,7 +1722,7 @@ function thicknessShape(oc, input, hollow) {
         oc.GeomAbs_JoinType.GeomAbs_Arc,
         false,
       );
-    } else maker.MakeThickSolidBySimple(shape, input.thickness);
+    } else maker.MakeThickSolidBySimple(working, input.thickness);
     if (!maker.IsDone())
       throw new Error(
         "CAD wall construction failed. Reduce thickness or choose other faces.",
@@ -1979,8 +2032,14 @@ function edgeShape(oc, input) {
   const handles = [],
     edges = [];
   try {
+    // Failure can modify native flags too. Keep both edge identities and the
+    // maker on the same private copy, preserving the public encounter order.
+    const copy = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
+    handles.push(copy);
+    const working = copy.Shape();
+    handles.push(working);
     const explorer = new oc.TopExp_Explorer_2(
-      shape,
+      working,
       oc.TopAbs_ShapeEnum.TopAbs_EDGE,
       oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
     );
@@ -2003,10 +2062,10 @@ function edgeShape(oc, input) {
     const maker =
       input.operation === "fillet"
         ? new oc.BRepFilletAPI_MakeFillet(
-            shape,
+            working,
             oc.ChFi3d_FilletShape.ChFi3d_Rational,
           )
-        : new oc.BRepFilletAPI_MakeChamfer(shape);
+        : new oc.BRepFilletAPI_MakeChamfer(working);
     handles.push(maker);
     for (const index of new Set(input.edgeIndices))
       maker.Add_2(input.amount, edges[index]);
