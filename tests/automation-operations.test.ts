@@ -91,6 +91,37 @@ it("uses reusable geometry processing for MCP analysis and inventory", async () 
   });
   expect(h.host.commit).not.toHaveBeenCalled();
 });
+it("serializes transferred component triangle indices as public JSON arrays", async () => {
+  const h = harness();
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    diagnostics: {},
+    scanEdit: {
+      diagnostics: { scope: "components" },
+      inventory: {
+        scope: "components",
+        components: [{ triangles: new Uint32Array([2, 5]), area: 3 }],
+        boundaries: [],
+      },
+    },
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: {
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+      },
+    },
+    h.context,
+  );
+  const serialized = vi.mocked(h.context.artifact).mock.calls.at(-1)![0];
+  const report = JSON.parse(String(serialized));
+  expect(report.inventory.components).toEqual([{ triangles: [2, 5], area: 3 }]);
+  expect(Array.isArray(report.inventory.components[0].triangles)).toBe(true);
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
 it("renames the selected objects in browser order in one transaction", () => {
   const h = harness([entity(), entity({ id: "b" }), entity({ id: "c" })]);
   h.state.selectedIds = ["c", "mesh", "b"];

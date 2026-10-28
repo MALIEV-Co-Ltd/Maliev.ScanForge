@@ -13,7 +13,11 @@ import {
   reduceScanNoiseAsync,
   type ScanToolResult,
 } from "./scan-tools-reduction";
-import { runScanEditAsync } from "./scan-edit";
+import {
+  runIndexedComponentExtract,
+  runIndexedComponentInventory,
+  runScanEditAsync,
+} from "./scan-edit";
 import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { SELECTED_SMOOTHING_DEFAULTS } from "./scan-selected-smooth";
@@ -113,11 +117,15 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     return;
   }
+  let indexedExtract = false;
+  let indexedInventory = false;
   let packedSource = (
     incoming as ProcessingRequest & {
       packedScanEditSource?: {
         positions?: Float64Array;
         vertices?: Float64Array;
+        indexedExtract?: true;
+        indexedInventory?: true;
       };
     }
   ).packedScanEditSource;
@@ -125,7 +133,10 @@ scope.onmessage = async ({ data: incoming }) => {
     try {
       if (
         incoming.kind !== "scanEdit" ||
-        !incoming.action.startsWith("component")
+        !(
+          incoming.action.startsWith("component") ||
+          incoming.action === "inventory"
+        )
       )
         throw new Error("Unexpected packed scan edit input.");
       const unpack = (values: Float64Array) => {
@@ -134,6 +145,26 @@ scope.onmessage = async ({ data: incoming }) => {
         return out;
       };
       const { positions, vertices } = packedSource;
+      indexedExtract = packedSource.indexedExtract === true;
+      indexedInventory = packedSource.indexedInventory === true;
+      if (
+        indexedInventory &&
+        (indexedExtract ||
+          incoming.action !== "inventory" ||
+          incoming.inventoryScope !== "components" ||
+          positions !== undefined ||
+          incoming.positions.length !== 0 ||
+          !incoming.sourceIndexed)
+      )
+        throw new Error("Invalid indexed component inventory input.");
+      if (
+        indexedExtract &&
+        (incoming.action !== "componentExtract" ||
+          positions !== undefined ||
+          incoming.positions.length !== 0 ||
+          !incoming.sourceIndexed)
+      )
+        throw new Error("Invalid indexed extraction input.");
       if (
         positions !== undefined &&
         (!(positions instanceof Float64Array) ||
@@ -335,11 +366,21 @@ scope.onmessage = async ({ data: incoming }) => {
       });
     } else if (request.kind === "scanEdit") {
       if (request.sourceIndexed) {
-        if (!indexedMeshMatches(request.sourceIndexed, request.positions))
+        if (
+          !indexedExtract &&
+          !indexedInventory &&
+          !indexedMeshMatches(request.sourceIndexed, request.positions)
+        )
           throw new Error(
             "Scan edit indices do not match the source geometry.",
           );
         if (
+          !indexedExtract &&
+          !indexedInventory &&
+          !(
+            request.action === "inventory" &&
+            request.inventoryScope === "components"
+          ) &&
           !(
             request.action.startsWith("component") &&
             request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
@@ -375,7 +416,7 @@ scope.onmessage = async ({ data: incoming }) => {
           { onProgress: progress },
         );
       }
-      result.scanEdit = await runScanEditAsync(request, {
+      const editOptions = {
         onProgress: progress,
         topologyCache: request.previewOnly
           ? { ...topologyCache }
@@ -383,7 +424,28 @@ scope.onmessage = async ({ data: incoming }) => {
         selectedSmoothing: selectedVertices
           ? () => selectedVertices!
           : undefined,
-      });
+      };
+      if (indexedExtract) {
+        progress(0, "Grouping indexed components");
+        result.scanEdit = runIndexedComponentExtract(
+          request.sourceIndexed!,
+          request.indices,
+          {
+            ...editOptions,
+            tolerance: request.tolerance,
+            onProgress: (fraction, stage) => progress(fraction * 0.95, stage),
+          },
+        );
+      } else if (indexedInventory) {
+        result.scanEdit = runIndexedComponentInventory(
+          request.sourceIndexed!,
+          {
+            ...editOptions,
+            tolerance: request.tolerance,
+          },
+          true,
+        );
+      } else result.scanEdit = await runScanEditAsync(request, editOptions);
       result.diagnostics = result.scanEdit.diagnostics;
       if (result.scanEdit.indexedMesh) {
         if (
@@ -421,7 +483,11 @@ scope.onmessage = async ({ data: incoming }) => {
       // successor exists, so do not allocate or transfer a duplicate buffer.
       if (result.scanEdit.diagnostics.changed === false)
         delete result.scanEdit.positions;
-      if (request.action === "inventory" && topologyCache.topology)
+      if (
+        request.action === "inventory" &&
+        request.inventoryScope !== "components" &&
+        topologyCache.topology
+      )
         result.topology = summarize(topologyCache.topology);
     } else if (request.kind === "selectionMorphology") {
       result.selection = morphTriangleSelection(
@@ -790,6 +856,13 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     if (persistent) Object.assign(result.diagnostics, persistent);
     const transfers: Transferable[] = [];
+    if (indexedInventory)
+      for (const component of result.scanEdit?.inventory?.components ?? [])
+        if (
+          component.triangles instanceof Uint32Array &&
+          component.triangles.buffer instanceof ArrayBuffer
+        )
+          transfers.push(component.triangles.buffer);
     const successor =
       result.pointCloudEdit?.positions ??
       result.scanEdit?.positions ??
@@ -872,6 +945,22 @@ scope.onmessage = async ({ data: incoming }) => {
       if (result.renderData.normals)
         transfers.push(result.renderData.normals.buffer as ArrayBuffer);
     }
+    if (
+      indexedExtract &&
+      result.scanEdit?.segments &&
+      result.scanEdit.segmentIndexedMeshes
+    ) {
+      const segments = result.scanEdit.segments;
+      const meshes = result.scanEdit.segmentIndexedMeshes;
+      if (segments.length !== meshes.length || meshes.some((mesh) => !mesh))
+        throw new Error("Invalid component display topology.");
+      progress(0.99, "Preparing component display");
+      result.segmentRenderData = segments.map((segment, i) =>
+        prepareSplitRenderData(segment, meshes[i]!, true),
+      );
+      for (const data of result.segmentRenderData)
+        if (data.normals) transfers.push(data.normals.buffer as ArrayBuffer);
+    }
     if (result.positions) transfers.push(result.positions.buffer);
     if (result.indexedMesh?.vertices instanceof Float32Array)
       transfers.push(result.indexedMesh.vertices.buffer);
@@ -914,7 +1003,8 @@ scope.onmessage = async ({ data: incoming }) => {
     if (
       request.kind === "scanEdit" &&
       request.action === "componentExtract" &&
-      (request.positions as unknown) instanceof Float64Array &&
+      (indexedExtract ||
+        (request.positions as unknown) instanceof Float64Array) &&
       result.scanEdit?.segments &&
       result.scanEdit.segmentIndexedMeshes &&
       result.scanEdit.segments.length ===
@@ -927,7 +1017,7 @@ scope.onmessage = async ({ data: incoming }) => {
           (segment, i) =>
             !((segment as unknown) instanceof Float64Array) ||
             !meshes[i] ||
-            !Array.isArray(meshes[i]!.vertices),
+            !((meshes[i]!.vertices as unknown) instanceof Float64Array),
         )
       )
         throw new Error("Invalid precise component segment output.");
@@ -935,7 +1025,7 @@ scope.onmessage = async ({ data: incoming }) => {
       packedScanSegments = segments.map((segment, i) => {
         const positions = segment as unknown as Float64Array;
         const mesh = meshes[i]!;
-        const vertices = Float64Array.from(mesh.vertices);
+        const vertices = mesh.vertices as unknown as Float64Array;
         mesh.vertices = [];
         transfers.push(positions.buffer, vertices.buffer);
         return { positions, vertices };

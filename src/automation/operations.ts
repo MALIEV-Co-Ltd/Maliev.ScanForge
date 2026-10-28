@@ -1578,7 +1578,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               artifact: json(
                 c,
                 {
-                  inventory: edit?.inventory,
+                  inventory: edit?.inventory && {
+                    ...edit.inventory,
+                    components: edit.inventory.components.map((component) => ({
+                      ...component,
+                      triangles:
+                        component.triangles instanceof Uint32Array
+                          ? Array.from(component.triangles)
+                          : component.triangles,
+                    })),
+                  },
                   curves: edit?.curves,
                   spatialCurves: edit?.spatialCurves,
                   sketchSection: result.sketchSection,

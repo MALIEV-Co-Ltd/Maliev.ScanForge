@@ -10,10 +10,12 @@ import type { ScanEditRequest } from "../scan-edit";
 import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
 import type { Entity, Positions, Vec3 } from "../types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "../scan-component-groups";
 import "./scan-topology-panels.css";
 
 export interface ScanInventory {
-  components: { triangles: number[]; area: number }[];
+  scope?: "components";
+  components: { triangles: number[] | Uint32Array; area: number }[];
   boundaries: {
     points: number[];
     triangles: number[];
@@ -68,6 +70,7 @@ type ScanAction =
   | "boundarySpatialSketch";
 export interface ScanPanelOperation {
   action: ScanAction;
+  inventoryScope?: ScanEditRequest["inventoryScope"];
   indices?: number[];
   algorithm?: ScanEditRequest["algorithm"];
   mode?: "entire" | "partial" | "bridge";
@@ -223,9 +226,19 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
     cancel();
     setInventory(empty);
     setBusy(false);
-    void run({ action: "inventory" }, "Inspect mesh");
+    void run(
+      {
+        action: "inventory",
+        ...(props.section === "components" &&
+        sourceIndexed &&
+        props.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          ? { inventoryScope: "components" as const }
+          : {}),
+      },
+      "Inspect mesh",
+    );
     return cancel;
-  }, [props.positions, props.selectedId, sourceIndexed]);
+  }, [props.positions, props.selectedId, sourceIndexed, props.section]);
   return (
     <ScanTopologyControls
       {...props}
@@ -395,9 +408,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.onOperation(operation, label);
   function choose(index: number) {
     setSelected(index);
-    highlight(index);
+    highlight(index, true);
   }
-  function highlight(index: number) {
+  function highlight(index: number, explicit = false) {
     if (section !== "components") {
       const rim = inventory.boundaries[items[index]?.index];
       props.onBoundaryHighlight?.(rim ? [rim] : []);
@@ -406,6 +419,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.onBoundaryHighlight?.([]);
     const mask = new Uint8Array(Math.floor(props.positions.length / 9));
     for (const triangle of items[index]?.triangles ?? []) mask[triangle] = 1;
+    if (!explicit && props.selection?.length === mask.length) {
+      let matches = true;
+      for (let i = 0; i < mask.length; i++)
+        if (mask[i] !== props.selection[i]) {
+          matches = false;
+          break;
+        }
+      if (matches) return;
+    }
     props.onSelection(mask);
   }
   useEffect(() => {
@@ -475,9 +497,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       </h3>
       <div className="tool-panel-content">
         <p className="scan-topology-summary">
-          {inventory.components.length} meshes ·{" "}
-          {inventory.boundaries.filter((item) => item.closed).length} holes ·{" "}
-          {inventory.boundaries.length} boundaries
+          {inventory.scope === "components"
+            ? `${inventory.components.length} meshes · holes and boundaries not calculated`
+            : `${inventory.components.length} meshes · ${inventory.boundaries.filter((item) => item.closed).length} holes · ${inventory.boundaries.length} boundaries`}
         </p>
         <fieldset disabled={blocked}>
           {!(section === "holes" && mode === "bridge") && (

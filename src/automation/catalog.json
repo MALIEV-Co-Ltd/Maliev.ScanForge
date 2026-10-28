@@ -1211,6 +1211,11 @@
                     "split"
                   ]
                 },
+                "inventoryScope": {
+                  "type": "string",
+                  "enum": ["components"],
+                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. The inventory scope identifies this partial result; omit for the full inventory."
+                },
                 "createSketches": {
                   "type": "boolean",
                   "description": "Boundary projection only. Omit or false for the existing read-only XYZ curve artifact. true publishes validated saved planar sketches in one model-history transaction, retains the source and active authoring session, and returns sketchIds plus the curve artifact. Undo/Redo/Seek and project reopening retain the operation-owned sketch identities. Locked source publication is rejected before processing."

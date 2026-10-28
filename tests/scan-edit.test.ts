@@ -322,6 +322,38 @@ it("fills an inner planar hole while preserving the outer sheet boundary", () =>
 });
 
 describe("scan edit inventory and components", () => {
+  it("returns explicitly scoped indexed component inventory without implying boundary results", () => {
+    const first = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    const positions = [
+      ...first,
+      ...first.map((value, i) => value + (i % 3 === 0 ? 3 : 0)),
+    ];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const full = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+      sourceIndexed,
+    });
+    const scoped = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      inventoryScope: "components",
+      positions,
+      sourceIndexed,
+    });
+    expect(scoped.inventory!.scope).toBe("components");
+    expect(scoped.inventory!.components).toEqual(full.inventory!.components);
+    expect(scoped.inventory!.boundaries).toEqual([]);
+    expect(scoped.diagnostics).toMatchObject({
+      scope: "components",
+      components: 2,
+    });
+    expect(scoped.diagnostics).not.toHaveProperty("holes");
+  });
   it("keeps coincident indexed components separate without a worker cache", () => {
     const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
     const positions = [...triangle, ...triangle];

@@ -5,6 +5,126 @@ import type {
 } from "../src/processing-client";
 import { runFiniteSplitCandidate } from "../src/scan-split-finite-candidate";
 import { indexedMeshMatches } from "../src/indexed-mesh";
+import { runScanEdit } from "../src/scan-edit";
+import { smoothDisplayNormals } from "../src/viewport-display";
+
+it("runs exact indexed component inventory in the worker without expanded positions", async () => {
+  vi.resetModules();
+  const replies: ProcessingResponse[] = [];
+  let transferredInventory = false;
+  const scope = {
+    onmessage: null as
+      null | ((event: { data: ProcessingRequest }) => Promise<void>),
+    postMessage(message: ProcessingResponse, transfer: Transferable[] = []) {
+      if ("result" in message) {
+        const triangles =
+          message.result.scanEdit?.inventory?.components[0]?.triangles;
+        transferredInventory =
+          triangles instanceof Uint32Array &&
+          transfer.includes(triangles.buffer);
+      }
+      replies.push(structuredClone(message, { transfer }));
+    },
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 6, 0, 0, 4, 2, 0];
+    const triangles = new Uint32Array([0, 1, 2, 3, 4, 5]);
+    const expected = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      inventoryScope: "components",
+      positions: vertices,
+      sourceIndexed: { vertices, triangles },
+    });
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+        positions: new Float32Array(),
+        sourceIndexed: { vertices, triangles },
+        packedScanEditSource: { indexedInventory: true },
+      } as ProcessingRequest,
+    });
+    const reply = replies.at(-1);
+    if (!reply || !("result" in reply)) throw Error(JSON.stringify(reply));
+    expect(transferredInventory).toBe(true);
+    const inventory = reply.result.scanEdit!.inventory!;
+    expect(inventory.components[0].triangles).toBeInstanceOf(Uint32Array);
+    expect({
+      ...inventory,
+      components: inventory.components.map((component) => ({
+        ...component,
+        triangles: Array.from(component.triangles),
+      })),
+    }).toEqual(expected.inventory);
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: new Float32Array(),
+        sourceIndexed: { vertices, triangles },
+        packedScanEditSource: { indexedInventory: true },
+      } as ProcessingRequest,
+    });
+    expect(replies.at(-1)).toMatchObject({
+      error: expect.stringMatching(/invalid indexed component inventory/i),
+    });
+  } finally {
+    vi.unstubAllGlobals();
+    vi.resetModules();
+  }
+});
+
+it("prepares equivalent indexed display normals for a precise Extract worker result", async () => {
+  vi.resetModules();
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as
+      null | ((event: { data: ProcessingRequest }) => Promise<void>),
+    postMessage(message: ProcessingResponse, transfer: Transferable[] = []) {
+      replies.push(structuredClone(message, { transfer }));
+    },
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1];
+    const triangles = new Uint32Array([0, 1, 2, 1, 3, 2]);
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [0],
+        positions: new Float32Array(),
+        sourceIndexed: { vertices, triangles },
+        packedScanEditSource: { indexedExtract: true },
+      } as ProcessingRequest,
+    });
+    const reply = replies.at(-1);
+    if (!reply || !("result" in reply) || !reply.packedScanSegments)
+      throw Error(JSON.stringify(reply));
+    const packed = reply.packedScanSegments[0];
+    const mesh = reply.result.scanEdit!.segmentIndexedMeshes![0]!;
+    const render = reply.result.segmentRenderData![0];
+    expect(render.indexedMesh).toBe(mesh);
+    const expanded = smoothDisplayNormals(packed.positions);
+    for (let slot = 0; slot < mesh.triangles.length; slot++)
+      for (let axis = 0; axis < 3; axis++)
+        expect(render.normals![mesh.triangles[slot] * 3 + axis]).toBe(
+          expanded[slot * 3 + axis],
+        );
+    const progress = replies
+      .filter((reply) => "progress" in reply)
+      .map((reply) => (reply as { progress: number }).progress);
+    expect(progress).toEqual([...progress].sort((a, b) => a - b));
+  } finally {
+    vi.unstubAllGlobals();
+    vi.resetModules();
+  }
+});
 
 function receive(
   message: ProcessingResponse,

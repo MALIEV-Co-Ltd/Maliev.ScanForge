@@ -55,6 +55,8 @@ export interface ScanEditRequest {
     | "smoothSelected"
     | "defeature"
     | "split";
+  /** Optional read-only inventory projection; full inventory remains the default. */
+  inventoryScope?: "components";
   selection?: Uint8Array;
   indices?: number[];
   algorithm?:
@@ -79,9 +81,10 @@ export interface ScanEditRequest {
   fitTolerance?: number;
 }
 export interface ScanEditInventory {
+  scope?: "components";
   /** Closed boundary indices in descending displayed-size order. */
   holeOrder?: number[];
-  components: { triangles: number[]; area: number }[];
+  components: { triangles: number[] | Uint32Array; area: number }[];
   boundaries: {
     points: number[];
     triangles: number[];
@@ -145,14 +148,11 @@ function componentIndex(
   flipped: Uint8Array | undefined,
   options: MeshProcessingOptions,
   float32: boolean,
+  privatePrecise = false,
 ): import("./types").IndexedMesh | undefined {
   if (!faces.length) return undefined;
   checkProgress(options, 1, "Compacting component indices");
   const ids = new Uint32Array(source.vertices.length / 3);
-  const capacity = Math.min(source.vertices.length, faces.length * 9);
-  const vertices: Positions = float32
-    ? new Float32Array(capacity)
-    : new Array<number>(capacity);
   const triangles = new Uint32Array(faces.length * 3);
   let slot = 0,
     vertexCount = 0;
@@ -167,22 +167,26 @@ function componentIndex(
       if (!id) {
         id = ++vertexCount;
         ids[sourceId] = id;
-        const destination = (id - 1) * 3;
-        vertices[destination] = source.vertices[sourceId * 3];
-        vertices[destination + 1] = source.vertices[sourceId * 3 + 1];
-        vertices[destination + 2] = source.vertices[sourceId * 3 + 2];
       }
       triangles[slot++] = id - 1;
     }
   }
-  if (Array.isArray(vertices)) vertices.length = vertexCount * 3;
-  return {
-    vertices:
-      vertices instanceof Float32Array
-        ? vertices.subarray(0, vertexCount * 3)
-        : vertices,
-    triangles,
-  };
+  const vertices: Positions = float32
+    ? new Float32Array(vertexCount * 3)
+    : privatePrecise
+      ? (new Float64Array(vertexCount * 3) as unknown as Positions)
+      : new Array<number>(vertexCount * 3);
+  for (let sourceId = 0; sourceId < ids.length; sourceId++) {
+    if ((sourceId & 4095) === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const id = ids[sourceId];
+    if (!id) continue;
+    const destination = (id - 1) * 3;
+    vertices[destination] = source.vertices[sourceId * 3];
+    vertices[destination + 1] = source.vertices[sourceId * 3 + 1];
+    vertices[destination + 2] = source.vertices[sourceId * 3 + 2];
+  }
+  return { vertices, triangles };
 }
 export function inventoryOf(
   t: MeshTopology,
@@ -333,20 +337,14 @@ function componentEdit(
   componentAt: (index: number) => ArrayLike<number>,
   indexed:
     { vertices: ArrayLike<number>; triangles: ArrayLike<number> } | undefined,
+  indexedSourceOnly = false,
 ): ScanEditResult {
-  const count = r.positions.length / 9;
+  const count = indexedSourceOnly
+    ? indexed!.triangles.length / 3
+    : r.positions.length / 9;
   const selectedComponents = selectedIndices(r.indices, componentCount);
-  const selected = new Uint8Array(count);
-  let selectedCount = 0;
-  for (const component of selectedComponents) {
-    const componentFaces = componentAt(component);
-    for (let i = 0; i < componentFaces.length; i++) {
-      const face = componentFaces[i];
-      if (!selected[face]) selectedCount++;
-      selected[face] = 1;
-    }
-  }
-  const privatePrecise = (r.positions as unknown) instanceof Float64Array;
+  const privatePrecise =
+    indexedSourceOnly || (r.positions as unknown) instanceof Float64Array;
   const precise =
     privatePrecise ||
     (Array.isArray(r.positions) &&
@@ -366,8 +364,11 @@ function componentEdit(
       for (let corner = 0; corner < 3; corner++) {
         const sourceCorner = flip?.[face] && corner > 0 ? 3 - corner : corner;
         for (let axis = 0; axis < 3; axis++)
-          positions[row * 9 + corner * 3 + axis] =
-            r.positions[face * 9 + sourceCorner * 3 + axis];
+          positions[row * 9 + corner * 3 + axis] = indexedSourceOnly
+            ? indexed!.vertices[
+                indexed!.triangles[face * 3 + sourceCorner] * 3 + axis
+              ]
+            : r.positions[face * 9 + sourceCorner * 3 + axis];
       }
     }
     if (positions.some((value) => !Number.isFinite(value)))
@@ -375,9 +376,13 @@ function componentEdit(
     return positions;
   };
   if (r.action === "componentExtract") {
-    const groups = selectedComponents.map((i) =>
-      Uint32Array.from(componentAt(i)).sort(),
-    );
+    const groups = selectedComponents.map((i) => {
+      const faces = componentAt(i);
+      // Compact indexed groups are filled in source-face order already.
+      return indexedSourceOnly && faces instanceof Uint32Array
+        ? faces
+        : Uint32Array.from(faces).sort();
+    });
     const segments = groups.map((faces) => output(faces));
     return {
       segments,
@@ -390,6 +395,7 @@ function componentEdit(
                 undefined,
                 o,
                 segments[index] instanceof Float32Array,
+                privatePrecise,
               ),
             ),
           }
@@ -398,6 +404,16 @@ function componentEdit(
         extractedComponents: groups.length,
       },
     };
+  }
+  const selected = new Uint8Array(count);
+  let selectedCount = 0;
+  for (const component of selectedComponents) {
+    const componentFaces = componentAt(component);
+    for (let i = 0; i < componentFaces.length; i++) {
+      const face = componentFaces[i];
+      if (!selected[face]) selectedCount++;
+      selected[face] = 1;
+    }
   }
   const outputCount =
     r.action === "componentKeep"
@@ -438,12 +454,111 @@ function componentEdit(
   return result;
 }
 
+/** Worker-only path after the caller has verified exact expanded-corner identity. */
+export function runIndexedComponentExtract(
+  indexed: import("./types").IndexedMesh,
+  indices: number[] | undefined,
+  options: ScanEditOptions = {},
+): ScanEditResult {
+  const triangles =
+    indexed.triangles instanceof Uint32Array
+      ? indexed.triangles
+      : Uint32Array.from(indexed.triangles);
+  const grouped = compactComponentGroups(indexed.vertices, triangles, options);
+  const chosen = selectedIndices(indices, grouped.count);
+  const chosenFlags = new Uint8Array(grouped.count);
+  for (const group of chosen) chosenFlags[group] = 1;
+  const offsets = new Uint32Array(grouped.count + 1);
+  for (let face = 0; face < grouped.groups.length; face++) {
+    if ((face & 4095) === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const group = grouped.groups[face];
+    if (chosenFlags[group]) offsets[group + 1]++;
+  }
+  for (let i = 1; i < offsets.length; i++) offsets[i] += offsets[i - 1];
+  const cursors = offsets.slice(0, grouped.count);
+  const faces = new Uint32Array(offsets[grouped.count]);
+  for (let face = 0; face < grouped.groups.length; face++) {
+    if ((face & 4095) === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const group = grouped.groups[face];
+    if (chosenFlags[group]) faces[cursors[group]++] = face;
+  }
+  return componentEdit(
+    {
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions: new Float32Array(),
+      indices,
+    },
+    options,
+    grouped.count,
+    (index) => faces.subarray(offsets[index], offsets[index + 1]),
+    indexed,
+    true,
+  );
+}
+
+/** Worker-only inventory after exact indexed-corner admission. */
+export function runIndexedComponentInventory(
+  mesh: import("./types").IndexedMesh,
+  o: ScanEditOptions = {},
+  compactIndices = false,
+): ScanEditResult {
+  checkProgress(o, 0, "Grouping indexed components");
+  const triangles =
+    mesh.triangles instanceof Uint32Array
+      ? mesh.triangles
+      : Uint32Array.from(mesh.triangles);
+  const grouped = compactComponentGroups(mesh.vertices, triangles, {
+    tolerance: o.tolerance,
+    signal: o.signal,
+  });
+  const counts = new Uint32Array(grouped.count);
+  for (const group of grouped.groups) counts[group]++;
+  const components = Array.from(counts, (size) => ({
+    triangles: compactIndices ? new Uint32Array(size) : new Array<number>(size),
+    area: 0,
+  }));
+  const cursors = new Uint32Array(grouped.count);
+  for (let face = 0; face < grouped.groups.length; face++) {
+    if ((face & 4095) === 0 && o.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const group = grouped.groups[face],
+      row = components[group];
+    row.triangles[cursors[group]++] = face;
+    const a = triangles[face * 3] * 3,
+      b = triangles[face * 3 + 1] * 3,
+      c = triangles[face * 3 + 2] * 3;
+    const ux = mesh.vertices[b] - mesh.vertices[a],
+      uy = mesh.vertices[b + 1] - mesh.vertices[a + 1],
+      uz = mesh.vertices[b + 2] - mesh.vertices[a + 2];
+    const vx = mesh.vertices[c] - mesh.vertices[a],
+      vy = mesh.vertices[c + 1] - mesh.vertices[a + 1],
+      vz = mesh.vertices[c + 2] - mesh.vertices[a + 2];
+    row.area +=
+      Math.hypot(uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx) / 2;
+  }
+  checkProgress(o, 1, "Component inventory complete");
+  return {
+    inventory: { scope: "components", components, boundaries: [] },
+    diagnostics: { scope: "components", components: grouped.count },
+  };
+}
+
 function scanEdit(
   r: ScanEditRequest,
   options: ScanEditOptions,
   fill: typeof runHoleFill | typeof runHoleFillAsync,
   boundarySmooth: typeof runBoundarySmooth | typeof runBoundarySmoothAsync,
 ): ScanEditResult | Promise<ScanEditResult> {
+  if (
+    r.inventoryScope !== undefined &&
+    (r.action !== "inventory" || r.inventoryScope !== "components")
+  )
+    throw new Error(
+      "Inventory scope is supported only for component inventory.",
+    );
   if (
     r.anchors !== undefined &&
     (r.action !== "boundarySmooth" || !Array.isArray(r.anchors))
@@ -555,6 +670,15 @@ function scanEdit(
     };
   }
   if (
+    r.action === "inventory" &&
+    r.inventoryScope === "components" &&
+    r.sourceIndexed
+  ) {
+    if (!indexedMeshMatches(r.sourceIndexed, r.positions))
+      throw new Error("Scan edit indices do not match the source geometry.");
+    return runIndexedComponentInventory(r.sourceIndexed, o);
+  }
+  if (
     r.sourceIndexed &&
     r.action.startsWith("component") &&
     count >= COMPACT_COMPONENT_FACE_THRESHOLD
@@ -620,6 +744,18 @@ function scanEdit(
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t, o.signal);
+    if (r.inventoryScope === "components")
+      return {
+        inventory: {
+          scope: "components",
+          components: inventory.components,
+          boundaries: [],
+        },
+        diagnostics: {
+          scope: "components",
+          components: inventory.components.length,
+        },
+      };
     inventory.holeOrder = holeListOrder(inventory.boundaries);
     return {
       inventory,

@@ -34,8 +34,9 @@ export function smoothDisplayNormals(
 export function smoothIndexedDisplayNormals(
   positions: Positions,
   mesh: IndexedMesh,
+  verified = false,
 ): Float32Array {
-  if (!indexedMeshMatches(mesh, positions))
+  if (!verified && !indexedMeshMatches(mesh, positions))
     throw new Error("Display indices do not match mesh positions.");
   const welded = weldDisplayPositions(positions);
   const geometry = new THREE.BufferGeometry();

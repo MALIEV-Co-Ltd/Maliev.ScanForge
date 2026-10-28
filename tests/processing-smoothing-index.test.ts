@@ -226,6 +226,119 @@ it("returns a transferable segment for packed precise Extract", async () => {
   }
 });
 
+it("extracts from a private indexed packet without an expanded source", async () => {
+  vi.resetModules();
+  const precise = [100000004, -0, 0, 100000012, 0, 0, 100000004, 8, 0];
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as null | ((event: { data: unknown }) => Promise<void>),
+    postMessage: (reply: ProcessingResponse, transfers: Transferable[] = []) =>
+      replies.push(structuredClone(reply, { transfer: transfers })),
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions: new Float32Array(),
+        indices: [0],
+        sourceIndexed: {
+          vertices: [],
+          triangles: new Uint32Array([0, 1, 2, 0, 1, 2]),
+        },
+        packedScanEditSource: {
+          indexedExtract: true,
+          vertices: Float64Array.from([
+            ...precise,
+            99,
+            99,
+            99,
+            88,
+            88,
+            88,
+            77,
+            77,
+            77,
+          ]),
+        },
+      },
+    });
+    const terminal = replies.at(-1)!;
+    if (!("result" in terminal))
+      throw new Error("Expected indexed Extract result");
+    const packed = (
+      terminal as typeof terminal & {
+        packedScanSegments?: {
+          positions: Float64Array;
+          vertices: Float64Array;
+        }[];
+      }
+    ).packedScanSegments!;
+    expect(Array.from(packed[0].positions)).toEqual([...precise, ...precise]);
+    expect(packed[0].vertices.buffer.byteLength).toBe(
+      packed[0].vertices.byteLength,
+    );
+    expect(Object.is(packed[0].positions[1], -0)).toBe(true);
+    expect(
+      indexedMeshMatches(
+        {
+          ...terminal.result.scanEdit!.segmentIndexedMeshes![0]!,
+          vertices: Array.from(packed[0].vertices),
+        },
+        Array.from(packed[0].positions),
+      ),
+    ).toBe(true);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
+it("decodes packed indexed inventory without merging coincident components", async () => {
+  vi.resetModules();
+  const triangle = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+  const precise = [...triangle, ...triangle];
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as
+      | null
+      | ((event: {
+          data: ProcessingRequest & {
+            packedScanEditSource?: {
+              positions: Float64Array;
+              vertices: Float64Array;
+            };
+          };
+        }) => Promise<void>),
+    postMessage: (reply: ProcessingResponse) => replies.push(reply),
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: new Float32Array(),
+        sourceIndexed: {
+          vertices: [],
+          triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+        },
+        packedScanEditSource: {
+          positions: Float64Array.from(precise),
+          vertices: Float64Array.from(precise),
+        },
+      },
+    });
+    const terminal = replies.at(-1)!;
+    if (!("result" in terminal)) throw new Error("Expected inventory result");
+    expect(terminal.result.scanEdit!.inventory!.components).toHaveLength(2);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
 it("does not build a welded persistent topology before an indexed component edit", async () => {
   vi.resetModules();
   const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);

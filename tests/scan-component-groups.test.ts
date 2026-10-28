@@ -1,9 +1,44 @@
 import { describe, expect, it } from "vitest";
 import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { compactComponentGroups } from "../src/scan-component-groups";
-import { runScanEdit } from "../src/scan-edit";
+import { runIndexedComponentExtract, runScanEdit } from "../src/scan-edit";
 
 describe("compact indexed components", () => {
+  it("extracts exact indexed coordinates without expanded source storage", () => {
+    const vertices = [
+      0, -0, 0, 1.123456789, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
+    ];
+    const triangles = new Uint32Array([0, 1, 2, 3, 4, 5]);
+    const positions = Array.from(triangles).flatMap((id) =>
+      vertices.slice(id * 3, id * 3 + 3),
+    );
+    const indexed = { vertices, triangles };
+    const expected = runScanEdit({
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions,
+      sourceIndexed: indexed,
+      indices: [0],
+    });
+    const actual = runIndexedComponentExtract(indexed, [0]);
+    expect(Array.from(actual.segments![0])).toEqual(
+      Array.from(expected.segments![0]),
+    );
+    expect(Object.is(actual.segments![0][1], -0)).toBe(true);
+    expect(Array.from(actual.segmentIndexedMeshes![0]!.vertices)).toEqual(
+      Array.from(expected.segmentIndexedMeshes![0]!.vertices),
+    );
+    expect(actual.segmentIndexedMeshes![0]!.triangles).toEqual(
+      expected.segmentIndexedMeshes![0]!.triangles,
+    );
+    expect(actual.diagnostics).toEqual(expected.diagnostics);
+    const reverse = runIndexedComponentExtract(indexed, [1, 0, 1]);
+    expect(reverse.segments!.map((part) => Array.from(part))).toEqual([
+      vertices.slice(9),
+      vertices.slice(0, 9),
+    ]);
+    expect(() => runIndexedComponentExtract(indexed, [2])).toThrow(/outside/);
+  });
   it.each([
     ["shared edge", [0, 1, 2, 1, 0, 3]],
     ["point-only contact", [0, 1, 2, 0, 3, 4]],

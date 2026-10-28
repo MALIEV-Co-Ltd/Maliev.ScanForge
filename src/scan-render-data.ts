@@ -94,6 +94,7 @@ export function prepareScanRenderData(
 export function prepareSplitRenderData(
   positions: Positions,
   indexedMesh: IndexedMesh,
+  verified = false,
 ): ScanRenderData {
   const stats = meshStats(positions);
   const bounds: ScanRenderData["bounds"] = [...stats.min, ...stats.max];
@@ -106,7 +107,7 @@ export function prepareSplitRenderData(
     ),
     stats,
     indexedMesh,
-    normals: smoothIndexedDisplayNormals(positions, indexedMesh),
+    normals: smoothIndexedDisplayNormals(positions, indexedMesh, verified),
   };
 }
 

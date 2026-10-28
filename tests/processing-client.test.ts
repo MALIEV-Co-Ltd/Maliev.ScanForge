@@ -2,6 +2,7 @@ import {
   backgroundMeshPreparation,
   prepareMeshInBackground,
   stopBackgroundMeshPreparation,
+  priorityScanPreparationCount,
 } from "../src/scan-background-preparation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { scanRenderData, prepareScanRenderData } from "../src/scan-render-data";
@@ -19,6 +20,7 @@ import { getWorkingJobStatus } from "../src/working-job-status";
 import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
 import nativeHoleCups from "./fixtures/hole-fill-observed-cups.json";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
+import { scanDisplayBuffers } from "../src/scan-display-buffers";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -315,6 +317,65 @@ it("restores packed precise Extract segments and retires their worker", async ()
   );
   expect(worker.terminated).toBe(true);
 });
+it("reuses worker-prepared indexed Extract display data after restoring its coordinates", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    indices: [0],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const indexed = { vertices: [], triangles: new Uint32Array([0, 1, 2]) };
+  const prepared = {
+    indexedMesh: indexed,
+    normals: new Float32Array(9),
+    bounds: [0, 0, 0, 1, 1, 0],
+    radius: 1,
+  };
+  const values = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {}, segmentIndexedMeshes: [indexed] },
+      segmentRenderData: [prepared],
+    },
+    packedScanSegments: [{ positions: values, vertices: values }],
+  });
+  const result = await pending;
+  const segment = result.scanEdit!.segments![0];
+  const mesh = result.scanEdit!.segmentIndexedMeshes![0]!;
+  expect(scanRenderData(segment)).toBe(prepared);
+  expect(
+    scanDisplayBuffers(segment, mesh, scanRenderData(segment)).indexed,
+  ).toBe(true);
+});
+it("rejects inconsistent component display data and releases its worker", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    indices: [0],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const values = new Float64Array(positions);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segmentIndexedMeshes: [
+          { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        ],
+      },
+      segmentRenderData: [],
+    },
+    packedScanSegments: [{ positions: values, vertices: values }],
+  });
+  await expect(pending).rejects.toThrow(/component display data/i);
+  expect(worker.terminated).toBe(true);
+});
 it("restores each packed Extract segment with its own topology", async () => {
   const pending = processMesh({
     kind: "scanEdit",
@@ -405,6 +466,7 @@ it("preserves aliased packed Split coordinates and rejects malformed responses",
   });
   const result = await pending;
   expect(result.indexedMesh?.vertices).toBe(result.scanEdit?.positions);
+  expect(packed.buffer.byteLength).toBe(0);
   const bad = processMesh({
     kind: "scanEdit",
     action: "split",
@@ -425,6 +487,87 @@ it("preserves aliased packed Split coordinates and rejects malformed responses",
   });
   await expect(bad).rejects.toThrow(/packed scan edit/);
 });
+it("does not detach a Split input that aliases a returned transport buffer", async () => {
+  const packed = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const target = new Float32Array(packed.buffer);
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target,
+  });
+  ProcessingWorkerDouble.latest.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: packed, vertices: packed },
+  });
+  const result = await pending;
+  expect(result.scanEdit!.positions).toEqual([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  expect(target.byteLength).toBe(72);
+});
+it.each([
+  { retainedAlias: false, unavailable: false },
+  { retainedAlias: true, unavailable: false },
+  { retainedAlias: false, unavailable: true },
+])(
+  "releases completed Split transport buffers safely: %o",
+  async ({ retainedAlias, unavailable }) => {
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "split",
+      positions,
+      target: positions,
+    });
+    const packedPositions = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+    const packedVertices = new Float64Array(packedPositions);
+    const geometryNormals = retainedAlias
+      ? new Float32Array(packedPositions.buffer, 0, 9)
+      : new Float32Array(9);
+    const descriptor = Object.getOwnPropertyDescriptor(
+      ArrayBuffer.prototype,
+      "transfer",
+    );
+    if (unavailable)
+      Object.defineProperty(ArrayBuffer.prototype, "transfer", {
+        configurable: true,
+        value: undefined,
+      });
+    try {
+      ProcessingWorkerDouble.latest.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+          indexedMesh: {
+            vertices: [],
+            triangles: new Uint32Array([0, 1, 2]),
+            geometryNormals,
+          },
+        },
+        packedScanEdit: {
+          positions: packedPositions,
+          vertices: packedVertices,
+        },
+      });
+      const result = await pending;
+      expect(result.scanEdit!.positions).toEqual([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+      expect(result.indexedMesh!.vertices).toEqual([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+      expect(packedPositions.buffer.byteLength).toBe(
+        retainedAlias || unavailable ? 72 : 0,
+      );
+      expect(packedVertices.buffer.byteLength).toBe(unavailable ? 72 : 0);
+      expect(geometryNormals.byteLength).toBe(36);
+      expect(positions.byteLength).toBe(36);
+    } finally {
+      if (unavailable && descriptor)
+        Object.defineProperty(ArrayBuffer.prototype, "transfer", descriptor);
+    }
+  },
+);
 it("releases a completed precise Split worker and starts a fresh worker for its successor", async () => {
   const pending = processMesh(
     { kind: "scanEdit", action: "split", positions, target: positions },
@@ -823,6 +966,163 @@ describe("processing worker resource ownership", () => {
     });
     await pending;
   });
+  it.each([true, false])(
+    "uses compact indexed Extract only for bit-exact corners: %s",
+    async (exact) => {
+      const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+      const triangles = new Uint32Array(65536 * 3);
+      const source = new Array<number>(65536 * 9);
+      for (let face = 0; face < 65536; face++) {
+        triangles.set([0, 1, 2], face * 3);
+        for (let i = 0; i < 9; i++) source[face * 9 + i] = vertices[i];
+      }
+      if (!exact) source[1] = -0;
+      const pending = processMesh({
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions: source,
+        sourceIndexed: {
+          vertices,
+          triangles,
+          geometryNormals: new Float32Array(vertices.length),
+          facetNormals: new Float32Array(triangles.length),
+        },
+        indices: [0],
+      });
+      expect(priorityScanPreparationCount()).toBeGreaterThan(0);
+      await vi.advanceTimersByTimeAsync(100);
+      const worker = ProcessingWorkerDouble.latest;
+      const sent = worker.sent as ProcessingRequest & {
+        packedScanEditSource?: {
+          indexedExtract?: boolean;
+          positions?: Float64Array;
+        };
+      };
+      expect(sent.packedScanEditSource?.indexedExtract === true).toBe(exact);
+      expect(!!sent.packedScanEditSource?.positions).toBe(!exact);
+      if (sent.kind !== "scanEdit") throw new Error("Expected scan edit");
+      expect(!!sent.sourceIndexed?.geometryNormals).toBe(!exact);
+      expect(!!sent.sourceIndexed?.facetNormals).toBe(!exact);
+      expect(source.length).toBe(65536 * 9);
+      worker.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+        },
+      });
+      await pending;
+      expect(priorityScanPreparationCount()).toBe(0);
+    },
+  );
+  it.each([
+    { retainedAlias: false, unavailable: false },
+    { retainedAlias: true, unavailable: false },
+    { retainedAlias: false, unavailable: true },
+  ])(
+    "releases temporary indexed Extract buffers safely: %o",
+    async ({ retainedAlias, unavailable }) => {
+      const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+      const triangles = new Uint32Array(65536 * 3);
+      const source = new Array<number>(65536 * 9);
+      for (let face = 0; face < 65536; face++) {
+        triangles.set([0, 1, 2], face * 3);
+        for (let i = 0; i < 9; i++) source[face * 9 + i] = vertices[i];
+      }
+      const pending = processMesh({
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions: source,
+        sourceIndexed: { vertices, triangles },
+        indices: [0],
+      });
+      await vi.advanceTimersByTimeAsync(100);
+      const worker = ProcessingWorkerDouble.latest;
+      const packed = new Float64Array(vertices);
+      const mesh = { vertices: [], triangles: new Uint32Array([0, 1, 2]) };
+      const normals = retainedAlias
+        ? new Float32Array(packed.buffer, 0, 9)
+        : new Float32Array(9);
+      const descriptor = Object.getOwnPropertyDescriptor(
+        ArrayBuffer.prototype,
+        "transfer",
+      );
+      if (unavailable)
+        Object.defineProperty(ArrayBuffer.prototype, "transfer", {
+          configurable: true,
+          value: undefined,
+        });
+      try {
+        worker.reply({
+          result: {
+            kind: "scanEdit",
+            diagnostics: {},
+            scanEdit: { diagnostics: {}, segmentIndexedMeshes: [mesh] },
+            segmentRenderData: [
+              {
+                indexedMesh: mesh,
+                normals,
+                bounds: [0, 0, 0, 1, 1, 0],
+                radius: 1,
+              },
+            ],
+          },
+          packedScanSegments: [{ positions: packed, vertices: packed }],
+        });
+        const result = await pending;
+        expect(result.scanEdit!.segments![0]).toEqual(vertices);
+        expect(result.scanEdit!.segmentIndexedMeshes![0]!.vertices).toBe(
+          result.scanEdit!.segments![0],
+        );
+        expect(packed.buffer.byteLength).toBe(
+          retainedAlias || unavailable ? 72 : 0,
+        );
+        expect(normals.byteLength).toBe(36);
+        expect(source.length).toBe(65536 * 9);
+      } finally {
+        if (unavailable && descriptor)
+          Object.defineProperty(ArrayBuffer.prototype, "transfer", descriptor);
+      }
+    },
+  );
+  it.each([true, false])(
+    "omits expanded component inventory only for exact indexed corners: %s",
+    async (exact) => {
+      const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+      const triangles = new Uint32Array(65536 * 3);
+      const positions = new Array<number>(65536 * 9);
+      for (let face = 0; face < 65536; face++) {
+        triangles.set([0, 1, 2], face * 3);
+        for (let i = 0; i < 9; i++) positions[face * 9 + i] = vertices[i];
+      }
+      if (!exact) positions[1] = -0;
+      const pending = processMesh({
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+        positions,
+        sourceIndexed: { vertices, triangles },
+      });
+      await vi.advanceTimersByTimeAsync(100);
+      const worker = ProcessingWorkerDouble.latest;
+      const sent = worker.sent as ProcessingRequest & {
+        packedScanEditSource?: {
+          indexedInventory?: boolean;
+          positions?: Float64Array;
+        };
+      };
+      expect(sent.packedScanEditSource?.indexedInventory === true).toBe(exact);
+      expect(!!sent.packedScanEditSource?.positions).toBe(!exact);
+      worker.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+        },
+      });
+      await pending;
+    },
+  );
   it("packs indexed precise Extract input without detaching the source", async () => {
     const source = Array.from({ length: 65538 }, (_, i) => i / 8);
     const sourceIndexed = {
@@ -856,6 +1156,40 @@ describe("processing worker resource ownership", () => {
       },
     });
     await pending;
+  });
+  it("packs indexed precise inventory input and retires its worker after the read", async () => {
+    const source = Array.from({ length: 65538 }, (_, i) => i / 8);
+    const sourceIndexed = {
+      vertices: source,
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    const pending = processMesh(
+      {
+        kind: "scanEdit",
+        action: "inventory",
+        positions: source,
+        sourceIndexed,
+      },
+      { reuseTopology: true },
+    );
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as ProcessingRequest & {
+      packedScanEditSource?: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+      };
+    };
+    expect(sent.packedScanEditSource?.positions).toBeInstanceOf(Float64Array);
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+    expect(worker.terminated).toBe(true);
+    expect(source).toHaveLength(65538);
   });
   it("transfers aliased packed coordinates only once", async () => {
     const source = Array.from({ length: 65538 }, (_, i) => i / 8);

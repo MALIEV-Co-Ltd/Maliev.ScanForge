@@ -146,6 +146,8 @@ try {
   page = await browser.newPage({
     viewport: { width: 1400, height: 900 },
   });
+  if (process.env.SCANFORGE_COMPONENT_RIPPLE_CAPTURE === "1")
+    await page.emulateMedia({ reducedMotion: "reduce" });
   page.setDefaultTimeout(12000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -366,6 +368,22 @@ try {
   const inspect = async () =>
     artifactJson((await runEdit({ action: "inventory" })).result.artifact);
   const report = await inspect();
+  const scoped = await artifactJson(
+    (await runEdit({ action: "inventory", inventoryScope: "components" }))
+      .result.artifact,
+  );
+  assert.equal(scoped.inventory.scope, "components");
+  assert.deepEqual(
+    scoped.inventory.components.map((component) => ({
+      ...component,
+      triangles: [...component.triangles].sort((a, b) => a - b),
+    })),
+    report.inventory.components.map((component) => ({
+      ...component,
+      triangles: [...component.triangles].sort((a, b) => a - b),
+    })),
+  );
+  assert.deepEqual(scoped.inventory.boundaries, []);
   assert.deepEqual(
     report.inventory.components
       .map((c) => c.triangles.length)
@@ -687,6 +705,10 @@ try {
   rawEqual(await geometry(), positions, "Cancelled result changed original");
   assert.equal((await call("project_get")).result.undo, baseline);
   await open();
+  if (process.env.SCANFORGE_COMPONENT_RIPPLE_CAPTURE === "1")
+    await controls
+      .getByRole("button", { name: /Mesh 2 · 8 triangles/ })
+      .click();
   await page.evaluate(() => {
     window.__holdComponentResult = true;
     window.__pendingComponentResult = false;
@@ -695,6 +717,13 @@ try {
     .getByRole("button", { name: "Leave selected only", exact: true })
     .click();
   await page.waitForFunction(() => window.__pendingComponentResult);
+  if (process.env.SCANFORGE_COMPONENT_RIPPLE_CAPTURE === "1")
+    await page
+      .locator("canvas")
+      .first()
+      .screenshot({
+        path: fileURLToPath(new URL("component-processing-ripple.png", out)),
+      });
   await controls
     .getByRole("button", { name: "Cancel and back", exact: true })
     .click();
@@ -703,6 +732,87 @@ try {
   });
   rawEqual(await geometry(), positions, "Cancelled GUI result changed source");
   assert.equal((await call("project_get")).result.undo, baseline);
+  let largeIndexedInventory;
+  if (process.env.SCANFORGE_COMPONENT_LARGE_INDEXED === "1") {
+    const vertices = [],
+      triangles = [],
+      expanded = [];
+    const width = 256,
+      height = 129;
+    for (let y = 0; y <= height; y++)
+      for (let x = 0; x <= width; x++) vertices.push(x, y, 0);
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        const a = y * (width + 1) + x,
+          b = a + 1;
+        const d = a + width + 1,
+          c = d + 1;
+        triangles.push(a, b, c, a, c, d);
+        for (const id of [a, b, c, a, c, d])
+          expanded.push(
+            vertices[id * 3],
+            vertices[id * 3 + 1],
+            vertices[id * 3 + 2],
+          );
+      }
+    const largeProject = {
+      ...project,
+      entities: [
+        {
+          ...project.entities[0],
+          positions: expanded,
+          indexedMesh: { vertices, triangles },
+        },
+      ],
+    };
+    const bytes = Buffer.from(JSON.stringify(largeProject));
+    let artifactId;
+    for (let offset = 0; offset < bytes.length; offset += 262144) {
+      const part = (
+        await call("artifact_put", {
+          name: "large-indexed-control.json",
+          ...(artifactId ? { artifactId } : {}),
+          offset,
+          base64: bytes.subarray(offset, offset + 262144).toString("base64"),
+        })
+      ).result;
+      artifactId = part.artifactId;
+    }
+    await job(await mutate("project_import", { artifactId, replace: true }));
+    await call("artifact_delete", { artifactId });
+    const largeReport = await artifactJson(
+      (await runEdit({ action: "inventory", inventoryScope: "components" }))
+        .result.artifact,
+    );
+    assert.equal(largeReport.inventory.components.length, 1);
+    const component = largeReport.inventory.components[0];
+    assert(
+      Array.isArray(component.triangles),
+      "MCP artifact must contain a JSON array",
+    );
+    assert.equal(component.triangles.length, width * height * 2);
+    assert.equal(new Set(component.triangles).size, width * height * 2);
+    assert.equal(component.area, width * height);
+    assert.equal((await geometry()).length, expanded.length);
+    await runEdit({ action: "componentExtract", indices: [0] });
+    const extractedProject = (await call("project_get")).result;
+    const extracted = extractedProject.objects.find(
+      (object) => object.id !== "scan",
+    );
+    assert(extracted, "MCP did not publish the indexed component");
+    assert.deepEqual(await geometry(extracted.id), expanded);
+    assert.deepEqual(await geometry(), expanded);
+    await mutate("history_undo", {});
+    assert.deepEqual(await geometry(), expanded);
+    await mutate("history_redo", {});
+    assert.deepEqual(await geometry(extracted.id), expanded);
+    largeIndexedInventory = {
+      triangles: component.triangles.length,
+      area: component.area,
+      jsonArray: true,
+      publicMcpExtractUndoRedo: true,
+    };
+  }
   assert.deepEqual(errors, []);
   ledger.result = {
     inputCoordinateSha256: digest(positions),
@@ -714,6 +824,7 @@ try {
     mcpHeldResultCancellation: true,
     guiCancelAndBack: true,
     pageErrors: errors,
+    largeIndexedInventory,
   };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {

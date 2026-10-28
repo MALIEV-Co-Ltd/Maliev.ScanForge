@@ -122,6 +122,12 @@ it("selects the triangles of an individual connected mesh and extracts that comp
     "Remove small meshes",
   );
 });
+it("does not republish an unchanged component selection on an idle update", () => {
+  const props = { ...defaults(), selection: new Uint8Array([1, 0]) };
+  ScanTopologyControls(props);
+  effects.forEach((effect) => effect());
+  expect(props.onSelection).not.toHaveBeenCalled();
+});
 it("defaults to entire-hole automatic fill and excludes open boundary chains from multiple fill", () => {
   const props = { ...defaults(), section: "holes" as const },
     tree = ScanTopologyControls(props);
