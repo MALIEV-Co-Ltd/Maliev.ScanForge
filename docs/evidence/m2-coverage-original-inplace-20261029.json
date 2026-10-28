@@ -1,0 +1,52 @@
+{
+  "scope": "Original PLY-3 Split/Extract and in-place project replacement on application commit 182a740a054009514a1a4d61e6f2bcfcc747acbd",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "testScriptSha256": "4fcc50ec6ba78a9395f60d67aa54d1541cfaf63cb3f9b0c588e4dc166408b90d",
+  "build": "Exact-coverage candidate static build with production offline manifest scanforge-d8f056c7a5f09e7c.",
+  "observed": "GUI Split, Extract, Undo/Redo digests and project export completed. The decoder returned its transport; before project import completed, sampled job peak exceeded 4 GiB and the owned harness was stopped.",
+  "decoderEvents": [
+    {
+      "event": "decoder-start",
+      "at": 97524.75499999523
+    },
+    {
+      "event": "decoder-message",
+      "at": 107447.84499999881,
+      "error": null,
+      "numericBuffers": 4,
+      "numericBytes": 461164920,
+      "numericSizes": [
+        {
+          "bytes": 266454504,
+          "shared": false
+        },
+        {
+          "bytes": 45011616,
+          "shared": false
+        },
+        {
+          "bytes": 128100312,
+          "shared": false
+        },
+        {
+          "bytes": 21598488,
+          "shared": false
+        }
+      ]
+    }
+  ],
+  "guard": {
+    "passed": false,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4297076736,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true
+  },
+  "limitations": [
+    "No post-reopen geometry comparison was obtained.",
+    "The timing does not identify the allocation responsible for the peak.",
+    "This application resource result does not establish native Split parity."
+  ]
+}
