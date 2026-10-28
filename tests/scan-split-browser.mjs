@@ -861,7 +861,7 @@ try {
     await panel
       .getByRole("button", { name: "Split mesh", exact: true })
       .click();
-    if (radiusDirectory) {
+    if (radiusDirectory || c.originalFaceWinding) {
       let state;
       for (let i = 0; i < 120; i++) {
         state = (await call("project_get")).result;
@@ -915,12 +915,14 @@ try {
           }
           assert.equal(values.length, count);
           for (let i = 0; i < values.length; i += 3) {
-            assert(
-              Math.abs(values[i]) < 1e-6 &&
-                Math.abs(values[i + 1]) < 1e-6 &&
-                Math.abs(values[i + 2] - 1) < 1e-6,
-              `${key} differs from the plane normal`,
-            );
+            assert(values.slice(i, i + 3).every(Number.isFinite));
+            if (radiusDirectory)
+              assert(
+                Math.abs(values[i]) < 1e-6 &&
+                  Math.abs(values[i + 1]) < 1e-6 &&
+                  Math.abs(values[i + 2] - 1) < 1e-6,
+                `${key} differs from the plane normal`,
+              );
           }
           result[key] = digest(values);
         }
@@ -939,7 +941,13 @@ try {
           });
       };
       const initialImage = await render("initial");
-      assert(Math.abs(area(guiPositions) - area(c.source)) <= 1e-7);
+      const reference = c.originalFaceWinding
+        ? sourceNormal(c.source)
+        : undefined;
+      assert(
+        Math.abs(area(guiPositions, reference) - area(c.source, reference)) <=
+          1e-7,
+      );
       rawEqual(await geometry(cutterId), c.target, "GUI changed cutter");
       await mutate("history_undo", {});
       rawEqual(await geometry(sourceId), c.source, "GUI Undo changed source");
@@ -1071,10 +1079,14 @@ try {
       );
       results.push({
         name: c.name,
-        sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
-        cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+        ...(inputDirectory
+          ? {
+              sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
+              cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+            }
+          : {}),
         outputDigest: guiDigest,
-        outputArea: area(guiPositions),
+        outputArea: area(guiPositions, reference),
         diagnostics: done.result.diagnostics,
         guiMcpGeometry: true,
         undoRedo: true,
