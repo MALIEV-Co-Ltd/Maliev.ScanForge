@@ -450,9 +450,7 @@ try {
       mimeType: "application/x-scanforge",
       buffer: exactSavedBytes,
     });
-  await page
-    .getByText("Opened exact-persistence.scanforge", { exact: true })
-    .waitFor();
+  await page.getByText(/^Opened.*1\/1 files$/).waitFor();
   const verifySavedGeometry = async () => {
     const artifact = await job(
       await call("project_export", { format: "project" }),
