@@ -1,0 +1,85 @@
+{
+  "scope": "Second original PLY GUI Split/Extract, GUI Save/Open and GUI post-reopen Undo/Redo, with public MCP geometry digests.",
+  "applicationCommit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+  "build": "scanforge-b9363ff5ad191d86",
+  "input": {
+    "path": "C:\\repo\\alignment-example-files\\ply-2.ply",
+    "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "faces": 2697877,
+    "boundsSource": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-ply2-bounds-20261029.json"
+  },
+  "result": {
+    "inputSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "inputFaces": 2697877,
+    "splitFaces": 2706309,
+    "extractedFaces": 1353615,
+    "guiOutputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 12182535,
+        "sha256": "502c0596a234f5f977c18062252e9a836711f5a0607998bd19f986b2ca562c37"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 2083359,
+        "sha256": "7670132ec23c0804a115665bf4f724b115b88da19d502bd3b37f9d2587018324"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 4060845,
+        "sha256": "b3b9f4e34b37fa723cdaa46a32bd993010e7ae9a6a0a3758692e074e5eeaaad0"
+      }
+    ],
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "guiBinaryReopen": true,
+    "guiPostReopenUndoRedo": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "gui-project-saved",
+    "gui-file-input-dispatched",
+    "gui-extract-project-imported",
+    "gui-extract-reopen-verified",
+    "before-history-tab",
+    "after-history-tab",
+    "after-undo-click",
+    "post-reopen-undo-verified",
+    "post-reopen-redo-verified",
+    "gui-extract-redo-verified"
+  ],
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 3286507520,
+    "cleanupConfirmed": true
+  },
+  "harness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-history-diagnostic-local.mjs",
+    "sha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4"
+  },
+  "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-ply2-gui-lifecycle-20261029-r1-guard.json",
+  "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-ply2-gui-lifecycle-20261029-r1\\split-lifecycle-browser-ledger.json",
+  "limitations": [
+    "One original input and one finite cutter; this is application lifecycle evidence, not native Split equivalence.",
+    "Geometry digests were obtained through public MCP; this run does not compare GUI and MCP Split computations as independent operations.",
+    "This result does not guarantee memory behavior for every project."
+  ]
+}
