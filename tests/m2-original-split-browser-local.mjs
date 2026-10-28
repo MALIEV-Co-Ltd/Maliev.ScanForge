@@ -76,6 +76,12 @@ try {
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
+        ...(process.env.SCANFORGE_QA_ISOLATED === "1"
+          ? {
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Cross-Origin-Embedder-Policy": "require-corp",
+            }
+          : {}),
         "Content-Type":
           {
             html: "text/html",
@@ -291,6 +297,9 @@ try {
     ledger.stages.push(entry);
     console.log(JSON.stringify({ stage: entry }));
   };
+  ledger.crossOriginIsolated = await page.evaluate(() => crossOriginIsolated);
+  if (process.env.SCANFORGE_QA_ISOLATED === "1")
+    assert.equal(ledger.crossOriginIsolated, true);
   const geometryDigest = async (entityId) =>
     (
       await job(await call("object_geometry_digest", { entityId }))
