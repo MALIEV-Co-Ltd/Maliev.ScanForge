@@ -133,6 +133,52 @@ export function finiteOutput(values: ArrayLike<number>): Float32Array {
     throw new Error("Coordinates exceed Float32 output precision.");
   return output;
 }
+
+function componentOutput(values: number[]): Positions {
+  if (values.some((value) => !Number.isFinite(value)))
+    throw new Error("Component coordinates must be finite.");
+  return values.some((value) => !Object.is(value, Math.fround(value)))
+    ? values
+    : finiteOutput(values);
+}
+
+/** Preserve source vertex identity when publishing a selected face subset. */
+function componentIndex(
+  source: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
+  faces: readonly number[],
+  flipped: ReadonlySet<number>,
+  options: MeshProcessingOptions,
+  float32: boolean,
+): import("./types").IndexedMesh | undefined {
+  if (!faces.length) return undefined;
+  const ids = new Map<number, number>(),
+    vertices: number[] = [];
+  const triangles = new Uint32Array(faces.length * 3);
+  let slot = 0;
+  for (const face of faces) {
+    if ((slot & 4095) === 0 && options.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const order = flipped.has(face) ? [0, 2, 1] : [0, 1, 2];
+    for (const corner of order) {
+      const sourceId = source.triangles[face * 3 + corner];
+      let id = ids.get(sourceId);
+      if (id === undefined) {
+        id = ids.size;
+        ids.set(sourceId, id);
+        vertices.push(
+          source.vertices[sourceId * 3],
+          source.vertices[sourceId * 3 + 1],
+          source.vertices[sourceId * 3 + 2],
+        );
+      }
+      triangles[slot++] = id;
+    }
+  }
+  return {
+    vertices: float32 ? new Float32Array(vertices) : vertices,
+    triangles,
+  };
+}
 export function inventoryOf(
   t: MeshTopology,
   signal?: AbortSignal,
@@ -390,7 +436,37 @@ function scanEdit(
       },
     };
   }
-  const t = analyzeMesh(r.positions, o);
+  let t: MeshTopology;
+  const cached = o.topologyCache?.topology;
+  const cachedIndexMatches =
+    r.sourceIndexed &&
+    cached &&
+    cached.triangles.length === r.sourceIndexed.triangles.length &&
+    cached.vertices.length === r.sourceIndexed.vertices.length &&
+    cached.triangles.every(
+      (value, i) => value === r.sourceIndexed!.triangles[i],
+    ) &&
+    cached.vertices.every((value, i) => value === r.sourceIndexed!.vertices[i]);
+  if (
+    r.sourceIndexed &&
+    (!o.topologyCache ||
+      o.topologyCache.positions !== r.positions ||
+      !cachedIndexMatches ||
+      o.topologyCache.tolerance !== (o.tolerance ?? 1e-6))
+  ) {
+    if (!indexedMeshMatches(r.sourceIndexed, r.positions))
+      throw new Error("Scan edit indices do not match the source geometry.");
+    t = analyzeIndexedMesh(
+      Float64Array.from(r.sourceIndexed.vertices),
+      Uint32Array.from(r.sourceIndexed.triangles),
+      o,
+    );
+    if (o.topologyCache) {
+      o.topologyCache.positions = r.positions;
+      o.topologyCache.tolerance = o.tolerance ?? 1e-6;
+      o.topologyCache.topology = t;
+    }
+  } else t = analyzeMesh(r.positions, o);
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t, o.signal);
@@ -466,21 +542,53 @@ function scanEdit(
       (i) => t.components[i],
     ),
   );
-  if (r.action === "componentExtract")
-    return {
-      segments: selectedIndices(r.indices, t.components.length).map((i) =>
-        finiteOutput(
-          [...t.components[i]]
-            .sort((a, b) => a - b)
-            .flatMap((f) => Array.from(r.positions.slice(f * 9, f * 9 + 9))),
-        ),
+  let cachedMatches = t.triangles.length * 3 === r.positions.length;
+  for (let slot = 0; cachedMatches && slot < t.triangles.length; slot++) {
+    if ((slot & 4095) === 0 && o.signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const vertex = t.triangles[slot] * 3,
+      corner = slot * 3;
+    cachedMatches =
+      t.vertices[vertex] === r.positions[corner] &&
+      t.vertices[vertex + 1] === r.positions[corner + 1] &&
+      t.vertices[vertex + 2] === r.positions[corner + 2];
+  }
+  const indexed = indexedMeshMatches(r.sourceIndexed, r.positions)
+    ? r.sourceIndexed
+    : cachedMatches
+      ? { vertices: t.vertices, triangles: t.triangles }
+      : undefined;
+  if (r.action === "componentExtract") {
+    const groups = selectedIndices(r.indices, t.components.length).map((i) =>
+      [...t.components[i]].sort((a, b) => a - b),
+    );
+    const segments = groups.map((faces) =>
+      componentOutput(
+        faces.flatMap((f) => Array.from(r.positions.slice(f * 9, f * 9 + 9))),
       ),
+    );
+    return {
+      segments,
+      ...(indexed
+        ? {
+            segmentIndexedMeshes: groups.map((faces, index) =>
+              componentIndex(
+                indexed,
+                faces,
+                new Set<number>(),
+                o,
+                segments[index] instanceof Float32Array,
+              ),
+            ),
+          }
+        : {}),
       diagnostics: {
-        extractedComponents: selectedIndices(r.indices, t.components.length)
-          .length,
+        extractedComponents: groups.length,
       },
     };
-  const out: number[] = [];
+  }
+  const out: number[] = [],
+    faces: number[] = [];
   for (let f = 0; f < count; f++) {
     if (
       (r.action === "componentKeep" && !selected.has(f)) ||
@@ -491,10 +599,23 @@ function scanEdit(
     if (r.action === "componentFlip" && selected.has(f))
       face.splice(3, 6, ...face.slice(6, 9), ...face.slice(3, 6));
     out.push(...face);
+    faces.push(f);
   }
   checkProgress(o, 1, "Scan edit complete");
+  const positions = componentOutput(out);
   return {
-    positions: finiteOutput(out),
+    positions,
+    ...(indexed && faces.length
+      ? {
+          indexedMesh: componentIndex(
+            indexed,
+            faces,
+            r.action === "componentFlip" ? selected : new Set<number>(),
+            o,
+            positions instanceof Float32Array,
+          ),
+        }
+      : {}),
     diagnostics: { triangles: out.length / 9 },
   };
 }

@@ -5,6 +5,7 @@ import {
 } from "../src/mesh-processing";
 import { runScanEdit } from "../src/scan-edit";
 import { smoothSelectedVertices } from "../src/scan-selected-smooth";
+import { indexedMeshMatches } from "../src/indexed-mesh";
 import type { Positions } from "../src/types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../src/scan-topology-tolerance";
 
@@ -321,6 +322,96 @@ it("fills an inner planar hole while preserving the outer sheet boundary", () =>
 });
 
 describe("scan edit inventory and components", () => {
+  it("keeps coincident indexed components separate without a worker cache", () => {
+    const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    const positions = [...triangle, ...triangle];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const inventory = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+      sourceIndexed,
+    });
+    expect(inventory.inventory!.components).toHaveLength(2);
+    const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> =
+      {};
+    analyzeMesh(positions, { topologyCache });
+    expect(
+      runScanEdit(
+        { kind: "scanEdit", action: "inventory", positions, sourceIndexed },
+        { topologyCache },
+      ).inventory!.components,
+    ).toHaveLength(2);
+    const result = runScanEdit({
+      kind: "scanEdit",
+      action: "componentKeep",
+      positions,
+      sourceIndexed,
+      indices: [0],
+    });
+    expect(Array.from(result.positions!)).toEqual(triangle);
+    expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(
+      true,
+    );
+  });
+  it("preserves precise indexed corners through component edits", () => {
+    const first = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+    const second = [100000028, 0, 0, 100000036, 0, 0, 100000028, 8, 0];
+    const positions = [...first, ...second];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    for (const action of [
+      "componentKeep",
+      "componentRemove",
+      "componentFlip",
+    ] as const) {
+      const result = runScanEdit({
+        kind: "scanEdit",
+        action,
+        positions,
+        sourceIndexed,
+        indices: [0],
+      });
+      const expected =
+        action === "componentKeep"
+          ? first
+          : action === "componentRemove"
+            ? second
+            : [
+                ...first.slice(0, 3),
+                ...first.slice(6, 9),
+                ...first.slice(3, 6),
+                ...second,
+              ];
+      expect(Array.from(result.positions!)).toEqual(expected);
+      expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(
+        true,
+      );
+    }
+    const extracted = runScanEdit({
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions,
+      sourceIndexed,
+      indices: [0, 1],
+    });
+    expect(extracted.segments!.map((part) => Array.from(part))).toEqual([
+      first,
+      second,
+    ]);
+    for (let i = 0; i < 2; i++)
+      expect(
+        indexedMeshMatches(
+          extracted.segmentIndexedMeshes![i],
+          extracted.segments![i],
+        ),
+      ).toBe(true);
+  });
   it("reports individual areas, holes, lengths and geometric diameter", () => {
     const result = runScanEdit({
       kind: "scanEdit",

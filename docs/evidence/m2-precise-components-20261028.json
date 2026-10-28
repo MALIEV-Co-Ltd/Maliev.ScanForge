@@ -1,0 +1,18 @@
+{
+  "scope": "Precise coordinates and indexed topology across component Keep, Remove, Flip and Extract; not a native-equivalence claim.",
+  "regression": "Component edits rounded wider source coordinates to Float32 and did not publish their matching indexed topology.",
+  "implementation": "Preserve non-Float32 corner values, compact matching source or cached topology by source vertex identity, and publish per-output indices. If cached welded representatives differ from raw corners, leave the result unindexed instead of changing those corners.",
+  "validation": {
+    "focused": "102 tests passed, including coincident indexed components with and without a prewarmed cache; guarded job cleaned up.",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-components-focused-20261028-r4.json",
+    "build": "scanforge-1be0b7d3945a3dfc",
+    "browser": "On a manufactured indexed three-component model with wider coordinates, GUI and public MCP matched exact corners and indexed vertices/triangles for Keep, Flip, Extract and two removal modes. Undo/redo, binary save/reopen, cancellation and source visibility passed.",
+    "browserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-components-browser-20261028-r5-guard.json",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-components-typecheck-20261028-r2.json"
+  },
+  "limitations": [
+    "Native component output and indexed seam identity were not independently observed in this control.",
+    "Large original-scan component editing has not yet been measured under the 4 GiB aggregate limit.",
+    "Other M2 acceptance gates remain open."
+  ]
+}

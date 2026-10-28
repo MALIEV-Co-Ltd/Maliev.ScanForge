@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+const preciseComponents = process.env.SCANFORGE_COMPONENT_PRECISE === "1";
 const root = new URL("../", import.meta.url),
   out = process.env.SCANFORGE_QA_OUT
     ? new URL(
@@ -242,12 +243,27 @@ try {
       )
     ).positions;
   };
+  const checkedIndex = async (entityId, expected) => {
+    const data = await artifactJson(
+      (await call("object_get", { entityId, includeGeometry: true })).result
+        .geometry,
+    );
+    assert(data.indexedMesh, `Indexed topology missing for ${entityId}`);
+    const { vertices, triangles } = data.indexedMesh;
+    assert.deepEqual(
+      triangles.flatMap((id) => vertices.slice(id * 3, id * 3 + 3)),
+      expected,
+    );
+    return { vertices, triangles };
+  };
   const digest = (positions) =>
     createHash("sha256")
       .update(Buffer.from(new Float32Array(positions).buffer))
       .digest("hex");
   const rawEqual = (actual, expected, message) =>
-    assert.equal(digest(actual), digest(expected), message);
+    preciseComponents
+      ? assert.deepEqual(actual, expected, message)
+      : assert.equal(digest(actual), digest(expected), message);
   const positions = [],
     groups = [];
   for (let n = 1; n <= 3; n++) {
@@ -264,12 +280,32 @@ try {
     positions.push(...part);
   }
   // Retained corners may be near-coincident without being identical.
-  groups[2][2] = 2e-7;
+  if (!preciseComponents) groups[2][2] = 2e-7;
   positions.splice(
     groups[0].length + groups[1].length,
     groups[2].length,
     ...groups[2],
   );
+  let indexedMesh;
+  if (preciseComponents) {
+    for (let i = 0; i < groups[1].length; i += 3) groups[1][i] += 2 ** -20;
+    positions.splice(groups[0].length, groups[1].length, ...groups[1]);
+    const vertices = [],
+      triangles = [],
+      ids = new Map();
+    for (let i = 0; i < positions.length; i += 3) {
+      const point = positions.slice(i, i + 3),
+        key = point.join(",");
+      let id = ids.get(key);
+      if (id === undefined) {
+        id = vertices.length / 3;
+        ids.set(key, id);
+        vertices.push(...point);
+      }
+      triangles.push(id);
+    }
+    indexedMesh = { vertices, triangles };
+  }
   const project = {
     format: "maliev-scanforge",
     version: 1,
@@ -282,6 +318,7 @@ try {
         source: "manufactured-components-control.stl",
         kind: "mesh",
         positions,
+        ...(indexedMesh ? { indexedMesh } : {}),
         visible: true,
         color: "#b4bec4",
         opacity: 1,
@@ -317,6 +354,7 @@ try {
     positions,
     "Import changed original corner records",
   );
+  if (preciseComponents) await checkedIndex("scan", positions);
   const runEdit = async (operation, expected = "succeeded") =>
     job(
       await mutate("mesh_process", {
@@ -502,6 +540,14 @@ try {
       c.expected,
       `GUI ${c.name} differs from raw-corner oracle`,
     );
+    const guiIndex = preciseComponents
+      ? await checkedIndex(
+          c.extract
+            ? guiProject.objects.find((o) => o.id !== "scan").id
+            : "scan",
+          c.expected,
+        )
+      : undefined;
     await page.screenshot({
       path: fileURLToPath(new URL(`${c.name}-after.png`, out)),
     });
@@ -535,6 +581,17 @@ try {
     } else mcpGeometry = await geometry();
     rawEqual(mcpGeometry, c.expected, `MCP ${c.name} differs from oracle`);
     rawEqual(mcpGeometry, guiGeometry, `GUI/MCP ${c.name} mismatch`);
+    if (preciseComponents) {
+      const mcpIndex = await checkedIndex(
+        c.extract ? mcpProject.objects.find((o) => o.id !== "scan").id : "scan",
+        c.expected,
+      );
+      assert.deepEqual(
+        mcpIndex,
+        guiIndex,
+        `GUI/MCP ${c.name} topology mismatch`,
+      );
+    }
     await mutate("history_undo", {});
     rawEqual(await geometry(), positions, "Undo changed source");
     assert.equal(
@@ -576,6 +633,11 @@ try {
       );
     } else
       rawEqual(await geometry(), c.expected, "Reopen changed component output");
+    if (preciseComponents)
+      await checkedIndex(
+        c.extract ? reopened.objects.find((o) => o.id !== "scan").id : "scan",
+        c.expected,
+      );
     results.push({
       name: c.name,
       triangles: c.expected.length / 9,

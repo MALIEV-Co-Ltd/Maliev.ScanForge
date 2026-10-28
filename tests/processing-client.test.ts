@@ -1097,7 +1097,14 @@ describe("processing worker resource ownership", () => {
     expect(segment).toBeInstanceOf(Float32Array);
     if (!(segment instanceof Float32Array))
       throw new Error("Expected Float32 segment");
-    expect(final.transfers).toEqual([segment.buffer]);
+    const indexed = result.scanEdit!.segmentIndexedMeshes![0]!;
+    expect(indexed.vertices).toBeInstanceOf(Float32Array);
+    expect(indexed.triangles).toBeInstanceOf(Uint32Array);
+    expect(final.transfers).toEqual([
+      segment.buffer,
+      (indexed.vertices as Float32Array).buffer,
+      (indexed.triangles as Uint32Array).buffer,
+    ]);
     await scope.onmessage?.({
       data: {
         kind: "selectionMorphology",
