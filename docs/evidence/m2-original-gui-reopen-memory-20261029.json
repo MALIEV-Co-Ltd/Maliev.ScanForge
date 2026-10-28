@@ -1,0 +1,55 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract then GUI opening of same-session saved project under the 4 GiB guard. Two failed diagnostic runs.",
+  "applicationCommit": "9df3ae1faf184d2819b2a2d319b2dc1a82571cae",
+  "build": "scanforge-edea62e4b86207d8",
+  "runs": [
+    {
+      "method": "Playwright remote setInputFiles",
+      "guardPassed": false,
+      "peakJobBytes": 4469448704,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "ownedDescendantsRequiredTermination": true,
+      "lastObservedStage": "saved-artifact-streamed-to-file",
+      "savedFileBytes": 475929265,
+      "savedFileSha256": "a4f11196e766ab1754ee462febdb114a71aa0ddc828cde72a1d62bc44cd2ab31",
+      "temporarySavedFileRemovedAfterRecording": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r1-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r1.log",
+      "harness": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-reopen-local.mjs",
+        "sha256": "15c4ad954c0c76122c6cba89b85b0dc0e3cabd8074a80888d53d2136e227af48"
+      }
+    },
+    {
+      "method": "Chrome DOM.setFileInputFiles with local path",
+      "guardPassed": false,
+      "peakJobBytes": 4517822464,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "ownedDescendantsRequiredTermination": true,
+      "lastObservedStage": "gui-file-input-dispatched",
+      "savedFileBytes": 475929265,
+      "savedFileSha256": "e17d827abfaea469bfeb95a44b497c71531f3e3471784c7e3f9dc7c283983476",
+      "temporarySavedFileRemovedAfterRecording": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r2-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r2.log",
+      "harness": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-reopen-cdp-local.mjs",
+        "sha256": "5e8f2aa23e6bb6380efdf506f3244900bfdc5c8eaf18debd6d764c10922943d4"
+      }
+    }
+  ],
+  "observations": [
+    "Both runs exported the project and streamed it to a temporary local file.",
+    "The second run dispatched a Chrome file-input command directly and exceeded the job limit before GUI open completed.",
+    "No post-open geometry, GUI Undo or GUI Redo result was observed."
+  ],
+  "limitations": [
+    "The process guard reports aggregate peak; neither run isolates a responsible allocation or process.",
+    "Harness artifact transfer, browser file handling, GUI restore and concurrent retained scene can all contribute.",
+    "The passing MCP reopen comparison uses a different artifact route and does not establish GUI parity.",
+    "The stopped harness was terminated before its final browser ledger could be completed; the guard reports zero remaining owned processes.",
+    "Native Split comparison remains open."
+  ]
+}
