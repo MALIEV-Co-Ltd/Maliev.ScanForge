@@ -18,6 +18,10 @@ it("uses the outward ripple and dark fine wireframe for every processing mode", 
   );
   expect(shader.fragmentShader).not.toContain("selectionSmoothing");
   expect(shader.fragmentShader).toContain("float wireVisibility = wave;");
+  expect(shader.vertexShader).toContain(
+    "attribute float processingBarycentric;",
+  );
+  expect(shader.vertexShader).toContain("step(1.5, processingBarycentric)");
   expect(shader.fragmentShader).toContain("smoothstep(0.15, 0.65,");
   expect(shader.fragmentShader).toContain("vec3(0.018, 0.023, 0.030)");
   for (const mode of ["boundary", "smoothing"] as const) {
