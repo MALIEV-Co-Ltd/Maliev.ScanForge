@@ -1,0 +1,28 @@
+{
+  "scope": "Original PLY-3 in-place replacement with candidate that avoids retaining a workspace snapshot in the project import handler",
+  "baseApplicationCommit": "cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "candidateOperationsSha256": "10b68302b6cfbb372aedf625bf7236854cf8297e1984b73321c2770bbc1a17a1",
+  "candidate": "Reads import settings from a snapshot only for non-project file types; project replacement decodes without storing that snapshot in the handler.",
+  "build": {
+    "passed": true,
+    "peakJobBytes": 1548300288,
+    "offlineManifest": "scanforge-ef120d0950462759"
+  },
+  "observation": "GUI Split/Extract, Undo/Redo digest checks and project export completed. In-place import started but the monitored peak crossed the limit and the owned harness was stopped before import completion.",
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4308000768,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true,
+    "elapsedSeconds": 108.68531450000592
+  },
+  "comparison": "The prior complete-build baseline crossed at 4309491712 bytes; this candidate crossed at 4308000768 bytes. Single independent runs that hit the cap cannot establish a quantitative improvement.",
+  "limitations": [
+    "This candidate was not adopted as a solution for the in-place resource gate.",
+    "No post-reopen geometry comparison was obtained and native comparison remains open.",
+    "The old project must remain available until replacement succeeds; this experiment does not characterize all references or allocations."
+  ]
+}
