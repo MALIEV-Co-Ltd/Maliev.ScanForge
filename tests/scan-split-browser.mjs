@@ -893,6 +893,7 @@ try {
           }));
       const guiDigest = await geometryDigest(sourceId);
       const guiPositions = await geometry(sourceId);
+      let facetPrecision;
       const normalState = async () => {
         const data = await artifactJson(
           (
@@ -923,6 +924,41 @@ try {
                   Math.abs(values[i + 2] - 1) < 1e-6,
                 `${key} differs from the plane normal`,
               );
+          }
+          if (key === "facetNormals" && c.originalFaceWinding) {
+            const source = sourceNormal(c.source);
+            const sourceLength = Math.hypot(...source);
+            let maxOriginalNormalError = 0;
+            let maxFloat32OracleError = 0;
+            for (let face = 0; face < mesh.triangles.length; face += 3) {
+              const triangle = mesh.triangles
+                .slice(face, face + 3)
+                .flatMap((index) =>
+                  mesh.vertices.slice(index * 3, index * 3 + 3),
+                );
+              const rounded = triangle.map(Math.fround);
+              const cross = sourceNormal(rounded);
+              const length = Math.sqrt(
+                cross.reduce((sum, v) => sum + v * v, 0),
+              );
+              assert(length > Number.EPSILON);
+              const denominator = Math.fround(length);
+              for (let axis = 0; axis < 3; axis++) {
+                maxOriginalNormalError = Math.max(
+                  maxOriginalNormalError,
+                  Math.abs(values[face + axis] - source[axis] / sourceLength),
+                );
+                maxFloat32OracleError = Math.max(
+                  maxFloat32OracleError,
+                  Math.abs(
+                    values[face + axis] -
+                      Math.fround(cross[axis] / denominator),
+                  ),
+                );
+              }
+            }
+            assert.equal(maxFloat32OracleError, 0);
+            facetPrecision = { maxOriginalNormalError, maxFloat32OracleError };
           }
           result[key] = digest(values);
         }
@@ -1094,6 +1130,7 @@ try {
         mcpHeldResultCancellation: true,
         guiCloseCancellation: true,
         ...(initialImage ? { guiRedoCanvasPngIdentical: true } : {}),
+        ...(facetPrecision ? { facetPrecision } : {}),
         normalCaches: {
           initial: initialNormals,
           guiRedo: guiRedoNormals,
