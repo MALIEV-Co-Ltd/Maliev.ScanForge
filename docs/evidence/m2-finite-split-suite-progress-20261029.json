@@ -1,0 +1,198 @@
+{
+  "scope": "Finite Split browser controls on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98 and test commit 29e08d6e04c12cdbb0d0b8867d08bb22434c1a5c",
+  "testSha256": "00eab948d507d254d55ee16b5933746fb064cb88505a8734d10efd3baa28aec9",
+  "finiteInteriorFinal": {
+    "result": {
+      "cases": [
+        {
+          "name": "finite-interior-cut",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 63,
+              "sha256": "965763573d6279bcbcce61111d5625904e213676afe582b79bafcadfa4e0ee6e"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 21,
+              "sha256": "0e08b8f24b462cc787ba8335395725d4c4039e734910f18c771ef40f7092b7ac"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 21,
+              "sha256": "4ffb8d1f0e0d74a9c8909acd96cd32d0fb4f8282e937ed3d6236464edf56952e"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 1,
+            "cutEdges": 1,
+            "sourceIdentity": "exact-corner-index",
+            "changed": true,
+            "topologyCache": "persistent-hit",
+            "topologyCacheBytes": 204
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "finiteSeamLength": 0.2,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+            },
+            "mcpRedo": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+            },
+            "reopened": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+            }
+          }
+        },
+        {
+          "name": "float32-precision",
+          "guiAndMcpFailure": true,
+          "unchangedGeometryAndHistory": true,
+          "retry": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 905220096,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "slopedAndCoplanarPriorRevision": [
+    {
+      "result": {
+        "cases": [
+          {
+            "name": "sloped-edge-crossing",
+            "outputDigest": [
+              {
+                "path": "positions",
+                "encoding": "f64",
+                "elements": 27,
+                "sha256": "0e35f2c51070d7bec3e3e17b3525b2b6ef840300dbac077e8335c49ba5e8c1cf"
+              },
+              {
+                "path": "indexedMesh.vertices",
+                "encoding": "f64",
+                "elements": 15,
+                "sha256": "912370138ada703d8dbd84862035928dad46dedb7f0abdf5c3017f8db71fd074"
+              },
+              {
+                "path": "indexedMesh.triangles",
+                "encoding": "u32",
+                "elements": 9,
+                "sha256": "ac5377d10f9d138e071378b00d9f701940b94cda5aa6760726784f70725dfc84"
+              }
+            ],
+            "outputArea": 2,
+            "diagnostics": {
+              "affectedFaces": 1,
+              "sourceFaces": 1,
+              "parts": 1,
+              "cutEdges": 1,
+              "sourceIdentity": "exact-corner-index",
+              "changed": true,
+              "topologyCache": "persistent-hit",
+              "topologyCacheBytes": 204
+            },
+            "guiMcpGeometry": true,
+            "undoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true,
+            "normalCaches": {
+              "initial": {
+                "geometryNormals": null,
+                "facetNormals": null
+              },
+              "guiRedo": {
+                "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+                "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+              },
+              "mcpRedo": {
+                "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+                "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+              },
+              "reopened": {
+                "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+                "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+              }
+            }
+          },
+          {
+            "name": "float32-precision",
+            "guiAndMcpFailure": true,
+            "unchangedGeometryAndHistory": true,
+            "retry": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "guard": {
+        "passed": true,
+        "jobLimitBytes": 4294967296,
+        "peakJobBytes": 901140480,
+        "cleanupConfirmed": true,
+        "activeAfter": 0
+      }
+    },
+    {
+      "result": {
+        "cases": [
+          {
+            "name": "tilted-coplanar-identical",
+            "guiMcpNoChange": true,
+            "unchangedHistory": true
+          },
+          {
+            "name": "float32-precision",
+            "guiAndMcpFailure": true,
+            "unchangedGeometryAndHistory": true,
+            "retry": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "guard": {
+        "passed": true,
+        "jobLimitBytes": 4294967296,
+        "peakJobBytes": 905633792,
+        "cleanupConfirmed": true,
+        "activeAfter": 0
+      }
+    }
+  ],
+  "defaultSuitePriorRevision": {
+    "passed": false,
+    "firstRemainingFailure": "coplanar-shared-edge",
+    "reason": "The legacy test waits for separate result objects for a finite mesh cutter.",
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Sloped and coplanar runs preceded the final test-only condition change for a separate diagnostic mode; the finite-interior control was rerun on the final test source.",
+    "A full default suite has not passed; the coplanar shared-edge and later cases remain unverified.",
+    "No native Split result was captured for these controls.",
+    "The no-op control checks geometry and history; no Undo/Redo or reopen transaction is created for a no-op."
+  ]
+}
