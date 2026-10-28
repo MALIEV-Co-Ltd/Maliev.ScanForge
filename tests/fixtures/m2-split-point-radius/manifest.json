@@ -1,0 +1,50 @@
+{
+  "scope": "Prepared geometric controls for future native Split observation; no native output or parity claim.",
+  "units": "mm when imported with no scaling",
+  "source": {
+    "file": "source-triangle.stl",
+    "sha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+    "facets": 1,
+    "bytes": 134
+  },
+  "cutters": [
+    {
+      "file": "cutter-below.stl",
+      "sha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+      "facets": 2,
+      "bytes": 184,
+      "case": "below",
+      "xFloat32": 9.000000136438757e-5,
+      "xBitsLittleEndian": "62bebc38",
+      "distanceToOrigin": 9.000000136438757e-5
+    },
+    {
+      "file": "cutter-at.stl",
+      "sha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+      "facets": 2,
+      "bytes": 184,
+      "case": "at",
+      "xFloat32": 9.999999747378752e-5,
+      "xBitsLittleEndian": "17b7d138",
+      "distanceToOrigin": 9.999999747378752e-5
+    },
+    {
+      "file": "cutter-above.stl",
+      "sha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+      "facets": 2,
+      "bytes": 184,
+      "case": "above",
+      "xFloat32": 0.00011000000085914508,
+      "xBitsLittleEndian": "cdafe638",
+      "distanceToOrigin": 0.00011000000085914508
+    }
+  ],
+  "referenceRadiusFloat32": 9.999999747378752e-5,
+  "referenceRadiusBitsLittleEndian": "17b7d138",
+  "purpose": "The first nominal intersection of x=constant with the source edge from (0,0,0) to (1,0,0) lies below, at, or above the statically inferred point-search radius from the origin.",
+  "limitations": [
+    "This construction does not establish native route, source/cutter binding, snapping or output ownership.",
+    "Input coordinates are float32 STL values; exact-boundary behavior depends on the native calculation and must be observed.",
+    "Compare native and application results using the same imported files and settings; do not infer native output from this manifest."
+  ]
+}

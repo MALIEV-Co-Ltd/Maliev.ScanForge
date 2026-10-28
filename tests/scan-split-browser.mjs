@@ -144,6 +144,9 @@ try {
   browser = await chromium.connect(browserServer.wsEndpoint());
   page = await browser.newPage({
     viewport: { width: 1400, height: 900 },
+    ...(process.env.SCANFORGE_SPLIT_COMPARE_RENDER
+      ? { reducedMotion: "reduce" }
+      : {}),
   });
   page.setDefaultTimeout(12000);
   const errors = [];
@@ -291,7 +294,31 @@ try {
             out.push(...vertices[id].map((v, i) => v + cell[i]));
     return out;
   };
+  const radiusDirectory = process.env.SCANFORGE_SPLIT_RADIUS_INPUT_DIR;
+  const readStlPositions = async (file) => {
+    const bytes = await readFile(`${radiusDirectory}/${file}`);
+    const count = bytes.readUInt32LE(80),
+      positions = [];
+    assert.equal(bytes.length, 84 + count * 50);
+    for (let i = 0; i < count; i++)
+      for (let j = 0; j < 9; j++)
+        positions.push(bytes.readFloatLE(84 + i * 50 + 12 + j * 4));
+    return positions;
+  };
+  const radiusCases = radiusDirectory
+    ? await Promise.all(
+        ["below", "at", "above"].map(async (label) => ({
+          name: `point-radius-${label}`,
+          source: await readStlPositions("source-triangle.stl"),
+          target: await readStlPositions(`cutter-${label}.stl`),
+          kind: "mesh",
+          parts: 2,
+          method: "open surface signed nearest grouping",
+        })),
+      )
+    : [];
   const cases = [
+    ...radiusCases,
     {
       name: "original-scan-face-7207",
       source: [
@@ -456,8 +483,15 @@ try {
   let sourceId = "scan",
     cutterId = "cutter";
   const results = [];
-  const inputDirectory = process.env.SCANFORGE_SPLIT_INPUT_DIR;
+  const inputDirectory =
+    radiusDirectory ?? process.env.SCANFORGE_SPLIT_INPUT_DIR;
   const fileInputs = {
+    ...Object.fromEntries(
+      ["below", "at", "above"].map((label) => [
+        `point-radius-${label}`,
+        ["source-triangle.stl", `cutter-${label}.stl`],
+      ]),
+    ),
     "finite-interior-cut": ["source.stl", "cutter.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
     "closed-convex": ["square-source.stl", "convex-cutter.stl"],
@@ -467,6 +501,14 @@ try {
     inputDirectory &&
     JSON.parse(await readFile(`${inputDirectory}/manifest.json`, "utf8"));
   const expectedFileHashes = {
+    "source-triangle.stl":
+      "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+    "cutter-below.stl":
+      "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+    "cutter-at.stl":
+      "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+    "cutter-above.stl":
+      "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
     "source.stl":
       "126431c2e8a871619b5bb055df2833fdb762f7a7dabd3f54fe8346446473a75d",
     "cutter.stl":
@@ -487,9 +529,12 @@ try {
       await mutate("project_new", { discard: true });
       const importStl = async (filename) => {
         const bytes = await readFile(`${inputDirectory}/${filename}`);
-        const entry = Object.values(inputManifest.files).find(
-          (item) => item.file === filename,
-        );
+        const entry = Object.values(
+          inputManifest.files ?? [
+            inputManifest.source,
+            ...inputManifest.cutters,
+          ],
+        ).find((item) => item.file === filename);
         assert(entry, `Missing manifest entry for ${filename}`);
         assert.equal(entry.sha256, expectedFileHashes[filename]);
         assert.equal(
@@ -796,6 +841,7 @@ try {
     return verifyState(state, c);
   };
   for (const c of cases) {
+    if (radiusDirectory && !c.name.startsWith("point-radius-")) continue;
     if (
       process.env.SCANFORGE_SPLIT_CASE &&
       c.name !== process.env.SCANFORGE_SPLIT_CASE
@@ -803,10 +849,248 @@ try {
       continue;
     if (inputDirectory && !fileInputs[c.name]) continue;
     const baseline = await load(c);
+    if (radiusDirectory)
+      await mutate("viewport_control", {
+        action: "camera",
+        position: [0.5, 0.5, 3],
+        target: [0.5, 0.5, 0],
+        up: [0, 1, 0],
+        zoom: 1,
+      });
     await open(c);
     await panel
       .getByRole("button", { name: "Split mesh", exact: true })
       .click();
+    if (radiusDirectory) {
+      let state;
+      for (let i = 0; i < 120; i++) {
+        state = (await call("project_get")).result;
+        if (state.undo > baseline) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      assert.equal(state.undo, baseline + 1, "GUI Split did not commit");
+      assert.equal(state.objects.length, 2);
+      assert.equal(
+        state.objects.find((object) => object.id === sourceId).visible,
+        true,
+      );
+      const geometryDigest = async (entityId) =>
+        (
+          await job(await call("object_geometry_digest", { entityId }))
+        ).result.buffers
+          .filter(({ path }) =>
+            [
+              "positions",
+              "indexedMesh.vertices",
+              "indexedMesh.triangles",
+            ].includes(path),
+          )
+          .map(({ path, encoding, elements, sha256 }) => ({
+            path,
+            encoding,
+            elements,
+            sha256,
+          }));
+      const guiDigest = await geometryDigest(sourceId);
+      const guiPositions = await geometry(sourceId);
+      const normalState = async () => {
+        const data = await artifactJson(
+          (
+            await call("object_get", {
+              entityId: sourceId,
+              includeGeometry: true,
+            })
+          ).result.geometry,
+        );
+        const mesh = data.indexedMesh;
+        const result = {};
+        for (const [key, count] of [
+          ["geometryNormals", mesh.vertices.length],
+          ["facetNormals", mesh.triangles.length],
+        ]) {
+          const values = mesh[key];
+          if (values === undefined) {
+            result[key] = null;
+            continue;
+          }
+          assert.equal(values.length, count);
+          for (let i = 0; i < values.length; i += 3) {
+            assert(
+              Math.abs(values[i]) < 1e-6 &&
+                Math.abs(values[i + 1]) < 1e-6 &&
+                Math.abs(values[i + 2] - 1) < 1e-6,
+              `${key} differs from the plane normal`,
+            );
+          }
+          result[key] = digest(values);
+        }
+        return result;
+      };
+      const initialNormals = await normalState();
+      const render = async (label) => {
+        if (!process.env.SCANFORGE_SPLIT_COMPARE_RENDER) return undefined;
+        await idle();
+        await page.waitForTimeout(250);
+        return page
+          .locator("canvas")
+          .first()
+          .screenshot({
+            path: fileURLToPath(new URL(`${c.name}-${label}.png`, out)),
+          });
+      };
+      const initialImage = await render("initial");
+      assert(Math.abs(area(guiPositions) - area(c.source)) <= 1e-7);
+      rawEqual(await geometry(cutterId), c.target, "GUI changed cutter");
+      await mutate("history_undo", {});
+      rawEqual(await geometry(sourceId), c.source, "GUI Undo changed source");
+      await mutate("history_redo", {});
+      assert.deepEqual(
+        await geometryDigest(sourceId),
+        guiDigest,
+        "GUI Redo changed output",
+      );
+      const guiRedoNormals = await normalState();
+      assert(guiRedoNormals.geometryNormals && guiRedoNormals.facetNormals);
+      const redoImage = await render("redo");
+      if (initialImage)
+        assert(
+          initialImage.equals(redoImage),
+          "Rendered canvas differs after GUI Redo",
+        );
+      await load(c);
+      const done = await job(
+        await mutate("mesh_process", {
+          entityId: sourceId,
+          targetId: cutterId,
+          operation: { kind: "scanEdit", action: "split" },
+        }),
+      );
+      assert.equal(done.result.diagnostics.changed, true);
+      assert.deepEqual(
+        await geometryDigest(sourceId),
+        guiDigest,
+        "GUI/MCP output differs",
+      );
+      rawEqual(await geometry(cutterId), c.target, "MCP changed cutter");
+      await mutate("history_undo", {});
+      rawEqual(await geometry(sourceId), c.source, "MCP Undo changed source");
+      await mutate("history_redo", {});
+      assert.deepEqual(
+        await geometryDigest(sourceId),
+        guiDigest,
+        "MCP Redo changed output",
+      );
+      const mcpRedoNormals = await normalState();
+      assert.deepEqual(
+        mcpRedoNormals,
+        guiRedoNormals,
+        "GUI/MCP computed normals differ",
+      );
+      const saved = await job(
+        await call("project_export", { format: "project" }),
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: saved.result.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: saved.result.artifactId });
+      assert.deepEqual(
+        await geometryDigest(sourceId),
+        guiDigest,
+        "Reopen changed output",
+      );
+      assert.deepEqual(
+        await normalState(),
+        guiRedoNormals,
+        "Reopen changed computed normals",
+      );
+      rawEqual(await geometry(cutterId), c.target, "Reopen changed cutter");
+      await load(c);
+      const beforeCancel = (await call("project_get")).result;
+      await page.evaluate(() => {
+        window.__holdSplitResult = true;
+        window.__pendingSplitResult = false;
+      });
+      const cancelled = await mutate("mesh_process", {
+        entityId: sourceId,
+        targetId: cutterId,
+        operation: { kind: "scanEdit", action: "split" },
+      });
+      await page.waitForFunction(() => window.__pendingSplitResult);
+      await call("job_cancel", { jobId: cancelled.result.jobId });
+      await job(cancelled, "cancelled");
+      await page.evaluate(() => {
+        window.__holdSplitResult = false;
+      });
+      assert.deepEqual(
+        stableObjects((await call("project_get")).result.objects),
+        stableObjects(beforeCancel.objects),
+      );
+      assert.equal((await call("project_get")).result.undo, beforeCancel.undo);
+      rawEqual(
+        await geometry(sourceId),
+        c.source,
+        "MCP cancellation changed source",
+      );
+      rawEqual(
+        await geometry(cutterId),
+        c.target,
+        "MCP cancellation changed cutter",
+      );
+      await open(c);
+      await page.evaluate(() => {
+        window.__holdSplitResult = true;
+        window.__pendingSplitResult = false;
+      });
+      await panel
+        .getByRole("button", { name: "Split mesh", exact: true })
+        .click();
+      await page.waitForFunction(() => window.__pendingSplitResult);
+      await panel
+        .getByRole("button", { name: "Close Split mesh", exact: true })
+        .click();
+      await page.evaluate(() => {
+        window.__holdSplitResult = false;
+      });
+      assert.deepEqual(
+        stableObjects((await call("project_get")).result.objects),
+        stableObjects(beforeCancel.objects),
+      );
+      assert.equal((await call("project_get")).result.undo, beforeCancel.undo);
+      rawEqual(
+        await geometry(sourceId),
+        c.source,
+        "GUI cancellation changed source",
+      );
+      rawEqual(
+        await geometry(cutterId),
+        c.target,
+        "GUI cancellation changed cutter",
+      );
+      results.push({
+        name: c.name,
+        sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
+        cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+        outputDigest: guiDigest,
+        outputArea: area(guiPositions),
+        diagnostics: done.result.diagnostics,
+        guiMcpGeometry: true,
+        undoRedo: true,
+        binaryReopen: true,
+        mcpHeldResultCancellation: true,
+        guiCloseCancellation: true,
+        ...(initialImage ? { guiRedoCanvasPngIdentical: true } : {}),
+        normalCaches: {
+          initial: initialNormals,
+          guiRedo: guiRedoNormals,
+          mcpRedo: mcpRedoNormals,
+          reopened: guiRedoNormals,
+        },
+      });
+      continue;
+    }
     const guiState = await waitParts(c.parts),
       gui = await verifyState(guiState, c);
     assert.equal(guiState.undo, baseline + 1);
