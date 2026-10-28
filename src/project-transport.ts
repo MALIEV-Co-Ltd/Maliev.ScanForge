@@ -99,7 +99,11 @@ export async function packProjectTransport(
 }
 export async function unpackProjectTransport<T = unknown>(
   packet: ProjectTransport,
-  options: { check?: () => void; cooperative?: boolean } = {},
+  options: {
+    check?: () => void;
+    cooperative?: boolean;
+    retainNumericBuffer?: (ref: object, values: Float64Array) => boolean;
+  } = {},
 ): Promise<T> {
   if (
     packet?.kind !== "scanforge-numeric-transport-v1" ||
@@ -117,6 +121,10 @@ export async function unpackProjectTransport<T = unknown>(
       memo.has(entry.ref)
     )
       throw new Error("Invalid numeric project buffer.");
+    if (options.retainNumericBuffer?.(entry.ref, entry.values)) {
+      memo.set(entry.ref, entry.values);
+      continue;
+    }
     const values = new Array<number>(entry.values.length);
     for (let first = 0; first < values.length; first += CHUNK) {
       check();
