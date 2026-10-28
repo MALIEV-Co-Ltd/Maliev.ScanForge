@@ -3915,7 +3915,7 @@
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -3927,6 +3927,10 @@
         },
         "visible": {
           "type": "boolean"
+        },
+        "cadOnly": {
+          "type": "boolean",
+          "description": "STEP only: omit non-CAD references and report their IDs. Default false retains strict mixed-scene rejection."
         }
       },
       "required": ["format"],

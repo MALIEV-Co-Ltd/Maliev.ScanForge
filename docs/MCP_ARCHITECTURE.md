@@ -1,5 +1,15 @@
 # ScanForge shared application API and MCP
 
+GUI STEP export submits the same read-only `project_export` job as MCP, using
+the explicit STEP-only `cadOnly` filter. Both paths share visibility, exact-body
+validation, cancellation, revision/owner fences and artifact quota. The GUI reads
+the leased immutable artifact locally, downloads it and deletes it; MCP callers
+use `artifact_read` and `artifact_delete`. A portal keeps the GUI's owned cancel
+control reachable while the workspace is busy. Late cancelled results publish no
+artifact and do not edit history.
+If cancellation interrupts GUI delivery after the owned job succeeds, the GUI
+also retires that completed artifact through the shared job observer's cleanup.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates

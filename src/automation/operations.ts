@@ -1782,12 +1782,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return result;
     },
     project_export: async (a, c) => {
+      if (a.cadOnly !== undefined && a.format !== "step")
+        throw Error("cadOnly is supported only for STEP export.");
       const s = host.snapshot(),
         entities =
           a.visible === false
             ? s.entities
             : s.entities.filter((e) => e.visible);
       let data: Blob | Uint8Array, name: string, mime: string;
+      let excludedEntityIds: string[] | undefined;
       if (a.format === "project") {
         data = await encodeProjectFile(
           {
@@ -1808,11 +1811,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {
-        if (!entities.length || entities.some((e) => !e.kernelId))
+        const shapes = a.cadOnly
+          ? entities.filter((entity) => entity.kernelId)
+          : entities;
+        if (a.cadOnly)
+          excludedEntityIds = entities
+            .filter((entity) => !entity.kernelId)
+            .map((entity) => entity.id);
+        if (!shapes.length && a.cadOnly)
+          throw Error("STEP export requires at least one exact CAD object.");
+        if (!shapes.length || shapes.some((e) => !e.kernelId))
           throw new Error(
             "STEP export requires exact CAD for every exported object.",
           );
-        data = await host.cad().exportStep(entities.map((e) => e.kernelId!));
+        data = await host.cad().exportStep(shapes.map((e) => e.kernelId!));
         name = `${s.name}.step`;
         mime = "application/step";
       } else {
@@ -1822,7 +1834,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         mime = "model/stl";
       }
       c.check();
-      return c.artifact(data, name, mime);
+      return {
+        ...c.artifact(data, name, mime),
+        ...(excludedEntityIds ? { excludedEntityIds } : {}),
+      };
     },
     history_undo: (a, c) => {
       c.check();
