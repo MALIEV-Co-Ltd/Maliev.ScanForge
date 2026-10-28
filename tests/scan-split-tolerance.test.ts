@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import { runScanEdit } from "../src/scan-edit";
 import { splitGeneralCutter } from "../src/scan-edit-general-split";
+import { indexedMeshMatches } from "../src/indexed-mesh";
 
 const positions = new Float32Array([-0.0005, 0, 0, -0.002, 1, 0, 1, 0.4, 0]);
 const target = new Float32Array([0, -3, -3, 0, 3, -3, 0, 0, 3]);
@@ -459,11 +460,9 @@ it("public split operation handles the coplanar shared-edge control", () => {
     positions: source,
     target: cutter,
   };
-  const expected = splitGeneralCutter(request, {});
   const actual = runScanEdit(request, {});
-  expect(actual.segments!.map((p) => Array.from(p))).toEqual(
-    expected.segments!.map((p) => Array.from(p)),
-  );
+  expect(actual.segments).toBeUndefined();
+  expect(indexedMeshMatches(actual.indexedMesh, actual.positions!)).toBe(true);
 });
 
 it("GUI request tolerance handles the coplanar shared-edge control", () => {
@@ -519,25 +518,56 @@ it.each([false, true])(
   },
 );
 
-it.fails(
-  "known gap: a finite cutter must not extend an interior seam to the source boundary",
-  () => {
-    const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
-    const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
-    const original = Array.from(source),
-      originalCutter = Array.from(cutter);
-    const result = splitGeneralCutter(
-      { kind: "scanEdit", action: "split", positions: source, target: cutter },
-      { tolerance: 0.001 },
-    );
-    const ys: number[] = [];
-    for (const segment of result.segments!)
-      for (let i = 0; i < segment.length; i += 3)
-        if (Math.abs(segment[i] - 0.5) < 1e-6) ys.push(segment[i + 1]);
-    expect(Array.from(source)).toEqual(original);
-    expect(Array.from(cutter)).toEqual(originalCutter);
-    expect(ys.some((y) => Math.abs(y - 0.1) < 1e-5)).toBe(true);
-    expect(ys.some((y) => Math.abs(y - 0.2) < 1e-5)).toBe(true);
-    expect(ys.every((y) => y >= 0.1 - 1e-5 && y <= 0.2 + 1e-5)).toBe(true);
-  },
-);
+it("a finite interior cut retains only its bounded seam in the shared operation", () => {
+  const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
+  const original = source.slice(),
+    originalCutter = cutter.slice();
+  const result = runScanEdit(
+    { kind: "scanEdit", action: "split", positions: source, target: cutter },
+    { tolerance: 0.001 },
+  );
+  const mesh = result.indexedMesh!;
+  expect(indexedMeshMatches(mesh, result.positions!)).toBe(true);
+  const edges = new Map<string, { a: number; b: number; count: number }>();
+  for (let i = 0; i < mesh.triangles.length; i += 3) {
+    for (let j = 0; j < 3; j++) {
+      const a = mesh.triangles[i + j],
+        b = mesh.triangles[i + ((j + 1) % 3)];
+      const key = a < b ? `${a}:${b}` : `${b}:${a}`;
+      const e = edges.get(key) ?? { a, b, count: 0 };
+      e.count++;
+      edges.set(key, e);
+    }
+  }
+  let boundary = 0,
+    seam = 0;
+  for (const e of edges.values())
+    if (e.count === 1) {
+      const a = e.a * 3,
+        b = e.b * 3,
+        v = mesh.vertices;
+      const length = Math.hypot(
+        v[a] - v[b],
+        v[a + 1] - v[b + 1],
+        v[a + 2] - v[b + 2],
+      );
+      boundary += length;
+      const onSeam =
+        Math.abs(v[a] - 0.5) < 1e-8 &&
+        Math.abs(v[b] - 0.5) < 1e-8 &&
+        Math.min(v[a + 1], v[b + 1]) >= 0.1 - 1e-7 &&
+        Math.max(v[a + 1], v[b + 1]) <= 0.2 + 1e-7;
+      const onPerimeter =
+        (v[a] === 0 && v[b] === 0) ||
+        (v[a + 1] === 0 && v[b + 1] === 0) ||
+        (Math.abs(v[a] + v[a + 1] - 1) < 1e-8 &&
+          Math.abs(v[b] + v[b + 1] - 1) < 1e-8);
+      expect(onSeam || onPerimeter).toBe(true);
+      if (onSeam) seam += length;
+    }
+  expect(seam).toBeCloseTo(0.2, 6);
+  expect(boundary).toBeCloseTo(2 + Math.SQRT2 + 0.2, 6);
+  expect(source).toEqual(original);
+  expect(cutter).toEqual(originalCutter);
+});

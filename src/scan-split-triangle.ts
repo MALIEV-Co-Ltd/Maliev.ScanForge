@@ -2,10 +2,10 @@ import type { Vec3 } from "./types";
 import { crossProduct, dotProduct, subtract } from "./scan-edit";
 
 export class SplitPrecisionError extends Error {
-  constructor() {
-    super(
-      "Split result loses or reverses a facet at Float32 precision; move the model closer to the origin or use a different cutter.",
-    );
+  constructor(
+    message = "Split result loses or reverses a facet at Float32 precision; move the model closer to the origin or use a different cutter.",
+  ) {
+    super(message);
     this.name = "SplitPrecisionError";
   }
 }
