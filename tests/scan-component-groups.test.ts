@@ -63,6 +63,43 @@ describe("compact indexed components", () => {
     }
   });
 
+  it("retains grouping through edge-table growth and honors a mid-build cancellation", () => {
+    const side = 36;
+    const vertices = new Float64Array((side + 1) * (side + 1) * 3);
+    for (let y = 0; y <= side; y++)
+      for (let x = 0; x <= side; x++) {
+        const offset = (y * (side + 1) + x) * 3;
+        vertices[offset] = x;
+        vertices[offset + 1] = y;
+      }
+    const triangles = new Uint32Array(side * side * 6);
+    let offset = 0;
+    for (let y = 0; y < side; y++)
+      for (let x = 0; x < side; x++) {
+        const a = y * (side + 1) + x,
+          b = a + 1,
+          c = a + side + 1,
+          d = c + 1;
+        triangles.set([a, b, c, b, d, c], offset);
+        offset += 6;
+      }
+    const before = triangles.slice();
+    const full = analyzeIndexedMesh(vertices, triangles);
+    const actual = compactComponentGroups(vertices, triangles);
+    expect(actual.count).toBe(full.components.length);
+    expect(actual.count).toBe(1);
+    expect(actual.groups.every((group) => group === 0)).toBe(true);
+    expect(triangles).toEqual(before);
+    let checks = 0;
+    expect(() =>
+      compactComponentGroups(vertices, triangles, {
+        check: () => {
+          if (++checks === 2) throw new Error("cancelled by owner");
+        },
+      }),
+    ).toThrow(/cancelled by owner/);
+  });
+
   it("uses compact indexed grouping for large component edits", () => {
     const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0];
     const faces = 65536;

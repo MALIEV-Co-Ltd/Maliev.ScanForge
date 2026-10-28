@@ -1,5 +1,3 @@
-import { MeshEdgeIndex } from "./mesh-edge-index";
-
 export const COMPACT_COMPONENT_FACE_THRESHOLD = 65536;
 
 /** Find edge-connected face groups without building per-face neighbor arrays. */
@@ -27,8 +25,22 @@ export function compactComponentGroups(
   )
     throw new Error("Invalid indexed component geometry.");
   const faces = triangles.length / 3;
-  const edges = new MeshEdgeIndex(triangles);
   const parent = new Uint32Array(faces);
+  const root = (face: number): number => {
+    while (parent[face] !== face) {
+      parent[face] = parent[parent[face]];
+      face = parent[face];
+    }
+    return face;
+  };
+  // Components only need the first face using an edge. Join subsequent faces
+  // immediately instead of retaining every incidence and packing it afterward.
+  let slots = new Uint32Array(2048),
+    edgeCount = 0;
+  const hash = (a: number, b: number) => {
+    const value = Math.imul(a, 73856093) ^ Math.imul(b, 19349663);
+    return (value ^ (value >>> 16)) >>> 0;
+  };
   for (let face = 0; face < faces; face++) {
     if ((face & 4095) === 0) check();
     parent[face] = face;
@@ -58,26 +70,53 @@ export function compactComponentGroups(
         tolerance * tolerance
     )
       continue;
-    for (let corner = 0; corner < 3; corner++)
-      edges.addCorner(face * 3 + corner);
-  }
-  const root = (face: number): number => {
-    while (parent[face] !== face) {
-      parent[face] = parent[parent[face]];
-      face = parent[face];
+    for (let local = 0; local < 3; local++) {
+      const corner = face * 3 + local;
+      const from = triangles[corner],
+        to = triangles[face * 3 + ((local + 1) % 3)];
+      const u = Math.min(from, to),
+        v = Math.max(from, to);
+      let slot = hash(u, v) & (slots.length - 1);
+      while (slots[slot]) {
+        const first = slots[slot] - 1,
+          base = first - (first % 3);
+        const x = triangles[first],
+          y = triangles[base + ((first + 1) % 3)];
+        if (u === Math.min(x, y) && v === Math.max(x, y)) break;
+        slot = (slot + 1) & (slots.length - 1);
+      }
+      if (slots[slot]) {
+        const left = root(Math.floor((slots[slot] - 1) / 3));
+        const right = root(face);
+        if (left !== right)
+          parent[Math.max(left, right)] = Math.min(left, right);
+      } else {
+        if ((edgeCount + 1) * 2 > slots.length) {
+          const grown = new Uint32Array(slots.length * 2);
+          for (let i = 0; i < slots.length; i++) {
+            if ((i & 4095) === 0) check();
+            const encoded = slots[i];
+            if (!encoded) continue;
+            const first = encoded - 1,
+              base = first - (first % 3);
+            const x = triangles[first],
+              y = triangles[base + ((first + 1) % 3)];
+            let next =
+              hash(Math.min(x, y), Math.max(x, y)) & (grown.length - 1);
+            while (grown[next]) next = (next + 1) & (grown.length - 1);
+            grown[next] = encoded;
+          }
+          slots = grown;
+          slot = hash(u, v) & (slots.length - 1);
+          while (slots[slot]) slot = (slot + 1) & (slots.length - 1);
+        }
+        slots[slot] = corner + 1;
+        edgeCount++;
+      }
     }
-    return face;
-  };
-  const { offsets, corners } = edges.packCorners();
-  for (let edge = 0; edge + 1 < offsets.length; edge++) {
-    if ((edge & 4095) === 0) check();
-    const first = root(Math.floor(corners[offsets[edge]] / 3));
-    for (let i = offsets[edge] + 1; i < offsets[edge + 1]; i++) {
-      const other = root(Math.floor(corners[i] / 3));
-      const left = root(first);
-      if (left !== other) parent[Math.max(left, other)] = Math.min(left, other);
-    }
   }
+  // The edge table is no longer needed when assigning group IDs.
+  slots = new Uint32Array(0);
   const ids = new Uint32Array(faces),
     groups = new Uint32Array(faces);
   let count = 0;
