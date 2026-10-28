@@ -52,7 +52,9 @@ it.skipIf(!source)(
     expect(result.diagnostics.changed).toBe(true);
     expect(result.diagnostics.addedTriangles).toBe(13);
     expect(digest(new Uint8Array(positions.buffer))).toBe(before);
-    expect(digest(new Uint8Array(result.positions!.buffer))).toBe(
+    if (!(result.positions instanceof Float32Array))
+      throw new Error("Bridge output must be Float32.");
+    expect(digest(new Uint8Array(result.positions.buffer))).toBe(
       "db9794c41df6c16bb56a2d292cf1679be4542a31f2a42a9bcffef3bf42d9bb9d",
     );
     expect(cache.positions).toBe(result.positions);

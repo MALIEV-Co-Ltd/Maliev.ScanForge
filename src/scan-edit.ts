@@ -14,6 +14,8 @@ import {
 import { runHoleFill, runHoleFillAsync } from "./scan-edit-holes";
 import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
+import { runFiniteSplitCandidate } from "./scan-split-finite-candidate";
+import { indexedMeshMatches } from "./indexed-mesh";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 import {
   runBoundarySmooth,
@@ -67,6 +69,8 @@ export interface ScanEditRequest {
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
   target?: Positions;
+  /** Trusted binding for sampled non-mesh cutters; not an MCP parameter. */
+  targetIsNonMesh?: boolean;
   tolerance?: number;
   fitTolerance?: number;
 }
@@ -83,8 +87,12 @@ export interface ScanEditInventory {
   }[];
 }
 export interface ScanEditResult {
-  positions?: Float32Array;
-  segments?: Float32Array[];
+  positions?: Positions;
+  /** Internal indexed successor topology matching positions, when available. */
+  indexedMesh?: import("./types").IndexedMesh;
+  segments?: Positions[];
+  /** Internal indexed topology corresponding to each segment, when available. */
+  segmentIndexedMeshes?: (import("./types").IndexedMesh | undefined)[];
   selection?: Uint8Array;
   inventory?: ScanEditInventory;
   curves?: number[][];
@@ -317,8 +325,7 @@ function scanEdit(
           }
         : options.onProgress,
   };
-  const t = analyzeMesh(r.positions, o),
-    count = r.positions.length / 9;
+  const count = r.positions.length / 9;
   if (
     r.selection &&
     (r.selection.length !== count ||
@@ -327,6 +334,45 @@ function scanEdit(
     throw new Error(
       "Triangle selection mask must contain one 0 or 1 per triangle.",
     );
+  if (r.action === "split" && r.target && !r.plane && !r.targetIsNonMesh) {
+    const cutterTopology = analyzeMesh(r.target, {
+      ...o,
+      topologyCache: undefined,
+      onProgress: undefined,
+    });
+    if (cutterTopology.degenerateTriangles || cutterTopology.nonManifoldEdges)
+      throw new Error(
+        "Split cutter must contain nondegenerate manifold triangles.",
+      );
+    if (r.sourceIndexed && !indexedMeshMatches(r.sourceIndexed, r.positions))
+      throw new Error("Scan edit indices do not match the source geometry.");
+    const indexed = r.sourceIndexed
+      ? {
+          vertices: r.sourceIndexed.vertices,
+          triangles:
+            r.sourceIndexed.triangles instanceof Uint32Array
+              ? r.sourceIndexed.triangles
+              : Uint32Array.from(r.sourceIndexed.triangles),
+        }
+      : undefined;
+    const result = runFiniteSplitCandidate(r.positions, r.target, indexed, {
+      preciseCoordinates: true,
+      outputMode: "single-mesh",
+      selection: r.selection,
+      tolerance: o.tolerance,
+      signal: o.signal,
+      onProgress: o.onProgress,
+      maxTypedBytesPerStage: 1024 * 1024 * 1024,
+    });
+    return {
+      ...(result.diagnostics.cutEdges ? result.mesh : {}),
+      diagnostics: {
+        ...result.diagnostics,
+        changed: result.diagnostics.cutEdges > 0,
+      },
+    };
+  }
+  const t = analyzeMesh(r.positions, o);
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t, o.signal);
@@ -435,6 +481,14 @@ function scanEdit(
   };
 }
 
+export function runScanEdit(
+  r: ScanEditRequest & { action: Exclude<ScanEditRequest["action"], "split"> },
+  options?: ScanEditOptions,
+): Omit<ScanEditResult, "positions"> & { positions?: Float32Array };
+export function runScanEdit(
+  r: ScanEditRequest,
+  options?: ScanEditOptions,
+): ScanEditResult;
 export function runScanEdit(
   r: ScanEditRequest,
   options: ScanEditOptions = {},

@@ -1507,6 +1507,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               segments,
               result.segmentClassifications,
               id,
+              edit?.segmentIndexedMeshes,
             );
       if (segmentPublication) {
         next = segmentPublication.entities;

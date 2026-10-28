@@ -1,6 +1,8 @@
 import { expect, it, vi } from "vitest";
 import { ApplicationApi, type WorkspaceHost } from "../src/automation/api";
 import { createScanSelectionOperations } from "../src/automation/scan-selection-operations";
+import { ScreenSelectionIndex } from "../src/screen-selection";
+import * as THREE from "three";
 
 function setup() {
   const entity = {
@@ -54,6 +56,74 @@ it("discovers public screen-region selection and preserves hidden source slots",
     );
     expect([...state.selection]).toEqual([1, 0, 1]);
   } finally {
+    api.dispose();
+  }
+});
+
+it("uses the same precise screen-selection result through the public operation", async () => {
+  const { state, host, api } = setup();
+  const x = 100000000;
+  const positions = [
+    x,
+    0,
+    0,
+    x + 4,
+    0,
+    0,
+    x + 4,
+    4,
+    0,
+    x,
+    0,
+    -1,
+    x + 4,
+    0,
+    -1,
+    x + 4,
+    4,
+    -1,
+  ];
+  const entity = state.entities[0] as any;
+  entity.kind = "mesh";
+  entity.positions = positions;
+  entity.meshSelection.hidden = [];
+  state.selection = new Uint8Array(2);
+  const camera = new THREE.OrthographicCamera(-4, 4, 4, -4, 0.1, 100);
+  camera.position.set(x + 2, 2, 10);
+  camera.lookAt(x + 2, 2, 0);
+  camera.updateMatrixWorld();
+  camera.updateProjectionMatrix();
+  const index = new ScreenSelectionIndex(positions);
+  const region = {
+    kind: "rectangle" as const,
+    start: [0, 0] as [number, number],
+    end: [200, 200] as [number, number],
+  };
+  const view = { width: 200, height: 200, through: false };
+  vi.mocked(host.selectScanRegion!).mockImplementation(
+    async (_entity, requestRegion, through) =>
+      index.select(camera, requestRegion, { ...view, through }),
+  );
+  try {
+    const guiMask = index.select(camera, region, view);
+    expect([...guiMask]).toEqual([1, 0]);
+    const response = await api.invoke("scan_select_region", {
+      entityId: "cloud",
+      region,
+      through: false,
+      expectedRevision: api.currentRevision(),
+      requestId: "precise-region",
+    });
+    expect(response.ok).toBe(true);
+    const jobId = (response as any).result.jobId;
+    await vi.waitFor(async () =>
+      expect(
+        ((await api.invoke("job_get", { jobId })) as any).result.status,
+      ).toBe("succeeded"),
+    );
+    expect([...state.selection]).toEqual([...guiMask]);
+  } finally {
+    index.dispose();
     api.dispose();
   }
 });

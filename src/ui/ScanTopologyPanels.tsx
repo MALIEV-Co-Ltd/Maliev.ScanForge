@@ -29,11 +29,15 @@ export interface ScanTopologyPanelsProps {
   selectedId: string;
   selection?: Uint8Array | null;
   onReplace: (
-    positions: Float32Array,
+    positions: Positions,
     label: string,
     indexedMesh?: Entity["indexedMesh"],
   ) => void;
-  onCreate: (segments: Float32Array[], label: string) => void;
+  onCreate: (
+    segments: Positions[],
+    label: string,
+    indexedParts?: (Entity["indexedMesh"] | undefined)[],
+  ) => void;
   onSelection: (mask: Uint8Array) => void;
   onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
   onBridgeSession?: (session: ScanBridgeSession | null) => void;
@@ -134,7 +138,8 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
           props.onReplace(outcome.positions, label, result.indexedMesh);
         else props.onReplace(outcome.positions, label);
       }
-      if (outcome.segments) props.onCreate(outcome.segments, label);
+      if (outcome.segments)
+        props.onCreate(outcome.segments, label, outcome.segmentIndexedMeshes);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);
       if (outcome.spatialCurves) {

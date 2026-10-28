@@ -56,7 +56,7 @@ it.skipIf(!process.env.SCANFORGE_M2_ORIGINAL_PLY)(
     expect(digest(positions)).toBe(sourceBefore);
     expect(digest(cutter)).toBe(cutterBefore);
     expect(result.segments!.filter((part) => part.length)).toHaveLength(2);
-    const area = (arr: Float32Array) => {
+    const area = (arr: ArrayLike<number>) => {
       let sum = 0;
       for (let i = 0; i < arr.length; i += 9) {
         const ax = arr[i + 3] - arr[i],
@@ -71,7 +71,7 @@ it.skipIf(!process.env.SCANFORGE_M2_ORIGINAL_PLY)(
       }
       return sum;
     };
-    const edges = (arr: Float32Array) => {
+    const edges = (arr: ArrayLike<number>) => {
       const found = new Map<string, number>();
       for (let i = 0; i < arr.length; i += 9)
         for (let j = 0; j < 3; j++) {

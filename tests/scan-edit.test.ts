@@ -546,17 +546,10 @@ describe("triangle fragment splitting", () => {
         positions,
         target,
       });
-      expect(result.diagnostics.cutter).toBe("closed convex mesh");
-      expect(result.segments![0].length).toBeGreaterThan(0);
-      expect(result.segments![1].length).toBeGreaterThan(0);
-      expect(area(result.segments![0]) + area(result.segments![1])).toBeCloseTo(
-        area(positions),
-      );
-      expect(
-        [...result.segments![0]]
-          .filter((_, i) => i % 3 === 0)
-          .every((x) => x >= 0 && x <= 1),
-      ).toBe(true);
+      expect(result.diagnostics.parts).toBe(2);
+      expect(result.positions?.length).toBeGreaterThan(positions.length);
+      expect(area(result.positions!)).toBeCloseTo(area(positions));
+      expect(result.indexedMesh).toBeDefined();
     }
   });
   it("preserves unselected triangles exactly and responds to cancellation", () => {
