@@ -1,0 +1,202 @@
+{
+  "scope": "Pinned Split point-radius controls on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98 and test commit 4a25d31f122857359cbd8586f46297e87afce48c",
+  "testScriptSha256": "3ef1224575481c607b3a2e4727dab21f5792f36be5f3ee31369b5216c1ee957f",
+  "focusedTest": {
+    "files": 1,
+    "tests": 1,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 339681280,
+    "passed": true,
+    "cleanupConfirmed": true
+  },
+  "browser": {
+    "cases": [
+      {
+        "name": "point-radius-below",
+        "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+        "cutterFileSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 81,
+            "sha256": "ff3400fd3e8c05bd0a497f38150c82ade569ddbf24d7b8c91b345572348d7489"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 39,
+            "sha256": "54cc2742b32df6118a7c5a81ca103153d1b820bf2d4461e020e6be22e85e3dba"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 27,
+            "sha256": "877c2ebdb2c78b8065133bfb087f248139573e4e85bd304d04445555dc0b7bde"
+          }
+        ],
+        "outputArea": 0.5,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 2,
+          "cutEdges": 2,
+          "sourceIdentity": "retained-indexed",
+          "changed": true
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "mcpRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "reopened": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          }
+        }
+      },
+      {
+        "name": "point-radius-at",
+        "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+        "cutterFileSha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 81,
+            "sha256": "c5af7753a78302b8ee75fb25e8fb4e25d37ba08cf1308d2217e458051972a6d8"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 39,
+            "sha256": "f8271ff3e76d566b92a5ba6c00ad9555a1ce2592e2b6b19a4d1cddd47ecb6959"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 27,
+            "sha256": "877c2ebdb2c78b8065133bfb087f248139573e4e85bd304d04445555dc0b7bde"
+          }
+        ],
+        "outputArea": 0.5,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 2,
+          "cutEdges": 2,
+          "sourceIdentity": "retained-indexed",
+          "changed": true
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "mcpRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "reopened": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          }
+        }
+      },
+      {
+        "name": "point-radius-above",
+        "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+        "cutterFileSha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 81,
+            "sha256": "ca020bb24c5efcb6aa05c0f50fe983bcabf5cd057905bbb3f3e5a199503007c9"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 39,
+            "sha256": "70613b831ed0233522b4612779c6dffff79b6a07d67b752a8fcaca593d3c8323"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 27,
+            "sha256": "877c2ebdb2c78b8065133bfb087f248139573e4e85bd304d04445555dc0b7bde"
+          }
+        ],
+        "outputArea": 0.5,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 2,
+          "cutEdges": 2,
+          "sourceIdentity": "retained-indexed",
+          "changed": true
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "mcpRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "reopened": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          }
+        }
+      }
+    ],
+    "pageErrors": []
+  },
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 903913472,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0
+  },
+  "limitations": [
+    "No native Split output was captured; native point-radius semantics, routing and source/cutter binding remain unverified.",
+    "This compares core geometry and calculated normal cache state for three tiny planar fixtures; initial cache presence differs after Redo.",
+    "No pixel-level rendered comparison was requested in this run; cancellation holds the worker result before publication and does not prove active-kernel cancellation.",
+    "These controls do not establish large-input memory acceptance."
+  ]
+}
