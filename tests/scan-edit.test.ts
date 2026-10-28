@@ -32,6 +32,33 @@ const faces = [
 ];
 const openCube = faces.flatMap((f) => f.flatMap((i) => vertices[i]));
 const cube = [...openCube, ...[4, 5, 6, 4, 6, 7].flatMap((i) => vertices[i])];
+it("preserves untouched precise coordinates when smoothing a separate component", () => {
+  const untouched = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+  const positions = [...cube, ...untouched];
+  const selection = new Uint8Array(positions.length / 9);
+  selection.fill(1, 0, cube.length / 9);
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "smoothSelected",
+    positions,
+    selection,
+  });
+  expect(Array.from(result.positions!.slice(-9))).toEqual(untouched);
+  expect(Array.from(result.positions!.slice(0, cube.length))).not.toEqual(cube);
+});
+it("does not round a precise boundary when smoothing makes no change", () => {
+  const positions = openCube.map(
+    (value, i) => value + (i % 3 === 0 ? 2 ** -30 : 0),
+  );
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "boundarySmooth",
+    positions,
+    strength: 0.5,
+  });
+  expect(result.positions).toEqual(positions);
+  expect(result.diagnostics.changed).toBe(false);
+});
 it("publishes precomputed worker smoothing with the same geometry and successor topology", () => {
   const positions = new Float32Array(cube);
   const selection = new Uint8Array(positions.length / 9).fill(1);

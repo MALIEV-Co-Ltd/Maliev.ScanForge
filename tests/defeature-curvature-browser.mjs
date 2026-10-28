@@ -8,6 +8,19 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const smoothing = process.env.SCANFORGE_EDIT_ACCEPTANCE === "smooth";
+const preciseSmoothing =
+  smoothing && process.env.SCANFORGE_SMOOTH_PRECISE === "1";
+const untouchedPrecise = [
+  20 + 2 ** -22,
+  0,
+  0,
+  28 + 2 ** -22,
+  0,
+  0,
+  20 + 2 ** -22,
+  8,
+  0,
+];
 const action = smoothing ? "smoothSelected" : "defeature";
 const smoothFixture = smoothing
   ? JSON.parse(
@@ -311,7 +324,9 @@ try {
   }
   if (smoothing && !replacementDirectory) {
     assert(!largePatch);
-    positions = smoothFixture.positions;
+    positions = preciseSmoothing
+      ? [...smoothFixture.positions, ...untouchedPrecise]
+      : smoothFixture.positions;
     selected = smoothFixture.selection.flatMap((value, index) =>
       value ? [index] : [],
     );
@@ -358,7 +373,9 @@ try {
           ? "Original scan-1.stl"
           : "Curved panel with badge",
         kind: "mesh",
-        positions: Array.from(new Float32Array(positions)),
+        positions: preciseSmoothing
+          ? positions
+          : Array.from(new Float32Array(positions)),
         visible: true,
         color: "#b4bec4",
         opacity: 1,
@@ -487,7 +504,9 @@ try {
     if (!replacementManifest) {
       assert.deepEqual(
         gui.positions,
-        smoothFixture.nativeOutput,
+        preciseSmoothing
+          ? [...smoothFixture.nativeOutput, ...untouchedPrecise]
+          : smoothFixture.nativeOutput,
         "GUI default differs from retained three-click native Smooth export",
       );
     } else {

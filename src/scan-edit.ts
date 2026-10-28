@@ -189,7 +189,7 @@ function smoothing(
   r: ScanEditRequest,
   t: MeshTopology,
   o: ScanEditOptions,
-): Float32Array {
+): Positions {
   const strength = r.strength ?? SELECTED_SMOOTHING_DEFAULTS.strength,
     iterations = r.iterations ?? SELECTED_SMOOTHING_DEFAULTS.iterations;
   if (
@@ -221,8 +221,13 @@ export function publishSmoothedVertices(
   o: MeshProcessingOptions,
   triangles: Uint32Array = t.triangles,
   sourceCorners?: Uint32Array,
-): Float32Array {
-  const expanded = new Float32Array(triangles.length * 3);
+): Positions {
+  const precise =
+    Array.isArray(r.positions) &&
+    r.positions.some((value) => !Object.is(value, Math.fround(value)));
+  const expanded: Positions = precise
+    ? new Array<number>(triangles.length * 3)
+    : new Float32Array(triangles.length * 3);
   for (let corner = 0; corner < triangles.length; corner++) {
     const vertex = triangles[corner] * 3;
     const moved =
@@ -236,7 +241,9 @@ export function publishSmoothedVertices(
         ? vertices[vertex + axis]
         : r.positions[(sourceCorners?.[corner] ?? corner) * 3 + axis];
   }
-  const positions = finiteOutput(expanded);
+  const positions = precise ? expanded : finiteOutput(expanded);
+  if (positions.some((value) => !Number.isFinite(value)))
+    throw new Error("Smoothed coordinates must be finite.");
   // Moving vertices preserves their indexed connectivity. Refresh geometric
   // diagnostics at output precision without rewelding the successor mesh.
   if (
@@ -244,8 +251,19 @@ export function publishSmoothedVertices(
     (positions.length !== r.positions.length ||
       positions.some((value, index) => !Object.is(value, r.positions[index])))
   ) {
+    const cachedVertices = Float64Array.from(vertices, Math.fround);
+    if (precise)
+      for (let i = 0; i < cachedVertices.length; i += 3) {
+        const moved =
+          cachedVertices[i] !== Math.fround(t.vertices[i]) ||
+          cachedVertices[i + 1] !== Math.fround(t.vertices[i + 1]) ||
+          cachedVertices[i + 2] !== Math.fround(t.vertices[i + 2]);
+        if (!moved)
+          for (let axis = 0; axis < 3; axis++)
+            cachedVertices[i + axis] = t.vertices[i + axis];
+      }
     const topology = analyzeIndexedMesh(
-      Float64Array.from(vertices, Math.fround),
+      cachedVertices,
       triangles,
       { ...o, onProgress: undefined },
       triangles === t.triangles ? t.edges : undefined,
@@ -482,7 +500,10 @@ function scanEdit(
 }
 
 export function runScanEdit(
-  r: ScanEditRequest & { action: Exclude<ScanEditRequest["action"], "split"> },
+  r: ScanEditRequest & {
+    action: Exclude<ScanEditRequest["action"], "split">;
+    positions: Float32Array;
+  },
   options?: ScanEditOptions,
 ): Omit<ScanEditResult, "positions"> & { positions?: Float32Array };
 export function runScanEdit(

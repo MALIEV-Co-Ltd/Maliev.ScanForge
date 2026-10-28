@@ -340,7 +340,9 @@ scope.onmessage = async ({ data: incoming }) => {
       ) {
         // Scene/history arrays must not detach the worker's canonical topology.
         const indexed = {
-          vertices: Float32Array.from(topologyCache.topology.vertices),
+          vertices: Array.isArray(result.scanEdit.positions)
+            ? Array.from(topologyCache.topology.vertices)
+            : Float32Array.from(topologyCache.topology.vertices),
           triangles: Uint32Array.from(topologyCache.topology.triangles),
         };
         if (indexedMeshMatches(indexed, result.scanEdit.positions))

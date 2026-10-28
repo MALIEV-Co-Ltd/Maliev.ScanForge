@@ -1100,7 +1100,9 @@ The browser test uses installed Chrome, a disposable profile, an isolated static
 
 ### Dedicated Split mesh command
 
-Split uses Float32 mesh coordinates for its results. If a generated facet would collapse or reverse its winding at that precision, the shared operation fails with a Float32 precision error rather than publishing partial output. Move the model closer to the origin or use a different cutter and retry; the source and history remain unchanged on failure.
+Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision; on rejection the source and history remain unchanged.
+
+Selected-area and boundary smoothing retain stationary raw corners, including wider coordinates produced by finite mesh Split. Moved vertices follow the smoothing operation's Float32 calculation; a moved shared vertex updates its adjacent aliases.
 
 Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agent access is unchanged: use `mesh_process` with a `scanEdit` request, `action: "split"`, and a cutting `targetId` (or the existing plane parameters). Smooth selected area and Defeature remain in the quick tools; MCP exposes `smoothSelected` and `defeature` through the same processing operation. Selected-area smoothing defaults to six passes with strength 0.5 in both the quick action and MCP; supply `iterations` and `strength` explicitly to override this preset (the previous preset was two passes at 0.5). Boundary smoothing defaults to one complete command at strength 1; its native fitted-curve path is described below. Both smoothing actions preserve raw corner coordinates for stationary vertices; a moved shared vertex updates its aliases on adjacent unselected facets. Tolerance-welded preparation does not normalize unrelated source corners. Selection tools, clear/invert, and cut/copy creation retain their existing selection operations; the new icons are presentation only.
 
