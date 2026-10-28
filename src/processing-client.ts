@@ -169,6 +169,10 @@ export type ProcessingResponse =
   | {
       result: ProcessingResult;
       packedScanEdit?: { positions: Float64Array; vertices: Float64Array };
+      packedScanSegments?: {
+        positions: Float64Array;
+        vertices: Float64Array;
+      }[];
     }
   | { error: string };
 export interface ProcessingOptions {
@@ -472,6 +476,47 @@ function runProcessingRequest(
           return;
         }
       }
+      if (event.data.packedScanSegments !== undefined) {
+        try {
+          const packed = event.data.packedScanSegments;
+          const edit = event.data.result.scanEdit;
+          const meshes = edit?.segmentIndexedMeshes;
+          if (
+            request.kind !== "scanEdit" ||
+            request.action !== "componentExtract" ||
+            event.data.packedScanEdit ||
+            !Array.isArray(packed) ||
+            !edit ||
+            edit.segments !== undefined ||
+            !Array.isArray(meshes) ||
+            meshes.length !== packed.length ||
+            packed.some(
+              (part, i) =>
+                !(part.positions instanceof Float64Array) ||
+                !(part.vertices instanceof Float64Array) ||
+                part.positions.length % 9 !== 0 ||
+                part.vertices.length % 3 !== 0 ||
+                !meshes[i] ||
+                meshes[i]!.vertices.length !== 0,
+            )
+          )
+            throw new Error("Unexpected packed scan segments response.");
+          if (session) session.release(false);
+          else worker.terminate();
+          workerReleased = true;
+          edit.segments = packed.map((part, i) => {
+            const positions = restorePreciseCoordinates(part.positions);
+            meshes[i]!.vertices =
+              part.positions === part.vertices
+                ? positions
+                : restorePreciseCoordinates(part.vertices);
+            return positions;
+          });
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
       if (request.kind === "pointCloudEdit" && request.pointColors) {
         try {
           const edit = event.data.result.pointCloudEdit;
@@ -561,9 +606,10 @@ function runProcessingRequest(
       } = {};
       const packComponentInput =
         request.kind === "scanEdit" &&
-        ["componentKeep", "componentRemove", "componentFlip"].includes(
+        (["componentKeep", "componentRemove", "componentFlip"].includes(
           request.action,
-        );
+        ) ||
+          (request.action === "componentExtract" && !!request.sourceIndexed));
       const borrowReconstruction =
         !session &&
         request.kind === "scanTools" &&

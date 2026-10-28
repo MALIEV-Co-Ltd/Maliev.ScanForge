@@ -284,6 +284,107 @@ it("restores packed precise component results and retires their worker", async (
   expect(result.indexedMesh!.vertices).toBe(result.scanEdit!.positions);
   expect(worker.terminated).toBe(true);
 });
+it("restores packed precise Extract segments and retires their worker", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    indices: [0],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const values = new Float64Array([
+    100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0,
+  ]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segmentIndexedMeshes: [
+          { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        ],
+      },
+    },
+    packedScanSegments: [{ positions: values, vertices: values }],
+  });
+  const result = await pending;
+  expect(result.scanEdit!.segments![0]).toEqual(Array.from(values));
+  expect(result.scanEdit!.segmentIndexedMeshes![0]!.vertices).toBe(
+    result.scanEdit!.segments![0],
+  );
+  expect(worker.terminated).toBe(true);
+});
+it("restores each packed Extract segment with its own topology", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    indices: [0, 1],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const first = new Float64Array([
+    100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0,
+  ]);
+  const second = new Float64Array([
+    100000028, 0, 0, 100000036, 0, 0, 100000028, 8, 0,
+  ]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segmentIndexedMeshes: [
+          { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+          { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        ],
+      },
+    },
+    packedScanSegments: [
+      { positions: first, vertices: first },
+      { positions: second, vertices: second },
+    ],
+  });
+  const result = await pending;
+  expect(result.scanEdit!.segments).toEqual([
+    Array.from(first),
+    Array.from(second),
+  ]);
+  expect(result.scanEdit!.segmentIndexedMeshes![0]!.vertices).toBe(
+    result.scanEdit!.segments![0],
+  );
+  expect(result.scanEdit!.segmentIndexedMeshes![1]!.vertices).toBe(
+    result.scanEdit!.segments![1],
+  );
+  expect(worker.terminated).toBe(true);
+});
+it("rejects malformed packed Extract segments without retaining the worker", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    indices: [0],
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segmentIndexedMeshes: [
+          { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        ],
+      },
+    },
+    packedScanSegments: [
+      { positions: new Float32Array(9), vertices: new Float64Array(9) },
+    ],
+  });
+  await expect(pending).rejects.toThrow(/packed scan segments/i);
+  expect(worker.terminated).toBe(true);
+});
 
 it("preserves aliased packed Split coordinates and rejects malformed responses", async () => {
   const pending = processMesh({
@@ -713,6 +814,40 @@ describe("processing worker resource ownership", () => {
       sent.packedScanEditSource!.positions!.buffer,
     );
     expect(source[0]).toBe(100000004);
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+  });
+  it("packs indexed precise Extract input without detaching the source", async () => {
+    const source = Array.from({ length: 65538 }, (_, i) => i / 8);
+    const sourceIndexed = {
+      vertices: source,
+      triangles: new Uint32Array([0, 1, 2]),
+    };
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions: source,
+      sourceIndexed,
+      indices: [0],
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    const sent = worker.sent as ProcessingRequest & {
+      packedScanEditSource?: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+      };
+    };
+    expect(sent.packedScanEditSource?.positions).toBeInstanceOf(Float64Array);
+    expect(sent.packedScanEditSource!.positions).toBe(
+      sent.packedScanEditSource!.vertices,
+    );
+    expect(source).toHaveLength(65538);
     worker.reply({
       result: {
         kind: "scanEdit",

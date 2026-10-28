@@ -407,7 +407,81 @@ try {
   await page.screenshot({
     path: fileURLToPath(new URL("original-split-gui.png", out)),
   });
-  if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "1") {
+  if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "extract") {
+    const core = (records) =>
+      records.filter((record) =>
+        ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
+          record.path,
+        ),
+      );
+    const extracted = await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [0],
+        },
+      }),
+    );
+    await stage("component-extract-committed");
+    const state = (await call("project_get")).result;
+    const created = state.objects.find(
+      (object) => object.id !== sourceId && object.id !== cutterId,
+    );
+    assert(created, "Extraction did not create an object");
+    assert.equal(
+      state.objects.find((object) => object.id === sourceId).visible,
+      false,
+    );
+    const extractedDigest = core(await geometryDigest(created.id));
+    assert.equal(extractedDigest.length, 3, "Extraction lost indexed geometry");
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(guiDigest),
+      "Extraction changed source",
+    );
+    assert.deepEqual(
+      await geometryDigest(cutterId),
+      cutterDigest,
+      "Extraction changed cutter",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(guiDigest),
+      "Extraction Undo changed source",
+    );
+    assert.equal(
+      (await call("project_get")).result.objects.some(
+        (object) => object.id === created.id,
+      ),
+      false,
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      core(await geometryDigest(created.id)),
+      extractedDigest,
+      "Extraction Redo changed geometry",
+    );
+    await stage("component-extract-redo-verified");
+    assert.deepEqual(errors, []);
+    assert.deepEqual(consoleErrors, []);
+    ledger.result = {
+      inputSha256: bounds.sha256,
+      inputFaces: initial.objects[0].triangles,
+      splitFaces: guiState.objects.find((o) => o.id === sourceId).triangles,
+      extractedFaces: created.triangles,
+      diagnostics: extracted.result.diagnostics,
+      indexedResult: true,
+      sourcePreserved: true,
+      cutterPreserved: true,
+      undoRedo: true,
+      pageErrors: errors,
+      consoleErrors,
+    };
+    console.log(JSON.stringify(ledger.result));
+  } else if (process.env.SCANFORGE_M2_ORIGINAL_COMPONENT === "1") {
     const core = (records) =>
       records.filter((record) =>
         ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(

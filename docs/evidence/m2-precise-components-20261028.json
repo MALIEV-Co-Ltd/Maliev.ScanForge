@@ -28,9 +28,21 @@
     "smallBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-component-compact-browser-20261028-r2-guard.json",
     "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-component-compact-typecheck-20261028-r3.json"
   },
+  "largeExtract": {
+    "scope": "GUI Split followed by public-MCP Extract of one component from the original ply-3 scan in a cross-origin-isolated browser.",
+    "baseline": "Before transferable segment input/output, Extract failed cloning worker input and the aggregate peak was 4,538,220,544 bytes.",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-extract-20261028-r1-guard.json",
+    "finalBuild": "scanforge-181758cef297ebed",
+    "result": "An indexed 1,779,171-face component was created from the 3,700,757-face Split result; source and cutter digests and Undo/Redo passed. Peak aggregate job use was 3,912,290,304 bytes under the 4,294,967,296-byte limit, with clean process and port cleanup.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-extract-20261028-r2-guard.json",
+    "focused": "123 tests passed, including packed Extract input, multi-segment output, aliasing, malformed responses and worker cleanup.",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-extract-transport-focused-20261028-r3.json",
+    "smallBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-extract-transport-browser-20261028-r1-guard.json",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-extract-transport-typecheck-20261028-r1.json"
+  },
   "limitations": [
     "Native component output and indexed seam identity were not independently observed in this control.",
-    "The large original-scan check covers one public-MCP Flip after GUI Split, not GUI component execution, Extract, persistence, non-isolated mode or a native comparison.",
+    "The large original-scan checks cover public-MCP Flip and one Extract after GUI Split, not GUI component execution, persistence, non-isolated mode or a native comparison.",
     "Other M2 acceptance gates remain open."
   ]
 }

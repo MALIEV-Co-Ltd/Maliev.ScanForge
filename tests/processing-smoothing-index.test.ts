@@ -167,6 +167,65 @@ it("returns ordinary empty geometry when a packed removal deletes the only compo
   }
 });
 
+it("returns a transferable segment for packed precise Extract", async () => {
+  vi.resetModules();
+  const precise = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as
+      | null
+      | ((event: {
+          data: ProcessingRequest & {
+            packedScanEditSource?: {
+              positions: Float64Array;
+              vertices: Float64Array;
+            };
+          };
+        }) => Promise<void>),
+    postMessage: (reply: ProcessingResponse, transfers: Transferable[] = []) =>
+      replies.push(structuredClone(reply, { transfer: transfers })),
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions: new Float32Array(),
+        indices: [0],
+        sourceIndexed: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        packedScanEditSource: {
+          positions: Float64Array.from(precise),
+          vertices: Float64Array.from(precise),
+        },
+      },
+    });
+    const terminal = replies.at(-1)!;
+    if (!("result" in terminal)) throw new Error("Expected Extract result");
+    const packed = (
+      terminal as typeof terminal & {
+        packedScanSegments?: {
+          positions: Float64Array;
+          vertices: Float64Array;
+        }[];
+      }
+    ).packedScanSegments;
+    expect(Array.from(packed![0].positions)).toEqual(precise);
+    expect(
+      indexedMeshMatches(
+        {
+          ...terminal.result.scanEdit!.segmentIndexedMeshes![0]!,
+          vertices: Array.from(packed![0].vertices),
+        },
+        Array.from(packed![0].positions),
+      ),
+    ).toBe(true);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
 it("does not build a welded persistent topology before an indexed component edit", async () => {
   vi.resetModules();
   const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);

@@ -892,6 +892,8 @@ scope.onmessage = async ({ data: incoming }) => {
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
     let packedScanEdit:
       { positions: Float64Array; vertices: Float64Array } | undefined;
+    let packedScanSegments:
+      { positions: Float64Array; vertices: Float64Array }[] | undefined;
     if (packPreciseSplit) {
       progress(1, "Packing precise scan edit");
       const edit = result.scanEdit!,
@@ -909,9 +911,44 @@ scope.onmessage = async ({ data: incoming }) => {
       indexed.vertices = [];
       transfers.push(positions.buffer, vertices.buffer);
     }
+    if (
+      request.kind === "scanEdit" &&
+      request.action === "componentExtract" &&
+      (request.positions as unknown) instanceof Float64Array &&
+      result.scanEdit?.segments &&
+      result.scanEdit.segmentIndexedMeshes &&
+      result.scanEdit.segments.length ===
+        result.scanEdit.segmentIndexedMeshes.length
+    ) {
+      const segments = result.scanEdit.segments;
+      const meshes = result.scanEdit.segmentIndexedMeshes;
+      if (
+        segments.some(
+          (segment, i) =>
+            !((segment as unknown) instanceof Float64Array) ||
+            !meshes[i] ||
+            !Array.isArray(meshes[i]!.vertices),
+        )
+      )
+        throw new Error("Invalid precise component segment output.");
+      progress(1, "Packing precise scan segments");
+      packedScanSegments = segments.map((segment, i) => {
+        const positions = segment as unknown as Float64Array;
+        const mesh = meshes[i]!;
+        const vertices = Float64Array.from(mesh.vertices);
+        mesh.vertices = [];
+        transfers.push(positions.buffer, vertices.buffer);
+        return { positions, vertices };
+      });
+      delete result.scanEdit.segments;
+    }
     // Published shared geometry stays attached; only private buffers transfer.
     scope.postMessage(
-      { result, ...(packedScanEdit ? { packedScanEdit } : {}) },
+      {
+        result,
+        ...(packedScanEdit ? { packedScanEdit } : {}),
+        ...(packedScanSegments ? { packedScanSegments } : {}),
+      },
       [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
     );
   } catch (error) {
