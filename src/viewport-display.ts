@@ -2,6 +2,18 @@ import * as THREE from "three";
 import { weldDisplayPositions } from "./display-weld";
 import type { IndexedMesh, Positions } from "./types";
 import { indexedMeshMatches } from "./indexed-mesh";
+
+/** Recenter precise coordinates before Float32 upload. */
+export function localDisplayCoordinates(
+  positions: ArrayLike<number>,
+  origin: THREE.Vector3,
+): Float32Array {
+  const result = new Float32Array(positions.length);
+  for (let i = 0; i < positions.length; i++)
+    result[i] = positions[i] - origin.getComponent(i % 3);
+  return result;
+}
+
 /** Preserve display weld ordering and Float32 normal arithmetic with typed storage. */
 export function smoothDisplayNormals(
   positions: ArrayLike<number>,

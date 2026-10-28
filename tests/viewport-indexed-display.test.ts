@@ -59,6 +59,214 @@ function setup(hidden: number[] = []) {
   return { view, entity, mesh, positions, prepared, rendered };
 }
 
+it("releases a retired recentered display buffer without changing authored geometry", () => {
+  const { view, entity } = setup();
+  const source = [0.123456789, 0, 0, 1, 0, 0, 0, 1, 0];
+  const precise = {
+    ...entity,
+    id: "precise",
+    positions: source,
+    indexedMesh: undefined,
+    meshSelection: undefined,
+  };
+  view.setEntities([precise], precise.id);
+  const item = (view as any).objects.get(precise.id);
+  const geometry = item.mesh.geometry as THREE.BufferGeometry;
+  const buffer = geometry.getAttribute("position").array.buffer;
+  const before = source.slice();
+  let intactDuringDispose = false;
+  geometry.addEventListener("dispose", () => {
+    intactDuringDispose = buffer.byteLength > 0;
+  });
+  const dependent = new THREE.BufferGeometry();
+  dependent.setAttribute("position", geometry.getAttribute("position"));
+  let intactDuringDependentDispose = false;
+  dependent.addEventListener("dispose", () => {
+    intactDuringDependentDispose = buffer.byteLength > 0;
+  });
+  item.deviationGeometry = geometry;
+  item.mesh.geometry = dependent;
+  view.setEntities([], null);
+  expect(intactDuringDispose).toBe(true);
+  expect(intactDuringDependentDispose).toBe(true);
+  if (
+    typeof (ArrayBuffer.prototype as { transfer?: unknown }).transfer ===
+    "function"
+  )
+    expect(buffer.byteLength).toBe(0);
+  expect(source).toEqual(before);
+});
+
+it("releases the retired recentered geometry when a same-object deviation display is replaced", () => {
+  const { view, entity } = setup();
+  const source = [0.123456789, 0, 0, 1, 0, 0, 0, 1, 0];
+  const precise = {
+    ...entity,
+    id: "precise",
+    positions: source,
+    indexedMesh: undefined,
+    meshSelection: undefined,
+  };
+  view.setEntities([precise], precise.id);
+  const item = (view as any).objects.get(precise.id);
+  const original = item.mesh.geometry as THREE.BufferGeometry;
+  const buffer = original.getAttribute("position").array.buffer;
+  const expanded = new THREE.BufferGeometry();
+  expanded.setAttribute("position", original.getAttribute("position"));
+  let intactDuringExpandedDispose = false;
+  expanded.addEventListener("dispose", () => {
+    intactDuringExpandedDispose = buffer.byteLength > 0;
+  });
+  item.deviationGeometry = original;
+  item.mesh.geometry = expanded;
+  view.setEntities(
+    [{ ...precise, positions: source.map((n) => n + 0.25) }],
+    precise.id,
+  );
+  expect(intactDuringExpandedDispose).toBe(true);
+  if (
+    typeof (ArrayBuffer.prototype as { transfer?: unknown }).transfer ===
+    "function"
+  )
+    expect(buffer.byteLength).toBe(0);
+  expect(source[0]).toBe(0.123456789);
+  view.setEntities([], null);
+});
+
+it("falls back to collection for retired recentered displays without transfer", () => {
+  const descriptor = Object.getOwnPropertyDescriptor(
+    ArrayBuffer.prototype,
+    "transfer",
+  );
+  const { view, entity } = setup();
+  const source = [0.123456789, 0, 0, 1, 0, 0, 0, 1, 0];
+  const precise = {
+    ...entity,
+    id: "precise",
+    positions: source,
+    indexedMesh: undefined,
+    meshSelection: undefined,
+  };
+  try {
+    Object.defineProperty(ArrayBuffer.prototype, "transfer", {
+      configurable: true,
+      value: undefined,
+    });
+    view.setEntities([precise], precise.id);
+    const geometry = (view as any).objects.get(precise.id).mesh
+      .geometry as THREE.BufferGeometry;
+    const buffer = geometry.getAttribute("position").array.buffer;
+    view.setEntities([], null);
+    expect(buffer.byteLength).toBe(36);
+    expect(source[0]).toBe(0.123456789);
+  } finally {
+    if (descriptor)
+      Object.defineProperty(ArrayBuffer.prototype, "transfer", descriptor);
+    else
+      delete (ArrayBuffer.prototype as ArrayBuffer & { transfer?: unknown })
+        .transfer;
+    view.setEntities([], null);
+  }
+});
+
+it("releases retired selection-only buffers while preserving source geometry", () => {
+  const { view, positions } = setup();
+  (view as any).selectionProcessing = new SelectionProcessingHighlight();
+  const original = Array.from(positions);
+  view.setTriangleSelection(positions, new Uint8Array([1, 0]));
+  const group = (view as any).triangleSelection as THREE.Group;
+  const overlay = group.children[0] as THREE.Mesh;
+  const vertex = overlay.geometry.getAttribute("position").array.buffer;
+  const corner = overlay.geometry.getAttribute("processingBarycentric").array
+    .buffer;
+  const line = group.children[1] as THREE.LineSegments;
+  const edge = (
+    line.geometry.getAttribute(
+      "instanceStart",
+    ) as THREE.InterleavedBufferAttribute
+  ).data.array.buffer;
+  const lineBase = line.geometry.getAttribute("position").array.buffer;
+  const lineBaseBytes = lineBase.byteLength;
+  expect(vertex.byteLength).toBeGreaterThan(0);
+  expect(corner.byteLength).toBeGreaterThan(0);
+  expect(edge.byteLength).toBeGreaterThan(0);
+  view.setTriangleSelection();
+  expect(vertex.byteLength).toBe(0);
+  expect(corner.byteLength).toBe(0);
+  expect(edge.byteLength).toBe(0);
+  expect(lineBase.byteLength).toBe(lineBaseBytes);
+  expect(Array.from(positions)).toEqual(original);
+  view.setEntities([], null);
+});
+
+it("keeps selection cleanup working when immediate buffer transfer is unavailable", () => {
+  const { view, positions } = setup();
+  const descriptor = Object.getOwnPropertyDescriptor(
+    ArrayBuffer.prototype,
+    "transfer",
+  );
+  const original = Array.from(positions);
+  try {
+    Object.defineProperty(ArrayBuffer.prototype, "transfer", {
+      configurable: true,
+      value: undefined,
+    });
+    view.setTriangleSelection(positions, new Uint8Array([1, 0]));
+    const group = (view as any).triangleSelection as THREE.Group;
+    const overlay = group.children[0] as THREE.Mesh;
+    const vertex = overlay.geometry.getAttribute("position").array.buffer;
+    view.setTriangleSelection();
+    expect(group.children).toHaveLength(0);
+    expect(vertex.byteLength).toBe(36);
+    expect(Array.from(positions)).toEqual(original);
+  } finally {
+    if (descriptor)
+      Object.defineProperty(ArrayBuffer.prototype, "transfer", descriptor);
+    else
+      delete (ArrayBuffer.prototype as ArrayBuffer & { transfer?: unknown })
+        .transfer;
+    view.setEntities([], null);
+  }
+});
+
+it("retires the previous selection overlay before displaying a different selected mesh", () => {
+  const { view, entity, positions } = setup();
+  view.setTriangleSelection(positions, new Uint8Array([1, 0]));
+  const group = (view as any).triangleSelection as THREE.Group;
+  const oldOverlay = group.children[0] as THREE.Mesh;
+  const dispose = vi.spyOn(oldOverlay.geometry, "dispose");
+  const next = { ...entity, id: "next", positions: positions.slice() };
+  try {
+    view.setEntities([entity, next], next.id);
+    expect(group.children).toHaveLength(0);
+    expect(dispose).toHaveBeenCalledOnce();
+    view.setTriangleSelection(next.positions, new Uint8Array([0, 1]));
+    expect(group.children).toHaveLength(1);
+    view.setEntities([entity, next], next.id);
+    expect(group.children).toHaveLength(1);
+  } finally {
+    view.setTriangleSelection();
+    view.setEntities([], null);
+  }
+});
+
+it("keeps a selection overlay when the new selected entity shares its positions", () => {
+  const { view, entity, positions } = setup();
+  view.setTriangleSelection(positions, new Uint8Array([1, 0]));
+  const group = (view as any).triangleSelection as THREE.Group;
+  const overlay = group.children[0] as THREE.Mesh;
+  const dispose = vi.spyOn(overlay.geometry, "dispose");
+  const sameGeometry = { ...entity, id: "same" };
+  try {
+    view.setEntities([entity, sameGeometry], sameGeometry.id);
+    expect(group.children[0]).toBe(overlay);
+    expect(dispose).not.toHaveBeenCalled();
+  } finally {
+    view.setTriangleSelection();
+    view.setEntities([], null);
+  }
+});
+
 it("renders and ray-picks a precise indexed triangle at large world coordinates", async () => {
   const x = 100000000;
   const positions = [x, 0, 0, x + 4, 0, 0, x + 4, 4, 0];

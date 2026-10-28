@@ -27,7 +27,11 @@ import {
 } from "./interactive-camera";
 import { modelGridSpacing, viewportScale } from "./viewport-scale";
 import { ViewportScaleOverlay } from "./viewport-scale-overlay";
-import { smoothDisplayNormals, snapSketchGrid } from "./viewport-display";
+import {
+  localDisplayCoordinates,
+  smoothDisplayNormals,
+  snapSketchGrid,
+} from "./viewport-display";
 import { installNormalsDisplay } from "./normals-display";
 import { createSavedSketchDisplay } from "./saved-sketch-display";
 import type { SavedSketch } from "./types";
@@ -150,6 +154,57 @@ import {
   type SketchDrawingTool,
   type SketchUV,
 } from "./sketch-drawing";
+
+// Recentered coordinates belong only to their disposable viewport geometry.
+const ownedViewportCoordinates = new WeakMap<
+  THREE.BufferGeometry,
+  ArrayBuffer
+>();
+function disposeViewportGeometry(
+  geometry: THREE.BufferGeometry,
+  dependent?: THREE.BufferGeometry,
+) {
+  geometry.dispose();
+  dependent?.dispose();
+  for (const item of dependent ? [geometry, dependent] : [geometry]) {
+    const buffer = ownedViewportCoordinates.get(item);
+    ownedViewportCoordinates.delete(item);
+    if (!buffer) continue;
+    const transfer = (
+      buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
+    ).transfer;
+    try {
+      transfer?.call(buffer, 0);
+    } catch {
+      /* Collection remains the fallback. */
+    }
+  }
+}
+
+// These buffers are created only for the transient selection overlay. They
+// never alias scene geometry or the shared base geometry of wide-line meshes.
+const selectionOwnedBuffers = new WeakMap<THREE.Group, Set<ArrayBuffer>>();
+function rememberSelectionBuffer(group: THREE.Group, buffer: ArrayBufferLike) {
+  if (!(buffer instanceof ArrayBuffer)) return;
+  let owned = selectionOwnedBuffers.get(group);
+  if (!owned) selectionOwnedBuffers.set(group, (owned = new Set()));
+  owned.add(buffer);
+}
+function releaseSelectionBuffers(group: THREE.Group) {
+  const buffers = selectionOwnedBuffers.get(group);
+  selectionOwnedBuffers.delete(group);
+  for (const buffer of buffers ?? []) {
+    const transfer = (
+      buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
+    ).transfer;
+    if (typeof transfer !== "function") continue;
+    try {
+      transfer.call(buffer, 0);
+    } catch {
+      /* Collection remains the fallback. */
+    }
+  }
+}
 
 type Item = {
   pointDisplay?: AdaptivePointDisplay;
@@ -3122,6 +3177,13 @@ export class Viewport {
     selectedIds: readonly string[] = selectedId ? [selectedId] : [],
   ): void {
     this.drainReferenceDisposals();
+    if (selectedId !== this.selectedId && this.triangleSelection) {
+      const previous = this.objects?.get(this.selectedId ?? "")?.positions;
+      const next = entities.find(
+        (entity) => entity.id === selectedId,
+      )?.positions;
+      if (previous !== next) this.clearGroup(this.triangleSelection);
+    }
     if (this.interactivePosePreview) this.setInteractivePreview(null);
     this.setNoiseComparison();
     this.holdMenu?.close();
@@ -3146,8 +3208,7 @@ export class Viewport {
       if (!ids.has(id) || referenceIds.has(id)) {
         this.scene.remove(item.mesh);
         item.selectionIndex?.dispose();
-        item.mesh.geometry.dispose();
-        item.deviationGeometry?.dispose();
+        disposeViewportGeometry(item.mesh.geometry, item.deviationGeometry);
         item.deviationGeometry = undefined;
         item.mesh.material.dispose();
         item.cadEdges?.geometry.dispose();
@@ -3212,8 +3273,7 @@ export class Viewport {
       ) {
         item.worldBounds = undefined;
         item.selectionIndex?.dispose();
-        item.mesh.geometry.dispose();
-        item.deviationGeometry?.dispose();
+        disposeViewportGeometry(item.mesh.geometry, item.deviationGeometry);
         item.deviationGeometry = undefined;
         item.selectionIndex = undefined;
         if (item.pointCloud) {
@@ -3268,11 +3328,7 @@ export class Viewport {
           );
         }
         const displayCoordinates = item.localOrigin
-          ? Float32Array.from(
-              display.positions,
-              (value, index) =>
-                value - item!.localOrigin!.getComponent(index % 3),
-            )
+          ? localDisplayCoordinates(display.positions, item.localOrigin)
           : display.positions;
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
@@ -3354,6 +3410,12 @@ export class Viewport {
           geometry.setDrawRange(0, 0);
         }
         item.mesh.geometry = geometry;
+        if (
+          item.localOrigin &&
+          displayCoordinates instanceof Float32Array &&
+          displayCoordinates.buffer instanceof ArrayBuffer
+        )
+          ownedViewportCoordinates.set(geometry, displayCoordinates.buffer);
         if (entity.kind !== "pointcloud")
           void prepareViewportPicking(item.mesh);
         item.positions = entity.positions;
@@ -4460,7 +4522,7 @@ export class Viewport {
     const stride = points ? 3 : 9;
     if (positions && mask && mask.length * stride === positions.length) {
       let count = 0;
-      for (const value of mask) count += value;
+      for (let i = 0; i < mask.length; i++) count += mask[i];
       if (count) {
         const buffer = new Float32Array(count * stride);
         let next = 0;
@@ -4496,6 +4558,21 @@ export class Viewport {
             );
         const processingOutline =
           this.selectionProcessing?.install(overlay.material, geometry) ?? [];
+        rememberSelectionBuffer(this.triangleSelection, buffer.buffer);
+        const barycentric = geometry.getAttribute("processingBarycentric");
+        if (barycentric instanceof THREE.BufferAttribute)
+          rememberSelectionBuffer(
+            this.triangleSelection,
+            barycentric.array.buffer,
+          );
+        for (const line of processingOutline) {
+          const start = line.geometry.getAttribute("instanceStart");
+          if (start instanceof THREE.InterleavedBufferAttribute)
+            rememberSelectionBuffer(
+              this.triangleSelection,
+              start.data.array.buffer,
+            );
+        }
         if (origin)
           for (const object of [overlay, ...processingOutline])
             object.position.copy(origin);
@@ -4528,6 +4605,7 @@ export class Viewport {
         renderable.material.forEach((material) => material.dispose());
       else renderable.material?.dispose();
     }
+    if (group === this.triangleSelection) releaseSelectionBuffers(group);
   }
 
   setSectionLines(
@@ -4693,11 +4771,7 @@ export class Viewport {
         );
         const geometry = new THREE.BufferGeometry();
         const displayCoordinates = item.localOrigin
-          ? Float32Array.from(
-              display.positions,
-              (value, index) =>
-                value - item.localOrigin!.getComponent(index % 3),
-            )
+          ? localDisplayCoordinates(display.positions, item.localOrigin)
           : display.positions;
         geometry.setAttribute(
           "position",
@@ -4836,8 +4910,7 @@ export class Viewport {
     window.removeEventListener("blur", this.paintModifierBlur);
     for (const item of this.objects.values()) {
       item.selectionIndex?.dispose();
-      item.mesh.geometry.dispose();
-      item.deviationGeometry?.dispose();
+      disposeViewportGeometry(item.mesh.geometry, item.deviationGeometry);
       item.deviationGeometry = undefined;
       item.mesh.material.dispose();
       item.cadEdges?.geometry.dispose();

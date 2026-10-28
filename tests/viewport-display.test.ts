@@ -1,8 +1,24 @@
 import { expect, it, vi } from "vitest";
 import * as THREE from "three";
-import { smoothDisplayNormals, snapSketchGrid } from "../src/viewport-display";
+import {
+  localDisplayCoordinates,
+  smoothDisplayNormals,
+  snapSketchGrid,
+} from "../src/viewport-display";
 import { createViewportGrid } from "../src/viewport-grid";
 import { Viewport } from "../src/viewport";
+it("retains the Float32 results of recentering precise coordinates", () => {
+  const positions = [1e8 + 0.25, -1e8 - 0.5, -0, 1e8 + 4.125, -1e8 + 2, 3];
+  const origin = new THREE.Vector3(1e8 + 0.125, -1e8 + 0.25, 0);
+  const before = positions.slice();
+  expect(localDisplayCoordinates(positions, origin)).toEqual(
+    Float32Array.from(
+      positions,
+      (value, i) => value - origin.getComponent(i % 3),
+    ),
+  );
+  expect(positions).toEqual(before);
+});
 it("snaps sketch coordinates to a metric lattice only when enabled", () => {
   expect(snapSketchGrid([12.3, -7.8], true, 5)).toEqual([10, -10]);
   expect(snapSketchGrid([12.3, -7.8], false, 5)).toEqual([12.3, -7.8]);
