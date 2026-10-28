@@ -18,6 +18,36 @@ import { importScan } from "../src/import-client";
 import type { WorkspaceHost, CommandContext } from "../src/automation/api";
 vi.mock("../src/import-client", () => ({ importScan: vi.fn() }));
 afterEach(() => vi.unstubAllGlobals());
+it("rejects nonfinite typed indexed coordinates and normals", () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const positions = new Float32Array(vertices);
+  const normals = new Float32Array(vertices);
+  expect(indexedMeshMatches({ vertices, triangles, normals }, positions)).toBe(
+    true,
+  );
+  vertices[0] = Infinity;
+  expect(indexedMeshMatches({ vertices, triangles, normals }, positions)).toBe(
+    false,
+  );
+  vertices[0] = 0;
+  normals[2] = NaN;
+  expect(indexedMeshMatches({ vertices, triangles, normals }, positions)).toBe(
+    false,
+  );
+});
+it("retains sparse unused vertex and normal semantics while rejecting explicit invalid values", () => {
+  const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+  vertices.length = 12;
+  const normals = new Array<number>(12);
+  const mesh = { vertices, normals, triangles: new Uint32Array([0, 1, 2]) };
+  expect(indexedMeshMatches(mesh, vertices.slice(0, 9))).toBe(true);
+  normals[11] = undefined as unknown as number;
+  expect(indexedMeshMatches(mesh, vertices.slice(0, 9))).toBe(false);
+  delete normals[11];
+  vertices[11] = "1" as unknown as number;
+  expect(indexedMeshMatches(mesh, vertices.slice(0, 9))).toBe(false);
+});
 function mesh(): Entity {
   const indexedMesh = {
     vertices: new Float32Array([9, 9, 9, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]),

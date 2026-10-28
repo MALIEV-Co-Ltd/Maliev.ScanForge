@@ -10,6 +10,7 @@ import {
 } from "./reference-frame";
 import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import * as THREE from "three";
+import { finiteArrayValues, finiteTypedValues } from "./finite-typed-values";
 import {
   validatePointCloudDisplay,
   DEFAULT_POINT_CLOUD_COLOR,
@@ -133,7 +134,9 @@ export function validatePositions(
       !isEncodingNumeric(value)) ||
     !value.length ||
     value.length % (pointCloud ? 3 : 9) !== 0 ||
-    !value.every((x) => typeof x === "number" && Number.isFinite(x))
+    !(Array.isArray(value)
+      ? finiteArrayValues(value)
+      : finiteTypedValues(value))
   ) {
     throw new Error(
       pointCloud
