@@ -1,0 +1,31 @@
+{
+  "scope": "Static call-site sequence on a runtime-derived analysis image; no native Split operation observed.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "callerEvidenceSha256": "31564a2578fd4723acf4a4782fe254c3265dc386aeaf85719150701b1cc9232d",
+  "helperEvidenceSha256": "583b16120875f6ad32fac47c3a330f7d23dd953a2ef2af897dc1d9c4de16c0cd",
+  "callSites": [
+    {
+      "restore": "0x14067e223",
+      "candidate": "0x14067e236",
+      "target": "0x14067d270"
+    },
+    {
+      "restore": "0x14067e266",
+      "candidate": "0x14067e271",
+      "target": "0x14067cec0"
+    },
+    {
+      "restore": "0x14067e280",
+      "candidate": "0x14067e2a8",
+      "target": "0x14067b440"
+    }
+  ],
+  "observation": "The retained caller sets the helper second argument to zero immediately before each candidate path. The previously recorded helper conditionally replaces the source pointer with a saved copy, clears the saved pointer, and calls the property refresh only when its second argument is nonzero.",
+  "applicationControl": "The current Split panel invokes its shared operation from an explicit Split button; no conclusion about native interaction follows.",
+  "futureControl": "When native access is available, compare repeated cutter changes, repeated operation, closing the panel and cancellation using the same saved source, recording geometry and visible state.",
+  "limitations": [
+    "The analysis image is runtime-derived and differs from the installed executable.",
+    "Static boundaries, types, runtime reachability and branch state are not established.",
+    "This does not establish preview, Undo, Cancel, GUI/MCP parity, geometry or milestone completion."
+  ]
+}
