@@ -382,6 +382,8 @@ export async function decodeProjectContents(
     sharedReadonlyBuffers?: boolean;
     reusableChunks?: readonly ProjectSharedChunk[];
     onSharedChunk?: (chunk: ProjectSharedChunk) => void;
+    onDecodedFloat64?: (values: number[], bytes: Float64Array) => void;
+    privateFloat64Chunks?: boolean;
   } = {},
 ): Promise<ProjectSession> {
   const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
@@ -412,6 +414,7 @@ export async function decodeProjectContents(
   )
     return invalid();
   const data: Uint8Array[] = [];
+  const privateChunk: boolean[] = [];
   const reusable = new Map<string, SharedArrayBuffer>();
   if (
     options.sharedReadonlyBuffers &&
@@ -427,6 +430,24 @@ export async function decodeProjectContents(
           `${chunk.sha256}:${chunk.buffer.byteLength}`,
           chunk.buffer,
         );
+  // Float64-only chunks become ordinary numeric arrays, so their raw bytes
+  // need not remain shared with any published geometry.
+  const chunkTypes = new Map<number, Set<unknown>>();
+  if (options.privateFloat64Chunks) {
+    const pending: unknown[] = [...m.records];
+    while (pending.length) {
+      const value = pending.pop();
+      if (!value || typeof value !== "object") continue;
+      const record = value as Record<string, unknown>;
+      if (Number.isInteger(record.chunk)) {
+        const index = record.chunk as number;
+        let types = chunkTypes.get(index);
+        if (!types) chunkTypes.set(index, (types = new Set()));
+        types.add(record.type);
+      }
+      for (const entry of Object.values(record)) pending.push(entry);
+    }
+  }
   let expected = 0;
   for (const chunk of m.chunks as Chunk[]) {
     if (
@@ -455,11 +476,13 @@ export async function decodeProjectContents(
     // later copying all geometry into shared buffers doubles restore storage.
     const existing = reusable.get(`${chunk.sha256}:${chunk.rawBytes}`);
     let borrowed = existing !== undefined;
+    const types = chunkTypes.get(data.length);
+    const privateFloat64 = types?.size === 1 && types.has("f64");
     let bytes = new Uint8Array(
       existing ??
         allocateImportedReadonlyBuffer(
           chunk.rawBytes,
-          options.sharedReadonlyBuffers,
+          options.sharedReadonlyBuffers && !privateFloat64,
         ),
     );
     let used = 0;
@@ -476,7 +499,7 @@ export async function decodeProjectContents(
               const replacement = new Uint8Array(
                 allocateImportedReadonlyBuffer(
                   chunk.rawBytes,
-                  options.sharedReadonlyBuffers,
+                  options.sharedReadonlyBuffers && !privateFloat64,
                 ),
               );
               replacement.set(bytes.subarray(0, used));
@@ -499,6 +522,7 @@ export async function decodeProjectContents(
     )
       options.onSharedChunk?.({ sha256: chunk.sha256, buffer: bytes.buffer });
     data.push(bytes);
+    privateChunk.push(!borrowed);
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
@@ -579,6 +603,21 @@ export async function decodeProjectContents(
               ? v.getFloat32(i * width, true)
               : v.getFloat64(i * width, true);
       result = values;
+      if (
+        ref.type === "f64" &&
+        Array.isArray(values) &&
+        privateChunk[ref.chunk] &&
+        bytes.byteOffset % 8 === 0 &&
+        new Uint8Array(new Uint16Array([1]).buffer)[0] === 1
+      )
+        options.onDecodedFloat64?.(
+          values,
+          new Float64Array(
+            bytes.buffer,
+            bytes.byteOffset,
+            bytes.byteLength / 8,
+          ),
+        );
     }
     decoded.set(key, result);
     return result;

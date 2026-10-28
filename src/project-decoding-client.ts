@@ -92,7 +92,7 @@ export function decodeProjectInBackground(
                 throw new Error("Invalid project decoding response.");
               const decoded = await unpackProjectTransport<DecodedProjectData>(
                 data.packet,
-                { check },
+                { check, releaseOwnedNumericBuffers: true },
               );
               check();
               if (
