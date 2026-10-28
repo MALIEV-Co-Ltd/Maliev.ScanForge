@@ -1,3 +1,4 @@
+import { exactSplitCoverage } from "./scan-split-exact-coverage";
 import type { Vec3 } from "./types";
 import {
   exactSegmentTriangleCrossing,
@@ -555,7 +556,17 @@ function assembleFiniteFaces(
       Number.EPSILON *
       128 *
       (ring.length + mesh.triangles.length);
-    if (!(expectedCoverage > 0) || Math.abs(covered - expectedCoverage) > error)
+    if (
+      !(expectedCoverage > 0) ||
+      (Math.abs(covered - expectedCoverage) > error &&
+        !exactSplitCoverage(
+          mesh.vertices,
+          mesh.triangles,
+          ring,
+          outputCoordinate,
+          tick,
+        ))
+    )
       throw new Error(
         `Finite assembly face coverage is incomplete at face ${f} (expected ${expectedCoverage}, observed ${covered}).`,
       );

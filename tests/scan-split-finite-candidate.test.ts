@@ -719,3 +719,35 @@ it("splits a selected face to its shared edge without modifying its unselected n
       indexedMeshMatches(result.segmentIndexedMeshes[i], result.segments[i]),
     ).toBe(true);
 });
+
+it("splits a thin shared-edge face without rejecting roundoff in coverage", () => {
+  const source = [
+    -0.00000075, 0, 0, 0.00000075, 0, 0, 1, 1, 0, 0.00000075, 0, 0, -0.00000075,
+    0, 0, 0, -1, 0,
+  ];
+  const target = [0, -2, -1, 0, 2, -1, 0, 2, 1, 0, -2, -1, 0, 2, 1, 0, -2, 1];
+  const before = source.slice(),
+    cutterBefore = target.slice();
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: source,
+    target,
+  });
+  expect(result.positions).toBeDefined();
+  expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(true);
+  expect(source).toEqual(before);
+  expect(target).toEqual(cutterBefore);
+  const incidence = new Map<string, number>();
+  const p = result.positions!;
+  for (let i = 0; i < p.length; i += 9)
+    for (let j = 0; j < 3; j++) {
+      const a = i + 3 * j,
+        b = i + 3 * ((j + 1) % 3);
+      if (p[a + 1] !== 0 || p[b + 1] !== 0) continue;
+      const key = [p[a], p[b]].sort((x, y) => x - y).join(",");
+      incidence.set(key, (incidence.get(key) ?? 0) + 1);
+    }
+  expect(incidence.size).toBeGreaterThan(0);
+  expect([...incidence.values()].every((count) => count === 2)).toBe(true);
+});
