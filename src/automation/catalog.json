@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Restore can reuse verified live numeric arrays from successful exports; stale or unavailable candidates fall back to independent reconstruction. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3907,7 +3907,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Verified large numeric arrays from successful exports may be reused weakly during restore; changed or unavailable arrays are independently reconstructed. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {

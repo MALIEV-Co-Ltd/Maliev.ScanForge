@@ -102,7 +102,15 @@ encoding snapshot/transport. The worker returns validated hashes and source
 tokens only; successful storage rebinds these to the original live wrappers.
 Thus weak-cache reachability follows editor ownership rather than temporary
 worker-returned wrappers. Malformed or sparse token replies fail before storage
-or cache publication. It reads and validates the entire
+or cache publication. Separately, successful stored exports register up to 128
+weak references to large ordinary geometry arrays. Main-thread restoration can
+reuse a candidate only after bounded, cancellable element comparison including
+signed zero, followed by synchronous rechecks after cooperative yields and at
+the transport handoff. One candidate cannot replace two distinct transport arrays;
+existing aliases remain shared. Missing, stale or over-budget candidates use
+independent reconstruction; page exit clears
+the cache. This follows the existing immutable geometry ownership contract and
+does not rely on shared-buffer availability. It reads and validates the entire
 incoming file even on a cache hit: matching streamed bytes borrow the earlier
 backing, mismatches allocate an independent chunk, and the final SHA-256 remains
 mandatory. Worker transport preserves SharedArrayBuffer backing without transfer

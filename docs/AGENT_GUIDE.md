@@ -617,7 +617,7 @@ backup encoding. First reimport can therefore reuse still-live original imports;
 no preceding restore is required. Export candidates require complete immutable
 SharedArrayBuffer views whose type and little-endian bytes match the encoded
 chunk. Subviews, ordinary buffers and converted numeric representations retain
-independent decoding. Failed, cancelled or expired encoding/storage publishes no
+independent shared-buffer decoding. Failed, cancelled or expired encoding/storage publishes no
 new candidates. The encoding request assigns at most 128 internal source tokens
 to original live buffers in the same clone graph as the snapshot. Worker hashes
 return with those tokens, so the weak registry references the editor's original
@@ -625,9 +625,15 @@ wrappers rather than collectible worker-returned wrappers. The decoder still rea
 incoming payload, compares its bytes and verifies its SHA-256 before publication.
 A differing cached chunk receives independent backing without modifying its old
 consumer. The browser keeps at most 128 weak backing references; this cache does
-not retain a closed project, and page exit clears it. Hosts without cross-origin
-isolation/shared buffers retain ordinary independent decoding. Public schemas,
-geometry, history, revision checks, cancellation and failure recovery are unchanged.
+not retain a closed project, and page exit clears it. Separately, a successful
+export can retain up to 128 weak references to large ordinary numeric geometry
+arrays. Restore compares every decoded value, including signed zero, and checks
+again after cooperative yields and at the transport handoff before reusing a live
+immutable array; stale or
+unavailable candidates use independent decoding. Comparisons have a bounded work
+budget and remain cancellable. Page exit clears this cache. This optimization
+also works without cross-origin isolation; shared-buffer reuse still requires it.
+Public schemas, geometry, history, revision checks and failure recovery are unchanged.
 
 Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 

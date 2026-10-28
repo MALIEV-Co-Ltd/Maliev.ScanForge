@@ -126,6 +126,10 @@ export async function unpackProjectTransport<T = unknown>(
     check?: () => void;
     cooperative?: boolean;
     retainNumericBuffer?: (ref: object, values: Float64Array) => boolean;
+    reuseNumericArray?: (
+      values: Float64Array,
+      used: ReadonlySet<number[]>,
+    ) => Promise<number[] | undefined>;
     releaseOwnedNumericBuffers?: boolean;
   } = {},
 ): Promise<T> {
@@ -136,6 +140,7 @@ export async function unpackProjectTransport<T = unknown>(
     throw new Error("Invalid numeric project transport.");
   const memo = new Map<object, unknown>(),
     check = options.check ?? (() => {});
+  const usedNumericArrays = new Set<number[]>();
   const protectedBuffers = new Set<ArrayBufferLike>();
   const bufferCounts = new Map<ArrayBufferLike, number>();
   let safeToRelease = options.releaseOwnedNumericBuffers === true;
@@ -187,14 +192,40 @@ export async function unpackProjectTransport<T = unknown>(
       memo.set(entry.ref, entry.values);
       continue;
     }
-    const values = new Array<number>(entry.values.length);
-    for (let first = 0; first < values.length; first += CHUNK) {
-      check();
-      for (let i = first; i < Math.min(values.length, first + CHUNK); i++)
-        values[i] = entry.values[i];
-      if (options.cooperative !== false && first + CHUNK < values.length)
-        await yieldScanTask();
+    let values = await options.reuseNumericArray?.(
+      entry.values,
+      usedNumericArrays,
+    );
+    check();
+    if (values) {
+      if (
+        usedNumericArrays.has(values) ||
+        values.length !== entry.values.length
+      )
+        values = undefined;
+      else
+        for (let i = 0; i < entry.values.length; i++) {
+          if (i % CHUNK === 0) check();
+          if (
+            !Number.isFinite(values[i]) ||
+            !Object.is(values[i], entry.values[i])
+          ) {
+            values = undefined;
+            break;
+          }
+        }
     }
+    if (!values) {
+      values = new Array<number>(entry.values.length);
+      for (let first = 0; first < values.length; first += CHUNK) {
+        check();
+        for (let i = first; i < Math.min(values.length, first + CHUNK); i++)
+          values[i] = entry.values[i];
+        if (options.cooperative !== false && first + CHUNK < values.length)
+          await yieldScanTask();
+      }
+    }
+    usedNumericArrays.add(values);
     memo.set(entry.ref, values);
     const buffer = entry.values.buffer;
     if (

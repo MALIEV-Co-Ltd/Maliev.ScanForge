@@ -1,3 +1,4 @@
+import { projectNumericReuse } from "./project-numeric-reuse";
 import type { ProjectSession } from "./project-file";
 import type { ProjectSharedChunk } from "./project-file-codec";
 import {
@@ -92,7 +93,12 @@ export function decodeProjectInBackground(
                 throw new Error("Invalid project decoding response.");
               const decoded = await unpackProjectTransport<DecodedProjectData>(
                 data.packet,
-                { check, releaseOwnedNumericBuffers: true },
+                {
+                  check,
+                  releaseOwnedNumericBuffers: true,
+                  reuseNumericArray: (values, used) =>
+                    projectNumericReuse.match(values, check, undefined, used),
+                },
               );
               check();
               if (
