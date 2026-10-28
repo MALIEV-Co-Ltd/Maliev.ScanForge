@@ -1,0 +1,126 @@
+{
+  "scope": "Exact coverage fallback for finite Split application commit 182a740a054009514a1a4d61e6f2bcfcc747acbd",
+  "method": "When floating coverage sums disagree beyond their error threshold, verify exact equality of all three oriented area-vector components for binary64 output coordinates. Existing winding, boundary, incidence, constraint and work-budget checks remain active.",
+  "red": "The new thin shared-edge unit regression failed before the change with an incomplete face-coverage error.",
+  "focused": {
+    "tests": 84,
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 349138944,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "typecheck": {
+    "batches": 14,
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 1229664256,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "viteBuild": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1641488384,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "browser": {
+    "result": {
+      "cases": [
+        {
+          "name": "tolerance-shared-edge",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 81,
+              "sha256": "776c63f1e4878bac44411c066f22d4f4209ab86c0f42af0a8a089803ba5bf504"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 39,
+              "sha256": "4bb5c88f4b487fcbc56b99594f23b111f130b1881429a6fc42d84b97b5e13410"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 27,
+              "sha256": "47f1354f0bf8783a49f9948150b48f4be48671f1c1117d8b6064599eb6e24e5e"
+            }
+          ],
+          "outputArea": 1.4999999999988938e-6,
+          "diagnostics": {
+            "affectedFaces": 2,
+            "sourceFaces": 2,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "exact-corner-index",
+            "changed": true,
+            "topologyCache": "persistent-hit",
+            "topologyCacheBytes": 188
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+              "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+            },
+            "mcpRedo": {
+              "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+              "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+            },
+            "reopened": {
+              "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+              "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+            }
+          }
+        },
+        {
+          "name": "float32-precision",
+          "guiAndMcpFailure": true,
+          "unchangedGeometryAndHistory": true,
+          "retry": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 908632064,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "defaultSuite": {
+    "passed": false,
+    "firstRemainingFailure": "finite-planar-mesh",
+    "observation": "The legacy driver waits for separate parts while the finite cutter leaves two objects; later cases not reached.",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 916385792,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "limitations": [
+    "One thin shared-edge control establishes GUI/public-MCP behavior and matching stored output, not native Split parity.",
+    "The default suite remains incomplete; the original large-scan in-place reopen remains unresolved.",
+    "Tests cover missing coverage, displaced geometry, output rounding and interruption, but do not prove all possible degenerate geometry."
+  ]
+}
