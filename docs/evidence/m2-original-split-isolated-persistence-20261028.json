@@ -1,0 +1,41 @@
+{
+  "scope": "Original PLY3 Split, public MCP project export and reopen under cross-origin isolation",
+  "bundle": "scanforge-cca399a4af87c53b",
+  "environment": {
+    "crossOriginIsolated": true,
+    "headers": {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp"
+    },
+    "preview5173HeadersVerified": true,
+    "jobLimitBytes": 4294967296
+  },
+  "result": {
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "exportedBytes": 338123261,
+    "reopenedGeometryEqual": true,
+    "cutterPreserved": true,
+    "reopenedUndoRedo": true,
+    "computedNormalsStable": true,
+    "pageAndConsoleErrors": 0,
+    "runs": [
+      {
+        "peakJobBytes": 4214353920,
+        "cleanupConfirmed": true,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-isolated-split-persistence-20261028-r1-guard.json"
+      },
+      {
+        "peakJobBytes": 4097708032,
+        "cleanupConfirmed": true,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-isolated-split-persistence-20261028-r2-guard.json"
+      }
+    ]
+  },
+  "limitations": [
+    "Two isolated runs passed for this scan and cutter; they do not prove a universal memory bound.",
+    "Non-isolated runs remain variable and include an out-of-memory failure and an over-limit peak; see m2-original-split-numeric-encoding-20261028.json.",
+    "Reopen initializes computed normal carriers absent from the initial Split; their digests match after Redo.",
+    "Native Split parity and remaining M2 gates are still open."
+  ]
+}

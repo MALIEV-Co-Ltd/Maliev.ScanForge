@@ -1,0 +1,20 @@
+{
+  "scope": "Float32 finite-seam coverage diagnostic; not a native Split comparison",
+  "openDefect": "A rounded seam midpoint can leave an edge and materially distort coverage while both generated faces retain positive winding. The regression remains marked as an expected failure in tests/scan-split-finite-seams.test.ts.",
+  "discardedApproach": {
+    "method": "Reject when the vector sum of child face normals differs from the immediate refined face normal by more than one part per million.",
+    "observation": "The known distortion was rejected, but the retained original-scan face crossing also failed because a very small refined face had a relative difference of approximately 0.0004688. The existing full-source-face coverage test accepts that case.",
+    "disposition": "Removed the check; no arbitrary threshold or application behavior change was retained.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-coverage-tests-20261028-r1.json",
+    "ratioReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-coverage-diagnostic-20261028-r1.json"
+  },
+  "restoredTests": {
+    "passed": 19,
+    "expectedFailures": 1,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-coverage-reverted-20261028-r1.json"
+  },
+  "limitations": [
+    "The Float32 helper defect remains unresolved. The current shared GUI/MCP finite mesh Split requests the separate precise-coordinate output mode.",
+    "Native Split behavior, full M2 acceptance and merge remain open."
+  ]
+}
