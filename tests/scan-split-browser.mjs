@@ -413,6 +413,7 @@ try {
       parts: 1,
       areas: [1],
       method: "open surface signed nearest grouping",
+      unchangedPart: true,
     },
     {
       name: "open-folded-surface",
@@ -910,6 +911,8 @@ try {
       c.requiredPoint ||
       c.sharedEdge ||
       c.coplanarSharedEdge ||
+      c.name === "open-folded-surface" ||
+      c.name.startsWith("closed-") ||
       (c.finiteInterior && !process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT)
     ) {
       let state;
@@ -992,6 +995,30 @@ try {
           assert(endpoints.some((value) => Math.abs(value - 0.7) < 1e-6));
         }
       }
+      let componentAreas;
+      if (c.name.startsWith("closed-")) {
+        const inventory = await artifactJson(
+          (
+            await job(
+              await mutate("mesh_process", {
+                entityId: sourceId,
+                operation: {
+                  kind: "scanEdit",
+                  action: "inventory",
+                  inventoryScope: "components",
+                },
+              }),
+            )
+          ).result.artifact,
+        );
+        componentAreas = inventory.inventory.components
+          .map((component) => component.area)
+          .sort((a, b) => a - b);
+        assert.deepEqual(
+          componentAreas.map((value) => Math.round(value * 1e5) / 1e5),
+          c.areas,
+        );
+      }
       let facetPrecision, finiteSeamLength;
       const normalState = async () => {
         const data = await artifactJson(
@@ -1040,6 +1067,54 @@ try {
             Math.abs(finiteSeamLength - 0.2) < 1e-6,
             "Finite seam boundary length changed",
           );
+        }
+        if (c.name === "open-folded-surface") {
+          const edges = new Map();
+          for (let i = 0; i < mesh.triangles.length; i += 3)
+            for (let j = 0; j < 3; j++) {
+              const a = mesh.triangles[i + j],
+                b = mesh.triangles[i + ((j + 1) % 3)];
+              const key = [a, b].sort((x, y) => x - y).join(":");
+              const edge = edges.get(key) ?? { a, b, count: 0 };
+              edge.count++;
+              edges.set(key, edge);
+            }
+          let boundaryLength = 0,
+            seamLength = 0;
+          for (const { a, b, count } of edges.values()) {
+            assert(count <= 2, "Folded Split created a non-manifold edge");
+            if (count !== 1) continue;
+            const x1 = mesh.vertices[3 * a],
+              y1 = mesh.vertices[3 * a + 1];
+            const x2 = mesh.vertices[3 * b],
+              y2 = mesh.vertices[3 * b + 1];
+            const length = Math.hypot(
+              ...[0, 1, 2].map(
+                (axis) =>
+                  mesh.vertices[3 * a + axis] - mesh.vertices[3 * b + axis],
+              ),
+            );
+            const perimeter =
+              (x1 === x2 && (x1 === -0.5 || x1 === 1.5)) ||
+              (y1 === y2 && (y1 === -0.5 || y1 === 1.5));
+            const seam =
+              (x1 === 0 &&
+                x2 === 0 &&
+                Math.min(y1, y2) >= -0.5 &&
+                Math.max(y1, y2) <= 1) ||
+              (y1 === 1 &&
+                y2 === 1 &&
+                Math.min(x1, x2) >= 0 &&
+                Math.max(x1, x2) <= 1);
+            assert(
+              perimeter || seam,
+              "Folded Split boundary leaves the cutter or source perimeter",
+            );
+            boundaryLength += length;
+            if (seam) seamLength += length;
+          }
+          assert(Math.abs(boundaryLength - 13) < 1e-7);
+          assert(Math.abs(seamLength - 5) < 1e-7);
         }
         const result = {};
         for (const [key, count] of [
@@ -1269,6 +1344,7 @@ try {
         ...(initialImage ? { guiRedoCanvasPngIdentical: true } : {}),
         ...(facetPrecision ? { facetPrecision } : {}),
         ...(finiteSeamLength !== undefined ? { finiteSeamLength } : {}),
+        ...(componentAreas ? { componentAreas } : {}),
         normalCaches: {
           initial: initialNormals,
           guiRedo: guiRedoNormals,
