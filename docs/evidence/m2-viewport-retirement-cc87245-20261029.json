@@ -1,0 +1,172 @@
+{
+  "scope": "Viewport-owned buffer retirement on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "focusedTests": {
+    "count": 29,
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 382918656,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": true
+    }
+  },
+  "build": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1754091520,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "peakWithinLimit": true
+  },
+  "browser": {
+    "result": {
+      "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+      "componentTriangles": [2, 8, 18],
+      "componentAreas": [1, 4, 9.00000000000002],
+      "inventoryHistoryIsolation": true,
+      "renderedCountsAreasAndNavigation": true,
+      "cases": [
+        {
+          "name": "keep",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "flip",
+          "triangles": 28,
+          "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "extract",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": true
+        },
+        {
+          "name": "triangle-threshold-inclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "area-threshold-exclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        }
+      ],
+      "mcpHeldResultCancellation": true,
+      "guiCancelAndBack": true,
+      "pageErrors": []
+    },
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 742236160,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": true
+    },
+    "cleanup": [
+      {
+        "port": 57588,
+        "closed": true
+      },
+      {
+        "pid": 33328,
+        "exited": true
+      },
+      {
+        "port": 57589,
+        "closed": true
+      },
+      {
+        "pid": 49848,
+        "exited": true
+      }
+    ]
+  },
+  "renderedControl": {
+    "baselineCommit": "b10655d6bc4732a56599db7ee6e94dafe0b35a2d",
+    "baselineSha256": "9f70539e4780355d943f18e7a1910916ac36c596c82a1da31b2e9945e231ca2e",
+    "candidateSha256": "9f70539e4780355d943f18e7a1910916ac36c596c82a1da31b2e9945e231ca2e",
+    "dimensions": [1140, 694],
+    "changedPixels": 0,
+    "maximumChannelDifference": 0,
+    "method": "Pillow RGBA pixel comparison of reduced-motion processing-overlay captures"
+  },
+  "originalPly3": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-extract-project-exported",
+      "gui-extract-project-imported"
+    ],
+    "failure": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"Browser command timed out\"}}",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4295991296,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": false
+    },
+    "cleanup": [
+      {
+        "port": 51644,
+        "closed": true
+      },
+      {
+        "pid": 40432,
+        "exited": true
+      },
+      {
+        "port": 51645,
+        "closed": true
+      },
+      {
+        "pid": 30504,
+        "exited": true
+      }
+    ]
+  },
+  "limitations": [
+    "One manufactured rendered control and one camera state do not establish general visual equivalence.",
+    "The PLY-3 test exceeded the 4 GiB limit and timed out during post-import Extract digest, so post-reopen geometry and resource acceptance remain unverified.",
+    "Separate runs cannot establish a controlled memory improvement.",
+    "Native comparison remains open."
+  ]
+}
