@@ -57,10 +57,7 @@ export function meshFacetNormals(
     output.set(stored);
     return output;
   }
-  const vertices =
-    mesh.vertices instanceof Float32Array
-      ? mesh.vertices
-      : Float32Array.from(mesh.vertices);
+  const vertices = mesh.vertices;
   const triangles =
     mesh.triangles instanceof Uint32Array
       ? mesh.triangles
