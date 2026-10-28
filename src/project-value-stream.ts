@@ -1,5 +1,6 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import type { Positions } from "./types";
+import { finiteTypedValues } from "./finite-typed-values";
 
 export type ProjectValue = Positions | Uint32Array | Uint8Array | string;
 export type ProjectValueType = "f32" | "f64" | "u32" | "u8" | "text";
@@ -11,6 +12,7 @@ export function projectValueBytes(
   value: ProjectValue,
   type: ProjectValueType,
   borrowTypedStorage: true,
+  reuseStaging?: boolean,
 ): Generator<Uint8Array<ArrayBufferLike>>;
 export function projectValueBytes(
   value: ProjectValue,
@@ -21,6 +23,7 @@ export function* projectValueBytes(
   value: ProjectValue,
   type: ProjectValueType,
   borrowTypedStorage = false,
+  reuseStaging = false,
 ): Generator<Uint8Array<ArrayBufferLike>> {
   if (typeof value === "string") {
     // BRep text keeps its existing UTF-8 treatment; only numeric staging is bounded.
@@ -35,7 +38,7 @@ export function* projectValueBytes(
     ArrayBuffer.isView(value) &&
     ((type === "f32" &&
       value instanceof Float32Array &&
-      value.every(Number.isFinite)) ||
+      finiteTypedValues(value)) ||
       (type === "u32" && value instanceof Uint32Array) ||
       (type === "u8" && value instanceof Uint8Array))
   ) {
@@ -48,10 +51,14 @@ export function* projectValueBytes(
     return;
   }
   const perChunk = STAGING_BYTES / width;
+  // Opt in only for consumers that finish using a chunk before advancing.
+  const staging = reuseStaging ? new Uint8Array(STAGING_BYTES) : undefined;
   for (let first = 0; first < value.length; first += perChunk) {
     const count = Math.min(perChunk, value.length - first);
-    const bytes = new Uint8Array(count * width);
-    const view = new DataView(bytes.buffer);
+    const bytes = staging
+      ? staging.subarray(0, count * width)
+      : new Uint8Array(count * width);
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
     for (let i = 0; i < count; i++) {
       if (type === "u8") {
         const n = value[first + i];
