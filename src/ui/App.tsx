@@ -1877,8 +1877,7 @@ export function App() {
           positions: selected.positions,
           tolerance: SCAN_TOPOLOGY_TOLERANCE,
           ...operation,
-          ...(operation.action === "split" &&
-          indexedMeshMatches(selected.indexedMesh, selected.positions)
+          ...(indexedMeshMatches(selected.indexedMesh, selected.positions)
             ? { sourceIndexed: selected.indexedMesh }
             : {}),
         },

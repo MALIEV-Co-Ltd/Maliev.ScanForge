@@ -257,9 +257,28 @@ try {
     cutterId = "cutter";
   const folded = process.env.SCANFORGE_FOLDED_CONTROL === "1";
   const precision = process.env.SCANFORGE_PRECISION_CONTROL === "1";
+  const splitSmoothingControl =
+    precision && process.env.SCANFORGE_M2_SPLIT_SMOOTH === "1";
   assert(!(folded && precision));
   const source = precision
-    ? [100000000, 0, 0, 100000008, 8, 0, 99999992, 16, 0]
+    ? [
+        100000000,
+        0,
+        0,
+        100000008,
+        8,
+        0,
+        99999992,
+        16,
+        0,
+        ...(splitSmoothingControl
+          ? [
+              99999960, 0, 0, 99999976, 0, 0, 99999968, 8, 2, 99999976, 0, 0,
+              99999976, 16, 0, 99999968, 8, 2, 99999976, 16, 0, 99999960, 16, 0,
+              99999968, 8, 2, 99999960, 16, 0, 99999960, 0, 0, 99999968, 8, 2,
+            ]
+          : []),
+      ]
     : folded
       ? [
           -0.5, -0.5, 0, 1.5, -0.5, 0, 1.5, 1.5, 0, -0.5, -0.5, 0, 1.5, 1.5, 0,
@@ -274,7 +293,7 @@ try {
           1, 1, -1, 1, 1, 1, 0, 1, -1, 1, 1, 1, 0, 1, 1,
         ]
       : [1, -2, -1, 1, 4, -1, 1, -2, 3];
-  const expectedParts = folded ? 1 : 2;
+  const expectedParts = folded ? 1 : splitSmoothingControl ? 3 : 2;
   const load = async () => {
     const project = {
       format: "maliev-scanforge",
@@ -377,7 +396,10 @@ try {
       doubledArea +=
         (gui[i + 3] - gui[i]) * (gui[i + 7] - gui[i + 1]) -
         (gui[i + 4] - gui[i + 1]) * (gui[i + 6] - gui[i]);
-    assert(Math.abs(doubledArea - 192) < 1e-8, `Area changed: ${doubledArea}`);
+    assert(
+      Math.abs(doubledArea - (splitSmoothingControl ? 704 : 192)) < 1e-8,
+      `Area changed: ${doubledArea}`,
+    );
     await mutate("viewport_control", {
       action: "camera",
       position: [100000002, 8, 60],
@@ -444,6 +466,101 @@ try {
   rawEqual(await geometry(sourceId), source, "MCP Undo did not restore source");
   await mutate("history_redo", {});
   assert.deepEqual(await geometry(sourceId), gui, "MCP Redo changed output");
+  let splitSmoothing;
+  if (splitSmoothingControl) {
+    const left = [],
+      right = [];
+    for (let face = 0; face < gui.length / 9; face++) {
+      const offset = face * 9;
+      const centerX = (gui[offset] + gui[offset + 3] + gui[offset + 6]) / 3;
+      (centerX < 100000004 ? left : right).push(face);
+    }
+    assert(left.length && right.length, "Split sides could not be selected");
+    await mutate("selection_set", { entityId: sourceId, triangles: left });
+    await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        selectionOnly: true,
+        operation: { kind: "scanEdit", action: "smoothSelected" },
+      }),
+    );
+    const smoothed = await geometry(sourceId);
+    for (const face of right) {
+      assert.deepEqual(
+        smoothed.slice(face * 9, face * 9 + 9),
+        gui.slice(face * 9, face * 9 + 9),
+        `Unselected split face ${face} changed`,
+      );
+    }
+    assert.notDeepEqual(smoothed, gui, "Selected side did not smooth");
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometry(sourceId),
+      gui,
+      "Smoothing Undo changed split",
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      await geometry(sourceId),
+      smoothed,
+      "Smoothing Redo changed result",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometry(sourceId),
+      gui,
+      "Second smoothing Undo changed split",
+    );
+    await mutate("selection_set", { entityId: sourceId, triangles: left });
+    await mutate("ui_set", {
+      workspace: "mesh",
+      mode: "brush",
+      toolPanelOpen: true,
+    });
+    const canvas = await page.locator(".viewport canvas").first().boundingBox();
+    assert(canvas, "Viewport canvas is missing");
+    await page.mouse.click(
+      canvas.x + canvas.width / 2,
+      canvas.y + canvas.height / 2,
+    );
+    await page
+      .getByRole("toolbar", { name: "Quick selection tools" })
+      .waitFor();
+    const selected = await artifactJson(
+      (await call("selection_get", { entityId: sourceId })).result.artifact,
+    );
+    assert.deepEqual(
+      selected,
+      left,
+      "GUI brush gesture changed the smoothing selection",
+    );
+    const beforeSmooth = (await call("project_get")).result.undo;
+    await page
+      .getByRole("button", { name: "Smooth selected", exact: true })
+      .click();
+    for (let i = 0; i < 200; i++) {
+      await idle();
+      if ((await call("project_get")).result.undo > beforeSmooth) break;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert.deepEqual(
+      await geometry(sourceId),
+      smoothed,
+      "GUI and MCP smoothing differ after Split",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      await geometry(sourceId),
+      gui,
+      "GUI smoothing Undo changed split",
+    );
+    splitSmoothing = {
+      selectedFaces: left.length,
+      untouchedFaces: right.length,
+      undoRedo: true,
+      guiMcpGeometryEqual: true,
+    };
+  }
   const saved = await job(await call("project_export", { format: "project" }));
   await job(
     await mutate("project_import", {
@@ -458,6 +575,7 @@ try {
   assert.deepEqual(errors, []);
   assert.deepEqual(consoleErrors, []);
   ledger.result = {
+    ...(splitSmoothing ? { splitSmoothing } : {}),
     sourceFaces: source.length / 9,
     outputFaces: gui.length / 9,
     parts: done.result.diagnostics.parts,
