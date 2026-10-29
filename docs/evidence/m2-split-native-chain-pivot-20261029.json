@@ -25,5 +25,19 @@
   "limitations": [
     "All function boundaries and pseudocode derive from a runtime-derived image, not a live call trace. The observed native Split path and function parameter types are not established.",
     "No application change or exact native parity is claimed. M2 remains open."
-  ]
+  ],
+  "pivotMath": {
+    "method": "Read-only Ghidra 12.1.4 import without automatic analysis; three explicitly selected callee addresses.",
+    "bodies": [
+      "140332120..1403327fe",
+      "140332b40..140332cc0",
+      "140335570..14033576d"
+    ],
+    "observation": "The pivot candidate calls 0x140332120 for interior values and 0x140332b40 when comparing some structured results. The latter compares integer metadata and arrays of 32-bit words. The former combines values associated with three indices and large structured operands. These observations suggest nontrivial numeric comparison but do not identify its mathematical formula, return type or live role.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-math-static-20261029-r1/evidence.json",
+    "evidenceSha256": "23944722de7f44452f834956f6943b943d5c1d99c00e896a2101890d6f4ef62b",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-math-guard-20261029-r1.json",
+    "guardSha256": "2ea3d92d6056f472a3b316122c5b45eb807857d0d74a64843c073b029ab30cde",
+    "peakJobBytes": 676282368
+  }
 }
