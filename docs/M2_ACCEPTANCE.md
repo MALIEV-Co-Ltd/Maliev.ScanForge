@@ -494,3 +494,7 @@ A manufactured single-triangle control exposes a remaining shared Split defect: 
 ## Split contact-copy precision, 2026-10-28
 
 The shared Split path now collapses consecutive numerical copies of the same observed contact when they round to the same Float32 output, while retaining original source corners. The original `ply-1` face 7207 previously rejected; it now passes direct winding/area checks and GUI/public-MCP geometry, history, reopening and cancellation checks. Direct one-cutter runs on the three original scans retain source and cutter buffers and pass area and seam-edge-set checks under the 4 GiB guard. [Scoped evidence](evidence/m2-split-contact-copy-20261028.json) records the browser, suite and typecheck boundaries. The independent review found no concrete blocker for this incremental correction. The finite interior-cutter defect and all native and milestone gates remain open.
+
+## Split corner association investigation, 2026-10-29
+
+The [static worker and offline diagnostic](evidence/m2-split-worker-corner-tolerance-20261029.json) suggest separate corner-association and point-reuse tolerances. A two-stage model reproduces the vertex sets of ten previously observed native controls, but does not compare facets or establish runtime order or safe general behavior. No application behavior changed; native Split and the other M2 acceptance gates remain open.
