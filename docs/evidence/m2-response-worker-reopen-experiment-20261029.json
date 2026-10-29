@@ -32,5 +32,16 @@
     "logSha256": "b62263f46bc26295afb2774f5540675b55d1ca9714fae019c11e9ec3d00b5e55",
     "guardSha256": "09b35b8111706e1d5fead61ed664c3d80a7cfbff2ea9cde8b503d02660b65d15"
   },
+  "mainReconstructionTrace": {
+    "build": "scanforge-70e708a6595114a8",
+    "method": "Repeat the actual downloaded-file reopen with diagnostic events around main-thread numeric-buffer reuse and allocation; no forced collection or process-profile snapshots.",
+    "result": "The decoder returned four numeric buffers. The first, containing 33263505 values, matched and reused an existing array and reached ready. The next buffer contained 5612016 values; its reuse check started but no match or allocation event appeared before the GUI and page probe timed out. Peak job bytes 4314853376 exceeded the nominal limit; cleanup was confirmed. This is the last reported stage, not proof of an exact allocation or scheduling cause.",
+    "downloadedFileSha256": "273adb7c6d373d4d5268ac08082f872a56b57dc67ebf3858cc549ba3caeaac72",
+    "transportSha256": "32bc909f5314c87abfc41be89df4ce249904d0b267e7c5dc98791058819cf7ca",
+    "decodingClientSha256": "ece7f326d0ce939e2ca4f087131434112176ae0beda943e592cce0c753a649db",
+    "harnessSha256": "86e187617b39949116e2ed3edafb8e247a4fd58df33148081b8ac4afacf97c3a",
+    "logSha256": "30eb057fd7d245d0c5948e3659934b22f49c3fb8283f528641893a44d8f7e43f",
+    "guardSha256": "2e21bcbd8cc9b4f8f0e6641a86a70d6267e1034dec67dcfa2e013baedf4810c8"
+  },
   "limits": "Single instrumented run with three experimental changes; their individual effects are not established. The worker lacks production lifecycle, cancellation, error, authorization and compatibility review. No independent full-download integrity, public-MCP import after download, post-reopen history, full suite, native Split acceptance or resource guarantee is established. No application change was integrated."
 }
