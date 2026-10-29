@@ -1,0 +1,43 @@
+{
+  "scope": "Follow-on bounded static candidate trace and disposable ordering experiments. No behavior change or native parity is claimed.",
+  "nativeStatic": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "method": "Read-only Ghidra 12.1.4 import with automatic analysis disabled; disassemble and decompile the three call targets observed in candidate 0x14032c400.",
+    "bodies": [
+      "14032e330..14032e6b8",
+      "14032edf0..14032f113",
+      "14032dae0..14032e328"
+    ],
+    "observations": [
+      "Candidate 0x14032e330 uses a four-byte FNV-style lookup for an integer key. Its decompilation walks records, searches three integer slots for a key and appends the following two cyclic slots as a pair.",
+      "Candidate 0x14032c400 calls 0x14032edf0 for both values of a returned pair and conditionally calls 0x14032dae0; the data structures and geometry semantics are not established."
+    ],
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-branches-static-20261029-r1/evidence.json",
+    "evidenceSha256": "46993fc6f636f9f76c2e766036d10c2acbb1a4e47fef20fc44b9a223171ec60b",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-branches-guard-20261029-r1.json",
+    "guardSha256": "a495629417396ccbf13d3c0a422c20a8c0e48bee9112e800e8ec645ea1223c9c",
+    "peakJobBytes": 676196352
+  },
+  "applicationExperiments": {
+    "candidateCommit": "6046b7c891c8adf33c48b0bbd17af9d278062bb0",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "baselineMatches": [12, 22, 10],
+    "preserveRawSegmentTraversalMatches": [12, 22, 10],
+    "omitCandidateSortMatches": [10, 20, 11],
+    "omitConstraintSortMatches": [12, 22, 10],
+    "omitAllThreeNormalizationsMatches": [13, 18, 10],
+    "observation": "None of these local ordering variants matches all native outputs. No variant was applied to production.",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-experiments-20261029.json",
+    "resultsSha256": "900ef60a43d4c0c1ddddc22c2f9ba08000fbb95feb91bd33c6928f27f2002d2c",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-guard-20261029.json",
+    "guardSha256": "bbff8b12ab43a168c4742fb487f75cd5dd4b0f7d79ec20fd9b17134c66963daf",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-runner-20261029.py",
+    "runnerSha256": "867a2f743efe215274d3cd384869eb73f888609422bc291231d399d6c2d79cf7",
+    "peakJobBytes": 358043648
+  },
+  "jobLimitBytes": 4294967296,
+  "limitations": [
+    "Candidate static paths and record types remain unbound to the observed native Split operation.",
+    "Three manufactured examples do not establish general triangulation behavior. Exact native parity and M2 closure remain open."
+  ]
+}
