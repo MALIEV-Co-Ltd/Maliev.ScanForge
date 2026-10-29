@@ -94,13 +94,19 @@ it.skipIf(!process.env.SCANFORGE_M2_ORIGINAL_PLY)(
       return { min, max };
     });
     if (precise) {
-      expect(partX).toHaveLength(2);
       expect(
-        partX.filter((range) => range.max <= cutter[0] + 1e-6),
-      ).toHaveLength(1);
-      expect(
-        partX.filter((range) => range.min >= cutter[0] - 1e-6),
-      ).toHaveLength(1);
+        partX.every(
+          (range) =>
+            range.max <= cutter[0] + 1e-6 || range.min >= cutter[0] - 1e-6,
+        ),
+      ).toBe(true);
+      expect(partX.some((range) => range.max <= cutter[0] + 1e-6)).toBe(true);
+      expect(partX.some((range) => range.min >= cutter[0] - 1e-6)).toBe(true);
+      if (
+        createHash("sha256").update(bytes).digest("hex") ===
+        "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2"
+      )
+        expect(partX).toHaveLength(2);
     }
     if (!precise) {
       const combined = combineFiniteSplitParts(

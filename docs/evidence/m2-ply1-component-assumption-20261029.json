@@ -1,0 +1,35 @@
+{
+  "scope": "Original PLY-1 precise finite Split component diagnostic and local-test correction; no native comparison",
+  "inputSha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+  "sourceFaces": 274154,
+  "observations": [
+    "The topology analyzer reports 31 source components and four degenerate triangles. It skips those zero-area triangles while building edge adjacency, leaving each as a singleton component.",
+    "Split's compact edge grouping retains the four zero-area faces and reports 27 source groups. The precise Split returns 30 parts; two large parts contain the four retained zero-area facets and their indexed edge neighbors.",
+    "The unchanged baseline and the source-coverage candidate produced byte-identical complete diagnostic receipts, including all output segment hashes, part sizes, source hashes and area.",
+    "All 30 resulting parts lie on one side of the cutter within 1e-6 mm and both sides are represented."
+  ],
+  "testCorrection": "The generic original-file test now checks per-part sidedness and representation of both sides. The previously intended two-part assertion remains for the pinned PLY-3 SHA-256, rather than assuming every input is one component.",
+  "ply1": {
+    "parts": 30,
+    "inputArea": 8239.89807684384,
+    "outputArea": 8239.89807684396,
+    "guardSha256": "a3f9cf6582512175605ccdf0c01e6713b2fe4bf92bf785c47d742d41e52c95ee",
+    "peakBytes": 455520256
+  },
+  "ply3": {
+    "parts": 2,
+    "guardSha256": "660eaa2f906b30af434250015e51879282f64fa1f67c13881cf8b272fc860ea9",
+    "peakBytes": 2113466368
+  },
+  "baselineAndCandidateReceiptSha256": "7cdf27dd5ead0ad837b41c35b502e2996e5f9033f5d5dcd11b55bd3a01f35b91",
+  "componentOriginReceiptSha256": "c5f4de7cd96df345c95c8513d647b410709dd899a9ec60372a59c674d58973d8",
+  "componentOriginGuardSha256": "7246cb52edd840bc9e3d3676d5c2efb40c779583f4732d6f9c8d8f7aa193f77f",
+  "executedTestSha256": "46c9c61613777731e5c7f1df6a6658e3495ab7f87625863a5e2dcc51bdcd8220",
+  "formattedTestSha256": "b04a35a255b9eaf8d7a658ffaa131f20c3b1facddfb36025bfa08aece097e4ee",
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Input component definitions differ: topology diagnostics exclude degenerate faces from adjacency, while Split grouping uses all indexed edges.",
+    "Sidedness, area and matching baseline output do not establish native Split equivalence or full GUI/MCP lifecycle for PLY-1.",
+    "The M2 native and milestone acceptance gates remain open."
+  ]
+}
