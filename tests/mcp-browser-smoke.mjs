@@ -239,6 +239,69 @@ try {
   const snapshot = await call("project_get");
   assert.equal(snapshot.result.objects.length, 1);
   assert(snapshot.result.objects[0].exactCad);
+  const curved = await job(
+    await mutate("cad_create", {
+      name: "Ownership cylinder",
+      recipe: {
+        kind: "primitive",
+        input: {
+          kind: "cylinder",
+          center: [0, 0, 4],
+          axis: [0, 0, 1],
+          radius: 3,
+          height: 8,
+        },
+      },
+    }),
+  );
+  const curveId = curved.entityIds[0];
+  const curveDigest = await job(
+    await call("object_geometry_digest", { entityId: curveId }),
+  );
+  const curveReferences = await job(
+    await call("alignment_references", { entityId: curveId }),
+  );
+  const patterned = await job(
+    await mutate("cad_create", {
+      name: "Ownership pattern",
+      recipe: {
+        kind: "pattern",
+        source: { featureId: curved.featureId },
+        pattern: { kind: "linear", count: 3, step: [200, 0, 0] },
+      },
+    }),
+  );
+  await page.getByText("Ownership pattern", { exact: true }).first().waitFor();
+  assert.deepEqual(
+    await job(await call("object_geometry_digest", { entityId: curveId })),
+    curveDigest,
+  );
+  assert.deepEqual(
+    (await job(await call("alignment_references", { entityId: curveId })))
+      .references,
+    curveReferences.references,
+  );
+  await page.getByRole("tab", { name: "Edit / View", exact: true }).click();
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  assert(
+    !(await call("project_get")).result.objects.some(
+      (entity) => entity.id === patterned.entityIds[0],
+    ),
+  );
+  await mutate("history_redo", {});
+  assert(
+    (await call("project_get")).result.objects.some(
+      (entity) => entity.id === patterned.entityIds[0],
+    ),
+  );
+  assert.deepEqual(
+    await job(await call("object_geometry_digest", { entityId: curveId })),
+    curveDigest,
+  );
+  await mutate("history_undo", {});
+  await mutate("history_undo", {});
+  assert.equal((await call("project_get")).result.objects.length, 1);
+  await page.getByRole("tab", { name: "Main", exact: true }).click();
   await mutate("object_select", { entityId: created.entityIds[0] });
   const referenceRevision = (await call("project_get")).revision;
   const references = await job(
@@ -923,6 +986,7 @@ try {
     "official SDK stdio initialize/tools/resources",
     "browser pairing and persisted connection after Settings closes",
     "exact CAD creation rendered in UI",
+    "curved CAD pattern preserves source hashes and exact face references across GUI Undo and MCP Redo",
     "MCP and GUI exact alignment references with identical coordinates and unchanged history",
     "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
     "native coordinate preview/cancel, primary-plane Z default and explicit X, GUI/MCP Apply and Undo restore identical scan geometry",
