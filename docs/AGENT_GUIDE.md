@@ -958,7 +958,16 @@ The command is `mesh_process`. Inspect the terminal job result and new object's 
 
 Call `project_export` with `{"format":"step"}` (or `project`/`stl`). Poll its job. The result contains `{artifactId,name,mime,bytes}`. `visible` defaults to true for geometry exports; project exports retain the whole project and its saved timeline.
 
-For STEP, every included object must be exact CAD. Hide scan/reference objects before exporting STEP, or export an all-CAD workspace. This check avoids silently omitting requested visible geometry.
+For STEP, every included object must be exact CAD by default. Hide scan/reference
+objects before exporting, or pass `cadOnly:true` to export only exact CAD within
+the visibility scope. This explicit option returns `excludedEntityIds` alongside
+the artifact fields; it rejects if no exact object remains. `visible:false`
+includes hidden objects before applying that filter. `cadOnly` is STEP-only;
+supplying it for project or STL export rejects. The GUI's Export STEP button
+submits this same exact-only job, downloads its artifact and releases it. Both
+paths use the shared artifact quota (1 GiB aggregate), owner/revision fences and
+native/job leases. GUI cancellation remains reachable while busy; agents use
+`job_cancel`. A cancelled late export publishes no artifact or history edit.
 
 Call `artifact_read` with the artifact ID, byte `offset` and optional `length` (maximum 262,144). Decode each returned `base64` chunk, append in offset order, and stop at `eof:true`. Use the agent's own authorized file tools to save bytes at the requested location. ScanForge does not grant arbitrary filesystem read/write privileges. Delete disposable artifacts through `artifact_delete`; exporting does not mark the browser project as saved.
 

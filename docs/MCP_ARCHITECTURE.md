@@ -1407,3 +1407,15 @@ revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
 checks remain active.
 
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+
+## Shared STEP export delivery
+
+GUI STEP export submits the same read-only `project_export` job as MCP, using
+the explicit STEP-only `cadOnly` filter. Both paths share visibility, exact-body
+validation, cancellation, revision/owner fences and artifact quota. The GUI reads
+the leased immutable artifact locally, downloads it and deletes it; MCP callers
+use `artifact_read` and `artifact_delete`. A portal keeps the GUI's owned cancel
+control reachable while the workspace is busy. Late cancelled results publish no
+artifact and do not edit history.
+If cancellation interrupts GUI delivery after the owned job succeeds, the GUI
+also retires that completed artifact through the shared job observer's cleanup.

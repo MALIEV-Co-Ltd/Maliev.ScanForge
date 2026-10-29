@@ -41,6 +41,8 @@ import {
 } from "../import-batch";
 import { entityDisplayStats } from "../entity-display-stats";
 import { GeometryStatistics } from "./GeometryStatistics";
+import { CadJobCancel } from "./CadJobCancel";
+import { runApplicationJobCommand } from "./application-job-command";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -759,6 +761,9 @@ export function App() {
   surfaceFitRef.current = surfaceFit;
   const surfaceFitAbort = useRef<AbortController | null>(null);
   const cad = useRef<CadClient | null>(null);
+  const stepExportAbort = useRef<AbortController | null>(null);
+  const [stepExportBusy, setStepExportBusy] = useState(false);
+  useEffect(() => () => stepExportAbort.current?.abort(), []);
   const fileInput = useRef<HTMLInputElement>(null);
   const modeRef = useRef(mode);
   modeRef.current = mode;
@@ -4509,20 +4514,53 @@ export function App() {
     });
   }
   function exportStep() {
-    void action("Exporting exact CAD…", async () => {
-      const shapes = entities.filter((e) => e.visible && e.kernelId);
-      if (!shapes.length)
-        throw new Error(
-          "Create or import exact CAD first. Scan meshes cannot be exported as editable STEP solids.",
-        );
-      const data = await cad.current!.exportStep(
-        shapes.map((e) => e.kernelId!),
+    if (busy || stepExportAbort.current) return;
+    const controller = new AbortController();
+    stepExportAbort.current = controller;
+    setStepExportBusy(true);
+    setError("");
+    void (async () => {
+      const result = await runApplicationJobCommand(
+        workspaceApi,
+        "project_export",
+        { format: "step", cadOnly: true },
+        {
+          readOnly: true,
+          signal: controller.signal,
+          onDiscardedResult: async (discarded) => {
+            if (typeof discarded.artifactId === "string")
+              await workspaceApi.invoke("artifact_delete", {
+                artifactId: discarded.artifactId,
+              });
+          },
+          cancelledMessage: "STEP export cancelled.",
+          leaseMessage: "STEP export exceeded its time limit.",
+        },
       );
-      download(data as BlobPart, "scanforge.step");
+      const artifactId = result.artifactId as string;
+      try {
+        controller.signal.throwIfAborted();
+        download(workspaceApi.readArtifactBlob(artifactId), "scanforge.step");
+      } finally {
+        await workspaceApi.invoke("artifact_delete", { artifactId });
+      }
       setMessage(
-        `Exported ${shapes.length} CAD object(s) · scan/reference meshes excluded`,
+        `Exact STEP downloaded · ${(result.excludedEntityIds as string[]).length} scan/reference object(s) excluded`,
       );
-    });
+    })()
+      .catch((failure) =>
+        setError(
+          controller.signal.aborted
+            ? "STEP export cancelled."
+            : errorText(failure),
+        ),
+      )
+      .finally(() => {
+        if (stepExportAbort.current === controller) {
+          stepExportAbort.current = null;
+          setStepExportBusy(false);
+        }
+      });
   }
   let measurementError = "";
   const measurement = (() => {
@@ -5101,6 +5139,12 @@ export function App() {
         if (files.length && !editingBlocked) void openFiles(files);
       }}
     >
+      {stepExportBusy && (
+        <CadJobCancel
+          label="Cancel STEP export"
+          onCancel={() => stepExportAbort.current?.abort()}
+        />
+      )}
       <Ribbon
         projectRecovery={
           <ProjectRecovery
