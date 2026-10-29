@@ -1,0 +1,34 @@
+{
+  "scope": "Disposable investigation of triangulation topology on three native Split controls; not a native runtime trace or application change.",
+  "candidateSource": "0375a9ca (same affected application source as 3b954f85)",
+  "matchesOrderedAs": ["convex", "concave", "cyclic"],
+  "baselineMatches": [12, 22, 10],
+  "localDelaunayMatches": [11, 20, 15],
+  "pointSetComparison": {
+    "observation": "After Float32 conversion, application and native unordered coordinate sets are identical for each control, with 12, 20 and 12 unique positions respectively. This does not establish matching indexed seam identities, winding, face order, or general coordinate equality.",
+    "raw": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-facets-20261029.json",
+    "rawSha256": "b19c8ccf110098a33fe6f60edcd0decfeb301e7a500ed2da13b5ac27df9962d9",
+    "analysis": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-edge-analysis-20261029.json",
+    "analysisSha256": "aada0c3ca61e8e6dd78ee1651302d0aa67f635984fb26f7032852d96041b77fc",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-edge-analysis-20261029.py",
+    "runnerSha256": "eef65319c5930d34823678d33c2cd3832513e9c11800e366d77bc125551ac84a"
+  },
+  "experiment": {
+    "method": "After recovering the cuts in each original face, repeatedly flip locally non-Delaunay unconstrained edges. This probe uses an arbitrary floating threshold and lacks robust predicates and complete resource checks; it is unsuitable for production. Five point orderings and forward/reversed edge traversal were measured.",
+    "observation": "The baseline-order variant increased cyclic facet matches from 10 to 15, while convex decreased from 12 to 11 and concave from 22 to 20. No variant matched all controls. The analysis found a native concave differing edge with positive in-circle score in a convex quadrilateral, although whether that edge is constrained was not established.",
+    "prototype": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-delaunay-prototype-20261029.ts",
+    "prototypeSha256": "0b1b9982bef627534d44706e134f880a11bb065a404c8df8d7a9953d18fdb240",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-delaunay-variants-runner-20261029.py",
+    "runnerSha256": "6bd2d18621320cb0c5bfd7c5ba8ea719091a536c5759a8d1cde7d183327361e3",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-delaunay-variants-20261029.json",
+    "resultsSha256": "7b4be4abc7236fe5115d4839a7362445f9d9ed6d750a0f28696850b59812ea69",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-delaunay-variants-guard-20261029.json",
+    "guardSha256": "9e810603665c120369bd608d85e6aa4a23102a8da2cc9ee20e8c2c456518c072",
+    "peakJobBytes": 362487808
+  },
+  "limitations": [
+    "Facet matches ignore triangle winding and ordering.",
+    "Synthetic probes do not establish native runtime routing or general equivalence; GUI/MCP native acceptance remains open.",
+    "No production behavior or MCP contract changed."
+  ]
+}
