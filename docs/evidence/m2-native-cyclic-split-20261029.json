@@ -1,0 +1,47 @@
+{
+  "scope": "Installed-native Split sensitivity to cyclic vertex order of identical source faces; shared-kernel comparison, not GUI or public MCP acceptance.",
+  "source": {
+    "original": "tests/fixtures/m2-native-cyclic-split-20261029/square-source.stl",
+    "originalSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+    "cyclic": "tests/fixtures/m2-native-cyclic-split-20261029/square-source-cyclic.stl",
+    "cyclicSha256": "683913baca0fe49e7d1ac803030896bcf65d6da418704e9c129084cd323c5a09",
+    "construction": "Each triangle's three STL vertex records are cyclically rotated once. Face order, geometry, normal records and winding remain unchanged."
+  },
+  "cutterSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+  "native": {
+    "product": "QUICKSURFACE Pro 8.0.123",
+    "units": "mm",
+    "command": "Edit square-source-cyclic > Additional tools > Split Mesh > Split with another body or a mesh > Preview > OK",
+    "envelope": false,
+    "guiFacets": 18,
+    "guiIndividualMeshes": 2,
+    "guiHoles": 3,
+    "export": "tests/fixtures/m2-native-cyclic-split-20261029/native-convex-cyclic-result-20261029.stl",
+    "exportSha256": "f815bf0459131a4ecc665f3bf45b282bff3d9cc9ceccc779affd904b748e4aa9",
+    "nativeScene": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/native-convex-cyclic-scene-20261029.qsf",
+    "nativeSceneSha256": "cbc91971755e254448c83fe02e09a37abba3b04b9493ea8c6b5d520659792b9d",
+    "unorderedFacetsSharedWithOriginal": 15,
+    "unorderedFacetsDifferentPerResult": 3
+  },
+  "application": {
+    "candidateCommit": "6046b7c891c8adf33c48b0bbd17af9d278062bb0",
+    "cyclicOutputFacets": 18,
+    "cyclicFacetsSharedWithNative": 10,
+    "cyclicFacetsSharedWithApplicationOriginal": 7,
+    "diagnostic": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cyclic-comparison-20261029.json",
+    "diagnosticSha256": "903025d5f55e3cb30ca0dba92405d442fb3887f719c27d4d170fece881b7b093"
+  },
+  "regression": {
+    "test": "tests/m2-native-cyclic-split.test.ts",
+    "result": "Source permutation and native order-sensitive observation pass; all three exact native comparisons are expected failures. Four passed, three expected failures.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cyclic-regression-20261029-r2.json",
+    "receiptSha256": "f02934e36cd7b7147ad8753bda903a48e3fbe2ffc611963620030b57217d7da2",
+    "peakJobBytes": 345088000,
+    "jobLimitBytes": 4294967296
+  },
+  "limitations": [
+    "One cyclic permutation of one manufactured control: the cause may occur during native import, splitting or export; no internal mechanism is proven.",
+    "STL does not retain indexed seam identity. Component and hole counts are native GUI observations.",
+    "No equivalent GUI/public-MCP cyclic fixture replay has been performed. Native triangulation remains mismatched; M2 is open."
+  ]
+}
