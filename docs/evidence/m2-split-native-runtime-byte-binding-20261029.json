@@ -1,0 +1,32 @@
+{
+  "scope": "Read-only selected code-byte binding in the existing QuickSurface process, not a runtime call trace.",
+  "pid": 29820,
+  "moduleBase": "0x140000000",
+  "installedSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "method": "Opened the named process with query and VM-read access; verified its executable path and compared 32 bytes at each of eight candidate RVAs with the retained analysis image. No process writes, function calls, suspension, UI input or native command occurred.",
+  "candidateRvas": [
+    "0x67df80",
+    "0x67cec0",
+    "0x32a500",
+    "0x3290a0",
+    "0x32c400",
+    "0x32dae0",
+    "0x32f980",
+    "0x330350"
+  ],
+  "result": "All eight 32-byte spans matched; this pins only the selected entry bytes in this process at the observation time.",
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-byte-binding-20261029.json",
+  "receiptSha256": "13985bad712e93861c44286b8f27ce68aa0f1c449a7a5bcab4c523d33addf3fe",
+  "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-byte-binding-20261029.py",
+  "scriptSha256": "48ef340b0ae33bd4c5ac7ebd0469eab6d5201fdbfc1333832e26f8573473d532",
+  "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-runtime-byte-binding-guard-20261029.json",
+  "guardSha256": "49d4fe3282f0c224cce198b30334def6bcc29a3ef5242556fc5515bb4a5942b9",
+  "peakJobBytes": 73289728,
+  "jobLimitBytes": 4294967296,
+  "limitations": [
+    "A matching entry prefix does not establish whole-function identity or that Split invokes these functions.",
+    "The PID and module binding must be checked afresh before any subsequent observation.",
+    "Native Split parity and M2 acceptance remain open."
+  ]
+}
