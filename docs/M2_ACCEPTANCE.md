@@ -524,3 +524,5 @@ Another combined run opened the actual MCP-downloaded file, whose on-disk hash m
 An instrumented repeat localized its last reported main-thread stage: the first numeric buffer reused an existing array, while the second buffer's reuse check started without reporting completion before timeout. This trace does not establish the exact cause of the stall or close the resource gate.
 
 Further [reuse and native-base64 diagnostics](evidence/m2-response-worker-reopen-experiment-20261029.json) include one run that timed out before decoder return and one that reopened the actual downloaded project with matching geometry. The latter reused all four numeric arrays but peaked 720896 bytes above the nominal 4 GiB limit. These isolated runs do not prove the cause of the difference or satisfy resource acceptance.
+
+Moving Blob reading into the experimental response worker passed a small public-MCP byte and offset control but failed the large download with a bridge timeout and an above-limit peak. That diagnostic was reverted; it did not reach reopen or establish a remedy.
