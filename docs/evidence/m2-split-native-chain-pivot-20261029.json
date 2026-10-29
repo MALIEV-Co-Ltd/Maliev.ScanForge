@@ -54,5 +54,9 @@
     "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-arithmetic-guard-20261029-r1.json",
     "guardSha256": "bc24e654dda21a5adc620da1cd04e4bdf9e696fa0e59ac8619afde20b72db320",
     "peakJobBytes": 675753984
+  },
+  "pivotAssemblyReturn": {
+    "observation": "The retained assembly initializes R14 to the first interior sequence index, replaces it with the candidate index on an update path, and returns R14 via RAX. This resolves the decompiler void-signature omission for the observed instructions. The comparator appears consistent with selecting the minimum structured score; score semantics and Split runtime binding remain unverified.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pivot-assembly-followup-20261029.json"
   }
 }
