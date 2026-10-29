@@ -6,6 +6,15 @@
   "nativeControls": "The retained convex, concave and cyclic STL facet multisets match the shared operation and the GUI output. Public MCP geometry digests match the GUI in all three browser runs; Undo/Redo, cancellation and binary reopening were checked. These comparisons ignore facet winding and output order, and do not establish arbitrary-input native equivalence.",
   "largeScan": "On the original 3691133-face PLY-3 scan the browser performed GUI Split and Extract with source and cutter preserved and Undo/Redo, peaking at 4033089536 job bytes. A direct precise PLY-3 control passed after lazy construction was introduced; earlier candidate versions passed direct PLY-1, PLY-2 and PLY-3 controls. The browser run did not include full artifact download and reopen, and native geometry was not compared for these scans.",
   "review": "Independent review identified a private test-fixture path, eager ordering-tree work on distant facets, and nontransactional tree accounting after interruption. The fixture was made portable; two work-budget regressions, query-order independence, cancellation inside expansion and retry accounting were covered. The reviewer found no additional concrete blocker, while general cavity robustness and native equivalence remain unproven.",
+  "combinedPreview": {
+    "origin": "http://127.0.0.1:5173",
+    "checkout": "C:/Users/Shoung/.codex/worktrees/scanforge-combined-preview/Maliev.ScanForge",
+    "result": "The five validated Split source files and MCP discovery description were applied after confirming the prior Split files matched the base. A separate browser session loaded the combined preview and its convex control matched the retained native facet set and GUI/public-MCP geometry, including Undo/Redo, cancellation and binary reopen. No page errors; guard peak 880971776 bytes and cleanup confirmed. Other combined-preview changes were preserved.",
+    "harnessSha256": "384aae1a9257545950ad1d45dd6338af277bb0d37f374fea9e8f6ecafd5d79a9",
+    "logSha256": "af17870682790681d0ac3c266f5147ba6c3a5ec889cb725ab51effecdd539176",
+    "guardSha256": "9b9b738493f418b9964c97651b747f3b6d35e7dc8218090cad65ce2c4e3dd7f6",
+    "ledgerSha256": "ef9120ec2cdbe298158718cdf3a61e6736fa3232fbffdf0d4fa837aea9825176"
+  },
   "validation": "The final source passed the batched typecheck and 344 Split tests with five skipped. After updating two stale observation tests, the full suite passed 50544 tests with 76 skipped. A rendered convex control matched its retained native facets and had identical canvas pixels after GUI redo; 131 automation, bridge and MCP tests passed after the catalog-description update. All reported guarded runs confirmed cleanup.",
   "guardSha256": {
     "fullSuite": "e7d8cf84a07ec4f16bb7059e784bd211ccb15ce748c260ee5ef122ab22b9a7be",
