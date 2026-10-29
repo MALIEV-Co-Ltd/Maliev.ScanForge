@@ -73,6 +73,18 @@
     "limitations": [
       "The deliberate throw run failed as intended and cleaned up; the other instrumented run passed. Neither verifies native behavior.",
       "The scratch prototype does not check every polygon validity condition and must not be used in production."
-    ]
+    ],
+    "nontrivialControl": {
+      "observation": "A deterministic synthetic face and four intersecting segments reached a constructed strip with chain lengths 4 and 3. On this input, nearest-pivot and baseline produced 17 matching unordered facets and passed positive winding and total area checks. The farthest-pivot prototype failed a later constraint recovery. The runner itself exited zero because it records child exit codes, so its passing guard is cleanup evidence, not a pass for both variants. Neither candidate has been compared to a native export.",
+      "input": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-20261029.json",
+      "inputSha256": "6e6fcf591ec52f767870312af9fc0515d0544c440da62751ebddeb9a36225422",
+      "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-results-20261029.json",
+      "resultsSha256": "4f4c234f80de3011e7fee1807a7048148e9b552e05fd98b05451314bc773c231",
+      "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-guard-20261029.json",
+      "guardSha256": "927fe9dba3ebb60811dc51d740d48ce69ce02fd90e4b0e54325cd8518e74b37e",
+      "peakJobBytes": 290963456,
+      "baseline": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-one-result-20261029.json",
+      "baselineSha256": "9871053aba416affb3dbc10c65412d013c1ca4070b351821aad72d492a20840e"
+    }
   }
 }
