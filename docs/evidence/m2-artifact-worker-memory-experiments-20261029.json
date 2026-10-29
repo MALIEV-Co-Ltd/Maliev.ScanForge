@@ -1,0 +1,47 @@
+{
+  "scope": "Three isolated, instrumented experiments following the original PLY-3 export, full public-MCP artifact read, and GUI file reopen; none is a production change",
+  "control": "m2-ply3-open-download-attribution-20261029.json",
+  "hypothesis": "Moving per-chunk artifact conversion into a worker and terminating it after artifact deletion could release conversion allocations before the project decoder starts.",
+  "experiments": [
+    {
+      "name": "artifact conversion worker with existing WebCrypto digest",
+      "build": "scanforge-e1fe200d50533f00",
+      "result": "The full artifact read completed and the worker was terminated. The decoder read the first 266108040-byte decompressed chunk but did not report completing its hash before the GUI completion wait timed out.",
+      "logSha256": "abf0d4c3f115b696cfae7fa25c6a2f79c5d10ef360514978902cde280e379075",
+      "guardSha256": "71eb0ec54e520fd179f501a528ee9be8ba465a38e4207a63fccff75823b33e73",
+      "peakJobBytes": 4560289792,
+      "cleanupConfirmed": true
+    },
+    {
+      "name": "artifact conversion worker and incremental decoder hashing",
+      "build": "scanforge-2114cf992188e817",
+      "result": "The first two Float64 chunks were read and hashed, then the decoder returned 'Array buffer allocation failed' at chunk 2. The GUI reported one failed file; no post-failure scene digest was obtained.",
+      "logSha256": "fa3c2f129210fdaf00195eb1cc7f1499c70b0683be72b0f9cf71be778c7d42e4",
+      "guardSha256": "439f62a7000a618138d900ea6d017132b7bb80a05adc329678dfbb2247f63c7a",
+      "peakJobBytes": 4338524160,
+      "cleanupConfirmed": true
+    },
+    {
+      "name": "baseline artifact read with diagnostic garbage collection after deletion",
+      "build": "scanforge-9584bb34bd8925a0",
+      "result": "An explicit CDP garbage collection ran after the full artifact read and deletion. The decoder reported all compressed chunks read and hashed, but did not report completing the decoded session before the GUI wait and page-state probe timed out. This is a diagnostic, not normal application behavior.",
+      "logSha256": "237fb732986cc149219783ae624b5bd2b7accd6818419cbf7eaa58707dc3de72",
+      "guardSha256": "87ad7af7732ef7b51358cbd2c9a9235d8375700f12cb737dacaca063f87f6cfc",
+      "peakJobBytes": 4343533568,
+      "cleanupConfirmed": true
+    }
+  ],
+  "guardLimitBytes": 4294967296,
+  "combinedCandidate": {
+    "worktree": "C:/Users/Shoung/.codex/worktrees/m2-gui-decode-trace/Maliev.ScanForge",
+    "apiSha256": "c86e1df13bc2f100f95de208ed2b91df97aabc012f99478c6ab94c34c9096c79",
+    "workerSha256": "4e36ac67afb86747f9f94c701825b9380b367884fc73c7a89fc495a7e7046e7d",
+    "codecSha256": "1d11867df37eb8c882fe1a4cff8aa01fb50c1d614401373f46bb4bc292810e6d",
+    "harnessSha256": "e8d3d6f92d519274509aa8453498e359da45ef58e261c6b7d4047485cfd181cf"
+  },
+  "limitations": [
+    "The workers and hashing changes are diagnostic only. The worker prototype assumes sequential reads and has not been tested for concurrent requests, cancellation, owner lifetime or API fallback.",
+    "Each experiment is a single instrumented run and all failed; stage differences do not prove a complete allocation model or a viable fix.",
+    "The guard reported peaks above its nominal limit but confirmed cleanup. Artifact integrity, GUI/public-MCP parity after a fix, native Split parity and M2 closure remain open."
+  ]
+}
