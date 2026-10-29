@@ -39,7 +39,7 @@ it("opens the closed native cutter seam without subdividing its facets", () => {
   expect(target).toEqual(targetBefore);
 });
 
-it.fails("matches native convex mesh Split facets on the pinned inputs", () => {
+it("matches native convex mesh Split facets on the pinned inputs", () => {
   const root = new URL(
     "./fixtures/m2-native-convex-split-20261029/",
     import.meta.url,

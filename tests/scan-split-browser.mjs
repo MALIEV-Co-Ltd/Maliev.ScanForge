@@ -524,7 +524,23 @@ try {
       "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
     "concave-cutter.stl":
       "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+    "square-source-cyclic.stl":
+      "683913baca0fe49e7d1ac803030896bcf65d6da418704e9c129084cd323c5a09",
   };
+  if (process.env.SCANFORGE_SPLIT_CYCLIC_SOURCE === "1") {
+    fileInputs["closed-convex"] = [
+      "square-source-cyclic.stl",
+      "convex-cutter.stl",
+    ];
+    const control = cases.find((c) => c.name === "closed-convex");
+    control.source = Array.from(
+      { length: control.source.length / 9 },
+      (_, i) => [
+        ...control.source.slice(i * 9 + 3, i * 9 + 9),
+        ...control.source.slice(i * 9, i * 9 + 3),
+      ],
+    ).flat();
+  }
   const load = async (c) => {
     if (inputDirectory) {
       await mutate("project_new", { discard: true });
@@ -946,6 +962,39 @@ try {
           }));
       const guiDigest = await geometryDigest(sourceId);
       const guiPositions = await geometry(sourceId);
+      if (process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE) {
+        const native = await readFile(
+          process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE,
+        );
+        if (process.env.SCANFORGE_SPLIT_NATIVE_SHA256)
+          assert.equal(
+            createHash("sha256").update(native).digest("hex"),
+            process.env.SCANFORGE_SPLIT_NATIVE_SHA256,
+          );
+        const count = native.readUInt32LE(80),
+          expected = [];
+        assert.equal(native.length, 84 + count * 50);
+        for (let i = 0; i < count; i++)
+          for (let j = 0; j < 9; j++)
+            expected.push(native.readFloatLE(84 + i * 50 + 12 + j * 4));
+        const facets = (p) =>
+          Array.from({ length: p.length / 9 }, (_, i) =>
+            [0, 3, 6]
+              .map((d) =>
+                [0, 1, 2].map((k) => Math.fround(p[9 * i + d + k])).join(","),
+              )
+              .sort()
+              .join("|"),
+          ).sort();
+        assert.deepEqual(
+          facets(guiPositions),
+          facets(expected),
+          "GUI facets differ from retained native STL",
+        );
+        console.log(
+          JSON.stringify({ nativeFacetMatch: c.name, facetCount: count }),
+        );
+      }
       if (c.requiredPoint)
         assert(
           guiPositions.some(

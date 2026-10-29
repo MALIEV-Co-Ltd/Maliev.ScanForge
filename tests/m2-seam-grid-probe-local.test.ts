@@ -20,8 +20,9 @@ it("proves the retained original seam has no interior Float32 point on its edge"
   const vertices = new Float32Array([...source, ...refined.addedVertices]);
   expect(refined.constraints).toHaveLength(2);
   const [a, b] = refined.constraints;
-  const first = Array.from(vertices.slice(3 * a, 3 * a + 3));
-  const second = Array.from(vertices.slice(3 * b, 3 * b + 3));
+  const [first, second] = [a, b]
+    .map((id) => Array.from(vertices.slice(3 * id, 3 * id + 3)))
+    .sort((left, right) => left[1] - right[1]);
   expect(first[0]).toBe(second[0]);
   // The whole edge stays in these two fixed-exponent Float32 intervals.
   for (const point of [first, second]) {

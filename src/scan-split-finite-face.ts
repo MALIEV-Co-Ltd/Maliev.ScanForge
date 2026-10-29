@@ -1,4 +1,5 @@
 import type { Vec3 } from "./types";
+import type { ExperimentalPointOrder } from "./scan-split-native-point-order";
 import {
   exactSegmentTriangleCrossing,
   exactEdgeWitnessCrossing,
@@ -41,6 +42,35 @@ const onSegment = (p: P2, a: P2, b: P2) =>
   parameter(p, a, b) >= 0 &&
   parameter(p, a, b) <= 1;
 
+// Isolated experiment only: exact binary64 incircle sign.
+const experimentalIncircle = (a: P2, b: P2, c: P2, d: P2): number => {
+  const values = [...a, ...b, ...c, ...d];
+  const view = new DataView(new ArrayBuffer(8));
+  const parts = values.map((value): [bigint, number] => {
+    view.setFloat64(0, value, false);
+    const high = view.getUint32(0, false),
+      low = view.getUint32(4, false);
+    const exponent = (high >>> 20) & 0x7ff;
+    let mantissa = (BigInt(high & 0xfffff) << 32n) | BigInt(low);
+    if (exponent) mantissa |= 1n << 52n;
+    if (high >>> 31) mantissa = -mantissa;
+    return [mantissa, exponent ? exponent - 1075 : -1074];
+  });
+  const minimum = Math.min(
+    0,
+    ...parts.filter(([m]) => m !== 0n).map(([, e]) => e),
+  );
+  const v = parts.map(([m, e]) => m << BigInt(e - minimum));
+  const x = [v[0] - v[6], v[2] - v[6], v[4] - v[6]],
+    y = [v[1] - v[7], v[3] - v[7], v[5] - v[7]];
+  const z = x.map((n, i) => n * n + y[i] * y[i]);
+  const determinant =
+    x[0] * (y[1] * z[2] - y[2] * z[1]) +
+    x[1] * (y[2] * z[0] - y[0] * z[2]) +
+    x[2] * (y[0] * z[1] - y[1] * z[0]);
+  return determinant > 0n ? 1 : determinant < 0n ? -1 : 0;
+};
+
 /** Local constrained triangulation. Shared-edge propagation and output grouping are separate. */
 export function triangulateFiniteFace(
   face: readonly [Vec3, Vec3, Vec3],
@@ -50,6 +80,7 @@ export function triangulateFiniteFace(
     maxWork?: number;
     check?: () => void;
     preciseCoordinates?: boolean;
+    experimentalPointOrder?: ExperimentalPointOrder;
     boundaryContacts?: readonly {
       edge: 0 | 1 | 2;
       t: number;
@@ -436,19 +467,32 @@ export function triangulateFiniteFace(
       throw new Error("Finite endpoint binding is invalid.");
     bindings.set(id, contact);
   }
-  const raw = segments
-    .map(([p, q], index) => {
-      const firstBinding = bindings.get(`${index}:0`),
-        secondBinding = bindings.get(`${index}:1`);
-      const first =
-          firstBinding === undefined ? project(p) : boundary[firstBinding],
-        second =
-          secondBinding === undefined ? project(q) : boundary[secondBinding];
-      return (
-        compare(first, second) <= 0 ? [first, second] : [second, first]
-      ) as [P2, P2];
-    })
-    .sort(
+  // Preserve the precise path when distinct intersections share a Float32 key.
+  const pointOrder =
+    options.experimentalPointOrder &&
+    !segments.some((segment) =>
+      segment.some((point) => {
+        tick();
+        return options.experimentalPointOrder!.ambiguous.has(
+          JSON.stringify(point.map(Math.fround)),
+        );
+      }),
+    )
+      ? options.experimentalPointOrder.ranks
+      : undefined;
+  const raw = segments.map(([p, q], index) => {
+    const firstBinding = bindings.get(`${index}:0`),
+      secondBinding = bindings.get(`${index}:1`);
+    const first =
+        firstBinding === undefined ? project(p) : boundary[firstBinding],
+      second =
+        secondBinding === undefined ? project(q) : boundary[secondBinding];
+    return (
+      compare(first, second) <= 0 ? [first, second] : [second, first]
+    ) as [P2, P2];
+  });
+  if (!pointOrder)
+    raw.sort(
       (left, right) => compare(left[0], right[0]) || compare(left[1], right[1]),
     );
   for (const s of raw)
@@ -489,7 +533,7 @@ export function triangulateFiniteFace(
         breaks[j].push(point);
       }
     }
-  candidates.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+  if (!pointOrder) candidates.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
   const points: P2[] = [
     [0, 0],
     [1, 0],
@@ -520,6 +564,18 @@ export function triangulateFiniteFace(
         );
     }
     if (!found) points.push(p);
+  }
+  // Experimental global first-seen hit ordering, without captured oracle data.
+  if (pointOrder) {
+    const order = (p: P2) => {
+      const xyz = a.map((n, i) => Math.fround(n + p[0] * u[i] + p[1] * v[i]));
+      return pointOrder.get(JSON.stringify(xyz)) ?? Number.MAX_SAFE_INTEGER;
+    };
+    const extra = points.slice(3).sort((p, q) => {
+      tick();
+      return order(p) - order(q);
+    });
+    points.splice(3, points.length - 3, ...extra);
   }
   const edgeContacts = new Map<
     number,
@@ -583,6 +639,43 @@ export function triangulateFiniteFace(
       (compare(b, contact) < 0 && compare(contact, a) < 0)
     );
   };
+  const nativeMetric = (() => {
+    if (!pointOrder) return undefined;
+    const f = Math.fround;
+    const nativeA = face[0].map(f),
+      nativeB = face[1].map(f),
+      nativeC = face[2].map(f);
+    const nativeU = nativeB.map((v, i) => f(v - nativeA[i])) as Vec3;
+    const nativeV = nativeC.map((v, i) => f(v - nativeA[i])) as Vec3;
+    const unit = (v: Vec3): Vec3 => {
+      const length = Math.hypot(...v);
+      return v.map((x) => (length > 0 ? x / length : NaN)) as Vec3;
+    };
+    const normal = unit(cross3(nativeU, nativeV));
+    const secondary = unit(cross3(normal, nativeU));
+    const xAxis = unit(cross3(secondary, normal));
+    const yAxis = unit(cross3(normal, xAxis));
+    const xOffset = -dot(nativeA, xAxis),
+      yOffset = -dot(nativeA, yAxis);
+    const value = (p: readonly number[], axis: Vec3, offset: number) =>
+      f(p[1] * axis[1] + p[0] * axis[0] + p[2] * axis[2] + offset);
+    const dx = value(nativeB, xAxis, xOffset),
+      dy = value(nativeC, yAxis, yOffset);
+    const metric = (point: P2): P2 => {
+      const xyz = a.map((n, i) => f(n + point[0] * u[i] + point[1] * v[i]));
+      return [value(xyz, xAxis, xOffset) / dx, value(xyz, yAxis, yOffset) / dy];
+    };
+    const seen = new Set<string>();
+    for (const point of points) {
+      tick();
+      const projected = metric(point);
+      if (!projected.every(Number.isFinite)) return undefined;
+      const key = JSON.stringify(projected);
+      if (seen.has(key)) return undefined;
+      seen.add(key);
+    }
+    return metric;
+  })();
   let tris: Tri[] = [[0, 1, 2]];
   const make = (i: number, j: number, k: number): Tri => {
     const d = orientSign(points[i], points[j], points[k]);
@@ -610,7 +703,11 @@ export function triangulateFiniteFace(
       throw new Error(
         "Finite boundary contact could not be placed on its source edge.",
       );
-    if (boundary) {
+    if (
+      boundary &&
+      (!nativeMetric ||
+        orientSign(points[boundary[0]], points[boundary[1]], p) !== 0)
+    ) {
       const [x, y] = boundary,
         next: Tri[] = [];
       for (const t of tris) {
@@ -632,8 +729,46 @@ export function triangulateFiniteFace(
       });
       if (index < 0)
         throw new Error("Finite constraint point could not be located.");
-      const [x, y, z] = tris[index];
-      tris.splice(index, 1, make(x, y, id), make(y, z, id), make(z, x, id));
+      if (!nativeMetric) {
+        const [x, y, z] = tris[index];
+        tris.splice(index, 1, make(x, y, id), make(y, z, id), make(z, x, id));
+        continue;
+      }
+      const edges = new Map<string, { a: number; b: number; count: number }>();
+      const keep: Tri[] = [];
+      for (const triangle of tris) {
+        tick();
+        const [x, y, z] = triangle;
+        if (
+          experimentalIncircle(
+            nativeMetric(points[x]),
+            nativeMetric(points[y]),
+            nativeMetric(points[z]),
+            nativeMetric(p),
+          ) < 0
+        ) {
+          keep.push(triangle);
+          continue;
+        }
+        for (const [a, b] of [
+          [x, y],
+          [y, z],
+          [z, x],
+        ]) {
+          tick();
+          const k = key(a, b),
+            prior = edges.get(k);
+          if (prior) prior.count++;
+          else edges.set(k, { a, b, count: 1 });
+        }
+      }
+      if (!edges.size) throw new Error("Finite cavity is empty.");
+      for (const edge of edges.values()) {
+        tick();
+        if (edge.count === 1 && orientSign(points[edge.a], points[edge.b], p))
+          keep.push(make(edge.a, edge.b, id));
+      }
+      tris = keep;
     }
   }
   const constraints: Seg[] = [];
@@ -742,6 +877,25 @@ export function triangulateFiniteFace(
       throw new Error("Finite constraint could not be recovered.");
     tris = recovered;
     locked.add(wanted);
+  }
+  if (pointOrder) {
+    const directed = new Set<string>();
+    let invalid = false;
+    for (const tri of tris)
+      for (let i = 0; i < 3; i++) {
+        tick();
+        const edge = `${tri[i]}:${tri[(i + 1) % 3]}`;
+        if (directed.has(edge)) invalid = true;
+        directed.add(edge);
+      }
+    if (invalid)
+      return triangulateFiniteFace(
+        face,
+        segments,
+        { ...options, experimentalPointOrder: undefined },
+        rotatedForPrecision,
+        budget,
+      );
   }
   const vertices = points.map(
     (p) =>

@@ -59,7 +59,7 @@ it("retains the observed native sensitivity to cyclic source vertex order", () =
   expect(cyclic).toHaveLength(18);
   expect(original.filter((face) => cyclic.includes(face))).toHaveLength(15);
 });
-it.fails("matches native Split for a cyclic source vertex order", () => {
+it("matches native Split for a cyclic source vertex order", () => {
   const source = load(
     "square-source-cyclic.stl",
     "683913baca0fe49e7d1ac803030896bcf65d6da418704e9c129084cd323c5a09",

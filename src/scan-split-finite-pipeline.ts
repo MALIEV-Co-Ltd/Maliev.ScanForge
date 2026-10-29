@@ -8,6 +8,7 @@ import { groupFiniteTrianglesCompact } from "./scan-split-finite-group";
 import { selectFiniteIndexedSource } from "./scan-split-finite-source";
 import { analyzeFiniteCutIncidence } from "./scan-split-finite-incidence";
 import { indexFiniteTriangleSoup } from "./scan-split-finite-soup";
+import { makeExperimentalPointOrder } from "./scan-split-native-point-order";
 
 type RefinementOptions = {
   selection?: Uint8Array;
@@ -15,6 +16,8 @@ type RefinementOptions = {
   tolerance?: number;
   maxWork?: number;
   maxTypedBytes?: number;
+  maxEstimatedTemporaryBytes?: number;
+  maxPointOrderEntries?: number;
   onProgress?: (fraction: number, stage: string) => void;
   check?: () => void;
   preciseCoordinates?: boolean;
@@ -175,6 +178,13 @@ export function refineFiniteCutterMesh(
   const maxTypedBytes = options.maxTypedBytes ?? Number.MAX_SAFE_INTEGER;
   if (!Number.isSafeInteger(maxTypedBytes) || maxTypedBytes < 0)
     throw new Error("Finite refinement typed memory budget is invalid.");
+  const maxEstimatedTemporaryBytes =
+    options.maxEstimatedTemporaryBytes ?? 1024 * 1024 * 1024;
+  if (
+    !Number.isSafeInteger(maxEstimatedTemporaryBytes) ||
+    maxEstimatedTemporaryBytes < 0
+  )
+    throw new Error("Finite refinement temporary memory budget is invalid.");
   let work = 0;
   const check = () => {
     if (options.signal?.aborted)
@@ -195,9 +205,27 @@ export function refineFiniteCutterMesh(
     tolerance: options.tolerance,
     signal: options.signal,
     maxWork: limit,
+    // Conservative per-reference estimate, not an engine heap measurement.
+    maxNativeTreeReferences: Math.floor(maxEstimatedTemporaryBytes / 32),
+    maxCollectedHits: Math.floor(maxEstimatedTemporaryBytes / 1024),
     check,
     onProgress: (fraction, stage) => report(fraction * 0.4, stage),
   });
+  const maxPointOrderEntries =
+    options.maxPointOrderEntries ??
+    Math.floor(maxEstimatedTemporaryBytes / 256);
+  function* collectedPoints() {
+    for (const [, hits] of [...collected.faces].sort((a, b) => {
+      check();
+      return a[0] - b[0];
+    }))
+      for (const hit of hits) for (const point of hit.points) yield point;
+  }
+  const experimentalPointOrder = makeExperimentalPointOrder(
+    collectedPoints(),
+    maxPointOrderEntries,
+    check,
+  );
   report(0.45, "Propagating finite edge contacts");
   const registry = buildSparseFiniteEdgeContactsIndexed(
     vertices,
@@ -266,6 +294,7 @@ export function refineFiniteCutterMesh(
     try {
       mesh = triangulateFiniteFace(face, input.segments, {
         ...input,
+        experimentalPointOrder,
         preciseCoordinates: options.preciseCoordinates,
         signal: options.signal,
         maxWork: limit,

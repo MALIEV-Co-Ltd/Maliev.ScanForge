@@ -1,4 +1,8 @@
 import { Box3, Ray, Triangle, Vector3 } from "three";
+import {
+  buildExperimentalNativeTree,
+  visitExperimentalNativeTree,
+} from "./scan-split-native-order-tree";
 import type { Vec3 } from "./types";
 import {
   appendSplitTriangle,
@@ -579,6 +583,8 @@ export function collectFiniteCutterHits(
     tolerance?: number;
     signal?: AbortSignal;
     maxWork?: number;
+    maxNativeTreeReferences?: number;
+    maxCollectedHits?: number;
     check?: () => void;
     onProgress?: (fraction: number, stage: string) => void;
     preciseCoordinates?: boolean;
@@ -608,6 +614,10 @@ export function collectFiniteCutterHits(
   if (!Number.isSafeInteger(limit) || limit < 1)
     throw new Error("Finite cutter work budget is invalid.");
   let work = 0;
+  const maxCollectedHits = options.maxCollectedHits ?? Number.MAX_SAFE_INTEGER;
+  if (!Number.isSafeInteger(maxCollectedHits) || maxCollectedHits < 0)
+    throw new Error("Finite cutter hit budget is invalid.");
+  let collectedHits = 0;
   const tick = () => {
     if (options.signal?.aborted)
       throw new DOMException("Aborted", "AbortError");
@@ -639,6 +649,42 @@ export function collectFiniteCutterHits(
     });
   }
   const tree = treeOf(cutterFaces, tick);
+  // Experimental native-order index; defer it until a source face has candidates.
+  let nativeTree:
+    ReturnType<typeof buildExperimentalNativeTree<CutterFace>> | undefined;
+  const getNativeTree = () => {
+    if (nativeTree) return nativeTree;
+    const exactBounds = new Box3();
+    for (const f of cutterFaces)
+      for (const p of f.points) {
+        tick();
+        exactBounds.expandByPoint(vec(p));
+      }
+    const nativeLow = exactBounds.min
+      .toArray()
+      .map((v) => Math.fround(v - 0.009999999776482582));
+    const nativeHigh = exactBounds.max
+      .toArray()
+      .map((v) => Math.fround(v + 0.009999999776482582));
+    const nativeCenter = nativeLow.map((v, i) =>
+      Math.fround(Math.fround(v + nativeHigh[i]) * 0.5),
+    );
+    const nativeHalf =
+      Math.max(...nativeLow.map((v, i) => Math.fround(nativeHigh[i] - v))) *
+      0.5;
+    const nativeLower = nativeCenter.map((v) => Math.fround(v - nativeHalf));
+    const nativeUpper = nativeCenter.map((v) => Math.fround(v + nativeHalf));
+    nativeTree = buildExperimentalNativeTree(
+      new Box3(
+        new Vector3(...(nativeLower as [number, number, number])),
+        new Vector3(...(nativeUpper as [number, number, number])),
+      ),
+      cutterFaces,
+      tick,
+      { maxReferences: options.maxNativeTreeReferences },
+    );
+    return nativeTree;
+  };
   const faces = new Map<
     number,
     {
@@ -677,14 +723,35 @@ export function collectFiniteCutterHits(
       nearby,
       tick,
     );
-    nearby.sort((a, b) => {
-      tick();
-      return a.index - b.index;
-    });
+    if (nearby.length) {
+      const query = new Box3()
+        .setFromPoints(source.map(vec))
+        .expandByScalar(tolerance);
+      const nativeOrder = new Map<number, number>();
+      visitExperimentalNativeTree(
+        getNativeTree(),
+        query,
+        (face) => {
+          if (!nativeOrder.has(face.index))
+            nativeOrder.set(face.index, nativeOrder.size);
+        },
+        tick,
+      );
+      nearby.sort((a, b) => {
+        tick();
+        return (
+          (nativeOrder.get(a.index) ?? Number.MAX_SAFE_INTEGER) -
+            (nativeOrder.get(b.index) ?? Number.MAX_SAFE_INTEGER) ||
+          a.index - b.index
+        );
+      });
+    }
     for (const face of nearby) {
       tick();
       const hit = intersection(source, face, true, options.preciseCoordinates);
       if (!hit.points.length) continue;
+      if (++collectedHits > maxCollectedHits)
+        throw new Error("Finite cutter hit budget exceeded.");
       const record = {
         cutterFace: face.index,
         points: hit.points,

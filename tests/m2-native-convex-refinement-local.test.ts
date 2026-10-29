@@ -47,6 +47,7 @@ it("observes refined facets before seam materialization", () => {
     refinedFacets: 18,
     nativeFacets: 18,
     constraints: 8,
-    exactFacetMatches: 12,
+    exactFacetMatches: 18,
   });
+  expect(a).toEqual(b);
 });

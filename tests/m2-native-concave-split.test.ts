@@ -39,53 +39,47 @@ it("opens the closed native concave cutter seam without subdividing its facets",
   expect(target).toEqual(targetBefore);
 });
 
-it.fails(
-  "matches native concave mesh Split facets on the pinned inputs",
-  () => {
-    const root = new URL(
-      "./fixtures/m2-native-concave-split-20261029/",
-      import.meta.url,
+it("matches native concave mesh Split facets on the pinned inputs", () => {
+  const root = new URL(
+    "./fixtures/m2-native-concave-split-20261029/",
+    import.meta.url,
+  );
+  const load = (name: string, sha256: string) => {
+    const bytes = readFileSync(new URL(name, root));
+    expect(createHash("sha256").update(bytes).digest("hex")).toBe(sha256);
+    return parseMesh(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+      "stl",
     );
-    const load = (name: string, sha256: string) => {
-      const bytes = readFileSync(new URL(name, root));
-      expect(createHash("sha256").update(bytes).digest("hex")).toBe(sha256);
-      return parseMesh(
-        bytes.buffer.slice(
-          bytes.byteOffset,
-          bytes.byteOffset + bytes.byteLength,
-        ),
-        "stl",
+  };
+  const source = load(
+    "square-source.stl",
+    "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+  );
+  const target = load(
+    "concave-cutter.stl",
+    "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+  );
+  const expected = load(
+    "native-concave-result-20261029.stl",
+    "590bab9d40c4a026bc5bb7ed3a6b240436a439c2d2a06e0e64058ec6b4f6acca",
+  );
+  const output = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: source,
+    target,
+  });
+  expect(output.positions?.length).toBe(expected.length);
+  const facets = (p: ArrayLike<number>) => {
+    const rows: string[] = [];
+    for (let i = 0; i < p.length; i += 9) {
+      const vertices = [0, 3, 6].map((offset) =>
+        [0, 1, 2].map((axis) => Math.fround(p[i + offset + axis])).join(","),
       );
-    };
-    const source = load(
-      "square-source.stl",
-      "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
-    );
-    const target = load(
-      "concave-cutter.stl",
-      "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
-    );
-    const expected = load(
-      "native-concave-result-20261029.stl",
-      "590bab9d40c4a026bc5bb7ed3a6b240436a439c2d2a06e0e64058ec6b4f6acca",
-    );
-    const output = runScanEdit({
-      kind: "scanEdit",
-      action: "split",
-      positions: source,
-      target,
-    });
-    expect(output.positions?.length).toBe(expected.length);
-    const facets = (p: ArrayLike<number>) => {
-      const rows: string[] = [];
-      for (let i = 0; i < p.length; i += 9) {
-        const vertices = [0, 3, 6].map((offset) =>
-          [0, 1, 2].map((axis) => Math.fround(p[i + offset + axis])).join(","),
-        );
-        rows.push(vertices.sort().join("|"));
-      }
-      return rows.sort();
-    };
-    expect(facets(output.positions!)).toEqual(facets(expected));
-  },
-);
+      rows.push(vertices.sort().join("|"));
+    }
+    return rows.sort();
+  };
+  expect(facets(output.positions!)).toEqual(facets(expected));
+});
