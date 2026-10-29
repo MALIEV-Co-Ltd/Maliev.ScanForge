@@ -529,6 +529,8 @@ Another combined run opened the actual MCP-downloaded file, whose on-disk hash m
 
 An instrumented repeat localized its last reported main-thread stage: the first numeric buffer reused an existing array, while the second buffer's reuse check started without reporting completion before timeout. This trace does not establish the exact cause of the stall or close the resource gate.
 
+On the later shared-index candidate, one [original PLY-3 replay](evidence/m2-ply3-shared-indices-reopen-20261029.json) completed GUI Split/Extract, full public-MCP artifact download and GUI reopen with matching core geometry. Its reported Job peak was 4,259,962,880 bytes, 35,004,416 bytes below 4 GiB. A subsequent extended replay timed out before reopening and recorded a peak above the strict threshold. GUI post-reopen Undo/Redo passed on the smaller PLY-1 control but was not reached on PLY-3. Repeatability, PLY-3 post-reopen history, independent download-hash comparison and broader resource and native acceptance remain open. Earlier failed receipts remain recorded.
+
 Further [reuse and native-base64 diagnostics](evidence/m2-response-worker-reopen-experiment-20261029.json) include one run that timed out before decoder return and one that reopened the actual downloaded project with matching geometry. The latter reused all four numeric arrays but peaked 720896 bytes above the nominal 4 GiB limit. These isolated runs do not prove the cause of the difference or satisfy resource acceptance.
 
 Moving Blob reading into the experimental response worker passed a small public-MCP byte and offset control but failed the large download with a bridge timeout and an above-limit peak. That diagnostic was reverted; it did not reach reopen or establish a remedy.
