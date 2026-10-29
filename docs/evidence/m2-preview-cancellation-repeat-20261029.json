@@ -1,0 +1,22 @@
+{
+  "scope": "Follow-up on the combined 5173 preview's finite-interior Split cancellation timeout; no application change or general cancellation claim.",
+  "previousFailure": "The prior preview run timed out waiting for a held GUI processing-worker result. Its cleanup succeeded; the cause was not recorded.",
+  "followUp": {
+    "instrumented": "One isolated browser run on the combined preview recorded processing-worker creation and messages and passed GUI/MCP held-result cancellation, geometry equality, history, binary reopen and the existing precision-failure control. Its recorded peak was 880164864 bytes; cleanup was confirmed.",
+    "uninstrumented": "The original harness then passed once and four additional consecutive times in fresh isolated browser sessions. Each run checked the same GUI/MCP cancellation, geometry, history, reopen and precision-failure assertions. Recorded peaks ranged from 883646464 to 896073728 bytes, and all runs cleaned up.",
+    "interpretation": "The prior timeout was not reproduced in these five uninstrumented repeats. The instrumented passing run cannot establish what occurred in the failed run or whether the original failure was caused by application state, scheduling or the harness."
+  },
+  "sourceSha256": {
+    "combined/src/ui/App.tsx": "520a79f3eae87176697aa18d71126c42330a3d71647267c71fdca781dcfd196c",
+    "combined/src/processing-client.ts": "abf153510e899a6cdc0eb272f9897d26636460d9edb072dde2bb95d5e98f7417",
+    "combined/src/processing-worker.ts": "eae6d47660fe2795fd1eb6253c93d9a6a60fef96e4ffd509152777af0b6aa9b4",
+    "combined/src/scan-edit.ts": "d851ce1a6908d266d25ef3ae3e16cc77c176847f7256a2bdfb59fd25374fc1f4",
+    "combined/src/scan-split-finite-seams.ts": "9ef20fca8edddd50d1df1ecfdd16fc541dbf291f3b104baf192c3881f62611b9",
+    "tests/m2-combined-split-validation.mjs": "384aae1a9257545950ad1d45dd6338af277bb0d37f374fea9e8f6ecafd5d79a9"
+  },
+  "limits": [
+    "The first failure remains unexplained; the repeats do not prove it is fixed or measure its failure rate.",
+    "The tests hold the worker result rather than observing interruption inside the active geometry kernel.",
+    "These are one small finite-interior fixture and do not close native Split, PLY-3 reopen or M2 acceptance."
+  ]
+}
