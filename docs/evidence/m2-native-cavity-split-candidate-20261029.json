@@ -1,0 +1,29 @@
+{
+  "scope": "Shared finite Split triangulation candidate and bounded native controls; not complete M2 acceptance",
+  "baseCommit": "d196982e556802e999c01daf8feaaceb4a8b1200",
+  "build": "scanforge-7a470a0118fe03cd",
+  "method": "Use a query-expanded native-order hypothesis and cavity triangulation while retaining the current source-area and seam-coverage guards. The GUI and public MCP invoke the same finite Split operation. The build predates only the agent-catalog description update.",
+  "nativeControls": "The retained convex, concave and cyclic STL facet multisets match the shared operation and the GUI output. Public MCP geometry digests match the GUI in all three browser runs; Undo/Redo, cancellation and binary reopening were checked. These comparisons ignore facet winding and output order, and do not establish arbitrary-input native equivalence.",
+  "largeScan": "On the original 3691133-face PLY-3 scan the browser performed GUI Split and Extract with source and cutter preserved and Undo/Redo, peaking at 4033089536 job bytes. A direct precise PLY-3 control passed after lazy construction was introduced; earlier candidate versions passed direct PLY-1, PLY-2 and PLY-3 controls. The browser run did not include full artifact download and reopen, and native geometry was not compared for these scans.",
+  "review": "Independent review identified a private test-fixture path, eager ordering-tree work on distant facets, and nontransactional tree accounting after interruption. The fixture was made portable; two work-budget regressions, query-order independence, cancellation inside expansion and retry accounting were covered. The reviewer found no additional concrete blocker, while general cavity robustness and native equivalence remain unproven.",
+  "validation": "The final source passed the batched typecheck and 344 Split tests with five skipped. After updating two stale observation tests, the full suite passed 50544 tests with 76 skipped. A rendered convex control matched its retained native facets and had identical canvas pixels after GUI redo; 131 automation, bridge and MCP tests passed after the catalog-description update. All reported guarded runs confirmed cleanup.",
+  "guardSha256": {
+    "fullSuite": "e7d8cf84a07ec4f16bb7059e784bd211ccb15ce748c260ee5ef122ab22b9a7be",
+    "typecheck": "8db07f8f1ea5fb2a485e5e7d94f9a3d430f204c1afad1f12e85902dec382721b",
+    "splitSuite": "2013a1e1e336e4f3445d5650f8a4ef4f6a883becc174f432f191aeb50a2f532e",
+    "convexBrowser": "ea9c044351a571b001f816cd63abde412b994b398392efc9de08aea66f323cd0",
+    "concaveBrowser": "6587d3afc04191b2e14eec0895af54e2b4c8a8a28f3269c7477b231eeaff4d18",
+    "cyclicBrowser": "8b221b9947fea131668aed262e9dfbc02aafa9a56d5edd61002845f7f96d0538",
+    "render": "acd9333ef8a2cf735accc318c5a9505cacf6d25d5d8c9e53d6eb40ebbdab8f1d",
+    "ply3Browser": "be0c5a2781e9d3583a5fd49b2675501c13b9a5e51fa33456aa1d8083c5d87229",
+    "catalog": "d0331be5e47f86b0e6f8b295f3e5dabb9765affc84185c826f755a7b6ba03bfe"
+  },
+  "sourceSha256": {
+    "src/scan-edit-general-split.ts": "28d381a7cc3db8cbd34bef64b5b3da373e91bf7c7826904cbbe284b41eeca36b",
+    "src/scan-split-finite-face.ts": "507f63f35a9403e9454248053d0aa6e58c39b5cb23d94749c7327b7cccf27ffb",
+    "src/scan-split-finite-pipeline.ts": "3f5af2a931f16ebbefef1396cdf4653a3bed47c4f84d84575c00e897fc01338c",
+    "src/scan-split-native-order-tree.ts": "0414e639a0e1a3ee71d1fa6e4bebd39d3676c5bd22f40058bccbf0eec0b5b7b4",
+    "src/scan-split-native-point-order.ts": "5a9d457133a856ab25e1a03e3b85389255a1b33843d05116d6f3d19310077cf4"
+  },
+  "limits": "The tree and insertion order are inferred from retained static observations and limited fixture behavior. Small-radius native controls with area loss, other native Split workflows, broader lifecycle and the 4 GiB full-download/reopen gate remain open. This change does not close M2."
+}
