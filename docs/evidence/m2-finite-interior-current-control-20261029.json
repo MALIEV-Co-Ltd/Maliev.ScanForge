@@ -1,0 +1,26 @@
+{
+  "scope": "Current-branch manufactured finite interior Split control, shared operation and GUI/public MCP; no native comparison",
+  "applicationCommit": "567d4d4aa0b87fe02df5c93a3214487c9086ad32",
+  "implementationCommit": "76a0e3f6620e07ec724f0e325e0190f379418aff",
+  "build": "scanforge-6c98716b7e959ddb",
+  "control": "The source triangle and finite cutter are the same manufactured coordinates as m2-split-finite-support-20261027.json. The current shared regression checks the bounded seam and source/cutter preservation.",
+  "focusedTests": "75 tests passed across finite Split tolerance, face triangulation and seams under the 4 GiB guard.",
+  "browser": {
+    "result": "The finite-interior GUI and public MCP operations produced matching indexed geometry, one component, 0.5 source area and 0.2 total boundary length for the two sides of the bounded seam. The test checked GUI/MCP undo and redo, binary reopen, held-result cancellation, GUI-close cancellation and normal-cache digests. The accompanying Float32 precision failure control verified unchanged geometry and history and retry. No page errors were reported.",
+    "peakJobBytes": 911224832,
+    "cleanupConfirmed": true,
+    "positionsSha256": "965763573d6279bcbcce61111d5625904e213676afe582b79bafcadfa4e0ee6e",
+    "indexedVerticesSha256": "0e08b8f24b462cc787ba8335395725d4c4039e734910f18c771ef40f7092b7ac",
+    "indexedTrianglesSha256": "4ffb8d1f0e0d74a9c8909acd96cd32d0fb4f8282e937ed3d6236464edf56952e"
+  },
+  "sha256": {
+    "src/scan-edit-general-split.ts": "ebfb6a3488c4625b963586a7214d8b1e17c926c6a9a58aeeeb98f09ff00a97db",
+    "tests/scan-split-tolerance.test.ts": "8edb391e5e13a4893f259f63fecef259c61c733952cc920e747594507584b59c",
+    "tests/scan-split-browser.mjs": "480d970892e98ce32b4acf5451212d0bc0c8fa810048ba6f4002f016bede3200",
+    "focusedGuard": "5aa306643ae501773a57f9289a4e87a049879db1537144edfc8d455a71e3df48",
+    "browserLog": "c9ad5950d5b05b5d794872a6ff5596bbfe45c242a71e1d59b725773354f66a8c",
+    "browserGuard": "f4c1bf964bd81b2a51866a418e7cb0711da1509a276667dc350390ab1327de87",
+    "browserLedger": "820bfe3deb43921eacbf65686f720dc8e97c9d1ad821b17abfdf0c97b43e6142"
+  },
+  "limits": "This is one manufactured finite-interior control, not a native comparison or proof for arbitrary cutters. Native Split facet mismatches, large-project resource acceptance and the remaining M2 requirements remain open."
+}
