@@ -838,15 +838,24 @@ export class ApplicationApi {
             .arrayBuffer(),
         );
         this.checkOwner(ownerEpoch);
-        // Bound conversion scratch; per-byte concatenation creates a string
-        // node for every byte during repeated full-project downloads.
-        const text: string[] = [];
-        for (let start = 0; start < data.length; start += 8192)
-          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
+        const nativeBase64 = (data as Uint8Array & { toBase64?: () => string })
+          .toBase64;
+        let base64: string;
+        if (typeof nativeBase64 === "function")
+          base64 = nativeBase64.call(data);
+        else {
+          // Bound conversion scratch in browsers without native Base64 encoding.
+          const text: string[] = [];
+          for (let start = 0; start < data.length; start += 8192)
+            text.push(
+              String.fromCharCode(...data.subarray(start, start + 8192)),
+            );
+          base64 = btoa(text.join(""));
+        }
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text.join("")),
+          base64,
           nextOffset: offset + data.length,
           eof: offset + data.length === entry.blob.size,
         });

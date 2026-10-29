@@ -453,6 +453,67 @@ describe("shared application API", () => {
     });
     api.dispose();
   });
+  it("uses native base64 when available and preserves exact artifact chunks with the fallback", async () => {
+    const { api } = setup();
+    const bytes = Uint8Array.from(
+      { length: 262145 },
+      (_, i) => (i * 47 + 31) & 255,
+    );
+    const uploaded = await api.invoke("artifact_put", {
+      name: "bytes.bin",
+      base64: Buffer.from(bytes).toString("base64"),
+      offset: 0,
+    });
+    expect(uploaded.ok).toBe(true);
+    const artifactId = (uploaded as any).result.artifactId;
+    const original = Object.getOwnPropertyDescriptor(
+      Uint8Array.prototype,
+      "toBase64",
+    );
+    const native = vi.fn(function (this: Uint8Array) {
+      return Buffer.from(this).toString("base64");
+    });
+    try {
+      for (const useNative of [true, false]) {
+        if (useNative)
+          Object.defineProperty(Uint8Array.prototype, "toBase64", {
+            configurable: true,
+            value: native,
+          });
+        else delete (Uint8Array.prototype as any).toBase64;
+        for (const [offset, length] of [
+          [0, 1],
+          [1, 2],
+          [3, 8193],
+          [0, 262144],
+          [262144, 1],
+          [262145, 1],
+        ]) {
+          const result = await api.invoke("artifact_read", {
+            artifactId,
+            offset,
+            length,
+          });
+          expect(result).toMatchObject({
+            ok: true,
+            result: {
+              base64: Buffer.from(
+                bytes.subarray(offset, offset + length),
+              ).toString("base64"),
+              nextOffset: Math.min(offset + length, bytes.length),
+              eof: offset + length >= bytes.length,
+            },
+          });
+        }
+        if (useNative) expect(native).toHaveBeenCalledTimes(6);
+      }
+    } finally {
+      if (original)
+        Object.defineProperty(Uint8Array.prototype, "toBase64", original);
+      else delete (Uint8Array.prototype as any).toBase64;
+      api.dispose();
+    }
+  });
   it("fails closed after disposal and rejects malformed base64", async () => {
     const { api } = setup();
     expect(

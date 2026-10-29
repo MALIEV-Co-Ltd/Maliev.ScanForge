@@ -221,6 +221,76 @@ try {
     }
     throw Error("Geometry job failed to settle");
   }
+  const artifactBytes = Buffer.from(
+    Uint8Array.from({ length: 262145 }, (_, i) => (i * 47 + 31) & 255),
+  );
+  const artifactUpload = await call("artifact_put", {
+    name: "base64-boundary.bin",
+    base64: artifactBytes.toString("base64"),
+    offset: 0,
+  });
+  const nativeBase64Available = await page.evaluate(() => {
+    const descriptor = Object.getOwnPropertyDescriptor(
+      Uint8Array.prototype,
+      "toBase64",
+    );
+    if (typeof descriptor?.value !== "function") return false;
+    globalThis.__m2Base64Descriptor = descriptor;
+    globalThis.__m2Base64Calls = 0;
+    Object.defineProperty(Uint8Array.prototype, "toBase64", {
+      ...descriptor,
+      value: function (...args) {
+        globalThis.__m2Base64Calls++;
+        return descriptor.value.apply(this, args);
+      },
+    });
+    return true;
+  });
+  for (const [offset, length] of [
+    [0, 1],
+    [1, 2],
+    [3, 8193],
+    [0, 262144],
+    [262144, 1],
+    [262145, 1],
+  ]) {
+    const read = await call("artifact_read", {
+      artifactId: artifactUpload.result.artifactId,
+      offset,
+      length,
+    });
+    assert.deepEqual(
+      Buffer.from(read.result.base64, "base64"),
+      artifactBytes.subarray(offset, offset + length),
+    );
+    assert.equal(
+      read.result.base64,
+      artifactBytes.subarray(offset, offset + length).toString("base64"),
+    );
+    assert.equal(
+      read.result.nextOffset,
+      Math.min(offset + length, artifactBytes.length),
+    );
+    assert.equal(read.result.eof, offset + length >= artifactBytes.length);
+  }
+  await call("artifact_delete", {
+    artifactId: artifactUpload.result.artifactId,
+  });
+  if (nativeBase64Available) {
+    const nativeCalls = await page.evaluate(() => {
+      const calls = globalThis.__m2Base64Calls;
+      Object.defineProperty(
+        Uint8Array.prototype,
+        "toBase64",
+        globalThis.__m2Base64Descriptor,
+      );
+      delete globalThis.__m2Base64Calls;
+      delete globalThis.__m2Base64Descriptor;
+      return calls;
+    });
+    assert.equal(nativeCalls, 6);
+  }
+  ledger.nativeBase64Available = nativeBase64Available;
   const empty = await call("project_get");
   assert.equal(empty.result.objects.length, 0);
   const created = await job(
