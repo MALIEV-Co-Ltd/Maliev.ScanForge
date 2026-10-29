@@ -2,6 +2,34 @@
 
 Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
 
+The 2026-10-29 merge candidate combines M5 `6dc75a3` with main `3c0f2fb`
+(including independently merged PRs #20, #21 and #22). Its tested source tree
+was `79e983546348ec7f17efb11bf047fa04e18d00e1`; the evidence-only ledger and
+receipts are added afterward. A [first combined run](evidence/m5-20261025/merged-main-validation-r1-job.json)
+hit its 200-second cutoff during type-check batch 12 and cleaned up; it is not
+a passing build. The same 13 batches then passed in two bounded sets
+([1–7](evidence/m5-20261025/merged-typecheck-a-r2-job.json),
+[8–13](evidence/m5-20261025/merged-typecheck-b-r1-job.json)). The
+[production build and CAD run](evidence/m5-20261025/merged-runtime-r1-job.json)
+passed with build `scanforge-5b25ee215b8f4afa`, 338 datum goldens, zero live
+BREP mutations across 11 families, exact-sketch checks, and 31 focused tests.
+The [isolated STEP browser replay](evidence/m5-20261025/merged-step-browser-r1.json)
+passed GUI/public-MCP export, strict mixed-scene rejection, cancellation and
+both exact reimports; its [guard](evidence/m5-20261025/merged-step-browser-r1-job.json)
+confirmed active-zero and handle/mutex cleanup. The first real-scan replay
+[admission](evidence/m5-20261025/sketch-browser-green-r5-job.json) found the
+shared mutex busy and spawned no child. Its fresh [r6 replay](evidence/m5-20261025/merged-sketch-real-scan-r6.json)
+passed the newly authored scan-section profile through GUI and public MCP to a
+valid 18-face solid, STEP and project reopen, with bit-exact face/solid display
+geometry and unchanged source. The [GUI STEP](evidence/m5-20261025/merged-sketch-real-gui-r6.step)
+SHA-256 is `c380de8610662439ad99afe2e7d568841f94fa06d6cd08c90c6407c7e8528c4f`;
+the [MCP STEP](evidence/m5-20261025/merged-sketch-real-mcp-r6.step) SHA-256 is
+`04fb6d77d690d2a5d8000ec502f931d14d635e552ac982eaa8cf641a461bde44`.
+The [r6 guard](evidence/m5-20261025/merged-sketch-browser-r6-job.json) recorded
+69.697 s, peak 3,105,161,216 bytes, terminal exit 0, active-zero, closed
+handles and mutex, and the owned preview port closed. Native modeling and M4
+remain open; none of these checks closes the milestone.
+
 On 2026-10-27, the supported Windows controller launched a fresh QuickSurface
 8.0.123 session and accepted menu and file-dialog input. Its earlier intermittent
 GetCursorPos access denial has not been explained or proven permanently fixed.

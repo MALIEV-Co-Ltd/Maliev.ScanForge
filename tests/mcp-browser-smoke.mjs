@@ -54,6 +54,8 @@ const staticServer = http.createServer(async (req, res) => {
     res.writeHead(200, {
       "Content-Type":
         mime[file.pathname.split(".").pop()] ?? "application/octet-stream",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
     });
     res.end(data);
   } catch {
@@ -237,6 +239,69 @@ try {
   const snapshot = await call("project_get");
   assert.equal(snapshot.result.objects.length, 1);
   assert(snapshot.result.objects[0].exactCad);
+  const curved = await job(
+    await mutate("cad_create", {
+      name: "Ownership cylinder",
+      recipe: {
+        kind: "primitive",
+        input: {
+          kind: "cylinder",
+          center: [0, 0, 4],
+          axis: [0, 0, 1],
+          radius: 3,
+          height: 8,
+        },
+      },
+    }),
+  );
+  const curveId = curved.entityIds[0];
+  const curveDigest = await job(
+    await call("object_geometry_digest", { entityId: curveId }),
+  );
+  const curveReferences = await job(
+    await call("alignment_references", { entityId: curveId }),
+  );
+  const patterned = await job(
+    await mutate("cad_create", {
+      name: "Ownership pattern",
+      recipe: {
+        kind: "pattern",
+        source: { featureId: curved.featureId },
+        pattern: { kind: "linear", count: 3, step: [200, 0, 0] },
+      },
+    }),
+  );
+  await page.getByText("Ownership pattern", { exact: true }).first().waitFor();
+  assert.deepEqual(
+    await job(await call("object_geometry_digest", { entityId: curveId })),
+    curveDigest,
+  );
+  assert.deepEqual(
+    (await job(await call("alignment_references", { entityId: curveId })))
+      .references,
+    curveReferences.references,
+  );
+  await page.getByRole("tab", { name: "Edit / View", exact: true }).click();
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  assert(
+    !(await call("project_get")).result.objects.some(
+      (entity) => entity.id === patterned.entityIds[0],
+    ),
+  );
+  await mutate("history_redo", {});
+  assert(
+    (await call("project_get")).result.objects.some(
+      (entity) => entity.id === patterned.entityIds[0],
+    ),
+  );
+  assert.deepEqual(
+    await job(await call("object_geometry_digest", { entityId: curveId })),
+    curveDigest,
+  );
+  await mutate("history_undo", {});
+  await mutate("history_undo", {});
+  assert.equal((await call("project_get")).result.objects.length, 1);
+  await page.getByRole("tab", { name: "Main", exact: true }).click();
   await mutate("object_select", { entityId: created.entityIds[0] });
   const referenceRevision = (await call("project_get")).revision;
   const references = await job(
@@ -409,6 +474,71 @@ try {
   );
   const saved = await job(await call("project_export", { format: "project" }));
   assert(saved.bytes > 0);
+  assert(await page.evaluate(() => crossOriginIsolated));
+  const artifactBytes = async (artifactId) => {
+    const parts = [];
+    let offset = 0;
+    for (;;) {
+      const { result } = await call("artifact_read", { artifactId, offset });
+      const part = Buffer.from(result.base64, "base64");
+      parts.push(part);
+      offset += part.length;
+      if (result.eof) return Buffer.concat(parts);
+      assert(part.length > 0);
+    }
+  };
+  const exactSavedBytes = await artifactBytes(saved.artifactId);
+  const savedGeometry = (bytes) => {
+    const manifest = JSON.parse(bytes.subarray(16, 16 + bytes.readUInt32LE(8)));
+    // Compare every saved state and byte digest, independently of compression.
+    return {
+      current: manifest.current,
+      history: manifest.history,
+      future: manifest.future,
+      records: manifest.records,
+      chunks: manifest.chunks.map(({ rawBytes, sha256 }) => ({
+        rawBytes,
+        sha256,
+      })),
+    };
+  };
+  const exactSavedGeometry = savedGeometry(exactSavedBytes);
+  assert(exactSavedGeometry.records.some((record) => record.brep));
+  assert(exactSavedGeometry.history.length && exactSavedGeometry.future.length);
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "exact-persistence.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: exactSavedBytes,
+    });
+  await page.getByText(/^Opened.*1\/1 files$/).waitFor();
+  const verifySavedGeometry = async () => {
+    const artifact = await job(
+      await call("project_export", { format: "project" }),
+    );
+    assert.deepEqual(
+      savedGeometry(await artifactBytes(artifact.artifactId)),
+      exactSavedGeometry,
+    );
+    await call("artifact_delete", { artifactId: artifact.artifactId });
+  };
+  await verifySavedGeometry();
+  // GUI open already preserves saved buffers; public MCP restore must match it.
+  const exactUpload = await call("artifact_put", {
+    name: "exact-persistence.scanforge",
+    offset: 0,
+    base64: exactSavedBytes.toString("base64"),
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: exactUpload.result.artifactId,
+      replace: true,
+    }),
+  );
+  await verifySavedGeometry();
+  await call("artifact_delete", { artifactId: exactUpload.result.artifactId });
   const copied = await mutate("mesh_copy", { entityId: created.entityIds[0] });
   const meshId = copied.result.entityId;
   const transformed = await mutate("mesh_transform", {
@@ -856,11 +986,13 @@ try {
     "official SDK stdio initialize/tools/resources",
     "browser pairing and persisted connection after Settings closes",
     "exact CAD creation rendered in UI",
+    "curved CAD pattern preserves source hashes and exact face references across GUI Undo and MCP Redo",
     "MCP and GUI exact alignment references with identical coordinates and unchanged history",
     "explicit multi-object CAD alignment through GUI/shared MCP Preview and atomic Apply/Undo/Redo",
     "native coordinate preview/cancel, primary-plane Z default and explicit X, GUI/MCP Apply and Undo restore identical scan geometry",
     "UI undo and MCP redo",
     "STEP content and project export artifacts",
+    "cross-origin-isolated GUI/public-MCP exact BREP reopen preserves all saved current/Undo/Redo buffer hashes",
     "mesh copy/transform/winding worker/topology",
     "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
     "GUI and MCP import the independent v2 typed-normal fixture and export identical Float32 bytes including signed zero",

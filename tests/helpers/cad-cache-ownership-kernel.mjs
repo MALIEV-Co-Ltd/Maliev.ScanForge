@@ -117,35 +117,55 @@ export async function checkCadCacheOwnership({ context, oc, request }) {
     );
   };
   const properties = async (shape, center, count = 1, step = 0) => {
-    const report = await request("inspectBrep", {
-      brep: exact(shape.kernelId),
-      edgeOffset: 0,
-      edgeLimit: 128,
-    });
-    assert(
-      report.valid && report.solids === count && report.faces === 3 * count,
+    const copier = new oc.BRepBuilderAPI_Copy_2(
+      context.getShape(shape.kernelId),
+      true,
+      false,
     );
-    assert(Math.abs(report.signedVolumeMm3 - 72 * Math.PI * count) <= 1e-7);
-    assert(Math.abs(report.areaMm2 - 66 * Math.PI * count) <= 1e-7);
-    assert.equal(report.edgeReferences.nextOffset, null);
-    const bounds = {
-      min: [center[0] - 3, center[1] - 3, center[2] - 4],
-      max: [center[0] + 3 + step * (count - 1), center[1] + 3, center[2] + 4],
-    };
-    for (const key of ["min", "max"])
-      for (let axis = 0; axis < 3; axis++) {
-        const values = report.edgeReferences.items.map((edge) => {
-          assert(edge.boundsMm);
-          return edge.boundsMm[key][axis];
-        });
-        const actual =
-          key === "min" ? Math.min(...values) : Math.max(...values);
-        assert(
-          Math.abs(actual - bounds[key][axis]) <= 1e-6,
-          "Independent exact cylinder placement differs",
-        );
-      }
-    return report;
+    const owned = copier.Shape();
+    const checker = new oc.BRepCheck_Analyzer(owned, true);
+    const volume = new oc.GProp_GProps_1(),
+      area = new oc.GProp_GProps_1();
+    const bounds = new oc.Bnd_Box_1();
+    let min, max;
+    try {
+      assert(checker.IsValid_2());
+      oc.BRepGProp.VolumeProperties_1(owned, volume, true, true, false);
+      oc.BRepGProp.SurfaceProperties_1(owned, area, true, false);
+      assert(Math.abs(volume.Mass() - 72 * Math.PI * count) <= 1e-7);
+      assert(Math.abs(area.Mass() - 66 * Math.PI * count) <= 1e-7);
+      oc.BRepBndLib.Add(owned, bounds, false);
+      min = bounds.CornerMin();
+      max = bounds.CornerMax();
+      const expectedMin = [center[0] - 3, center[1] - 3, center[2] - 4];
+      const expectedMax = [
+        center[0] + 3 + step * (count - 1),
+        center[1] + 3,
+        center[2] + 4,
+      ];
+      for (const [actual, expected] of [
+        [min, expectedMin],
+        [max, expectedMax],
+      ])
+        for (const [axis, coordinate] of [
+          actual.X(),
+          actual.Y(),
+          actual.Z(),
+        ].entries())
+          assert(
+            Math.abs(coordinate - expected[axis]) <= 1e-6,
+            "Independent exact cylinder placement differs",
+          );
+    } finally {
+      max?.delete();
+      min?.delete();
+      bounds.delete();
+      area.delete();
+      volume.delete();
+      checker.delete();
+      owned.delete();
+      copier.delete();
+    }
   };
   try {
     const source = await create("primitive", {

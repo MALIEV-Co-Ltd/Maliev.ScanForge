@@ -1,0 +1,113 @@
+{
+  "owner": "scanforge-mcp-browser-validation",
+  "startedAt": "2026-10-29T01:27:21.891Z",
+  "expiresAt": "2026-10-29T01:31:21.891Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 21844,
+      "executable": "C:/Program Files/nodejs/node.exe",
+      "startedAt": "2026-10-29T01:27:21.891Z",
+      "port": 62427,
+      "bind": "127.0.0.1",
+      "purpose": "isolated built application"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 6604,
+      "executable": "C:/Program Files/nodejs/node.exe",
+      "startedAt": "2026-10-29T01:27:22.132Z",
+      "port": 62428,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio SDK and browser bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 3796,
+      "executable": "installed Chrome",
+      "startedAt": "2026-10-29T01:27:22.287Z",
+      "purpose": "isolated profile and UI validation"
+    }
+  ],
+  "cleanup": [
+    {
+      "port": 62427,
+      "closed": true
+    },
+    {
+      "port": 62428,
+      "closed": true
+    },
+    {
+      "pid": 6604,
+      "exited": true
+    },
+    {
+      "pid": 3796,
+      "exited": true
+    }
+  ],
+  "scenarios": [
+    {
+      "stepExport": {
+        "actualGuiDownload": true,
+        "sharedGuiJob": true,
+        "exactOnlyGuiMcpNormalizedStepEquality": true,
+        "excludedEntityIds": ["scan"],
+        "strictDefaultRetained": true,
+        "emptyGuiMcpErrorEquality": true,
+        "cancellation": "Held owned export transport, cancelled through reachable GUI control, released late response; no publication and subsequent export succeeded",
+        "unchangedRevisionHistoryGeometry": true,
+        "normalizedFields": [
+          "FILE_NAME header",
+          "Open CASCADE translator product export counter"
+        ],
+        "roundTrips": [
+          {
+            "exactCad": true,
+            "areaMm2": 600,
+            "signedVolumeMm3": 1000.0000000000001,
+            "triangles": 12,
+            "exact": {
+              "entityId": "e6277b1b-7418-4c59-a808-f5493a81a830",
+              "units": "mm",
+              "valid": true,
+              "solids": 1,
+              "shells": 1,
+              "faces": 6,
+              "edges": 12,
+              "vertices": 8,
+              "areaMm2": 599.9999999999999,
+              "signedVolumeMm3": 999.9999999999998,
+              "volumeMm3": 999.9999999999998,
+              "topologyVisits": 80
+            }
+          },
+          {
+            "exactCad": true,
+            "areaMm2": 600,
+            "signedVolumeMm3": 1000.0000000000001,
+            "triangles": 12,
+            "exact": {
+              "entityId": "fe828cfc-947b-44a0-922b-563e1e6e4f98",
+              "units": "mm",
+              "valid": true,
+              "solids": 1,
+              "shells": 1,
+              "faces": 6,
+              "edges": 12,
+              "vertices": 8,
+              "areaMm2": 599.9999999999999,
+              "signedVolumeMm3": 999.9999999999998,
+              "volumeMm3": 999.9999999999998,
+              "topologyVisits": 80
+            }
+          }
+        ],
+        "bytes": 15440
+      }
+    }
+  ],
+  "passed": true
+}

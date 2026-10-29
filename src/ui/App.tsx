@@ -4546,6 +4546,12 @@ export function App() {
         {
           readOnly: true,
           signal: controller.signal,
+          onDiscardedResult: async (discarded) => {
+            if (typeof discarded.artifactId === "string")
+              await workspaceApi.invoke("artifact_delete", {
+                artifactId: discarded.artifactId,
+              });
+          },
           cancelledMessage: "STEP export cancelled.",
           leaseMessage: "STEP export exceeded its time limit.",
         },

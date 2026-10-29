@@ -142,14 +142,51 @@ export async function replayStepExport({
     const reopened = (await call("project_get")).result.objects.find(
       (x) => !ids.has(x.id),
     );
-    const report = await job(
+    assert(reopened.exactCad);
+    const info = (
+      await call("object_get", { entityId: reopened.id, includeGeometry: true })
+    ).result;
+    const { positions } = JSON.parse(
+      (await artifactBytes(info.geometry)).toString(),
+    );
+    let areaMm2 = 0,
+      signedVolumeMm3 = 0;
+    for (let i = 0; i < positions.length; i += 9) {
+      const a = positions.slice(i, i + 3),
+        b = positions.slice(i + 3, i + 6),
+        c = positions.slice(i + 6, i + 9);
+      const u = b.map((value, axis) => value - a[axis]),
+        v = c.map((value, axis) => value - a[axis]);
+      areaMm2 +=
+        Math.hypot(
+          u[1] * v[2] - u[2] * v[1],
+          u[2] * v[0] - u[0] * v[2],
+          u[0] * v[1] - u[1] * v[0],
+        ) / 2;
+      signedVolumeMm3 +=
+        (a[0] * (b[1] * c[2] - b[2] * c[1]) +
+          a[1] * (b[2] * c[0] - b[0] * c[2]) +
+          a[2] * (b[0] * c[1] - b[1] * c[0])) /
+        6;
+    }
+    assert(
+      Math.abs(areaMm2 - 600) < 1e-6 && Math.abs(signedVolumeMm3 - 1000) < 1e-6,
+    );
+    const exact = await job(
       await call("cad_inspect", { entityId: reopened.id }),
     );
-    assert(report.valid && report.solids === 1 && report.faces === 6);
+    assert(exact.valid && exact.solids === 1 && exact.faces === 6);
     assert(
-      Math.abs(report.areaMm2 - 600) < 1e-6 &&
-        Math.abs(report.volumeMm3 - 1000) < 1e-6,
+      Math.abs(exact.areaMm2 - 600) < 1e-6 &&
+        Math.abs(exact.volumeMm3 - 1000) < 1e-6,
     );
+    const report = {
+      exactCad: reopened.exactCad,
+      areaMm2,
+      signedVolumeMm3,
+      triangles: positions.length / 9,
+      exact,
+    };
     roundTrips.push(report);
     await mutate("object_update", {
       entityId: reopened.id,

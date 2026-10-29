@@ -1,0 +1,47 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/run-sketch-browser.mjs",
+    "sketch-browser-green-r5"
+  ],
+  "passed": false,
+  "exitCode": null,
+  "receiptStatus": "provisional",
+  "acceptanceRequires": "This receipt alone never establishes success. Require observed wrapper terminal exit 0 within the absolute deadline, active-zero/process-exit observations and confirmed handle/mutex cleanup. A late or failed receipt finalization forces wrapper exit 1 even if this provisional file contains passed=true.",
+  "clockScope": "First monotonic reading before imports, mutex and admission",
+  "deadlineScope": "Absolute scheduling deadlines; synchronous WinAPI and receipt I/O are not preemptible. Final exit status fails if receipt completion crosses +205s.",
+  "deadlinesSecondsFromStart": {
+    "execution": 200,
+    "cleanupWaits": 204,
+    "absolute": 205
+  },
+  "cleanupReserveSeconds": 5,
+  "cleanupWaitReserveSeconds": 4,
+  "jobLimitBytes": 4294967296,
+  "jobCpuRate": 2500,
+  "freePhysicalAdmissionBytes": 4294967296,
+  "mutexName": "Local/ScanForge.BoundedValidation",
+  "mutexWaitMs": 0,
+  "childCreated": false,
+  "childResumed": false,
+  "jobAssigned": false,
+  "killOnJobClose": true,
+  "breakawayEnabled": false,
+  "activeAfter": null,
+  "activeZeroObserved": false,
+  "ownedProcessExitObserved": false,
+  "cleanupConfirmed": true,
+  "mutexAcquired": false,
+  "mutexReleased": false,
+  "closedHandles": {
+    "mutex": true
+  },
+  "errors": ["Shared validation lane busy; no admission or child started"],
+  "cleanupErrors": [],
+  "receiptExclusivelyReservedBeforeWork": true,
+  "mutexWaitStatus": 258,
+  "timedOut": false,
+  "elapsedSecondsBeforeReceipt": 0.04517299999997704,
+  "cleanupFinishedSecondsFromStart": 0.04517299999997704,
+  "absoluteDeadlineMetBeforeReceipt": true
+}
