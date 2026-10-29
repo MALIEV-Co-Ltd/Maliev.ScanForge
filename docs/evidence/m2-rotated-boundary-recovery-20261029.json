@@ -1,0 +1,28 @@
+{
+  "scope": "Boundary edge recovery for rotated finite mesh Split; native parity remains incomplete",
+  "base": "e287787478f9cca5884c0d4cfa678f3f06671173",
+  "behavior": "When a non-registered point lies on an existing edge and a cavity boundary is collinear, subdivide all triangles incident to that edge before continuing. Cancellation checks remain in the scans.",
+  "nativeComparison": "Rotated raw output shares 35 of 36 native unordered Float32 facets, with 3 additional facets. Endpoint reuse and full native equivalence remain open.",
+  "mcp": "The shared Split operation is used by GUI and public MCP. Isolated production build and actual 5173 preview each passed GUI/MCP geometry equality, undo/redo, cancellation and binary reopen for the rotated control.",
+  "validation": {
+    "focused": "338 passed, 5 skipped",
+    "full": "50545 passed, 76 skipped",
+    "fullPeakJobBytes": 1340260352,
+    "typecheck": "14 batches passed after final regression assertions",
+    "previewPeakJobBytes": 881745920,
+    "reviewer": "Independent review found no concrete recovery-path blocker after the test asserted both differences and area."
+  },
+  "sha256": {
+    "source": "5445b2d74c1434c340527dfb2dd36be827762409c95e22563e8428897d330ab0",
+    "test": "dc65af4905a81a59517494a073c958809d7f292ec2dbb07fd5f86f2389bc3329",
+    "fullGuard": "a28b3b312c40fd45f4c3da7fd9e6aaf1ab3baf36e6f6374814428b4427a99eb2",
+    "previewGuard": "cd11b83d6017ec152eae0405901f16ab9ce202ce5779d2cf262af0fe7c5b531c",
+    "typecheckGuard": "a3003336b7d321e8e887efae27e0224d5058e97c930953ca955ec8f82d798ef0"
+  },
+  "limitations": [
+    "A previous 240 second suite timed out with clean process cleanup; the subsequent 600 second run passed.",
+    "The raw rotated output is not identical to native; small-radius snapping and filtering are not implemented.",
+    "The original large-project full MCP download and GUI reopen under 4 GiB and other native M2 acceptance gates remain open.",
+    "Area and duplicate-facet checks do not independently rule out all overlap or topology defects."
+  ]
+}

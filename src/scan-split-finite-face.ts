@@ -763,6 +763,32 @@ export function triangulateFiniteFace(
         }
       }
       if (!edges.size) throw new Error("Finite cavity is empty.");
+      let collinearCavityBoundary = false;
+      if (boundary && !edgeContacts.has(id)) {
+        for (const edge of edges.values()) {
+          tick();
+          if (
+            edge.count === 1 &&
+            !orientSign(points[edge.a], points[edge.b], p)
+          ) {
+            collinearCavityBoundary = true;
+            break;
+          }
+        }
+      }
+      if (boundary && collinearCavityBoundary) {
+        const [x, y] = boundary,
+          next: Tri[] = [];
+        for (const triangle of tris) {
+          tick();
+          if (triangle.includes(x) && triangle.includes(y)) {
+            const z = triangle.find((n) => n !== x && n !== y)!;
+            next.push(make(x, id, z), make(id, y, z));
+          } else next.push(triangle);
+        }
+        tris = next;
+        continue;
+      }
       for (const edge of edges.values()) {
         tick();
         if (edge.count === 1 && orientSign(points[edge.a], points[edge.b], p))
