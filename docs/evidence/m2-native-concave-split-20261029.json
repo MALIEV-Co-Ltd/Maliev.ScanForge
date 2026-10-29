@@ -1,0 +1,44 @@
+{
+  "scope": "Native GUI concave mesh Split compared with the shared ScanForge operation on the same manufactured inputs, in millimetres.",
+  "native": {
+    "product": "QUICKSURFACE Pro 8.0.123",
+    "source": "tests/fixtures/m2-native-concave-split-20261029/square-source.stl",
+    "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+    "cutter": "tests/fixtures/m2-native-concave-split-20261029/concave-cutter.stl",
+    "cutterSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+    "command": "Edit square-source > Additional tools > Split Mesh > Split with another body or a mesh > Preview > OK",
+    "envelope": false,
+    "export": "tests/fixtures/m2-native-concave-split-20261029/native-concave-result-20261029.stl",
+    "exportSha256": "590bab9d40c4a026bc5bb7ed3a6b240436a439c2d2a06e0e64058ec6b4f6acca",
+    "nativeProject": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/native-concave-scene-20261029.qsf",
+    "facets": 34,
+    "individualMeshesGui": 2,
+    "holesGui": 3,
+    "exportAreaMm2": 16
+  },
+  "application": {
+    "commit": "f72fe09b96b35354b991786d1d83f3acd37284a4",
+    "splitFaceSha256": "b73ccd73df45d1084a338edeb305cd4c3cdbc5f116461d02e72f361dab21510a",
+    "splitSeamsSha256": "b25e5c1b4e18667ebc1231fb1dff3d6efc50eb533ac0d515925210e6fc1452ad",
+    "facets": 34,
+    "indexedComponents": 2,
+    "nonManifoldEdges": 0,
+    "exactMatchingFacets": 22,
+    "facetsDifferentPerResult": 12,
+    "facetDiagnostic": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-concave-facets-20261029.json",
+    "facetDiagnosticSha256": "246bcca6f00936ef3b78ce1b70bf9ce4c5c84e8bb59a3c4beecccea38d294044"
+  },
+  "regression": {
+    "test": "tests/m2-native-concave-split.test.ts",
+    "result": "Count, components, manifoldness and input ownership pass; exact native facets are an expected failure.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-concave-regression-20261029-r1.json",
+    "receiptSha256": "4ce425697ea2676c0878786dec62eae146ba44c964772500122d5d1f9af4281f",
+    "peakJobBytes": 345616384,
+    "jobLimitBytes": 4294967296
+  },
+  "limitations": [
+    "Native indexed seam identity is not available in STL; native component and hole counts are GUI observations.",
+    "Direct shared-kernel comparison does not itself demonstrate this concave fixture through GUI and public MCP.",
+    "These manufactured controls do not prove general native Split parity. Exact triangulation remains mismatched and M2 remains open."
+  ]
+}
