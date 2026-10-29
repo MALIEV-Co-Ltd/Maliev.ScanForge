@@ -1,0 +1,50 @@
+{
+  "scope": "Isolated instrumented decoder comparison on original PLY-3; no production change",
+  "baseApplicationCommit": "ac2347aadd1759387e8894b88ae1c5f6121044b3",
+  "traceBuild": "scanforge-9584bb34bd8925a0",
+  "traceChanges": "Logging only in project-file-codec.ts and project-decoding-worker.ts. The diagnostic harness adds local-file selection, artifact-read and decoder-event tracing.",
+  "previouslySavedFileSha256": "ef27c0bb37e012836cbaaaa012a9511bff86769960cd05a463aa395e20444dbb",
+  "comparisons": [
+    {
+      "name": "MCP in-place import",
+      "result": "Passed with matching reopened geometry. The first 266108040-byte decompressed chunk completed reading and hashing; the decoder returned all four numeric buffers.",
+      "peakJobBytes": 4159037440,
+      "logSha256": "166abf6bbda390e620300a7d4391fa78a903b10f2fb27e50b53633c3b249fbd3",
+      "guardSha256": "25eb7464c8a081e1e409f7b635714e57d176bb27b07e310cdd3fdcdb598a56ac"
+    },
+    {
+      "name": "GUI open of an existing file without immediate export",
+      "result": "The decoder returned and the GUI accepted replacement. The first subsequent public-MCP geometry-digest request lost its connection near the 4 GiB boundary, so geometry was not verified.",
+      "peakJobBytes": 4295491584,
+      "logSha256": "a3788d11d6ebf3511127ebfe3334308e8bab70df7a2fcf62b7fb6c11a682bc43",
+      "guardSha256": "f6cbf8e92a6cb4ff0a7e45f9fbf3f5796830c962ee2e5502cad2e49eeee61f03"
+    },
+    {
+      "name": "Export then delete artifact, GUI open existing file without artifact reads",
+      "result": "Passed: GUI replacement completed and the source, cutter and extracted-part core geometry digests matched. The source scene was reconstructed from the same original scan but object IDs differed, so comparison matched digests across returned objects.",
+      "peakJobBytes": 4159983616,
+      "logSha256": "d08e148e189ea43131ddc2152c73455c09ab9dc37bc84cf2d9173a62bf78910a",
+      "guardSha256": "2534b362df9cafd57dec58ed2ee5abd47edd7b4b251eb318479a7c58fa1da83a",
+      "ledgerSha256": "67b297e1cc85a1815b26ad7343b45fa203d7130d2368d0a91bc47d759d0bb451"
+    },
+    {
+      "name": "Export, read the entire artifact in 262144-byte MCP calls, delete, then GUI open existing file",
+      "result": "Failed: decoder started but returned 'Array buffer allocation failed' at the first chunk. The GUI reported one failed file. The original scene was not independently checked after the failure.",
+      "peakJobBytes": 4335509504,
+      "logSha256": "adf4fde118dd764c8335eb374ea340dddf71549fdefacc56f1b007bf1c474135",
+      "guardSha256": "c49d72990b4d0f4d8ced262a707e9c4e8ac961a53ea3687293a661b3f1626667"
+    }
+  ],
+  "experimentalCandidates": [
+    "An isolated FileReader-based artifact-read conversion reached the first chunk's hashing stage but timed out; peak job bytes 4519333888. Log SHA-256 5f89faeb489167c88b20940a9289ab64c79bdcbedcbd77897ef8ad836503d66c.",
+    "Combining that conversion with incremental chunk hashing also timed out before reporting completion of the first chunk; peak job bytes 4312932352. Log SHA-256 f6e7e23e7ff885ddc6d8f5ede062381483a47872af7a00b35352429e860bfbc6. Neither candidate was applied."
+  ],
+  "guardLimitBytes": 4294967296,
+  "cleanupConfirmed": true,
+  "interpretation": "The matched controls demonstrate that the full artifact-read workload can make the subsequent allocation fail under the guard, while export and direct GUI open can succeed without those reads. This is not proof of a particular retained buffer, garbage-collection cause or universal GUI failure.",
+  "limitations": [
+    "These are instrumented, single-run controls; timings and memory pressure vary. The passing GUI run does not cover post-reopen history or native Split parity.",
+    "The artifact-read sequence discards returned payloads rather than independently verifying every downloaded byte; this is an allocation diagnostic, not artifact integrity acceptance.",
+    "Some recorded guard peaks exceed the nominal limit. Cleanup is confirmed; no failed run is presented as passing."
+  ]
+}
