@@ -1,0 +1,19 @@
+{
+  "scope": "Isolated response-worker, deferred reconstruction and incremental hash experiment; not a production fix",
+  "build": "scanforge-bc14265f2f6f0c49",
+  "method": "Move artifact_read result serialization and HTTP delivery to a disposable worker, retaining the previous experimental decoder changes. With the original PLY-3, run GUI Split and Extract, export, read the entire artifact through public MCP with chunk-length checks and an incremental download hash, delete the artifact, then open an existing project in the GUI without forced garbage collection and compare core geometry digests.",
+  "result": "The 475566423-byte read completed and the GUI opened the project; source, cutter and extracted-part core digests matched and the page reported no errors. The download SHA-256 was 4e8928bed8f15d80dca88767d58472eb52b93f38222266d331ec59aee5df431f; it was not independently compared with an authoritative exported-file hash. The guard reported success and cleanup, but its peak of 4299132928 bytes exceeded the nominal 4294967296-byte limit, so the resource gate does not pass.",
+  "worktree": "C:/Users/Shoung/.codex/worktrees/m2-deferred-reconstruct/Maliev.ScanForge",
+  "sourceSha256": {
+    "src/automation/browser-bridge.ts": "3e6ef49ef8e69e398874b573c1e4ed903b1b97defdd6ae692db4ab14c789a20c",
+    "src/automation/m2-response-worker-experiment.ts": "143532c2cad8a4af68732533de91eb0ce2766869096a3b2a8d7dbbea29c0fb1e",
+    "src/project-file-codec.ts": "60ad5d182e638124798618e143e22c1be07e718b738980d2c0091d1455dd5e97",
+    "src/project-decoding-worker.ts": "7179d6e719b7d2488f22eb2c2cff8f39c7140e9279b1f9fdd64017f2cdee5f42",
+    "src/project-transport.ts": "df7634df24f059b0a75de8129963c4ace06c71a09026f331ffbf161f3e4cb5de",
+    "src/project-encoding-numeric.ts": "fc265cea6867e6edaed60add1d4b6ee09ae7e145d7f6ab8664924be890fca63e",
+    "tests/m2-ply3-gui-open-diagnostic-20261029.mjs": "cc8c865f83881ffcbb3313255f395930871ecc265123f68a0e0621c1e0b2ad71"
+  },
+  "logSha256": "81f2a80c906591030fa591986ceada2b13d2cc9b4a74f34605d8d008e3154016",
+  "guardSha256": "dcb2263f836d568a8d44edbdbeb9c74116ce377526fb1e33059d4a3437198ca3",
+  "limits": "Single instrumented run with three experimental changes; their individual effects are not established. The worker lacks production lifecycle, cancellation, error, authorization and compatibility review. No independent full-download integrity, public-MCP import after download, post-reopen history, full suite, native Split acceptance or resource guarantee is established. No application change was integrated."
+}
