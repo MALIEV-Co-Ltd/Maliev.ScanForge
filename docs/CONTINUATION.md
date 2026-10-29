@@ -132,9 +132,8 @@ do not close a milestone. Track progress in the existing repository issues:
 | M8 Performance and resources           | #8    |
 | M9 Release readiness                   | #9    |
 
-The owner requested that Plasticity 2026.2 investigation and overlapping CAD
-work begin alongside M4 and M5. Use the installed application as evidence and
-build on shared GUI/MCP operations. The first coordinated comparison is tracked
-in [issue #19](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/19).
-This does not remove the existing MVP, first-release, or Plasticity milestone
-acceptance gates.
+The owner rejected the Plasticity 2026.2 workflow milestone for now. It is
+closed as not planned, not completed. Continue the QuickSurface reference path
+for construction, sketch and CAD workflows, preserving the M4 and M5 acceptance
+gates and shared GUI/MCP operations. Retain the closed Plasticity evidence as
+historical context; do not use it as a current implementation plan.
