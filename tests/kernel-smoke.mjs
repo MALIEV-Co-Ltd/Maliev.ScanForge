@@ -4,6 +4,7 @@ import vm from "node:vm";
 import { webcrypto, createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply.ts";
+import { checkCadCacheOwnership } from "./helpers/cad-cache-ownership-kernel.mjs";
 import { noiseNormals } from "../src/scan-native-noise.ts";
 
 // Exercise the actual classic-worker protocol without a server or detached worker.
@@ -55,12 +56,105 @@ vm.runInContext(
   context,
   { filename: "cad-worker.js" },
 );
-function request(operation, payload, onProgress) {
-  return new Promise((resolve, reject) => {
-    const requestId = ++id;
-    requests.set(requestId, { resolve, reject, onProgress });
-    context.self.onmessage({ data: { id: requestId, operation, payload } });
-  });
+let ownershipKernel;
+const sourceModelingOperations = new Set([
+  "boolean",
+  "transform",
+  "datumTransform",
+  "pattern",
+  "mirror",
+  "split",
+  "edges",
+  "offset",
+  "sew",
+  "shell",
+  "thicken",
+]);
+const inputBrepChecks = {},
+  inputBrepMutations = [];
+const recordInputBrepFailure = (failure) => {
+  inputBrepMutations.push(failure);
+  console.error(JSON.stringify({ nativeInputBrepMutation: failure }));
+};
+async function request(operation, payload, onProgress) {
+  const before = new Map();
+  const shapes = ownershipKernel && vm.runInContext("shapes", context);
+  if (shapes && sourceModelingOperations.has(operation)) {
+    const visited = new Set();
+    const collect = (value) => {
+      if (typeof value === "string" && shapes.has(value)) {
+        if (!before.has(value)) {
+          before.set(value, undefined);
+          try {
+            before.set(
+              value,
+              context.serializeBrep(ownershipKernel, shapes.get(value)),
+            );
+          } catch (error) {
+            recordInputBrepFailure({
+              operation,
+              kernelId: value,
+              phase: "before",
+              serializationError: String(error),
+            });
+          }
+        }
+      } else if (
+        value &&
+        typeof value === "object" &&
+        !ArrayBuffer.isView(value) &&
+        !visited.has(value)
+      ) {
+        visited.add(value);
+        for (const child of Object.values(value)) collect(child);
+      }
+    };
+    collect(payload);
+  }
+  try {
+    return await new Promise((resolve, reject) => {
+      const requestId = ++id;
+      requests.set(requestId, { resolve, reject, onProgress });
+      context.self.onmessage({ data: { id: requestId, operation, payload } });
+    });
+  } finally {
+    for (const [kernelId, original] of before) {
+      inputBrepChecks[operation] = (inputBrepChecks[operation] ?? 0) + 1;
+      let current;
+      try {
+        current = shapes.has(kernelId)
+          ? context.serializeBrep(ownershipKernel, shapes.get(kernelId))
+          : "<released>";
+      } catch (error) {
+        recordInputBrepFailure({
+          operation,
+          kernelId,
+          phase: "after",
+          serializationError: String(error),
+        });
+        continue;
+      }
+      if (original === undefined) continue; // The failed pre-check is already recorded.
+      if (current !== original) {
+        let offset = 0;
+        while (
+          offset < Math.min(original.length, current.length) &&
+          original[offset] === current[offset]
+        )
+          offset++;
+        const mutation = {
+          operation,
+          kernelId,
+          beforeSha256: createHash("sha256").update(original).digest("hex"),
+          afterSha256: createHash("sha256").update(current).digest("hex"),
+          firstDifference: offset,
+          beforeContext: original.slice(Math.max(0, offset - 80), offset + 160),
+          afterContext: current.slice(Math.max(0, offset - 80), offset + 160),
+        };
+        recordInputBrepFailure(mutation);
+      }
+    }
+  }
 }
 const expiry = setTimeout(() => {
   console.error("CAD smoke exceeded 90 seconds.");
@@ -94,6 +188,8 @@ function close(actual, expected, message) {
 }
 try {
   const oc = await vm.runInContext("kernel()", context);
+  ownershipKernel = oc;
+  await checkCadCacheOwnership({ context, oc, request });
   const nativeFaces = JSON.parse(
     readFileSync(
       new URL(
@@ -1738,6 +1834,22 @@ try {
     "proc",
     "tmp",
   ]);
+  console.log(
+    JSON.stringify({
+      nativeInputBrepChecks: inputBrepChecks,
+      nativeInputBrepMutations: inputBrepMutations,
+    }),
+  );
+  for (const operation of sourceModelingOperations)
+    assert(
+      (inputBrepChecks[operation] ?? 0) > 0,
+      `Missing live input BREP coverage for ${operation}.`,
+    );
+  assert.equal(
+    inputBrepMutations.length,
+    0,
+    "CAD modeling changed a live input BREP; inspect nativeInputBrepMutation receipts above.",
+  );
   console.log(
     "CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.",
   );

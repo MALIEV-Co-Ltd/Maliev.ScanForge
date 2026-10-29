@@ -1,5 +1,11 @@
 # ScanForge shared application API and MCP
 
+The shared CAD worker owns construction inputs for Boolean/split, edge treatment,
+shell and thickening makers. Datum partners retain prepared source triangulations
+and patterns deep-copy their first instance before compound meshing. Existing GUI
+and MCP CAD/alignment operations share these fixes; revision, cancellation, output
+ownership, history and public edge/face indexing retain their current contracts.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates
@@ -78,6 +84,14 @@ remains retryable for failed preview cleanup. Owner leases are internal lifecycl
 controls and do not add transport commands or bypass revision and request guards.
 
 ## Intent and scope
+
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace. Text chunks use an ordinary byte view
+for browser TextDecoder; numeric chunks retain immutable shared backing.
 
 The shared restore worker accepts optional immutable shared chunk candidates
 from a shared bounded weak registry. Successful restore and encoding workers
@@ -1825,3 +1839,15 @@ the source at the requested revision. `sketch_manage` consumes a frame's
 XY/YZ/XZ placement as a detached copy; later datum edits do not move that sketch.
 See [reference datum usage and limits](REFERENCE_DATUMS.md). Native acceptance
 of additional relational construction modes remains a separate gate.
+
+## Shared STEP export delivery
+
+GUI STEP export submits the same read-only `project_export` job as MCP, using
+the explicit STEP-only `cadOnly` filter. Both paths share visibility, exact-body
+validation, cancellation, revision/owner fences and artifact quota. The GUI reads
+the leased immutable artifact locally, downloads it and deletes it; MCP callers
+use `artifact_read` and `artifact_delete`. A portal keeps the GUI's owned cancel
+control reachable while the workspace is busy. Late cancelled results publish no
+artifact and do not edit history.
+If cancellation interrupts GUI delivery after the owned job succeeds, the GUI
+also retires that completed artifact through the shared job observer's cleanup.

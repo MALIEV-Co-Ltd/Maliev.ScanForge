@@ -882,7 +882,9 @@ try {
       offset = part.nextOffset;
     }
   }
-  const mcpStep = await job(await call("project_export", { format: "step" }));
+  const mcpStep = await job(
+    await call("project_export", { format: "step", cadOnly: true }),
+  );
   const mcpStepBytes = await artifactBytes(mcpStep.artifactId);
   const stepReadbacks = [];
   for (const [producer, bytes] of [

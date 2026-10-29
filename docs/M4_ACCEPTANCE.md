@@ -93,6 +93,13 @@ normal buffers and history/visibility behavior are retained. The integration
 requires its own exact-head hosted checks. Required source-family and
 original-native gates remain open.
 
+The [2026-10-29 main-integration checkpoint](evidence/m4-main-integration-20261029.json)
+combines the current M4 branch with main `b25da68`. The production build, 44
+focused checks, CAD smoke and four isolated GUI/public MCP replays passed.
+STEP retains main's strict default and shared explicit CAD-only GUI/MCP path;
+the CAD worker retains private-copy ownership and M4 topology ordering. The
+original native source-family and lifecycle gates remain open.
+
 The [cone-source checkpoint](evidence/m4-cone-source-acceptance-20261026.json)
 adds positive, equal and inverted-radius current cone recipes to shared point
 center/pair and line pair/average construction. Its 146 focused checks and 7,871

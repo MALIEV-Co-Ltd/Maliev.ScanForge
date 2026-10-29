@@ -97,6 +97,7 @@ async function exportJob(api: ApplicationApi, visible = true) {
   const launched = await api.invoke("project_export", {
     format: "step",
     visible,
+    cadOnly: true,
   });
   expect(launched.ok, JSON.stringify(launched)).toBe(true);
   if (!launched.ok) throw Error(launched.error.message);
@@ -150,7 +151,9 @@ it("includes hidden exact CAD only when visibility filtering is explicitly disab
   snapshot.entities[0].visible = false;
   const hidden = await exportJob(api);
   expect(hidden.status).toBe("failed");
-  expect(hidden.error?.message).toContain("Create or import exact CAD first");
+  expect(hidden.error?.message).toContain(
+    "STEP export requires at least one exact CAD object",
+  );
   expect(exportStep).not.toHaveBeenCalled();
   const all = await exportJob(api, false);
   expect(all.status).toBe("succeeded");
@@ -162,7 +165,9 @@ it("rejects datum-only scenes before allocating a STEP kernel export", async () 
   const before = structuredClone(snapshot);
   const result = await exportJob(api);
   expect(result.status).toBe("failed");
-  expect(result.error?.message).toContain("Create or import exact CAD first");
+  expect(result.error?.message).toContain(
+    "STEP export requires at least one exact CAD object",
+  );
   expect(exportStep).not.toHaveBeenCalled();
   expect(snapshot).toEqual(before);
 });

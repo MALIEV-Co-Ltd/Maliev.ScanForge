@@ -1,5 +1,13 @@
 # ScanForge MCP agent guide
 
+Exact CAD Boolean, split, fillet/chamfer, shell and thickening makers use private
+input geometry so successful and rejected operations preserve source and earlier
+result BREP. Both split makers own separate copies. Datum placement reads prepared
+face triangulations without remeshing its shared source; missing triangulations
+fail safely and require recreating or reimporting the body. Patterns own their
+first instance's geometry and mesh. GUI and MCP use the same worker through the
+existing CAD and alignment operations, with unchanged parameters and history.
+
 ## Fine alignment accuracy
 
 `mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.
@@ -562,6 +570,13 @@ Never infer that an operation succeeded from a status message or transport succe
 
 Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Source geometry, scanner normals, selections and undo/redo history remain intact. Indexed display buffers borrow stored computed normals; older active indexed meshes initialize absent computed normals from their topology. See `docs/PROJECT_LOAD_PERFORMANCE.md` for earlier measurements and limits.
 
+Exact CAD restoration refreshes kernel handles from saved BREP while retaining
+the saved positions, normals, edge buffers and BREP in current, undo and redo
+states. Reopening does not replace those buffers with a fresh tessellation or
+reserialization. Identical BREP seeds reuse one restored handle; the restore
+cache retains handles only. GUI opening, `project_import` and `backup_restore`
+preserve the same saved values.
+
 GUI Save, automatic backup and MCP `project_export` share concurrent encoding of
 the same immutable snapshot. Each caller retains its own cancellation: cancelling
 one export leaves another caller's backup running; the last cancellation retires
@@ -952,7 +967,16 @@ The command is `mesh_process`. Inspect the terminal job result and new object's 
 
 Call `project_export` with `{"format":"step"}` (or `project`/`stl`). Poll its job. The result contains `{artifactId,name,mime,bytes}`. `visible` defaults to true for geometry exports; project exports retain the whole project and its saved timeline.
 
-STEP exports exact CAD kernel shapes, matching GUI **Export STEP**. Scan meshes, point clouds, reference points/lines, numeric planes and coordinate-frame display geometry are excluded. Omitted `visible` or true exports visible exact CAD; `visible:false` also includes hidden exact CAD. If no eligible CAD remains, the job fails with the same create/import-exact-CAD error as the GUI. Export the project format to preserve scans and construction metadata together with CAD.
+For STEP, every included object must be exact CAD by default. Hide scan/reference
+objects before exporting, or pass `cadOnly:true` to export only exact CAD within
+the visibility scope. This explicit option returns `excludedEntityIds` alongside
+the artifact fields; it rejects if no exact object remains. `visible:false`
+includes hidden objects before applying that filter. `cadOnly` is STEP-only;
+supplying it for project or STL export rejects. The GUI's Export STEP button
+submits this same exact-only job, downloads its artifact and releases it. Both
+paths use the shared artifact quota (1 GiB aggregate), owner/revision fences and
+native/job leases. GUI cancellation remains reachable while busy; agents use
+`job_cancel`. A cancelled late export publishes no artifact or history edit.
 
 Call `artifact_read` with the artifact ID, byte `offset` and optional `length` (maximum 262,144). Decode each returned `base64` chunk, append in offset order, and stop at `eof:true`. Use the agent's own authorized file tools to save bytes at the requested location. ScanForge does not grant arbitrary filesystem read/write privileges. Delete disposable artifacts through `artifact_delete`; exporting does not mark the browser project as saved.
 

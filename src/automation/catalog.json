@@ -4807,7 +4807,7 @@
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. STEP exports exact CAD kernel shapes only, excluding scans and reference/datum display geometry, matching GUI Export STEP. Omitted visible or true exports visible exact CAD; visible:false includes hidden exact CAD too. No eligible CAD fails with the same create/import-exact-CAD error as the GUI. Project format retains the full project independently of visible. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -4819,6 +4819,10 @@
         },
         "visible": {
           "type": "boolean"
+        },
+        "cadOnly": {
+          "type": "boolean",
+          "description": "STEP only: omit non-CAD references and report their IDs. Default false retains strict mixed-scene rejection."
         }
       },
       "required": ["format"],
