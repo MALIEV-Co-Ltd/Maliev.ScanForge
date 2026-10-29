@@ -15,5 +15,13 @@
   },
   "logSha256": "81f2a80c906591030fa591986ceada2b13d2cc9b4a74f34605d8d008e3154016",
   "guardSha256": "dcb2263f836d568a8d44edbdbeb9c74116ce377526fb1e33059d4a3437198ca3",
+  "responseWorkerOnlyControl": {
+    "worktree": "C:/Users/Shoung/.codex/worktrees/m2-response-worker-control/Maliev.ScanForge",
+    "method": "The same response-worker prototype and real download with chunk-length checks, but the unmodified 94153b76 project decoder. Run without the extra process profiler and without forced garbage collection.",
+    "result": "The 475566423-byte download completed, then GUI reopen and its page-state probe timed out. Peak job bytes 4537548800 exceeded the nominal limit; cleanup was confirmed. The downloaded SHA-256 aa440bd2ab92c8c2d52c3a820b5beeca67485aff9327aaa22b7a540152c24071 has no independent export reference.",
+    "baselineCodecSha256": "240bff8fd70f6bb4649d2e39e9232323ad553781be2ddd59ad8f5170b5b56980",
+    "logSha256": "b41861c2b325931f09652047f29b513fbe6555eb3cdb0c54f0766e98a541c130",
+    "guardSha256": "f07bba7a19961919a666de9ec69ddbbe1c9d6f18eb104912705494be25168355"
+  },
   "limits": "Single instrumented run with three experimental changes; their individual effects are not established. The worker lacks production lifecycle, cancellation, error, authorization and compatibility review. No independent full-download integrity, public-MCP import after download, post-reopen history, full suite, native Split acceptance or resource guarantee is established. No application change was integrated."
 }
