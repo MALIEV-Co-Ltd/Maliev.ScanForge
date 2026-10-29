@@ -102,3 +102,41 @@ export function resolveEncodingChunkTokens(
   }
   return result;
 }
+
+/** Original immutable numeric geometry retained weakly only after a successful save. */
+export function projectEncodingNumericSources(
+  snapshot: ProjectEncodingSnapshot,
+): number[][] {
+  const sources: number[][] = [],
+    seen = new Set<number[]>();
+  const add = (value: unknown) => {
+    if (
+      !Array.isArray(value) ||
+      value.length < 65536 ||
+      seen.has(value) ||
+      sources.length >= 128
+    )
+      return;
+    seen.add(value);
+    sources.push(value);
+  };
+  const states = [
+    snapshot.session.project,
+    ...snapshot.session.history,
+    ...snapshot.session.future,
+  ];
+  for (const { entities } of states)
+    for (const entity of entities) {
+      add(entity.positions);
+      add(entity.normals);
+      add(entity.edgePositions);
+      add(entity.indexedMesh?.vertices);
+      add(entity.indexedMesh?.normals);
+      add(entity.indexedMesh?.geometryNormals);
+      add(entity.indexedMesh?.facetNormals);
+      add(entity.pointCloudPlacement?.sourcePositions);
+      add(entity.pointCloudPlacement?.sourceNormals);
+      if (sources.length === 128) return sources;
+    }
+  return sources;
+}

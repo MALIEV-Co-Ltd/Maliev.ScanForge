@@ -1,0 +1,14 @@
+{
+  "scope": "Experimental precise single-mesh finite Split candidate; not connected to production GUI or MCP and no native output observed.",
+  "change": "The optional single-mesh candidate preserves indexed seam connectivity and expands one mesh instead of partitioning each connected component into a separate output. It groups by actual indexed connectivity, without forcing an extra selection partition.",
+  "verification": {
+    "focused": "The original RED control showed the single-mesh result was absent. After implementation, 61 tests passed and two known expected failures remained in the five-file candidate/seam suite; a later candidate-file run passed 23 tests including disconnected and separating controls.",
+    "originalScan": "ply-3.ply SHA-256 bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2: 3,691,133 input faces, 3,700,757 output faces, 2,406 cut edges and two indexed components. The single expanded mesh matches its indexed mesh, retains input buffer hashes and preserves area within 1e-6 relative tolerance.",
+    "resource": "Original-scan job m2-single-mesh-original-20261028-r1-guard.json peaked at 1,592,090,624 bytes under the 4 GiB limit and confirmed cleanup. Targeted TypeScript and the focused suites also completed under guarded jobs."
+  },
+  "limitations": [
+    "Native static evidence suggests source mesh replacement and submesh refresh but does not prove result counts or geometry for the same inputs.",
+    "This result is not wired to the production worker, GUI, MCP, persistence, history or live localhost preview.",
+    "The complete M2 acceptance suite and native comparisons remain open."
+  ]
+}

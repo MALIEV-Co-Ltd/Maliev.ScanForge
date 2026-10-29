@@ -32,7 +32,6 @@ import { createSketchEditOperations } from "./sketch-edit-operations";
 import { analyzePrimitiveFit, createFittedPlane } from "../primitive-fitting";
 import { fittedPrimitive } from "../fitted-primitive";
 import { entityDisplayStats } from "../entity-display-stats";
-import { selectStepExportEntities } from "../step-export";
 import { referenceDeletionDependents } from "../reference-midpoint";
 import { inspectReferenceFrame } from "../reference-frame";
 import { transformPlaneFrame, validatePlaneFrame } from "../plane-frame";
@@ -575,11 +574,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     c: CommandContext,
     fit = true,
   ) {
-    const s = host.snapshot(),
-      blob = c.artifactBlob(a.artifactId),
+    const blob = c.artifactBlob(a.artifactId),
       name = (blob as File).name ?? a.name ?? "import.stl",
-      extension = name.split(".").pop()?.toLowerCase();
-    if (extension === "scanforge" || extension === "json") {
+      extension = name.split(".").pop()?.toLowerCase(),
+      isProject = extension === "scanforge" || extension === "json",
+      settings = isProject ? undefined : host.snapshot().settings;
+    if (isProject) {
       if (!a.replace) throw new Error("Project import requires replace:true.");
       const session = await decodeProjectFile(blob, c.signal),
         project = session.project,
@@ -666,10 +666,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       entity = await prepareImportedScan(new File([blob], name), {
         unit: a.unit ?? "mm",
         placeAtOrigin:
-          a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
+          a.placeAtOrigin ?? settings?.importPlaceAtOrigin === true,
         ascAttributes:
           a.ascAttributes ??
-          s.settings?.importAscAttributes ??
+          settings?.importAscAttributes ??
           DEFAULT_ASC_ATTRIBUTES,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),
@@ -1617,6 +1617,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               segments,
               result.segmentClassifications,
               id,
+              edit?.segmentIndexedMeshes,
             );
       if (segmentPublication) {
         next = segmentPublication.entities;
@@ -1687,7 +1688,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               artifact: json(
                 c,
                 {
-                  inventory: edit?.inventory,
+                  inventory: edit?.inventory && {
+                    ...edit.inventory,
+                    components: edit.inventory.components.map((component) => ({
+                      ...component,
+                      triangles:
+                        component.triangles instanceof Uint32Array
+                          ? Array.from(component.triangles)
+                          : component.triangles,
+                    })),
+                  },
                   curves: edit?.curves,
                   spatialCurves: edit?.spatialCurves,
                   sketchSection: result.sketchSection,
@@ -2195,10 +2205,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {
-        const shapes = a.cadOnly === false ? entities : selectStepExportEntities(s.entities, a.visible !== false);
-        if (a.cadOnly === false && (!shapes.length || shapes.some((entity) => !entity.kernelId)))
+        const shapes = a.cadOnly
+          ? entities.filter((entity) => entity.kernelId)
+          : entities;
+        if (a.cadOnly)
+          excludedEntityIds = entities
+            .filter((entity) => !entity.kernelId)
+            .map((entity) => entity.id);
+        if (!shapes.length && a.cadOnly)
+          throw Error("STEP export requires at least one exact CAD object.");
+        if (!shapes.length || shapes.some((entity) => !entity.kernelId))
           throw new Error("STEP export requires exact CAD for every exported object.");
-        if (a.cadOnly === true) excludedEntityIds = entities.filter((entity) => !entity.kernelId).map((entity) => entity.id);
         data = await host.cad().exportStep(shapes.map((e) => e.kernelId!));
         name = `${s.name}.step`;
         mime = "application/step";

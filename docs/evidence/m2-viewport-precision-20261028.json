@@ -1,0 +1,19 @@
+{
+  "scope": "Experimental viewport support for precise number-array scan meshes. Controls use Three.js objects in-process; no browser-rendered pixels or real browser worker/MCP transport were observed.",
+  "problem": "Converting world-space precise scan positions to Float32 collapsed a manufactured triangle from X=100000000 to X=100000004, causing failed picking and selection overlay geometry.",
+  "change": "When a non-CAD mesh has number-array coordinates that differ from Float32, viewport display coordinates are localized around its authored bounds center, and its mesh transform restores the world position. World bounds, selection overlays, expanded deviation geometry and noise comparison overlay use the same frame. Float32 scans, CAD entities and point clouds retain their previous display path.",
+  "coverage": "The in-process viewport control checks world bounds, ordinary and accelerated raycasting, public viewport_pick operation with a mocked host, selection overlay, repeated scene synchronization, geometry replacement and deviation display. A separate precise noise-overlay control checks its local coordinates and world bounds. GUI and public MCP browser delivery are not established.",
+  "validation": {
+    "regression": "The viewport precision control failed before local origin (m2-viewport-precision-red-20261028-r1-guard.json) and passed afterward. The noise overlay control failed before its local-origin fix and passed afterward (m2-noise-overlay-precision-red-20261028-r1-guard.json and m2-noise-overlay-precision-green-20261028-r1-guard.json).",
+    "wide": "35 in-process viewport, selection and API test files passed 203 tests, with one opt-in large test skipped, under m2-viewport-precision-wide-20261028-r3-guard.json. The opt-in large control was run separately as recorded below. Focused TypeScript passed under m2-viewport-precision-types-20261028-r4-guard.json.",
+    "large": "A manufactured 400000-triangle number-array mesh retained its local coordinate span and world bounds under m2-viewport-precision-large-20261028-r1-guard.json, peak job memory 534466560 bytes. This did not render WebGL or verify actual browser-worker memory.",
+    "hiddenAndClippedPick": "m2-local-origin-clipped-pick-20261028-r1-guard.json and m2-selection-transfer-precision-20261028-r1-guard.json passed; focused TypeScript passed under m2-local-followup-types-20261028-r1-guard.json. Cleanup was confirmed."
+  },
+  "limitations": [
+    "Float32 local precision depends on the mesh extent; arbitrary large extents can still lose detail.",
+    "Rendered pixels, GPU shader precision, interactive pointer selection, clipping, screenshot capture and the real browser/public MCP boundary remain unverified.",
+    "The candidate finite Split path and the viewport changes remain uncommitted and are not in the preserved port-5173 preview."
+  ],
+  "additionalControls": "The precise mesh selection overlay and processing-outline objects share the mesh local origin. An in-process control verifies Float32 model-view uniform projection retains the manufactured 4-unit edge. A mocked background-BVH worker preserves the same world-space hit and facet index before and after acceleration. These are mathematical and in-process controls, not rendered WebGL or actual browser-worker evidence.",
+  "hiddenAndClippedPickControl": "A large-coordinate indexed two-facet fixture hides source facet 0. The in-process GUI pointer handler maps the visible rendered slot 0 back to source facet 1, while the documented viewport_pick contract reports rendered slot 0. Both report the same world point and reject it when clipped. The agent guide was corrected to say rendered triangle slots. The selection worker dispatcher control structured-clones and transfers its Float64 copy and retains the source array. These are not actual browser or public transport observations."
+}

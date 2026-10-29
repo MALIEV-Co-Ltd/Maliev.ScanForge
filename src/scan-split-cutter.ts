@@ -15,7 +15,7 @@ export function isScanSplitCutter(entity: Entity): boolean {
 /** Reference planes are infinite; ordinary surface meshes retain their bounds. */
 export function scanSplitCutter(
   entity: Entity,
-): Pick<ScanEditRequest, "plane" | "target"> {
+): Pick<ScanEditRequest, "plane" | "target" | "targetIsNonMesh"> {
   if (!isScanSplitCutter(entity))
     throw Error(
       "Choose a triangle mesh, surface or reference plane as the split cutter.",
@@ -35,5 +35,8 @@ export function scanSplitCutter(
         plane: { origin: [...entity.fit.center], normal: [...entity.fit.axis] },
       };
   }
-  return { target: entity.positions };
+  return {
+    target: entity.positions,
+    targetIsNonMesh: entity.kind !== "mesh" || !!entity.kernelId,
+  };
 }

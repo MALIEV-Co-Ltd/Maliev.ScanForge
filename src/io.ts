@@ -1,4 +1,5 @@
 import { validateSpatialCurves } from "./spatial-sketch";
+import { isEncodingNumeric } from "./project-encoding-numeric";
 import { validateMeshFacetNormals } from "./mesh-geometry-normals";
 import { validateInspectionDefinitions } from "./inspection-definition";
 import { validateSavedSketchDisplay } from "./saved-sketch-display";
@@ -9,6 +10,7 @@ import {
 } from "./reference-frame";
 import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import * as THREE from "three";
+import { finiteArrayValues, finiteTypedValues } from "./finite-typed-values";
 import { copyFitResult } from "./fitted-primitive";
 import {
   validatePointCloudDisplay,
@@ -129,10 +131,14 @@ export function validatePositions(
   pointCloud = false,
 ): asserts value is Positions {
   if (
-    (!Array.isArray(value) && !(value instanceof Float32Array)) ||
+    (!Array.isArray(value) &&
+      !(value instanceof Float32Array) &&
+      !isEncodingNumeric(value)) ||
     !value.length ||
     value.length % (pointCloud ? 3 : 9) !== 0 ||
-    !value.every((x) => typeof x === "number" && Number.isFinite(x))
+    !(Array.isArray(value)
+      ? finiteArrayValues(value)
+      : finiteTypedValues(value))
   ) {
     throw new Error(
       pointCloud

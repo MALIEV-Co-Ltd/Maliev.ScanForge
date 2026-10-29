@@ -33,6 +33,7 @@ export async function packProjectTransport(
     ownedTypedArrays?: boolean;
     check?: () => void;
     cooperative?: boolean;
+    reuseNumericBuffer?: (values: number[]) => Float64Array | undefined;
   } = {},
 ) {
   const memo = new Map<object, unknown>(),
@@ -57,8 +58,30 @@ export async function packProjectTransport(
       return v;
     }
     if (Array.isArray(v) && v.length >= CHUNK && typeof v[0] === "number") {
-      const ref = {},
-        values = new Float64Array(v.length);
+      const ref = {};
+      let values = options.ownedTypedArrays
+        ? options.reuseNumericBuffer?.(v)
+        : undefined;
+      if (values && values.length === v.length) {
+        for (let first = 0; first < v.length && values; first += CHUNK) {
+          check();
+          for (let i = first; i < Math.min(v.length, first + CHUNK); i++) {
+            if (!Number.isFinite(v[i]) || !Object.is(v[i], values[i])) {
+              values = undefined;
+              break;
+            }
+          }
+          if (options.cooperative !== false && first + CHUNK < v.length)
+            await yieldScanTask();
+        }
+      } else values = undefined;
+      if (values) {
+        memo.set(v, ref);
+        numbers.push({ ref, values });
+        if (values.buffer instanceof ArrayBuffer) buffers.add(values.buffer);
+        return ref;
+      }
+      values = new Float64Array(v.length);
       memo.set(v, ref);
       for (let first = 0; first < v.length; first += CHUNK) {
         check();
@@ -72,7 +95,7 @@ export async function packProjectTransport(
       }
       check();
       numbers.push({ ref, values });
-      buffers.add(values.buffer);
+      if (values.buffer instanceof ArrayBuffer) buffers.add(values.buffer);
       return ref;
     }
     const out: any = Array.isArray(v) ? new Array(v.length) : {};
@@ -99,7 +122,16 @@ export async function packProjectTransport(
 }
 export async function unpackProjectTransport<T = unknown>(
   packet: ProjectTransport,
-  options: { check?: () => void; cooperative?: boolean } = {},
+  options: {
+    check?: () => void;
+    cooperative?: boolean;
+    retainNumericBuffer?: (ref: object, values: Float64Array) => boolean;
+    reuseNumericArray?: (
+      values: Float64Array,
+      used: ReadonlySet<number[]>,
+    ) => Promise<number[] | undefined>;
+    releaseOwnedNumericBuffers?: boolean;
+  } = {},
 ): Promise<T> {
   if (
     packet?.kind !== "scanforge-numeric-transport-v1" ||
@@ -108,6 +140,45 @@ export async function unpackProjectTransport<T = unknown>(
     throw new Error("Invalid numeric project transport.");
   const memo = new Map<object, unknown>(),
     check = options.check ?? (() => {});
+  const usedNumericArrays = new Set<number[]>();
+  const protectedBuffers = new Set<ArrayBufferLike>();
+  const bufferCounts = new Map<ArrayBufferLike, number>();
+  let safeToRelease = options.releaseOwnedNumericBuffers === true;
+  if (safeToRelease) {
+    const seen = new Set<object>();
+    const inspect = (value: unknown): void => {
+      check();
+      if (!value || typeof value !== "object" || seen.has(value)) return;
+      seen.add(value);
+      if (ArrayBuffer.isView(value)) {
+        protectedBuffers.add(value.buffer);
+        return;
+      }
+      if (
+        value instanceof ArrayBuffer ||
+        (typeof SharedArrayBuffer !== "undefined" &&
+          value instanceof SharedArrayBuffer)
+      ) {
+        protectedBuffers.add(value);
+        return;
+      }
+      for (const descriptor of Object.values(
+        Object.getOwnPropertyDescriptors(value),
+      )) {
+        if (!("value" in descriptor)) {
+          safeToRelease = false;
+          continue;
+        }
+        inspect(descriptor.value);
+      }
+    };
+    inspect(packet.graph);
+    for (const entry of packet.numbers) {
+      check();
+      const buffer = entry?.values?.buffer;
+      if (buffer) bufferCounts.set(buffer, (bufferCounts.get(buffer) ?? 0) + 1);
+    }
+  }
   for (const entry of packet.numbers) {
     check();
     if (
@@ -117,15 +188,61 @@ export async function unpackProjectTransport<T = unknown>(
       memo.has(entry.ref)
     )
       throw new Error("Invalid numeric project buffer.");
-    const values = new Array<number>(entry.values.length);
-    for (let first = 0; first < values.length; first += CHUNK) {
-      check();
-      for (let i = first; i < Math.min(values.length, first + CHUNK); i++)
-        values[i] = entry.values[i];
-      if (options.cooperative !== false && first + CHUNK < values.length)
-        await yieldScanTask();
+    if (options.retainNumericBuffer?.(entry.ref, entry.values)) {
+      memo.set(entry.ref, entry.values);
+      continue;
     }
+    let values = await options.reuseNumericArray?.(
+      entry.values,
+      usedNumericArrays,
+    );
+    check();
+    if (values) {
+      if (
+        usedNumericArrays.has(values) ||
+        values.length !== entry.values.length
+      )
+        values = undefined;
+      else
+        for (let i = 0; i < entry.values.length; i++) {
+          if (i % CHUNK === 0) check();
+          if (
+            !Number.isFinite(values[i]) ||
+            !Object.is(values[i], entry.values[i])
+          ) {
+            values = undefined;
+            break;
+          }
+        }
+    }
+    if (!values) {
+      values = new Array<number>(entry.values.length);
+      for (let first = 0; first < values.length; first += CHUNK) {
+        check();
+        for (let i = first; i < Math.min(values.length, first + CHUNK); i++)
+          values[i] = entry.values[i];
+        if (options.cooperative !== false && first + CHUNK < values.length)
+          await yieldScanTask();
+      }
+    }
+    usedNumericArrays.add(values);
     memo.set(entry.ref, values);
+    const buffer = entry.values.buffer;
+    if (
+      safeToRelease &&
+      buffer instanceof ArrayBuffer &&
+      bufferCounts.get(buffer) === 1 &&
+      !protectedBuffers.has(buffer)
+    ) {
+      const transfer = (
+        buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
+      ).transfer;
+      try {
+        transfer?.call(buffer, 0);
+      } catch {
+        /* Collection remains the fallback. */
+      }
+    }
   }
   const visit = (v: any): any => {
     check();

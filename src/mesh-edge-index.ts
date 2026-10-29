@@ -21,6 +21,25 @@ export class MeshEdgeIndex implements ReadonlyMap<string, EdgeUse[]> {
   get useCount(): number {
     return this.corners;
   }
+  /** Visit each edge's first corner paired with its remaining incident corners. */
+  forEachCornerPair(visit: (first: number, other: number) => void): void {
+    for (let edge = 0; edge < this.count; edge++) {
+      const first = this.first[edge];
+      for (
+        let encoded = this.next[first];
+        encoded;
+        encoded = this.next[encoded - 1]
+      )
+        visit(first, encoded - 1);
+    }
+  }
+  /** Visit directed corners belonging to edges with exactly one use. */
+  forEachBoundaryCorner(visit: (corner: number) => void): void {
+    for (let edge = 0; edge < this.count; edge++) {
+      const corner = this.first[edge];
+      if (!this.next[corner]) visit(corner);
+    }
+  }
   /** Ordered CSR snapshot without transient keys, arrays or EdgeUse objects. */
   packCorners(): {
     offsets: Uint32Array<ArrayBuffer>;

@@ -1,0 +1,10 @@
+{
+  "scope": "Experimental finite Split source preparation; not connected to the GUI or MCP production route.",
+  "observation": "A borrowed Float64 indexed topology cache was charged as a new allocation, while the identical explicitly supplied vertices were not. The regression failed with a memory-budget error at the minimum allowance accepted for the direct source.",
+  "change": "Recognize the cached Float64 vertex buffer as borrowed when accounting for source preparation. Copies continue to count toward the allowance.",
+  "verification": "The regression passed with five related suites: 76 passed and one expected folded-cutter failure under m2-cache-precise-budget-green-20261028-r1.json. The targeted TypeScript project passed under m2-cache-precise-budget-types-20261028-r1.json. Both guarded jobs used a 4 GiB process limit and confirmed cleanup.",
+  "limitations": [
+    "The folded-cutter native object ownership remains unverified.",
+    "No production GUI, public MCP, native, or full-suite validation is established by this experimental change."
+  ]
+}

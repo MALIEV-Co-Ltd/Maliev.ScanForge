@@ -110,7 +110,7 @@ export class SelectionProcessingHighlight {
       this.updateOutlines();
     }
     const boundaryVaryings = hasBoundary
-      ? "\nvarying vec3 selectionBarycentric;\nvarying vec3 selectionBoundary;"
+      ? "\nvarying vec3 selectionBarycentric;"
       : "";
     material.onBeforeCompile = (shader) => {
       shader.uniforms.selectionProcessing = this.active;
@@ -126,15 +126,13 @@ export class SelectionProcessingHighlight {
           "#include <common>",
           "#include <common>\nvarying vec3 selectionPosition;\nuniform vec3 selectionCenter;\nuniform float selectionScale;" +
             boundaryVaryings +
-            (hasBoundary
-              ? "\nattribute vec3 processingBarycentric;\nattribute vec3 processingBoundary;"
-              : ""),
+            (hasBoundary ? "\nattribute float processingBarycentric;" : ""),
         )
         .replace(
           "#include <begin_vertex>",
           "#include <begin_vertex>\nselectionPosition = (position - selectionCenter) / selectionScale;" +
             (hasBoundary
-              ? "\nselectionBarycentric = processingBarycentric;\nselectionBoundary = processingBoundary;"
+              ? "\nselectionBarycentric = vec3(1.0 - step(0.5, processingBarycentric), step(0.5, processingBarycentric) - step(1.5, processingBarycentric), step(1.5, processingBarycentric));"
               : ""),
         );
       shader.fragmentShader = shader.fragmentShader
@@ -168,7 +166,7 @@ export class SelectionProcessingHighlight {
         );
     };
     material.customProgramCacheKey = () =>
-      `selection-processing-red-v9:${hasBoundary}`;
+      `selection-processing-red-v11:${hasBoundary}`;
     return lines;
   }
 }
