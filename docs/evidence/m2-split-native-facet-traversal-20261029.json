@@ -52,5 +52,27 @@
     "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-20261029.py",
     "runnerSha256": "c03a7614f157a09da16af84de47ed4caccaaf043ea1871844043f4ace838c085",
     "peakJobBytes": 361951232
+  },
+  "distancePivotExperiment": {
+    "scope": "Disposable crossed-strip prototype using closest or farthest point-to-segment pivot; not a faithful native implementation or production code.",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "nearestMatches": [12, 22, 10],
+    "farthestMatches": [12, 22, 10],
+    "interpretation": "A deliberate throw showed that at least one crossed strip was reached. A second run deliberately throwing for any successfully constructed strip with a chain longer than three vertices passed all three controls. Thus the prototype did not exercise a choice between multiple interior pivot candidates on these controls, so identical results cannot support or refute the native distance-pivot hypothesis. Further work needs an input with a nontrivial chain and a live native binding.",
+    "prototype": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-prototype-20261029.ts",
+    "prototypeSha256": "a769d2730f36e50f9c729ceb71e2df2706ab32e8941b5f27312b33c1504def90",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-variants-20261029.json",
+    "resultsSha256": "a6abdf2acd249932388ab13be399e148310e05f6704a615b39b8cb19df40fa8d",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-guard-20261029.json",
+    "guardSha256": "09341b2c1dfca41f65101abccb8630c43761b70a94e5a6ecfbebbf38969510e8",
+    "peakJobBytes": 358965248,
+    "triggerGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-trigger-guard-20261029.json",
+    "triggerGuardSha256": "e959c7b5e3bd1af6614fa60a26bc859293a3808de879eb102d31824e4ac17c49",
+    "nontrivialGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-nontrivial-guard-20261029.json",
+    "nontrivialGuardSha256": "a3d58e71cedd3439c73e3ae1ef930ddaff672e27ac8100aba9a7a50606aed6cd",
+    "limitations": [
+      "The deliberate throw run failed as intended and cleaned up; the other instrumented run passed. Neither verifies native behavior.",
+      "The scratch prototype does not check every polygon validity condition and must not be used in production."
+    ]
   }
 }
