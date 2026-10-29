@@ -1,0 +1,41 @@
+{
+  "scope": "One numeric sphere-pair reference point, source edit, project reopen and native history trial; not complete M4 acceptance.",
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "initialCentersMm": [
+      [5, 6, 7],
+      [15, 6, 7]
+    ],
+    "initialPointMm": [10, 6, 7],
+    "editedFirstCenterMm": [9, 6, 7],
+    "updatedAndReopenedPointMm": [12, 6, 7],
+    "reopenedSources": ["Sphere(2)", "Sphere(1)"],
+    "updatedProjectSha256": "fd397952ac5b4e5513e74d01dadf86fd5d10c8267357662edff8a1e42f540559",
+    "reopenedEditorCaptureSha256": "249a79cd3bdfaa255ea90ee2fad26a072f49aa69e94485cece62117b3b25dc09",
+    "savedRecordReadback": "The indexed point span decodes to coordinates [12,6,7], mode 3, submode 1 and two source identities. Sphere payloads were not decoded.",
+    "oneSourceControl": "A From primitives point with only the first sphere selected stored [0,0,0] and one source identity; this is not a separate center-mode test.",
+    "historyTrial": {
+      "sequence": "Reopen the saved project, change Sphere(1) center X from 9 to 5, accept, then invoke Undo and Redo without opening another editor in between.",
+      "undo": "Sphere(1) disappeared from the history tree; Sphere(2) and both reference points remained. Undo became disabled and Redo enabled. The point's geometry during this intermediate state was not inspected.",
+      "redo": "Sphere(1) reappeared at the end of history. The point editor displayed [10,6,7] and both sphere names.",
+      "undoTreeCaptureSha256": "da595a01e6183f252b4dfcd957d17f4f155dcdbd2be9e10a3fc8eee992585402",
+      "redoTreeCaptureSha256": "1857fba0cddc379f3164e622b4316b47e0dfac8e01567597acbbac6a649806f4",
+      "redoPointCaptureSha256": "cf34501e0c3897a3e697d598d8722277af7d9ca3f05715e8f6cc9902b5ba3768",
+      "limitation": "This one sequence differs from the application undo of a source rebuild; the native undo stack's internal semantics and intermediate point geometry are unverified."
+    }
+  },
+  "application": {
+    "baseCommit": "14ede2edf0bdac55afe10848b4fcd38bbb20714d",
+    "testScriptSha256": "50614e02c7070684e8156d72931f364f5eda4ef4da0243504c83378d7e0808ec",
+    "command": "node tests/reference-construction-browser.mjs",
+    "result": "Independent GUI and public MCP point creation matched [10,6,7]; rebuilding the first sphere refreshed both to [12,6,7]. Application undo, redo and project-worker reopen preserved both definitions and expected coordinates.",
+    "browserLedgerSha256": "32c4ae0e6a4ed7a636d8716683ad85f2c31ea9bf74cd1372ba26acdc35048959",
+    "guardReceiptSha256": "782af114ddaf6dddd07f72bf7aef940fe315404740950fb7d87e7b264323b07c",
+    "cleanup": "The bounded 4 GiB Job passed with zero active children, closed handles, released validation lane and closed private browser and MCP ports."
+  },
+  "limits": [
+    "Native viewport geometry and selection were not visible in capture.",
+    "The one native history trial does not establish undo/redo parity or general native history semantics.",
+    "This comparison does not establish general source-provider, curve, sketch or milestone parity."
+  ]
+}

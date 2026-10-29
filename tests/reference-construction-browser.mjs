@@ -1254,6 +1254,126 @@ try {
       )
     ).entityIds[0];
   }
+  // Compare the isolated native two-sphere fixture through both public paths.
+  const spherePairIds = [];
+  for (const [name, center] of [
+    ["Native sphere pair A", [5, 6, 7]],
+    ["Native sphere pair B", [15, 6, 7]],
+  ]) {
+    spherePairIds.push(
+      (
+        await job(
+          await mutate("cad_create", {
+            name,
+            recipe: {
+              kind: "primitive",
+              input: { kind: "sphere", center, radius: 1 },
+            },
+          }),
+        )
+      ).entityIds[0],
+    );
+  }
+  const spherePairPreview = (
+    await mutate("reference_construct", {
+      action: "preview",
+      kind: "point",
+      mode: "pair",
+      sourceEntityIds: spherePairIds,
+    })
+  ).result;
+  assert.deepEqual(spherePairPreview.geometry.position, [10, 6, 7]);
+  const spherePairMcpId = (
+    await mutate("reference_construct", {
+      action: "apply",
+      sessionId: spherePairPreview.sessionId,
+      version: spherePairPreview.version,
+    })
+  ).result.entityId;
+  const beforeSpherePairGui = new Set(
+    (await call("project_get")).result.objects.map((row) => row.id),
+  );
+  await page.getByRole("tab", { name: "Construct", exact: true }).click();
+  await page
+    .getByRole("group", { name: "Primitives", exact: true })
+    .getByRole("button", { name: "Reference point", exact: true })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Reference point", exact: true });
+  await dialog.locator(".app-select > button").first().click();
+  await page
+    .getByRole("option", { name: "Two primitives", exact: true })
+    .click();
+  for (const [index, name] of [
+    "Native sphere pair A",
+    "Native sphere pair B",
+  ].entries()) {
+    await dialog
+      .locator(".app-select > button")
+      .nth(index + 1)
+      .click();
+    await page.getByRole("option", { name, exact: true }).click();
+  }
+  await dialog.getByRole("button", { name: "Preview", exact: true }).click();
+  await page.waitForFunction(
+    () =>
+      !document.querySelector(
+        '[role="dialog"] .button-row:last-child button:nth-child(2)',
+      )?.disabled,
+  );
+  const spherePairGuiPreview = (await call("reference_construction_get"))
+    .result;
+  assert.deepEqual(spherePairGuiPreview.geometry, spherePairPreview.geometry);
+  assert.deepEqual(
+    spherePairGuiPreview.definition,
+    spherePairPreview.definition,
+  );
+  await dialog.getByRole("button", { name: "Apply", exact: true }).click();
+  await dialog.waitFor({ state: "detached" });
+  const spherePairGuiId = (await call("project_get")).result.objects.find(
+    (row) => !beforeSpherePairGui.has(row.id),
+  ).id;
+  const assertSpherePair = async (expected) => {
+    for (const entityId of [spherePairMcpId, spherePairGuiId]) {
+      const reference = (await call("object_get", { entityId })).result
+        .reference;
+      assert.deepEqual(reference.geometry.position, expected);
+      assert.deepEqual(reference.definition, spherePairPreview.definition);
+    }
+  };
+  await assertSpherePair([10, 6, 7]);
+  const rebuiltSpherePair = await job(
+    await mutate("cad_rebuild", {
+      entityId: spherePairIds[0],
+      recipe: {
+        kind: "primitive",
+        input: { kind: "sphere", center: [9, 6, 7], radius: 1 },
+      },
+    }),
+  );
+  for (const entityId of [spherePairMcpId, spherePairGuiId])
+    assert(rebuiltSpherePair.refreshedEntityIds.includes(entityId));
+  await assertSpherePair([12, 6, 7]);
+  await mutate("history_undo", {});
+  await assertSpherePair([10, 6, 7]);
+  await mutate("history_redo", {});
+  await assertSpherePair([12, 6, 7]);
+  const spherePairArtifact = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: spherePairArtifact.artifactId,
+      replace: true,
+    }),
+  );
+  await assertSpherePair([12, 6, 7]);
+  ledger.nativeSpherePair = {
+    gui: true,
+    publicMcp: true,
+    sourceEdit: true,
+    undoRedo: true,
+    reopen: true,
+  };
   await mutate("object_update", {
     entityId: primitiveIds.sphere,
     patch: { locked: true },

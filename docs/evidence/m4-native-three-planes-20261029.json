@@ -1,0 +1,33 @@
+{
+  "scope": "One axis-aligned three-plane reference point and source edit; not general plane, viewport-pick or M4 acceptance.",
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "planes": [
+      { "normal": [0, 0, 1], "displayedOffsetMm": 4 },
+      { "normal": [1, 0, 0], "displayedOffsetMm": 2 },
+      { "normal": [0, 1, 0], "displayedOffsetMm": 3 }
+    ],
+    "initialPointMm": [2, 3, 4],
+    "editedXPlaneOffsetMm": 7,
+    "updatedPointMm": [7, 3, 4],
+    "reopenedPointMm": [7, 3, 4],
+    "reopenedSources": ["Plane(3)", "Plane(1)", "Plane(2)"],
+    "initialProjectSha256": "fc1bb850ab9b58d48dfb471c235d5b2aaa198056c3b3f8011b066b312bcb2912",
+    "editedProjectSha256": "1f974d42f4b46b5399d9a280d73e0625501ee6845c146a437d501891ebe6a592",
+    "initialReopenedEditorSha256": "6855d52d437a86fcd7d451341bf3c25f8d55a901d467a3f950113926e2edf20d",
+    "editedReopenedEditorSha256": "73c7cf971a53f82f07198e44b106e6a85d1479a112d26dfe8ebba7b9596dea03",
+    "savedRecordReadback": "The explicit indexed point spans decode to [2,3,4] and [7,3,4], mode 4 and three source identities. The plane payloads were not decoded."
+  },
+  "application": {
+    "baseCommit": "14ede2edf0bdac55afe10848b4fcd38bbb20714d",
+    "testScriptSha256": "50614e02c7070684e8156d72931f364f5eda4ef4da0243504c83378d7e0808ec",
+    "browserLedgerSha256": "32c4ae0e6a4ed7a636d8716683ad85f2c31ea9bf74cd1372ba26acdc35048959",
+    "guardReceiptSha256": "782af114ddaf6dddd07f72bf7aef940fe315404740950fb7d87e7b264323b07c",
+    "result": "The isolated GUI construction and independent public MCP preview produced [2,3,4]. An application source-plane edit produced [7,3,4], with application undo/redo and worker reopen."
+  },
+  "limits": [
+    "The native planes were locked; the application fixture used its own authored-plane policy. Lock policy parity is not established.",
+    "Native undo/redo and viewport picking were not tested; the viewport remained white in capture.",
+    "Only the saved point span was decoded; native plane payload, fit, display frame and general numerical equivalence were not established."
+  ]
+}

@@ -100,6 +100,31 @@ STEP retains main's strict default and shared explicit CAD-only GUI/MCP path;
 the CAD worker retains private-copy ownership and M4 topology ordering. The
 original native source-family and lifecycle gates remain open.
 
+An [isolated QuickSurface reproduction](evidence/m4-native-point-crash-reproduction-20261029.json)
+opened and canceled a Reference Point in an empty project, then created a
+numeric line and selected it in the history tree. Opening Reference Point
+after that selection was followed by a native access violation at the same
+reported executable offset as the earlier failure on a separate fixture. The
+event log does not establish the cause, and the captured viewport remained
+white. This is original-application evidence, not a ScanForge failure or a
+passing native acceptance case. Required pick and lifecycle checks remain open.
+
+The [two-sphere point comparison](evidence/m4-native-sphere-pair-20261029.json)
+matches a native source edit and save/reopen with independent GUI and public MCP
+constructions. Native and application points changed from `[10,6,7]` to
+`[12,6,7]` mm after the same sphere-center edit. Both application paths also
+passed undo/redo and worker reopen. In a separate native history trial, Undo
+removed the edited sphere from the history tree and Redo reinserted it at the
+end; the point then displayed `[10,6,7]`. That differs from application source
+rebuild undo and does not establish general native history semantics. Viewport
+picking and other source families remain unverified.
+
+The [three-plane comparison](evidence/m4-native-three-planes-20261029.json)
+matches one axis-aligned native construction and source edit with the existing
+GUI/public MCP replay: both produced `[2,3,4]` and then `[7,3,4]` mm. Native
+save/reopen preserved the edited point and three sources. Native lock policy,
+undo/redo and viewport picking remain separate unverified behaviors.
+
 The [cone-source checkpoint](evidence/m4-cone-source-acceptance-20261026.json)
 adds positive, equal and inverted-radius current cone recipes to shared point
 center/pair and line pair/average construction. Its 146 focused checks and 7,871

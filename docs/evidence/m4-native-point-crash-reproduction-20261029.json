@@ -1,0 +1,41 @@
+{
+  "application": "QuickSurface Pro 8.0.123",
+  "case": "fresh empty unsaved project",
+  "steps": [
+    "Open Reference Point in empty project",
+    "Cancel; provisional Ref. Point disappears from history",
+    "Open Reference Line",
+    "Select Type In and accept default endpoints (0,0,0) and (10,0,0)",
+    "Select Ref. Line(1) in history",
+    "Click Reference Point"
+  ],
+  "observations": [
+    "Empty-project Point dialog opened with zero coordinates",
+    "Cancel removed provisional point",
+    "Accepted line appeared in history and Undo became available",
+    "After selecting the line and opening Reference Point, accessibility state was unavailable and the owned window subsequently disappeared"
+  ],
+  "event_log": [
+    {
+      "local_time": "2026-10-29 12:42:24",
+      "pid": 36220,
+      "exception": "0xc0000005",
+      "module_offset": "0x580648",
+      "report_id": "e6fe204a-cb77-401f-8090-d62b57aed47b"
+    },
+    {
+      "local_time": "2026-10-29 12:42:30",
+      "pid": 36220,
+      "exception": "0xc000041d",
+      "module_offset": "0x580648",
+      "report_id": "979d217d-7fb8-46eb-90c8-7c0532a73711"
+    }
+  ],
+  "limitations": [
+    "One isolated reproduction; no stack or faulting address captured",
+    "A selected line and command sequence are correlated; the underlying cause is not established",
+    "Viewport remained white in capture; geometry and picking were not observed",
+    "This is an original application failure, not a ScanForge failure",
+    "No fixture saved or overwritten"
+  ]
+}
