@@ -1,6 +1,9 @@
 import type { Handler, WorkspaceHost } from "./api";
 import { evaluateCadAlignmentReference } from "../cad/alignment-reference";
-import { referenceDatumFeature } from "../alignment-reference-entity";
+import {
+  referenceDatumFeature,
+  storedFrameDatumReferences,
+} from "../alignment-reference-entity";
 import {
   nativeDatumFitFeature,
   nativeDatumPickedFeature,
@@ -10,6 +13,7 @@ export interface AlignmentReference {
   id: string;
   source: "cadFace" | "fittedPrimitive" | "referenceConstruction";
   kind: "plane" | "direction" | "point" | "unsupported";
+  label?: string;
   point?: number[];
   direction?: number[];
   length?: number;
@@ -44,7 +48,14 @@ export function createAlignmentOperations(
       if (!entity)
         throw new Error("Alignment reference object is not in this project.");
       context.check();
-      let references: AlignmentReference[] = [];
+      let references: AlignmentReference[] = storedFrameDatumReferences(
+        entity,
+        args.centerAt,
+      ).map(({ key, ...reference }) => ({
+        ...reference,
+        id: `${entity.id}/${key}`,
+        source: "referenceConstruction",
+      }));
       const semantic = referenceDatumFeature(entity);
       if (semantic) {
         const kind = semantic.kind === "referencePoint" ? "point" : "direction";

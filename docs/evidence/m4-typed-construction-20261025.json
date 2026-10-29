@@ -1,0 +1,219 @@
+{
+  "date": "2026-10-25",
+  "scope": "Typed semantic point and finite-line public GUI/MCP construction lifecycle only",
+  "status": "Implemented and verified in isolated uncommitted candidate; M4 remains open",
+  "candidate": {
+    "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workspace": "C:\\Users\\Shoung\\.codex\\worktrees\\m4-construction\\Maliev.ScanForge",
+    "sourceManifestSha256": "a21b2b1063898027ee78a719b54e0085b9d09d9c8c53467a64b4a572ac305361",
+    "applicationInputs": 1025,
+    "inputsStableThroughVerification": true,
+    "buildIdentity": "scanforge-7a809975f91c77a8",
+    "committed": false,
+    "merged": false
+  },
+  "gui": [
+    "Construct > Reference point / Reference line",
+    "Object properties > Edit reference",
+    "Shared preview/apply/cancel operation and modal/repeat guards"
+  ],
+  "mcp": {
+    "tools": ["reference_construct", "reference_construction_get"],
+    "sharedExecutor": "src/automation/reference-construction-operations.ts",
+    "existingOperations": [
+      "object_get",
+      "project_get",
+      "history_undo",
+      "history_redo",
+      "project_export",
+      "project_import",
+      "backup_restore"
+    ],
+    "admission": "Only numeric definitions with empty common source sets are enabled in current and history states; derived definitions remain gated",
+    "validation": [
+      "current revision",
+      "identical-request replay",
+      "session identity/version",
+      "finite kind-matched world-mm coordinates",
+      "locked edits",
+      "stale model binding",
+      "60-second expiry",
+      "retryable cleanup after committed Apply",
+      "inactive ordered line pick retention"
+    ]
+  },
+  "validation": {
+    "build": {
+      "command": [
+        "node",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2623094784,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 37.478444000007585
+    },
+    "focused": {
+      "files": 7,
+      "passed": 177,
+      "failed": 0,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/reference-construction-api.test.ts",
+          "tests/reference-project.test.ts",
+          "tests/reference-construction-apply.test.ts",
+          "tests/automation-api.test.ts",
+          "tests/reference-construction-preview.test.ts",
+          "tests/reference-preview-admission.test.ts",
+          "tests/reference-preview-lifetime.test.ts",
+          "--maxWorkers=1"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 391344128,
+        "totalProcesses": 14,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 4.1881368000176735
+      }
+    },
+    "suite": {
+      "passed": 49040,
+      "skipped": 65,
+      "failed": 0,
+      "filesPassed": 679,
+      "filesSkipped": 19,
+      "receipt": {
+        "command": [
+          "node",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "--exclude",
+          "**/.resources/**"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 1019412480,
+        "totalProcesses": 826,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 303.3160418999614
+      }
+    },
+    "browser": {
+      "runner": "node tests/reference-construction-browser.mjs",
+      "receipt": {
+        "command": ["node", "tests/reference-construction-browser.mjs"],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 900,
+        "exitCode": 0,
+        "peakJobBytes": 942452736,
+        "totalProcesses": 13,
+        "activeAfter": 0,
+        "passed": true,
+        "elapsedSeconds": 2.8592841000063345
+      },
+      "evidence": {
+        "owner": "scanforge-m4-reference-validation",
+        "startedAt": "2026-10-25T15:00:07.482Z",
+        "expiresAt": "2026-10-25T15:04:07.483Z",
+        "persistentData": false,
+        "resources": [
+          {
+            "kind": "http-server",
+            "pid": 22228,
+            "executable": "C:\\Program Files\\nodejs\\node.exe",
+            "startedAt": "2026-10-25T15:00:07.482Z",
+            "port": 61513,
+            "bind": "127.0.0.1",
+            "purpose": "isolated built application"
+          },
+          {
+            "kind": "mcp-stdio-child",
+            "pid": 50384,
+            "executable": "C:\\Program Files\\nodejs\\node.exe",
+            "startedAt": "2026-10-25T15:00:07.740Z",
+            "port": 61514,
+            "bind": "127.0.0.1",
+            "purpose": "actual stdio SDK and browser bridge"
+          },
+          {
+            "kind": "disposable-browser",
+            "pid": 54968,
+            "executable": "installed Chrome",
+            "startedAt": "2026-10-25T15:00:07.898Z",
+            "purpose": "isolated profile and UI validation"
+          }
+        ],
+        "cleanup": [
+          {
+            "port": 61513,
+            "closed": true
+          },
+          {
+            "port": 61514,
+            "closed": true
+          },
+          {
+            "pid": 50384,
+            "exited": true
+          },
+          {
+            "pid": 54968,
+            "exited": true
+          }
+        ],
+        "steps": [
+          "actual SDK stdio discovery and pairing",
+          "MCP point Preview/Cancel",
+          "equal GUI/MCP numeric point preview",
+          "GUI Apply and MCP object inspection",
+          "MCP Undo/Redo",
+          "MCP finite line Preview/Apply",
+          "actual project worker export/import preserving semantic IDs and history",
+          "GUI line edit Preview/Cancel",
+          "rendered WebGL screenshots and clean page errors"
+        ],
+        "passed": true
+      },
+      "screenshots": [
+        ".resources/m4-reference-browser-r5/point-preview.png",
+        ".resources/m4-reference-browser-r5/accepted-references.png"
+      ],
+      "browserPlugin": "unavailable; installed Playwright and disposable Chrome used"
+    }
+  },
+  "native": {
+    "newExecution": false,
+    "sharedWindowTouched": false,
+    "authority": "Retained docs/NATIVE_REFERENCE_GEOMETRY.md and numeric acceptance evidence; new native numerical/workflow parity is not claimed"
+  },
+  "failedReceiptsRetained": [
+    ".resources/m4/reference-api-red.json",
+    ".resources/m4/reference-browser-r1.json",
+    ".resources/m4/reference-browser-r2.json",
+    ".resources/m4/reference-browser-r3.json",
+    ".resources/m4/reference-api-green-r2.json",
+    ".resources/m4/reference-records-red.json"
+  ],
+  "remaining": [
+    "Complete source-derived point/line, exact provider and dependency-rebuild integration",
+    "Primitive fitting/materialization parity",
+    "Axes, coordinate systems and remaining plane/sketch inventory",
+    "Ordered authoritative sketch records and native lifecycle integration",
+    "Matched real scan/reference/sketch workflow, native acceptance and remaining resource/error gates",
+    "Reviewed immutable candidate, hosted checks, merge and milestone closure"
+  ]
+}

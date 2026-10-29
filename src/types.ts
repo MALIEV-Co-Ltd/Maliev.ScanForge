@@ -1,6 +1,7 @@
 export type Vec3 = [number, number, number];
 import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
+import type { SketchFrame } from "./sketch-frame";
 import type { ParametricFeature } from "./parametric";
 import type { ScanSourceCounts } from "./scan-source";
 import type { ReferenceEntityData } from "./reference-entity";
@@ -30,7 +31,8 @@ export type EntityKind =
   | "cone"
   | "box"
   | "referencePoint"
-  | "referenceLine";
+  | "referenceLine"
+  | "referenceFrame";
 export interface Entity {
   id: string;
   name: string;
@@ -40,6 +42,8 @@ export interface Entity {
   constructionOrderKey?: string;
   /** Authoritative reference geometry and recipe; positions is empty for these kinds. */
   reference?: ReferenceEntityData;
+  /** One authoritative rigid coordinate system; rendered axes are derived, positions empty. */
+  coordinateFrame?: { version: 1; frame: SketchFrame; displaySize: number };
   /** Immutable local cloud buffers and native accumulated pose; positions remains a world-space view. */
   pointCloudPlacement?: {
     matrixBits: string;
@@ -79,7 +83,12 @@ export interface Entity {
   brep?: string;
   fit?: FitResult;
   /** Persistent construction-plane orientation, including rotation about its normal. */
-  planeFrame?: { center: Vec3; normal: Vec3; tangent: Vec3 };
+  planeFrame?: {
+    center: Vec3;
+    normal: Vec3;
+    tangent: Vec3;
+    displaySize?: number;
+  };
   surfacePatch?: NurbsPatch;
   surfaceScanId?: string;
   /** Stable authoring identity and resolved links retained after a recipe is baked. */

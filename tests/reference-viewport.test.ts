@@ -2,6 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { Viewport } from "../src/viewport";
 import { pickCamera } from "../src/viewport-agent";
+import {
+  createNumericDatumPlane,
+  numericDatumFrame,
+} from "../src/datum-construction";
+import { createFittedPlane } from "../src/primitive-fitting";
 import { createReferenceDisplay } from "../src/reference-display";
 import type { Entity } from "../src/types";
 
@@ -378,4 +383,619 @@ describe("semantic reference viewport integration", () => {
       view.setEntities([], null);
     }
   });
+});
+
+it("canvas and MCP pick a coordinate frame without triangle or cloud indices", () => {
+  const { view, state } = fixture();
+  const frame: Entity = {
+    id: "frame",
+    name: "Named frame",
+    kind: "referenceFrame",
+    positions: [],
+    visible: true,
+    color: "#ffbb44",
+    opacity: 1,
+    coordinateFrame: {
+      version: 1,
+      frame: {
+        origin: [0, 0, 0],
+        u: [1, 0, 0],
+        v: [0, 1, 0],
+        normal: [0, 0, 1],
+      },
+      displaySize: 2,
+    },
+  };
+  try {
+    view.setEntities([frame], frame.id);
+    expect(state.objects.size).toBe(0);
+    const hit = view.pickAgentView(0.5, 0.5, 1).hits[0];
+    expect(hit).toMatchObject({
+      entityId: "frame",
+      referenceKind: "frame",
+      triangleIndex: null,
+    });
+    expect(hit).not.toHaveProperty("pointIndex");
+    expect(state.pickAt({ clientX: 50, clientY: 50 })).toBe("frame");
+    expect(state.onPick).toHaveBeenCalledWith(hit.point, "frame", undefined);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("renders and picks a small numeric plane at a large origin without narrowing world geometry", () => {
+  const { view, state, camera, target } = fixture();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1], [1, 0, 0]),
+    0.125,
+    "plane",
+    "Precise plane",
+  );
+  const source = plane.positions,
+    before = Array.from(source);
+  target.set(100000000.125, -20, 30);
+  camera.position.set(100000000.125, -20, 40);
+  camera.lookAt(target);
+  camera.updateMatrixWorld(true);
+  try {
+    view.setEntities([plane], plane.id);
+    const item = state.objects.get(plane.id),
+      mesh = item.mesh;
+    expect(Array.from(mesh.geometry.getAttribute("position").array)).toEqual([
+      -0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0, -0.0625,
+      -0.0625, 0, 0.0625, 0.0625, 0, -0.0625, 0.0625, 0,
+    ]);
+    expect(state.bounds.min.toArray()).toEqual([100000000.0625, -20.0625, 30]);
+    expect(state.bounds.max.toArray()).toEqual([100000000.1875, -19.9375, 30]);
+    expect(view.pickAgentView(0.5, 0.5, 1).hits[0]).toMatchObject({
+      entityId: "plane",
+      point: [100000000.125, -20, 30],
+    });
+    expect(state.pickAt({ clientX: 50, clientY: 50 })).toBe("plane");
+    expect(plane.positions).toBe(source);
+    expect(Array.from(source)).toEqual(before);
+    view.setEntities(
+      [{ ...plane, kind: "mesh", planeFrame: undefined }],
+      plane.id,
+    );
+    expect(state.objects.get(plane.id).mesh.matrix.elements).toEqual(
+      new THREE.Matrix4().elements,
+    );
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("keeps numeric-plane selection overlays in the same precise local coordinate space", () => {
+  const { view, state } = fixture();
+  state.triangleSelection = new THREE.Group();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1]),
+    0.125,
+    "p",
+    "p",
+  );
+  try {
+    view.setEntities([plane], plane.id);
+    view.setTriangleSelection(plane.positions, Uint8Array.of(1, 0));
+    expect(state.triangleSelection.position.toArray()).toEqual([
+      100000000.125, -20, 30,
+    ]);
+    expect(
+      Array.from(
+        state.triangleSelection.children[0].geometry.getAttribute("position")
+          .array,
+      ),
+    ).toEqual([-0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0]);
+    view.setEntities(
+      [{ ...plane, kind: "mesh", planeFrame: undefined }],
+      plane.id,
+    );
+    view.setTriangleSelection(plane.positions, Uint8Array.of(1, 0));
+    expect(state.triangleSelection.position.toArray()).toEqual([0, 0, 0]);
+  } finally {
+    view.setTriangleSelection();
+    view.setEntities([], null);
+  }
+});
+it("keeps expanded indexed-plane deviation geometry local and restores its compact carrier", () => {
+  const { view, state } = fixture();
+  const plane = createNumericDatumPlane(
+    numericDatumFrame([100000000.125, -20, 30], [0, 0, 1]),
+    0.125,
+    "p",
+    "p",
+  );
+  plane.indexedMesh = {
+    vertices: [
+      100000000.0625, -20.0625, 30, 100000000.1875, -20.0625, 30,
+      100000000.1875, -19.9375, 30, 100000000.0625, -19.9375, 30,
+    ],
+    triangles: new Uint32Array([0, 1, 2, 0, 2, 3]),
+    geometryNormals: new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]),
+  };
+  try {
+    view.setEntities([plane], plane.id);
+    const mesh = state.objects.get(plane.id).mesh,
+      original = mesh.geometry;
+    expect(original.getAttribute("position").count).toBe(4);
+    view.setDeviation(plane.id, [1, 2, 3, 4, 5, 6], 1);
+    expect(mesh.geometry).not.toBe(original);
+    expect(Array.from(mesh.geometry.getAttribute("position").array)).toEqual([
+      -0.0625, -0.0625, 0, 0.0625, -0.0625, 0, 0.0625, 0.0625, 0, -0.0625,
+      -0.0625, 0, 0.0625, 0.0625, 0, -0.0625, 0.0625, 0,
+    ]);
+    view.setDeviation(plane.id, null, 1);
+    expect(mesh.geometry).toBe(original);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it("uses the same local render precision for fitted planes", () => {
+  const { view, state } = fixture();
+  const plane = createFittedPlane(
+    {
+      kind: "plane",
+      center: [100000000.125, -20, 30],
+      axis: [0, 0, 1],
+      rms: 0,
+      maxError: 0,
+    },
+    0.125,
+  );
+  try {
+    view.setEntities([plane], plane.id);
+    expect(
+      state.objects
+        .get(plane.id)
+        .mesh.geometry.getAttribute("position")
+        .getX(0),
+    ).toBe(-0.0625);
+    expect(state.bounds.max.x - state.bounds.min.x).toBe(0.125);
+  } finally {
+    view.setEntities([], null);
+  }
+});
+
+it.each(["numeric", "fitted"] as const)(
+  "retains unit display normals on a small %s plane at a large origin",
+  (kind) => {
+    const { view, state } = fixture();
+    const plane =
+      kind === "numeric"
+        ? createNumericDatumPlane(
+            numericDatumFrame([100000000.125, -20, 30], [0, 0, 1], [1, 0, 0]),
+            0.125,
+            "plane",
+            "Precise plane",
+          )
+        : createFittedPlane(
+            {
+              kind: "plane",
+              center: [100000000.125, -20, 30],
+              axis: [0, 0, 1],
+              rms: 0,
+              maxError: 0,
+            },
+            0.125,
+          );
+    try {
+      view.setEntities([plane], plane.id);
+      const normals = state.objects
+        .get(plane.id)
+        .mesh.geometry.getAttribute("normal");
+      expect(normals.count).toBe(plane.positions.length / 3);
+      for (let i = 0; i < normals.count; i++) {
+        const normal = [normals.getX(i), normals.getY(i), normals.getZ(i)];
+        expect(normal.every(Number.isFinite)).toBe(true);
+        expect(Math.hypot(...normal)).toBeCloseTo(1, 7);
+        expect(normal).toEqual([0, 0, 1]);
+      }
+    } finally {
+      view.setEntities([], null);
+    }
+  },
+);
+
+function coordinateGestureFixture(tool: "line" | "trim") {
+  const f = fixture();
+  const capture = new Set<number>();
+  Object.assign(f.state.renderer.domElement, {
+    style: {},
+    setPointerCapture: (id: number) => capture.add(id),
+    hasPointerCapture: (id: number) => capture.has(id),
+    releasePointerCapture: (id: number) => capture.delete(id),
+  });
+  const beginDraw = vi.fn(() => 17),
+    beginTrim = vi.fn(() => 17);
+  const onDraw = vi.fn(),
+    onTrim = vi.fn();
+  Object.assign(f.state, {
+    sketchEditor: {
+      sketch: { version: 1, points: [], segments: [], constraints: [] },
+      tool,
+      constraints: false,
+      trimRadiusMm: 0.25,
+      beginDraw,
+      beginTrim,
+      onDraw,
+      onTrim,
+      onError: vi.fn(),
+    },
+    sketchGeometry: new THREE.Group(),
+    sketchPreview: new THREE.Group(),
+    sketchCurvePoints: [],
+    sketchCurveRawPoints: [],
+    sketchPlanePoint: vi.fn(() => [1, 2]),
+    renderSketchDrag: vi.fn(),
+    setBrush: vi.fn((enabled: boolean) => {
+      f.state.brushing = enabled;
+    }),
+    paintTrail: { setAttribute: vi.fn() },
+    selectionOverlay: { hidden: true },
+  });
+  return { ...f, capture, beginDraw, beginTrim, onDraw, onTrim };
+}
+
+it.each(["line", "trim"] as const)(
+  "suspends active sketch %s gestures while acquiring a reference coordinate",
+  (tool) => {
+    const f = coordinateGestureFixture(tool);
+    f.view.setReferenceCoordinatePicking(true);
+    const event = {
+      clientX: 50,
+      clientY: 50,
+      button: 0,
+      isPrimary: true,
+      pointerId: 9,
+      ctrlKey: false,
+      shiftKey: false,
+      altKey: false,
+      preventDefault: vi.fn(),
+      stopImmediatePropagation: vi.fn(),
+    } as unknown as PointerEvent;
+    expect(f.state.beginSketchDrag(event)).toBe(false);
+    expect(f.beginDraw).not.toHaveBeenCalled();
+    expect(f.beginTrim).not.toHaveBeenCalled();
+    expect(f.onDraw).not.toHaveBeenCalled();
+    expect(f.onTrim).not.toHaveBeenCalled();
+    expect(f.state.sketchDrag).toBeUndefined();
+    expect(f.capture.size).toBe(0);
+    // Exiting acquisition resumes the same editor, without publishing a drawing.
+    f.view.setReferenceCoordinatePicking(false);
+    expect(f.state.beginSketchDrag(event)).toBe(true);
+    expect(tool === "trim" ? f.beginTrim : f.beginDraw).toHaveBeenCalledOnce();
+    f.state.cancelSketchDrag();
+    expect(f.onDraw).not.toHaveBeenCalled();
+    expect(f.onTrim).not.toHaveBeenCalled();
+  },
+);
+
+it("retires pending sketch capture, defining picks and trim preview when entering reference coordinate acquisition", () => {
+  const f = coordinateGestureFixture("line");
+  const controller = new AbortController();
+  const geometry = new THREE.BufferGeometry();
+  const material = new THREE.LineBasicMaterial();
+  const disposed = vi.spyOn(geometry, "dispose");
+  f.state.sketchPreview.add(new THREE.Line(geometry, material));
+  f.capture.add(17);
+  Object.assign(f.state, {
+    sketchDrag: { id: 17, start: [0, 0], end: [1, 2], tolerance: 0.1 },
+    sketchCurvePoints: [
+      [1, 2],
+      [3, 4],
+    ],
+    sketchCurveRawPoints: [
+      [1.1, 2.1],
+      [3.1, 4.1],
+    ],
+    sketchCurveRevision: 17,
+    trimPreviewPending: true,
+    trimPreviewController: controller,
+  });
+  f.view.setReferenceCoordinatePicking(true);
+  expect(f.capture.size).toBe(0);
+  expect(f.state.sketchDrag).toBeUndefined();
+  expect(f.state.sketchCurvePoints).toEqual([]);
+  expect(f.state.sketchCurveRawPoints).toEqual([]);
+  expect(f.state.sketchCurveRevision).toBeUndefined();
+  expect(f.state.trimPreviewPending).toBe(false);
+  expect(controller.signal.aborted).toBe(true);
+  expect(f.state.sketchPreview.children).toHaveLength(0);
+  expect(disposed).toHaveBeenCalledOnce();
+  expect(f.onDraw).not.toHaveBeenCalled();
+  expect(f.onTrim).not.toHaveBeenCalled();
+});
+
+function referenceSurfaceFixture() {
+  const f = fixture();
+  Object.assign(f.state, {
+    container: { clientWidth: 200, clientHeight: 100 },
+    pointerCancel: vi.fn(),
+    setBrush: vi.fn(),
+  });
+  f.state.renderer.clippingPlanes = [];
+  f.state.renderer.domElement.getBoundingClientRect = () => ({
+    left: 100,
+    top: 50,
+    width: 200,
+    height: 100,
+  });
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute([-4, -4, 0, 4, -4, 0, 0, 4, 0], 3),
+  );
+  const material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.userData.entityId = "surface";
+  mesh.userData.objectPickable = true;
+  const cloud = new THREE.Points(
+    new THREE.BufferGeometry().setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute([0, 0, 2], 3),
+    ),
+    new THREE.PointsMaterial({ size: 1 }),
+  );
+  cloud.userData.entityId = "cloud";
+  const cloudParent = new THREE.Mesh(
+    new THREE.BufferGeometry(),
+    new THREE.MeshStandardMaterial(),
+  );
+  cloudParent.userData.entityId = "cloud";
+  cloudParent.userData.objectPickable = true;
+  cloudParent.add(cloud);
+  f.state.objects.set("surface", {
+    mesh,
+    positions: [-4, -4, 0, 4, -4, 0, 0, 4, 0],
+    triangleSlots: [42],
+  });
+  f.state.objects.set("cloud", {
+    mesh: cloudParent,
+    pointCloud: cloud,
+    positions: [0, 0, 2],
+  });
+  f.state.scene.add(mesh, cloudParent);
+  f.state.scene.updateMatrixWorld(true);
+  return { ...f, mesh, cloud, material };
+}
+
+it.each(["perspective", "orthographic"] as const)(
+  "captures detached %s source camera, dimensions and clipping state",
+  (projection) => {
+    const f = referenceSurfaceFixture();
+    try {
+      if (projection === "orthographic") {
+        const camera = new THREE.OrthographicCamera(-3, 3, 2, -2, 0.1, 100);
+        camera.position.set(0, 0, 10);
+        camera.updateMatrixWorld(true);
+        f.state.camera = camera;
+      }
+      const camera = f.state.camera as
+        THREE.PerspectiveCamera | THREE.OrthographicCamera;
+      const global = new THREE.Plane(new THREE.Vector3(1, 0, 0), 2);
+      const local = new THREE.Plane(new THREE.Vector3(0, 1, 0), 3);
+      f.state.renderer.clippingPlanes = [global];
+      f.material.clippingPlanes = [local];
+      f.material.side = THREE.BackSide;
+      const capture = f.view.referenceCoordinateView("surface");
+      expect(capture).toMatchObject({
+        projection,
+        cameraMatrixFormat: "column-major-4x4",
+        viewport: { width: 200, height: 100 },
+        clippingPlanes: [
+          { normal: [1, 0, 0], constant: 2 },
+          { normal: [0, 1, 0], constant: 3 },
+        ],
+        materialSide: THREE.BackSide,
+        clipIntersection: false,
+      });
+      expect(capture.projectionMatrix).toEqual(
+        camera.projectionMatrix.toArray(),
+      );
+      expect(capture.cameraWorldMatrix).toEqual(camera.matrixWorld.toArray());
+      expect(capture.projectionMatrix).not.toBe(
+        camera.projectionMatrix.elements,
+      );
+      expect(capture.cameraWorldMatrix).not.toBe(camera.matrixWorld.elements);
+      capture.projectionMatrix[0] = 123;
+      capture.cameraWorldMatrix[12] = 123;
+      capture.clippingPlanes[0].normal[0] = 123;
+      capture.clippingPlanes[1].constant = 123;
+      expect(camera.projectionMatrix.elements[0]).not.toBe(123);
+      expect(camera.matrixWorld.elements[12]).toBe(0);
+      expect(global.normal.x).toBe(1);
+      expect(local.constant).toBe(3);
+    } finally {
+      f.view.setEntities([], null);
+    }
+  },
+);
+
+it("captures local clipping intersection and rejects an unrepresentable mixed global policy", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(1, 0, 0), 2),
+    ];
+    f.material.clipIntersection = true;
+    expect(f.view.referenceCoordinateView("surface")).toMatchObject({
+      clipIntersection: true,
+      clippingPlanes: [{ normal: [1, 0, 0], constant: 2 }],
+    });
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 2),
+    ];
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /clip|intersection|policy/i,
+    );
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("captures global-only clipping as union even when the material has an unused intersection flag", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.material.clipIntersection = true;
+    f.material.clippingPlanes = [];
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 2),
+    ];
+    expect(f.view.referenceCoordinateView("surface")).toMatchObject({
+      clipIntersection: false,
+      clippingPlanes: [{ normal: [0, 1, 0], constant: 2 }],
+    });
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("requires an existing visible pickable object for a coordinate camera capture", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    expect(() => f.view.referenceCoordinateView("missing")).toThrow(
+      /visible selectable/,
+    );
+    f.mesh.visible = false;
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /visible selectable/,
+    );
+    f.mesh.visible = true;
+    f.mesh.userData.objectPickable = false;
+    expect(() => f.view.referenceCoordinateView("surface")).toThrow(
+      /visible selectable/,
+    );
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface acquisition supplies normalized canvas coordinates as a fifth argument and excludes clouds", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setPickTarget("surface");
+    expect(f.view.getPickTarget()).toBe("surface");
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    expect(f.state.pickAt({ clientX: 220, clientY: 90 })).toBe("surface");
+    const args = f.state.onPick.mock.calls.at(-1);
+    expect(args).toHaveLength(5);
+    expect(args.slice(1)).toEqual([
+      "surface",
+      0,
+      undefined,
+      { x: 0.6, y: 0.4 },
+    ]);
+    expect(args[0]).toHaveLength(3);
+    expect(args[0].every(Number.isFinite)).toBe(true);
+    f.view.setPickTarget("cloud");
+    expect(f.view.getPickTarget()).toBe("cloud");
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.state.onPick).toHaveBeenCalledOnce();
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface overlap choices use the same fifth argument while an origin guide is active", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.state.originPicking = true;
+    f.state.originHits = vi.fn(() => []);
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    const choices = f.view.selectionChoicesAt({ clientX: 220, clientY: 90 });
+    expect(choices.map((choice) => choice.id)).toEqual(["surface"]);
+    choices[0].choose();
+    expect(f.state.onPick.mock.calls.at(-1).slice(1)).toEqual([
+      "surface",
+      0,
+      undefined,
+      { x: 0.6, y: 0.4 },
+    ]);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(5);
+    expect(f.state.originHits).not.toHaveBeenCalled();
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("surface direct and overlap picks use local intersection clipping while global planes always clip independently", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    f.material.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(1, 0, 0), -1),
+      new THREE.Plane(new THREE.Vector3(0, 1, 0), 1),
+    ];
+    f.material.clipIntersection = true;
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("surface");
+    const visible = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    expect(visible.map((choice) => choice.id)).toEqual(["surface"]);
+    visible[0].choose();
+    expect(f.state.onPick).toHaveBeenCalledTimes(2);
+    f.material.clipIntersection = false;
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.view.selectionChoicesAt({ clientX: 200, clientY: 100 })).toEqual(
+      [],
+    );
+    f.material.clipIntersection = true;
+    f.state.renderer.clippingPlanes = [
+      new THREE.Plane(new THREE.Vector3(0, 0, 1), -1),
+    ];
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBeUndefined();
+    expect(f.view.selectionChoicesAt({ clientX: 200, clientY: 100 })).toEqual(
+      [],
+    );
+    expect(f.state.onPick).toHaveBeenCalledTimes(2);
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("cloud acquisition preserves the four-argument record index callback for direct and overlap picks", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true);
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("cloud");
+    expect(f.state.onPick).toHaveBeenLastCalledWith(
+      [0, 0, 2],
+      "cloud",
+      undefined,
+      0,
+    );
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(4);
+    const choices = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    expect(choices.map((choice) => choice.id)).toEqual(["cloud"]);
+    choices[0].choose();
+    expect(f.state.onPick).toHaveBeenLastCalledWith(
+      [0, 0, 2],
+      "cloud",
+      undefined,
+      0,
+    );
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(4);
+  } finally {
+    f.view.setEntities([], null);
+  }
+});
+
+it("leaving coordinate acquisition retains the legacy three-argument original-facet callback", () => {
+  const f = referenceSurfaceFixture();
+  try {
+    f.view.setReferenceCoordinatePicking(true, "surface");
+    f.view.setReferenceCoordinatePicking(false);
+    f.view.setPickTarget("surface");
+    expect(f.state.pickAt({ clientX: 200, clientY: 100 })).toBe("surface");
+    expect(f.state.onPick).toHaveBeenLastCalledWith([0, 0, 0], "surface", 42);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(3);
+    const choices = f.view.selectionChoicesAt({ clientX: 200, clientY: 100 });
+    choices[0].choose();
+    expect(f.state.onPick).toHaveBeenLastCalledWith([0, 0, 0], "surface", 42);
+    expect(f.state.onPick.mock.calls.at(-1)).toHaveLength(3);
+    f.view.setPickTarget(null);
+    expect(f.view.getPickTarget()).toBeNull();
+  } finally {
+    f.view.setEntities([], null);
+  }
 });

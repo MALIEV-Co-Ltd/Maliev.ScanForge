@@ -1,6 +1,6 @@
 import { AppSelect } from "./AppSelect";
 import { useState } from "react";
-import { coordinateSketchFrame, type SketchFrame } from "../sketch-frame";
+import { coordinateSketchFrame } from "../sketch-frame";
 import {
   datumFrame,
   ORIGIN_PLANES,
@@ -8,6 +8,12 @@ import {
   type OriginPlane,
 } from "../origin";
 import type { Entity, Vec3 } from "../types";
+import {
+  isSketchPlaneSource,
+  offsetSketchPlane,
+  type SketchPlaneSelection,
+  type CoordinateFramePlane,
+} from "../sketch-plane-source";
 
 export function SketchPlaneDialog({
   initialPlane,
@@ -18,18 +24,18 @@ export function SketchPlaneDialog({
 }: {
   initialPlane: OriginPlane;
   entities: Entity[];
-  onCreate: (frame: SketchFrame) => void;
+  onCreate: (selection: SketchPlaneSelection) => void | Promise<void>;
   onCancel: () => void;
   onScanSection?: () => void;
 }) {
   const [plane, setPlane] = useState<string>(initialPlane);
   const [offset, setOffset] = useState(0);
+  const [framePlane, setFramePlane] = useState<CoordinateFramePlane>("XY");
   const [origin, setOrigin] = useState<Vec3>([0, 0, 0]);
   const [normal, setNormal] = useState<Vec3>([0, 0, 1]);
   const [error, setError] = useState("");
-  const fitted = entities.filter(
-    (e) => e.kind === "plane" && e.fit?.kind === "plane",
-  );
+  const [creating, setCreating] = useState(false);
+  const fitted = entities.filter(isSketchPlaneSource);
   return (
     <div className="modal-backdrop">
       <section
@@ -52,13 +58,33 @@ export function SketchPlaneDialog({
               </option>
             ))}
             {fitted.map((e) => (
-              <option key={e.id} value={e.id}>
+              <option key={e.id} value={`source:${e.id}`}>
                 {e.name}
               </option>
             ))}
             <option value="custom">Custom plane</option>
           </AppSelect>
         </label>
+        {plane.startsWith("source:") &&
+          entities.find((e) => e.id === plane.slice(7))?.kind ===
+            "referenceFrame" && (
+            <label className="select-field">
+              Coordinate-system plane
+              <AppSelect
+                aria-label="Coordinate-system plane"
+                value={framePlane}
+                onChange={(e) =>
+                  setFramePlane(e.target.value as CoordinateFramePlane)
+                }
+              >
+                {["XY", "YZ", "XZ"].map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </AppSelect>
+            </label>
+          )}
         {plane === "custom" &&
           ["origin", "normal"].map((kind) => (
             <fieldset key={kind}>
@@ -100,26 +126,40 @@ export function SketchPlaneDialog({
           )}
           <button
             className="accent"
-            onClick={() => {
+            disabled={creating}
+            onClick={async () => {
               try {
+                setError("");
                 if (!Number.isFinite(offset))
                   throw new Error("Offset must be finite.");
-                let frame: SketchFrame;
-                if (ORIGIN_PLANES.includes(plane as OriginPlane))
-                  frame = coordinateSketchFrame(plane as OriginPlane, offset);
-                else {
-                  const fit = fitted.find((e) => e.id === plane)?.fit;
-                  frame = datumFrame(
-                    plane === "custom" ? origin : fit!.center,
-                    plane === "custom" ? normal : fit!.axis,
-                  );
-                  frame.origin = frame.origin.map(
-                    (n, i) => n + frame.normal[i] * offset,
-                  ) as Vec3;
-                }
-                onCreate(frame);
+                let selection: SketchPlaneSelection;
+                if (plane.startsWith("source:"))
+                  selection = {
+                    planeSourceId: plane.slice(7),
+                    normalOffset: offset,
+                    ...(entities.find((e) => e.id === plane.slice(7))?.kind ===
+                    "referenceFrame"
+                      ? { framePlane }
+                      : {}),
+                  };
+                else if (ORIGIN_PLANES.includes(plane as OriginPlane))
+                  selection = {
+                    frame: coordinateSketchFrame(plane as OriginPlane, offset),
+                  };
+                else if (plane === "custom")
+                  selection = {
+                    frame: offsetSketchPlane(
+                      datumFrame(origin, normal),
+                      offset,
+                    ),
+                  };
+                else throw new Error("Select a sketch plane.");
+                setCreating(true);
+                await onCreate(selection);
               } catch (e) {
                 setError(e instanceof Error ? e.message : String(e));
+              } finally {
+                setCreating(false);
               }
             }}
           >

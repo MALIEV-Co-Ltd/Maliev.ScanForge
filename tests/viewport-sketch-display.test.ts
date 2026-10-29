@@ -81,12 +81,13 @@ describe("sketch display controls", () => {
       constraints: [],
     };
     const before = structuredClone(sketch),
-      onChange = vi.fn();
+      onDraw = vi.fn();
     const editor = {
       sketch,
       tool: "line" as const,
       constraints: true,
-      onChange,
+      beginDraw: () => 17,
+      onDraw,
       onError: vi.fn(),
     };
     f.view.setSketchEditor(editor);
@@ -97,7 +98,7 @@ describe("sketch display controls", () => {
     expect(f.sketchGeometry.children).toHaveLength(1);
     expect(f.sketchGeometry.children[0]).toBeInstanceOf(THREE.LineSegments);
     expect(sketch).toEqual(before);
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onDraw).not.toHaveBeenCalled();
   });
   it.each(["OXY", "OYZ", "OXZ"] as const)(
     "fits visible scan references in normal view on %s",
@@ -128,7 +129,8 @@ describe("sketch display controls", () => {
         sketch,
         tool: "navigate",
         constraints: true,
-        onChange: vi.fn(),
+        beginDraw: () => 17,
+        onDraw: vi.fn(),
         onError: vi.fn(),
       });
       f.view.viewSketchNormal();

@@ -6,8 +6,18 @@ import {
   copyReferenceEntityData,
   validateReferenceEntity,
 } from "../reference-entity";
-import { datumEntityDependencies } from "../datum-dependencies";
 import { lockedObjectEdit } from "../object-operations";
+import {
+  refreshReferenceConstructions,
+  REFERENCE_CONSTRUCTION_SCENE_LIMIT,
+} from "../reference-construction-lifecycle";
+import {
+  evaluateReferenceConstruction,
+  type ReferenceConstructionState,
+} from "../reference-construction-evaluation";
+import { resolveStoredReferenceConstructionInputs } from "../reference-construction-resolver";
+import { encodeReferenceGeometry } from "../reference-construction-values";
+import { referenceGeometrySceneBounds } from "../reference-scene-bounds";
 
 export type ReferenceConstructionApplyTarget =
   | {
@@ -27,6 +37,8 @@ export function applyReferenceConstructionToWorkspace(
     readonly owner: string;
     readonly version: number;
     readonly target: ReferenceConstructionApplyTarget;
+    /** Actual prior used by the captured Preview, never a caller-authored input. */
+    readonly evaluationPrior?: ReferenceConstructionState;
   },
 ) {
   context.check();
@@ -54,6 +66,7 @@ export function applyReferenceConstructionToWorkspace(
     | {
         entityId: string;
         assignedSources: { id: string; constructionOrderKey: string }[];
+        refreshedEntityIds: string[];
       }
     | undefined;
   const result = applyReferenceConstructionPreview(
@@ -62,9 +75,13 @@ export function applyReferenceConstructionToWorkspace(
     request.version,
     (candidate) => {
       context.check();
+      const derived =
+        candidate.definition.kind === "point"
+          ? candidate.definition.mode !== "coordinates"
+          : candidate.definition.mode !== "endpoints";
       if (
-        candidate.definition.mode !== "coordinates" &&
-        candidate.definition.mode !== "endpoints"
+        derived &&
+        candidate.preview.diagnostics.reason === "evaluation-disabled"
       )
         throw new Error(
           "Derived reference acceptance requires source-specific finalization.",
@@ -75,6 +92,14 @@ export function applyReferenceConstructionToWorkspace(
       );
       if (target.kind === "create" && existing)
         throw new Error("Reference destination already exists.");
+      if (
+        derived &&
+        target.kind === "create" &&
+        snapshot.entities.length >= REFERENCE_CONSTRUCTION_SCENE_LIMIT
+      )
+        throw new Error(
+          "Reference construction creation would exceed the scene limit.",
+        );
       if (target.kind === "edit") {
         if (!existing || existing.locked || !validateReferenceEntity(existing))
           throw new Error(
@@ -85,14 +110,6 @@ export function applyReferenceConstructionToWorkspace(
           candidate.preview.geometry.kind
         )
           throw new Error("Reference edit cannot change its geometric kind.");
-        if (
-          datumEntityDependencies(snapshot.entities).some(
-            (row) => row.id !== target.id && row.references.includes(target.id),
-          )
-        )
-          throw new Error(
-            "Reference dependency rebuild is required before editing this source.",
-          );
       }
       if (
         candidate.definition.sources.some((source) => source.id === target.id)
@@ -107,12 +124,45 @@ export function applyReferenceConstructionToWorkspace(
         JSON.stringify(candidate.definition.sources)
       )
         throw new Error("Reference source identity binding changed.");
+      const assignments = derived ? identities.assignments : [];
+      const assigned = new Map(
+        assignments.map((source) => [source.id, source.constructionOrderKey]),
+      );
+      const stagedSources = snapshot.entities.map((source) =>
+        assigned.has(source.id)
+          ? { ...source, constructionOrderKey: assigned.get(source.id)! }
+          : source,
+      );
       const reference = copyReferenceEntityData({
         version: 1,
-        definition: candidate.definition,
+        definition: derived
+          ? candidate.definition
+          : { ...candidate.definition, sources: [] },
         geometry: candidate.preview.geometry,
-        evaluation: candidate.preview.state,
+        evaluation: { completionWord: 0x100 },
       });
+      referenceGeometrySceneBounds(reference.geometry);
+      if (derived) {
+        const finalized = evaluateReferenceConstruction(
+          reference.definition,
+          resolveStoredReferenceConstructionInputs(
+            stagedSources,
+            reference.definition,
+          ),
+          {
+            geometry: request.evaluationPrior?.geometry ?? reference.geometry,
+            state: { completionWord: 1 },
+          },
+        );
+        if (
+          encodeReferenceGeometry(reference.geometry).bits !==
+          encodeReferenceGeometry(finalized.geometry).bits
+        )
+          throw new Error(
+            "Reference construction no longer matches the cached preview.",
+          );
+        reference.evaluation = finalized.state;
+      }
       const entity: Entity =
         target.kind === "edit"
           ? { ...existing!, reference }
@@ -136,35 +186,27 @@ export function applyReferenceConstructionToWorkspace(
               selectable: true,
             };
       validateReferenceEntity(entity);
-      const assigned = new Map(
-        identities.assignments.map((source) => [
-          source.id,
-          source.constructionOrderKey,
-        ]),
-      );
-      const next = snapshot.entities.map((source) =>
-        source.id === target.id
-          ? entity
-          : assigned.has(source.id)
-            ? { ...source, constructionOrderKey: assigned.get(source.id)! }
-            : source,
+      const next = stagedSources.map((source) =>
+        source.id === target.id ? entity : source,
       );
       if (target.kind === "create") next.push(entity);
-      const policy = { constructionIdentityMigration: identities.assignments };
-      if (lockedObjectEdit(snapshot.entities, next, policy))
+      const refreshed = refreshReferenceConstructions(next, [entity.id], {
+        check: () => context.check(),
+      });
+      const policy = { constructionIdentityMigration: assignments };
+      if (lockedObjectEdit(snapshot.entities, refreshed.entities, policy))
         throw new Error("Reference Apply would edit locked geometry.");
       mutate(() =>
         host.commit(
-          next,
+          refreshed.entities,
           `${target.kind === "create" ? "Create" : "Edit"} reference ${reference.geometry.kind}`,
           policy,
         ),
       );
       publication = {
         entityId: entity.id,
-        assignedSources: identities.assignments.map((source) => ({
-          ...source,
-        })),
+        assignedSources: assignments,
+        refreshedEntityIds: refreshed.refreshedEntityIds,
       };
     },
   );

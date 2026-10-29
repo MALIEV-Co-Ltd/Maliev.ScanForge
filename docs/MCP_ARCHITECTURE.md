@@ -682,13 +682,54 @@ discarded. Ordinary keyed objects use the existing `object_get`, duplication,
 history and file operations; duplication derives a fresh key through the shared
 object operation. Revision tracking includes key and semantic-payload changes.
 
-Semantic reference publication is still gated. `decodeProjectFile` and its decoder
-worker reject reference-bearing current, Undo or Redo states before preparing
-display caches or replacing a workspace. GUI opening, `project_import` and
-`backup_restore` share this boundary. Internal codec support does not advertise
-construction commands or admit reference objects into triangle-only consumers.
-Rendering, operation eligibility, dependency lifecycle and native acceptance
-remain required before this guard can be removed.
+Semantic typed reference publication uses `createReferenceConstructionOperations`
+from the shared executor. The GUI dialog sends the same `reference_construct`
+Preview/Apply/Cancel commands as MCP; it stores only session identity/version
+between requests. Existing cached preview ownership, exact model binding, atomic
+mutation, one history commit, expiry and retryable display cleanup are reused.
+The existing precise codec and viewport render the accepted semantic objects.
+`decodeProjectFile` and its worker admit typed references with empty common source
+sets plus a single-source stored-line midpoint in current/Undo/Redo states;
+other source-derived definitions remain gated.
+This is an application lifecycle result; source-provider/dependency integration
+and native acceptance remain separate M4 gates.
+
+`reference-midpoint.ts` is the narrow semantic source adapter and shared affected
+reference planner. It admits one existing stored endpoints line with a saved key,
+resolves its actual Float64 geometry and evaluates the existing native center
+branch. Public `mode:"midpoint"` maps to an internal `center` recipe with one
+active source; arbitrary CAD/scan/sketch source resolution is not implied.
+New-point staging uses the recovered finite constructor seed only before a
+successful evaluation; the sentinel is never a published fallback. Derived Apply
+retains the source identity, marks staged state dirty and performs specialized
+refresh, verifying its geometry still matches the cached preview. Numeric Apply
+keeps its existing cached geometry, empty sources and retained line picks.
+
+The planner discovers affected common-source dependents through
+`datumEntityDependencies`, processes them in dependency order, checks finite
+geometry, locks, cancellation, cycles and work admission, then returns detached
+entities to the same one-commit mutation boundary. It never edits source objects
+or assigns their already-required keys. Apply reports `refreshedEntityIds`.
+An explicit semantic dependency guard rejects source deletion before ordinary
+geometry-tool eligibility. Current transform and duplication admission is described
+below; linked source deletion remains guarded. Workspace import validates supported
+point/line recipes and their source/key bindings in each retained state; existing
+codecs retain definitions, precise geometry and evaluation state. This application integration does not turn
+the retained static native evidence into numerical/runtime acceptance.
+
+`reference-transform.ts` supplies one eligibility rule and a small binary64 payload
+transform for detached numeric points and empty-record endpoint lines. The GUI,
+ribbon and `ui_set` share that eligibility; `mesh_transform` branches into the
+same operation before sampled-geometry admission. A supplied row-major 3x4 matrix
+transforms original point/start and raw direction components without normalization
+or stored-length changes. The existing application XYZ-degree/positive-scale
+conversion constructs that matrix; original-native toolbar conversion is not
+claimed. The separate numeric definition is synchronized from the resulting
+geometry, then the shared dependency planner refreshes descendants without
+reevaluating the root. One guarded commit retains revision/retry, cancellation,
+locks, history and persistence. Derived modes, retained inactive picks, frame
+datums and semantic duplication remain gated pending their own policy and
+acceptance. This introduces no separate agent implementation or CAD allocation.
 
 `reference-entity.ts` supplies precise bounds, detached inspection and a shared
 sampled-geometry admission check. Bounds reconstruct a line endpoint from its raw
@@ -698,9 +739,9 @@ and definitions. Geometry artifacts follow the same semantic branch. Inspection
 reports saved source identities and record presence, without evaluating sources,
 rewriting keys or inferring an outcome from the internal completion word.
 Shared mesh-copy, sampling/editability, topology analysis and selection paths
-reject reference sources and secondary targets before geometry work or publication. This integration
-remains behind the reference import gate until viewport and remaining consumers
-are ready; it does not establish rendered GUI/MCP acceptance.
+reject reference sources and secondary targets before geometry work or publication.
+Typed references and single stored-line midpoints use the shared import boundary;
+unsupported source families and geometry operations remain gated.
 
 `referenceEntitySummary` and `inspectReferenceEntity` share the same geometric
 summary. `entityDisplayStats` projects those semantic counts and bounds for the
@@ -722,7 +763,8 @@ Canvas and MCP raycasts use authoritative world geometry and shared visibility,
 protection and clipping rules. MCP hits identify semantic kind without invented
 facet/cloud indices; decorative CAD edge children remain excluded. Visible locked
 objects contribute to hit tolerance in both routes. The shared project import
-gate stays closed pending remaining consumers and rendered/native acceptance.
+gate admits typed references and the supported midpoint; broader native source
+admission and original-native acceptance remain open.
 
 ### Connected Global Fine scan-set groundwork
 
@@ -841,15 +883,335 @@ Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` sh
 
 `cad_create` and `cad_rebuild` accept the explicit `sketch-curves` profile discriminant. The shared parametric evaluator solves the inline sketch and emits an ordered exact line/arc descriptor to `CadClient.extrudeCurves`; the worker constructs analytic edges, checks the planar face and resulting prism, then registers the CAD body. The sketch GUI submits the same shared `cad_create` operation. Discovery schemas expose this variant. Existing `sketch` profiles continue through the sampled polygon evaluator, preserving historical geometry; no automatic migration changes saved recipes.
 
+### Numeric reference editor initialization
+
+`referenceNumericEditFields` prepares detached startup-mm/N6 editor values from
+stored geometry. It separates point N7 pre-rounding from direct line endpoint
+formatting, applies exact rational fixed-six ties-to-even formatting and then
+the existing G15 exchange. Inspection exposes fields/encodings without changing
+accepted geometry; preparation errors remain `editorInputsError` so finite saved
+geometry beyond authoring bounds remains inspectable.
+
+Numeric `initialize:true` is an explicit existing-edit Preview intent, exclusive
+with replacement fields or source modes. It reads the accepted numeric object
+server-side under the normal revision/owner checks; Apply still publishes only
+the cached version. The GUI reads inspection fields, decodes their lossless
+vectors and uses the same intent until a user changes a coordinate or picks a
+replacement. No session is allocated merely by opening the editor.
+
+### Located semantic line construction
+
+Located semantic line construction uses the same preview/Apply boundary:
+`buildReferenceLineDefinition` acquires ordered Float32 world picks from semantic
+points or explicit fractions of finite semantic lines. It canonicalizes common
+dependencies independently, preserving repeated records and their weighting.
+`resolveReferenceLineSource` is shared by discovery, acquisition, admission and
+refresh. The acquired fraction is not persisted or recalculated on source edits.
+Inactive endpoint records remain data without active dependency links.
+
+The default resolvers also consume validated current sphere/cylinder/cone primitive
+recipes at output0. Sphere centers and the worker's finite cylinder axial segment
+are application geometry authority; stale fit metadata and display classification
+are not fallbacks. `cad_rebuild` marks every rebuilt CAD output as a refresh root
+before staging reference descendants, including mixed point/line chains. Deep
+locks, cancellation, admission and work limits are checked before the single
+commit. Failure releases newly owned kernel handles while preserving handles
+retained by current/history/future states. No imported/general CAD provider or finite plane extent is inferred by this adapter.
+Cone endpoint order uses the explicit application mapping below; native controller
+and whole-construction equivalence remain separate acceptance gates.
+
+Cone recipes bridge the worker's midpoint to the canonical geometry converter
+also used by native datum alignment. The converter accepts geometry fields only;
+the adapter does not fabricate fit residuals. For unequal radii it chooses the
+large-end base and a large-to-small input axis locally, then resolves the finite
+small-to-large axis with the existing direct-source arithmetic. Inverted radii
+change only that local normalization. Equal radii reuse the existing cylinder
+path without an apex. The native helper's strict positive-taper contract and
+original geometry oracles remain unchanged. Endpoint bounds and nonfinite
+conversion failures reject before publication. This application recipe bridge
+does not infer native class/owner or controller behavior.
+
+Pair/average creation requires an existing line or an owned endpoint preview,
+so the evaluator always receives real prior geometry. The operation retains
+that prior for the exact successful preview version. Apply re-evaluates with
+the same prior, avoiding an additional average projection of cached geometry
+that could change binary64 bits. No caller-provided prior or default native
+scene seed is introduced. Missing source keys on newly defined semantic
+references remain invalid; the line slice does not weaken entity admission to
+simulate a nonexistent legacy representation.
+
+Public source intents admit at most 1,000 records per operation. Scene admission
+and graph refresh use the existing atomic closure, cycle, lock, cancellation,
+work and history checks. Omitted `sourcePicks` preserves accepted records.
+Explicit replacement resolves each new acquisition or reuses a server-owned
+record by index from the existing derived edit or current owned preview. Reuse
+checks the record's entity and current construction key, and never accepts
+caller-provided record bytes. Pair-mode object selection of a stored numeric
+reference line retains the native-observed zero pick suffix; explicit fraction
+acquisition remains available. Inspection exposes
+lossless definition encoding alongside geometry encoding. Required retained CAD
+and scan adapters and remaining primitive families are still release gates.
+Current sphere/cylinder/cone recipes already provide analytic sources. Fit-only
+sources without an admitted recipe/frame and internal sketch line providers
+remain unsupported; internal sketch providers do not independently expand the
+owner-approved input scope.
+
+### Read-only coordinate acquisition
+
+`reference_construction_pick` accepts only a cloud entity ID and original point
+index. The shared operation checks visibility and `objectPickable`, resolves an
+exactly identified point-cloud source through `resolveReferenceCoordinatePoint`,
+then calls `bakeNativeMillimetreFloatPick` and applies
+`roundTripNativePickedCoordinate` to each promoted coordinate. This second stage
+models the native numeric-control exchange's 15-significant-digit decimal
+format/parse, preserving signed zero. Native editor initialization's fixed-six
+formatting is a distinct phase. The resolver validates source/index
+structure and uses the authoritative `cloudPlacement` witness. Native placed
+clouds transform only the selected triple through their stored pose without
+reading lazy full world-position/normal getters. The API revision capture already
+uses authoritative local cloud buffers and pose bits, so it preserves this
+bounded single-point path.
+
+GUI picking and direct MCP indexing use the same read-only operation and result:
+world-mm position, lossless `positionEncoding`, acquisition family and explicit
+numeric-only/no-dependency flags. The caller cannot supply acquired coordinates,
+keys or provenance. This read creates no preview, history or source-key assignment.
+
+Numeric Preview accepts `positionPick` or each endpoint's `startPick`/`endPick`
+with only entity ID and point index, mutually exclusive with that typed field.
+The same resolver/authorization/quantizer helper runs inside the existing shared
+mutation revision guard. This avoids losing negative-zero bits through JSON
+number arrays, without adding caller-written bits, opaque handles or TTL caches.
+Read inspection returns `positionEncoding`; preview/get return `geometryEncoding`.
+The GUI retains each intent and acquisition revision until that numeric field
+is edited, and rejects stale acquisition rather than silently resolving a newer
+source. Apply persists a detached numeric coordinate/endpoints definition with
+no new source link or retained pick record; existing inactive line records remain.
+The recovered
+mm/N6 float-controller rounding is scoped separately from precise-double picks
+and derived line records. Asynchronous CAD/original-mesh acquisition is separate
+from this unchanged synchronous cloud path.
+
+### Retained-job CAD and mesh coordinate acquisition
+
+`reference_construction_features` and `reference_construction_acquire` are
+read-only jobs in the existing serial API admission lane. Both are permitted
+inside an owned reference preview and preserve its owner/version. Feature pages
+default to 50 rows, allow at most 100, and return the captured `sourceRevision`.
+Acquisition requires `expectedRevision` even though it is read-only, preventing
+an old feature index from silently selecting a rebuilt source. Vertex,
+edge-endpoint, edge-fraction and normalized-screen selection arms are strict;
+caller XYZ, bits, handles, display-triangle indices and barycentric/provenance
+fields are rejected by discovery and execution.
+
+`reference-acquisition-operations.ts` owns source eligibility, worker queries,
+camera witnesses and numeric preparation. `CadClient.referenceFeatures` and
+`referenceCoordinate` return plain detached topology data and expose a read-only
+worker generation witness. Exact CAD vertex/curve locations use direct fixed-six
+preparation plus the existing G15 exchange, without point-editor N7. Screen
+locations use `alignmentMesh` canonical geometry and server-resolved face ranges;
+`resolveReferenceScreenCoordinate` consumes the captured camera, material side,
+clipping state and hidden slots. Its declared arithmetic is world Float32 nodes,
+double ray/triangle intersection and one Float32 XYZ before float/N6/G15 bake.
+This is application canonical screen behavior, not a claim of native provider
+intermediate arithmetic. Camera/clipping changes across awaits reject; later
+camera-only changes do not invalidate an already completed world point. Raw
+meshes use a matching original indexed carrier for vertex IDs and connectivity,
+falling back to flat source records when no valid indexed witness remains.
+Carrier choice is shared by feature pages, vertex acquisition and screen
+topology; equal coordinates are never deduplicated by the gateway. The screen
+work bound is checked before linear indexed-witness validation. Meshes expose
+surface acquisition, not invented CAD
+edge/face topology. Sampled-only sources reject. CAD hidden display slots cannot
+be assumed to match canonical slots, so that screen case rejects with recovery.
+The viewport adapter also rejects a mixed global-union/local-intersection clip
+configuration rather than flattening those distinct predicates into one flag.
+
+The generic `CommandContext` captures `startRevision`, provides an internal
+`retainPrivateJobData` setter and an exact-command `getCompletedJobData` reader.
+Private metadata lives inside the existing retained Job row, not another cache.
+The acquisition handler stores a frozen three-number coordinate and immutable
+source witnesses: Entity identity, geometry/carrier/recipe identities,
+kernel/BREP values and CAD-client identity/generation. These are borrowed
+references, never source-buffer copies. Checks run after every native await and
+again when Preview consumes `{acquisitionJobId}`. Failed/cancelled work,
+eviction, owner release/disposal and observed model revision changes clear the
+private metadata so obsolete projects are not kept alive by job bindings.
+Witness failure at reuse also clears its retained authority. The existing
+32-job retention policy bounds successful-job lifetime; no new TTL is added.
+The React host additionally observes committed entity/history/future array and
+project identity publication after rendering. This internal boundary clears
+private acquisition bindings even when replacement objects have the same wire
+revision signature. Camera/UI-only renders do not trigger this effect or a scene
+revision walk, and preserve already acquired world coordinates.
+
+Only the small public acquisition result is cloned and recursively frozen.
+`job_get`/`session_get` omit private fields; other job results and shared geometry
+buffers retain their existing identity behavior. A public result alias cannot
+alter the retained coordinate. Preview requires the exact successful acquisition
+command, current owner/revision and source witness. The job identifier is never
+stored in accepted geometry: numeric Apply remains source-detached and uses the
+ordinary cached session/version, one history step and lossless geometry codec.
+
+Local work budgets are 100,000 CAD topology visits/identity comparisons,
+2,000,000 screen triangles and 32 clips, alongside the existing canonical mesh
+cache/converter limits. The acquisition-only `alignmentMesh` option also checks
+prospective canonical conversion against 2,000,000 triangles/6,000,000 nodes
+before allocation and rejects oversized cached conversions. This whole-source
+preparation guard is conservative even for a selected face; existing alignment
+callers retain their original limits. These guards do not alter global
+model/import admission.
+Cancellation remains boundary-based: native queries settle and clean temporary
+handles, then publication checks reject cancellation. Ordinary cancellation
+never resets all source bodies. Browser GUI picking and MCP both submit these
+shared operations; the host adapter contributes actual camera/clip capture,
+not caller-authored geometry.
+
+### Source-derived point adapter
+
+`reference_construction_sources` is the read-only paged eligibility boundary for
+both GUI selectors and agents, including the existing `midpoint` alias. It
+returns revision-bound saved/provisional identity keys without assigning them;
+edit-target self/dependency-cycle candidates are listed as ineligible. Preview
+and discovery share one eligibility policy over `resolveReferencePointSource`.
+The source-derived point resolver uses authoritative semantic points/lines,
+validated current sphere/cylinder/cone recipe sources and explicit analytic
+stored-plane-frame equations. Nonkernel, nonparametric planes with a valid frame
+may retain fit diagnostics; those diagnostics are not the plane geometry
+authority. A fit-only mesh without a frame is not a fallback. This adapter does
+not infer direct native plane half sizes, general CAD extraction or retained
+scan/sketch pick provenance.
+Planes remain eligible for center selectors: the recovered plane-center origin
+fallback preserves the entire accepted common set independently of evaluator
+consumption and its fresh outcome diagnostics.
+
+`reference_construct` builds source definitions server-side from
+`sourceEntityIds`, through `buildReferencePointDefinition`. Selector requests,
+canonical deduplicated common identities and evaluator consumption remain
+distinct; no accepted-source count is borrowed from three-plane evaluation.
+Caller-written keys, primitive snapshots, state words and raw records are absent
+from the mutation schema. Existing numeric and midpoint request shapes remain
+supported. The same cached-preview lifecycle owns versions, expiry, source/model
+binding, exact Apply and retryable owner-scoped display cleanup.
+
+The general staged lifecycle evaluates changed sources and descendants before a
+single history publication. Accepted selected-source key migration uses the
+existing trusted `constructionIdentityMigration` policy; only the missing key
+can change on a locked source. Point finalization marks dirty state before the
+specialized evaluator, preserving supported unchanged/fallback semantics rather
+than forcing a clean word. Numeric-plane `datum_construct` edits and plane
+`mesh_transform` now enter this boundary before publication, returning
+`refreshedEntityIds` and fresh `evaluations` rows with entity ID, outcome and
+diagnostics. Empty refresh arrays identify calls without affected descendants.
+The source and complete admitted point closure share one model-history commit;
+a locked descendant or failed staging preserves every prior entity and buffer.
+Other future source writers must enter the same boundary rather than commit
+independently. Fresh evaluation results remain separate from persisted
+inspection, which cannot infer an outcome from a completion word alone.
+History/project codecs validate supported definitions and identity links in each
+saved state. Located semantic/recipe line records retain their integrated
+acquisition/Apply lifecycle. Additional CAD/scan/sketch line-provider families
+remain gated until their provenance and finalization contracts are integrated,
+without placeholder Float32 coordinates or an unused authoring model.
+
+### Shared STEP eligibility
+
+GUI **Export STEP** and MCP `project_export` use `selectStepExportEntities` for the same exact-kernel eligibility and empty-result error. Geometry visibility defaults to visible objects; MCP `visible:false` includes hidden exact CAD. Scans and semantic/datum display objects without kernel handles are excluded rather than treated as CAD. Both paths pass the resulting kernel IDs to the same CAD exporter. Project and STL export policies remain separate; project export retains the full workspace and history.
+
+### Shared sketch drawing submission
+
+Canvas line, center/radius circle, three-point arc/circle and endpoint movement submit `sketch_draw` through `ApplicationApi`. The viewport retains snapped preview coordinates and raw input coordinates separately; only raw coordinates enter the shared operation. A gesture captures its revision at the first pointer/pick, including the first of three curve picks. Escape releases capture and drops pending input without publishing. App binds the callback to the public operation with that revision and a unique retry receipt; the viewport has no drawing publication path through the graph setter.
+
+The executor reads the active draft and current grid settings, invokes pure `applySketchDrawIntent`, then publishes a changed result once through the existing `setSketch` adapter inside the shared mutation lane. The helper validates and detaches the input, grid-snaps raw UV picks, reuses the existing Sketch v1 drawing/solver helpers, and validates prospective local and world coordinates. Line automatic relations and tolerance are explicit request fields; circles/arcs preserve their existing construction semantics. Endpoint movement retains the existing temporary target constraint behavior. Admission bounds collections, reference/validation work and dense solver work before cloning or solving. `SketchDrawResourceLimit` maps narrowly to `RESOURCE_LIMIT`; all rejected attempts and no-op moves preserve draft/history. Cancellation/revision checks surround synchronous work; they cannot interrupt an in-flight solver.
+
+The discoverable schema exposes each intent's meaningful parameters, revision and request ID. Results expose created identities, snapped inputs, grid settings and diagnostics; `sketch_get` exposes the resulting graph. GUI and MCP therefore share construction, defaults, failures and scoped history rather than exchanging a GUI-generated graph. Existing `sketch_set` remains the validated full-graph compatibility operation; panel intents use `sketch_edit`. Saved Sketch v1 and project codecs remain authoritative; this drawing slice adds no native clone or ordered-pick model.
+
+### Shared semantic sketch panel editing
+
+`sketch-edit-intent.ts` owns panel edit semantics in `applySketchEditIntent`;
+`sketch-edit-operations.ts` reads the active draft and invokes it with the shared
+cancellation/revision context. `sketch_edit` covers rectangle/circle presets,
+plane/normal offset, point/segment/arc creation and field edits, construction
+flags, geometry/relation removal, dimensions, relation addition and explicit
+solving. Optional creation references use the same documented defaults as the
+GUI; generated IDs belong to the operation. Numeric/topology edits preserve an
+unsolved draft and do not invoke grid snapping or an implicit solve.
+
+The helper validates immutable input/candidate graphs, UV/world bounds and
+reference integrity. Geometry removal uses the existing dependent-reference
+pruning policy; presets preserve placement and extracted scan references.
+Results enumerate created/removed point, curve and relation IDs, `changed`, and
+optional solution/profile data. No-ops preserve input identity and skip the
+publisher. Changed results call `context.mutate`/`setSketch` once for one scoped
+edit, preserving model history and CAD geometry. The GUI submits these intents
+through its `onEdit` binding, holds a synchronous pending guard and disables
+controls until the request settles; its standalone component fallback uses the
+same pure helper. Public callers need not reproduce GUI graph constructors.
+`sketch_set` remains available for explicit full-graph compatibility replacement.
+
+Semantic edits have local 2,000,000-reference-coordinate and
+2,000,000-validation-work budgets. These are operation admission limits, not new
+project/import collection caps. Explicit solve paths also use the common solver
+budget below. Invalid requests, stale revisions, cancellation and resource
+failures occur before publication.
+
+### Bounded solver and diagnostic work
+
+`sketch-solver-budget.ts` supplies a typed `SketchSolverResourceLimit` and local
+budgets of 262,144 estimated live numeric cells, 2,000,000 cumulative solve work
+units and 2,000,000 validation work units. Preflight includes validation and final
+Jacobian/rank work, including the quadratic per-column variable-vector copies
+even when residuals are empty. Each actual dense iteration charges the same
+cumulative budget before allocating its Jacobian/normal/augmented matrices,
+reserving enough work for final diagnostics. An already-satisfied graph does not
+pay hypothetical dense iteration work. The guard applies to `solveSketch`
+callers, including drawing, relation edits, read-only `sketch_solve`, solved
+`sketch_set` and parametric sketch evaluation. API error mapping recognizes the
+typed class with `instanceof`; arbitrary backend `error.code` values are not
+trusted.
+
+`inspectSketchDiagnostics` is a nonthrowing read-only wrapper returning either
+`{available:true,solution}` or
+`{available:false,code:"RESOURCE_LIMIT"|"INVALID_SKETCH",message}`. The panel
+displays that unavailable state instead of allocating an oversized solver.
+Large admitted graphs remain readable/serializable and can be replaced without
+solving; neither project admission nor `sketch_get` runs an automatic solve.
+Synchronous solver work cannot be interrupted mid-iteration; existing checks
+surround bounded computation and prevent rejected publication.
+
 ### Atomic sketch constraint application
 
-The sketch panel's Add constraint action submits `sketch_set` with `solve:true`. The existing executor validates the full Sketch v1, solves it, rejects conflicts before host mutation and publishes once through `setSketch`; revision checks, retry receipts and per-sketch edit history remain shared with MCP. The default false preserves unsolved-draft replacement. Symmetry is a persisted shared-solver constraint, including its construction-axis reference and explicit endpoint correspondence; no separate agent solver or GUI-only geometry path is introduced.
+The sketch panel's Add constraint action submits `sketch_edit` with
+`kind:"constraintAdd"`. The server assigns its ID, captures current coordinates
+for a fixed relation, validates and solves the candidate, and rejects conflicts
+before the one `setSketch` publication. Revision checks, retry receipts and
+per-sketch history remain shared with MCP. Explicit `kind:"solve"` preserves the
+existing partial-solution behavior when not converged; its returned solution
+reports that state. `forProfile:true` additionally requires convergence and a
+closed analytic profile before publication, returning the profile for the
+separate CAD operation. Full-graph `sketch_set` with `solve:true` retains atomic
+solved replacement; omitted/false `solve` retains unsolved replacement. Symmetry
+is persisted with its construction-axis reference and explicit endpoint
+correspondence. No separate agent solver is introduced.
 
 GUI extrusion requests `cad_create.selectCreated:true`; selection is published inside the shared operation before job completion. The GUI completion poll only reports errors and performs no later selection mutation. The optional flag preserves existing selection defaults for agents.
 
 ### Construction sketch display
 
-The viewport separates ordinary and construction line/arc display batches. Construction batches use dashed materials and per-primitive normalized line distances; their source remains the same shared Sketch v1 returned by `sketch_get` and written by `sketch_set`. No display-only agent operation or separate geometry model is introduced. Point-relation markers include the additional references of symmetry constraints; solver diagnostics remain authoritative for local DOF.
+The viewport separates ordinary and construction line/arc display batches.
+Construction batches use dashed materials and per-primitive normalized line
+distances; their source remains the same shared Sketch v1 returned by
+`sketch_get` and edited by `sketch_edit` or full-graph `sketch_set`. Construction
+flag changes use the semantic edit operation. Point-relation markers include
+symmetry references; solver diagnostics remain authoritative for local DOF when
+available.
+
+`settings_set` additionally exposes Boolean `sketchControlPoints` and
+`sketchMeshPoints`, both initially true. The panel checkboxes invoke that same
+operation and the stable host setters; `project_get.settings` returns current
+values. The viewport derives defining-point and extracted scan-reference point
+visibility from those flags. These session view preferences add no geometry
+mutation, source-buffer copy or model-history entry.
 
 ### Shared sketch corner edits
 
@@ -1407,6 +1769,76 @@ revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
 checks remain active.
 
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+
+### Shared primitive fitting
+
+`analyzePrimitiveFit` owns the common GUI/MCP sampler, source precision, region
+filter and fit dispatch. `analysis_fit` remains read-only; `primitive_fit_create`
+reuses that operation and the shared plane/CAD builders before one checked model
+commit. Both use the same tri-state selection rule: omitted follows the active
+nonempty source mask, false fits the whole source, true requires a current mask.
+The GUI captures its fitting revision and rejects stale materialization before
+submitting the public operation. Point-cloud display bounds, rather than triangle
+statistics, size plane references. Newly created kernel handles are released on
+publication failure/cancellation, while previous bodies stay owned by history.
+
+`copyFitResult` validates and detaches accepted object fit parameters at project
+boundaries. JSON and binary serializers now retain this optional metadata instead
+of discarding it. The decoder applies the same finite vector, dimension and
+residual validation to current and retained history states. Geometry buffers and
+file chunk protocols keep their existing ownership and cancellation contracts.
+
+`sketch_manage` also owns GUI/MCP plane-to-sketch creation. The shared
+`resolveSketchPlaneSource` adapter preserves a reference plane's stored tangent
+orientation, validates its detached rigid placement and applies the signed
+normal offset. Legacy fitted planes without a stored frame use the existing
+datum convention. Creation/activation publish saved authoring state and clear
+object selection through the same host callbacks. Source placement is copied,
+not retained as a live dependency; existing sketch project codecs persist it.
+
+### Numeric reference datums
+
+`datum_construct` is the shared create/edit transaction for numeric planes and
+named coordinate systems. `numericDatumFrame` builds the rigid basis from the
+world origin, normal and optional X direction. A plane owns its finite display
+triangles and `planeFrame`; a coordinate system is one `referenceFrame` entity
+with empty positions and authoritative
+`coordinateFrame: { version: 1, frame, displaySize }`. Three rendered positive
+axes belong to this one entity. Newly authored numeric/fitted planes additionally
+retain optional `planeFrame.displaySize`, their explicit square side length in
+millimetres. JSON copying, binary metadata, rigid datum placement and uniform
+mesh transforms preserve this field (scale multiplies it). Legacy frames without
+size remain readable; no extent is reverse-derived from their display buffers.
+The shared plane basis projects/normalizes the tangent for both sketch placement
+and located line-pair `planeUV` acquisition. Discovery returns local bounds;
+the resolver uses saved size/2 as both direct-plane half sizes. Existing ordered
+F32 records, identity migration, cached preview binding and atomic dependency
+refresh handle this source family without a second writer or project format.
+This is an application authored-frame bridge, not native provider/controller
+equivalence. Frame validation rejects sampled geometry,
+fitted/CAD metadata, nonrigid bases and out-of-bounds display endpoints.
+
+`copyReferenceFrame` preserves accepted binary64 coordinates without
+normalizing or converting them to Float32. JSON project version 3 and binary
+manifest version 5 store twelve little-endian Float64 values as hexadecimal
+`frameBits`, ordered origin, U, V, normal, plus positive `displaySize`. Existing
+JSON versions and binary manifests 2–4 remain readable. Both project codecs
+validate current, history and future entities. Frame-only changes participate
+in model history, geometry digests, API revision identity and construction
+preview bindings. Inspection returns detached structured frame data and its
+exact encoding. Sampled processing, scan selection and CAD export cannot treat
+the frame as geometry; display bounds and picking use its semantic axes.
+
+`alignment_references` supplies the frame's named origin, XYZ directions and
+XY/YZ/XZ planes through the existing point/direction/plane constraint schema.
+Axes are anchored at the stored origin, independent of their display length.
+Stored numeric planes supply their infinite center/normal plane; their saved
+tangent is retained. The GUI picker and inspector consume these same paged read
+jobs, including read-only locked sources. Bound alignment constraints reread
+the source at the requested revision. `sketch_manage` consumes a frame's
+XY/YZ/XZ placement as a detached copy; later datum edits do not move that sketch.
+See [reference datum usage and limits](REFERENCE_DATUMS.md). Native acceptance
+of additional relational construction modes remains a separate gate.
 
 ## Shared STEP export delivery
 

@@ -1,20 +1,20 @@
-import { flushSync } from "react-dom";
 import type { ParametricProfile } from "../parametric";
 import { AppSelect } from "./AppSelect";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { coordinateSketchFrame } from "../sketch-frame";
-import { resetSketchRectangle } from "../sketch-authoring";
+import {
+  applySketchEditIntent,
+  type SketchConstraintIntent,
+  type SketchEditIntent,
+  type SketchEditReceipt,
+} from "../sketch-edit-intent";
 import { cornerTrimSketch, type SketchCornerSelection } from "../sketch-corner";
 import { filletSketchCorner, type SketchFilletRequest } from "../sketch-fillet";
 import { mirrorSketch, type SketchMirrorRequest } from "../sketch-mirror";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
-  rectangleSketch,
-  sketchCurveProfile,
-  solveSketch,
+  inspectSketchDiagnostics,
   sampleSketchArc,
-  removeSketchGeometry,
-  constrainSketch,
   type Sketch,
   type SketchConstraint,
 } from "../sketch";
@@ -22,11 +22,17 @@ import {
 export interface SketchToolsProps {
   value?: Sketch;
   onChange?: (sketch: Sketch) => void;
-  onConstrain?: (constraint: SketchConstraint) => void | Promise<void>;
+  onEdit?: (
+    intent: SketchEditIntent,
+  ) => SketchEditReceipt | Promise<SketchEditReceipt>;
   onCornerTrim?: (options: SketchCornerSelection) => void | Promise<void>;
   onCornerFillet?: (options: SketchFilletRequest) => void | Promise<void>;
   onMirror?: (options: SketchMirrorRequest) => void | Promise<void>;
-  onExtrude: (profile: ParametricProfile, height: number) => void;
+  onExtrude: (
+    profile: ParametricProfile,
+    height: number,
+    oppositeDistance?: number,
+  ) => void;
   disabled?: boolean;
   drawingTool?: SketchDrawingTool;
   onDrawingTool?: (tool: SketchDrawingTool) => void;
@@ -52,15 +58,70 @@ const constraintLabel = (kind: string) =>
       ? "Vertical distance"
       : kind;
 
+/** Preserve incomplete numeric text and focus until the user accepts an edit. */
+function SketchNumberInput({
+  value,
+  resetKey,
+  label,
+  disabled,
+  onCommit,
+}: {
+  value: number;
+  resetKey: Sketch;
+  label?: string;
+  disabled?: boolean;
+  onCommit: (value: number) => void;
+}) {
+  const [text, setText] = useState(String(value));
+  const dirty = useRef(false);
+  useEffect(() => {
+    dirty.current = false;
+    setText(String(value));
+  }, [value, resetKey]);
+  return (
+    <input
+      type="number"
+      aria-label={label}
+      value={text}
+      disabled={disabled}
+      onChange={(event) => {
+        dirty.current = true;
+        setText(event.currentTarget.value);
+      }}
+      onBlur={(event) => {
+        if (!dirty.current) return;
+        dirty.current = false;
+        const next =
+          event.currentTarget.value.trim() === ""
+            ? NaN
+            : Number(event.currentTarget.value);
+        setText(String(value));
+        if (!Object.is(next, value)) onCommit(next);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          dirty.current = false;
+          setText(String(value));
+          event.currentTarget.blur();
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          event.currentTarget.blur();
+        }
+      }}
+    />
+  );
+}
+
 export function SketchTools({
   value,
   onChange,
-  onConstrain,
+  onEdit,
   onCornerTrim,
   onCornerFillet,
   onMirror,
   onExtrude,
-  disabled = false,
+  disabled: inputDisabled = false,
   drawingTool = "navigate",
   onDrawingTool,
   trimRadiusMm = 1,
@@ -77,8 +138,24 @@ export function SketchTools({
   showMeshPoints = true,
   onShowMeshPoints,
 }: SketchToolsProps) {
-  const [local, setLocal] = useState<Sketch>(() => rectangleSketch());
+  const [local, setLocal] = useState<Sketch>(
+    () =>
+      applySketchEditIntent(
+        { version: 1, points: [], segments: [], constraints: [] },
+        { kind: "preset", profile: "rectangle" },
+      ).sketch,
+  );
   const sketch = value ?? local;
+  const [editPending, setEditPending] = useState(false);
+  const pendingEdit = useRef(false);
+  const mounted = useRef(true);
+  const disabled = inputDisabled || editPending;
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   const frame = sketch.frame ?? coordinateSketchFrame("OXY", 0);
   const plane =
     frame.normal[2] === 1 && frame.u[0] === 1 && frame.v[1] === 1
@@ -93,6 +170,7 @@ export function SketchTools({
     0,
   );
   const [height, setHeight] = useState(20);
+  const [oppositeText, setOppositeText] = useState("0");
   const [error, setError] = useState("");
   const [kind, setKind] = useState<SketchConstraint["kind"]>("distance");
   const [requestedFirst, setFirst] = useState("p1"),
@@ -137,13 +215,43 @@ export function SketchTools({
     onChange?.(next);
     setError("");
   };
-  const diagnostics = useMemo(() => {
+  const inspected = useMemo(() => inspectSketchDiagnostics(sketch), [sketch]);
+  const diagnostics = inspected.available ? inspected.solution : null;
+  async function edit(
+    intent: SketchEditIntent,
+  ): Promise<SketchEditReceipt | undefined> {
+    if (disabled || pendingEdit.current) return;
+    pendingEdit.current = true;
+    setEditPending(true);
+    setError("");
     try {
-      return solveSketch(sketch);
-    } catch {
-      return null;
+      let receipt: SketchEditReceipt;
+      if (onEdit) receipt = await onEdit(intent);
+      else {
+        const result = applySketchEditIntent(sketch, intent);
+        if (result.changed && mounted.current) update(result.sketch);
+        const { sketch: _sketch, ...response } = result;
+        receipt = response;
+      }
+      if (mounted.current && receipt.solution && !receipt.solution.converged)
+        setError(
+          `Unresolved constraints: ${receipt.solution.conflictingConstraintIds.join(", ")}`,
+        );
+      return receipt;
+    } catch (failure) {
+      if (mounted.current)
+        setError(
+          failure instanceof Error ? failure.message : "Invalid sketch edit.",
+        );
+      throw failure;
+    } finally {
+      pendingEdit.current = false;
+      if (mounted.current) setEditPending(false);
     }
-  }, [sketch]);
+  }
+  const submit = (intent: SketchEditIntent) => {
+    void edit(intent).catch(() => {});
+  };
   const attempt = (fn: () => void) => {
     try {
       fn();
@@ -196,45 +304,34 @@ export function SketchTools({
     : (sketch.points[0]?.id ?? "");
   const addConstraint = () =>
     attempt(() => {
-      const id = crypto.randomUUID();
-      let constraint: SketchConstraint;
-      if (kind === "fixed") {
-        const p = sketch.points.find((p) => p.id === first);
-        if (!p) throw new Error("Select a point.");
-        constraint = { id, kind, point: first, x: p.x, y: p.y };
-      } else if (kind === "horizontal" || kind === "vertical")
-        constraint = { id, kind, segment: first };
+      let constraint: SketchConstraintIntent;
+      if (kind === "fixed") constraint = { kind, point: first };
+      else if (kind === "horizontal" || kind === "vertical")
+        constraint = { kind, segment: first };
       else if (
         kind === "distance" ||
         kind === "horizontalDistance" ||
         kind === "verticalDistance"
       )
-        constraint = { id, kind, a: first, b: second, value: dimension };
+        constraint = { kind, a: first, b: second, value: dimension };
       else if (kind === "coincident")
-        constraint = { id, kind, a: first, b: second };
+        constraint = { kind, a: first, b: second };
       else if (kind === "angle")
-        constraint = { id, kind, first, second, value: dimension };
+        constraint = { kind, first, second, value: dimension };
       else if (kind === "radius")
-        constraint = { id, kind, arc: first, value: dimension };
+        constraint = { kind, arc: first, value: dimension };
       else if (kind === "tangent")
-        constraint = { id, kind, first, second, point: tangentPoint };
+        constraint = { kind, first, second, point: tangentPoint };
       else if (kind === "symmetric")
         constraint = {
-          id,
           kind,
           first,
           second,
           axis: symmetryAxis,
           reverse: reversePairing,
         };
-      else constraint = { id, kind, first, second };
-      if (onConstrain) {
-        void Promise.resolve(onConstrain(constraint)).catch((error: unknown) =>
-          setError(
-            error instanceof Error ? error.message : "Constraint failed.",
-          ),
-        );
-      } else update(constrainSketch(sketch, constraint));
+      else constraint = { kind, first, second };
+      submit({ kind: "constraintAdd", constraint });
     });
   const preview = sketch.points;
   const arcPreview = (sketch.arcs ?? []).map((arc) => {
@@ -381,12 +478,9 @@ export function SketchTools({
           value={plane}
           disabled={disabled}
           onChange={(event) =>
-            update({
-              ...sketch,
-              frame: coordinateSketchFrame(
-                event.target.value as "OXY" | "OYZ" | "OXZ",
-                offset,
-              ),
+            submit({
+              kind: "plane",
+              plane: event.target.value as "OXY" | "OYZ" | "OXZ",
             })
           }
         >
@@ -402,19 +496,14 @@ export function SketchTools({
       </label>
       <label>
         Plane offset (mm)
-        <input
-          type="number"
+        <SketchNumberInput
           value={offset}
+          resetKey={sketch}
           disabled={disabled}
-          onChange={(event) =>
-            attempt(() => {
-              const next = Number(event.target.value);
-              const origin = frame.origin.map(
-                (n, i) => n + (next - offset) * frame.normal[i],
-              ) as typeof frame.origin;
-              const placed = { ...sketch, frame: { ...frame, origin } };
-              solveSketch(placed);
-              update(placed);
+          onCommit={(value) =>
+            submit({
+              kind: "planeOffset",
+              offsetMm: value,
             })
           }
         />
@@ -699,18 +788,15 @@ export function SketchTools({
             {(["x", "y"] as const).map((axis) => (
               <label key={axis}>
                 {axis}
-                <input
-                  type="number"
-                  aria-label={`${p.id} ${axis}`}
+                <SketchNumberInput
+                  label={`${p.id} ${axis}`}
                   value={p[axis]}
-                  onChange={(e) =>
-                    update({
-                      ...sketch,
-                      points: sketch.points.map((q) =>
-                        q.id === p.id
-                          ? { ...q, [axis]: Number(e.target.value) }
-                          : q,
-                      ),
+                  resetKey={sketch}
+                  onCommit={(value) =>
+                    submit({
+                      kind: "pointSet",
+                      pointId: p.id,
+                      [axis]: value,
                     })
                   }
                 />
@@ -719,26 +805,14 @@ export function SketchTools({
             <button
               aria-label={`Remove point ${p.id}`}
               onClick={() =>
-                update(removeSketchGeometry(sketch, "point", p.id))
+                submit({ kind: "remove", target: "point", id: p.id })
               }
             >
               ×
             </button>
           </div>
         ))}
-        <button
-          onClick={() =>
-            update({
-              ...sketch,
-              points: [
-                ...sketch.points,
-                { id: crypto.randomUUID(), x: 0, y: 0 },
-              ],
-            })
-          }
-        >
-          Add point
-        </button>
+        <button onClick={() => submit({ kind: "pointAdd" })}>Add point</button>
       </fieldset>
       <fieldset disabled={disabled}>
         <legend>Circular arcs</legend>
@@ -752,13 +826,10 @@ export function SketchTools({
                   aria-label={`${arc.id} ${reference}`}
                   value={arc[reference]}
                   onChange={(event) =>
-                    update({
-                      ...sketch,
-                      arcs: (sketch.arcs ?? []).map((a) =>
-                        a.id === arc.id
-                          ? { ...a, [reference]: event.target.value }
-                          : a,
-                      ),
+                    submit({
+                      kind: "arcSet",
+                      arcId: arc.id,
+                      [reference]: event.target.value,
                     })
                   }
                 >
@@ -775,13 +846,10 @@ export function SketchTools({
                 type="checkbox"
                 checked={arc.clockwise}
                 onChange={(event) =>
-                  update({
-                    ...sketch,
-                    arcs: (sketch.arcs ?? []).map((a) =>
-                      a.id === arc.id
-                        ? { ...a, clockwise: event.target.checked }
-                        : a,
-                    ),
+                  submit({
+                    kind: "arcSet",
+                    arcId: arc.id,
+                    clockwise: event.target.checked,
                   })
                 }
               />
@@ -790,7 +858,7 @@ export function SketchTools({
             <button
               aria-label={`Remove arc ${arc.id}`}
               onClick={() =>
-                update(removeSketchGeometry(sketch, "arc", arc.id))
+                submit({ kind: "remove", target: "arc", id: arc.id })
               }
             >
               ×
@@ -801,13 +869,10 @@ export function SketchTools({
                 aria-label={`${arc.id} For construction`}
                 checked={!!arc.construction}
                 onChange={(e) =>
-                  update({
-                    ...sketch,
-                    arcs: sketch.arcs?.map((a) =>
-                      a.id === arc.id
-                        ? { ...a, construction: e.target.checked }
-                        : a,
-                    ),
+                  submit({
+                    kind: "construction",
+                    curveId: arc.id,
+                    enabled: e.target.checked,
                   })
                 }
               />
@@ -817,60 +882,11 @@ export function SketchTools({
         ))}
         <button
           disabled={preview.length < 3}
-          onClick={() =>
-            update({
-              ...sketch,
-              arcs: [
-                ...(sketch.arcs ?? []),
-                {
-                  id: crypto.randomUUID(),
-                  a: preview[0].id,
-                  b: preview[1].id,
-                  center: preview[2].id,
-                  clockwise: false,
-                },
-              ],
-            })
-          }
+          onClick={() => submit({ kind: "arcAdd" })}
         >
           Add arc
         </button>
-        <button
-          onClick={() =>
-            update({
-              ...sketch,
-              version: 1,
-              points: [
-                { id: "center", x: 0, y: 0 },
-                { id: "east", x: 10, y: 0 },
-                { id: "west", x: -10, y: 0 },
-              ],
-              segments: [],
-              arcs: [
-                {
-                  id: "upper",
-                  a: "east",
-                  b: "west",
-                  center: "center",
-                  clockwise: false,
-                },
-                {
-                  id: "lower",
-                  a: "west",
-                  b: "east",
-                  center: "center",
-                  clockwise: false,
-                },
-              ],
-              constraints: [
-                { id: "origin", kind: "fixed", point: "center", x: 0, y: 0 },
-                { id: "anchor", kind: "fixed", point: "east", x: 10, y: 0 },
-                { id: "radius-upper", kind: "radius", arc: "upper", value: 10 },
-                { id: "radius-lower", kind: "radius", arc: "lower", value: 10 },
-              ],
-            })
-          }
-        >
+        <button onClick={() => submit({ kind: "preset", profile: "circle" })}>
           New circular profile
         </button>
       </fieldset>
@@ -885,11 +901,10 @@ export function SketchTools({
                 aria-label={`${s.id} endpoint ${end}`}
                 value={s[end]}
                 onChange={(e) =>
-                  update({
-                    ...sketch,
-                    segments: sketch.segments.map((q) =>
-                      q.id === s.id ? { ...q, [end]: e.target.value } : q,
-                    ),
+                  submit({
+                    kind: "segmentSet",
+                    segmentId: s.id,
+                    [end]: e.target.value,
                   })
                 }
               >
@@ -903,7 +918,7 @@ export function SketchTools({
             <button
               aria-label={`Remove segment ${s.id}`}
               onClick={() =>
-                update(removeSketchGeometry(sketch, "segment", s.id))
+                submit({ kind: "remove", target: "segment", id: s.id })
               }
             >
               ×
@@ -914,13 +929,10 @@ export function SketchTools({
                 aria-label={`${s.id} For construction`}
                 checked={!!s.construction}
                 onChange={(e) =>
-                  update({
-                    ...sketch,
-                    segments: sketch.segments.map((segment) =>
-                      segment.id === s.id
-                        ? { ...segment, construction: e.target.checked }
-                        : segment,
-                    ),
+                  submit({
+                    kind: "construction",
+                    curveId: s.id,
+                    enabled: e.target.checked,
                   })
                 }
               />
@@ -930,19 +942,7 @@ export function SketchTools({
         ))}
         <button
           disabled={sketch.points.length < 2}
-          onClick={() =>
-            update({
-              ...sketch,
-              segments: [
-                ...sketch.segments,
-                {
-                  id: crypto.randomUUID(),
-                  a: sketch.points[0].id,
-                  b: sketch.points[1].id,
-                },
-              ],
-            })
-          }
+          onClick={() => submit({ kind: "segmentAdd" })}
         >
           Add segment
         </button>
@@ -956,18 +956,15 @@ export function SketchTools({
               {"value" in c ? ` ${c.value}` : ""}
             </span>
             {"value" in c && (
-              <input
-                aria-label={`${c.id} dimension`}
-                type="number"
+              <SketchNumberInput
+                label={`${c.id} dimension`}
                 value={c.value}
-                onChange={(e) =>
-                  update({
-                    ...sketch,
-                    constraints: sketch.constraints.map((q) =>
-                      q.id === c.id
-                        ? { ...c, value: Number(e.target.value) }
-                        : q,
-                    ),
+                resetKey={sketch}
+                onCommit={(value) =>
+                  submit({
+                    kind: "dimension",
+                    constraintId: c.id,
+                    value,
                   })
                 }
               />
@@ -975,10 +972,7 @@ export function SketchTools({
             <button
               aria-label={`Remove constraint ${c.id}`}
               onClick={() =>
-                update({
-                  ...sketch,
-                  constraints: sketch.constraints.filter((q) => q.id !== c.id),
-                })
+                submit({ kind: "remove", target: "constraint", id: c.id })
               }
             >
               ×
@@ -1106,21 +1100,11 @@ export function SketchTools({
       <p role="status">
         {diagnostics
           ? `${diagnostics.converged ? "Constraints satisfied" : "Conflicting or unsolved constraints"} · ${diagnostics.degreesOfFreedom} local DOF · residual ${diagnostics.maxResidual.toPrecision(3)}`
-          : "Invalid references"}
+          : inspected.available
+            ? "Invalid references"
+            : inspected.message}
       </p>
-      <button
-        disabled={disabled}
-        onClick={() =>
-          attempt(() => {
-            const result = solveSketch(sketch);
-            update(result.sketch);
-            if (!result.converged)
-              setError(
-                `Unresolved constraints: ${result.conflictingConstraintIds.join(", ")}`,
-              );
-          })
-        }
-      >
+      <button disabled={disabled} onClick={() => submit({ kind: "solve" })}>
         Solve constraints
       </button>
       <label>
@@ -1148,21 +1132,38 @@ export function SketchTools({
           onChange={(e) => setHeight(Number(e.target.value))}
         />
       </label>
+      <label>
+        Opposite extrusion distance (mm)
+        <input
+          type="number"
+          min="0"
+          value={oppositeText}
+          disabled={disabled}
+          onChange={(event) => setOppositeText(event.target.value)}
+        />
+      </label>
       <button
         disabled={disabled}
         onClick={() =>
           attempt(() => {
-            const result = solveSketch(sketch);
-            if (!result.converged)
-              throw new Error(
-                "Resolve conflicting constraints before extrusion.",
-              );
+            const oppositeDistance =
+              oppositeText.trim() === "" ? NaN : Number(oppositeText);
             if (!(height > 0) || !Number.isFinite(height))
               throw new Error("Extrusion height must be positive.");
-            sketchCurveProfile(result.sketch);
-            // Publish the solved draft before the shared operation captures its revision.
-            flushSync(() => update(result.sketch));
-            onExtrude({ kind: "sketch-curves", sketch: result.sketch }, height);
+            if (
+              !Number.isFinite(oppositeDistance) ||
+              oppositeDistance < 0 ||
+              height + oppositeDistance > 1e9
+            )
+              throw new Error(
+                "Opposite extrusion distance must be nonnegative and the total at most 1e9 mm.",
+              );
+            void edit({ kind: "solve", forProfile: true })
+              .then((result) => {
+                if (result?.profile && mounted.current)
+                  onExtrude(result.profile, height, oppositeDistance);
+              })
+              .catch(() => {});
           })
         }
       >
@@ -1170,7 +1171,7 @@ export function SketchTools({
       </button>
       <button
         disabled={disabled}
-        onClick={() => update(resetSketchRectangle(sketch))}
+        onClick={() => submit({ kind: "preset", profile: "rectangle" })}
       >
         Reset rectangle
       </button>

@@ -1,0 +1,12 @@
+{
+  "scope": "Selected-source static REA analysis of the installed Plasticity 26.2.3 ASAR package; no application execution or CAD behavior observation.",
+  "artifact": "C:/Program Files/Plasticity/app-26.2.3/resources/app.asar",
+  "artifactSha256": "14fd0cfd945257553430d3c420b39b6900d1a1b6b131063f673416dd4987717c",
+  "selectedSources": ["package.json", ".webpack/renderer/app_window/index.js"],
+  "evidenceId": "ev_a669caf54bfd58f18232a211492610908db51a36ed9717a1cba4148801bb90aa",
+  "observation": "The renderer bootstrap loads V8 cached data from a compiled renderer module. REA records that compiled module as unavailable for source analysis. The selected-source graph is partial and other application sources were not analyzed.",
+  "limitations": "This does not establish sketch, extrusion, user interaction, geometry or runtime behavior. Compare controlled original-application observations with the existing M4/M5 GUI and public MCP baseline before implementing behavior.",
+  "fullEvidenceSha256": "935f171c2591138def5dacd7d95a9039f46e72d710e131b38e387abd3d4c074f",
+  "boundedReceiptSha256": "4b1b3d31b227881f345e6166123bacde24382b2242ddf8a429e3bae684c8d88f",
+  "cleanup": "Exit 0; owned root and descendants exited, zero active processes, all handles closed, no cleanup errors or lease overrun."
+}

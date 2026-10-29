@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -123,7 +123,7 @@
   },
   {
     "name": "object_get",
-    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Computed facetNormals are separate XYZ vectors in triangle order. Geometry JSON is measured before coordinate expansion and must fit the existing 1 GiB artifact capacity; use object_geometry_digest or project_export for larger geometry. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact.",
+    "description": "Inspect an object. Optional geometry is returned as a bounded artifact, not in tool text. Counts follow the object's semantic kind; geometry artifacts do not substitute empty triangle buffers for semantic geometry. Saved constructionOrderKey identities are read-only. Indexed scanner normals and separate computed geometryNormals, when available, are included in original vertex order. Computed facetNormals are separate XYZ vectors in triangle order. Geometry JSON is measured before coordinate expansion and must fit the existing 1 GiB artifact capacity; use object_geometry_digest or project_export for larger geometry. Raw meshes expose meshPreparation with scheduled, pending/progress, ready/counts, error or inactive state for automatic selected-mesh preparation. Color summaries expose pointColorAttributes (rgba8, points, bytes) and ascAttributes; includeGeometry includes explicit pointColors byte arrays in its artifact. Semantic reference objects also expose reference.editorInputs with detached startup-mm/N6 point or endpoint vectors and lossless encodings, separate from accepted geometry; editorInputsError reports a numeric-edit preparation bound without hiding saved geometry. This read does not open a preview, mutate a recipe, assign keys or change history.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00c3\u0192\u00c2\u00a2\u00c3\u00a2\u00e2\u20ac\u0161\u00c2\u00ac\u00c3\u00a2\u00e2\u201a\u00ac\u00c5\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00c3\u0192\u00c2\u00a2\u00c3\u00a2\u00e2\u20ac\u0161\u00c2\u00ac\u00c3\u00a2\u00e2\u201a\u00ac\u00c5\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -1396,7 +1396,7 @@
   },
   {
     "name": "mesh_transform",
-    "description": "Transform an editable triangle object (XYZ rotation radians, translation mm).",
+    "description": "Transform an unlocked editable triangle object or a detached numeric semantic reference: positive uniform scale about the world origin, XYZ rotation in degrees (X then Y then Z), then world-mm translation. Numeric reference points require coordinates mode and empty sources; numeric reference lines require endpoints mode, empty sources and no retained pick records. Their binary64 payloads never pass through Float32 or numeric-editor rounding. Line direction receives the linear matrix, start receives the affine matrix and stored length stays bit-identical; the numeric definition is synchronized from the resulting geometry. Reconstruct end=start+direction*length; stored length alone need not be physical length after scale. Admitted reference descendants refresh atomically; locked or unsupported dependents reject the whole operation. A stored planeFrame retains transformed center/normal/tangent and scales an existing authored displaySize while obsolete fit diagnostics are cleared. Prospective world positions/endpoints within +/-1e9 mm are validated before one model-history commit; source buffers remain immutable. Exact CAD, point clouds, frame datums, derived reference transforms, inactive line-pick transforms and semantic duplication remain outside this operation. Use object_get lossless reference encodings and returned refreshedEntityIds/evaluations to verify. Revision/retry, cancellation, locks, Undo/Redo and project persistence apply. Application Euler/scale conversion is not a claim of original-native toolbar numerical parity.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -1452,7 +1452,7 @@
   },
   {
     "name": "analysis_fit",
-    "description": "Fit a plane/sphere/cylinder/cone; analytical residuals are estimates, not certified metrology.",
+    "description": "Fit a plane/sphere/cylinder/cone using the same source-precision sampling and fitter as the GUI. Optional selectionOnly requires a nonempty current point/triangle mask. Optional region filters world XYZ points within its inclusive spherical radius in millimeters; it composes with selection. Up to 20,000 eligible samples are retained in source order. totalVertices counts eligible vertices before sampling; samples is the retained count. Hidden metadata does not independently modify the chosen mask. Read-only: no geometry, selection or model history changes. Analytical residuals are estimates, not certified metrology. Omitted selectionOnly follows a nonempty mask of the active source, matching the GUI; false explicitly fits the whole source, and true requires a nonempty current mask. A mask belonging to another object is never used.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1469,7 +1469,27 @@
           "enum": ["plane", "sphere", "cylinder", "cone"]
         },
         "selectionOnly": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Omitted uses the active source nonempty mask, otherwise whole input; false explicitly fits the whole source; true requires a nonempty current source mask."
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "center": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["center", "radius"],
+          "additionalProperties": false
         }
       },
       "required": ["entityId", "kind"],
@@ -1861,6 +1881,11 @@
                 },
                 "height": {
                   "type": "number"
+                },
+                "oppositeDistance": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
               "required": ["kind", "profile", "height"],
@@ -2535,7 +2560,7 @@
   },
   {
     "name": "cad_rebuild",
-    "description": "Atomically edit a feature recipe and rebuild dependents; preserve prior outputs for Undo.",
+    "description": "Atomically edit a feature recipe and rebuild dependents; preserve prior outputs for Undo. Rebuild every changed CAD output and refresh admitted reference-point/line descendants as one atomic history transaction. Current validated sphere/cylinder/cone primitive recipes are authoritative construction inputs; stale fit diagnostics are not. Returns rebuiltFeatureIds, refreshedEntityIds, evaluations and cleanupFailures. Deep locks, unsupported source replacement, cancellation, resource limits or commit failure preserve prior geometry/history and release newly owned handles, retaining current/history/future handles.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -2792,6 +2817,11 @@
                 },
                 "height": {
                   "type": "number"
+                },
+                "oppositeDistance": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
               "required": ["kind", "profile", "height"],
@@ -3463,6 +3493,868 @@
     }
   },
   {
+    "name": "sketch_edit",
+    "description": "Apply one semantic Sketch v1 panel edit to the active draft using the same operation as GUI numeric/topology controls. kind:preset replaces editable geometry with the existing rectangle40x30mm or R10mm two-arc circle, retaining placement and immutable scan references. plane changes origin-plane orientation while preserving signed normal offset; planeOffset moves only origin along its current normal. pointAdd defaults to[0,0]; pointSet changes only supplied axes. segmentAdd defaults to the first two points; arcAdd defaults to the first three and clockwise:false; explicit references must be complete. segmentSet/arcSet change only supplied fields; construction toggles one curve; remove cascades geometry and invalidated constraints; dimension changes a dimensional relation. Numeric/topology/dimension edits do not snap, auto-solve or alter grid settings. constraintAdd constructs a server-owned ID (fixed captures current point coordinates), solves and rejects nonconvergence atomically. Explicit solve returns best-candidate diagnostics and may publish a nonconverged valid result, preserving existing Solve behavior. solve.forProfile:true instead requires convergence and a closed analytic profile before publication, returning a server-built sketch-curves profile for cad_create; failed preparation preserves the draft. Returns changed, created/removed point/curve/constraint IDs, optional solution/profile, units:mm and coordinateSystem:sketch-local-UV. Changed results publish exactly one scoped sketch edit; semantic noops preserve undo/redo. Revision/request guards, competing-preview ownership, cancellation and prospective local/world bounds +/-1e9 apply. Validation/reference work is bounded to2000000; there is no drawing-style256point cap. Solver dense cells262144/work2000000 apply only when solving. RESOURCE_LIMIT leaves state/history unchanged; use a smaller sketch or split the operation. Current saved draft takes precedence over the legacy sketch, unrelated saved sketches/model history remain unchanged. Public callers cannot supply replacement graphs, IDs for created records, source provenance or solver state; inspect accepted geometry through sketch_get.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["preset"]
+            },
+            "profile": {
+              "type": "string",
+              "enum": ["rectangle", "circle"]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "profile", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["plane"]
+            },
+            "plane": {
+              "type": "string",
+              "enum": ["OXY", "OYZ", "OXZ"]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "plane", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["planeOffset"]
+            },
+            "offsetMm": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "offsetMm", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["pointAdd"]
+            },
+            "position": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["pointSet"]
+            },
+            "pointId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "y": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "pointId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["segmentAdd"]
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["segmentAdd"]
+                },
+                "a": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "b": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "a", "b", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["segmentSet"]
+            },
+            "segmentId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "a": {
+              "type": "string",
+              "minLength": 1
+            },
+            "b": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "segmentId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["arcAdd"]
+                },
+                "clockwise": {
+                  "type": "boolean"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["kind", "expectedRevision", "requestId"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["arcAdd"]
+                },
+                "a": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "b": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "center": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "clockwise": {
+                  "type": "boolean"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": [
+                "kind",
+                "a",
+                "b",
+                "center",
+                "expectedRevision",
+                "requestId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["arcSet"]
+            },
+            "arcId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "a": {
+              "type": "string",
+              "minLength": 1
+            },
+            "b": {
+              "type": "string",
+              "minLength": 1
+            },
+            "center": {
+              "type": "string",
+              "minLength": 1
+            },
+            "clockwise": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "arcId", "expectedRevision", "requestId"],
+          "additionalProperties": false,
+          "minProperties": 5
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["construction"]
+            },
+            "curveId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "curveId",
+            "enabled",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["remove"]
+            },
+            "target": {
+              "type": "string",
+              "enum": ["point", "segment", "arc", "constraint"]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "target", "id", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["dimension"]
+            },
+            "constraintId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "type": "number",
+              "minimum": -1000000000,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "constraintId",
+            "value",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["constraintAdd"]
+            },
+            "constraint": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["fixed"]
+                    },
+                    "point": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "point"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["coincident"]
+                    },
+                    "a": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "b": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "a", "b"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["horizontal", "vertical"]
+                    },
+                    "segment": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "segment"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "distance",
+                        "horizontalDistance",
+                        "verticalDistance"
+                      ]
+                    },
+                    "a": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "b": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "a", "b", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["radius"]
+                    },
+                    "arc": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "arc", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "parallel",
+                        "perpendicular",
+                        "equal",
+                        "collinear"
+                      ]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "first", "second"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["angle"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    }
+                  },
+                  "required": ["kind", "first", "second", "value"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["tangent"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "point": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": ["kind", "first", "second", "point"],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": ["symmetric"]
+                    },
+                    "first": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "second": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "axis": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reverse": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["kind", "first", "second", "axis", "reverse"],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "constraint", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["solve"]
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1000000000
+            },
+            "maxIterations": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "forProfile": {
+              "type": "boolean"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "sketch_draw",
+    "description": "Append a line, center/radius circle, three-point circle or three-point arc, or move an endpoint in the active Sketch v1 using the same operation as canvas gestures. Coordinates are raw local UV millimetres, not screen pixels. kind:line uses two points and requires explicit autoConstraints and snapToleranceMm; autoConstraints enables existing-endpoint/origin reuse and automatic horizontal/vertical relations within that tolerance. kind:circle uses center then radius point; circle3/arc3 use start, a point on the curve, then end. Circles are stored as two analytic arcs; arc direction follows the three supplied points. kind:move uses pointId and position, solves a temporary fixed target and removes that temporary relation before publication. Current settings_set snapGrid (default false) and gridSpacing (default 10 mm) snap raw inputs before construction. Curves do not gain endpoint snapping or extra automatic constraints. Existing constraints are solved; degeneracy, conflicts, invalid coordinates or work limits reject without changing the draft/revision/history. Prospective local and world coordinates must remain within +/-1e9 mm. One changed result publishes one scoped sketch-history edit, preserving model history, placement, references and unrelated geometry. Exact retry receipts avoid duplicate UUID geometry. GUI captures the revision at the first pointer/pick and submits once on release/third pick; Escape discards unfinished input without a call. Returns changed, created point/curve/constraint IDs, grid-snapped usedPoints (before line endpoint/axis decisions), grid settings and work/count diagnostics; inspect full geometry through sketch_get. No-op movement returns changed:false. Busy, reference-preview ownership and revision/retry guards apply. Limits per draw:256 points,512 curves,512 constraints including a temporary move constraint,2000000 reference coordinates,2000000 validation work,262144 dense solver cells and2000000 solver work. RESOURCE_LIMIT preserves prior state: use a smaller sketch or split the operation. Synchronous solving cannot be interrupted in flight; admission bounds work before allocation/solve. Native sketch cloning and retained ordered source-pick provenance are not exposed.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["line"]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "autoConstraints": {
+              "type": "boolean"
+            },
+            "snapToleranceMm": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "points",
+            "autoConstraints",
+            "snapToleranceMm",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["circle"]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["circle3", "arc3"]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["move"]
+            },
+            "pointId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "position": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "kind",
+            "pointId",
+            "position",
+            "expectedRevision",
+            "requestId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  {
     "name": "sketch_set",
     "description": "Replace the active sketch draft with a validated Sketch v1; With solve:true, solve and apply atomically; conflicting constraints leave the draft unchanged. Returns solution diagnostics when solving. Supports collinear constraints {id,kind:'collinear',first,second} on two distinct finite straight segments of length at least 1e-10 mm: both supporting lines coincide, including disjoint or reversed segments, without welding endpoints or equating lengths. Collinear residuals are signed endpoint-to-line distances in local UV millimetres. CAD remains unchanged until rebuild/extrude.",
     "readOnly": false,
@@ -3636,7 +4528,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3823,7 +4715,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4033,7 +4925,7 @@
   },
   {
     "name": "settings_set",
-    "description": "Set display, grid and scan-import preferences through the application.",
+    "description": "Set display, grid, sketch-display and scan-import preferences through the shared application operation. sketchControlPoints and sketchMeshPoints control the current sketch's defining-point markers and extracted scan-reference points; both default true. Inspect project_get.settings for current values. These view preferences do not alter sketch geometry or model history.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4076,6 +4968,14 @@
             },
             "normalsDisplay": {
               "type": "boolean"
+            },
+            "sketchControlPoints": {
+              "type": "boolean",
+              "description": "Show defining/control-point markers in the current sketch display. Default true; no geometry or model-history change."
+            },
+            "sketchMeshPoints": {
+              "type": "boolean",
+              "description": "Show extracted scan-reference points in the current sketch display. Default true; no geometry or model-history change."
             },
             "importAscAttributes": {
               "type": "string",
@@ -4674,7 +5574,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "description": "Create/activate/rename/delete a saved sketch through the shared editor. Create accepts either an explicit validated sketch or planeSourceId (mutually exclusive). Sources include reference planes and named coordinate systems. A reference plane's stored planeFrame preserves its tangent orientation; legacy fitted planes without planeFrame use their fitted center/normal. A coordinate system supplies its rigid saved frame. Optional framePlane selects XY (default), YZ or XZ of a coordinate system; ordinary reference planes accept only XY. planeSourceId creates an empty sketch at a detached rigid placement, with optional normalOffset in world millimetres along the selected plane normal (default 0). Returns sketchId and the created frame. Later source edits do not move the sketch. normalOffset and framePlane require planeSourceId; all source-placement fields are create-only. Omit sketch and planeSourceId for the legacy default rectangle.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4698,6 +5598,23 @@
         },
         "sketch": {
           "type": "object"
+        },
+        "planeSourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Reference plane or referenceFrame object ID from project_get; mutually exclusive with sketch."
+        },
+        "framePlane": {
+          "type": "string",
+          "enum": ["XY", "YZ", "XZ"],
+          "description": "Coordinate-system sketch plane, default XY. Requires planeSourceId; ordinary reference planes accept only XY."
+        },
+        "normalOffset": {
+          "type": "number",
+          "minimum": -1000000000,
+          "maximum": 1000000000,
+          "description": "Signed distance along the source plane normal in millimetres; requires planeSourceId."
         },
         "expectedRevision": {
           "type": "integer",
@@ -5043,7 +5960,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u015332 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5543,7 +6460,7 @@
   },
   {
     "name": "viewport_pick",
-    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Inspect visible rendered geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Semantic reference hits report referenceKind, triangleIndex:null and no cloud pointIndex; reference project admission remains gated. Respects visibility, protection and clipping. Read-only; native CAD edge/face IDs are separate.",
+    "description": "Optional view selects main (default), moving or fixed; picking views require an active landmark session and use independent original-pose cameras. Inspect visible rendered geometry at normalized top-left viewport x/y. Return ordered object IDs, world-mm points, distances, tessellation triangle indices or pointIndex. Semantic point, finite-line and coordinate-frame hits report referenceKind (point/line/frame), triangleIndex:null and no cloud pointIndex. Respects visibility, protection and clipping. Read-only; native CAD edge/face IDs are separate.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -5687,7 +6604,7 @@
   },
   {
     "name": "alignment_references",
-    "description": "Read exact CAD face, fitted primitive or stored semantic point/line alignment references without changing geometry or history. Semantic sources return referenceConstruction and object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. Semantic creation/import remains gated pending construction integration; discovery does not permit moving these sources. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
+    "description": "Read exact CAD face, fitted primitive, stored numeric plane, semantic point/line or named coordinate-frame alignment references without changing geometry or history. Semantic sources return referenceConstruction. Numeric planes expose their stored plane; coordinate frames expose true origin, X/Y/Z directions and XY/YZ/XZ planes independently of display size. Existing point/line sources retain object-local /reference/point or /reference/direction IDs; line direction references retain the stored extent and native midpoint convention. reference_construct supports typed creation, stored-line midpoint, center/pair/threePlanes points and located pair/average lines within its documented source matrix. mesh_transform supports numeric coordinate points and numeric endpoint lines, refreshing admitted linked descendants atomically; derived source transforms and duplication remain gated. Returns paged points, directions and display triangle ranges in mm; exact CAD cylinder faces also expose their kernel radiusMm. Unsupported surfaces are explicit. This read-only native job uses job_get/job_cancel; use fresh results after any model edit. Optional triangleIndex resolves the exact face picked in the canvas.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -6779,7 +7696,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u015332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -7266,6 +8183,610 @@
         }
       },
       "required": ["inspectionId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_get",
+    "description": "Inspect the shared typed point/line construction session: exact millimeter geometry, definition, version, expiry and evaluation diagnostics. Preview is ephemeral and non-pickable; object_get inspects accepted geometry. Inactive sessions report their termination reason and cleanup failures. Active inspection includes geometryEncoding using the existing lossless point/line geometry codec; use it to verify signed zero and exact coordinate bits across JSON.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_features",
+    "description": "Read-only job listing exact CAD vertices, edges or faces in bounded pages, or original unsampled mesh vertex records. Default offset0/limit50, maximum100. Rows retain stable query-local topology indices, eligibility/reason, finite curve parameters or canonical face triangle ranges; mesh vertices retain original duplicate records, and mesh edge/face topology is unsupported. Source must be visible unlocked selectable. Returns entityId,sourceRevision,units:mm,coordinateSpace:world,selectionModel,total,nextOffset,rows; no kernel/BREP/source buffers. Query-local CAD traversal/identity budget100000, existing canonical converter/cache limits apply; use a simpler source after a budget error. Allowed during an owned reference preview without changing owner/version. Poll job_get; pass the returned sourceRevision to reference_construction_acquire expectedRevision. Native alternate-provider viewport equivalence and persistent topology identities are not claimed.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "family": {
+          "enum": ["vertices", "edges", "faces"]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": ["entityId", "family"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_acquire",
+    "description": "Read-only cancellable job resolving a numeric reference coordinate from exact CAD vertex, finite curve endpoint/parameter fraction, canonical CAD face screen hit, or original unsampled mesh vertex/screen surface. Source must be visible unlocked selectable; clouds continue using synchronous reference_construction_pick. expectedRevision is mandatory and must match the feature page/current source revision. Curve fraction is first+(last-first)*fraction, not arc length or native closest projection. Exact CAD coordinates use direct fixed-six ties-even then G15 numeric exchange without point editor N7; surface/mesh coordinates use canonical F32 acquisition then the existing float/N6/G15 bake. Screen x/y are normalized top-left within[0,1]; camera/clipping/material state is captured server-side and must stay unchanged during work. Optional faceIndex restricts an exact CAD canonical range. Hidden mesh triangles are excluded. The declared application-canonical-triangle model is not a native viewport-intermediate equivalence claim. Operation-local budgets100000 topology visits/identity comparisons,2000000 screen triangles,32clips; select a smaller face/simpler source or split geometry after a budget error. Poll job_get until succeeded; result includes entityId,sourceRevision,position,positionEncoding,units:mm,coordinateSpace:world,acquisition,selectionModel,numericOnly:true,sourceDependencyRetained:false. Use only {acquisitionJobId:jobId} in reference_construct positionPick/startPick/endPick with sourceRevision. Source object/BREP/kernel/client generation and current revision must remain unchanged through Preview. Job authority lasts only in the existing32-row job retention window and owner; failed/cancelled/evicted/stale jobs reject and require reacquisition. Public result mutation cannot alter retained numeric data. Allowed during an owned reference preview without replacing its owner/version. No caller XYZ, rawbits, barycentric/display-triangle fields, kernel handles or provenance. Ordinary cancellation waits native work to settle and cleans temporary handles; it does not reset source bodies. No source geometry, selection, history, links or ordering keys are mutated.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "selection": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": ["vertex"]
+                },
+                "vertexIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["kind", "vertexIndex"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": ["edge-endpoint"]
+                },
+                "edgeIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "endpoint": {
+                  "enum": ["start", "end"]
+                }
+              },
+              "required": ["kind", "edgeIndex", "endpoint"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": ["edge-fraction"]
+                },
+                "edgeIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "fraction": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": ["kind", "edgeIndex", "fraction"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": ["screen"]
+                },
+                "x": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "y": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "view": {
+                  "enum": ["main", "moving", "fixed"]
+                },
+                "faceIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["kind", "x", "y"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityId", "selection", "expectedRevision"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_pick",
+    "description": "Read one original point-cloud vertex by entityId and zero-based pointIndex, returning a detached numeric coordinate for existing reference_construct point/endpoint Preview/Apply. The source must be a visible unlocked selectable pointcloud, matching the GUI picking eligibility for this admitted family. Resolve the current original vertex in world millimetres; placed clouds transform just this local triple through the authoritative pose without materializing whole world-position/normal buffers. Apply the recovered startup millimetres/N6 float-controller bake: input Float32, binary64 magnitude*1e6+0.5 and integer truncation/division with recovered sign threshold, final Float32 promoted to double, then native numeric-control exchange through15significant decimal digits and parsing, preserving explicit signed zero. This is separate from fixed-six native editor initialization. Returns entityId,pointIndex,position,positionEncoding (existing lossless point-geometry codec),units:mm,coordinateSpace:world,acquisition:point-cloud-vertex,numericOnly:true,sourceDependencyRetained:false; normal outer revision binds the read. No geometry/history/selection/key mutation or preview is created. Read again with the same arguments to acquire current geometry; no mutation receipt is required. Caller coordinates, ordering keys, raw bits and provenance assertions are forbidden. For exact publication use reference_construct positionPick/startPick/endPick:{entityId,pointIndex} with this read response revision as expectedRevision. Server-side resolution preserves negative-zero bits across public JSON; number arrays alone cannot. Verify positionEncoding and preview/get geometryEncoding. Accepted numeric points/lines retain no dependency or new pick records, so later source edits/deletion do not refresh them; existing inactive line records stay preserved. CAD/mesh/sketch picks, the native cached precise-double route, alternate native unit/precision settings and derived line-pick acquisition remain unsupported.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "pointIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Zero-based index in the current original source point order, not a sampled display slot."
+        }
+      },
+      "required": ["entityId", "pointIndex"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construction_sources",
+    "description": "Read-only paged source eligibility for point and line construction, shared by GUI selectors and MCP. Modes center/pair/threePlanes use semantic points/lines, current validated sphere/cylinder/cone primitive recipes and explicit numeric plane equations as supported; midpoint uses the existing stored endpoints-line-only policy. Returns world millimetres, total,nextOffset and source rows with entityId,name,kind,primitiveKind,eligible,reason when unavailable,read-only saved/provisional constructionOrderKey and identityStatus. Discovery never assigns keys or edits geometry/history. Optional entityId is the edit target; self and dependency-cycle sources remain listed as ineligible. Reading locked sources is allowed. offset defaults0, limit defaults50/max100; ordinary outer response revision binds the page. For kind:line, pair admits semantic reference points/lines plus sphere/cylinder/cone primitive recipes and planes with stored authored displaySize, and average admits semantic lines or cylinder/cone recipes; primitiveKind point needs no parameter and axis needs an explicit finite fraction [0,1], except pair-mode stored numeric reference lines marked objectSelection:true accept selection:object with no fraction. Plane pair sources require planeUV:[u,v] in local millimetres within returned planeUVBounds; legacy planes without saved size remain ineligible. kind/mode must match. General CAD, fit-only metadata, scan/sketch line acquisition remain unsupported. Authored numeric/fitted planes use their saved size as direct-plane half extents, never inferred from display triangles. Primitive recipe output0 and the current recipe win over stale display kind/fit diagnostics; cylinder location uses the worker midpoint/base/height convention. Cone recipes have fraction0 at the smaller-radius end and1 at the larger-radius end; equal radii use cylinder base-to-top. This explicit application canonicalization leaves the recipe unchanged and does not establish native controller, provider or whole-construction parity. Provisional keys are deterministic inspection results, not caller-editable parameters.",
+    "readOnly": true,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["point", "line"]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": ["kind", "mode"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "reference_construct",
+    "description": "Create/edit typed reference points, finite endpoint lines, stored-line midpoint, source-derived points, or located semantic pair/average lines in world XYZ millimetres. For kind:point use mode:center, pair or threePlanes with sourceEntityIds; the server resolves authoritative semantic referencePoint/referenceLine geometry, current validated sphere/cylinder/cone primitive recipes and validated canonical planeFrame equations, including fitted planes with authoritative frames (no kernel/parametric source). This plane adapter is an application analytic equation, not native direct-plane extent or CAD-provider extraction. Center admits plane selectors and reports the recovered origin fallback when the first canonical source is a plane, retaining all common links. Center consumes the first canonical source, pair the first two, threePlanes evaluates exactly three planes; the full accepted source set is retained independently, sorted by read-only construction-order keys and deduplicated by object identity. Known GUI selector defaults are center one/two, pair two, threePlanes three; no additional native controller count rule is inferred. Fallback/origin/unchanged outcomes are explicit; unchanged edits may retain prior geometry and dirty state. sourceEntityIds excludes numeric coordinates, sourceEntityId, raw records, keys, state and provenance. mode:midpoint keeps the existing one stored semantic endpoints-line sourceEntityId contract. Omitted mode accepts position OR positionPick for a point; each line endpoint independently accepts start OR startPick and end OR endPick. Pick intents contain only {entityId,pointIndex} and use the same visible/unlocked/selectable cloud resolution, native mm/N6 float bake and15significant-digit numeric-control roundtrip as reference_construction_pick, resolved server-side under expectedRevision so JSON cannot lose signed zero. Never supply both forms for one field or use pick fields with derived modes. Preserve the readonly pick response revision for the mutation; changed sources reject rather than quietly re-resolve. Inputs/output world bounds remain +/-1e9 and endpoint lines must be nondegenerate. Numeric picked definitions retain no common dependency or new line-pick records; existing inactive line records are preserved. Preview/get include lossless geometryEncoding and definitionEncoding (F32 retained-record bits). Line mode:pair/average uses sourcePicks; records preserve requested order/repetitions independently of canonical deduplicated common dependencies. Pair admits semantic points/lines plus sphere/cylinder/cone primitive recipes and numeric/fitted planes with saved authored displaySize; average admits semantic lines or cylinder/cone recipes. Current primitive recipe/output0 is authoritative; fit-only metadata and stale display kind cannot override it. Cylinder axes follow the application worker midpoint/base/height convention. Unequal-radius cone recipes use an explicit application midpoint-to-base canonical mapping: fraction0 is the smaller-radius end and1 the larger-radius end; equal radii use the worker cylinder fallback and its base-to-top convention. Original recipes remain unchanged and accepted F32 hits are not reacquired on radius-order changes. Nonfinite or out-of-world conversions reject; native controller or whole-construction parity is not inferred. Planes require planeUV:[u,v] local millimetres within their saved square extent; the unit tangent basis matches sketch placement. Their saved displaySize supplies both direct-plane half sizes. General CAD/scan/sketch acquisition remains gated; this authored-frame bridge does not establish the native extent producer or controller. Each point pick omits parameter and planeUV; each plane pick requires only planeUV, and each finite line pick requires a fraction [0,1], consumed once into an F32 world hit without N6 or G15, except pair-mode selection:object for stored numeric reference lines retains the observed dropdown zero record. Omitted sourcePicks reuses exact existing/owned records and common bindings; endpoints with inactive records can restore them only when all sources resolve. Changed source selections require explicit new source intents; retainedIndex reuses a matching record from the owned derived preview or existing derived edit. New derived lines require an owned typed-endpoint preview as explicit prior, then a same-session mode edit; direct new derived requests cannot invent a constructor/default-average seed. Apply reevaluates the captured actual prior and inputs to verify exact cached geometry; per-version prior is internal, never caller writable. Preview uses an owned60second versioned session; optional entityId edits an unlocked same-kind reference, otherwise creates with optional name. Updates keep destination/name fixed. Apply publishes cached geometry and atomically refreshes admitted derived descendants in one history step, including selected missing source-key assignments; locked source reads and deterministic key-only migration are allowed, locked dependent geometry rejects. Cancel has no history or key migration. Models/source/history changes invalidate previews; camera/selection do not. Source queries and inspection expose read-only identities and structured outcomes. Derived construction/refresh admission is bounded; unrelated numeric operations/imports do not inherit a scene cap. Numeric coordinate-point and endpoint-line transforms use mesh_transform and refresh admitted descendants atomically. Derived transforms, duplication and retained CAD/fit-only/scan derived-line acquisition remain gated. Located line authoring/refresh has an operation-local1000record bound; persistence has no new global scene/record cap. Delete permits leaves or complete dependency sets; cleanupPending retains owner-scoped retry recovery. Existing numeric edits can use initialize:true exclusively with entityId or an owned edit session/version, without retransmitting raw coordinates. It prepares startup-mm/N6 editor defaults server-side, preserves accepted geometry until Apply, and never initializes a new object or detaches a derived recipe. object_get.reference.editorInputs exposes the same detached vectors and lossless vector encodings; project_get object summaries agree. If saved geometry exceeds numeric edit bounds, reference.editorInputsError reports the unavailable preparation while accepted geometry remains inspectable. Point initialization uses the proved N7 sign/pre-round before fixed6 ties-even and G15; line endpoints use direct fixed6 and G15. Explicit typed coordinates and project persistence are not rounded by this intent. Partial native R11 text observations do not establish negative/general tie, line signed-zero or all unit configurations. Numeric pick fields also accept {acquisitionJobId} from a successful owned reference_construction_acquire job. This exact-command binding is checked for revision, source object/BREP/kernel/client generation and existing32-job retention; acquired numbers are detached from public job_get aliases and are not persisted as dependencies. Acquire/features jobs can run while the current reference preview remains owned and unchanged.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["preview", "apply", "cancel"]
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["point", "line"]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
+        },
+        "sourceEntityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Single semantic referenceLine ID with accepted endpoints mode and a saved construction key; midpoint point previews only."
+        },
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "start": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "end": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "sourceEntityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "maxItems": 10000,
+          "description": "Derived point source selectors. Server owns canonical identity ordering and deduplication, retaining all accepted common links independently of evaluator consumption. Application request/work bound10000 is not a native mode arity. Never supply constructionOrderKey, completion state or raw retained picks."
+        },
+        "positionPick": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "entityId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "pointIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["entityId", "pointIndex"],
+              "additionalProperties": false,
+              "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+            },
+            {
+              "type": "object",
+              "properties": {
+                "acquisitionJobId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["acquisitionJobId"],
+              "additionalProperties": false
+            }
+          ],
+          "description": "Cloud {entityId,pointIndex} or successful owned {acquisitionJobId}; use captured source revision. Both arms resolve server-side; caller coordinates/bits/provenance are forbidden."
+        },
+        "startPick": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "entityId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "pointIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["entityId", "pointIndex"],
+              "additionalProperties": false,
+              "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+            },
+            {
+              "type": "object",
+              "properties": {
+                "acquisitionJobId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["acquisitionJobId"],
+              "additionalProperties": false
+            }
+          ],
+          "description": "Cloud {entityId,pointIndex} or successful owned {acquisitionJobId}; use captured source revision. Both arms resolve server-side; caller coordinates/bits/provenance are forbidden."
+        },
+        "endPick": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "entityId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "pointIndex": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["entityId", "pointIndex"],
+              "additionalProperties": false,
+              "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
+            },
+            {
+              "type": "object",
+              "properties": {
+                "acquisitionJobId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": ["acquisitionJobId"],
+              "additionalProperties": false
+            }
+          ],
+          "description": "Cloud {entityId,pointIndex} or successful owned {acquisitionJobId}; use captured source revision. Both arms resolve server-side; caller coordinates/bits/provenance are forbidden."
+        },
+        "sourcePicks": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "properties": {
+              "entityId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "parameter": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "selection": {
+                "type": "string",
+                "enum": ["object"],
+                "description": "Pair mode and stored numeric reference lines only: select the source object without a location, retaining the zero Float32 pick record observed for native dropdown selection. Excludes parameter and planeUV."
+              },
+              "retainedIndex": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999,
+                "description": "Reuse exactly one server-owned record from the existing derived line or current owned preview. entityId must match that record and its current source identity; excludes all acquisition fields."
+              },
+              "planeUV": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": -1000000000,
+                  "maximum": 1000000000
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "Plane pair sources only: local U,V millimetres within planeUVBounds from source discovery. Uses the projected unit tangent and normal-cross-tangent basis, then rounds the world hit once to F32. Excludes parameter."
+              }
+            },
+            "required": ["entityId"],
+            "additionalProperties": false
+          },
+          "description": "kind:line mode:pair/average only. Ordered semantic sources, repetitions preserved. For average mode, an explicit empty array clears sources and evaluates from the existing or owned prior; omitted sourcePicks retains existing records. A point forbids parameter; a finite line requires a fraction except that pair mode accepts selection:object for stored numeric reference lines, matching the observed native dropdown zero pick record. Parameter is consumed once as start+(end-start)*fraction in authoritative world F64, then each coordinate rounds once to F32 without numeric N6/G15 baking. Server owns retained records and common identity keys. Use retainedIndex with the matching entityId to reuse one record from the current existing derived edit or owned preview; omit sourcePicks to reuse all records exactly. Max1000 is an application work bound, not native arity. For a plane pair source supply planeUV:[u,v] local mm, excluding parameter; source discovery reports planeUVBounds. Missing legacy size requires an explicit numeric plane edit or a newly fitted plane; no extent is reconstructed from old display geometry."
+        },
+        "initialize": {
+          "type": "boolean",
+          "description": "Preview-only existing numeric edit initialization. With true, provide an existing entityId or an owned EDIT session/version and kind; omit all numeric, pick, mode and source replacements. Server prepares accepted point coordinates through N7 pre-round/fixed6-even/G15, or stored line endpoints through direct fixed6-even/G15 without point pre-round. Derived definitions and new-object seeds reject. Explicit typed create/update values keep their exact existing meaning."
+        }
+      },
+      "required": ["action", "expectedRevision", "requestId"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "datum_construct",
+    "description": "Create or edit one named numeric reference plane (kind:plane) or coordinate system (kind:frame) in world millimetres through the shared GUI operation. Supply origin, nonzero normal (the frame Z axis) and positive displaySize (at most 2e9 mm). Optional nonzero xDirection is projected perpendicular to normal to preserve rotation about Z; a parallel direction rejects. Omitted xDirection uses the same deterministic datumFrame basis as the GUI. Coordinates, plane display vertices and positive frame-axis endpoints must stay within +/-1e9 mm. displaySize is the plane side length or each positive coordinate-axis length. Omit entityId to create, with optional name (default Reference plane or Coordinate system). entityId edits the same unlocked numeric datum kind: planes require planeFrame and no fit or exact CAD metadata; frames require a valid referenceFrame payload. Presentation and identity are preserved. name is create-only; rename through object_update. Apply creates one model-history step and selects the datum; cancelling the GUI form creates nothing. Returns entityId, rigid frame, units:mm and displaySize. Placement is detached with no source dependency or fabricated fit residuals. Reference preview ownership, revision/retry guards, locks and project/history persistence apply. object_get/project_get expose coordinateFrame plus binary64 frame encoding. sketch_manage planeSourceId creates a detached sketch on a plane or a coordinate system's XY/YZ/XZ plane. Planes are mesh references excluded from STEP; coordinate systems carry no mesh/CAD geometry and are excluded from STL/STEP and sampled-geometry tools. World origin is unchanged. Infinite axes and relational datum construction are not implemented by this operation. New and edited planes persist planeFrame.displaySize; positive uniform transforms scale it and rigid placement preserves it. object_get/project_get expose this authored finite extent. Legacy frames without it stay readable; accepting a numeric-plane edit records the explicitly supplied size.",
+    "readOnly": false,
+    "job": false,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["plane", "frame"]
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "origin": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "normal": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "xDirection": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": -1000000000,
+            "maximum": 1000000000
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "displaySize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 2000000000
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "kind",
+        "origin",
+        "normal",
+        "displaySize",
+        "expectedRevision",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "primitive_fit_create",
+    "description": "Fit and create a plane reference or exact sphere/cylinder/cone using the same source-precision sampler, optional world-mm spherical region and current selection as GUI fitting. Recomputes at the supplied current revision; a GUI fit preview must be refreshed after workspace or selection changes. Creates and selects one independent object in one model history step, preserving the source and its buffers even when locked. Returns entityId, sourceEntityId, fit parameters/residuals, samples and eligible totalVertices. Planes retain an explicit rigid planeFrame and are mesh references excluded from STEP; other kinds retain exact parametric CAD and fit diagnostics. Cancel/failure/stale source preserve the scene and release newly owned kernel handles. Use job_get/job_cancel, history_undo/history_redo and project export/reopen. This independently authored fitter does not establish native solver equivalence or automatic dependent refitting. Omitted selectionOnly follows a nonempty mask of the active source, matching the GUI; false explicitly fits the whole source, and true requires a nonempty current mask. A mask belonging to another object is never used.",
+    "readOnly": false,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": ""
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["plane", "sphere", "cylinder", "cone"]
+        },
+        "selectionOnly": {
+          "type": "boolean",
+          "description": "Omitted uses the active source nonempty mask, otherwise whole input; false explicitly fits the whole source; true requires a nonempty current source mask."
+        },
+        "region": {
+          "type": "object",
+          "properties": {
+            "center": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["center", "radius"],
+          "additionalProperties": false
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityId", "kind", "expectedRevision", "requestId"],
       "additionalProperties": false
     }
   }

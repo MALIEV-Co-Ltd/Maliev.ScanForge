@@ -10,7 +10,10 @@ export interface NativeDatumConeGeometry {
 
 /** Geometry-equivalent native apex/outward-axis representation of an authored frustum. */
 export function nativeDatumConeGeometry(
-  fit: FitResult,
+  fit: Pick<
+    FitResult,
+    "kind" | "center" | "axis" | "radius" | "topRadius" | "height"
+  >,
 ): NativeDatumConeGeometry {
   if (
     fit.kind !== "cone" ||

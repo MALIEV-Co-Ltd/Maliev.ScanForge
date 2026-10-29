@@ -1,5 +1,14 @@
 import type { Entity } from "./types";
+import {
+  assertReferenceFrameCompatibleMetadata,
+  validateReferenceFrameEntity,
+} from "./reference-frame";
 import type { ProjectSession } from "./project-file-codec";
+import { assertReferenceConstructionSceneAdmission } from "./reference-construction-lifecycle";
+import {
+  referenceNumericEditFields,
+  type ReferenceNumericEditFields,
+} from "./reference-numeric-edit-fields";
 import {
   copyReferenceConstruction,
   encodeReferenceConstruction,
@@ -104,7 +113,9 @@ export function isReferenceEntity(entity: Pick<Entity, "kind">): boolean {
 export function supportsSampledGeometry(
   entity: Pick<Entity, "kind"> | undefined,
 ): boolean {
-  return !!entity && !isReferenceEntity(entity);
+  return (
+    !!entity && !isReferenceEntity(entity) && entity.kind !== "referenceFrame"
+  );
 }
 export function validateConstructionOrderKeys(
   entities: readonly Pick<Entity, "constructionOrderKey">[],
@@ -135,12 +146,14 @@ const incompatible = [
   "scanSource",
   "edgePositions",
   "ascAttributes",
+  "coordinateFrame",
 ] as const;
 /** Check raw metadata before a codec can normalize or discard its values. */
 export function assertReferenceCompatibleMetadata(
   entity: Pick<Entity, "kind"> &
     Partial<Record<(typeof incompatible)[number], unknown>>,
 ): void {
+  assertReferenceFrameCompatibleMetadata(entity);
   if (
     isReferenceEntity(entity) &&
     incompatible.some((key) => entity[key] !== undefined)
@@ -153,6 +166,11 @@ export function assertReferenceCompatibleMetadata(
 export function validateReferenceEntity(
   entity: Entity,
 ): ReferenceEntityData | undefined {
+  if (entity.kind === "referenceFrame") {
+    validateReferenceFrameEntity(entity);
+    return undefined;
+  }
+  assertReferenceFrameCompatibleMetadata(entity);
   if (!isReferenceEntity(entity)) {
     if (entity.reference !== undefined)
       throw new Error("Reference payload requires a reference entity kind.");
@@ -239,6 +257,13 @@ export function inspectReferenceEntity(
 ) {
   const data = validateReferenceEntity(entity);
   if (!data) return undefined;
+  let editorInputs: ReferenceNumericEditFields | undefined;
+  let editorInputsError: string | undefined;
+  try {
+    editorInputs = referenceNumericEditFields(entity);
+  } catch (error) {
+    editorInputsError = error instanceof Error ? error.message : String(error);
+  }
   const objects = new Map(scene.map((row) => [row.id, row]));
   return {
     ...geometrySummary(data.geometry),
@@ -248,6 +273,7 @@ export function inspectReferenceEntity(
       geometryEncoding: encodeReferenceGeometry(data.geometry),
       definition: data.definition,
       definitionEncoding: encodeReferenceConstruction(data.definition),
+      ...(editorInputs ? { editorInputs } : { editorInputsError }),
       // The retained word alone cannot distinguish updated/fallback/unchanged.
       evaluation: { status: "stored" as const, outcome: null },
       sourceBindings: data.definition.sources.map((source) => {
@@ -274,17 +300,14 @@ export function inspectReferenceEntity(
     },
   };
 }
-/** Shared temporary publication gate until viewport and operation eligibility exist. */
+/** Validate current and undo/redo states without changing retained evaluation state. */
 export function assertReferenceWorkspaceAdmission(
   session: ProjectSession,
 ): void {
-  const states = [
+  for (const entities of [
     session.project.entities,
     ...session.history.map((row) => row.entities),
     ...session.future.map((row) => row.entities),
-  ];
-  if (states.some((entities) => entities.some(isReferenceEntity)))
-    throw new Error(
-      "Reference construction objects are not yet supported in this workspace.",
-    );
+  ])
+    assertReferenceConstructionSceneAdmission(entities);
 }

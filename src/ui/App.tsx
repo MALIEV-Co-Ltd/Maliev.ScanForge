@@ -1,3 +1,4 @@
+import { assertReferenceConstructionSceneAdmission } from "../reference-construction-lifecycle";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
@@ -13,7 +14,7 @@ import {
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
 import { prepareMeshInBackground } from "../scan-background-preparation";
-import { primitiveFitSamples } from "../primitive-fit-samples";
+import { analyzePrimitiveFit } from "../primitive-fitting";
 import { getWorkingJobStatus } from "../working-job-status";
 import {
   ToolWorkspace,
@@ -57,6 +58,7 @@ import {
   supportsSampledGeometry,
   assertSampledGeometry,
 } from "../reference-entity";
+import { referenceTransformEligibility } from "../reference-transform";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
 import { GlobalAlignmentTools } from "./GlobalAlignmentTools";
 import { inspectGlobalAlignmentCandidates } from "../global-alignment-input";
@@ -80,7 +82,7 @@ import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
 import { RIBBON_TABS } from "./ribbon-model";
-import { createCadFeature, rebuildCadFeature } from "../automation/operations";
+import { createCadFeature } from "../automation/operations";
 import {
   duplicateObject,
   lockedObjectEdit,
@@ -125,7 +127,14 @@ import { scanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
@@ -150,6 +159,14 @@ import { SaveProjectButton } from "./SaveProjectButton";
 import "./workspace-chrome.css";
 import { CoordinateSystem } from "./OriginControls";
 import { SketchPlaneDialog } from "./SketchPlaneDialog";
+import type { SketchPlaneSelection } from "../sketch-plane-source";
+import {
+  ReferenceConstructionDialog,
+  type PickedReferenceCoordinate,
+} from "./ReferenceConstructionDialog";
+import { decodeReferenceGeometry } from "../reference-construction-values";
+import { DatumConstructionDialog } from "./DatumConstructionDialog";
+import { encodeReferenceFrame } from "../reference-frame";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import type { ScanClipBounds } from "../scan-clip-box";
 import {
@@ -192,7 +209,6 @@ import {
 import {
   DEFAULT_PART_COLOR,
   DEFAULT_FREEFORM_COLOR,
-  DEFAULT_REFERENCE_COLOR,
   DEFAULT_POINT_DENSITY,
 } from "../appearance";
 import { exportSectionDxf } from "../section-dxf";
@@ -225,20 +241,8 @@ import {
 import { PointCloudTools } from "./PointCloudTools";
 import { type PointCloudEditRequest } from "../point-cloud-processing";
 import { selectionCount } from "../selection";
-import { fittedPrimitive } from "../fitted-primitive";
-import {
-  cleanupMesh,
-  fitCylinder,
-  fitCone,
-  fitPlane,
-  fitSphere,
-} from "../geometry";
-import {
-  download,
-  exportStl,
-  geometryPositions,
-  validatePositions,
-} from "../io";
+import { cleanupMesh } from "../geometry";
+import { download, exportStl, validatePositions } from "../io";
 import {
   retainIndexedMesh,
   transformIndexedMesh,
@@ -276,6 +280,7 @@ import {
 } from "../surface-fit-session";
 import type { SurfaceFitOptions } from "../surfaces";
 import { SketchTools } from "./SketchTools";
+import type { SketchEditReceipt } from "../sketch-edit-intent";
 import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
 import {
@@ -322,6 +327,173 @@ const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 export function App() {
   const [entities, setEntities] = useState<Entity[]>([]);
   const datumPointPick = useRef<((point: Vec3) => void) | null>(null);
+  const referenceCoordinatePick = useRef<{
+    pick(
+      entityId: string,
+      pointIndex?: number,
+      screen?: { x: number; y: number },
+    ): void;
+    cancel(): void;
+  } | null>(null);
+  const [referencePicking, setReferencePicking] = useState(false);
+  function requestReferenceCoordinatePick(
+    signal: AbortSignal,
+    mode: "cloud" | "surface" = "cloud",
+    targetEntityId?: string,
+  ): Promise<PickedReferenceCoordinate> {
+    return new Promise((resolve, reject) => {
+      if (signal.aborted) {
+        reject(new DOMException("Coordinate picking cancelled.", "AbortError"));
+        return;
+      }
+      if (referenceCoordinatePick.current) {
+        reject(new Error("Another coordinate pick is active."));
+        return;
+      }
+      let pending = false;
+      let jobId: string | undefined;
+      const previousTarget = viewport.current?.getPickTarget() ?? null;
+      const guard = (event: Event) => {
+        const target = event.target;
+        if (target instanceof Node && viewportHost.current?.contains(target))
+          return;
+        if (
+          target instanceof Element &&
+          target.closest("[data-reference-coordinate-pick]")
+        )
+          return;
+        event.preventDefault();
+        event.stopPropagation();
+      };
+      const finish = (point?: PickedReferenceCoordinate, error?: Error) => {
+        if (referenceCoordinatePick.current !== entry) return;
+        referenceCoordinatePick.current = null;
+        signal.removeEventListener("abort", entry.cancel);
+        document.removeEventListener("pointerdown", guard, true);
+        document.removeEventListener("click", guard, true);
+        viewport.current?.setReferenceCoordinatePicking(false);
+        viewport.current?.setPickTarget(previousTarget);
+        setReferencePicking(false);
+        if (error) reject(error);
+        else resolve(point!);
+      };
+      const entry = {
+        cancel: () => {
+          if (jobId) void workspaceApi.invoke("job_cancel", { jobId });
+          // Keep the picker owned until its native read job is terminal.
+          if (mode === "surface" && pending) return;
+          finish(
+            undefined,
+            new DOMException("Coordinate picking cancelled.", "AbortError"),
+          );
+        },
+        pick: (
+          entityId: string,
+          pointIndex?: number,
+          screen?: { x: number; y: number },
+        ) => {
+          if (pending) return;
+          if (mode === "surface") {
+            if (!screen || entityId !== targetEntityId) return;
+            pending = true;
+            void (async () => {
+              const receipt = await workspaceApi.invoke(
+                "reference_construction_acquire",
+                {
+                  entityId,
+                  expectedRevision: workspaceApi.currentRevision(),
+                  selection: { kind: "screen", ...screen },
+                },
+              );
+              if (!receipt.ok) throw new Error(receipt.error.message);
+              jobId = (receipt.result as { jobId: string }).jobId;
+              if (signal.aborted) {
+                await workspaceApi.invoke("job_cancel", { jobId });
+              }
+              const expires = Date.now() + 900000;
+              while (Date.now() < expires) {
+                const response = await workspaceApi.invoke("job_get", {
+                  jobId,
+                });
+                if (!response.ok) throw new Error(response.error.message);
+                const job = response.result as {
+                  status: string;
+                  error?: { message: string };
+                  result?: {
+                    positionEncoding: unknown;
+                    sourceRevision: number;
+                  };
+                };
+                if (job.status !== "running") signal.throwIfAborted();
+                if (job.status === "succeeded" && job.result) {
+                  signal.throwIfAborted();
+                  const geometry = decodeReferenceGeometry(
+                    job.result.positionEncoding,
+                  );
+                  if (geometry.kind !== "point")
+                    throw new Error(
+                      "Coordinate acquisition returned invalid geometry.",
+                    );
+                  finish({
+                    entityId,
+                    acquisitionJobId: jobId,
+                    position: [...geometry.position],
+                    revision: job.result.sourceRevision,
+                  });
+                  return;
+                }
+                if (job.status === "failed" || job.status === "cancelled")
+                  throw new Error(
+                    job.error?.message ?? "Coordinate acquisition cancelled.",
+                  );
+                await new Promise((resume) => setTimeout(resume, 50));
+              }
+              await workspaceApi.invoke("job_cancel", { jobId });
+              throw new Error("Coordinate acquisition timed out.");
+            })().catch((failure) =>
+              finish(
+                undefined,
+                failure instanceof Error ? failure : new Error(String(failure)),
+              ),
+            );
+            return;
+          }
+          if (pointIndex === undefined) {
+            setMessage("Click a point-cloud vertex.");
+            return;
+          }
+          pending = true;
+          void workspaceApi
+            .invoke("reference_construction_pick", { entityId, pointIndex })
+            .then((receipt) => {
+              if (!receipt.ok) throw new Error(receipt.error.message);
+              finish({
+                ...(receipt.result as {
+                  entityId: string;
+                  pointIndex: number;
+                  position: Vec3;
+                }),
+                revision: receipt.revision,
+              });
+            })
+            .catch((failure) =>
+              finish(
+                undefined,
+                failure instanceof Error ? failure : new Error(String(failure)),
+              ),
+            );
+        },
+      };
+      referenceCoordinatePick.current = entry;
+      signal.addEventListener("abort", entry.cancel, { once: true });
+      document.addEventListener("pointerdown", guard, true);
+      document.addEventListener("click", guard, true);
+      if (mode === "surface")
+        viewport.current?.setPickTarget(targetEntityId ?? null);
+      viewport.current?.setReferenceCoordinatePicking(true, mode);
+      setReferencePicking(true);
+    });
+  }
   const datumFacePick = useRef<
     ((entityId: string, triangleIndex?: number) => void) | null
   >(null);
@@ -346,6 +518,15 @@ export function App() {
   const selectedIds = objectSelection.ids;
   const [interactiveStore] = useState(() => new InteractiveAlignmentStore());
   const [interactiveOpen, setInteractiveOpen] = useState(false);
+  const [datumDialog, setDatumDialog] = useState<{
+    entity?: Entity;
+    kind?: "plane" | "frame";
+  }>();
+  const [referenceDialog, setReferenceDialog] = useState<{
+    kind: "point" | "line";
+    finiteAxis?: boolean;
+    entity?: Entity;
+  }>();
   const interactiveTargetError = useMemo(
     () => interactiveAlignmentTargetError(entities, selectedIds),
     [entities, selectedIds],
@@ -687,6 +868,13 @@ export function App() {
   const [localFit, setLocalFit] = useState(false);
   const [fitRadius, setFitRadius] = useState(12);
   const [fit, setFit] = useState<FitResult | null>(null);
+  const fitRequest = useRef<{
+    entityId: string;
+    kind: FitResult["kind"];
+    selectionOnly: boolean;
+    region?: { center: Vec3; radius: number };
+    revision: number;
+  } | null>(null);
   const [inspectionReferenceId, setInspectionReferenceId] = useState("");
   const [inspectionMaxDistance, setInspectionMaxDistance] = useState(10);
   const [inspectionSigned, setInspectionSigned] = useState(false);
@@ -700,6 +888,8 @@ export function App() {
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [rotation, setRotation] = useState<Vec3>([0, 0, 0]);
   const [scale, setScale] = useState(1);
+  const [applyingTransform, setApplyingTransform] = useState(false);
+  const transformPending = useRef(false);
   const [primitiveDialog, setPrimitiveDialog] = useState(false);
   const [primitiveKind, setPrimitiveKind] = useState<
     "box" | "sphere" | "cylinder" | "cone"
@@ -770,6 +960,7 @@ export function App() {
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
   const sampledSelected = supportsSampledGeometry(selected);
+  const selectedTransformEligibility = referenceTransformEligibility(selected);
   useEffect(() => {
     if (!selected || sampledSelected) return;
     try {
@@ -778,7 +969,13 @@ export function App() {
       setMode("inspect");
       setWorkspace("properties");
     }
-  }, [selected?.id, sampledSelected, mode, workspace]);
+  }, [
+    selected?.id,
+    sampledSelected,
+    selectedTransformEligibility.eligible,
+    mode,
+    workspace,
+  ]);
   useEffect(() => {
     if (selected && !objectPickable(selected)) setSelectedId(null);
   }, [selected]);
@@ -829,7 +1026,12 @@ export function App() {
   );
   const stats = useMemo(
     () => (selected ? entityDisplayStats(selected) : null),
-    [selected?.kind, selected?.positions, selected?.reference],
+    [
+      selected?.kind,
+      selected?.positions,
+      selected?.reference,
+      selected?.coordinateFrame,
+    ],
   );
   const section = useMemo(
     () =>
@@ -861,8 +1063,12 @@ export function App() {
     try {
       viewport.current = new Viewport(
         viewportHost.current!,
-        (point, id, triangleIndex) => {
+        (point, id, triangleIndex, pointIndex, screen) => {
           if (busyRef.current || interactiveStore.getSnapshot()) return;
+          if (referenceCoordinatePick.current) {
+            referenceCoordinatePick.current.pick(id, pointIndex, screen);
+            return;
+          }
           if (datumFacePick.current) {
             const pick = datumFacePick.current;
             datumFacePick.current = null;
@@ -893,6 +1099,7 @@ export function App() {
           // Viewport invokes onSelect before onPick for one click. Keep the scan
           // selected until onPick binds the reference and completes the gesture.
           if (scanReferencePick.current) return;
+          if (referenceCoordinatePick.current) return;
           if (datumPointPick.current) return;
           if (datumFacePick.current) return;
           if (
@@ -1024,6 +1231,7 @@ export function App() {
           console.error("SpaceMouse cleanup failed", error);
         }
         // Effect cleanup releases the hook's owner lease; page exit is permanent.
+        referenceCoordinatePick.current?.cancel();
         if (event) workspaceApi.dispose();
         datumPreview.current = null;
         datumPointPick.current = null;
@@ -1166,6 +1374,7 @@ export function App() {
         workspace === "mesh" &&
         toolPanelOpen &&
         !busy &&
+        !referencePicking &&
         !selected?.kernelId &&
         !scanPanel &&
         !scanBoundaryPaths.length,
@@ -1179,6 +1388,7 @@ export function App() {
     sampledSelected,
     scanPanel,
     scanBoundaryPaths,
+    referencePicking,
   ]);
   useEffect(() => {
     viewport.current?.setSelectionOptions(
@@ -1216,8 +1426,9 @@ export function App() {
       view.onMeshClipChange = undefined;
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
-  // Lazy world-view buffers can change without changing selected point identities.
-  useEffect(() => {
+  // Publish selection initialization with the shared GUI/MCP snapshot.
+  // Lazy world-view buffers do not change the source point identities below.
+  useLayoutEffect(() => {
     if (!selected || !sampledSelected) {
       setTriangleMask(null);
       return;
@@ -1407,7 +1618,15 @@ export function App() {
               });
               if (!result.ok) throw new Error(result.error.message);
             },
-            onChange: updateSketchDraft,
+            beginDraw: () => workspaceApi.currentRevision(),
+            onDraw: async (intent, expectedRevision) => {
+              const result = await workspaceApi.invoke("sketch_draw", {
+                ...intent,
+                expectedRevision,
+                requestId: crypto.randomUUID(),
+              });
+              if (!result.ok) throw new Error(result.error.message);
+            },
             onError: setError,
           }
         : undefined,
@@ -1429,7 +1648,9 @@ export function App() {
     if (viewport.current)
       viewport.current.onOriginPlane = (plane) => {
         if (!planePicking || busyRef.current) return;
-        createPlaneSketch(coordinateSketchFrame(plane, 0));
+        void createPlaneSketch({
+          frame: coordinateSketchFrame(plane, 0),
+        }).catch((error) => setError(errorText(error)));
       };
   }, [originVisible, planePicking, savedSketches.length]);
   useEffect(() => {
@@ -1998,6 +2219,11 @@ export function App() {
       "Choose 2–32 visible, unlocked raw meshes.";
   const [, setCommandVersion] = useState(0);
   const ribbonActions = {
+    referencePlane: () => setDatumDialog({}),
+    coordinateSystem: () => setDatumDialog({ kind: "frame" }),
+    referencePoint: () => setReferenceDialog({ kind: "point" }),
+    referenceLine: () => setReferenceDialog({ kind: "line" }),
+    referenceAxis: () => setReferenceDialog({ kind: "line", finiteAxis: true }),
     newDocument: requestNewDocument,
     open: () => fileInput.current?.click(),
     save,
@@ -2134,6 +2360,12 @@ export function App() {
     "settings",
   ]);
   const globalRibbonCommands = new Set([
+    "sketch2d",
+    "referencePlane",
+    "coordinateSystem",
+    "referencePoint",
+    "referenceLine",
+    "referenceAxis",
     "globalFineAlign",
     "fitView",
     "iso",
@@ -2225,7 +2457,7 @@ export function App() {
             ? selectionVisibility("hide")
             : updateSelected({ visible: false })
       : undefined,
-    "new-sketch": selected ? openSketchCreation : undefined,
+    "new-sketch": openSketchCreation,
     compare: selected ? () => showTools("deviation") : undefined,
     "selection-wand":
       selected && sampledSelected
@@ -2306,6 +2538,8 @@ export function App() {
         surfaceFit ||
         createSketch ||
         primitiveDialog ||
+        referenceDialog ||
+        datumDialog ||
         settingsOpen ||
         saveDialogOpen ||
         newDocumentDialog ||
@@ -2335,6 +2569,8 @@ export function App() {
       surfaceFit ||
       createSketch ||
       primitiveDialog ||
+      referenceDialog ||
+      datumDialog ||
       settingsOpen ||
       saveDialogOpen ||
       newDocumentDialog ||
@@ -2486,6 +2722,7 @@ export function App() {
         : entity;
     });
     entityFeatureModel(next);
+    assertReferenceConstructionSceneAdmission(next);
     next = next.map(canonicalCloud);
     if (!modelChanged(entities, next)) {
       setEntities(next);
@@ -3932,23 +4169,26 @@ export function App() {
           );
         if (fitRadius <= 0) throw new Error("Region radius must be positive.");
       }
-      const positions = primitiveFitSamples(
+      const result = analyzePrimitiveFit(
         selected,
+        kind,
         triangleMask,
         localFit && anchor ? { center: anchor, radius: fitRadius } : undefined,
       );
-      const fitted =
-        kind === "plane"
-          ? fitPlane(positions)
-          : kind === "sphere"
-            ? fitSphere(positions)
-            : kind === "cylinder"
-              ? fitCylinder(positions)
-              : fitCone(positions);
+      const fitted = result.fit;
+      fitRequest.current = {
+        entityId: selected.id,
+        kind,
+        selectionOnly: !!triangleMask?.some(Boolean),
+        ...(localFit && anchor
+          ? { region: { center: [...anchor], radius: fitRadius } }
+          : {}),
+        revision: workspaceApi.currentRevision(),
+      };
       setFit(fitted);
       setShowDeviation(true);
       setMessage(
-        `Fitted ${kind} · RMS ${number(fitted.rms)} mm · ${positions.length / 3} sampled vertices`,
+        `Fitted ${kind} · RMS ${number(fitted.rms)} mm · ${result.samples} sampled vertices`,
       );
     });
   }
@@ -3966,48 +4206,70 @@ export function App() {
     setMessage(`${label} created as exact CAD`);
   }
   function materializeFit() {
-    void action("Creating fitted geometry…", async () => {
-      if (!fit || !stats) throw new Error("Fit a surface first.");
-      if (fit.kind === "plane") {
-        const geometry = new THREE.PlaneGeometry(
-          Math.max(...stats.size),
-          Math.max(...stats.size),
-        );
-        const q = new THREE.Quaternion().setFromUnitVectors(
-          new THREE.Vector3(0, 0, 1),
-          new THREE.Vector3(...fit.axis),
-        );
-        geometry.applyQuaternion(q);
-        geometry.translate(...fit.center);
-        try {
-          const entity: Entity = {
-            id: crypto.randomUUID(),
-            name: "Fitted plane reference",
-            kind: "plane",
-            planeFrame: {
-              center: [...fit.center],
-              normal: [...fit.axis],
-              tangent: new THREE.Vector3(1, 0, 0)
-                .applyQuaternion(q)
-                .toArray() as Vec3,
-            },
-            positions: geometryPositions(geometry),
-            color: DEFAULT_REFERENCE_COLOR,
-            visible: true,
-            opacity: 0.5,
-          };
-          commit([...entities, entity]);
-          setSelectedId(entity.id);
-          setMessage(
-            "Reference plane created · mesh reference, excluded from STEP",
+    void (async () => {
+      try {
+        const draft = fitRequest.current;
+        if (!fit || !draft) throw new Error("Fit a surface first.");
+        if (workspaceApi.currentRevision() !== draft.revision)
+          throw new Error(
+            "Workspace or selection changed; fit the surface again before creating geometry.",
           );
-        } finally {
-          geometry.dispose();
-        }
-      } else await addPrimitive(fittedPrimitive(fit), `Fitted ${fit.kind}`);
-    });
+        const { revision: _revision, ...args } = draft;
+        await runApplicationJobCommand(
+          workspaceApi,
+          "primitive_fit_create",
+          args,
+          {
+            cancelledMessage: "Fitted geometry creation cancelled.",
+            leaseMessage: "Fitted geometry creation exceeded its lease.",
+          },
+        );
+        setMessage(
+          fit.kind === "plane"
+            ? "Reference plane created; mesh reference, excluded from STEP"
+            : `Fitted ${fit.kind} created as exact CAD`,
+        );
+      } catch (failure) {
+        setError(failure instanceof Error ? failure.message : String(failure));
+      }
+    })();
   }
   function applyTransform() {
+    if (!selected || editingBlocked || transformPending.current) return;
+    const semanticReference = !supportsSampledGeometry(selected);
+    if (semanticReference && !selectedTransformEligibility.eligible) {
+      setError(
+        selectedTransformEligibility.reason ??
+          "This reference cannot be transformed.",
+      );
+      return;
+    }
+    if (
+      semanticReference ||
+      (selected.kind === "plane" && selected.planeFrame && !selected.kernelId)
+    ) {
+      transformPending.current = true;
+      setApplyingTransform(true);
+      void uiCommand("mesh_transform", {
+        entityId: selected.id,
+        translation,
+        rotation,
+        scale,
+      })
+        .then((result) => {
+          if (result.ok)
+            setMessage(
+              semanticReference
+                ? "Reference transform applied"
+                : "Reference plane transform applied",
+            );
+        })
+        .finally(() => {
+          transformPending.current = false;
+          setApplyingTransform(false);
+        });
+      return;
+    }
     if (selected?.kernelId) {
       cadOperation(
         "Transform body",
@@ -4119,45 +4381,42 @@ export function App() {
     setPlanePicking(true);
     setMessage("Select the plane for your sketch");
   }
-  function createPlaneSketch(frame: SketchFrame) {
-    try {
-      validateSketchFrame(frame);
-      const worldPlane = ORIGIN_PLANES.find((plane) => {
-        const base = coordinateSketchFrame(plane, 0);
-        return (
-          base.u.every((n, i) => n === frame.u[i]) &&
-          base.v.every((n, i) => n === frame.v[i])
-        );
-      });
-      if (worldPlane) setOriginPlane(worldPlane);
-      const item: SavedSketch = {
-        id: crypto.randomUUID(),
-        name: `Sketch ${savedSketches.length + 1}`,
-        sketch: {
-          version: 1,
-          points: [],
-          segments: [],
-          constraints: [],
-          frame,
-        },
-      };
-      setSavedSketches((previous) => [...previous, item]);
-      setSketchDraft(item.sketch);
-      setSelectedId(null);
-      setActiveSketchId(item.id);
-      setSketchDrawingTool("line");
-      setSketchPlaneDialog(false);
-      setPlanePicking(false);
-      setMode("inspect");
-      setDirty(true);
-      showTools("sketch");
-      viewport.current?.viewReferencePlane(frame);
-      setMessage(
-        "Sketch created · coordinates and dimensions are in the selected plane",
+  async function createPlaneSketch(selection: SketchPlaneSelection) {
+    if ("frame" in selection) validateSketchFrame(selection.frame);
+    const receipt = await uiCommand("sketch_manage", {
+      action: "create",
+      name: `Sketch ${savedSketches.length + 1}`,
+      ...("frame" in selection
+        ? {
+            sketch: {
+              version: 1,
+              points: [],
+              segments: [],
+              constraints: [],
+              frame: selection.frame,
+            },
+          }
+        : selection),
+    });
+    if (!receipt.ok) throw new Error(receipt.error.message);
+    const frame = (receipt.result as { frame: SketchFrame }).frame;
+    const worldPlane = ORIGIN_PLANES.find((plane) => {
+      const base = coordinateSketchFrame(plane, 0);
+      return (
+        base.u.every((n, i) => n === frame.u[i]) &&
+        base.v.every((n, i) => n === frame.v[i])
       );
-    } catch (e) {
-      setError(errorText(e));
-    }
+    });
+    if (worldPlane) setOriginPlane(worldPlane);
+    setSketchDrawingTool("line");
+    setSketchPlaneDialog(false);
+    setPlanePicking(false);
+    setMode("inspect");
+    showTools("sketch");
+    viewport.current?.viewReferencePlane(frame);
+    setMessage(
+      "Sketch created · coordinates and dimensions are in the selected plane",
+    );
   }
   function openScanSketchCreation() {
     if (busy) return;
@@ -4228,8 +4487,8 @@ export function App() {
       )
     )
       return;
-    const item: SavedSketch = {
-      id: crypto.randomUUID(),
+    void uiCommand("sketch_manage", {
+      action: "create",
       name: `Sketch ${savedSketches.length + 1}`,
       sketch: {
         version: 1,
@@ -4239,18 +4498,16 @@ export function App() {
         frame: session.preview.frame,
         reference: session.preview.reference,
       },
-    };
-    setSavedSketches((previous) => [...previous, item]);
-    setSketchDraft(item.sketch);
-    setSelectedId(null);
-    setActiveSketchId(item.id);
-    setDirty(true);
-    cancelSketchCreation();
-    showTools("sketch");
-    setMessage(
-      "Sketch reference section created · draw or fit editable curves",
-    );
+    }).then((receipt) => {
+      if (!receipt.ok) return;
+      cancelSketchCreation();
+      showTools("sketch");
+      setMessage(
+        "Sketch reference section created \u00b7 draw or fit editable curves",
+      );
+    });
   }
+
   function updateSketchDraft(sketch: Sketch) {
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     let session = sketchUndoSessions.current.get(key);
@@ -4289,10 +4546,19 @@ export function App() {
       );
     setDirty(true);
   }
-  function extrude(profile: ParametricProfile, height: number) {
+  function extrude(
+    profile: ParametricProfile,
+    height: number,
+    oppositeDistance?: number,
+  ) {
     void (async () => {
       const receipt = await uiCommand("cad_create", {
-        recipe: { kind: "extrude", profile, height },
+        recipe: {
+          kind: "extrude",
+          profile,
+          height,
+          ...(oppositeDistance ? { oppositeDistance } : {}),
+        },
         selectCreated: true,
         name:
           profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
@@ -4451,23 +4717,45 @@ export function App() {
     };
   }
   function rebuildFeature(recipe: ParametricRecipe) {
-    void action("Rebuilding parametric features…", async () => {
+    void (async () => {
       if (!selected) throw new Error("Select a parametric body.");
-      const result = await rebuildCadFeature(
-        cad.current!,
-        entities,
-        history,
-        future,
-        selected.id,
+      const receipt = await uiCommand("cad_rebuild", {
+        entityId: selected.id,
         recipe,
-      );
-      commit(result.entities);
-      if (result.cleanupFailures.length)
-        setError(result.cleanupFailures.map((f) => f.message).join("; "));
-      setMessage(
-        `Rebuilt ${result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
-      );
-    });
+      });
+      if (!receipt.ok) return;
+      const { jobId } = receipt.result as { jobId: string };
+      // The shared job owns admission, cancellation, limits and publication.
+      for (;;) {
+        const response = await workspaceApi.invoke("job_get", { jobId });
+        if (!response.ok) throw Error(response.error.message);
+        const job = response.result as {
+          status: string;
+          result?: {
+            rebuiltFeatureIds: string[];
+            cleanupFailures: { message: string }[];
+          };
+          error?: { message: string };
+        };
+        if (job.status === "succeeded" && job.result) {
+          if (job.result.cleanupFailures.length)
+            setError(
+              job.result.cleanupFailures
+                .map((failure) => failure.message)
+                .join("; "),
+            );
+          setMessage(
+            `Rebuilt ${job.result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
+          );
+          return;
+        }
+        if (job.status !== "running")
+          throw Error(job.error?.message ?? "Feature rebuild cancelled.");
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    })().catch((error: unknown) =>
+      setError(error instanceof Error ? error.message : String(error)),
+    );
   }
   function save() {
     setSaveDialogOpen(true);
@@ -4807,6 +5095,8 @@ export function App() {
           sketchSection: !!createSketch,
           dialog: !!(
             primitiveDialog ||
+            referenceDialog ||
+            datumDialog ||
             saveDialogOpen ||
             newDocumentDialog ||
             pendingScanImport ||
@@ -4832,6 +5122,8 @@ export function App() {
     },
     setInterface,
     inspectViewport: (view) => alignmentViewport(view).inspectAgentView(),
+    referenceCoordinateView: (entityId, view) =>
+      alignmentViewport(view).referenceCoordinateView(entityId),
     inspectSpaceMouse,
     controlSpaceMouse,
     controlViewport: (command) => {
@@ -4925,6 +5217,8 @@ export function App() {
         automaticGrid,
         snapGrid,
         originVisible,
+        sketchControlPoints,
+        sketchMeshPoints,
         importPlaceAtOrigin: placeImportAtOrigin,
         importAscAttributes,
         scanSelection: {
@@ -5041,6 +5335,10 @@ export function App() {
       if (patch.snapGrid !== undefined) setSnapGrid(patch.snapGrid as boolean);
       if (patch.originVisible !== undefined)
         setOriginVisible(patch.originVisible as boolean);
+      if (patch.sketchControlPoints !== undefined)
+        setSketchControlPoints(patch.sketchControlPoints as boolean);
+      if (patch.sketchMeshPoints !== undefined)
+        setSketchMeshPoints(patch.sketchMeshPoints as boolean);
     },
     busy: () => busyRef.current,
     activity: (running, label, selectionMode) => {
@@ -5228,6 +5526,7 @@ export function App() {
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
         selectionKind={selected?.kind}
+        referenceTransformEligibility={selectedTransformEligibility}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -5760,6 +6059,13 @@ export function App() {
             role={nPoints ? "region" : undefined}
             aria-label={nPoints ? "Alignment result" : undefined}
           />
+          {planePicking && !sketchPlaneDialog && (
+            <div style={{ position: "absolute", top: 12, left: 12, zIndex: 6 }}>
+              <button onClick={() => setSketchPlaneDialog(true)}>
+                Reference or custom plane…
+              </button>
+            </div>
+          )}
           {nPoints && (
             <>
               <LandmarkPickingViews
@@ -6375,23 +6681,65 @@ export function App() {
                             </strong>
                           )}
                           <small>
-                            {selected.kind === "referencePoint"
-                              ? "Reference point"
-                              : selected.kind === "referenceLine"
-                                ? "Reference line"
-                                : selected.kind === "pointcloud"
-                                  ? "Point cloud"
-                                  : selected.kernelId
-                                    ? "Exact CAD + display mesh"
-                                    : selected.kind === "plane"
-                                      ? "Reference surface"
-                                      : "Triangle mesh"}{" "}
+                            {selected.kind === "referenceFrame"
+                              ? "Coordinate system"
+                              : selected.kind === "referencePoint"
+                                ? "Reference point"
+                                : selected.kind === "referenceLine"
+                                  ? "Reference line"
+                                  : selected.kind === "pointcloud"
+                                    ? "Point cloud"
+                                    : selected.kernelId
+                                      ? "Exact CAD + display mesh"
+                                      : selected.kind === "plane"
+                                        ? "Reference surface"
+                                        : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
                       </div>
                       <ToolSection tools={["properties", "measure"]}>
                         <Panel title="Geometry" className="geometry-panel">
+                          {selected.kind === "referenceFrame" && (
+                            <button
+                              disabled={selected.locked}
+                              onClick={() =>
+                                setDatumDialog({
+                                  entity: selected,
+                                  kind: "frame",
+                                })
+                              }
+                            >
+                              Edit coordinate system
+                            </button>
+                          )}
+                          {selected.kind === "plane" &&
+                            selected.planeFrame &&
+                            !selected.fit &&
+                            !selected.kernelId &&
+                            !selected.parametric && (
+                              <button
+                                disabled={selected.locked}
+                                onClick={() =>
+                                  setDatumDialog({ entity: selected })
+                                }
+                              >
+                                Edit reference plane
+                              </button>
+                            )}
+                          {selected.reference && (
+                            <button
+                              disabled={selected.locked}
+                              onClick={() =>
+                                setReferenceDialog({
+                                  kind: selected.reference!.geometry.kind,
+                                  entity: selected,
+                                })
+                              }
+                            >
+                              Edit reference
+                            </button>
+                          )}
                           {selected.fit && (
                             <p className="muted">
                               {selected.fit.kind} fit · RMS{" "}
@@ -6418,7 +6766,7 @@ export function App() {
                       {workspace === "properties" &&
                         hasAlignmentReferences(selected) && (
                           <AlignmentReferences
-                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.reference ? encodeReferenceEntityData(selected.reference) : selected.fit)}`}
+                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.coordinateFrame ? encodeReferenceFrame(selected.coordinateFrame) : selected.reference ? encodeReferenceEntityData(selected.reference) : (selected.planeFrame ?? selected.fit))}`}
                             entityId={selected.id}
                             onRead={(offset, signal) =>
                               readAlignmentReferences(
@@ -6631,30 +6979,56 @@ export function App() {
                       </ToolSection>
                       <ToolSection tools={["transform"]}>
                         <Panel title="Transform" className="transform-panel">
-                          <VectorField
-                            label="Move (mm)"
-                            value={translation}
-                            onChange={setTranslation}
-                          />
-                          <VectorField
-                            label="Rotate (°)"
-                            value={rotation}
-                            onChange={setRotation}
-                          />
-                          <Field
-                            label="Uniform scale"
-                            value={scale}
-                            min={0.001}
-                            step={0.1}
-                            onChange={setScale}
-                          />
-                          <button
-                            className="wide"
-                            disabled={busy}
-                            onClick={applyTransform}
+                          <fieldset
+                            disabled={
+                              busy ||
+                              applyingTransform ||
+                              (!sampledSelected &&
+                                !selectedTransformEligibility.eligible)
+                            }
+                            style={{
+                              border: 0,
+                              margin: 0,
+                              padding: 0,
+                              minWidth: 0,
+                            }}
                           >
-                            Apply transform
-                          </button>
+                            <VectorField
+                              label="Move (mm)"
+                              value={translation}
+                              onChange={setTranslation}
+                            />
+                            <VectorField
+                              label="Rotate (°)"
+                              value={rotation}
+                              onChange={setRotation}
+                            />
+                            <Field
+                              label="Uniform scale"
+                              value={scale}
+                              min={!sampledSelected ? Number.MIN_VALUE : 0.001}
+                              step={0.1}
+                              onChange={setScale}
+                            />
+                            <button
+                              className="wide"
+                              disabled={
+                                busy ||
+                                applyingTransform ||
+                                (!sampledSelected &&
+                                  !selectedTransformEligibility.eligible)
+                              }
+                              onClick={applyTransform}
+                            >
+                              Apply transform
+                            </button>
+                          </fieldset>
+                          {!sampledSelected &&
+                            !selectedTransformEligibility.eligible && (
+                              <p role="status">
+                                {selectedTransformEligibility.reason}
+                              </p>
+                            )}
                           {selected.kernelId && (
                             <p className="muted">
                               Exact CAD transforms preserve STEP export.
@@ -7074,8 +7448,12 @@ export function App() {
                             selected={selected}
                             busy={busy}
                             onBoolean={boolean}
-                            onExtrude={(points, height) =>
-                              extrude({ kind: "polygon", points }, height)
+                            onExtrude={(points, height, oppositeDistance) =>
+                              extrude(
+                                { kind: "polygon", points },
+                                height,
+                                oppositeDistance,
+                              )
                             }
                             onRevolve={revolve}
                           />
@@ -7179,10 +7557,22 @@ export function App() {
                       onUndo={() => sketchUndo()}
                       onRedo={() => sketchUndo(true)}
                       showControlPoints={sketchControlPoints}
-                      onShowControlPoints={setSketchControlPoints}
+                      onShowControlPoints={(shown) => {
+                        void uiCommand("settings_set", {
+                          patch: { sketchControlPoints: shown },
+                        });
+                      }}
                       showMeshPoints={sketchMeshPoints}
-                      onShowMeshPoints={setSketchMeshPoints}
-                      onChange={updateSketchDraft}
+                      onShowMeshPoints={(shown) => {
+                        void uiCommand("settings_set", {
+                          patch: { sketchMeshPoints: shown },
+                        });
+                      }}
+                      onEdit={async (intent) => {
+                        const result = await uiCommand("sketch_edit", intent);
+                        if (!result.ok) throw new Error(result.error.message);
+                        return result.result as SketchEditReceipt;
+                      }}
                       onCornerTrim={async (options) => {
                         const result = await uiCommand("sketch_corner_trim", {
                           ...options,
@@ -7198,19 +7588,6 @@ export function App() {
                       onMirror={async (options) => {
                         const result = await uiCommand("sketch_mirror", {
                           ...options,
-                        });
-                        if (!result.ok) throw new Error(result.error.message);
-                      }}
-                      onConstrain={async (constraint) => {
-                        const result = await uiCommand("sketch_set", {
-                          sketch: {
-                            ...sketchDraft,
-                            constraints: [
-                              ...sketchDraft.constraints,
-                              constraint,
-                            ],
-                          },
-                          solve: true,
                         });
                         if (!result.ok) throw new Error(result.error.message);
                       }}
@@ -7914,6 +8291,23 @@ export function App() {
           />
         }
       />
+      {datumDialog && (
+        <DatumConstructionDialog
+          api={workspaceApi}
+          entity={datumDialog.entity}
+          kind={datumDialog.kind}
+          onClose={() => setDatumDialog(undefined)}
+        />
+      )}
+      {referenceDialog && (
+        <ReferenceConstructionDialog
+          api={workspaceApi}
+          entities={entities}
+          pickCoordinate={requestReferenceCoordinatePick}
+          {...referenceDialog}
+          onClose={() => setReferenceDialog(undefined)}
+        />
+      )}
       {primitiveDialog && (
         <div className="modal-backdrop">
           <section

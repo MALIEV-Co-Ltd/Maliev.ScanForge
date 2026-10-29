@@ -1,0 +1,30 @@
+{
+  "scope": "Application and public MCP real-scan fitted-plane sketch workflow; not original-native numerical acceptance",
+  "applicationCommit": "ac49960af71885408d94a991dabb3e18d16bc76c",
+  "build": "scanforge-8d14a572c53c5924",
+  "scan": {
+    "fixture": "ply-1.ply",
+    "bytes": 6926970,
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  },
+  "verification": {
+    "guiFitAndPublicMcpAnalysisEqual": true,
+    "guiAndPublicMcpSketchFramesEqual": true,
+    "guiCancelPreservesSketchAndRevision": true,
+    "guiAndPublicMcpConflictRejectionPreservesSketchAndRevision": true,
+    "guiAndPublicMcpScopedUndoRedo": true,
+    "bothSketchesReopened": true,
+    "scanGeometryDigestUnchangedAfterReopen": true,
+    "privatePortsAndProcessesClosed": true
+  },
+  "sha256": {
+    "driver": "02f672bfebd74a2fa3ff22d28bd113cc7dcf173f9df7b80117711f043db3c479",
+    "browserEvidence": "cde787a1f9f9b8842fa28aea915b0767fe865abb3b013905c26f192dad4cb6ea",
+    "boundedReceipt": "c924be95c912efe82a2c7b355fff5be22592e97eed69316c5f4d980b01398a5f",
+    "conflictingConstraintScreenshot": "f54f7a0b7ebfa31598252f4d99fa9219960e83fb28396da1ec3e9612e0bc8945"
+  },
+  "limitations": [
+    "The fit and sketch workflow are application/public MCP evidence; native fit population, frame and solver equivalence are not established.",
+    "The fitted plane is detached placement; this does not establish retained general CAD/scan provider semantics."
+  ]
+}

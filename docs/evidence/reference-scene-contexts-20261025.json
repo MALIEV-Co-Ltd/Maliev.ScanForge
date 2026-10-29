@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-25",
+  "scope": "Static scene bounds category, dependency, region and sketch-context tracing; whole-scene provider admission remains unfinished.",
+  "candidate": {
+    "head": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+    "workingTree": "Uncommitted; not a shipped candidate"
+  },
+  "native": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "mode": "Retained static image only. No target execution, fresh target reads, native input, executable mapping or emulation.",
+    "newProceduresRecovered": 8,
+    "selectedProceduresChecked": 13,
+    "listedInstructionStartsChecked": 2951,
+    "localBranchTargetsChecked": 349,
+    "directCallTargetsChecked": 47,
+    "intersectionOperatorsChecked": 6,
+    "verificationSha256": "92d7568cdeeab546ab63bae722611b3e564c9938ec4aa564c0a2887aa8d1188d",
+    "receipts": {
+      "scene-bounds-fields-query-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.2585803000256419,
+        "childPeakJobMemoryBytes": 82616320,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "construction-scene-bounds-contexts-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.583700900024269,
+        "childPeakJobMemoryBytes": 864526336,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "construction-scene-bounds-gates-noanalysis-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 12.331345799961127,
+        "childPeakJobMemoryBytes": 876531712,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "scene-bounds-contexts-verifier-r1": {
+        "exitCode": 0,
+        "elapsedSeconds": 0.30938120000064373,
+        "childPeakJobMemoryBytes": 92315648,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  },
+  "findings": [
+    "Ordered categories include mesh wrappers and point-cloud wrappers through separate iterator queries; general categories use the dependency-aware common collector followed by category classification.",
+    "The common collector resets its output, preserves order and duplicate entries, applies support/suppression/type exclusions, and conditionally applies visibility. Nonempty consumer lists accumulate higher-priority/nonexempt and consuming predicates independently; missing/unready/suppressed consumers retain the candidate.",
+    "Ordinary bounds screen their object predicate and excluded receiver, use special mesh/cloud cache branches, follow replacement-object bounds and perform an additional replacement-object pass.",
+    "An enabled transformed region builds bounds from eight corners, then intersects: source-operand MAXSS for lower bounds and MINSS for upper bounds. Its state also participates in an inclusive point-in-region predicate. UI flag ownership is not established.",
+    "Retained exact sketch-interface/type binding identifies the special source. Its stored records and child geometry contribute bounds; other scene bounds are transformed using the existing native rigid inverse and flattened to local XY. Invalid bounds expand to include the local minus-one to plus-one XY box.",
+    "The recovered inverse is already implemented and historically byte-tested as nativeDatumInverseFrame. Reuse it when binding the scene provider; do not introduce a generic inverse or duplicate arithmetic."
+  ],
+  "applicationImpact": "These findings guide the still-gated scene provider. This evidence does not present a whole-scene adapter or native numerical runtime comparison as complete.",
+  "relatedFix": "reference-landmark-policy-20261025.json",
+  "remaining": [
+    "Bind category/type/cache/replacement and active-sketch source state to the application model.",
+    "Bind transformed-region state to its actual UI owner; do not substitute viewport clipping by assumption.",
+    "Finish shared source resolution and the common GUI/MCP reference editor and lifecycle.",
+    "Keep M3/M4 and the complete reconstruction objective open."
+  ]
+}

@@ -3,6 +3,10 @@ import * as THREE from "three";
 import { Viewport } from "../src/viewport";
 import { coordinateSketchFrame } from "../src/sketch-frame";
 import type { Sketch } from "../src/sketch";
+import {
+  applySketchDrawIntent,
+  type SketchDrawIntent,
+} from "../src/sketch-draw-intent";
 type Hooks = {
   pointerDown: (e: PointerEvent) => void;
   pointerMove: (e: PointerEvent) => void;
@@ -55,6 +59,21 @@ function fixture(plane: "OXY" | "OYZ" | "OXZ" = "OXY") {
   });
   const change = vi.fn(),
     error = vi.fn();
+  const revision = vi.fn(() => 17);
+  // A test host for the same intent boundary used by the real application API.
+  const draw = vi.fn((intent: SketchDrawIntent, expectedRevision: number) => {
+    expect(expectedRevision).toBe(17);
+    const state = view as unknown as {
+      sketchEditor: { sketch: Sketch };
+      snapGrid?: boolean;
+      gridSpacing?: number;
+    };
+    const result = applySketchDrawIntent(state.sketchEditor.sketch, intent, {
+      enabled: state.snapGrid ?? false,
+      spacingMm: state.gridSpacing ?? 10,
+    });
+    if (result.changed) change(result.sketch);
+  });
   const sketch: Sketch = {
     version: 1,
     points: [],
@@ -70,6 +89,8 @@ function fixture(plane: "OXY" | "OYZ" | "OXZ" = "OXY") {
     geometry,
     preview,
     change,
+    draw,
+    revision,
     error,
     sketch,
   };
@@ -97,7 +118,8 @@ describe("sketch model-view pointer routing", () => {
         sketch: f.sketch,
         tool: "circle",
         constraints: true,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
       f.hooks.pointerDown(event(500, 500));
@@ -121,7 +143,8 @@ describe("sketch model-view pointer routing", () => {
         sketch: f.sketch,
         tool,
         constraints: false,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
       for (const [x, y] of [
@@ -145,6 +168,36 @@ describe("sketch model-view pointer routing", () => {
       expect(f.preview.children).toHaveLength(0);
     },
   );
+  it("submits raw three-point intent with only the first pick's revision", () => {
+    const f = fixture();
+    Object.assign(f.view, { snapGrid: true, gridSpacing: 10 });
+    f.view.setSketchEditor({
+      sketch: f.sketch,
+      tool: "arc3",
+      constraints: true,
+      beginDraw: f.revision,
+      onDraw: f.draw,
+      onError: f.error,
+    });
+    for (const [index, [x, y]] of [
+      [650, 500],
+      [500, 350],
+      [350, 500],
+    ].entries()) {
+      f.hooks.pointerDown(event(x, y));
+      f.hooks.pointerUp(event(x, y));
+      if (index === 0) f.revision.mockReturnValue(99);
+    }
+    expect(f.revision).toHaveBeenCalledOnce();
+    expect(f.draw).toHaveBeenCalledOnce();
+    expect(f.draw.mock.calls[0][1]).toBe(17);
+    const intent = f.draw.mock.calls[0][0];
+    expect(intent.kind).toBe("arc3");
+    if (intent.kind !== "arc3") throw Error("Expected arc intent");
+    expect(intent.points[0][0]).not.toBe(10);
+    expect(f.change).toHaveBeenCalledOnce();
+    expect(f.capture.size).toBe(0);
+  });
   it("discards incomplete three-point picks on Escape and tool changes, and recovers after collinearity rejection", () => {
     const f = fixture();
     const activate = () =>
@@ -152,7 +205,8 @@ describe("sketch model-view pointer routing", () => {
         sketch: f.sketch,
         tool: "arc3",
         constraints: false,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
     const click = (x: number, y: number) => {
@@ -188,7 +242,8 @@ describe("sketch model-view pointer routing", () => {
       sketch: f.sketch,
       tool: "line",
       constraints: false,
-      onChange: f.change,
+      beginDraw: f.revision,
+      onDraw: f.draw,
       onError: f.error,
     });
     expect(f.error).toHaveBeenCalledOnce();
@@ -205,7 +260,8 @@ describe("sketch model-view pointer routing", () => {
         sketch: f.sketch,
         tool: "line",
         constraints: true,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
       const down = event(500, 500);
@@ -233,7 +289,8 @@ describe("sketch model-view pointer routing", () => {
       sketch: f.sketch,
       tool: "line",
       constraints: false,
-      onChange: f.change,
+      beginDraw: f.revision,
+      onDraw: f.draw,
       onError: f.error,
     });
     for (const cancel of [
@@ -266,7 +323,8 @@ describe("sketch model-view pointer routing", () => {
       sketch: f.sketch,
       tool: "move",
       constraints: false,
-      onChange: f.change,
+      beginDraw: f.revision,
+      onDraw: f.draw,
       onError: f.error,
     });
     const ctrl = event(500, 500, { ctrlKey: true });
@@ -294,7 +352,8 @@ it("snaps points in each sketch plane's local coordinates", () => {
       sketch: f.sketch,
       tool: "line",
       constraints: false,
-      onChange: f.change,
+      beginDraw: f.revision,
+      onDraw: f.draw,
       onError: f.error,
     });
     const point = (f.view as any).sketchPlanePoint(613, 537);
@@ -318,7 +377,8 @@ describe("paint trim gesture ownership", () => {
         trimRadiusMm: 0.1,
         beginTrim: revision,
         onTrim: trim,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
       f.hooks.pointerDown(event(487, 500));
@@ -356,7 +416,8 @@ describe("paint trim gesture ownership", () => {
         trimRadiusMm: 0.1,
         beginTrim: () => 17,
         onTrim: trim,
-        onChange: f.change,
+        beginDraw: f.revision,
+        onDraw: f.draw,
         onError: f.error,
       });
       f.hooks.pointerDown(event(487, 500));

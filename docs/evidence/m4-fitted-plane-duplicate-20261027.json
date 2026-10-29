@@ -1,0 +1,82 @@
+{
+  "scope": "One original-native fitted-plane duplicate and separate application GUI/public-MCP duplicate on the same PLY file; not full M4 acceptance.",
+  "native": {
+    "version": "QuickSurface Pro 8.0.123",
+    "inputProjectSha256": "915a8c5684c4d82a5610a888b2f5526b2864253277b652a4e1462d8ef8226190",
+    "inputProjectUnchanged": true,
+    "operation": "Plane(1) history menu Duplicate created Plane(1)(1) and Planes(2).",
+    "displayedNormal": [0.4496712, -0.3367553, -0.8272797],
+    "displayedOffsetMm": 252.902158,
+    "beforeSave": "Original and duplicate showed the same displayed normal and offset in Type In mode.",
+    "reopen": "Both history items reopened; the duplicate editor retained those displayed values.",
+    "outputBytes": 4972592,
+    "outputProjectSha256": "398b8d2d8db3a3e73782b41e7c525914bfce27e5c97f51d4cbd3e62063115ebd",
+    "privateObservationSha256": "a47b03357f72999fe2fc190d453e723be5df5df6ea5d954f6f8386cb5281cb1b",
+    "privateCleanupReceiptSha256": "1725f943dd0ca76c534e3bf6ff4215b4280a1f89c974490344c9820eee88f32c",
+    "cleanup": "Authenticated owned finish, zero active processes, closed handles, no cleanup errors, released mutex; 100.06 seconds under 540-second outer lease.",
+    "displayDirectionComparison": {
+      "scope": "Same input PLY, native displayed decimals versus the existing application/public MCP fit receipt; native selection and sampling membership are unknown.",
+      "nativeDisplayedNormal": [0.4496712, -0.3367553, -0.8272797],
+      "applicationAxis": [
+        -0.4498839210802536, 0.33666408758993643, 0.8272011543032879
+      ],
+      "unorientedAngleDegrees": 0.0140040294440894,
+      "applicationSamples": 19583,
+      "applicationRmsMm": 2.5177831922908473,
+      "limitations": "The angle uses rounded native UI text and ignores axis sign. Native fit membership, weighting, residual and plane equation convention are not established; this is not a matched-fit parity claim. Candidate matching 64-bit values in both saved records are not identified as authoritative fields without serializer evidence.",
+      "reportSha256": "730471117cd596fef433de97e3201d8c5b5ae81cfd2a0fdc21eea557bbc39837",
+      "boundedReceiptSha256": "b71b8350fc8636a4fa6ba1133bc94b0ac7769c1b9dc59b379c8af6e8fc6a3be6"
+    },
+    "storedReadback": {
+      "scope": "Strict, data-only index and bounded field comparison of the two pinned QSF v4 files; no native execution or reference-point/line copy-policy claim.",
+      "observation": "The four original record spans are byte-identical after duplication; a fifth type-0x8 record is appended. The two type-0x8 records contain the observed Plane(1) and Plane(1)(1) strings and each repeats a different 16-byte value in two positions. Excluding those two 16-byte fields and string count/value leaves 304 compared bytes, with one differing byte at normalized offset 4. Its four-byte little-endian values are 4 and 5, matching these records' one-based positions; that field's meaning is not established.",
+      "verifiedPrefix": "A byte-verified 958-byte serializer entry writes the type-0x8 marker, 120-byte header, existing name/common-state helpers and a selected plane prefix. Reading that prefix finds distinct identities, empty saved common source/dependent sets, update level 0 and raw mode 2 in both records. The next vector and scalar fields contain promoted FLT_MAX sentinels and the 12-byte record count is zero in both. This one case does not establish behavior after source edits, other plane modes or reference-point/line duplication.",
+      "candidatePayload": "The captured type-8 loader branch, constructor table assignment and serializer slot lead statically to a byte-verified 112-byte payload writer; the live table binding was not observed. Both records contain identical 112-byte payloads at the expected position. The first stored vector is [0.44967119665687344, -0.3367553132527314, -0.82727968299314], matching the native displayed normal at its shown precision. Two additional vectors and two scalars are recorded in the private readback without assigning geometric roles. In this zero-list case, the remaining 32 bytes are all zero in both records and the read consumes each record through its end. Their meanings and general tail and copy-link behavior are not established.",
+      "initialOffsetAttempt": "A first exploratory read used the point/line name offset and returned empty strings; that interpretation was rejected and its receipt retained. The corrected bounded read uses the next field and matches the independently observed native names.",
+      "sha256": {
+        "indexReport": "01315533813099993a0c97bb003c26d1004def4dae0496cf9a704609e89cb4de",
+        "indexReceipt": "b1ae8aa7147b70815267c995922e21be2b6b7aac00b11ae327e0e5339ff7512e",
+        "initialOffsetReport": "a16e033faa7d8a9a750b29ebdb5afc6e5b8629318ee881f66669da0613e92a0e",
+        "initialOffsetReceipt": "efe2558dd20d4714fd193bc33dead76fe86c3eb34ca5d112172a1630315a8196",
+        "correctedNameReport": "8a55a8113013650a1b74f73cbbfcc4254793b75479faa9cdba143d0807d9742d",
+        "correctedNameReceipt": "9dd52925ffad6d69e8551a637dc009feeda6153ab7630791bc9764ba0a46421d",
+        "payloadComparison": "aab5e58de06ef6e7ab8aae59c8bd83878b805c94c82543447a4eeeb826a4257c",
+        "payloadReceipt": "230bf858e6fa5ff59559fbe346c2c1a9567e542f9f02aa3c8f7a20a168fdcc70",
+        "headerFieldReport": "c8bc26d719c443beba3e73e8fae40a0c9c4a81908730d666bf217ab95558a72a",
+        "headerFieldReceipt": "1d928ae9c9179286e56c8d6caccc3aab7c45aa0a602f0a3d5d76fd5beb1f37d2",
+        "planeSerializerByteVerification": "7f8dc1470516f163268e87f93277a553ed56b56330c3c8ec5e94c01dc6c0f442",
+        "planeSerializerListingReceipt": "a5c21221d3d409408a756d4fcefe2e135f43ec8fac0c9cfb3f70eb9a090b620c",
+        "planeSerializerVerificationReceipt": "493612fa241626e419a2b7eda89cce285dd74568bde54cd4de9092502ff20530",
+        "planePrefixReadback": "3b4b21761868515999059098e12fdec61706b9a4634da91a5c072e7998c00336",
+        "planePrefixReceipt": "153bd6f471384c3272cf6f997d347299107edf201cf12422d41d5cc7edcd1f6a",
+        "constructorTableVerification": "0bb40d7001831322c117a0fd4e4a26bf15f9f97b68fbc1bedf2e33c7f0e46918",
+        "payloadWriterVerification": "570fe6bedb5b401519030ee691baf55608ff4216936300a337a7079d9272616e",
+        "payloadWriterListingReceipt": "3fd57f1654e2c30c9a26de4759b92ad8169cc48425272567a6c5d374169dc031",
+        "payloadWriterVerificationReceipt": "e7ae5094870ed3c08120bd576bda43a36ff2d623be93a760400d038ab421c6b8",
+        "payloadReadback": "3967dfc956706d5a899e0c2ef2470d9c84f350f83897634ee9ca83c709cf740c",
+        "payloadReadbackReceipt": "22e74bdb6ddea2e454bedb1ceaccebc359a2b0c5f26911e1d00ae5b05b3d8b43",
+        "tailReadback": "d9d73ecb55daf7e41824a8946bd146b561654be5889cf7808ce10d6420838b24",
+        "tailReadbackReceipt": "499513ac155ef30bfca4ea91e457a1fead5a4afe9ee1a066dcad3f01b645ed65"
+      }
+    }
+  },
+  "applicationAndMcp": {
+    "inputPlySha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+    "buildId": "scanforge-ef836f21c2055ee2",
+    "productionInputSha256": "1536c75004139ae4e04447cfe20d160cb48da82dd93132a8fc8335ee9a976bae",
+    "productionInputsMatched": 1055,
+    "driver": "tests/primitive-fitting-browser.mjs",
+    "driverSha256": "87757acc5cbe8d2d599343587d9607daf11001df19ab44b5dcb110a659654314",
+    "coverage": "Actual GUI menu Duplicate and public stdio MCP object_duplicate produced distinct identities and equal fit/frame to the original and each other; GUI undo and MCP-created copy project-worker reopen and undo passed.",
+    "privateBrowserReceiptSha256": "eb78e3c04598aa10d3614eaa8bfd195198f6ee9f2ccb85cf45349ba2b670d470",
+    "privateScreenshotSha256": "ace1d6828bb5d00b245817ad5f09786f65a6feb6ae72296f531fef8420a436b9",
+    "privateCleanupReceiptSha256": "70fe293324f23ea11009b265637ddc4d2f883f17dc16e4b4f8fbc63067d144a9",
+    "cleanup": "Private ephemeral ports closed, owned processes exited and mutex released; 23.28 seconds under 480-second outer lease."
+  },
+  "limitations": [
+    "The same input file does not establish matching native and application fit populations, weighting, residuals or frame conventions; no fit equivalence is claimed.",
+    "Native displayed decimals alone are not raw binary values. A saved-vector candidate matches the display, but its live writer binding and geometric role are not proven. No source edits were tested; original plane properties were not reread after reopen.",
+    "The native case concerns a fitted plane, not semantic reference point or line duplication. Native undo, locks, transforms and other modes remain open.",
+    "This checkpoint does not complete M4 or authorize merge or milestone closure."
+  ]
+}

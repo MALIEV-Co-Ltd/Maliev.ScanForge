@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "scope": "One native numeric point-cloud pick accepted and saved in QSF; exact stored coordinates, not a generic formatter oracle",
+  "provenance": {
+    "nativeVersionObserved": "QUICKSURFACE Pro 8.0.123",
+    "executable": {
+      "artifact": "QuickSurface.exe",
+      "bytes": 13617424,
+      "sha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d"
+    },
+    "qsf": {
+      "artifact": "owned-ui-point-pick-r10/native-output/m4-point-picked-cloud.qsf",
+      "bytes": 402,
+      "sha256": "5d0d610175d0ad7c466149e718e328e171692be730aa9e48e1959ef1d252a88b"
+    },
+    "asc": {
+      "artifact": "fixtures/point-pick-r10/point-pick-three.asc",
+      "bytes": 34,
+      "sha256": "4dde62cecf94a887da7b0aa9ed66bdfc68c045d8926aa4a3cc6eadda4d52349d"
+    },
+    "sourceReport": {
+      "artifact": "owned-ui-point-pick-r10/acceptance-report.json",
+      "bytes": 8755,
+      "sha256": "6e06eb2fd4258012e8fd672667a0daff53787941acb651a2cff69b3d786f4b68"
+    },
+    "strictParser": {
+      "artifact": "read_native_reference_qsf.py",
+      "bytes": 7724,
+      "sha256": "58d80f6ef6673629f2e6f96d5cdf807a7d5540eb63e4b40c7a9607d30b8d6ad1"
+    },
+    "readback": {
+      "artifact": "qsf-point-r10-readback-r1.json",
+      "bytes": 2387,
+      "sha256": "2ed371454c366e03bb88ee19ab4cd3f52e2175b812b7d7862fc848b98712536f"
+    },
+    "serializerProofReceipt": {
+      "artifact": "required-qsf-serializers-r1/byte-provenance-verification.json",
+      "bytes": 1524,
+      "sha256": "9287e5f2cb4b2b5e87e7ab06efd04d649fe71bac6c42538eeb88c1fb445db7e7"
+    },
+    "pointSerializerProofReceipt": {
+      "artifact": "required-point-fields-r1/byte-provenance-verification.json",
+      "bytes": 965,
+      "sha256": "261a4567ddfdc4a6662c548027c0d80ad2a1df148acc93667b816a73755460f4"
+    },
+    "staticCarrierSha256": "7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849",
+    "completeSerializerProofs": [
+      {
+        "rva": "0x46f820",
+        "listedInstructionCount": 93,
+        "listedBytesSha256": "805a819df2863e248db716ee5a1b8ccc34d8aea69452f4b5b71fc747ad5205c0",
+        "coverage": "complete captured unwind-chain fragments"
+      },
+      {
+        "rva": "0x471f30",
+        "listedInstructionCount": 256,
+        "listedBytesSha256": "96ac514af36f17e39b6a8ca58bd6ae0fa2e6f050444d967de99e0a089b16c0fc",
+        "coverage": "complete captured unwind-chain fragments"
+      },
+      {
+        "rva": "0x489840",
+        "listedInstructionCount": 379,
+        "listedBytesSha256": "48346b2f0f6f637079a9346c508a8bb2e2da7f4d01de7a88d13873bc9690704c",
+        "coverage": "complete captured unwind-chain fragments"
+      }
+    ],
+    "containerPrefix": {
+      "rva": "0x4676d0",
+      "listedBytesSha256": "8f92e763d41a47e05a0c5a59a8c0251013f9a6f79a12d451e4b687a04142a957",
+      "fullDispatcherInstructionCoverage": false
+    },
+    "parserScope": "Exact captured plaintext v4 header, one point object, checked forward field grammar, exact EOF; not general QSF support",
+    "rawStoredFloat64BitsRead": true,
+    "nativeFileOpenVerified": true,
+    "sourceCloudDeletedPointSurvived": true,
+    "mmN6Quantizer": "Recovered startup millimetre Float32 quantizer stage; not the complete dialog text roundtrip",
+    "configuredPrecisionObservedInUi": false,
+    "ddxPhaseBinding": "Pending actual application DDX helper/formatter code binding; this fixture asserts the observed final native QSF value only"
+  },
+  "source": {
+    "units": "mm",
+    "coordinateSpace": "world",
+    "pointIndex": 0,
+    "sourceLiteralXYZ": ["1.0000005", "-3e-7", "6.8"],
+    "sourceXYZ": [1.0000005, -3e-7, 6.8]
+  },
+  "accepted": {
+    "storedXYZ": [1, "-0", 6.80000019073486],
+    "storedFloat64Hex": [
+      "0x1.0000000000000p+0",
+      "-0x0.0p+0",
+      "0x1.b33333ffffffcp+2"
+    ],
+    "geometryEncoding": {
+      "version": 1,
+      "kind": "point",
+      "bits": "000000000000f03f0000000000000080fcffff3f33331b40"
+    },
+    "geometryByteOffset": 346,
+    "recordEndExclusive": 402,
+    "mode": 2,
+    "submode": 0,
+    "commonSourceCount": 0,
+    "commonDependentCount": 0
+  },
+  "nativeUiObservations": {
+    "pickedFieldStringsBeforeOk": ["1", "-0", "6.80000019073486"],
+    "acceptedInMemoryEditorStrings": ["1", "0", "6.8"],
+    "fileReopenedEditorStrings": ["1", "0", "6.8"],
+    "readbackEditorsClosedByCancel": true,
+    "readbackOkOrResaveUsed": false
+  },
+  "limits": [
+    "One ordinary picked point; no decimal tie policy or general G15 equivalence established.",
+    "No line, CAD, alternate units, retained derived source, or whole-M4 parity claim.",
+    "Editor strings are separate from serialized coordinate bits."
+  ]
+}

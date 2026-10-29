@@ -2,6 +2,7 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { projectValueBytes } from "./project-value-stream";
 import type { Entity, Positions } from "./types";
 import { validateReferenceEntity } from "./reference-entity";
+import { validateReferenceFrameEntity } from "./reference-frame";
 
 export interface GeometryDigestBuffer {
   path: string;
@@ -64,7 +65,14 @@ export async function digestEntityGeometry(
     });
   };
   const reference = validateReferenceEntity(entity);
-  if (reference) {
+  const coordinateFrame = validateReferenceFrameEntity(entity);
+  if (coordinateFrame) {
+    add("coordinateFrame.frame.origin", [...coordinateFrame.frame.origin]);
+    add("coordinateFrame.frame.u", [...coordinateFrame.frame.u]);
+    add("coordinateFrame.frame.v", [...coordinateFrame.frame.v]);
+    add("coordinateFrame.frame.normal", [...coordinateFrame.frame.normal]);
+    add("coordinateFrame.displaySize", [coordinateFrame.displaySize]);
+  } else if (reference) {
     const geometry = reference.geometry;
     if (geometry.kind === "point")
       add("reference.geometry.position", [...geometry.position]);

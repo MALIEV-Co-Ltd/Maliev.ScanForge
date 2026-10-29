@@ -1,3 +1,7 @@
+import {
+  refreshReferenceConstructions,
+  assertReferenceConstructionSceneAdmission,
+} from "../reference-construction-lifecycle";
 import { geometryArtifact } from "./geometry-artifact";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
@@ -12,6 +16,19 @@ import {
 } from "../scan-reconstruction-targets";
 import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
+import { createReferenceConstructionOperations } from "./reference-construction-operations";
+import { createDatumConstructionOperations } from "./datum-construction-operations";
+import { createSketchEditOperations } from "./sketch-edit-operations";
+import { analyzePrimitiveFit, createFittedPlane } from "../primitive-fitting";
+import { fittedPrimitive } from "../fitted-primitive";
+import { entityDisplayStats } from "../entity-display-stats";
+import { referenceDeletionDependents } from "../reference-midpoint";
+import { inspectReferenceFrame } from "../reference-frame";
+import { transformPlaneFrame, validatePlaneFrame } from "../plane-frame";
+import {
+  referenceTransformMatrix,
+  transformNumericReference,
+} from "../reference-transform";
 import { isSampledScan } from "../scan-source";
 import { renameObjects } from "../object-renaming";
 import { autoColorScene } from "../scene-auto-color";
@@ -58,15 +75,10 @@ import { partitionMeshSelection } from "../mesh-selection-edit";
 import {
   assertSampledGeometry,
   inspectReferenceEntity,
+  isReferenceEntity,
 } from "../reference-entity";
 import { partitionTriangles, selectionCount } from "../selection";
-import {
-  meshStats,
-  fitPlane,
-  fitSphere,
-  fitCylinder,
-  fitCone,
-} from "../geometry";
+import { meshStats } from "../geometry";
 import { processMesh, type ProcessingRequest } from "../processing-client";
 import { processScanRegistration } from "../scan-registration";
 import { alignmentTriangleMask } from "../registration-selection";
@@ -77,6 +89,10 @@ import { cornerTrimSketch } from "../sketch-corner";
 import { filletSketchCorner } from "../sketch-fillet";
 import { trimSketchStroke } from "../sketch-trim";
 import { mirrorSketch } from "../sketch-mirror";
+import {
+  applySketchDrawIntent,
+  type SketchDrawIntent,
+} from "../sketch-draw-intent";
 import { digestEntityGeometry } from "../geometry-digest";
 import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
@@ -240,8 +256,10 @@ export async function rebuildCadFeature(
     { signal, preserveKernelIds: preserved },
   );
   const features = new Map(rebuilt.model.features.map((f) => [f.id, f]));
+  const changedFeatures = new Set(rebuilt.rebuiltFeatureIds);
   const next = entities.map((e) => {
-    if (!e.parametric) return e;
+    if (!e.parametric || !changedFeatures.has(e.parametric.feature.id))
+      return e;
     const feature = features.get(e.parametric.feature.id)!;
     const output = rebuilt.results[feature.id][e.parametric.output];
     return {
@@ -276,7 +294,8 @@ function editable(entity: Entity, meshOnly = false) {
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
 function summary(e: Entity, scene: readonly Entity[]) {
-  const reference = inspectReferenceEntity(e, scene);
+  const reference =
+    inspectReferenceEntity(e, scene) ?? inspectReferenceFrame(e);
   const {
     positions,
     normals: _normals,
@@ -407,13 +426,28 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       host.select(source.kind === "pointcloud" ? null : (next[0]?.id ?? null));
   };
   const commit = (c: CommandContext, entities: Entity[], label: string) => {
-    const write = () => host.commit(entities.map(retainIndexedMesh), label);
+    const write = () => {
+      const next = entities.map(retainIndexedMesh);
+      assertReferenceConstructionSceneAdmission(next);
+      host.commit(next, label);
+    };
     if (c.mutate) c.mutate(write);
     else {
       c.check();
       write();
     }
   };
+  const fitSelection = (
+    state: WorkspaceSnapshot,
+    entity: Entity,
+    selectionOnly?: boolean,
+  ) =>
+    selectionOnly === true ||
+    (selectionOnly === undefined &&
+      state.selectedId === entity.id &&
+      state.selection?.some(Boolean))
+      ? mask(state, entity)
+      : undefined;
   async function publishImportedEntity(
     entity: Entity,
     a: { replace?: boolean },
@@ -569,6 +603,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     ...createDatumOperations(host),
     ...createGlobalAlignmentOperations(host),
     ...createInteractiveOperations(host),
+    ...createReferenceConstructionOperations(host),
+    ...createDatumConstructionOperations(host),
+    ...createSketchEditOperations(host),
     project_get: () => {
       const s = host.snapshot();
       return {
@@ -661,30 +698,37 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                       semantic: details.reference.geometry,
                       encoding: details.reference.geometryEncoding,
                     }
-                  : {
-                      positions: e.positions,
-                      indexedMesh: e.indexedMesh
-                        ? {
-                            vertices: e.indexedMesh.vertices,
-                            triangles: e.indexedMesh.triangles,
-                            ...(e.indexedMesh.normals
-                              ? { normals: e.indexedMesh.normals }
-                              : {}),
-                            ...(e.indexedMesh.facetNormals
-                              ? { facetNormals: e.indexedMesh.facetNormals }
-                              : {}),
-                            ...(e.indexedMesh.geometryNormals
-                              ? {
-                                  geometryNormals:
-                                    e.indexedMesh.geometryNormals,
-                                }
-                              : {}),
-                          }
-                        : undefined,
-                      normals: e.normals ? e.normals : undefined,
-                      pointColors: e.pointColors ? e.pointColors : undefined,
-                      edgePositions: e.edgePositions,
-                    },
+                  : "coordinateFrameEncoding" in details
+                    ? {
+                        units: "mm",
+                        coordinateFrame: details.coordinateFrame,
+                        coordinateFrameEncoding:
+                          details.coordinateFrameEncoding,
+                      }
+                    : {
+                        positions: e.positions,
+                        indexedMesh: e.indexedMesh
+                          ? {
+                              vertices: e.indexedMesh.vertices,
+                              triangles: e.indexedMesh.triangles,
+                              ...(e.indexedMesh.normals
+                                ? { normals: e.indexedMesh.normals }
+                                : {}),
+                              ...(e.indexedMesh.facetNormals
+                                ? { facetNormals: e.indexedMesh.facetNormals }
+                                : {}),
+                              ...(e.indexedMesh.geometryNormals
+                                ? {
+                                    geometryNormals:
+                                      e.indexedMesh.geometryNormals,
+                                  }
+                                : {}),
+                            }
+                          : undefined,
+                        normals: e.normals ? e.normals : undefined,
+                        pointColors: e.pointColors ? e.pointColors : undefined,
+                        edgePositions: e.edgePositions,
+                      },
               ),
             }
           : {}),
@@ -801,9 +845,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const targets = new Set(ids);
       if (targets.size !== ids.length)
         throw new Error("Object IDs must be unique.");
+      const dependentReferences = referenceDeletionDependents(s.entities, ids);
+      if (dependentReferences.length)
+        throw new Error(
+          "Remove dependent reference objects first: " +
+            dependentReferences.join(", "),
+        );
       for (const id of ids) {
         const e = object(s, id);
-        editable(e);
+        if (e.locked) throw new Error("Object is locked.");
         if (
           e.parametric &&
           s.entities.some(
@@ -1436,13 +1486,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       };
       c.check();
       if (positions || segments?.length) {
+        const staged = next.map(retainIndexedMesh);
+        assertReferenceConstructionSceneAdmission(staged);
         if (nativeReconstruction && created.length)
-          host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`, {
+          host.commit(staged, `Mesh ${kind}`, {
             modelVisibilityFor: nativeReconstruction.inputs.map(
               (input) => input.id,
             ),
           });
-        else host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
+        else host.commit(staged, `Mesh ${kind}`);
       }
       if (nativeReconstruction && created.length) host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
@@ -1451,48 +1503,134 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_transform: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      if (isReferenceEntity(e)) {
+        c.check();
+        const transformed = transformNumericReference(
+          e,
+          referenceTransformMatrix(a.translation, a.rotation, a.scale),
+        );
+        const staged = s.entities.map((entity) =>
+          entity.id === e.id ? transformed : entity,
+        );
+        // Root payload is already transformed; refresh only its dependent closure.
+        const refreshed = refreshReferenceConstructions(staged, [e.id], {
+          check: () => c.check(),
+        });
+        commit(c, refreshed.entities, "Transform reference");
+        return {
+          entityId: e.id,
+          refreshedEntityIds: refreshed.refreshedEntityIds,
+          evaluations: refreshed.evaluations,
+        };
+      }
       editable(e, true);
+      const storedPlane = e.kind === "plane" ? e.planeFrame : undefined;
+      if (storedPlane) validatePlaneFrame(storedPlane, e.positions, e.kind);
       const transformed = transformIndexedMesh(
         e,
         a.translation,
         a.rotation,
         a.scale,
       );
-      commit(
-        c,
-        s.entities.map((x) =>
-          x.id === e.id
-            ? {
-                ...meshEdited(e, transformed.positions),
-                indexedMesh: transformed.indexedMesh,
-                normals: transformed.normals,
-              }
-            : x,
-        ),
-        "Transform mesh",
-      );
-      return { entityId: e.id };
+      const updated: Entity = {
+        ...meshEdited(e, transformed.positions),
+        indexedMesh: transformed.indexedMesh,
+        normals: transformed.normals,
+      };
+      if (storedPlane) {
+        if (
+          transformed.positions.some(
+            (value) => !Number.isFinite(value) || Math.abs(value) > 1e9,
+          )
+        )
+          throw new Error(
+            "Transformed plane display coordinates exceed world bounds (+/-1e9 mm).",
+          );
+        const planeFrame = transformPlaneFrame(
+          storedPlane,
+          a.translation,
+          a.rotation,
+          a.scale,
+        );
+        validatePlaneFrame(planeFrame, transformed.positions, "plane");
+        updated.kind = "plane";
+        updated.planeFrame = planeFrame;
+      }
+      const staged = s.entities.map((x) => (x.id === e.id ? updated : x));
+      const refreshed = storedPlane
+        ? refreshReferenceConstructions(staged, [e.id], {
+            check: () => c.check(),
+          })
+        : { entities: staged, refreshedEntityIds: [], evaluations: [] };
+      commit(c, refreshed.entities, "Transform mesh");
+      return {
+        entityId: e.id,
+        refreshedEntityIds: refreshed.refreshedEntityIds,
+        evaluations: refreshed.evaluations,
+      };
     },
     analysis_fit: (a, c) => {
       const s = host.snapshot(),
-        e = object(s, a.entityId),
-        p = selectedPositions(s, e, a.selectionOnly);
+        e = object(s, a.entityId);
       c.check();
-      const fitters = {
-        plane: fitPlane,
-        sphere: fitSphere,
-        cylinder: fitCylinder,
-        cone: fitCone,
-      };
-      const sampled: number[] = [];
-      const stride = Math.max(1, Math.ceil(p.length / 3 / 20_000));
-      for (let i = 0; i < p.length; i += stride * 3)
-        sampled.push(p[i], p[i + 1], p[i + 2]);
-      return {
-        fit: fitters[a.kind as keyof typeof fitters](sampled),
-        samples: sampled.length / 3,
-        totalVertices: p.length / 3,
-      };
+      const result = analyzePrimitiveFit(
+        e,
+        a.kind,
+        fitSelection(s, e, a.selectionOnly),
+        a.region,
+      );
+      c.check();
+      return result;
+    },
+    primitive_fit_create: async (a, c) => {
+      const snapshot = host.snapshot(),
+        source = object(snapshot, a.entityId);
+      c.check();
+      const result = analyzePrimitiveFit(
+        source,
+        a.kind,
+        fitSelection(snapshot, source, a.selectionOnly),
+        a.region,
+      );
+      c.check();
+      let created: Entity;
+      if (result.fit.kind === "plane") {
+        created = createFittedPlane(
+          result.fit,
+          Math.max(...entityDisplayStats(source).size),
+          a.name,
+        );
+        commit(c, [...snapshot.entities, created], "Create fitted plane");
+      } else {
+        const cad = host.cad();
+        const built = await createCadFeature(
+          cad,
+          snapshot.entities,
+          { kind: "primitive", input: fittedPrimitive(result.fit) },
+          a.name ?? `Fitted ${result.fit.kind}`,
+          { signal: c.signal },
+        );
+        created = {
+          ...built.created[0],
+          kind: result.fit.kind,
+          opacity: 0.85,
+          fit: result.fit,
+        };
+        try {
+          commit(
+            c,
+            built.entities.map((entity) =>
+              entity.id === created.id ? created : entity,
+            ),
+            `Create fitted ${result.fit.kind}`,
+          );
+        } catch (error) {
+          await releaseCreated(cad, built.entities, snapshot.entities);
+          throw error;
+        }
+      }
+      host.select(created.id);
+      return { entityId: created.id, sourceEntityId: source.id, ...result };
     },
     analysis_section: (a, c) => {
       const s = host.snapshot(),
@@ -1557,15 +1695,36 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           c.signal,
         );
       try {
-        commit(c, result.entities, "Rebuild CAD feature");
+        c.check();
+        const rebuilt = new Set(result.rebuiltFeatureIds);
+        const roots = result.entities
+          .filter(
+            (entity) =>
+              entity.parametric && rebuilt.has(entity.parametric.feature.id),
+          )
+          .map((entity) => entity.id);
+        const refreshed = refreshReferenceConstructions(
+          result.entities,
+          roots,
+          {
+            check: () => c.check(),
+          },
+        );
+        commit(c, refreshed.entities, "Rebuild CAD feature");
+        return {
+          rebuiltFeatureIds: result.rebuiltFeatureIds,
+          cleanupFailures: result.cleanupFailures,
+          refreshedEntityIds: refreshed.refreshedEntityIds,
+          evaluations: refreshed.evaluations,
+        };
       } catch (error) {
-        await releaseCreated(cad, result.entities, s.entities);
+        await releaseCreated(cad, result.entities, [
+          ...s.entities,
+          ...s.history.flatMap((row) => row.entities),
+          ...s.future.flatMap((row) => row.entities),
+        ]);
         throw error;
       }
-      return {
-        rebuiltFeatureIds: result.rebuiltFeatureIds,
-        cleanupFailures: result.cleanupFailures,
-      };
     },
     sketch_get: () => {
       const s = host.snapshot();
@@ -1573,6 +1732,39 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         sketch: s.sketchDraft ?? s.authoring.sketch,
         sketches: s.authoring.sketches,
         activeSketchId: s.authoring.activeSketchId,
+      };
+    },
+    sketch_draw: (a, c) => {
+      const state = host.snapshot();
+      const sketch = state.sketchDraft ?? state.authoring.sketch;
+      if (!sketch) throw new Error("No active sketch.");
+      if (!c.mutate)
+        throw new Error("Sketch drawing requires the shared mutation context.");
+      const {
+        expectedRevision: _revision,
+        requestId: _requestId,
+        ...intent
+      } = a;
+      const result = applySketchDrawIntent(
+        sketch,
+        intent as SketchDrawIntent,
+        {
+          enabled: (state.settings.snapGrid ?? false) as boolean,
+          spacingMm: (state.settings.gridSpacing ?? 10) as number,
+        },
+        { check: c.check, signal: c.signal },
+      );
+      c.check();
+      if (result.changed) c.mutate(() => host.setSketch(result.sketch));
+      const { sketch: _sketch, ...diagnostics } = result;
+      return {
+        ...diagnostics,
+        units: "mm",
+        coordinateSystem: "sketch-local-UV",
+        grid: {
+          enabled: state.settings.snapGrid ?? false,
+          spacingMm: state.settings.gridSpacing ?? 10,
+        },
       };
     },
     sketch_set: (a, c) => {

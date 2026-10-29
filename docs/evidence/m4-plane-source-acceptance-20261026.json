@@ -1,0 +1,158 @@
+{
+  "checkpoint": "M4 authored plane sources for located line pairs",
+  "date": "2026-10-26",
+  "branch": "codex/m4-integration",
+  "sourceBaseCommit": "c07d25a359f81d17516fb103e4bad0a10f9996ce",
+  "sourceBinding": "Production input digests bind the working candidate; the resulting commit and hosted checks are recorded on PR17.",
+  "sharedContract": {
+    "creation": "Numeric and fitted plane creation retain the explicitly authored square side length as optional planeFrame.displaySize. Legacy frames without it remain readable.",
+    "discovery": "reference_construction_sources kind:line mode:pair returns eligible planes and planeUVBounds in local millimetres. Average remains finite-axis-only.",
+    "acquisition": "reference_construct sourcePicks accepts exactly entityId plus planeUV:[u,v] for a plane. The projected unit tangent basis matches sketch placement. Both coordinates must lie within the saved square; one world F64 placement is rounded once to the retained F32 hit without N6/G15.",
+    "evaluation": "The current authoritative plane equation and saved displaySize/2 feed the existing line-pair evaluator. Geometry, record order/repetitions and common identities remain separate.",
+    "lifecycle": "Cached Preview/Apply, source-key migration, dependency refresh, locks, Cancel, source edits, Undo/Redo and current/history/future persistence reuse shared operations. Rigid movement preserves size and positive uniform scale multiplies it.",
+    "recovery": "Missing legacy size is not derived from display triangles. Explicitly edit a numeric plane with the intended size, or create a newly fitted plane.",
+    "gui": "GUI selectors and local U/V controls invoke the same public operation. Numeric plane editing prefers stored size. Existing vector-field styling preserves readable U/V controls."
+  },
+  "focusedVerification": [
+    {
+      "receipt": "plane-line-source-red-r1.json",
+      "passed": false,
+      "failedTests": 14,
+      "passedTests": 104,
+      "scope": "New authored-size, located-source, validation and scale requirements failed before implementation."
+    },
+    {
+      "receipt": "plane-line-source-green-r1.json",
+      "command": "node node_modules/vitest/vitest.mjs run tests/reference-plane-source.test.ts tests/reference-analytic-input-api.test.ts tests/reference-fitted-plane-input-api.test.ts tests/datum-construction.test.ts tests/sketch-plane-source.test.ts tests/plane-frame.test.ts --maxWorkers=1 --reporter=dot",
+      "passed": true,
+      "passedTests": 187,
+      "passedFiles": 6,
+      "elapsedSeconds": 4.489595899998676,
+      "peakJobBytes": 427208704,
+      "totalProcesses": 13,
+      "activeAfter": 0,
+      "scope": "Shared resolver/API, authored-size validation and JSON/binary current/history/future recovery, source movement, legacy compatibility, projected tangent basis and existing mirror/sketch-placement checks."
+    },
+    {
+      "receipt": "plane-line-source-regression-r1.json",
+      "passed": false,
+      "selectedFiles": 103,
+      "elapsedSeconds": 73.01607360003982,
+      "peakJobBytes": 510922752,
+      "totalProcesses": 110,
+      "activeAfter": 0,
+      "scope": "Broader affected run retained as failed. Two legacy test assumptions required correction: source-pick schema previously omitted planeUV, and a frame persistence helper treated every field as a vector. This is not reported as a passing 103-file run."
+    },
+    {
+      "receipt": "plane-line-source-corrected-r1.json",
+      "report": "plane-line-source-corrected-r1.vitest.json",
+      "command": "node node_modules/vitest/vitest.mjs run tests/reference-derived-api.test.ts tests/reference-derived-line-api.test.ts --maxWorkers=1 --reporter=json --outputFile=.resources/m4/plane-line-source-corrected-r1.vitest.json",
+      "passed": true,
+      "passedTests": 73,
+      "passedFiles": 2,
+      "elapsedSeconds": 2.3957835999899544,
+      "peakJobBytes": 407617536,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "scope": "Both corrected derived-point/line contract files; production behavior unchanged by the test corrections."
+    }
+  ],
+  "buildVerification": {
+    "receipt": "build-plane-line-source-r3.json",
+    "command": [
+      "C:/Program Files/nodejs/node.exe",
+      "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+      "run",
+      "build"
+    ],
+    "passed": true,
+    "typecheckBatches": 13,
+    "sourceRootFiles": 590,
+    "warnings": 0,
+    "errors": 0,
+    "productionInputCount": 1055,
+    "productionSourceSha256": "67f01c1545db68f48b3d958b5e9594f4f4dfb15cf093c4d51eb4a56e627e532e",
+    "prePostSourceDigestsEqual": true,
+    "buildId": "scanforge-f60dda428b2c8a93",
+    "elapsedSeconds": 205.29515399999218,
+    "peakJobBytes": 1586270208,
+    "totalProcesses": 33,
+    "activeAfter": 0,
+    "scope": "Full build after functional changes. A subsequent presentation-only U/V layout refinement received the fresh production/browser verification below; final exact-head hosted checks remain required."
+  },
+  "presentationRefresh": {
+    "receipt": "plane-layout-vite-r1.json",
+    "commands": [
+      ["node", "node_modules/vite/bin/vite.js", "build"],
+      ["node", "scripts/offline-manifest.mjs"]
+    ],
+    "passed": true,
+    "warnings": 0,
+    "productionInputCount": 1055,
+    "productionSourceSha256": "657db88d114ba257ae5431c953b1057f184616c9d92ace331b5a2f67b3ac157d",
+    "prePostSourceDigestsEqual": true,
+    "buildId": "scanforge-598e491b941b7328",
+    "localAssets": 273,
+    "elapsedSeconds": 10.354288399976213,
+    "peakJobBytes": 1548750848,
+    "totalProcesses": 7,
+    "activeAfter": 0
+  },
+  "browserVerification": {
+    "command": "node tests/reference-construction-browser.mjs",
+    "receipt": "plane-line-source-browser-r2.json",
+    "passed": true,
+    "buildId": "scanforge-598e491b941b7328",
+    "privateArtifactRun": "8825aee9-fad4-4967-bc76-2425180ea105",
+    "elapsedSeconds": 54.04430179996416,
+    "peakJobBytes": 1768083456,
+    "totalProcesses": 18,
+    "activeAfter": 0,
+    "checks": [
+      "Actual GUI plane edit reads the stored size; changed size Cancel preserves accepted metadata.",
+      "Character-by-character positive decimal and negative U/V input produces equal GUI/public stdio MCP definition and geometry encodings.",
+      "Accepted local UV1.25,-2.5 on the rotated plane yields retained world F32 hit2.5,1.25,0.",
+      "Two orthogonal authored planes with sides20 and12 produce a20mm intersection line. Scaling the second plane by3 preserves side36 and refreshes line length36.",
+      "Moving the first plane from Z0 to Z2 refreshes point-to-plane line length8 to6 while retaining exact original pick records.",
+      "Undo, binary project worker export/import with a real future state, and Redo preserve source size, retained bits and evaluated geometry.",
+      "A locked derived line rejects the entire later plane transform; model state and accepted reference geometry remain unchanged.",
+      "Existing reference, cone, numeric acquisition, preview cleanup/expiry and history scenarios pass in the same browser run.",
+      "Final screenshots were visually inspected: U/V controls align, and both source planes and derived lines are clearly rendered."
+    ],
+    "portsClosed": [55116, 55117],
+    "ownedBrowserAndMcpChildrenExited": true
+  },
+  "screenshots": [
+    {
+      "path": "m4-plane-sources-20261026/plane-located-pair-preview.png",
+      "bytes": 157218,
+      "sha256": "e7644c1080f9d51e4548fffc5f1538ac3a37ef4aaa9424a5867223e1e916de46"
+    },
+    {
+      "path": "m4-plane-sources-20261026/plane-source-history-parity.png",
+      "bytes": 144323,
+      "sha256": "e2938e49f63564f1b099fddf6dcd58e32f2894d8c767111ae27c3701e5b1d5a2"
+    }
+  ],
+  "retainedFailures": [
+    "build-plane-line-source-r1.json: bare npm launcher failed before child creation; fresh zero-wait mutex audit recorded no abandonment before retrying with verified node/npm CLI paths.",
+    "build-plane-line-source-r2.json: TypeScript caught missing reason on an inferred success return arm. Explicit eligibility return typing corrected it without a runtime behavior change.",
+    "plane-line-source-browser-r1.json: functional checks passed, but visual inspection found wrapped U/V labels. Final presentation refresh and browser r2 supersede its layout.",
+    "Original-native R14 failed before modeling with cursor access denied and separate-context kernel-asset startup errors; authenticated cleanup completed. No native persistence acceptance is inferred."
+  ],
+  "resourcePolicy": {
+    "jobMemoryLimitBytes": 4294967296,
+    "cpuRatePercent": 25,
+    "serializedNamedMutex": "Local\\ScanForge.BoundedValidation",
+    "finiteLeasesAndFreeMemoryAdmissionPreserved": true
+  },
+  "remainingRequiredGates": [
+    "Retained general CAD/scan owner/provider acquisition with complete same-provider nearest-candidate semantics",
+    "Derived and inactive-pick transforms, semantic duplication and specialized lifecycle policy",
+    "Original-native source-edit/save-reopen and remaining frame/fit/curve/constraint comparisons; R14 desktop input failed before modeling",
+    "Exact-head hosted checks/review, merge, merged-main verification and issue4/milestone5 closure"
+  ],
+  "nativeExtentProducerOrControllerParityClaimed": false,
+  "milestoneComplete": false,
+  "merged": false
+}

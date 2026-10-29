@@ -139,7 +139,7 @@ describe("ribbon command inventory", () => {
       "multipleSections",
       "projectSketch",
     ]);
-    for (const id of ["sectionView", "referenceAxis", "coordinateSystem"])
+    for (const id of ["sectionView"])
       expect(getRibbonToolMetadata(id)?.action, id).toBeUndefined();
   });
   it("never enables an unimplemented operation even if a caller injects a same-name callback", () => {
@@ -216,7 +216,6 @@ describe("ribbon command inventory", () => {
       "chamfer",
       "repairMesh",
       "segmentMesh",
-      "sketch2d",
       "splitSolid",
       "circularPattern",
       "linearPattern",
@@ -264,3 +263,20 @@ it("offers Section to sketch on Main and Sketch with selected idle scan admissio
     expect(ribbonToolAvailability(tool, ready, {}).available).toBe(false);
   }
 });
+
+it.each(["referencePlane", "referenceAxis", "coordinateSystem"])(
+  "admits the shared named datum command %s only while idle",
+  (id) => {
+    const tool = getRibbonToolMetadata(id)!;
+    expect(
+      ribbonToolAvailability(tool, ready, { [id]: vi.fn() }).available,
+    ).toBe(true);
+    expect(
+      ribbonToolAvailability(
+        tool,
+        { ...ready, disabled: true },
+        { [id]: vi.fn() },
+      ).available,
+    ).toBe(false);
+  },
+);

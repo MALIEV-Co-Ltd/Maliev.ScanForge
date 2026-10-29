@@ -22,6 +22,10 @@ import {
   DISK_BLOB_BLOCK_BYTES,
 } from "../transient-blob-storage";
 import { cloudPlacement } from "../point-cloud-placement";
+import { encodeReferenceFrame } from "../reference-frame";
+import { SketchDrawResourceLimit } from "../sketch-draw-intent";
+import { SketchSolverResourceLimit } from "../sketch-solver-budget";
+import { SketchEditResourceLimit } from "../sketch-edit-intent";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
   inspectGlobalAlignmentPreview,
@@ -63,6 +67,19 @@ export interface WorkspaceSnapshot {
   selection: Uint8Array | null;
   sketchDraft?: Sketch;
   settings: Record<string, unknown>;
+}
+export interface ReferenceCoordinateView {
+  projection: "perspective" | "orthographic";
+  cameraMatrixFormat: "column-major-4x4";
+  projectionMatrix: readonly number[];
+  cameraWorldMatrix: readonly number[];
+  viewport: { width: number; height: number; coordinates?: string };
+  clippingPlanes: readonly {
+    normal: readonly [number, number, number];
+    constant: number;
+  }[];
+  materialSide?: "front" | "back" | "double" | 0 | 1 | 2;
+  clipIntersection?: boolean;
 }
 export interface WorkspaceHost {
   showMeasurement?(
@@ -159,6 +176,10 @@ export interface WorkspaceHost {
   inspectApplication?(maxControls: number): unknown;
   setInterface?(patch: InterfacePatch): void;
   inspectViewport?(view?: ViewportCommand["view"]): unknown;
+  referenceCoordinateView?(
+    entityId: string,
+    view?: "main" | "moving" | "fixed",
+  ): ReferenceCoordinateView;
   inspectSpaceMouse?(): unknown;
   controlSpaceMouse?(
     command: import("../spacemouse").SpaceMouseCommand,
@@ -196,6 +217,15 @@ export interface ArtifactInfo {
 export interface CommandContext {
   /** API-owned operation identity; retained previews may outlive the job receipt. */
   jobId?: string;
+  /** Captured gateway revision, including for read-only job results. */
+  readonly startRevision?: number;
+  /** Bounded retained-job state; never part of job_get/session_get output. */
+  retainPrivateJobData?(value: unknown): void;
+  getCompletedJobData?(
+    jobId: string,
+    expectedCommand: string,
+    validate?: (value: unknown) => void,
+  ): unknown;
   signal: AbortSignal;
   progress(
     fraction: number,
@@ -354,6 +384,9 @@ interface Job {
   error?: { code: string; message: string };
   controller: AbortController;
   timer: ReturnType<typeof setTimeout>;
+  ownerEpoch: number;
+  privateData?: unknown;
+  privateRevision?: number;
 }
 
 /** One gateway for UI and MCP; no network, React, or native handles in its wire contract. */
@@ -398,6 +431,7 @@ export class ApplicationApi {
       this.ownerLeased = false;
       this.ownerDetached = true;
       this.ownerEpoch++;
+      this.clearPrivateJobData();
       this.cancelActive();
       try {
         this.releasePreviews();
@@ -442,6 +476,10 @@ export class ApplicationApi {
         e.kind,
         e.constructionOrderKey,
         identity(e.reference),
+        identity(e.coordinateFrame),
+        e.coordinateFrame === undefined
+          ? undefined
+          : encodeReferenceFrame(e.coordinateFrame),
         e.color,
         e.pointSize,
         e.pointAutoDensity,
@@ -480,9 +518,18 @@ export class ApplicationApi {
       inspections: next.authoring.inspections,
       settings,
     });
-    if (this.stateKey !== undefined && key !== this.stateKey) this.revision++;
+    if (this.stateKey !== undefined && key !== this.stateKey) {
+      this.revision++;
+      this.clearPrivateJobData();
+    }
     this.stateKey = key;
     return this.revision;
+  }
+
+  /** Internal GUI publication boundary, including identity-only replacements. */
+  observeModelPublication() {
+    this.clearPrivateJobData();
+    this.currentRevision();
   }
 
   discardScanPreview(previewId?: string) {
@@ -564,17 +611,25 @@ export class ApplicationApi {
     try {
       const ownerEpoch = this.ownerEpoch;
       let startRevision = this.currentRevision();
-      if (!readOnly && args.expectedRevision !== startRevision)
+      if (
+        (!readOnly || command === "reference_construction_acquire") &&
+        args.expectedRevision !== startRevision
+      )
         throw new ApiError(
           "REVISION_CONFLICT",
           "Workspace changed; inspect project_get and use its current revision with a new requestId.",
         );
       if (
         [
+          "datum_construct",
+          "sketch_draw",
+          "sketch_edit",
           "alignment_preview",
           "global_alignment_preview",
           "landmark_preview",
         ].includes(command) ||
+        (command === "sketch_manage" &&
+          ["create", "activate"].includes(String(args.action))) ||
         (command === "scan_preview" && args.action === "create") ||
         (command === "interactive_alignment_edit" && args.action === "begin") ||
         (command === "landmark_edit" &&
@@ -738,7 +793,14 @@ export class ApplicationApi {
             "NOT_FOUND",
             "Job not retained in this workspace.",
           );
-        const { controller: _controller, timer: _timer, ...info } = job;
+        const {
+          controller: _controller,
+          timer: _timer,
+          ownerEpoch: _ownerEpoch,
+          privateData: _privateData,
+          privateRevision: _privateRevision,
+          ...info
+        } = job;
         return this.success(info);
       }
       if (command === "job_cancel") {
@@ -750,6 +812,7 @@ export class ApplicationApi {
           );
         if (job.status === "running") {
           job.controller.abort();
+          this.clearPrivateJobData(job);
           job.stage =
             "Cancellation requested; waiting for native work to settle";
         }
@@ -894,10 +957,61 @@ export class ApplicationApi {
         stage: "Starting",
         controller: new AbortController(),
         timer: undefined!,
+        ownerEpoch,
       };
       const createdArtifacts: string[] = [];
       const context: CommandContext = {
         jobId: job.jobId,
+        startRevision,
+        retainPrivateJobData: (value) => {
+          context.check();
+          if (this.jobs.get(job.jobId) !== job)
+            throw new ApiError(
+              "UNSUPPORTED",
+              "Private data requires a retained API job.",
+            );
+          job.privateData = value;
+          job.privateRevision = startRevision;
+        },
+        getCompletedJobData: (jobId, expectedCommand, validate) => {
+          context.check();
+          const retained = this.jobs.get(jobId);
+          if (!retained)
+            throw new ApiError(
+              "NOT_FOUND",
+              "Acquisition job is not retained in this workspace.",
+            );
+          if (retained.command !== expectedCommand)
+            throw new ApiError(
+              "INVALID_ARGUMENT",
+              "Job command does not match the required acquisition.",
+            );
+          if (retained.status !== "succeeded")
+            throw new ApiError(
+              "INVALID_ARGUMENT",
+              "Acquisition job must have succeeded before use.",
+            );
+          this.checkOwner(retained.ownerEpoch);
+          if (retained.privateRevision !== this.currentRevision()) {
+            this.clearPrivateJobData(retained);
+            throw new ApiError(
+              "REVISION_CONFLICT",
+              "Acquisition source revision changed; acquire again.",
+            );
+          }
+          if (retained.privateData === undefined)
+            throw new ApiError(
+              "NOT_FOUND",
+              "Acquisition job data is no longer available.",
+            );
+          try {
+            validate?.(retained.privateData);
+            return retained.privateData;
+          } catch (error) {
+            this.clearPrivateJobData(retained);
+            throw error;
+          }
+        },
         signal: job.controller.signal,
         progress: (fraction, stage, details) => {
           job.progress = Math.max(0, Math.min(1, fraction));
@@ -973,7 +1087,11 @@ export class ApplicationApi {
       );
       const run = async () => {
         try {
-          job.result = await handler(args, context);
+          const result = await handler(args, context);
+          if (command === "reference_construction_acquire") {
+            context.check();
+            job.result = frozenAcquisitionResult(result);
+          } else job.result = result;
           job.controller.signal.throwIfAborted();
           this.checkOwner(ownerEpoch);
           job.status = "succeeded";
@@ -981,6 +1099,8 @@ export class ApplicationApi {
           job.stage = "Completed";
           return this.success(job.result);
         } catch (error) {
+          this.clearPrivateJobData(job);
+          if (command === "reference_construction_acquire") delete job.result;
           if (
             command === "landmark_preview" &&
             error instanceof DOMException &&
@@ -1003,8 +1123,11 @@ export class ApplicationApi {
       };
       if (asynchronous) {
         this.jobs.set(job.jobId, job);
-        if (this.jobs.size > 32)
-          this.jobs.delete(this.jobs.keys().next().value!);
+        if (this.jobs.size > 32) {
+          const oldest = this.jobs.keys().next().value!;
+          this.clearPrivateJobData(this.jobs.get(oldest));
+          this.jobs.delete(oldest);
+        }
         void run();
         return this.success({ jobId: job.jobId, status: "running" });
       }
@@ -1017,17 +1140,27 @@ export class ApplicationApi {
   private success(result: unknown): ApiResult {
     return { ok: true, revision: this.currentRevision(), result };
   }
+  private clearPrivateJobData(job?: Job) {
+    for (const retained of job ? [job] : this.jobs.values()) {
+      delete retained.privateData;
+      delete retained.privateRevision;
+    }
+  }
   private failure(error: unknown): Extract<ApiResult, { ok: false }> {
     return {
       ok: false,
       revision: this.currentRevision(),
       error: {
         code:
-          error instanceof ApiError || error instanceof VisualCaptureError
-            ? error.code
-            : error instanceof DOMException && error.name === "AbortError"
-              ? "CANCELLED"
-              : "OPERATION_FAILED",
+          error instanceof SketchDrawResourceLimit ||
+          error instanceof SketchSolverResourceLimit ||
+          error instanceof SketchEditResourceLimit
+            ? "RESOURCE_LIMIT"
+            : error instanceof ApiError || error instanceof VisualCaptureError
+              ? error.code
+              : error instanceof DOMException && error.name === "AbortError"
+                ? "CANCELLED"
+                : "OPERATION_FAILED",
         message: error instanceof Error ? error.message : String(error),
       },
     };
@@ -1082,6 +1215,7 @@ export class ApplicationApi {
     this.ownerLeased = false;
     this.ownerGeneration++;
     this.ownerEpoch++;
+    this.clearPrivateJobData();
     this.cancelActive();
     try {
       this.releasePreviews();
@@ -1109,6 +1243,18 @@ export class ApplicationApi {
     if (errors.length)
       throw new AggregateError(errors, "Workspace preview cleanup failed.");
   }
+}
+
+/** Only the small numeric acquisition result is detached; other job buffers retain identity. */
+function frozenAcquisitionResult(value: unknown): unknown {
+  const result = structuredClone(value);
+  const freeze = (item: unknown): void => {
+    if (!item || typeof item !== "object") return;
+    for (const child of Object.values(item)) freeze(child);
+    Object.freeze(item);
+  };
+  freeze(result);
+  return result;
 }
 
 function canonical(value: unknown): unknown {

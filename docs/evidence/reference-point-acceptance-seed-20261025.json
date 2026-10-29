@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-25",
+  "status": "reviewed static contract; native numerical and command acceptance remain open",
+  "scope": "Point constructor storage seed, selected point acceptance reinsertion branches and dirty-state composition",
+  "applicationBehaviorChanged": false,
+  "newPublicOperationAdvertised": false,
+  "ownedApplicationStartupUsedForPassiveCapture": true,
+  "originalConstructionFunctionsInvokedOrReplayed": false,
+  "originalConstructionNumericalComparison": false,
+  "nativeSaveReopenComparison": false,
+  "renderedGuiMcpAcceptance": false,
+  "sourceExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "analysisCarrierSha256": "7f98889f1b31001617fea2508636f36496bac914d4c9dfd4e5a2a2b898a2f849",
+  "analysisImageBase": "0x140000000",
+  "carrierExecutableImageBitRemainsCleared": true,
+  "privateEvidence": [
+    {
+      "artifact": "point-contract-byte-verification-r1.json",
+      "sha256": "f148469da3d5a67b0947f20a57909eef746d86b59ac38fb59330855b98954d3d"
+    },
+    {
+      "artifact": "verify_focused_contract.py",
+      "sha256": "a05aaaa31b904917487a5ab6f61562ab5c22407d070e11f0cf4fc18704915793"
+    },
+    {
+      "artifact": "focused-point-static-r3/functions/focused-summary.json",
+      "sha256": "d27d7cf3d10a7db7ea0cea453f2293cbe8fdf2611db7a034fa5098da0331993f"
+    },
+    {
+      "artifact": "focused-point-static-r3/functions/0041c6f0-constructor-direct-callee.json",
+      "sha256": "498f334f0a9e78ae95428f8de8077e03459289283bb092aa3d976f32d6ee7bc8"
+    },
+    {
+      "artifact": "focused-point-static-r3/functions/0057fcd0-point-acceptance.json",
+      "sha256": "8fddb40de2462f71d5814d4ea8458fe2420283f036b151fa82d6e239df42c495"
+    },
+    {
+      "artifact": "focused-static-runner-r3.json",
+      "sha256": "0f0eac153b35c4b9a3309e26fc1c74bd49fb07c899bbec7f953b3debb4ea36ea"
+    }
+  ],
+  "verification": {
+    "listedInstructionBytesCheckedAgainstCarrier": 2085,
+    "functions": 11,
+    "allFocusedDecompilationsCompleted": true,
+    "independentInstructionDecoderUsed": false,
+    "historicalDigestsMatched": [
+      {
+        "entry": "0x14057f640",
+        "instructions": 397,
+        "bytes": 1677,
+        "instructionBytesSha256": "48171b4ea094a96e929c5a4490b554f724e93565940b414db93adffc2203ac75",
+        "authority": "reference-point-outcomes-20261023.json"
+      },
+      {
+        "entry": "0x14041b1e0",
+        "instructions": 955,
+        "bytes": 4300,
+        "instructionBytesSha256": "48191bc655d1fe855f62296b0e7619986f8750617399c45e2293861449ad2dd0",
+        "authority": "reference-point-outcomes-20261023.json"
+      },
+      {
+        "entry": "0x14041c3d0",
+        "bytes": 351,
+        "instructionBytesSha256": "f01376ad7363813d6d982cd178859fbf2e85dace34af97e2e8a181b181811dc8",
+        "authority": "reference-geometry-lifecycle-20261023.json"
+      },
+      {
+        "entry": "0x140406460",
+        "bytes": 16,
+        "instructionBytesSha256": "bb010cf676c942470a4f5536d306d6e5a3ec7b4f3fc711afb8dc8cfbb2606695",
+        "authority": "reference-geometry-lifecycle-20261023.json"
+      }
+    ],
+    "newSelectedRanges": [
+      {
+        "entry": "0x14041c6f0",
+        "endExclusive": "0x14041c929",
+        "rangeAuthority": "exact advertised runtime-function entry",
+        "instructions": 126,
+        "bytes": 569,
+        "instructionBytesSha256": "83af2d255b583b3bae45c066d5cf7be7b903e718be0af28bfb205f7711749fc1"
+      },
+      {
+        "entry": "0x14057fcd0",
+        "endExclusive": "0x14058028f",
+        "rangeAuthority": "exact advertised runtime-function entry",
+        "instructions": 340,
+        "bytes": 1471,
+        "instructionBytesSha256": "609728fc8e3b799adc9132303d053d25e2d7f1d4ad47692b46aaf6a983c73b85"
+      }
+    ]
+  },
+  "constructorContract": {
+    "outerEntry": "0x14041a780",
+    "innerPayloadInitializerEntry": "0x14041c6f0",
+    "innerBaseInitializerCallee": "0x14040bcc0",
+    "allocationBytes": 184,
+    "outerOwnedPayloadOffset": "0x160",
+    "storedCoordinateOffsets": ["0x38", "0x40", "0x48"],
+    "storedCoordinates": [3.4028234663852886e38, 0, 0],
+    "firstCoordinateDoubleBits": "0x47efffffe0000000",
+    "meaning": "Promoted positive maximum Float32 sentinel, followed by two zero coordinate stores",
+    "anchors": {
+      "outerCallsInnerInitializer": "0x14041a87f",
+      "zeroRegisterEstablished": "0x14041c711",
+      "zeroSecondCoordinateStore": "0x14041c7df",
+      "zeroThirdCoordinateStore": "0x14041c7e3",
+      "sentinelImmediate": "0x14041c7e7",
+      "sentinelFirstCoordinateStore": "0x14041c7f1",
+      "ownedPayloadPublication": "0x14041c8ec",
+      "outerModeTwoAndSubmodeZeroStore": "0x14041a8fb",
+      "baseCompletionWordStore": "0x14041c4bf",
+      "controllerCoordinateWrites": [
+        "0x14057f6f1",
+        "0x14057f6f6",
+        "0x14057f6fb"
+      ]
+    },
+    "notEstablished": "Final dialog defaults, sentinel display/admission, constructor allocation/exception failure behavior or original object output"
+  },
+  "acceptanceContract": {
+    "entry": "0x14057fcd0",
+    "precondition": "Selected accepted-object branch requires a nonnull object at controller offset 0x168",
+    "commonPrefix": "Run controller update; copy mode/submode and cached point geometry; remove resolvable old backlinks and clear accepted common inputs",
+    "modeThree": {
+      "modeGate": "0x14057fe88",
+      "selectorIdentityOffsets": ["0x4c8", "0x4d8"],
+      "admission": "Each selector independently requires scene identity resolution to return an object, then common-feature interface query 0x14114bba0 to return nonnull",
+      "acceptedWrites": "For each admitted selector, add accepted identity to source dependents through slot 0x1b0, then selector identity to accepted inputs through slot 0x1a8",
+      "submodeGuard": false,
+      "firstMissingBranch": "0x14057feb9",
+      "firstInterfaceRejectionBranch": "0x14057ff03",
+      "firstReverseAndInputInsert": ["0x14057ff1c", "0x14057ff33"],
+      "secondMissingBranch": "0x14057ff5d",
+      "secondInterfaceRejectionBranch": "0x14057ffa7",
+      "secondReverseAndInputInsert": ["0x14057ffc0", "0x14057ffd7"]
+    },
+    "modeFour": {
+      "modeGate": "0x14057ffdd",
+      "sourceContainer": "Common input set of controller preview object at offset 0x180",
+      "acceptedWrites": "Walk every preview common identity and insert through accepted slot 0x1a8",
+      "inputInsertAnchor": "0x14058001e",
+      "loopScope": "No scene identity lookup, common-interface query, count-equals-three check or explicit source reverse-link insertion in this selected loop",
+      "caution": "This does not prove the later enclosing callbacks never repair or modify links"
+    },
+    "numericMode": "Mode two bypasses both derived reinsertion branches; accepted common inputs remain empty",
+    "suffix": {
+      "dirtyBooleanTrueLoad": "0x14058007e",
+      "dirtySetterDispatch": "0x140580080",
+      "referencePropagationCall": "0x1405800a1",
+      "sceneRefreshCall": "0x14058012c"
+    }
+  },
+  "dirtyStateComposition": {
+    "dirtySetter": "0x140406460",
+    "dirtyBooleanTrueWord": 1,
+    "ordinaryCompletionWord": 256,
+    "pointRejectedAxisPlaneBranches": ["0x14041b72e", "0x14041b95e"],
+    "rejectedAxisPlaneTarget": "0x14041c249",
+    "ordinaryCompletionStore": "0x14041c23f",
+    "interpretation": "After marking an accepted derived point dirty, ordinary specialized refresh finishes at 0x0100. Rejected axis/plane retains copied geometry and prior dirty word 0x0001. This is a static composition, not an original derived-Apply execution capture."
+  },
+  "resourceReceipt": {
+    "jobLimitBytes": 4294967296,
+    "cpuRate": 2500,
+    "javaHeapMiB": 1536,
+    "elapsedSeconds": 6.6603502000216395,
+    "peakJobBytes": 750182400,
+    "totalProcesses": 6,
+    "activeAfter": 0,
+    "temporaryProjectRemoved": true
+  },
+  "limitations": [
+    "Byte checks verify Ghidra listings against captured bytes; no independent decoder ran in this checkpoint.",
+    "Exact advertised ranges and successful decompilation do not prove all virtual dispatch targets, disjoint tails, exceptions or whole-command ownership.",
+    "Point acceptance has an unresolved final virtual tail call; its target and enclosing UI transaction behavior are not recovered here.",
+    "Source interface identity is reused from retained common-reference evidence, not newly recovered RTTI.",
+    "No new runtime construction numerical fixture, native save/reopen or rendered acceptance is claimed.",
+    "CAD/sketch/provider admission, active missing-link recovery, dependency scheduling and full M4 remain unfinished."
+  ]
+}

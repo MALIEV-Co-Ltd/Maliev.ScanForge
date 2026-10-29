@@ -1,0 +1,51 @@
+{
+  "scope": "Integration of current main into the M4 candidate; application and public MCP evidence, not complete QuickSurface acceptance",
+  "date": "2026-10-29",
+  "m4Parent": "def2ea0f",
+  "mainParent": "b25da68d2369994be91f4472e390b6f0596a2c23",
+  "build": "scanforge-94cc0dcdc93845fb",
+  "integration": "Preserves strict STEP export by default and shared cadOnly GUI/MCP delivery; CAD edge operations use a private copy with M4 unique topology ordering.",
+  "review": "Independent static review found no actionable defect; it did not execute tests.",
+  "validation": {
+    "build": {
+      "typecheckBatches": 13,
+      "receiptSha256": "721a1b6a9f9634b0ef0eb86c063dc1125519506c10651bdff9d37e3e00d63f77"
+    },
+    "earlierBuildFailure": {
+      "reason": "Duplicate merged import; fixed before the successful build.",
+      "receiptSha256": "cf1537252e820f66589824c9fccb72af4878d7436d5dcdc2b40ff11953d1aaeb"
+    },
+    "focused": {
+      "files": 5,
+      "passed": 44,
+      "receiptSha256": "511d7ab01fb61e2e1b3e0d3c4aa8f83dc433747f2a680fbf21348a3cbc62ba86"
+    },
+    "cadSmoke": {
+      "nativeDatumMatrices": 338,
+      "inputBrepMutations": 0,
+      "receiptSha256": "d9e93a576864f21519e6c69a7cb847bdd9378d7df348816ed30282885ca82dd5"
+    },
+    "stepBrowser": {
+      "ledgerSha256": "66dd9253fc8c14eb205f72aaea5c905bccb0ba051035d12617c6825a949988bbc",
+      "receiptSha256": "e3032857349fcc78bcbae3750e1d232d28e020593b54fbe36506875d1e317ff3"
+    },
+    "primitiveBrowser": {
+      "ledgerSha256": "19117e220042c4b32e10aaa8742022c301dd678135a1dc1dfd4ebaf539a3d4c3",
+      "receiptSha256": "6bac28e9f9db605fe9d1e2492b6219ec07b7defd421f5c47af152094c2681899"
+    },
+    "referenceBrowser": {
+      "ledgerSha256": "32c299ef3250276979d267a9297467a8e8978eb8f4d3389e514c5f24816ed4c3",
+      "receiptSha256": "f6d51a39d590b6b7fd833396625f7736ac218f2ca0a6022a301fea5cea1139e5"
+    },
+    "sketchBrowser": {
+      "ledgerSha256": "acd0ec3aa07edd6cb62804ad51fadbf40be2c453b3b9cd332db57f58e7cd7cb2",
+      "receiptSha256": "561567035ff05c6860346b2999037e3ddc347532e4f71980378965ecea091497"
+    },
+    "cleanup": "Owned browser and job processes exited, handles closed, and private ports closed."
+  },
+  "remaining": [
+    "Full exact-head hosted checks and review remain required.",
+    "Retained general CAD/scan provider binding and specialized lifecycle behavior remain incomplete.",
+    "Matched QuickSurface native mode, fit, curve and lifecycle acceptance remains open."
+  ]
+}

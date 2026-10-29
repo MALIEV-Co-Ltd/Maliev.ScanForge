@@ -719,14 +719,298 @@ function getShape(id) {
   return shape;
 }
 
+const REFERENCE_TOPOLOGY_VISIT_LIMIT = 100000;
+const REFERENCE_SCREEN_TRIANGLE_LIMIT = 2000000;
+const REFERENCE_SCREEN_NODE_LIMIT = 6000000;
+
+function referenceMeshAdmission(nodes, triangles) {
+  if (
+    nodes > REFERENCE_SCREEN_NODE_LIMIT ||
+    triangles > REFERENCE_SCREEN_TRIANGLE_LIMIT
+  )
+    throw new Error(
+      "CAD reference screen conversion exceeds 6000000 nodes or 2000000 triangles. Select a simpler source or split the source.",
+    );
+}
+
+/** First-encounter IsSame topology identity, shared with edge treatment. */
+function uniqueReferenceTopology(oc, shape, family, handles, bounded = true) {
+  const type =
+    family === "vertices"
+      ? oc.TopAbs_ShapeEnum.TopAbs_VERTEX
+      : oc.TopAbs_ShapeEnum.TopAbs_EDGE;
+  const explorer = new oc.TopExp_Explorer_2(
+    shape,
+    type,
+    oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+  );
+  handles.push(explorer);
+  const result = [],
+    buckets = new Map();
+  let visits = 0,
+    comparisons = 0;
+  for (; explorer.More(); explorer.Next()) {
+    if (bounded && ++visits > REFERENCE_TOPOLOGY_VISIT_LIMIT)
+      throw new Error(
+        "CAD reference topology exceeds 100000 visits. Select a simpler source.",
+      );
+    const current = explorer.Current();
+    let item;
+    try {
+      item =
+        family === "vertices"
+          ? oc.TopoDS.Vertex_1(current)
+          : oc.TopoDS.Edge_1(current);
+      const hash =
+        typeof item.HashCode === "function" ? item.HashCode(2147483647) : 0;
+      const bucket = buckets.get(hash) ?? [];
+      let duplicate = false;
+      for (const previous of bucket) {
+        if (bounded && ++comparisons > REFERENCE_TOPOLOGY_VISIT_LIMIT)
+          throw new Error(
+            "CAD reference topology identity work exceeds 100000 comparisons. Select a simpler source.",
+          );
+        if (previous.IsSame(item)) {
+          duplicate = true;
+          break;
+        }
+      }
+      if (duplicate) item.delete();
+      else {
+        result.push(item);
+        handles.push(item);
+        bucket.push(item);
+        buckets.set(hash, bucket);
+      }
+      item = undefined;
+    } finally {
+      item?.delete();
+      current.delete();
+    }
+  }
+  return result;
+}
+
+function referencePointCoordinates(point) {
+  const position = [point.X(), point.Y(), point.Z()];
+  if (
+    !position.every((value) => Number.isFinite(value) && Math.abs(value) <= 1e9)
+  )
+    throw new Error(
+      "CAD reference coordinate exceeds finite world bounds (+/-1e9 mm).",
+    );
+  return position;
+}
+
+function referenceEdgeInfo(oc, edge, handles) {
+  const degenerate = oc.BRep_Tool.Degenerated(edge);
+  if (degenerate)
+    return {
+      degenerate: true,
+      eligible: false,
+      reason: "Degenerate CAD edge has no available curve location.",
+    };
+  const curve = new oc.BRepAdaptor_Curve_2(edge);
+  handles.push(curve);
+  const firstParameter = curve.FirstParameter(),
+    lastParameter = curve.LastParameter();
+  if (!Number.isFinite(firstParameter) || !Number.isFinite(lastParameter))
+    return {
+      degenerate: false,
+      eligible: false,
+      reason: "CAD edge parameter range is not finite.",
+    };
+  return {
+    degenerate: false,
+    eligible: true,
+    firstParameter,
+    lastParameter,
+    curve,
+  };
+}
+
+/** Bounded read query: no source mutation, remeshing or shape registration. */
+function referenceFeatures(oc, input) {
+  if (!["vertices", "edges", "faces"].includes(input.family))
+    throw new Error(
+      "CAD reference feature family must be vertices, edges or faces.",
+    );
+  const offset = input.offset ?? 0,
+    limit = input.limit ?? 50;
+  if (
+    !Number.isSafeInteger(offset) ||
+    offset < 0 ||
+    !Number.isSafeInteger(limit) ||
+    limit < 1 ||
+    limit > 100
+  )
+    throw new Error(
+      "CAD reference paging requires nonnegative offset and limit1..100.",
+    );
+  const shape = getShape(input.kernelId),
+    handles = [];
+  try {
+    if (input.family === "faces") {
+      const all = alignmentReferences(oc, input);
+      const rows = all.slice(offset, offset + limit).map((value) => ({
+        ...value,
+        index: value.faceIndex,
+        eligible: value.triangleCount > 0,
+      }));
+      return {
+        total: all.length,
+        nextOffset:
+          offset + rows.length < all.length ? offset + rows.length : null,
+        rows,
+      };
+    }
+    const all = uniqueReferenceTopology(oc, shape, input.family, handles);
+    const rows = [];
+    for (
+      let index = offset;
+      index < Math.min(all.length, offset + limit);
+      index++
+    ) {
+      const local = [];
+      try {
+        if (input.family === "vertices") {
+          // BRep_Tool.Pnt already applies the vertex Location exactly once.
+          const point = oc.BRep_Tool.Pnt(all[index]);
+          local.push(point);
+          rows.push({
+            index,
+            position: referencePointCoordinates(point),
+            eligible: true,
+          });
+        } else {
+          const { curve: _curve, ...info } = referenceEdgeInfo(
+            oc,
+            all[index],
+            local,
+          );
+          rows.push({ index, ...info });
+        }
+      } catch (error) {
+        rows.push({
+          index,
+          eligible: false,
+          ...(input.family === "edges" ? { degenerate: false } : {}),
+          reason:
+            error instanceof Error
+              ? error.message
+              : "CAD feature location is unavailable.",
+        });
+      } finally {
+        cleanup(local);
+      }
+    }
+    return {
+      total: all.length,
+      nextOffset:
+        offset + rows.length < all.length ? offset + rows.length : null,
+      rows,
+    };
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function referenceCoordinate(oc, input) {
+  const selection = input.selection;
+  if (!selection || typeof selection !== "object" || Array.isArray(selection))
+    throw new Error("CAD coordinate selection is invalid.");
+  const fields =
+    selection.kind === "vertex"
+      ? ["kind", "vertexIndex"]
+      : selection.kind === "edge-endpoint"
+        ? ["kind", "edgeIndex", "endpoint"]
+        : selection.kind === "edge-fraction"
+          ? ["kind", "edgeIndex", "fraction"]
+          : [];
+  if (
+    !fields.length ||
+    Object.keys(selection).length !== fields.length ||
+    Object.keys(selection).some((key) => !fields.includes(key))
+  )
+    throw new Error("CAD coordinate selection contains invalid fields.");
+  const vertex = selection.kind === "vertex",
+    index = vertex ? selection.vertexIndex : selection.edgeIndex;
+  if (!Number.isSafeInteger(index) || index < 0)
+    throw new Error(
+      "CAD reference feature index must be a nonnegative safe integer.",
+    );
+  if (
+    selection.kind === "edge-endpoint" &&
+    !["start", "end"].includes(selection.endpoint)
+  )
+    throw new Error("CAD edge endpoint must be start or end.");
+  if (
+    selection.kind === "edge-fraction" &&
+    (!Number.isFinite(selection.fraction) ||
+      selection.fraction < 0 ||
+      selection.fraction > 1)
+  )
+    throw new Error("CAD edge fraction must be within [0,1].");
+  const shape = getShape(input.kernelId),
+    handles = [];
+  try {
+    const all = uniqueReferenceTopology(
+      oc,
+      shape,
+      vertex ? "vertices" : "edges",
+      handles,
+    );
+    if (index >= all.length)
+      throw new Error(
+        "CAD reference feature index is outside the available range.",
+      );
+    if (vertex) {
+      const point = oc.BRep_Tool.Pnt(all[index]);
+      handles.push(point);
+      return { position: referencePointCoordinates(point) };
+    }
+    const info = referenceEdgeInfo(oc, all[index], handles);
+    if (!info.eligible) throw new Error(info.reason);
+    const fraction =
+      selection.kind === "edge-endpoint"
+        ? selection.endpoint === "start"
+          ? 0
+          : 1
+        : selection.fraction;
+    const parameter =
+      fraction === 0
+        ? info.firstParameter
+        : fraction === 1
+          ? info.lastParameter
+          : info.firstParameter +
+            (info.lastParameter - info.firstParameter) * fraction;
+    if (!Number.isFinite(parameter))
+      throw new Error("CAD edge parameter is not finite.");
+    // BRepAdaptor_Curve.Value includes the edge's location; do not apply it again.
+    const point = info.curve.Value(parameter);
+    handles.push(point);
+    return { position: referencePointCoordinates(point) };
+  } finally {
+    cleanup(handles);
+  }
+}
+
 /** Native per-face conversion of existing kernel triangulations. Never cleans
  * or remeshes the exact body: acquisition reuses its current triangulations.
  */
 function alignmentMesh(oc, input) {
   const shape = getShape(input.kernelId),
     handles = [];
+  const referenceAcquisition = input.referenceAcquisition === true;
+  if (input.referenceAcquisition !== undefined && !referenceAcquisition)
+    throw new Error("Invalid CAD reference acquisition limit policy.");
   const cached = alignmentMeshes.get(input.kernelId);
   if (cached) {
+    if (referenceAcquisition)
+      referenceMeshAdmission(
+        cached.mesh.vertices.length / 3,
+        cached.mesh.triangles.length / 3,
+      );
     alignmentMeshes.delete(input.kernelId);
     alignmentMeshes.set(input.kernelId, cached);
     return cached.mesh;
@@ -736,6 +1020,7 @@ function alignmentMesh(oc, input) {
     normals = [],
     triangles = [],
     uvs = [];
+  let faceVisits = 0;
   try {
     const explorer = own(
       new oc.TopExp_Explorer_2(
@@ -745,6 +1030,10 @@ function alignmentMesh(oc, input) {
       ),
     );
     for (; explorer.More(); explorer.Next()) {
+      if (referenceAcquisition && ++faceVisits > REFERENCE_TOPOLOGY_VISIT_LIMIT)
+        throw new Error(
+          "CAD reference screen conversion exceeds 100000 face visits. Select a simpler source.",
+        );
       const faceHandles = [];
       const local = (value) => (faceHandles.push(value), value);
       try {
@@ -756,6 +1045,11 @@ function alignmentMesh(oc, input) {
             "CAD alignment requires cached face triangulations. Recreate or reimport this body.",
           );
         const mesh = handle.get();
+        if (referenceAcquisition)
+          referenceMeshAdmission(
+            vertices.length / 3 + mesh.NbNodes(),
+            triangles.length / 3 + mesh.NbTriangles(),
+          );
         if (!mesh.HasUVNodes())
           throw new Error("CAD alignment requires face UV coordinates.");
         if (
@@ -2032,31 +2326,19 @@ function edgeShape(oc, input) {
   const handles = [],
     edges = [];
   try {
-    // Failure can modify native flags too. Keep both edge identities and the
-    // maker on the same private copy, preserving the public encounter order.
+    // Preserve the source while keeping the same unique topology ordering.
     const copy = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
     handles.push(copy);
     const working = copy.Shape();
     handles.push(working);
-    const explorer = new oc.TopExp_Explorer_2(
+    for (const edge of uniqueReferenceTopology(
+      oc,
       working,
-      oc.TopAbs_ShapeEnum.TopAbs_EDGE,
-      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
-    );
-    handles.push(explorer);
-    for (; explorer.More(); explorer.Next()) {
-      const current = explorer.Current();
-      try {
-        const edge = oc.TopoDS.Edge_1(current);
-        if (edges.some((e) => e.IsSame(edge))) edge.delete();
-        else {
-          edges.push(edge);
-          handles.push(edge);
-        }
-      } finally {
-        current.delete();
-      }
-    }
+      "edges",
+      handles,
+      false,
+    ))
+      edges.push(edge);
     if (input.edgeIndices.some((i) => i >= edges.length))
       throw new Error(`Edge index is outside 0 to ${edges.length - 1}.`);
     const maker =
@@ -2236,6 +2518,10 @@ self.onmessage = (event) => {
       let result;
       if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
+      else if (operation === "referenceFeatures")
+        result = referenceFeatures(oc, payload);
+      else if (operation === "referenceCoordinate")
+        result = referenceCoordinate(oc, payload);
       else if (operation === "alignmentReferences")
         result = alignmentReferences(oc, payload);
       else if (operation === "alignmentMesh") {
