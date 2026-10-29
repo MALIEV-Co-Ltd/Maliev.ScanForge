@@ -79,6 +79,14 @@ controls and do not add transport commands or bypass revision and request guards
 
 ## Intent and scope
 
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace. Text chunks use an ordinary byte view
+for browser TextDecoder; numeric chunks retain immutable shared backing.
+
 The shared restore worker accepts optional immutable shared chunk candidates
 from a shared bounded weak registry. Successful restore and encoding workers
 seed the same registry; encoder candidates are published only after file storage

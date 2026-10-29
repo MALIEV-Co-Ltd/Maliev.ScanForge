@@ -35,6 +35,47 @@ const source = (): ProjectSession => ({
 beforeEach(() => vi.stubGlobal("crossOriginIsolated", true));
 afterEach(() => vi.unstubAllGlobals());
 
+it("restores BREP text with the browser decoder while retaining shared numeric backing", async () => {
+  const session = source();
+  session.project.entities[0].brep = "CASCADE Topology\nชิ้นงาน\n";
+  const file = await encodeProjectFileLocally(session);
+  const originalDecode = TextDecoder.prototype.decode;
+  const browserDecoder = vi
+    .spyOn(TextDecoder.prototype, "decode")
+    .mockImplementation(function (this: TextDecoder, input, options) {
+      if (
+        ArrayBuffer.isView(input) &&
+        input.buffer instanceof SharedArrayBuffer
+      )
+        throw new TypeError(
+          "The provided ArrayBufferView value must not be shared.",
+        );
+      return originalDecode.call(this, input, options);
+    });
+  try {
+    const sharedChunks: SharedChunk[] = [];
+    const first = await decodeProjectContents(file, {
+      sharedReadonlyBuffers: true,
+      onSharedChunk: (chunk) => sharedChunks.push(chunk),
+    });
+    const second = await decodeProjectContents(file, {
+      sharedReadonlyBuffers: true,
+      reusableChunks: sharedChunks,
+    });
+    expect(second.project.entities[0].brep).toBe(
+      session.project.entities[0].brep,
+    );
+    expect((second.project.entities[0].positions as Float32Array).buffer).toBe(
+      (first.project.entities[0].positions as Float32Array).buffer,
+    );
+    expect(
+      (second.project.entities[0].positions as Float32Array).buffer,
+    ).toBeInstanceOf(SharedArrayBuffer);
+  } finally {
+    browserDecoder.mockRestore();
+  }
+});
+
 it("keeps shared chunk backing across the restore worker transport without transferring it", async () => {
   const buffer = new SharedArrayBuffer(36);
   const { packet, transfers } = await packProjectTransport(
