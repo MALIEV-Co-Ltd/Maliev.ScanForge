@@ -132,5 +132,8 @@ do not close a milestone. Track progress in the existing repository issues:
 | M8 Performance and resources           | #8    |
 | M9 Release readiness                   | #9    |
 
-The Plasticity 2026.2 workflow milestone is deferred until after the first major
-release. Do not expand that work ahead of the MVP gates.
+The owner rejected the Plasticity 2026.2 workflow milestone for now. It is
+closed as not planned, not completed. Continue the QuickSurface reference path
+for construction, sketch and CAD workflows, preserving the M4 and M5 acceptance
+gates and shared GUI/MCP operations. Retain the closed Plasticity evidence as
+historical context; do not use it as a current implementation plan.
