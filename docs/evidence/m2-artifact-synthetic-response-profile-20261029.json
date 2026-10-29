@@ -1,0 +1,28 @@
+{
+  "scope": "Diagnostic comparison of MCP response-size effects after original PLY-3 Split/Extract; neither build returns valid artifact data",
+  "control": "m2-artifact-read-process-profile-20261029.json",
+  "method": "Run the same export and repeated artifact_read offsets with disposable builds that skip reading the saved Blob. One returns a synthetic base64-shaped string with the same encoded length as each real chunk; the other returns an empty string while advancing the same offsets. Both runs sample process private commitment and stop intentionally after artifact deletion and diagnostic page garbage collection. No reopen or artifact integrity check is attempted.",
+  "fullSizeResponse": {
+    "build": "scanforge-c58c44daacf4ee6e",
+    "rendererBeforeBytes": 1485316096,
+    "rendererAfterReadBytes": 2307362816,
+    "rendererAfterDiagnosticGcBytes": 2212577280,
+    "peakJobBytes": 4023914496,
+    "apiSha256": "f7b75d35803635f4b3788fd909b27ce48c62889085f67acd297b75b799811d9a",
+    "logSha256": "9b480c028180dfbf5905b925efda398697b1a49e70971dab4f42d6aef3623765",
+    "guardSha256": "a7c4a1c7e3f5fe843a37b25fc90b41d6fb04dd2ef651dd70c029b517810e64a2"
+  },
+  "emptyResponse": {
+    "build": "scanforge-07d8038329ca3046",
+    "rendererBeforeBytes": 1484640256,
+    "rendererAfterReadBytes": 1560186880,
+    "rendererAfterDiagnosticGcBytes": 1541087232,
+    "peakJobBytes": 4109824000,
+    "apiSha256": "f85e5e48f396265cf258fa53c04c9df931a7d4e72516eb3aa671f6559e939e02",
+    "logSha256": "d5dcc07b80091c7964318d337223ef12d20b3102b5c05577e198471fa45e6c1f",
+    "guardSha256": "422a80f94a0fb109cac365c084c3a36961c1eb1e2ff8eecf2cee4ec4bcf939cc"
+  },
+  "interpretation": "The renderer grew by 822046720 bytes for full-size synthetic responses and 75546624 bytes for empty responses. This supports response-size-dependent renderer pressure without actual Blob reads, but does not isolate serialization from fetch/networking or allocator reservation. The measurements are snapshots from separate single runs, not a memory guarantee.",
+  "cleanup": "Both intentional stops returned nonzero and confirmed cleanup. The original artifact API was restored in the experimental worktree and its disposable build rebuilt; no synthetic response code was applied to the application or main preview.",
+  "limits": "These deliberately incorrect responses cannot validate artifact integrity, MCP compatibility, GUI reopen or native equivalence. Diagnostic garbage collection is not a production step."
+}
