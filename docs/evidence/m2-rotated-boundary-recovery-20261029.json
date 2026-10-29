@@ -3,6 +3,13 @@
   "base": "e287787478f9cca5884c0d4cfa678f3f06671173",
   "behavior": "When a non-registered point lies on an existing edge and a cavity boundary is collinear, subdivide all triangles incident to that edge before continuing. Cancellation checks remain in the scans.",
   "nativeComparison": "Rotated raw output shares 35 of 36 native unordered Float32 facets, with 3 additional facets. Endpoint reuse and full native equivalence remain open.",
+  "contactInvestigation": {
+    "scope": "Read-only examination of the existing rotated fixture using the current shared finite-triangle contact routine; no new native run or application behavior change.",
+    "observation": "Source facet 1 and cutter facet 73 produce two different contacts, separated by approximately 2.15539943e-8 mm. One contact is on source edge 0; the other is shared with adjacent cutter facet 70, whose triangle shares an edge with facet 73. Their Float32 output coordinates differ by one step in Y. The retained native export uses one of these output vertices where the application retains both, creating two additional thin facets and replacing one native facet with a third.",
+    "interpretation": "These contacts arise from distinct input intersections. Their proximity alone does not establish native's tolerance rule or justify welding arbitrary nearby contacts. The previous endpoint-reuse description is a hypothesis, not proof of native internals.",
+    "validation": "The rotated regression identifies the two contacts and verifies their source and cutter adjacency as well as the existing facet and area checks. The public GUI and MCP Split paths continue to share the existing operation; this investigation makes no behavioral or MCP contract change.",
+    "limitations": "One retained rotated control, unordered Float32 facets, and application contact calculations only. This does not establish native snapping thresholds, winding, arbitrary geometry, or full M2 acceptance."
+  },
   "mcp": "The shared Split operation is used by GUI and public MCP. Isolated production build and actual 5173 preview each passed GUI/MCP geometry equality, undo/redo, cancellation and binary reopen for the rotated control.",
   "validation": {
     "focused": "338 passed, 5 skipped",
