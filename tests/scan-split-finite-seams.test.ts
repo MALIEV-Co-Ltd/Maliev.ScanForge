@@ -3,6 +3,33 @@ import { analyzeIndexedMesh } from "../src/mesh-processing";
 import { refineFiniteCutterMesh } from "../src/scan-split-finite-pipeline";
 import { materializeFiniteSeams } from "../src/scan-split-finite-seams";
 
+it("opens a closed seam without adding facets, including duplicate cut requests", () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]);
+  const triangles = new Uint32Array([0, 2, 1, 0, 1, 3, 1, 2, 3, 2, 0, 3]);
+  const cuts = new Uint32Array([0, 1, 1, 2, 2, 0, 1, 0]);
+  const before = [vertices.slice(), triangles.slice(), cuts.slice()];
+  const result = materializeFiniteSeams(vertices, triangles, cuts);
+  expect(result.triangles).toHaveLength(triangles.length);
+  const topology = analyzeIndexedMesh(
+    Float64Array.from(result.vertices),
+    result.triangles,
+  );
+  expect(topology.components).toHaveLength(2);
+  expect(topology.nonManifoldEdges).toBe(0);
+  expect([vertices, triangles, cuts]).toEqual(before);
+});
+
+it("rejects a closed cut cycle containing an edge absent from the mesh", () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0]);
+  expect(() =>
+    materializeFiniteSeams(
+      vertices,
+      new Uint32Array([0, 1, 2]),
+      new Uint32Array([0, 1, 1, 3, 3, 0]),
+    ),
+  ).toThrow(/missing/i);
+});
+
 it("opens a finite interior cut while retaining one connected indexed surface", () => {
   const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const triangles = new Uint32Array([0, 1, 2]);

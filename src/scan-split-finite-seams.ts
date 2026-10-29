@@ -58,6 +58,8 @@ export function materializeFiniteSeams(
   const midpoint = new Map<string, number>();
   const splitEdges = new Set<string>();
   const cutVertices = new Set<number>();
+  const cutKeys = new Set<string>();
+  const degrees = new Map<number, number>();
   for (let i = 0; i < cuts.length; i += 2) {
     tick();
     const a = cuts[i],
@@ -65,6 +67,31 @@ export function materializeFiniteSeams(
       k = key(a, b);
     if (a >= vertexCount || b >= vertexCount || a === b)
       throw new Error("Finite seam edge is invalid.");
+    if (cutKeys.has(k)) continue;
+    cutKeys.add(k);
+    degrees.set(a, (degrees.get(a) ?? 0) + 1);
+    degrees.set(b, (degrees.get(b) ?? 0) + 1);
+  }
+  // A closed cut already separates vertex fans; an open tip still needs a midpoint.
+  let closed = cutKeys.size > 0;
+  for (const degree of degrees.values()) {
+    tick();
+    if (degree !== 2) {
+      closed = false;
+      break;
+    }
+  }
+  for (let i = 0; i < cuts.length; i += 2) {
+    tick();
+    const a = cuts[i],
+      b = cuts[i + 1],
+      k = key(a, b);
+    if (closed) {
+      cutVertices.add(a);
+      cutVertices.add(b);
+      splitEdges.add(k);
+      continue;
+    }
     if (midpoint.has(k)) continue;
     const m = vertexCount + addedVertices.length / 3;
     const p = [0, 1, 2].map((axis) => {
@@ -106,13 +133,13 @@ export function materializeFiniteSeams(
       [c, a],
     ]) {
       const k = key(start, end);
+      if (cutKeys.has(k)) countedCuts.add(k);
       if (midpoint.has(k)) {
         faceSlots += 3;
-        countedCuts.add(k);
       }
     }
   }
-  if (countedCuts.size !== midpoint.size)
+  if (countedCuts.size !== cutKeys.size)
     throw new Error("Finite seam edge is missing.");
   if (faceSlots >= 0xffffffff || expandedVertexCount >= 0xffffffff)
     throw new Error("Finite seam index capacity exceeded.");

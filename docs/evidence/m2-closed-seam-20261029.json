@@ -1,0 +1,70 @@
+{
+  "scope": "Closed degree-two Split seams retain their refined facets; open and branched seams retain midpoint handling.",
+  "baseCommit": "fe41e874b2489a1cfee6e9266d6e353235cfbb6f",
+  "candidateBuild": "scanforge-e3811992b85e0b90",
+  "sourceSha256": "b25e5c1b4e18667ebc1231fb1dff3d6efc50eb533ac0d515925210e6fc1452ad",
+  "nativeControl": {
+    "nativeFacets": 18,
+    "applicationBefore": 34,
+    "applicationAfter": 18,
+    "components": 2,
+    "remainingExactFacetDifferences": 6,
+    "nativeParity": false
+  },
+  "validation": {
+    "focused": "323 passed, 2 expected failures in 29 files",
+    "focusedReceipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-focused-20261029-r1.json",
+      "sha256": "9860cefa558539da77b2f5cf2ba9a5c1327ff0fc2e2492b0125e3be922742eed",
+      "passed": true,
+      "peakJobBytes": 1513717760,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "guiMcpClosedConvex": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-gui-mcp-20261029-r1-guard.json",
+      "sha256": "15c005ac3fce405d30ce265d2eb82ed300c902f21314427206fa46f51e06a998",
+      "passed": true,
+      "peakJobBytes": 921743360,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "ply2GuiMcpExtract": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-ply2-20261029-r1-guard.json",
+      "sha256": "a509533902c8db229f3194338d7f24e326e8d5f1dd96ba9c35dd5c7bb8d9cfc9",
+      "passed": true,
+      "peakJobBytes": 3393527808,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "ply3GuiMcpExtract": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-ply3-20261029-r2-guard.json",
+      "sha256": "bb4e4b289ddd565a0656247514ccc63b552b9f2d48c2f45815233a77d6a6dc19",
+      "passed": true,
+      "peakJobBytes": 4032753664,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "typecheck": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-typecheck-20261029-r2.json",
+      "sha256": "8f924d8b5ba0779b26cfe588af444919cf3104917e6e73de32d1317335d13f04",
+      "passed": true,
+      "peakJobBytes": 1227968512,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "previewFocused": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-closed-seam-preview-20261029-r1.json",
+      "sha256": "7590327f68d70e1b0b4edec47bf008916af36450b49b788aa8cfafeddc76b0c4",
+      "passed": true,
+      "peakJobBytes": 382881792,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    }
+  },
+  "limits": [
+    "Native diagonal choice remains mismatched; the exact native regression is still an expected failure.",
+    "Original scans cover one cutter each and GUI Split followed by GUI/MCP Extract, not independent native comparisons or a universal resource guarantee.",
+    "The first PLY-3 and typecheck guard attempts rejected before child launch due to floating-point deadline subtraction. The helper now compares the identically computed absolute deadline without changing its 4 GiB limit or lease."
+  ]
+}

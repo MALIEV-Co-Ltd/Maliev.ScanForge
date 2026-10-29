@@ -3,6 +3,41 @@ import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import { parseMesh } from "../src/io";
 import { runScanEdit } from "../src/scan-edit";
+import { analyzeIndexedMesh } from "../src/mesh-processing";
+
+it("opens the closed native cutter seam without subdividing its facets", () => {
+  const root = new URL(
+    "./fixtures/m2-native-convex-split-20261029/",
+    import.meta.url,
+  );
+  const load = (name: string) => {
+    const bytes = readFileSync(new URL(name, root));
+    return parseMesh(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+      "stl",
+    );
+  };
+  const positions = load("square-source.stl"),
+    target = load("convex-cutter.stl");
+  const before = positions.slice(),
+    targetBefore = target.slice();
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target,
+  });
+  expect(result.positions).toHaveLength(18 * 9);
+  expect(result.indexedMesh).toBeDefined();
+  const topology = analyzeIndexedMesh(
+    Float64Array.from(result.indexedMesh!.vertices),
+    Uint32Array.from(result.indexedMesh!.triangles),
+  );
+  expect(topology.components).toHaveLength(2);
+  expect(topology.nonManifoldEdges).toBe(0);
+  expect(positions).toEqual(before);
+  expect(target).toEqual(targetBefore);
+});
 
 it.fails("matches native convex mesh Split facets on the pinned inputs", () => {
   const root = new URL(
