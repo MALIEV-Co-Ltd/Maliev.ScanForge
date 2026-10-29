@@ -72,7 +72,8 @@ export function materializeFiniteSeams(
     degrees.set(a, (degrees.get(a) ?? 0) + 1);
     degrees.set(b, (degrees.get(b) ?? 0) + 1);
   }
-  // A closed cut already separates vertex fans; an open tip still needs a midpoint.
+  // Existing junctions separate vertex fans. Only an isolated edge needs a
+  // new midpoint to open a seam while keeping its two tips connected.
   let closed = cutKeys.size > 0;
   for (const degree of degrees.values()) {
     tick();
@@ -86,7 +87,7 @@ export function materializeFiniteSeams(
     const a = cuts[i],
       b = cuts[i + 1],
       k = key(a, b);
-    if (closed) {
+    if (closed || (degrees.get(a) ?? 0) > 1 || (degrees.get(b) ?? 0) > 1) {
       cutVertices.add(a);
       cutVertices.add(b);
       splitEdges.add(k);
@@ -214,6 +215,8 @@ export function materializeFiniteSeams(
         ];
       };
       const reference = normal(original);
+      const total = [0, 0, 0];
+      let totalMagnitude = 0;
       for (const part of parts) {
         tick();
         const result = normal(part);
@@ -225,7 +228,22 @@ export function materializeFiniteSeams(
           throw new Error(
             "Finite seam face collapses or reverses at Float32 precision.",
           );
+        for (let axis = 0; axis < 3; axis++) total[axis] += result[axis];
+        totalMagnitude += Math.hypot(...result);
       }
+      const coverageError = Math.hypot(
+        ...total.map((value, axis) => value - reference[axis]),
+      );
+      const tolerance =
+        Math.max(Math.hypot(...reference), totalMagnitude) *
+        Math.max(
+          Number.EPSILON * 128 * (parts.length + 1),
+          options.preciseCoordinates ? 1e-9 : 1e-3,
+        );
+      if (!Number.isFinite(coverageError) || coverageError > tolerance)
+        throw new Error(
+          "Finite seam face coverage changes at output precision.",
+        );
     }
     for (const part of parts) {
       if (faceParents) faceParents[faceOffset / 3] = f / 3;

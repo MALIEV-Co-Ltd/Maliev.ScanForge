@@ -570,6 +570,21 @@ function assembleFiniteFaces(
       throw new Error(
         `Finite assembly face coverage is incomplete at face ${f} (expected ${expectedCoverage}, observed ${covered}).`,
       );
+    // Allow small edge-rounding drift while rejecting material source-area loss.
+    if (
+      options.preciseCoordinates &&
+      Math.abs(expectedCoverage - area) > Math.max(error, area * 1e-9) &&
+      !exactSplitCoverage(
+        mesh.vertices,
+        mesh.triangles,
+        [0, 1, 2],
+        outputCoordinate,
+        tick,
+      )
+    )
+      throw new Error(
+        `Finite assembly source face coverage changes at output precision at face ${f}.`,
+      );
     for (let i = 0; i < ring.length; i++) {
       tick();
       const from = ring[i],

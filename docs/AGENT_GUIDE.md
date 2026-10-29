@@ -1106,7 +1106,9 @@ The browser test uses installed Chrome, a disposable profile, an isolated static
 
 ### Dedicated Split mesh command
 
-Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision; on rejection the source and history remain unchanged.
+Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. It rejects a refined face when its projected source-area change exceeds a relative 1e-9 allowance and an exact binary-coordinate coverage check still differs. It also rejects seam-midpoint area-vector changes beyond a relative 1e-9 allowance in the precise path; the internal Float32 helper allows 1e-3 for rounding. Rejection occurs before publication, leaving source geometry and history unchanged. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision.
+
+Finite Split uses existing junction vertices when opening a multi-edge seam. An isolated cut edge receives a midpoint so its tips remain connected. This applies equally to `mesh_process` and the GUI; the resulting facet count and geometry digest can differ from earlier releases.
 
 Selected-area and boundary smoothing retain stationary raw corners, including wider coordinates produced by finite mesh Split. Moved vertices follow the smoothing operation's Float32 calculation; a moved shared vertex updates its adjacent aliases.
 

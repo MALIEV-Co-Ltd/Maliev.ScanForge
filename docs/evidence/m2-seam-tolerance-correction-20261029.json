@@ -1,0 +1,44 @@
+{
+  "scope": "Correction to the seam coverage guard after full-suite regression; wider M2 and native gates remain open",
+  "failure": "The first full suite failed the original-scan Float32 face-crossing control because the seam area-vector difference was 8.825445547699928e-7 against a reference magnitude of 0.0018825459479558952, approximately 0.047% relative. The original machine-epsilon-only threshold rejected this existing supported helper case.",
+  "failedSuiteGuardSha256": "d045f3fa86baa9aba0344fbacd36f96ff88e3db7bc5576734f20006943e96ebb",
+  "diagnosticGuardSha256": "2c35fd99317d6c8a6a5e4b23a7fc83ae1a4359dcd06d6d008f98007bd832ecf3",
+  "change": "Seam materialization allows a relative area-vector difference of 1e-9 for precise output and 1e-3 for its internal Float32 output, in addition to its machine-arithmetic bound. The separate precise assembly projected-area guard is unchanged. Both known material-loss controls still reject.",
+  "focused": {
+    "passed": 73,
+    "expectedNativeMismatch": 1,
+    "guardSha256": "e66ddbeb987710877c56c97d7a741f116ae053646fa2e6696a394e08aafddc87",
+    "peakBytes": 353366016
+  },
+  "build": {
+    "guardSha256": "749192faf9651d07eab4032afe0ee6eeec71b82ef056476a89d70d80a8f17fff",
+    "peakBytes": 1633579008
+  },
+  "browser": {
+    "normalCutGuiMcpLifecycle": true,
+    "coverageFailureGuiMcpRollback": true,
+    "pageErrors": [],
+    "guardSha256": "9ad5090916382324bc3136f298e023b130885e3686e14331aa1111a101c9b234",
+    "peakBytes": 692842496
+  },
+  "seamSourceSha256": "82d2bc2890c15e51fd395d536657f037656c0e79a8e89b359a94f1c48ed44d01",
+  "correctedFullSuite": {
+    "filesPassed": 781,
+    "filesSkipped": 29,
+    "testsPassed": 50546,
+    "expectedFailures": 10,
+    "testsSkipped": 76,
+    "guardSha256": "17442c8f93f60561e033b051616c6b11d108dafe91c9853414679ee099a25caf",
+    "logSha256": "1b0bdb99e24451269f710f2aa736828dc4dc1f2217d716ec6a79a52db9a3783f",
+    "peakBytes": 1412759552,
+    "cleanupConfirmed": true
+  },
+  "preview": "The revised seam source was copied to the 5173 combined preview after its previous content matched the recorded baseline; its served module contains the guard and Float32 allowance.",
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The tolerances are explicit loss allowances, not exact coverage or native-equivalence guarantees.",
+    "The 1e-3 Float32 allowance is supported by the current real-face control but has not been established as a universal geometry-quality threshold.",
+    "The ten expected failures represent known native Split comparisons, not native parity; the previous passing typecheck predates this small numeric adjustment.",
+    "Native Split mismatches and the other M2 acceptance gates remain open."
+  ]
+}

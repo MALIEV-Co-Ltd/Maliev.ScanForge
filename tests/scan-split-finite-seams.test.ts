@@ -115,21 +115,42 @@ it("rejects a rounded seam midpoint that collapses a generated face", () => {
   expect(vertices).toEqual(before);
 });
 
-it.fails(
-  "rejects material area distortion when a rounded midpoint leaves the source edge",
-  () => {
-    const vertices = new Float32Array([
-      100000000, 0, 0, 100000008, 8, 0, 99999992, 16, 0,
-    ]);
-    expect(() =>
-      materializeFiniteSeams(
-        vertices,
-        new Uint32Array([0, 1, 2]),
-        new Uint32Array([0, 1]),
-      ),
-    ).toThrow(/coverage|precision/i);
-  },
-);
+it("rejects material area distortion when a rounded midpoint leaves the source edge", () => {
+  const vertices = new Float32Array([
+    100000000, 0, 0, 100000008, 8, 0, 99999992, 16, 0,
+  ]);
+  expect(() =>
+    materializeFiniteSeams(
+      vertices,
+      new Uint32Array([0, 1, 2]),
+      new Uint32Array([0, 1]),
+    ),
+  ).toThrow(/coverage|precision/i);
+});
+
+it("rejects material area distortion for a precise midpoint at large coordinates", () => {
+  const vertices = new Float64Array([
+    1e16,
+    0,
+    0,
+    1e16 + 2,
+    8,
+    0,
+    1e16 - 2,
+    16,
+    0,
+  ]);
+  const before = vertices.slice();
+  expect(() =>
+    materializeFiniteSeams(
+      vertices,
+      new Uint32Array([0, 1, 2]),
+      new Uint32Array([0, 1]),
+      { preciseCoordinates: true },
+    ),
+  ).toThrow(/coverage|precision/i);
+  expect(vertices).toEqual(before);
+});
 
 it("identifies an edge with no exactly collinear Float32 interior point", () => {
   const endpoints = new Float32Array([100000000, 100000008]);

@@ -1,0 +1,60 @@
+{
+  "scope": "Shared finite Split coverage checks for a rounded source boundary and isolated seam midpoint; M2 remains open",
+  "problem": "A midpoint or boundary contact rounded off its original edge can preserve winding while materially changing the represented source face. In the shared Float64 control at x=1e16, the original triangle's doubled area is 48 and the previously accepted output's is 40.",
+  "change": "The precise face assembly checks projected source-area drift against a relative 1e-9 allowance and the existing exact binary-coordinate coverage fallback. Seam materialization checks the accumulated area vector of subdivided faces. Detected material changes reject before publication. GUI and public MCP use the shared operation.",
+  "redTests": "The Float32 seam and large-coordinate Float64 seam tests both failed before the seam check; the shared-operation control accepted changed geometry before the assembly check.",
+  "redGuardSha256": "082c12801817a99e181ecfc6cca2657715a505c8eddc77cd1830c2672482566c",
+  "focused": {
+    "passed": 161,
+    "expectedFailure": 1,
+    "expectedFailureMeaning": "Rotated native facet mismatch",
+    "guardSha256": "270cccca9d5ccdc292d4ff496efd1771d7f2acdf9bbfe6178c38b3972d3d9100",
+    "peakBytes": 367095808
+  },
+  "originalPly3": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "sourceFaces": 3691133,
+    "outputPartFaces": [1776963, 1918982],
+    "sourceAndCutterPreserved": true,
+    "inputArea": 7083.997795891035,
+    "outputArea": 7083.997795890635,
+    "guardSha256": "076e2edfd5590850ed96ebcce584eb8265a46a132474b3326fdc56e6d96ef1be",
+    "peakBytes": 2028941312
+  },
+  "originalPly1": "The initial strict check rejected face 9737 with approximately 2.7e-13 relative difference. The adjusted check completed refinement; the existing test then expected two parts but both adjusted and unchanged baseline produced 30. Neither run is a passing PLY-1 acceptance.",
+  "ply1BaselineGuardSha256": "cdeb5d84ca489870fd5456bca343e8d879f60ac678a323d3ba903608ba19ff21",
+  "typecheck": {
+    "batchesPassed": 14,
+    "guardSha256": "39a427f4f77bbca8ee06caa84a5a031a103a613d6cea9d4bcfd99fc3e6a3a06b",
+    "peakBytes": 1191714816
+  },
+  "build": {
+    "kind": "Vite production asset build following separate full typecheck",
+    "guardSha256": "f960f05768f1b82d96bc0de38f1c309f5165c85842433e906f1caaa066001a07",
+    "peakBytes": 1530650624,
+    "warning": "The requested new output directory is outside the project root and was not emptied by Vite."
+  },
+  "browser": {
+    "normalFiniteCutGuiMcpGeometry": true,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "guiAndMcpCancellation": true,
+    "coverageFailureGuiAndMcp": true,
+    "failurePreservesSourceCutterRevisionAndHistory": true,
+    "pageErrors": [],
+    "guardSha256": "80d9556e150638a778f035bf4d819bf0c5f3d87d472023ab0d7b15e59fdea69d",
+    "peakBytes": 686600192
+  },
+  "sourceHashes": {
+    "scan-split-finite-seams.ts": "5a771fee2d4f10ce9211fc779cfcc034cc9ef25ce61e499a2c7615cbb75bcc0a",
+    "scan-split-finite-assembly.ts": "904c1b31d1656aff789ae2a58ac22195c2f464a4fefbce2e9baf576dd543dc42"
+  },
+  "preview": "Both files were copied to the combined 5173 preview after baseline identity verification; HTTP and served module checks confirmed the guards are present.",
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The 1e-9 projected-area allowance permits small drift and is not an exact shape-equivalence guarantee.",
+    "PLY-1's part-count assertion remains unresolved; PLY-3 is one real input, not general resource acceptance.",
+    "The rotated and near-boundary native Split mismatches and the other M2 closure gates remain open.",
+    "No full-suite, fresh native comparison, commit or merge is claimed."
+  ]
+}

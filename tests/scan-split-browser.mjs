@@ -1623,6 +1623,82 @@ try {
       retry: true,
     });
   }
+  if (process.env.SCANFORGE_SPLIT_COVERAGE_ERROR === "1") {
+    const x = 1e16;
+    const coverage = {
+      name: "seam-coverage-precision",
+      source: [x, 0, 0, x + 2, 8, 0, x - 2, 16, 0],
+      target: [
+        x,
+        0,
+        -1,
+        x + 2,
+        8,
+        -1,
+        x,
+        0,
+        1,
+        x + 2,
+        8,
+        -1,
+        x + 2,
+        8,
+        1,
+        x,
+        0,
+        1,
+      ],
+      kind: "mesh",
+    };
+    await load(coverage);
+    assert.deepEqual(await geometry(sourceId), coverage.source);
+    assert.deepEqual(await geometry(cutterId), coverage.target);
+    const before = await call("project_get");
+    await open(coverage);
+    await panel
+      .getByRole("button", { name: "Split mesh", exact: true })
+      .click();
+    await page
+      .getByText(/source face coverage changes at output precision/i)
+      .first()
+      .waitFor();
+    await idle();
+    const afterGui = await call("project_get");
+    assert.equal(afterGui.revision, before.revision);
+    assert.equal(afterGui.result.undo, before.result.undo);
+    assert.deepEqual(
+      stableObjects(afterGui.result.objects),
+      stableObjects(before.result.objects),
+    );
+    assert.deepEqual(await geometry(sourceId), coverage.source);
+    assert.deepEqual(await geometry(cutterId), coverage.target);
+    const failedJob = await job(
+      await mutate("mesh_process", {
+        entityId: sourceId,
+        targetId: cutterId,
+        operation: { kind: "scanEdit", action: "split" },
+      }),
+      "failed",
+    );
+    assert.match(
+      JSON.stringify(failedJob.error),
+      /source face coverage changes at output precision/i,
+    );
+    const afterMcp = await call("project_get");
+    assert.equal(afterMcp.revision, before.revision);
+    assert.equal(afterMcp.result.undo, before.result.undo);
+    assert.deepEqual(
+      stableObjects(afterMcp.result.objects),
+      stableObjects(before.result.objects),
+    );
+    assert.deepEqual(await geometry(sourceId), coverage.source);
+    assert.deepEqual(await geometry(cutterId), coverage.target);
+    results.push({
+      name: coverage.name,
+      guiAndMcpFailure: true,
+      unchangedGeometryAndHistory: true,
+    });
+  }
   assert.deepEqual(errors, []);
   ledger.result = { cases: results, pageErrors: errors };
   console.log(JSON.stringify(ledger.result));
