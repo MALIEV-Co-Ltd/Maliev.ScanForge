@@ -39,5 +39,18 @@
   "limitations": [
     "Candidate static paths and record types remain unbound to the observed native Split operation.",
     "Three manufactured examples do not establish general triangulation behavior. Exact native parity and M2 closure remain open."
-  ]
+  ],
+  "additionalPointOrderExperiments": {
+    "scope": "Disposable shared-kernel ordering experiments, not production changes or native path proof",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "baselineMatches": [12, 22, 10],
+    "result": "Nine candidate orderings based on barycentric sums, differences and distances did not match all three native controls. Best aggregate matches varied by case; none was applied.",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-20261029.json",
+    "resultsSha256": "afe4c9a21c30e38b7b21232c8d27b2586bb674cafb0da373a2fd080ae460e822",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-guard-20261029-r1.json",
+    "guardSha256": "c38766d09f6b3ab6fa4b79d96b11f38cb7afd994bd849fedf5459861c32ee369",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-20261029.py",
+    "runnerSha256": "c03a7614f157a09da16af84de47ed4caccaaf043ea1871844043f4ace838c085",
+    "peakJobBytes": 361951232
+  }
 }
