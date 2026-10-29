@@ -1,0 +1,38 @@
+{
+  "scope": "Large public-MCP artifact responses through the paired browser bridge; one original PLY-3 diagnostic per variant.",
+  "baselineBuild": "scanforge-56698340417b5ffa",
+  "blobBuild": "scanforge-f330beb57f1e180e",
+  "inputFaces": 3691133,
+  "artifactBytes": 475563378,
+  "sampledRendererPrivateBytes": {
+    "stringBody": {
+      "beforeRead": 1497382912,
+      "afterRead": 2389172224,
+      "afterDeleteAndDiagnosticGc": 2244571136
+    },
+    "blobBody": {
+      "beforeRead": 1491316736,
+      "afterRead": 1672376320,
+      "afterDeleteAndDiagnosticGc": 1518759936
+    }
+  },
+  "validation": {
+    "focusedTests": "58 passed across browser bridge, MCP bridge and application API tests.",
+    "fullSuite": "50549 passed and 76 skipped; peak 1412235264 bytes.",
+    "build": "14 TypeScript batches and Vite build passed; peak 1664638976 bytes.",
+    "format": "Changed files pass Prettier; the repository-wide check reports two pre-existing untracked diagnostic scripts."
+  },
+  "combinedReopen": {
+    "scope": "Experimental Blob bridge plus worker-only Float64 views and shared Split/component indices.",
+    "geometry": "GUI reopened the saved project; public MCP source, cutter and extracted-part geometry digests matched before and after.",
+    "peakJobBytes": 4300234752,
+    "jobLimitBytes": 4294967296,
+    "resourcePass": false,
+    "note": "The guard reported passed but its sampled peak exceeded the limit. Undo and Redo were checked before reopen, not after."
+  },
+  "limitations": [
+    "Process private-byte samples are not allocation attribution; each variant ran once and diagnostic garbage collection is not an application behavior.",
+    "The full reopen used other experimental changes as well as the Blob bridge, and does not isolate their contributions.",
+    "The 4 GiB reopen gate, post-reopen history, broader GUI/MCP acceptance and native M2 comparisons remain open."
+  ]
+}

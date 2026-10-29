@@ -66,6 +66,78 @@ it("pairs, forwards validated envelopes, sends result and closes without leaking
     ),
   ).toBe(true);
 });
+it("sends large artifact replies with exact JSON and pairing headers", async () => {
+  const base64 = "abcXYZ012+/=".repeat(30000);
+  let resolveReply!: (value: { body: unknown; authorization: string }) => void;
+  const delivered = new Promise<{ body: unknown; authorization: string }>(
+    (resolve) => {
+      resolveReply = resolve;
+    },
+  );
+  let polled = false;
+  const fetcher = vi.fn(
+    async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith("/connect"))
+        return Response.json({ sessionId: "session" });
+      if (url.includes("/poll")) {
+        if (!polled) {
+          polled = true;
+          return Response.json({
+            requests: [
+              {
+                id: "request",
+                command: "artifact_read",
+                args: { artifactId: "a" },
+              },
+            ],
+          });
+        }
+        return new Promise<Response>((_resolve, reject) =>
+          init?.signal?.addEventListener(
+            "abort",
+            () => reject(new Error("aborted")),
+            { once: true },
+          ),
+        );
+      }
+      if (url.endsWith("/result"))
+        resolveReply({
+          body: init?.body,
+          authorization: (init?.headers as Record<string, string>)
+            .Authorization,
+        });
+      return Response.json({ ok: true });
+    },
+  );
+  const api = {
+    invoke: vi.fn(async () => ({
+      ok: true as const,
+      revision: 0,
+      result: { base64 },
+    })),
+    cancelActive: vi.fn(),
+  };
+  const connection = await connectBrowserBridge(
+    api,
+    "http://127.0.0.1:5184",
+    token,
+    vi.fn(),
+    fetcher,
+  );
+  try {
+    const reply = await delivered;
+    expect(reply.body).toBeInstanceOf(Blob);
+    expect(reply.authorization).toBe(`Bearer ${token}`);
+    expect(JSON.parse(await (reply.body as Blob).text())).toEqual({
+      sessionId: "session",
+      id: "request",
+      result: { ok: true, revision: 0, result: { base64 } },
+    });
+  } finally {
+    await connection.disconnect();
+  }
+});
 it("renders accessible explicit pairing controls with password field and disabled initial action", () => {
   const html = renderToStaticMarkup(
     createElement(AgentConnection, { api: {} as ApplicationApi }),

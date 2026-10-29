@@ -30,13 +30,18 @@ export async function connectBrowserBridge(
   let sessionId = "";
   let closed = false;
   async function request(path: string, body?: unknown) {
+    const payload = body === undefined ? undefined : JSON.stringify(body);
     const response = await fetcher(new URL(path, url), {
       method: body === undefined ? "GET" : "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
       },
-      body: body === undefined ? undefined : JSON.stringify(body),
+      // Blob bodies avoid retaining large serialized responses in the renderer.
+      body:
+        payload !== undefined && payload.length >= 65536
+          ? new Blob([payload], { type: "application/json" })
+          : payload,
       signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10000)]),
       cache: "no-store",
       credentials: "omit",
