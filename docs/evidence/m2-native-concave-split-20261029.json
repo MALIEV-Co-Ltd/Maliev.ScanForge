@@ -38,7 +38,48 @@
   },
   "limitations": [
     "Native indexed seam identity is not available in STL; native component and hole counts are GUI observations.",
-    "Direct shared-kernel comparison does not itself demonstrate this concave fixture through GUI and public MCP.",
     "These manufactured controls do not prove general native Split parity. Exact triangulation remains mismatched and M2 remains open."
-  ]
+  ],
+  "integratedGuiMcp": {
+    "baseCommit": "f72fe09b96b35354b991786d1d83f3acd37284a4",
+    "incomingMain": "3c0f2fb5783fbcdf096dd76b3326cd391ba6284c",
+    "mergeTree": "a74b7d30f9b617fcc6abfd8a090654c83fd52a7d",
+    "build": "scanforge-8ef8d18f7e6854c5",
+    "result": "GUI and public MCP geometry match on the pinned input. 34 facets, two components, areas 3 and 13 mm2, binary reopen, history and held-result cancellation passed.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-concave-integrated-gui-mcp-20261029-r1-guard.json",
+    "receiptSha256": "a2ecdeac5c433ab965285d03a2193c957e4193fc1d4d22e66cd0da1abbaff596",
+    "peakJobBytes": 919859200,
+    "jobLimitBytes": 4294967296
+  },
+  "orderingExperiments": {
+    "scope": "Disposable shared-kernel experiment only; no application change",
+    "baselineMatches": {
+      "convex": 12,
+      "concave": 22
+    },
+    "variants": [
+      {
+        "order": "x ascending, y descending",
+        "convex": 13,
+        "concave": 24
+      },
+      {
+        "order": "y descending, x descending",
+        "convex": 14,
+        "concave": 15
+      },
+      {
+        "order": "y ascending, x ascending",
+        "convex": 6,
+        "concave": 11
+      },
+      {
+        "order": "x descending, y ascending",
+        "convex": 8,
+        "concave": 11
+      }
+    ],
+    "interpretation": "Simple insertion-order changes do not establish native parity; none was applied.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-orders-guard-20261029-r1.json"
+  }
 }
