@@ -114,6 +114,19 @@ it("reads shared storage without mutating it and hashes empty numeric values", a
   });
 });
 
+it("matches WebCrypto for a large byte view with a nonzero offset", async () => {
+  const storage = new Uint8Array(1024 * 1024 + 31);
+  for (let i = 0; i < storage.length; i++) storage[i] = (i * 37 + 11) & 255;
+  const bytes = storage.subarray(7, storage.length - 3);
+  const expected = Buffer.from(
+    await crypto.subtle.digest("SHA-256", bytes),
+  ).toString("hex");
+  expect(projectValueHash(bytes, "u8")).toEqual({
+    sha256: expected,
+    rawBytes: bytes.length,
+  });
+});
+
 it("propagates compression failure", async () => {
   const failure = new Error("encoder stream failed");
   vi.stubGlobal(

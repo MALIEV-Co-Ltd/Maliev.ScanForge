@@ -1,4 +1,4 @@
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import {
   encodeProjectFile,
   decodeProjectFile,
@@ -122,6 +122,52 @@ it("rejects truncated and corrupted payloads", async () => {
   ).rejects.toThrow();
   const bytes = new Uint8Array(await file.arrayBuffer());
   bytes[bytes.length - 1] ^= 1;
+  await expect(decodeProjectFile(new Blob([bytes]))).rejects.toThrow();
+});
+it("opens verified project geometry when a whole-buffer digest cannot be allocated", async () => {
+  const source = session();
+  const positions = new Float32Array(262152);
+  positions.set([-0, 0, 0, 1.234, 0, 0, 0, 1, 0]);
+  source.project.entities = [{ ...entity, positions }];
+  source.history = [];
+  source.future = [];
+  const file = await encodeProjectFile(source);
+  const digest = vi
+    .spyOn(crypto.subtle, "digest")
+    .mockRejectedValue(
+      new DOMException(
+        "Insufficient memory for a whole-buffer digest",
+        "OperationError",
+      ),
+    );
+  try {
+    const restored = await decodeProjectFile(file);
+    expect(restored.project.entities[0].positions).toEqual(positions);
+    expect(Object.is(restored.project.entities[0].positions[0], -0)).toBe(true);
+  } finally {
+    digest.mockRestore();
+  }
+});
+it("rejects a large chunk when its declared digest does not match", async () => {
+  const source = session();
+  source.project.entities = [
+    { ...entity, positions: new Float32Array(262152) },
+  ];
+  source.history = [];
+  source.future = [];
+  const bytes = new Uint8Array(
+    await (await encodeProjectFile(source)).arrayBuffer(),
+  );
+  const manifestLength = new DataView(bytes.buffer).getUint32(8, true);
+  const manifestBytes = bytes.subarray(16, 16 + manifestLength);
+  const manifest = new TextDecoder().decode(manifestBytes);
+  const changed = manifest.replace(
+    /("sha256"\s*:\s*"[0-9a-f]{63})([0-9a-f])(")/,
+    (_match, prefix: string, last: string, suffix: string) =>
+      `${prefix}${last === "0" ? "1" : "0"}${suffix}`,
+  );
+  expect(changed).not.toBe(manifest);
+  manifestBytes.set(new TextEncoder().encode(changed));
   await expect(decodeProjectFile(new Blob([bytes]))).rejects.toThrow();
 });
 it("compresses representative repeated scan geometry below JSON size", async () => {

@@ -570,6 +570,9 @@ Binary restoration decompresses directly into final readonly shared buffers when
 cross-origin isolation is available, avoiding a second complete decompressed
 geometry copy. GUI opening, MCP `project_import`, and `backup_restore` retain
 the same chunk hash checks, buffer aliases, history, cancellation and fallback.
+Decompressed chunks larger than 1 MiB are hashed incrementally to avoid a
+second whole-chunk digest allocation; this does not impose a total restore-memory
+limit and can take longer than WebCrypto on large projects.
 
 Browser binary project saves/exports of at least 64 MiB use temporary IndexedDB backing before
 publication. MCP uploads checkpoint their accumulated bytes to the same disk

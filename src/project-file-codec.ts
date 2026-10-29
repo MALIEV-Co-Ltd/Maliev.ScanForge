@@ -97,9 +97,9 @@ type RecordData = Omit<
 };
 const magic = new TextEncoder().encode("SCANFRG2");
 async function digest(bytes: Uint8Array): Promise<string> {
-  // WebCrypto rejects shared buffers; the existing incremental hash borrows
-  // their bytes without allocating another full decompressed chunk.
-  if (!(bytes.buffer instanceof ArrayBuffer))
+  // WebCrypto rejects shared buffers and may copy the entire input. Hash large
+  // chunks incrementally to avoid another geometry-sized allocation on restore.
+  if (!(bytes.buffer instanceof ArrayBuffer) || bytes.byteLength > 1024 * 1024)
     return projectValueHash(bytes, "u8").sha256;
   return Array.from(
     new Uint8Array(
