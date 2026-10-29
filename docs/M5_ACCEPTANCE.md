@@ -51,6 +51,15 @@ is archived byte-for-byte (SHA-256 `2834cff4abdf76390983836e8f683724d129c0ea5b08
 its relative paths refer to its original location in `.resources/m5`.
 The M5 native operation matrix and M4 acceptance remain open.
 
+On 2026-10-29 a [matched fillet attempt](evidence/m5-20261025/native-fillet-blank-r2.json)
+opened the verified QSF in a fresh owned QuickSurface session. The object tree
+showed one solid, but successive viewport captures were blank white, so the
+specified edge could not be identified. No fillet was applied or exported. The
+[guard receipt](evidence/m5-20261025/native-fillet-blank-r2-job.json) records
+terminal exit 0 for authenticated cleanup, 54.551 s, 699,273,216 peak bytes,
+active zero and closed handles/mutex. This is an incomplete observation, not a
+passing native comparison; the separately owned desktop scenes were preserved.
+
 The integration of M5 `d5eb684` with main `57c77aa`, committed as `b6c2453`, passes the
 [local pre-commit integration runtime](evidence/m5-20261025/main-integration-r1-ledger.json),
 build `scanforge-6df43e18c921f0bd`. All seven phases exit 0: formatting the
