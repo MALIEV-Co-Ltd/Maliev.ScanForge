@@ -264,8 +264,13 @@ export function materializeFiniteSeams(
     }
     return i;
   };
-  let order = Uint32Array.from({ length: faces.length }, (_, i) => i);
-  let scratch = new Uint32Array(faces.length);
+  let order = new Uint32Array(
+    allocateImportedReadonlyBuffer(faces.length * 4, true),
+  );
+  for (let i = 0; i < order.length; i++) order[i] = i;
+  let scratch = new Uint32Array(
+    allocateImportedReadonlyBuffer(faces.length * 4, true),
+  );
   const next = (slot: number) => slot - (slot % 3) + (((slot % 3) + 1) % 3);
   const min = (slot: number) => Math.min(faces[slot], faces[next(slot)]);
   const max = (slot: number) => Math.max(faces[slot], faces[next(slot)]);
@@ -372,3 +377,4 @@ export function materializeFiniteSeams(
     ...(faceParents ? { faceParents } : {}),
   };
 }
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";

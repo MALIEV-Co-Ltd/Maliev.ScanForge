@@ -16,6 +16,7 @@ import { runDefeature } from "./scan-defeature";
 import { splitByPlane } from "./scan-edit-split";
 import { runFiniteSplitCandidate } from "./scan-split-finite-candidate";
 import { indexedMeshMatches } from "./indexed-mesh";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import {
   compactComponentGroups,
   COMPACT_COMPONENT_FACE_THRESHOLD,
@@ -153,7 +154,9 @@ function componentIndex(
   if (!faces.length) return undefined;
   checkProgress(options, 1, "Compacting component indices");
   const ids = new Uint32Array(source.vertices.length / 3);
-  const triangles = new Uint32Array(faces.length * 3);
+  const triangles = new Uint32Array(
+    allocateImportedReadonlyBuffer(faces.length * 3 * 4, true),
+  );
   let slot = 0,
     vertexCount = 0;
   for (let row = 0; row < faces.length; row++) {
