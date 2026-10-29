@@ -1,0 +1,39 @@
+{
+  "scope": "Offline postprocessing diagnostic on a prior experimental Split candidate, not production or a new native observation",
+  "method": "Use application-collected hits in face order to associate endpoints first with current-face corners strictly within 0.001, then with first-seen points within the inferred Float32-derived 0.0001 radius. Apply the resulting Float32 aliases to already-triangulated experimental output and drop facets with duplicate corners; compare unordered Float32 facet multisets and summed triangle areas with ten retained native outputs.",
+  "results": {
+    "exactFacetMatches": [
+      "rotated",
+      "wide-below",
+      "wide-above",
+      "convex",
+      "concave",
+      "cyclic",
+      "dense"
+    ],
+    "threeRemainingCases": "The below, at and above small-radius controls each retain one additional nondegenerate triangle after mapping. Their areas are approximately 0.000045, 0.000050 and 0.000055 square mm, respectively.",
+    "areaSums": "Each source and mapped result sums to 0.5 square mm; native outputs sum to 0.4999549999993178, 0.4999500000012631 and 0.4999449999995704 square mm, respectively. These are triangle-area sums, not an independent overlap or boundary analysis.",
+    "aliasConflicts": 0
+  },
+  "testPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-two-stage-facet-diagnostic-20261029.test.ts",
+  "testSha256": "9fe0add6ab93e24e9b9737dc3e8bf3f5fb533db05c77f3fba54acb85675857e7",
+  "resultPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/two-stage-facet-diagnostic-20261029.json",
+  "resultSha256": "6f62a631bba2eefc7fc08a4571e064894df5c0adffcd793e719c8389215f6c9b",
+  "guardSha256": "6a0920490abfd874d320d277212e3f40c2123049d86f606a222702303e35a8f2",
+  "peakJobBytes": 345763840,
+  "cleanupConfirmed": true,
+  "experimentalSourceSha256": {
+    "scan-split-finite-face.ts": "a145d1454c5607655cea3371025e77bc8c16f0ce953ccc7b1542891df4b92afc",
+    "scan-split-finite-pipeline.ts": "6befa89520b9c7d374f84044e4227d59f66c6ea6409ad31fbdc08ff1ab4bda84",
+    "scan-edit-general-split.ts": "ad7ce89d11d389809ac85a4e4047a6286c6709761bf08865928140cf9760b038",
+    "scan-split-finite-assembly.ts": "fe608242b6566532e73400eb511ac9b34ebb7830a7fa028bd8f9e655135c7547",
+    "scan-split-finite-seams.ts": "00c555c921340df8587cf6440454f17387b5f92456cc66f881684a509f934430",
+    "scan-split-native-point-order.ts": "48a837aeeb4eb4d7fc190e64bfdabf13505590fe946faa6de129617ba88bf22d"
+  },
+  "limitations": [
+    "The diagnostic uses a prior isolated experimental candidate and applies associations after triangulation, unlike the hypothesized native order. It does not test the current production candidate.",
+    "The cases were known before this model was selected; no independent scaled native result was available. Output winding, ownership, topology, GUI and MCP are not compared.",
+    "The diagnostic test asserts the number of cases and retains measured differences; its passing status is not a native equivalence assertion.",
+    "Dropping an additional nonzero facet would remove area in these controls. The static reason for the native output and the general rule remain unresolved; no application change is justified by this observation alone."
+  ]
+}

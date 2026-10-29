@@ -498,3 +498,5 @@ The shared Split path now collapses consecutive numerical copies of the same obs
 ## Split corner association investigation, 2026-10-29
 
 The [static worker and offline diagnostic](evidence/m2-split-worker-corner-tolerance-20261029.json) suggest separate corner-association and point-reuse tolerances. A two-stage model reproduces the vertex sets of ten previously observed native controls, but does not compare facets or establish runtime order or safe general behavior. No application behavior changed; native Split and the other M2 acceptance gates remain open.
+
+A subsequent [facet diagnostic](evidence/m2-two-stage-facet-diagnostic-20261029.json) applies the modeled associations after triangulation in an older experimental candidate. Seven of ten retained controls match unordered native facet sets; each of the other three has one additional nonzero-area facet. The native triangle-area sums are smaller than the source sums in those three controls. This diagnostic does not establish a general removal rule or validate production, and no geometry change was applied.
