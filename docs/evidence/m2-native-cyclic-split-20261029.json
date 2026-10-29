@@ -42,6 +42,20 @@
   "limitations": [
     "One cyclic permutation of one manufactured control: the cause may occur during native import, splitting or export; no internal mechanism is proven.",
     "STL does not retain indexed seam identity. Component and hole counts are native GUI observations.",
-    "No equivalent GUI/public-MCP cyclic fixture replay has been performed. Native triangulation remains mismatched; M2 is open."
-  ]
+    "GUI/MCP comparison covers the isolated integrated tree, not the latest M2 branch head or final milestone. Native triangulation remains mismatched."
+  ],
+  "integratedGuiMcp": {
+    "baseCommit": "f72fe09b96b35354b991786d1d83f3acd37284a4",
+    "incomingMain": "3c0f2fb5783fbcdf096dd76b3326cd391ba6284c",
+    "mergeTree": "a74b7d30f9b617fcc6abfd8a090654c83fd52a7d",
+    "build": "scanforge-8ef8d18f7e6854c5",
+    "result": "GUI and public MCP match on the cyclic source and same cutter: 18 facets, two components, areas 1 and 15 mm2, source preservation, undo/redo, binary reopen and held-result cancellation. This does not establish native triangulation parity.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cyclic-integrated-gui-mcp-20261029-r2-guard.json",
+    "receiptSha256": "d71ceb4d520c42204503874bd6a77cd14fe9fd1b8313f0483105ba34a885af26",
+    "browserScript": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cyclic-browser-local-20261029.mjs",
+    "browserScriptSha256": "18cfa2466143dc3a5f013d56babcdae8829d887a9ffd679ebe8237d23db8f7d6",
+    "peakJobBytes": 918659072,
+    "jobLimitBytes": 4294967296,
+    "priorAttempt": "r1 stopped at the import assertion because the adapted test still expected original, not cyclic, vertex order; r2 corrected the test input expectation. Both attempts cleaned up."
+  }
 }
