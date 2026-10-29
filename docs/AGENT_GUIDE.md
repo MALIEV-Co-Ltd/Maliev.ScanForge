@@ -81,6 +81,15 @@ Failed, cancelled or stale-revision jobs publish no selection. One successful
 selection change records one selection-history step. Obtain a fresh revision
 after camera/editor changes and use a new request ID after correcting a rejected
 request; exact retries retain the original receipt.
+For mesh positions stored as number arrays, the worker receives binary64 values
+and constructs its Float32 BVH relative to the mesh bounds center. Selection
+continues to use world-space camera and clipping coordinates. Worker parallelism
+accounts for the larger precise input; the BVH remains Float32 and its precision
+depends on the mesh's spatial extent.
+Precise number-array scan meshes also use a local display origin for viewport
+picking and selection overlays; `viewport_pick` continues to report world-space
+points and rendered triangle slots. The display buffer remains Float32 relative
+to that origin, so its precision likewise depends on mesh extent.
 
 The internal new-draft initializer now distinguishes constructor/scene seeding
 from typed input writes, including the native zero-span line behavior. It does
@@ -146,6 +155,19 @@ BVH comparison index instead of failing at the native octree's node budget;
 small surfaces retain the recovered comparison behavior. Comparison never limits
 smoothing.
 
+For selected Reduce noise through `mesh_process`, set top-level
+`selectionOnly: true` and inner `operation.selectionOnly: true`; the outer flag
+binds the current facet mask and the inner flag selects the smoothing scope.
+For `scan_preview`, set `operation.selectionOnly: true`; preview binds the
+current source selection itself. Both paths retain raw corner coordinates for
+stationary vertices, including unrelated tolerance-welded aliases. A moved
+shared vertex updates its aliases on adjacent facets. Preview creation,
+cancellation/discard, history and binary reopening use the same shared operation.
+Deviation measurement compares the published facets, including retained raw
+aliases, in both direct processing and preview comparison.
+
+Flip Normals retains valid indexed vertex identities while reversing each triangle and refreshing computed vertex normals. Existing computed facet normals have their Float32 sign bits inverted before refresh; scanner-supplied normals are not retained as computed geometry normals. Indexed sources above 27 million vertex coordinates reject before worker dispatch. Indexed admission reports `Validating indexed topology` at zero progress after it starts, and yields to browser tasks while checking cancellation and workspace revision between bounded validation tasks. Poll `job_get` and use `job_cancel`; the terminal receipt confirms whether cancellation succeeded. The immediate GUI command displays the same stage and a status-bar cancel control. Browser scheduling determines when cancellation is delivered. Later buffer copies and publication checks may still run synchronously. This applies equally to the ribbon and `mesh_process` (`scanTools/flipNormals`). Native refresh equivalence for every stored-normal state remains unverified.
+
 ## Background mesh preparation
 
 GUI and MCP imports stream the packed little-endian PLY scanner schema (XYZ and
@@ -153,7 +175,10 @@ normal Float32 values, triangular faces) through reads of at most 1 MiB, retaini
 the full geometry and authored normals. Other PLY layouts use the existing loader.
 Cancellation, units, placement, source counts and history semantics are unchanged.
 This bounds raw input reads; final geometry and preparation still scale with scan
-size, and the three-scan 2 GiB diagnostic gate remains unresolved.
+size. The historical three-scan 2 GiB diagnostic is not the current process
+limit: owned validation uses an aggregate 4 GiB limit. Per-operation working
+admission and transfer/artifact quotas remain separate; none guarantees a total
+browser-memory ceiling.
 Packed PLY per-file progress now advances during face preflight, vertex/face
 decoding and position/normal expansion through the existing import progress
 responses. Cancellation and callback failures do not report completion.
@@ -199,12 +224,16 @@ source is selected again. Preparation never starts a competing foreground geomet
 
 Agents use `mesh_analyze` for diagnostics or `mesh_process` with
 `operation: {kind: "scanEdit", action: "inventory", tolerance: 0.001}` for
-the GUI's inventory. Use `tolerance: 0.001` with `mesh_analyze` to share the GUI's
-millimetre weld tolerance; the existing API default remains `0.000001`.
+the GUI's inventory. Both operations now default to the GUI's `0.001` mm weld
+tolerance. Pass `tolerance: 0.000001` explicitly when reproducing older API
+requests that relied on that former default.
 Reusable operations on the same immutable geometry queue behind one another,
 sharing the prepared topology. Shared diagnostics stop only when their last
 observer leaves; cancellation of queued work starts no worker. Geometry edits,
-replacement, or a different tolerance invalidate reuse. Compact cached counts
+replacement, or a different tolerance invalidate reuse. Defeature also drops
+derived adjacency when preserving raw source corners changes its welded
+representatives; the next topology operation rebuilds once from the published
+coordinates. Compact cached counts
 may be reused on Undo; the worker index belongs to the selected geometry.
 Prepared topology is also cached in the browser's local IndexedDB storage. The
 key includes all ordered mesh coordinates, weld tolerance, and topology/cache
@@ -221,7 +250,10 @@ snapshots use the canonical source-coordinate analysis.
 Edit Scan observes this preparation without starting duplicate work.
 `object_get.meshPreparation` exposes `scheduled`, `pending` (with progress),
 `ready` (with counts), `error`, or `inactive` for raw meshes. Use GUI tolerance
-`0.001` for MCP selected-facet edits to reuse the prepared index.
+`0.001` for MCP selected-facet edits to reuse the prepared index; this is also
+the default when the request omits tolerance. Defeature retains the exact
+Float32 corner coordinates of unselected, unpruned source facets even when
+tolerant adjacency groups nearby source vertices for diagnostics and patching.
 
 The derived cache is separate from project/recovery data and project files.
 It retains at most eight entries, 256 MiB total, 128 MiB per snapshot, with
@@ -278,10 +310,22 @@ not repeat welding and topology construction. Patch append shares untouched edge
 records and copies affected edge uses; output-precision changes force a full
 refresh instead of retaining stale adjacency.
 
+Flat bridges sample each free rail at the mean length of the two attachment
+edges, with each rail's segment count truncated independently (minimum one).
+The resulting rim uses smallest-corner triangulation. Rails already attached
+to retained mesh edges are not subdivided. The shared GUI/MCP operation rejects
+a flat patch above 2,048 boundary vertices to bound clipping work, rather than reducing its density;
+cancellation and invalid triangulation leave the source and history unchanged.
+
 To commit, repeat the operation with `previewOnly` omitted, a fresh revision and
 request ID. The normal processing response reports the chosen method; one model
 history step is added. `history_undo` / `history_redo` restore/reapply the bridge.
 Reinspect boundaries after each edit, Undo or Redo; their indices may change.
+Geometry publication can precede completion of model-history work. Inspect
+`session_get` and wait for `busy: false` and `activeJobId: null` before the next
+mutation. To verify rendered hole/bridge picking after restoration, also wait
+for `viewport_get.bridge.mode` to report `holes` or `bridge`; derived picking
+state can prepare after the geometry becomes readable.
 Geometry locks, cancellation, revision checks and retry receipts remain active.
 In Entire/Semi hole mode, hovering inside a visible closed boundary highlights
 its full rim; clicking selects that hole in the list. Picking respects clipping
@@ -553,6 +597,13 @@ Never infer that an operation succeeded from a status message or transport succe
 
 Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Source geometry, scanner normals, selections and undo/redo history remain intact. Indexed display buffers borrow stored computed normals; older active indexed meshes initialize absent computed normals from their topology. See `docs/PROJECT_LOAD_PERFORMANCE.md` for earlier measurements and limits.
 
+Exact CAD restoration refreshes kernel handles from saved BREP while retaining
+the saved positions, normals, edge buffers and BREP in current, undo and redo
+states. Reopening does not replace those buffers with a fresh tessellation or
+reserialization. Identical BREP seeds reuse one restored handle; the restore
+cache retains handles only. GUI opening, `project_import` and `backup_restore`
+preserve the same saved values.
+
 GUI Save, automatic backup and MCP `project_export` share concurrent encoding of
 the same immutable snapshot. Each caller retains its own cancellation: cancelling
 one export leaves another caller's backup running; the last cancellation retires
@@ -566,7 +617,7 @@ backup encoding. First reimport can therefore reuse still-live original imports;
 no preceding restore is required. Export candidates require complete immutable
 SharedArrayBuffer views whose type and little-endian bytes match the encoded
 chunk. Subviews, ordinary buffers and converted numeric representations retain
-independent decoding. Failed, cancelled or expired encoding/storage publishes no
+independent shared-buffer decoding. Failed, cancelled or expired encoding/storage publishes no
 new candidates. The encoding request assigns at most 128 internal source tokens
 to original live buffers in the same clone graph as the snapshot. Worker hashes
 return with those tokens, so the weak registry references the editor's original
@@ -574,9 +625,15 @@ wrappers rather than collectible worker-returned wrappers. The decoder still rea
 incoming payload, compares its bytes and verifies its SHA-256 before publication.
 A differing cached chunk receives independent backing without modifying its old
 consumer. The browser keeps at most 128 weak backing references; this cache does
-not retain a closed project, and page exit clears it. Hosts without cross-origin
-isolation/shared buffers retain ordinary independent decoding. Public schemas,
-geometry, history, revision checks, cancellation and failure recovery are unchanged.
+not retain a closed project, and page exit clears it. Separately, a successful
+export can retain up to 128 weak references to large ordinary numeric geometry
+arrays. Restore compares every decoded value, including signed zero, and checks
+again after cooperative yields and at the transport handoff before reusing a live
+immutable array; stale or
+unavailable candidates use independent decoding. Comparisons have a bounded work
+budget and remain cancellable. Page exit clears this cache. This optimization
+also works without cross-origin isolation; shared-buffer reuse still requires it.
+Public schemas, geometry, history, revision checks and failure recovery are unchanged.
 
 Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 
@@ -645,6 +702,11 @@ Mutation receipts retain the latest 256 request IDs in the current application i
 ### See and navigate the application
 
 Use `application_inspect` to read the current panel, ribbon tab, interaction mode, visible dialogs, bounded accessible controls, status/errors, progress and GUI preview presence. Password/token and file-input values are omitted. Request `maxControls` up to 300 when a larger control inventory is useful. Use structured inspection before spending image tokens.
+
+`application_inspect.progress.scan` describes active GUI scan-tool work.
+After completion or cancellation its fraction is absent and its stage is empty;
+the accepted preview and its results remain available independently. Read the
+terminal `job_get` receipt for the completed job's final status and progress.
 
 `application_inspect.dirty` reports unsaved project changes independently of the
 GUI reminder. The Save button pulses while dirty (unless reduced motion is
@@ -976,6 +1038,8 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 
 Polygon-reduction comparisons use the recovered octree for small surfaces and a linear-storage BVH for surfaces above 100,000 triangles or when the octree exhausts its node budget. GUI preview/accept and `mesh_process` with `scanTools.reducePolygons` share this path. The BVH still evaluates signed triangle distances with the existing numerical kernel, palette/search radius and tolerance statistics; comparison does not modify reduction output. Equal-distance BVH candidates use stable source-triangle order. Index construction and comparison retain cancellation checks.
 
+Count and retained-percentage reduction use the recovered whole-input collapse order with compact typed records when admitted. The former object-record estimate no longer sends a supported input through spatial patches. Preparation preserves the first-matching 1e-6 mm weld, cached indexed identity and rejection of degenerate/duplicate faces, inconsistent winding, nonmanifold edges and disconnected vertex fans. Preview acquires its indexed original once with bounded storage and reuses those arrays for the edit. Weld growth, validation, collapse references and export are admitted against a 1536 MiB internal working budget, accounting for the resident source and retained indexed arrays; this is separate from the 4 GiB validation-process limit and does not promise a total browser RAM ceiling. Only explicit working-budget exhaustion permits spatial fallback, whose result summary says `Spatial patch borders preserved`. Cancellation and invalid topology propagate without a spatial retry and leave source/history unchanged. Deviation-mode reduction retains its separate conservative algorithm and acceptance gate.
+
 Resident spatial reduction proves complete source vertex fans before separating fans disconnected only by a patch cut. The temporary representatives have identical coordinates and stay pinned at patch boundaries; fans that fail this check and locally unsafe facets remain protected. Original-to-reduced comparison retains unique samples and corner IDs without constructing original adjacency, using the same weld order for GUI and MCP. These improvements retain resident source/output arrays; disk-backed application loading is not yet enabled. Always inspect achieved counts and any protected-topology message rather than treating the requested count as achieved.
 
 Full Sketch and NurbsPatch wire structures are shown below. Existing domain validators enforce their invariants. Operations outside the advertised schemas are rejected; do not inject native worker IDs, raw worker requests, executable code, or arbitrary geometry fields into a command.
@@ -1042,7 +1106,11 @@ The browser test uses installed Chrome, a disposable profile, an isolated static
 
 ### Dedicated Split mesh command
 
-Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agent access is unchanged: use `mesh_process` with a `scanEdit` request, `action: "split"`, and a cutting `targetId` (or the existing plane parameters). Smooth selected area and Defeature remain in the quick tools; MCP exposes `smoothSelected` and `defeature` through the same processing operation. Selected-area smoothing defaults to six passes with strength 0.5 in both the quick action and MCP; supply `iterations` and `strength` explicitly to override this preset (the previous preset was two passes at 0.5). Boundary smoothing retains its three-pass, 0.3 preset. Selection tools, clear/invert, and cut/copy creation retain their existing selection operations; the new icons are presentation only.
+Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision; on rejection the source and history remain unchanged.
+
+Selected-area and boundary smoothing retain stationary raw corners, including wider coordinates produced by finite mesh Split. Moved vertices follow the smoothing operation's Float32 calculation; a moved shared vertex updates its adjacent aliases.
+
+Split mesh is available in the Scan Data ribbon independently of Edit Scan. Agent access is unchanged: use `mesh_process` with a `scanEdit` request, `action: "split"`, and a cutting `targetId` (or the existing plane parameters). Smooth selected area and Defeature remain in the quick tools; MCP exposes `smoothSelected` and `defeature` through the same processing operation. Selected-area smoothing defaults to six passes with strength 0.5 in both the quick action and MCP; supply `iterations` and `strength` explicitly to override this preset (the previous preset was two passes at 0.5). Boundary smoothing defaults to one complete command at strength 1; its native fitted-curve path is described below. Both smoothing actions preserve raw corner coordinates for stationary vertices; a moved shared vertex updates its aliases on adjacent unselected facets. Tolerance-welded preparation does not normalize unrelated source corners. Selection tools, clear/invert, and cut/copy creation retain their existing selection operations; the new icons are presentation only.
 
 Coordinate alignment also accepts optional `translation: [x, y, z]` in mm. These offsets follow the constructed reference frame axes and are applied before rigid inversion. They are not world-axis translation. Both preview and apply return the offsets alongside the resulting matrix; omission means no offset. The GUI uses the same shared operation through Frame translation (mm). Translation inputs must contain exactly three finite values within +/-1e9 mm. Editing them discards the current preview; apply remains one history transaction.
 
@@ -1539,18 +1607,63 @@ hidden. This full text remains in `application_inspect.statuses`; the visible
 label exposes its stage and an accessible progressbar value. MCP `job_get` progress,
 request schemas, model/history semantics and geometry behavior are unchanged.
 
-## Automatic hole surface recovery
+## Hole algorithms and explicit surface recovery
 
-Automatic entire-hole filling (`algorithm: "automatic"`, `mode: "entire"`)
+`mesh_process` with `operation:{kind:"scanEdit",action:"fillHoles",batch:true,
+diameter:9}` uses native multiple-hole Tangent dispatch. It requires entire-hole
+mode; omit `algorithm` or specify `tangent`. Other explicit algorithms are
+rejected with `batch:true`. Optional `indices` restrict the batch. Omit `batch`
+for selected-hole algorithm behavior, including filling several selected rims
+with one explicit algorithm. GUI **Fill multiple holes** uses the batch path;
+**Recover multiple holes** explicitly applies surface recovery instead.
+
+Inventory boundary `diameter` and the fill filter use a Float32 enclosing sphere
+with native boundary traversal order, in mm. Diameter 0 or omission includes all
+selected boundaries; positive thresholds use the native comparison tolerance.
+GUI **Measure hole** displays the physical diameter and sets the filter with
+the native 0.1 mm margin. Requested boundary indices remain inventory indices.
+
+Imported indexed topology is bound internally by the application for GUI and
+MCP; agents continue referring to entity IDs rather than supplying index buffers.
+The retained worker reuses its isolated index copy across consecutive successful
+edits at the same tolerance. Diagnostic requests, failed edits and tolerance
+changes invalidate that transport reuse marker; the next edit restores the
+authoritative indexed carrier rather than rewelding authored connectivity.
+Empty/all-skipped fills report `changed:false`,
+preserve the original entity and add no model revision. Inspect `filledHoles`,
+`skippedHoles`, `addedTriangles`, `batch`, `algorithm` and `method` diagnostics.
+An empty `indices:[]` is an explicit no-op.
+
+Entire-hole Automatic (`algorithm: "automatic"`, the default) selects Tangent
+for at most 40 retained rim edges and Curvature for larger rims. Tangent uses
+the native ordered boundary walk and Float32 insertion arithmetic, without a
+second surface projection or density refinement. Exact native comparisons
+require retaining the imported indexed topology; another weld order can change
+strict corner ties. See [native controls and remaining bounds](NATIVE_HOLE_FILL.md).
+
+Explicit partial Tangent uses the selected directed boundary arc, a sampled
+tangent chord and the shared spatial fill. Synthetic chord vertices start with
+zero normals; the operation rejects chords requiring more than 10,000 segments
+or overlapping an existing mesh edge. It also rejects patch intersections and
+new vertices within weld tolerance of retained geometry, including patches
+already produced in the same request. This behavior is exposed through the
+existing `mesh_process` scan-edit parameters and is shared with the GUI. The
+native comparison currently covers one manufactured curved-annulus selection.
+
+The observed native Automatic can extrapolate below a steep rim. Use explicit
+`algorithm: "surfaceRecovery"`, `mode: "entire"` (GUI **Recover surface**) for
+the former automatic collar-fitting behavior. This option
 fits a local quadratic to retained, connected scan faces when the collar is
 smooth and sufficiently supported. Steep, creased, underdetermined or poorly
 fitted collars use positive boundary-edge height interpolation instead of
 extrapolating scan normals into a pit. The fallback stays within the rim's
 height range in the cap frame; it cannot reconstruct missing curvature without
-reliable support. Existing rim and retained vertices stay fixed. Explicit flat,
-tangent and curvature algorithms, partial fills and bridges keep their behavior.
+reliable support. Existing rim and retained vertices stay fixed. Surface recovery
+requires an entire closed hole; partial and bridge requests reject it. Their
+Automatic option retains its existing boundary-based choice.
 Both GUI and MCP use the same `mesh_process` scan-edit operation. Successful
-results expose `diagnostics.surfaceFitHoles`, `surfaceFitMaxRms` (model units),
+results expose `diagnostics.algorithm` (the requested algorithm),
+`surfaceFitHoles`, `surfaceFitMaxRms` (model units),
 `boundedFallbackHoles` and `surfaceFallbackReasons`. These count accepted patches;
 `method` retains the selected algorithm category. The GUI reports how many holes
 were filled from the boundary. Unsupported or invalid disks still remain unchanged
@@ -1558,8 +1671,17 @@ and count as skipped.
 
 ## Constrained hole triangulation
 
-Entire-hole fills (`mesh_process` with `kind: "scanEdit"`, `action: "fillHoles"`,
-`mode: "entire"`) legalize cap diagonals before density refinement and during
+Explicit Flat entire-hole fills (`mesh_process` with `kind: "scanEdit"`,
+`action: "fillHoles"`, `mode: "entire"`, `algorithm: "flat"`) use native
+smallest-corner clipping, without inserting interior refinement vertices.
+The retained directed rim determines strict score ties. Invalid caps and
+diagonals that would reuse retained interior mesh edges remain rejected.
+GUI and MCP share this path and the existing diagnostics and history guards.
+The observed 39-edge cup matches all 154 oriented native triangles in a private
+probe; production and rendered acceptance are tracked in
+[the native comparison record](NATIVE_HOLE_FILL.md).
+
+Other entire-hole fills legalize cap diagonals before density refinement and during
 final fairing. A bounded, cancellable queue replaces long, thin ear-cut fans with
 local triangles, avoiding excessive subdivision on long narrow scan openings.
 Existing rim vertices stay fixed. Cap interior edges cannot reuse diagonals of
@@ -1701,6 +1823,32 @@ closing. The shared GUI/MCP diagnostics include `surfaceBlendFallbackHoles` and
 `surfaceBlendLimitedHoles`; no new agent parameter is needed. Support-fit RMS
 describes the interpolant, not a guarantee of final visual continuity or accuracy
 of geometry absent from the scan. Close-up inspection remains necessary.
+
+### Entire-hole Curvature
+
+Use `mesh_process` with `operation: {kind: "scanEdit", action: "fillHoles",
+mode: "entire", algorithm: "curvature", indices: [boundaryIndex]}`. Entire-hole
+Automatic selects this operation above 40 rim edges; multiple-hole batch filling
+continues to use Tangent. Curvature fits a local cubic surface, trims it to the
+requested hole, then remeshes and smooths its adjacent collar. The original rim
+can move; inspect the whole result rather than treating it as appended triangles.
+Unrelated source records and components remain outside the selected collar.
+
+GUI and MCP use the same async processing operation. Its temporary CAD worker and
+surface handles are private to the edit and released on success, failure or
+cancellation. No CAD scene object is created. `job_cancel` aborts without publishing
+geometry or a history entry. Existing revision, retry, lock and history guards apply.
+The internal solver rejects singular graph/projection systems and explicit resource
+limits instead of substituting another advertised algorithm. Its dense fitting
+workspace is limited to 64 MiB and 250 million estimated arithmetic operations;
+trim/collar records are limited to one million. Public surface control-count limits
+are unchanged. Poll `job_get` for the shared hole-fill progress and use `mesh_analyze`
+and project geometry resources to inspect the complete remeshed result.
+
+The observed 64-edge smooth-annulus comparison, exact native geometry, GUI/public-MCP
+parity, persistence and cancellation evidence are recorded in
+[the Curvature investigation](NATIVE_HOLE_FILL.md). This control does not close all
+remaining M2 modes, inputs or operations.
 
 ### Hole-filling batch progress
 
@@ -2217,3 +2365,124 @@ definition using `inspection_manage` `action:"delete"` and its `inspectionId`.
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
 
 Inspection heatmaps use the same blue/cyan/green/yellow/red palette and right-hand vertical scale as mesh reduction. The retained report tolerance sets the saturated blue/red endpoints; hidden or unmatched samples remain gray. The inspection scale is read-only; change tolerance through the analysis parameters and recompute. `inspection_display` and MCP captures render this same scale.
+
+## Average meshes
+
+The GUI's Average mesh and `mesh_process` use the same public operation. Pass
+`operation:{kind:"scanTools",operation:{kind:"averageMesh",tolerance:10}}`,
+`entityId` for one participating raw mesh and `targetIds` for one to 32 additional
+distinct raw meshes. The legacy singular `targetId` remains an alias; omit it when
+using `targetIds`. Meshes must already be aligned. The input with the most facets
+becomes the base; ties and reference contributions follow object-list order.
+
+Average creates and selects a new mesh by default, retaining every input. Explicit
+`createNew:false` retains the replacement capability and replaces the chosen base.
+The result's `average.baseEntityId` and `average.referenceEntityIds` identify the
+actual inputs; `entityIds` identifies the output. Use revision/request guards and
+poll `job_get`. Locks, cancellation, errors and one-step geometry history remain
+enforced; cancellation or failure publishes no partial result.
+
+Search tolerance is narrowed to positive finite Float32 millimetres (the existing
+application default remains 10 mm). Matches exactly at that radius and closest
+hits on an open boundary region are excluded. Each accepted surface point and
+the original base point contribute equally, with Float32 accumulation in object
+order. Original indexed vertex identities are retained during query preparation;
+duplicate seam vertices are not welded together. Plain facet streams use the
+recovered STL indexing path. The existing three-million aggregate input-facet
+limit remains. These corrections do not establish full native dialog/default or
+original-scan parity; see [the M2 ledger](M2_ACCEPTANCE.md).
+
+## Cylindrical Unroll
+
+For a workspace reference, prefer `operation:{kind:"scanTools",operation:{kind:"unroll",cylinderId:"reference-id",offsetDegrees:0,instances:1}}`. This is the GUI command's shared binding. Exact CAD uses analytic parameters from the existing kernel body, rather than fitting its display triangles. The body must contain one cylinder face with optional planar caps; ambiguous or mixed curved bodies reject atomically. Construction cylinders use their existing reference binding. The result's `unroll` object reports `cylinderEntityId`, `referenceKind`, the exact CAD `faceIndex` when applicable, and the resolved millimetre center/radius and axis. Cancellation during reference inspection preserves source geometry and history. Do not combine `cylinderId` with explicit center/axis/radius.
+
+For an exact CAD cylinder, the resolved axis is oriented so its largest-magnitude component is positive; ties choose X, then Y, then Z. The source CAD face is not changed. Construction-cylinder and explicit numeric directions retain their supplied sign. This CAD convention is inferred from native static analysis; a negative-axis native export remains unverified.
+
+Use `mesh_process` with `operation:{kind:"scanTools",operation:{kind:"unroll",center:[0,0,0],axis:[0,0,1],radius:2,offsetDegrees:90,instances:2}}`. Coordinates and radius are millimetres; the offset is degrees. `instances` defaults to 1 and must be a positive safe integer. The conservative input-times-instances bound is 3 million facets. There is no resource-limit override.
+
+The radial zero direction is the projection of the world axis least aligned with the cylinder axis; ties choose X, then Y, then Z. The unrolled mesh and Roll frame share this choice. Changing it can change the seam and retained facets for tilted cylinders. This rule is derived from native static analysis; native output comparison for axes that select Y or Z remains outstanding.
+
+Positive offsets rotate the radial frame. Radial frame components narrow to Float32 before the acos/sign calculation. Facets touching both the first and last angular quadrants are removed, using swap-last deletion order; no seam triangles are synthesized. Copies translate along X using a Float32 circumference translation. Output XY contains arc length and axial distance, with radial residual in Z. The GUI invokes the same public operation and shared worker. A successful operation creates and selects a separate mesh owner by default, preserving the original. `createNew:false` retains explicit replacement support. Read `entityIds` and diagnostics from the terminal job result. Existing revision, retry, cancellation, lock, history and persistence checks apply.
+
+The original cylinder's reference tangent is currently not retained by the reference binding. Observed exports verify a +Z cylinder at 0 and 90 degrees and two instances; arbitrary imported tangent/frame conventions remain an acceptance gap. Finite Float32 output and triangle-collapse checks remain enforced. If every facet crosses the seam, the operation fails without publication. Cap and axis points follow the same mapping; geometrically collapsed results fail atomically.
+
+Unroll also publishes a visible saved **Sketch** and a hidden **Roll frame** in the same transaction. The sketch is the axial line at one circumference, including when `instances` exceeds one. It does not activate or replace another sketch draft. The roll frame is a tangent coordinate system on the cylinder surface; `rollMapping.radius` is separate from its axis display size. Terminal `unroll` reports `meshEntityId`, `frameEntityId`, `sketchId`, `coordinateFrame` and `mapping`. `entityIds` continues to contain only the mesh output for existing callers. Use `object_get` (optionally `includeGeometry:true`) for exact frame/mapping values, `object_geometry_digest` for numeric frame/radius hashes, and `sketch_get` for the saved line. Missing source/output/sketch identities after later independent deletion remain retained mapping references, not regenerated geometry.
+
+Saved sketches have optional `visible`; unset remains hidden for legacy files. Use `sketch_manage` with `action:"visibility"`, `sketchId` and `visible:boolean`, or the same eye control in the Sketch objects list. A visible saved sketch renders without opening its editor. It uses the editor's 0.1 mm arc sampling, with at most 8,192 segments per arc and one million displayed segments per sketch, two million point records, and 50 million point/arc search visits. Invalid or excessive geometry must be corrected before display. Model Undo/Redo/Seek removes or restores only the transaction-owned sketch identities and retains their live edited values for the reverse step; unrelated sketches and edits remain intact. Binary project save/reopen and automatic backups preserve both directions of those transitions. These records require binary manifest version 6; JSON exports containing roll mappings or explicit sketch visibility use wire version 4. Older readers reject these versions instead of silently dropping the new state. Earlier formats remain readable; JSON continues to omit the modeling timeline.
+
+### Shared Scan Data previews
+
+`scan_preview` supports `shrinkwrap`, `reduceNoise`, `reducePolygons`, `scaleMesh`, and `mirrorMesh`. These are the same guarded operations used by the GUI. Create returns an immutable `previewId`; the source and history remain unchanged. Compare reuses that output, never reruns the edit. Pass `deviation` in mm and optionally independent `paletteThreshold` and `displayRange` in mm. Reduction defaults its display range to deviation. Statistics remain sampled surface measurements, not a certified bound.
+
+Noise `selectionOnly` resolves the current selected source mask; do not inject geometry or masks. Mirror uses `plane: OXY|OYZ|OXZ`, or `plane: object` plus `referenceId` for an existing planar object. ShrinkWrap alone accepts outer `targetIds`. Accept uses the retained result once, replacing the source by default or creating an independent owner with `createNew: true`. Noise replacement retains facet selection and hidden facets because facet identities do not change; other previews invalidate them. Cancel preserves source and history. Source/reference edits, lock changes or the 60-second lease invalidate acceptance; create a new preview. Use revision and request IDs on every call and job polling/cancellation as usual.
+
+### Re-polygonize methods
+
+`mesh_process` with `operation: {kind: "scanTools", operation: {kind: "repolygonize", resolution: 0.5}}` uses the observed native signed-field preset with half-count topology optimization. Resolution is Float32 spacing in mm, not a maximum-deviation bound. Omitted outer `targetIds` combines visible raw meshes in scene order, including the requested source. Use `targetIds: []` for that source alone, or explicit additional IDs to narrow the inputs. Maximum participants: 33. Exact CAD and point clouds are excluded. Indexed source identities and native facet/adjacency preparation resolve internally; callers must not supply geometry, topology or masks.
+
+Native reconstruction defaults to a new `Polygonized N.NNN mm` owner and hides its unchanged inputs in the same history step. `createNew: false` explicitly replaces the requested source instead. The response identifies ordered `reconstruction.inputEntityIds`, output `entityIds`, measured `topology` and diagnostics. Open boundaries, disconnected regions, nonmanifold vertices/edges and duplicates remain reported; reconstruction does not certify a solid or self-intersection freedom. Undo restores input geometry and visibility. Job cancellation/failure adopts no partial result.
+
+Use `method: "voxel"` to retain the existing closed offset-shell reconstruction. This explicit method retains its previous replacement default, cavity filling and approximately `0.75 * resolution` surface offset; it is distinct from native field reconstruction. Both methods use the same GUI/MCP operation.
+
+Native reconstruction admits up to 500 million source coordinates with a 256 MiB private numeric transport budget, including copied indexed carriers. Immutable shared Float32 views may be borrowed by the disposable read-only worker; index arrays are copied. Its field has estimated 512 MiB working storage, one million nodes, 750,000 corners and 50 million candidate visits; output is bounded to two million vertices/facets. Finalization and optimization have separate 512/768 MiB estimated working-record budgets. These are admission limits, not a claim about total browser RAM. Rejection preserves inputs; increase spacing or reduce the selected input set. No silent spacing adjustment or voxel fallback occurs.
+
+### Connected-component inspection and cleanup
+
+Call `mesh_process` with `operation:{kind:"scanEdit",action:"inventory"}`. Read the terminal job's JSON artifact to obtain `inventory.components`, including original facet indices and area in mm². Inspection does not change geometry history. Component indices address that inventory for the current source revision; recompute them after editing.
+
+For component-only inspection, add `inventoryScope:"components"` to that operation. The artifact reports `inventory.scope:"components"` and includes the component faces and areas; boundaries and holes are not calculated, so its empty `boundaries` array does not mean the mesh has no boundaries. The facet indices within each component may be in a different order than in the full inventory. Omit the scope when boundary or hole data is needed. Large indexed meshes use a compact component calculation shared with the Individual meshes panel.
+
+Use `componentKeep`, `componentRemove`, `componentFlip` or `componentExtract` with `indices:[...]` in the same `scanEdit` operation. To reproduce the Individual meshes panel's **Maximum triangle count** cleanup, select inventory entries whose `triangles.length <= threshold`. For **Area smaller than (mm²)**, select entries whose `area < threshold`. Submit those component indices using `componentRemove`. The count threshold is inclusive and the area threshold is exclusive. These actions preserve retained source corner records; flipping reverses the chosen facets' winding. Extraction creates independent visible mesh owners, retains the original hidden, and selects the first result. New meshes use the normal opaque part appearance and source-name/segment-index names. Model Undo restores the original visibility; Redo hides it again. Inspect the resulting object list and returned entity IDs.
+
+Keep the existing `expectedRevision`, unique `requestId`, lock/job/cancellation checks and history/persistence workflow. The manufactured component browser control exercises GUI/public-MCP equality, retained corners, extraction ownership, cancellation, Undo/Redo and binary reopen; it does not establish installed-native comparison acceptance.
+
+`scanEdit/boundarySmooth` is a geometry edit. Locked objects and exact CAD/parametric bodies are rejected before processing starts; unlock a raw mesh or create an independent mesh copy first. Read-only `scanEdit/inventory` and boundary-curve reports remain available on protected sampled geometry. Rejection preserves geometry and history.
+
+For boundary smoothing, optional `anchors` is an array of `{ "boundary": 0, "point": 3 }` references using zero-based indices from the current `scanEdit/inventory` result. Each point indexes triples in that boundary's `points` array. Up to two anchors are supported; two must be on the same closed boundary with at least two points between them on each side. Invalid, unselected, duplicate, too-close, cross-boundary, open-boundary pairs or excess anchors reject without publishing. Obtain a new inventory after geometry changes. The GUI provides the same one- or two-anchor choices by selecting a boundary and entering point indices. One native annulus control shows that fitting can move a single anchor at the boundary-walk head by about 0.113 mm; another preserves two opposite anchors. The shared operation reproduces these finite controls. Other native geometries and more than two anchors remain unverified.
+
+`mesh_process` with `operation:{kind:"scanEdit",action:"boundarySpatialSketch",indices:[...],fitTolerance:0.05}` creates one visible spatial sketch containing ordered cubic boundary curves and returns its `sketchIds` plus a JSON artifact with the fitted curves. Omit `indices` for all boundaries. Indices come from a fresh `scanEdit/inventory`; only closed manifold boundaries are supported. Omit `selectionOnly`; triangle-mask selection is not supported. Tolerance is positive millimetres and defaults to 0.05. Admission limits are 1024 boundaries, 200000 input boundary points, 32 poles per curve and 2000000 display basis-and-knot work units. Inspect the stored curve definitions with `sketch_get`; `sketch_manage` can rename, hide, show or delete the result. Spatial curves cannot yet be activated in the planar editor. Creation is one model-history transaction and retains the source and active planar draft. JSON project version 5 and binary project version 7 preserve these curves and history; older formats without spatial data remain supported. Native comparison is limited to the retained annulus controls.
+
+Boundary smoothing uses the same fitted-boundary operation as the GUI buttons.
+`indices` restricts inventory boundaries; omission includes all, processed in
+native boundary order. `strength` defaults to `1` and maps `[0,1]` to integer
+slider positions `0–10` by rounding; the GUI offers increments of `0.1`.
+`iterations` defaults to `1` complete command repetition, not one vertex pass.
+Each repetition runs `10 + sliderPosition` native vertex passes, adaptive cubic
+curve fitting/projection, and boundary-preserving local correction. Strength
+zero selects minimum native strength (ten passes and a 0.05 mm fit tolerance);
+it does not disable the command. Selected-area `smoothSelected` retains its
+separate defaults of six vertex passes at strength 0.5.
+
+Diagnostics include `changed`, selected boundary count, `passesPerBoundary`,
+command repetitions, cumulative `fittedBoundaries`/`unfittedBoundaries` and
+`outOfTolerance` counts, `removedFacets` from native boundary-ear cleanup, and
+`maxFitError` in mm. Curve admission and `outOfTolerance` use the mean
+sample error; `maxFitError` remains the largest individual sample error and
+can exceed the fit tolerance even when the native candidate is accepted.
+Small or singular boundaries
+may have no fitted curve; their vertex stage is retained and the unavailable
+fit is reported. An unchanged operation keeps the canonical source and adds no
+successor geometry. Updated indexed identity is retained by GUI and MCP edits,
+so later commands and save/reopen preserve the boundary ordering. CAD curves
+are temporary and request-owned. Native
+acceptance scopes and remaining M2 gates are tracked in `M2_ACCEPTANCE.md`.
+
+### Publish projected boundary sketches
+
+Run `mesh_process` with `operation:{kind:"scanEdit",action:"boundaryProject",indices:[boundaryIndex],plane:{origin:[0,0,0],normal:[0,0,1]},fitTolerance:0.05,createSketches:true}`. Indices refer to current boundary inventory; omission projects all boundaries. Plane origin is in world millimetres, the normal is nonzero, and fit tolerance is in millimetres. Omit `createSketches`, or pass false, to retain the existing read-only XYZ curve artifact without history or authoring changes. The option is boolean and applies only to boundary projection.
+
+Explicit publication returns `sketchIds` and the curve artifact in the terminal job. New saved sketches are named `Projected boundary N`, retain shared closing point IDs for closed loops, and use the requested planar frame. Read `sketch_get` for their stored definitions; use existing saved-sketch visibility/activation tools to show or edit them. The source mesh and current active authoring draft stay unchanged. Publication adds one model-history step; ordinary model Undo/Redo/Seek affects only the new sketch identities and preserves unrelated authoring. Binary project export/reopen retains the sketches and history. Locked publication, empty/invalid output, cancellation or changed revisions publish no partial sketch bank; read-only projection remains available on protected sampled geometry. Reusing the identical request ID/request returns its existing job receipt and does not create duplicate sketches.
+
+### Split cutter and result ownership
+
+For `mesh_process` / `scanEdit/split`, `targetId` resolves the same cutting object as the GUI. A `kind:plane` reference uses its stored `planeFrame` as an infinite plane (or a legacy live plane fit if no stored frame exists). An ordinary mesh remains a finite cutter even if it has plane-fit metadata. A finite mesh cutter updates the source mesh with indexed, uncapped geometry; its connected components remain available to inventory and component operations. A cutter with no intersections leaves the source unchanged and reports `changed:false`. Thin faces whose floating-point coverage sum is uncertain are checked with exact binary-coordinate area-vector equality before rejection; winding, edge and constraint validation remain required. Diagnostics include `affectedFaces`, `sourceFaces`, `parts`, `cutEdges` and `sourceIdentity`. Sampled CAD and other non-mesh cutters retain the existing segment-producing path; their native behavior still requires comparison. Point clouds and semantic objects without triangle geometry are not mesh cutters. Explicit operation `plane` parameters remain authoritative when supplied.
+
+GUI scan edits and `mesh_process` use matching existing indexed topology when it still matches the source corners. This retains separate seam vertices for later operations such as selected-area smoothing.
+
+Component Keep, Remove, Flip and Extract preserve wider source coordinates. When source or cached indices match the source corners exactly, their published meshes retain compact indexed topology and vertex identity; near-coincident raw corners that do not match the cached representatives remain unindexed instead of being silently welded.
+
+Large indexed component edits use compact edge-connected grouping and retain separate seam identities. They remain subject to available memory; original-scan validation covers one Flip and one Extract after Split, not every large component operation.
+
+Reference-plane Split, component extraction and segmentation publish independent visible mesh parts through one GUI/MCP helper. They retain raw source/cutter coordinates, hide the source, select the first created result and return its IDs in result order. New parts use normal opaque part appearance, names `Source name segment N`, and only their own classification fits. Source-file provenance is retained, while exact/parametric/construction identity is not inherited. Empty leading results do not shift classification lookup or original segment indices. No nonempty output means rejection without model/history mutation. Source visibility belongs to the modeling transaction: model Undo/Redo/Seek and binary reopening restore it while keeping unrelated display changes independent. The retained source can also be shown explicitly using `object_update`. Finite mesh Split instead returns the source ID and updates its geometry, preserving the cutter. Existing lock, revision/retry, cancellation, resource and history guards apply.
+
+Boundary smoothing rejects degenerate triangles, nonmanifold edges and nonmanifold vertices before fitting or publication. Use mesh diagnostics and repair the source first. This failure preserves geometry, canonical topology and history through both the GUI and MCP.

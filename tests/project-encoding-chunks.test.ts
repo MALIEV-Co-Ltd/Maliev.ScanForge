@@ -112,3 +112,19 @@ it("rebinds worker hashes to the original source wrapper without returning a wor
     resolveEncodingChunkTokens([{ sourceToken: 0, sha256: hash }], [original]),
   ).toEqual([{ sha256: hash, buffer: original }]);
 });
+
+it("captures large ordinary geometry arrays once across current and history", async () => {
+  const { projectEncodingNumericSources } =
+    await import("../src/project-encoding-chunks");
+  const positions = new Array<number>(65538).fill(1);
+  const vertices = new Array<number>(65538).fill(2);
+  const source = session([new Float32Array(9)]);
+  const entity = source.project.entities[0];
+  entity.kind = "mesh";
+  entity.positions = positions;
+  entity.indexedMesh = { vertices, triangles: new Uint32Array([0, 1, 2]) };
+  source.history = [{ label: "before", entities: [entity] }];
+  expect(
+    projectEncodingNumericSources(projectEncodingSnapshot(source)),
+  ).toEqual([positions, vertices]);
+});

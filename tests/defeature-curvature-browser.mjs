@@ -2,13 +2,52 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+const smoothing = process.env.SCANFORGE_EDIT_ACCEPTANCE === "smooth";
+const preciseSmoothing =
+  smoothing && process.env.SCANFORGE_SMOOTH_PRECISE === "1";
+const untouchedPrecise = [
+  20 + 2 ** -22,
+  0,
+  0,
+  28 + 2 ** -22,
+  0,
+  0,
+  20 + 2 ** -22,
+  8,
+  0,
+];
+const action = smoothing ? "smoothSelected" : "defeature";
+const smoothFixture = smoothing
+  ? JSON.parse(
+      await readFile(
+        new URL("fixtures/smooth-six-passes-observed.json", import.meta.url),
+        "utf8",
+      ),
+    )
+  : undefined;
+const largePatch = process.env.SCANFORGE_DEFEATURE_LARGE === "1";
+const replacementDirectory = process.env.SCANFORGE_DEFEATURE_CASE_DIR;
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/defeature-curvature-browser/", import.meta.url);
+  out = process.env.SCANFORGE_DEFEATURE_OUTPUT
+    ? pathToFileURL(`${process.env.SCANFORGE_DEFEATURE_OUTPUT}/`)
+    : new URL(
+        smoothing
+          ? "../.resources/selected-smoothing-browser/"
+          : replacementDirectory
+            ? "../.resources/defeature-real-scan-browser/"
+            : largePatch
+              ? "../.resources/defeature-large-browser/"
+              : "../.resources/defeature-curvature-browser/",
+        import.meta.url,
+      );
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? new URL("./", pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/index.html`))
+  : new URL("dist/", root);
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -18,7 +57,9 @@ if (admission.status !== 0) process.exit(admission.status ?? 1);
 await mkdir(out, { recursive: true });
 const token = randomBytes(32).toString("hex"),
   ledger = {
-    owner: "defeature-curvature-browser",
+    owner: smoothing
+      ? "selected-smoothing-browser"
+      : "defeature-curvature-browser",
     pid: process.pid,
     executable: process.execPath,
     startedAt: new Date().toISOString(),
@@ -51,10 +92,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -129,6 +169,10 @@ try {
     }),
     errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (["warning", "error"].includes(message.type()))
+      errors.push(message.text());
+  });
   page.setDefaultTimeout(15000);
   await page.addInitScript(() => {
     window.__defeatureRequests = [];
@@ -161,6 +205,7 @@ try {
   });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -181,23 +226,35 @@ try {
     assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
-  const mutate = async (name, args) =>
-    call(name, {
+  const idle = async () => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const state = (await call("session_get")).result;
+      if (!state.busy && state.activeJobId === null) return;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error("Workspace did not settle before edit acceptance");
+  };
+  const mutate = async (name, args) => {
+    await idle();
+    return call(name, {
       ...args,
       expectedRevision: (await call("project_get")).revision,
       requestId: randomUUID(),
     });
+  };
   const job = async (receipt, expected = "succeeded") => {
+    let lastState;
     for (let i = 0; i < 120; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
+      lastState = state;
       if (state.status !== "running") {
         assert.equal(state.status, expected, JSON.stringify(state));
         return state;
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    throw Error("Geometry job timeout");
+    throw Error("Geometry job timeout: " + JSON.stringify(lastState));
   };
 
   const artifactJson = async (artifact) => {
@@ -225,17 +282,25 @@ try {
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
-  const positions = [],
+  let positions = [],
     selected = [];
-  const height = (x, y) => 0.035 * x * x + 0.018 * y * y + 0.012 * x * y;
+  const height = (x, y) =>
+    largePatch
+      ? 0.001 * x * x + 0.0007 * y * y + 0.0004 * x * y
+      : 0.035 * x * x + 0.018 * y * y + 0.012 * x * y;
   const point = (x, y) => [
     x,
     y,
     height(x, y) +
-      (Math.abs(x) < 3 && Math.abs(y) < 3 ? 2 + 0.4 * Math.cos(x * y) : 0),
+      (Math.abs(x) < (largePatch ? 44 : 3) &&
+      Math.abs(y) < (largePatch ? 44 : 3)
+        ? largePatch
+          ? 2 + 0.3 * Math.cos(x * 0.1) * Math.cos(y * 0.1)
+          : 2 + 0.4 * Math.cos(x * y)
+        : 0),
   ];
-  for (let y = -8; y < 8; y++)
-    for (let x = -8; x < 8; x++) {
+  for (let y = largePatch ? -64 : -8; y < (largePatch ? 64 : 8); y++)
+    for (let x = largePatch ? -64 : -8; x < (largePatch ? 64 : 8); x++) {
       const face = positions.length / 9;
       positions.push(
         ...point(x, y),
@@ -245,32 +310,89 @@ try {
         ...point(x + 1, y + 1),
         ...point(x, y + 1),
       );
-      if (x >= -3 && x < 3 && y >= -3 && y < 3) selected.push(face, face + 1);
+      if (
+        x >= (largePatch ? -48 : -3) &&
+        x < (largePatch ? 48 : 3) &&
+        y >= (largePatch ? -48 : -3) &&
+        y < (largePatch ? 48 : 3)
+      )
+        selected.push(face, face + 1);
     }
+  if (largePatch) {
+    selected.splice(0, 7);
+    assert.equal(selected.length, 18425);
+  }
+  if (smoothing && !replacementDirectory) {
+    assert(!largePatch);
+    positions = preciseSmoothing
+      ? [...smoothFixture.positions, ...untouchedPrecise]
+      : smoothFixture.positions;
+    selected = smoothFixture.selection.flatMap((value, index) =>
+      value ? [index] : [],
+    );
+  }
+  let replacementManifest;
+  if (replacementDirectory) {
+    const input = await readFile(`${replacementDirectory}/input.json`);
+    const mask = await readFile(`${replacementDirectory}/selection.json`);
+    replacementManifest = JSON.parse(
+      await readFile(`${replacementDirectory}/manifest.json`, "utf8"),
+    );
+    assert.equal(
+      createHash("sha256").update(input).digest("hex"),
+      replacementManifest.inputJsonSha256,
+    );
+    assert.equal(
+      createHash("sha256").update(mask).digest("hex"),
+      replacementManifest.selectionSha256,
+    );
+    const replacement = JSON.parse(input.toString());
+    assert.equal(replacement.units, "mm");
+    positions = replacement.entities[0].positions;
+    selected = JSON.parse(mask.toString());
+    assert.equal(positions.length / 9, replacementManifest.inputTriangles);
+    assert.equal(selected.length, replacementManifest.selectedFacets);
+    assert.equal(
+      createHash("sha256")
+        .update(Buffer.from(new Float32Array(positions).buffer))
+        .digest("hex"),
+      replacementManifest.sourceCoordinateSha256,
+    );
+  }
   const project = {
     format: "maliev-scanforge",
     version: 1,
-    name: "Defeature curvature parity",
+    name: replacementManifest
+      ? "Available-scan Defeature replacement"
+      : "Defeature curvature parity",
     units: "mm",
     entities: [
       {
         id: "panel",
-        name: "Curved panel with badge",
+        name: replacementManifest
+          ? "Original scan-1.stl"
+          : "Curved panel with badge",
         kind: "mesh",
-        positions: Array.from(new Float32Array(positions)),
+        positions: preciseSmoothing
+          ? positions
+          : Array.from(new Float32Array(positions)),
         visible: true,
         color: "#b4bec4",
         opacity: 1,
       },
     ],
   };
-  const upload = (
-    await call("artifact_put", {
-      name: "panel.json",
-      offset: 0,
-      base64: Buffer.from(JSON.stringify(project)).toString("base64"),
-    })
-  ).result;
+  const payload = Buffer.from(JSON.stringify(project));
+  let upload;
+  for (let offset = 0; offset < payload.length; offset += 262144)
+    upload = (
+      await call("artifact_put", {
+        name: "panel.json",
+        ...(upload ? { artifactId: upload.artifactId } : {}),
+        offset,
+        base64: payload.subarray(offset, offset + 262144).toString("base64"),
+      })
+    ).result;
   await job(
     await mutate("project_import", {
       artifactId: upload.artifactId,
@@ -285,14 +407,40 @@ try {
   });
   await mutate("viewport_control", {
     action: "camera",
-    position: [0, 0, 45],
+    position: [0, 0, largePatch ? 340 : 45],
     target: [0, 0, 0],
     up: [0, 1, 0],
-    zoom: 4,
+    zoom: 1,
   });
   await mutate("selection_set", { entityId: "panel", triangles: selected });
+  if (replacementManifest) {
+    await mutate("viewport_control", {
+      action: "fit",
+      entityId: "panel",
+      selection: true,
+    });
+    const center = replacementManifest.seedCenter;
+    const normal = replacementManifest.seedNormal;
+    await mutate("viewport_control", {
+      action: "camera",
+      target: center,
+      position: center.map((value, axis) => value + normal[axis] * 10),
+      up: Math.abs(normal[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0],
+    });
+    await mutate("scan_selection_control", {
+      entityId: "panel",
+      action: "configure",
+      tool: "brush",
+      brushRadiusPx: 2,
+    });
+  }
   const original = await geometry(),
     beforeHistory = await history();
+  const originalTopology = replacementManifest
+    ? (await job(await call("mesh_analyze", { entityId: "panel" }))).result
+        .topology
+    : undefined;
+  const beforeViewport = (await call("viewport_get")).result;
   await page.screenshot({ path: fileURLToPath(new URL("before.png", out)) });
   const canvas = page.locator(".viewport canvas").first(),
     box = await canvas.boundingBox();
@@ -308,7 +456,12 @@ try {
     window.__holdResult = true;
     window.__sawProgress = false;
   });
-  await page.getByRole("button", { name: "Defeature", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: smoothing ? "Smooth selected" : "Defeature",
+      exact: true,
+    })
+    .click();
   await page.mouse.move(1000, 450);
   const pointerStatus = page.locator(".pointer-job-status");
   await pointerStatus.waitFor({ state: "visible" });
@@ -328,47 +481,309 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 100));
   assert.equal(await history(), beforeHistory + 1);
   const gui = await geometry();
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  const afterViewport = (await call("viewport_get")).result;
+  assert.deepEqual(
+    afterViewport.cameraWorldMatrix,
+    beforeViewport.cameraWorldMatrix,
+  );
+  assert.deepEqual(
+    afterViewport.projectionMatrix,
+    beforeViewport.projectionMatrix,
+  );
   await page.screenshot({ path: fileURLToPath(new URL("after.png", out)) });
   assert.notDeepEqual(gui.positions, original.positions);
-  const retained = original.positions.filter(
-    (_, i) => !selected.includes(Math.floor(i / 9)),
-  );
-  assert.deepEqual(gui.positions.slice(0, retained.length), retained);
-  let worstDeviation = 0;
-  for (let i = retained.length; i < gui.positions.length; i += 3)
-    worstDeviation = Math.max(
-      worstDeviation,
-      Math.abs(
-        gui.positions[i + 2] - height(gui.positions[i], gui.positions[i + 1]),
-      ),
+  let worstDeviation = null;
+  let unchangedFarSlots = null;
+  if (smoothing) {
+    if (!replacementManifest) {
+      assert.deepEqual(
+        gui.positions,
+        preciseSmoothing
+          ? [...smoothFixture.nativeOutput, ...untouchedPrecise]
+          : smoothFixture.nativeOutput,
+        "GUI default differs from retained three-click native Smooth export",
+      );
+    } else {
+      assert.equal(gui.positions.length, original.positions.length);
+      const low = [Infinity, Infinity, Infinity],
+        high = [-Infinity, -Infinity, -Infinity];
+      for (const face of selected)
+        for (let corner = 0; corner < 3; corner++)
+          for (let axis = 0; axis < 3; axis++) {
+            const value = original.positions[face * 9 + corner * 3 + axis];
+            low[axis] = Math.min(low[axis], value);
+            high[axis] = Math.max(high[axis], value);
+          }
+      let farSlots = 0;
+      for (let corner = 0; corner < original.positions.length; corner += 3)
+        if (
+          [0, 1, 2].some(
+            (axis) =>
+              original.positions[corner + axis] < low[axis] - 0.001 ||
+              original.positions[corner + axis] > high[axis] + 0.001,
+          )
+        ) {
+          assert.deepEqual(
+            gui.positions.slice(corner, corner + 3),
+            original.positions.slice(corner, corner + 3),
+            `Unrelated source corner ${corner / 3} moved`,
+          );
+          farSlots++;
+        }
+      assert(farSlots > 0);
+      unchangedFarSlots = farSlots;
+    }
+  } else {
+    const retained = original.positions.filter(
+      (_, i) => !selected.includes(Math.floor(i / 9)),
     );
-  assert(worstDeviation < 0.003, `Surface deviation ${worstDeviation}`);
+    assert.deepEqual(gui.positions.slice(0, retained.length), retained);
+    worstDeviation = replacementManifest ? null : 0;
+    for (
+      let i = retained.length;
+      !replacementManifest && i < gui.positions.length;
+      i += 3
+    )
+      worstDeviation = Math.max(
+        worstDeviation,
+        Math.abs(
+          gui.positions[i + 2] - height(gui.positions[i], gui.positions[i + 1]),
+        ),
+      );
+    if (!replacementManifest)
+      assert(worstDeviation < 0.003, `Surface deviation ${worstDeviation}`);
+  }
   await mutate("history_undo", {});
   assert.deepEqual((await geometry()).positions, original.positions);
   await mutate("history_redo", {});
   assert.deepEqual((await geometry()).positions, gui.positions);
   await mutate("history_undo", {});
   await mutate("selection_set", { entityId: "panel", triangles: selected });
+  await page.evaluate(() => {
+    window.__pendingResult = null;
+    window.__holdResult = true;
+  });
+  const cancelled = await mutate("mesh_process", {
+    entityId: "panel",
+    selectionOnly: true,
+    operation: { kind: "scanEdit", action },
+  });
+  await page.waitForFunction(() => !!window.__pendingResult);
+  await call("job_cancel", { jobId: cancelled.result.jobId });
+  await job(cancelled, "cancelled");
+  await page.evaluate(() => {
+    window.__pendingResult = null;
+    window.__holdResult = false;
+  });
+  assert.deepEqual((await geometry()).positions, original.positions);
+  assert.equal(await history(), beforeHistory);
+  if (!smoothing) {
+    await mutate("selection_modify", { entityId: "panel", operation: "all" });
+    const rejected = await job(
+      await mutate("mesh_process", {
+        entityId: "panel",
+        selectionOnly: true,
+        operation: { kind: "scanEdit", action },
+      }),
+      "failed",
+    );
+    assert.match(JSON.stringify(rejected.error), /whole|entire|patch|seam/i);
+    assert.deepEqual((await geometry()).positions, original.positions);
+    assert.equal(await history(), beforeHistory);
+  }
+  await mutate("selection_set", { entityId: "panel", triangles: selected });
   const mcp = await job(
     await mutate("mesh_process", {
       entityId: "panel",
       selectionOnly: true,
-      operation: { kind: "scanEdit", action: "defeature" },
+      operation: { kind: "scanEdit", action },
     }),
   );
-  assert.equal(mcp.result.diagnostics.curvaturePatches, 1);
-  assert.equal(mcp.result.diagnostics.curvatureFallback, "");
+  if (!smoothing && !replacementManifest) {
+    assert.equal(mcp.result.diagnostics.curvaturePatches, 1);
+    assert.equal(mcp.result.diagnostics.curvatureFallback, "");
+  }
   assert.deepEqual((await geometry()).positions, gui.positions);
+  let replacementTopology;
+  if (replacementManifest) {
+    replacementTopology = (
+      await job(await call("mesh_analyze", { entityId: "panel" }))
+    ).result.topology;
+    for (const key of [
+      "components",
+      "boundaryLoops",
+      "boundaryEdges",
+      "nonManifoldEdges",
+      "inconsistentEdges",
+    ])
+      assert.equal(
+        replacementTopology[key],
+        originalTopology[key],
+        `Real-input topology changed: ${key}`,
+      );
+    if (!smoothing) {
+      assert.equal(mcp.result.diagnostics.removedTriangles, selected.length);
+      assert.equal(mcp.result.diagnostics.prunedTriangles, 0);
+    }
+  }
   assert.equal(await history(), beforeHistory + 1);
+  const saved = await job(await call("project_export", { format: "project" }));
+  await job(
+    await mutate("project_import", {
+      artifactId: saved.result.artifactId,
+      replace: true,
+    }),
+  );
+  assert.deepEqual((await geometry()).positions, gui.positions);
+  if (replacementManifest)
+    assert.deepEqual(
+      (await job(await call("mesh_analyze", { entityId: "panel" }))).result
+        .topology,
+      replacementTopology,
+      "Replacement diagnostics changed after reopening",
+    );
+  if (largePatch) {
+    await mutate("viewport_control", {
+      action: "camera",
+      position: [180, -150, 160],
+      target: [0, 0, 0],
+      up: [0, 0, 1],
+      zoom: 1,
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("after-angled.png", out)),
+    });
+  }
+  let annularTwoPass;
+  if (smoothing && !replacementManifest) {
+    const input = JSON.parse(
+      await readFile(
+        new URL("fixtures/defeature-annular.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    const native = JSON.parse(
+      await readFile(
+        new URL("fixtures/smooth-annular.json", import.meta.url),
+        "utf8",
+      ),
+    );
+    const inputPositions = Array.from(new Float32Array(input.positions));
+    const data = Buffer.from(
+      JSON.stringify({
+        ...project,
+        name: "Native annular selected smoothing",
+        entities: [{ ...project.entities[0], positions: inputPositions }],
+      }),
+    );
+    const artifact = (
+      await call("artifact_put", {
+        name: "annular.json",
+        offset: 0,
+        base64: data.toString("base64"),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: artifact.artifactId,
+        replace: true,
+      }),
+    );
+    await mutate("object_select", { entityId: "panel" });
+    const faces = input.selection.flatMap((value, index) =>
+      value ? [index] : [],
+    );
+    await mutate("selection_set", { entityId: "panel", triangles: faces });
+    await job(
+      await mutate("mesh_process", {
+        entityId: "panel",
+        selectionOnly: true,
+        operation: {
+          kind: "scanEdit",
+          action,
+          iterations: 2,
+          strength: 0.5,
+          tolerance: 0.001,
+        },
+      }),
+    );
+    const actual = (await geometry()).positions;
+    assert.equal(actual.length, native.nativeOutput.length);
+    const maxError = Math.max(
+      ...actual.map((value, index) =>
+        Math.abs(value - native.nativeOutput[index]),
+      ),
+    );
+    assert(maxError < 0.000001, `Native annular coordinate error ${maxError}`);
+    const marked = new Set();
+    for (let i = 0; i < inputPositions.length; i += 3)
+      if (input.selection[Math.floor(i / 9)])
+        marked.add(inputPositions.slice(i, i + 3).join(","));
+    let retainedSlots = 0;
+    for (let i = 0; i < inputPositions.length; i += 3)
+      if (!marked.has(inputPositions.slice(i, i + 3).join(","))) {
+        assert.deepEqual(
+          actual.slice(i, i + 3),
+          inputPositions.slice(i, i + 3),
+        );
+        retainedSlots++;
+      }
+    assert(retainedSlots > 0);
+    await mutate("history_undo", {});
+    assert.deepEqual((await geometry()).positions, inputPositions);
+    await mutate("history_redo", {});
+    assert.deepEqual((await geometry()).positions, actual);
+    await mutate("viewport_control", { action: "fit", entityId: "panel" });
+    await page.screenshot({
+      path: fileURLToPath(new URL("annular-two-iterations.png", out)),
+    });
+    annularTwoPass = {
+      inputTriangles: inputPositions.length / 9,
+      selectedFacets: faces.length,
+      iterations: 2,
+      strength: 0.5,
+      toleranceMm: 0.001,
+      maxCoordinateErrorMm: maxError,
+      unchangedUnmarkedCornerSlots: retainedSlots,
+      undoRedo: true,
+      nativeExportSha256:
+        "864a7317c3427e697cf21448f170a8dc1e012127611ef4a3534d70a13403eb4a",
+    };
+  }
   assert.deepEqual(errors, []);
   ledger.result = {
-    defeatureCanvasOnlyStatus: true,
+    action,
+    unchangedFarSlots,
+    annularTwoPass,
+    nativeSixPassCoordinatesEqual:
+      smoothing && !replacementManifest ? true : undefined,
+    defeatureCanvasOnlyStatus: !smoothing,
+    largePatch,
+    selectedFacets: selected.length,
+    manufacturedFailureClassOnly: largePatch,
+    replacementManifest,
+    originalTopology,
+    replacementTopology,
     guiMcpEqual: true,
+    outputCoordinateSha256: createHash("sha256")
+      .update(Buffer.from(Float32Array.from(gui.positions).buffer))
+      .digest("hex"),
     undoRedo: true,
     sourcePreserved: true,
+    cancellationRollback: true,
+    failureRollback: !smoothing,
+    saveReopen: true,
+    beforeViewport,
+    afterViewport,
     worstDeviation,
     diagnostics: mcp.result.diagnostics,
-    pageErrors: errors,
+    pageErrors: [...errors],
   };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
@@ -376,10 +791,10 @@ try {
   throw error;
 } finally {
   clearTimeout(deadline);
-  await client?.close().catch(() => {});
-  await transport?.close().catch(() => {});
   await browser?.close().catch(() => {});
   await browserServer?.close().catch(() => {});
+  await client?.close().catch(() => {});
+  await transport?.close().catch(() => {});
   if (reserve?.listening)
     await new Promise((resolve) => reserve.close(resolve));
   if (server?.listening) await new Promise((resolve) => server.close(resolve));

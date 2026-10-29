@@ -1,0 +1,168 @@
+{
+  "scope": "Compact selection boundary buffers on application commit b10655d6bc4732a56599db7ee6e94dafe0b35a2d",
+  "focusedTests": {
+    "count": 16,
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 375914496,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": true
+    }
+  },
+  "build": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 1731153920,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "peakWithinLimit": true
+  },
+  "browser": {
+    "result": {
+      "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+      "componentTriangles": [2, 8, 18],
+      "componentAreas": [1, 4, 9.00000000000002],
+      "inventoryHistoryIsolation": true,
+      "renderedCountsAreasAndNavigation": true,
+      "cases": [
+        {
+          "name": "keep",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "flip",
+          "triangles": 28,
+          "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "extract",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": true
+        },
+        {
+          "name": "triangle-threshold-inclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "area-threshold-exclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        }
+      ],
+      "mcpHeldResultCancellation": true,
+      "guiCancelAndBack": true,
+      "pageErrors": []
+    },
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 738316288,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": true
+    },
+    "cleanup": [
+      {
+        "port": 54607,
+        "closed": true
+      },
+      {
+        "pid": 48376,
+        "exited": true
+      },
+      {
+        "port": 54608,
+        "closed": true
+      },
+      {
+        "pid": 51004,
+        "exited": true
+      }
+    ]
+  },
+  "renderedControl": {
+    "baselineCommit": "494348b74cdbebac6f65cd9214fedc737c02b50d",
+    "baselineSha256": "9f70539e4780355d943f18e7a1910916ac36c596c82a1da31b2e9945e231ca2e",
+    "candidateSha256": "9f70539e4780355d943f18e7a1910916ac36c596c82a1da31b2e9945e231ca2e",
+    "dimensions": [1140, 694],
+    "changedPixels": 0,
+    "maximumChannelDifference": 0,
+    "method": "Pillow RGBA pixel comparison of captured component-processing canvas"
+  },
+  "originalPly3": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed"
+    ],
+    "failure": "Not connected",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4331126784,
+      "cleanupConfirmed": true,
+      "activeAfter": 0,
+      "peakWithinLimit": false
+    },
+    "cleanup": [
+      {
+        "port": 59852,
+        "closed": true
+      },
+      {
+        "pid": 37432,
+        "exited": true
+      },
+      {
+        "port": 59853,
+        "closed": true
+      },
+      {
+        "pid": 28568,
+        "exited": true
+      }
+    ]
+  },
+  "limitations": [
+    "One manufactured rendered control and one lighting/camera state do not establish general visual equivalence.",
+    "The PLY-3 test failed the 4 GiB gate after Extract and did not reach project reopen.",
+    "The exact candidate excludes remaining local viewport and selection-retirement work; separate runs cannot establish a controlled memory improvement.",
+    "Native comparison remains open."
+  ]
+}

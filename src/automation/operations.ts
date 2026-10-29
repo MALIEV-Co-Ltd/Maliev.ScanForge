@@ -1,8 +1,18 @@
+import { flipSourceTopology } from "../scan-flip-request";
+import { scanSplitCutter } from "../scan-split-cutter";
+import { scanSegmentPublication } from "../scan-segment-publication";
+import { projectedBoundarySketches } from "../scan-boundary-sketch";
+import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
 import { geometryArtifact } from "./geometry-artifact";
+import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { createInspectionOperations } from "./inspection-operations";
 import { inspectSection, measureGeometry } from "../inspection";
 import { bindShrinkwrap } from "../shrinkwrap-request";
-import { resolveConstructionIdentities } from "../reference-construction-identity";
+import { bindAverageMeshes } from "../scan-average-request";
+import { bindUnrollReference } from "../scan-unroll-reference";
+import { createUnrollAuxiliaries } from "../scan-unroll-auxiliary";
+import { inspectReferenceFrame } from "../reference-frame";
+import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { createScanPreviewOperation } from "./scan-preview-operations";
 import {
   reconstructionTargets,
@@ -53,6 +63,7 @@ import {
   type ParametricFeature,
 } from "../parametric";
 import { duplicateObject, toggleObjectVisibility } from "../object-operations";
+import { resolveConstructionIdentities } from "../reference-construction-identity";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { partitionMeshSelection } from "../mesh-selection-edit";
 import {
@@ -82,6 +93,7 @@ import { validatePatch, tessellatePatch } from "../surfaces";
 import { createSurfaceFitOperation } from "./surface-fit-operations";
 import {
   retainIndexedMesh,
+  indexedMeshMatches,
   transformIndexedMesh,
   indexedRenderNormals,
 } from "../indexed-mesh";
@@ -276,7 +288,8 @@ function editable(entity: Entity, meshOnly = false) {
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
 function summary(e: Entity, scene: readonly Entity[]) {
-  const reference = inspectReferenceEntity(e, scene);
+  const reference =
+    inspectReferenceFrame(e) ?? inspectReferenceEntity(e, scene);
   const {
     positions,
     normals: _normals,
@@ -288,6 +301,7 @@ function summary(e: Entity, scene: readonly Entity[]) {
     pointCloudPlacement: _placement,
     pointColors: _pointColors,
     reference: _reference,
+    coordinateFrame: _coordinateFrame,
     ...metadata
   } = e;
   return {
@@ -472,23 +486,25 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         cad = new CadClient();
       let transferred = false;
       try {
-        const cache = new Map<string, KernelMesh>();
+        const cache = new Map<string, string>();
         const restore = async (entities: Entity[]) => {
           const restored: Entity[] = [];
           for (const e of entities) {
             abort(c.signal);
-            let output: KernelMesh | undefined;
+            let kernelId: string | undefined;
             if (e.brep) {
-              output = cache.get(e.brep);
-              if (!output) {
-                output = await cad.importFile(
+              kernelId = cache.get(e.brep);
+              if (!kernelId) {
+                const output = await cad.importFile(
                   new TextEncoder().encode(e.brep),
                   "brep",
                 );
-                cache.set(e.brep, output);
+                kernelId = output.kernelId;
+                cache.set(e.brep, kernelId);
               }
             }
-            restored.push({ ...e, ...output });
+            // Rehydrate native ownership without replacing the saved exact/display data.
+            restored.push(kernelId ? { ...e, kernelId } : e);
           }
           return restored;
         };
@@ -653,36 +669,43 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           ? {
               geometry: geometryArtifact(
                 c,
-                "reference" in details
+                "coordinateFrame" in details && details.coordinateFrame
                   ? {
                       units: "mm",
-                      semantic: details.reference.geometry,
-                      encoding: details.reference.geometryEncoding,
+                      coordinateFrame: details.coordinateFrame,
+                      coordinateFrameEncoding: details.coordinateFrameEncoding,
+                      rollMapping: e.rollMapping,
                     }
-                  : {
-                      positions: e.positions,
-                      indexedMesh: e.indexedMesh
-                        ? {
-                            vertices: e.indexedMesh.vertices,
-                            triangles: e.indexedMesh.triangles,
-                            ...(e.indexedMesh.normals
-                              ? { normals: e.indexedMesh.normals }
-                              : {}),
-                            ...(e.indexedMesh.facetNormals
-                              ? { facetNormals: e.indexedMesh.facetNormals }
-                              : {}),
-                            ...(e.indexedMesh.geometryNormals
-                              ? {
-                                  geometryNormals:
-                                    e.indexedMesh.geometryNormals,
-                                }
-                              : {}),
-                          }
-                        : undefined,
-                      normals: e.normals ? e.normals : undefined,
-                      pointColors: e.pointColors ? e.pointColors : undefined,
-                      edgePositions: e.edgePositions,
-                    },
+                  : "reference" in details
+                    ? {
+                        units: "mm",
+                        semantic: details.reference.geometry,
+                        encoding: details.reference.geometryEncoding,
+                      }
+                    : {
+                        positions: e.positions,
+                        indexedMesh: e.indexedMesh
+                          ? {
+                              vertices: e.indexedMesh.vertices,
+                              triangles: e.indexedMesh.triangles,
+                              ...(e.indexedMesh.facetNormals
+                                ? { facetNormals: e.indexedMesh.facetNormals }
+                                : {}),
+                              ...(e.indexedMesh.normals
+                                ? { normals: e.indexedMesh.normals }
+                                : {}),
+                              ...(e.indexedMesh.geometryNormals
+                                ? {
+                                    geometryNormals:
+                                      e.indexedMesh.geometryNormals,
+                                  }
+                                : {}),
+                            }
+                          : undefined,
+                        normals: e.normals ? e.normals : undefined,
+                        pointColors: e.pointColors ? e.pointColors : undefined,
+                        edgePositions: e.edgePositions,
+                      },
               ),
             }
           : {}),
@@ -981,7 +1004,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         {
           kind: "report",
           positions: e.positions,
-          tolerance: a.tolerance ?? 1e-6,
+          tolerance: a.tolerance ?? SCAN_TOPOLOGY_TOLERANCE,
         },
         { signal: c.signal, onProgress: c.progress, reuseTopology: true },
       );
@@ -994,14 +1017,50 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     },
     mesh_process: async (a, c) => {
       const bridgePreview = validateBridgePreview(a);
-      const s = host.snapshot(),
-        e = sampledObject(s, a.entityId);
+      const s = host.snapshot();
+      let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      if (
+        op.createSketches !== undefined &&
+        (kind !== "scanEdit" ||
+          op.action !== "boundaryProject" ||
+          typeof op.createSketches !== "boolean")
+      )
+        throw Error(
+          "createSketches is boolean and supported only for boundary projection (boundaryProject).",
+        );
+      const publishBoundarySketches = op.createSketches === true;
+      const publishSpatialSketch =
+        kind === "scanEdit" && op.action === "boundarySpatialSketch";
+      if (publishSpatialSketch && a.selectionOnly)
+        throw Error(
+          "Spatial boundary sketches use boundary indices; omit selectionOnly.",
+        );
+      delete op.createSketches;
+      if (publishBoundarySketches || publishSpatialSketch) editable(e);
+      let unroll: Awaited<ReturnType<typeof bindUnrollReference>> | undefined;
+      let average: ReturnType<typeof bindAverageMeshes> | undefined;
       const reconstruction =
         kind === "scanTools" && op.operation?.kind === "repolygonize";
       let nativeReconstruction:
         ReturnType<typeof bindNativeReconstruction> | undefined;
+      if (kind === "scanTools" && op.operation.kind === "averageMesh") {
+        if (a.selectionOnly)
+          throw new Error(
+            "Average mesh processes whole inputs; omit selectionOnly.",
+          );
+        editable(e, true);
+        if (a.targetId && a.targetIds !== undefined)
+          throw new Error(
+            "Average mesh accepts targetId or targetIds, not both.",
+          );
+        const targetIds = a.targetIds ?? (a.targetId ? [a.targetId] : []);
+        if (Array.isArray(targetIds))
+          for (const targetId of targetIds) sampledObject(s, targetId);
+        average = bindAverageMeshes(e, targetIds, s.entities);
+        e = average.source;
+      }
       if (!reconstruction && Array.isArray(a.targetIds) && !a.targetIds.length)
         throw Error(
           "targetIds requires at least one reference for this operation.",
@@ -1027,9 +1086,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         (kind === "pointCloudEdit" &&
           ["connectedSelection", "grow", "shrink"].includes(op.action)) ||
         (kind === "scanEdit" &&
-          ["inventory", "boundaryProject", "boundarySmooth"].includes(
-            op.action,
-          ));
+          ["inventory", "boundaryProject"].includes(op.action));
       if (!readonly) editable(e, e.kind !== "pointcloud");
       if (
         "positions" in op ||
@@ -1074,11 +1131,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         kind !== "nativeRefine" &&
         !(
           kind === "scanTools" &&
-          ["repolygonize", "shrinkwrap"].includes(op.operation.kind)
+          ["repolygonize", "shrinkwrap", "averageMesh"].includes(
+            op.operation.kind,
+          )
         )
       )
         throw new Error(
-          "targetIds is supported only for surface refinement or re-polygonize.",
+          "targetIds is supported only for surface refinement, re-polygonize, ShrinkWrap or Average mesh.",
         );
       if (
         selection &&
@@ -1096,6 +1155,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         throw new Error(
           "Selection-only processing requires createNew:true for this operation.",
         );
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        op.operation.cylinderId !== undefined
+      ) {
+        unroll = await bindUnrollReference(
+          op.operation,
+          e,
+          s.entities,
+          (kernelId) => host.cad().alignmentReferences(kernelId),
+          () => c.check(),
+        );
+        op.operation = unroll.operation;
+      }
       const request = {
         ...op,
         ...(bridgePreview ? { previewOnly: true } : {}),
@@ -1195,13 +1268,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           ),
         );
       }
-      if (kind === "scanEdit")
+      if (kind === "scanEdit") {
+        const target = a.targetId ? sampledObject(s, a.targetId) : undefined;
         Object.assign(request, {
           selection,
-          ...(a.targetId
-            ? { target: sampledObject(s, a.targetId).positions }
+          ...(indexedMeshMatches(e.indexedMesh, e.positions)
+            ? { sourceIndexed: e.indexedMesh }
+            : {}),
+          ...(target
+            ? op.action === "split" && op.plane === undefined
+              ? scanSplitCutter(target)
+              : { target: target.positions }
             : {}),
         });
+      }
       if (kind === "connectedSelection")
         Object.assign(request, { seeds: mask(s, e) });
       if (kind === "selectionMorphology")
@@ -1293,9 +1373,20 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           } else op.operation.targets = reconstructionTargets(e, targets);
         }
         if (op.operation.kind === "averageMesh") {
-          if (!a.targetId) throw new Error("Average mesh requires targetId.");
-          op.operation.targets = [sampledObject(s, a.targetId).positions];
+          op.operation.targets = average!.references.map(
+            (entity) => entity.positions,
+          );
+          op.operation.targetTopology = average!.references.map(
+            (entity) => entity.indexedMesh,
+          );
+          op.operation.sourceTopology = average!.source.indexedMesh;
         }
+        if (op.operation.kind === "flipNormals")
+          op.operation.sourceTopology = await flipSourceTopology(
+            e,
+            () => c.check(),
+            c.progress,
+          );
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
         if (selection && op.operation.kind !== "reduceNoise")
@@ -1309,6 +1400,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       });
       c.check();
       const edit = result.scanEdit;
+      const boundarySketches = publishBoundarySketches
+        ? projectedBoundarySketches(edit?.curves ?? [], op.plane)
+        : publishSpatialSketch
+          ? [spatialBoundarySketch(edit?.spatialCurves ?? [])]
+          : undefined;
       if (bridgePreview) return bridgePreviewResponse(e.positions, result, c);
       const pointEdit = result.pointCloudEdit;
       const positions =
@@ -1318,7 +1414,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         pointEdit?.selection ?? edit?.selection ?? result.selection;
       let next = s.entities;
       const created: Entity[] = [];
-      if (positions) {
+      let unrollAuxiliary:
+        ReturnType<typeof createUnrollAuxiliaries> | undefined;
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        !positions?.length
+      )
+        throw Error(
+          "Unroll produced no complete facets; no objects were published.",
+        );
+      if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
           (reconstruction && e.kind === "pointcloud"
@@ -1361,56 +1467,102 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 });
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
-        else if (a.createNew ?? !!nativeReconstruction) {
+        else if (
+          a.createNew ??
+          (!!average ||
+            !!nativeReconstruction ||
+            (kind === "scanTools" && op.operation.kind === "unroll"))
+        ) {
           updated.id = id();
-          if (
-            nativeReconstruction &&
-            updated.constructionOrderKey !== undefined
-          )
+          if (updated.constructionOrderKey !== undefined)
             updated.constructionOrderKey = resolveConstructionIdentities(
               [...s.entities, { id: updated.id }],
               [updated.id],
             ).orderedSources[0].constructionOrderKey;
           updated.name = nativeReconstruction
             ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
-            : `${e.name} ${kind}`;
+            : average
+              ? "Average mesh"
+              : kind === "scanTools" && op.operation.kind === "unroll"
+                ? `${e.name} - Unrolled`
+                : `${e.name} ${kind}`;
           created.push(updated);
           next = [...next, updated];
           if (nativeReconstruction) {
             const inputIds = new Set(
-              nativeReconstruction.inputs.map((input) => input.id),
+              nativeReconstruction.inputs.map((e) => e.id),
             );
-            next = next.map((input) =>
-              inputIds.has(input.id) ? { ...input, visible: false } : input,
+            next = next.map((e) =>
+              inputIds.has(e.id) ? { ...e, visible: false } : e,
             );
           }
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
-      if (segments?.length) {
-        for (const [index, p] of segments.entries()) {
-          if (!p.length) continue;
-          const copy = meshEdited(scanMeshCopy(e, id()), p);
-          const classification = result.segmentClassifications?.[index];
-          copy.fit = classification?.fit;
-          copy.name = `${e.name} segment ${index + 1}${classification ? ` · ${classification.kind === "freeform" ? "unclassified" : classification.kind}` : ""}`;
-          created.push(copy);
-        }
-        next = [...next, ...created.filter((x) => !next.includes(x))];
+      const segmentPublication =
+        segments === undefined
+          ? undefined
+          : scanSegmentPublication(
+              next,
+              e.id,
+              segments,
+              result.segmentClassifications,
+              id,
+              edit?.segmentIndexedMeshes,
+            );
+      if (segmentPublication) {
+        next = segmentPublication.entities;
+        created.push(...segmentPublication.created);
+      }
+      if (
+        kind === "scanTools" &&
+        op.operation.kind === "unroll" &&
+        positions?.length
+      ) {
+        unrollAuxiliary = createUnrollAuxiliaries(op.operation, positions, {
+          frameId: id(),
+          sketchId: id(),
+          sourceEntityId: e.id,
+          meshEntityId: created[0]?.id ?? e.id,
+        });
+        next = [...next, unrollAuxiliary.frame];
       }
       const response = {
+        ...(boundarySketches
+          ? { sketchIds: boundarySketches.map((sketch) => sketch.id) }
+          : {}),
+        ...(unrollAuxiliary
+          ? {
+              unroll: {
+                ...unroll?.reference,
+                meshEntityId: created[0]?.id ?? e.id,
+                frameEntityId: unrollAuxiliary.frame.id,
+                sketchId: unrollAuxiliary.sketch.id,
+                coordinateFrame: unrollAuxiliary.frame.coordinateFrame,
+                mapping: unrollAuxiliary.frame.rollMapping,
+              },
+            }
+          : {}),
         ...(nativeReconstruction
           ? {
               reconstruction: {
-                inputEntityIds: nativeReconstruction.inputs.map(
-                  (input) => input.id,
-                ),
+                inputEntityIds: nativeReconstruction.inputs.map((e) => e.id),
                 method: "native",
+              },
+            }
+          : {}),
+        ...(average
+          ? {
+              average: {
+                baseEntityId: average.source.id,
+                referenceEntityIds: average.references.map(
+                  (entity) => entity.id,
+                ),
               },
             }
           : {}),
         entityIds: created.length
           ? created.map((x) => x.id)
-          : positions?.length
+          : edit?.diagnostics.changed === false || positions?.length
             ? [e.id]
             : [],
         diagnostics: edit?.diagnostics ?? result.diagnostics,
@@ -1418,13 +1570,26 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         topology: result.topology,
         registration: result.registration,
         refinement: result.refinement,
-        ...(edit?.inventory || edit?.curves || result.sketchSection
+        ...(edit?.inventory ||
+        edit?.curves ||
+        edit?.spatialCurves ||
+        result.sketchSection
           ? {
               artifact: json(
                 c,
                 {
-                  inventory: edit?.inventory,
+                  inventory: edit?.inventory && {
+                    ...edit.inventory,
+                    components: edit.inventory.components.map((component) => ({
+                      ...component,
+                      triangles:
+                        component.triangles instanceof Uint32Array
+                          ? Array.from(component.triangles)
+                          : component.triangles,
+                    })),
+                  },
                   curves: edit?.curves,
+                  spatialCurves: edit?.spatialCurves,
                   sketchSection: result.sketchSection,
                 },
                 "mesh-report.json",
@@ -1433,16 +1598,33 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           : {}),
       };
       c.check();
-      if (positions || segments?.length) {
-        if (nativeReconstruction && created.length)
-          host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`, {
-            modelVisibilityFor: nativeReconstruction.inputs.map(
-              (input) => input.id,
-            ),
-          });
-        else host.commit(next.map(retainIndexedMesh), `Mesh ${kind}`);
-      }
-      if (nativeReconstruction && created.length) host.select(created[0].id);
+      if (
+        (positions && edit?.diagnostics.changed !== false) ||
+        segmentPublication ||
+        boundarySketches?.length
+      )
+        host.commit(
+          next.map(retainIndexedMesh),
+          `Mesh ${kind}`,
+          boundarySketches
+            ? { newModelSketches: boundarySketches }
+            : unrollAuxiliary
+              ? { newModelSketches: [unrollAuxiliary.sketch] }
+              : segmentPublication
+                ? segmentPublication.policy
+                : nativeReconstruction && created.length
+                  ? {
+                      modelVisibilityFor: nativeReconstruction.inputs.map(
+                        (e) => e.id,
+                      ),
+                    }
+                  : undefined,
+        );
+      if (
+        (segmentPublication || average || nativeReconstruction) &&
+        created.length
+      )
+        host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
       return response;
     },
@@ -1580,6 +1762,15 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         throw new Error(
           `Conflicting or unsolved constraints: ${solution.conflictingConstraintIds.join(", ")}`,
         );
+      const state = host.snapshot();
+      const saved = state.authoring.sketches?.find(
+        (row) => row.id === state.authoring.activeSketchId,
+      );
+      if (saved?.visible && saved.kind !== "spatial")
+        validateSavedSketchDisplay({
+          ...saved,
+          sketch: solution?.sketch ?? a.sketch,
+        });
       c.check();
       host.setSketch(structuredClone(solution?.sketch ?? a.sketch));
       return { updated: true, ...(solution ? { solution } : {}) };

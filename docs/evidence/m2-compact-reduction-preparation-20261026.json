@@ -1,0 +1,132 @@
+{
+  "scope": "Compact reduction Task1 storage/preparation only. Current production routing still has the captured spatial/global mismatch; no complete kernel, application integration or M2 closure claim.",
+  "baseCommit": "8542a68465e9de09e54c98638ac7a542d06f1408",
+  "baseline": {
+    "data": {
+      "scope": "Current TypeScript recovered global loop versus production routing; not a new native UI export",
+      "nx": 160,
+      "ny": 128,
+      "inputFaces": 40960,
+      "sourceSha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+      "target": 20480,
+      "globalFaces": 20480,
+      "globalFloat32Sha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+      "globalFloat64Sha256": "96841cb8f0d3e5cf9ff02dbe8577a78e944b52fcc707490d95e441a213cdac18",
+      "globalTriangleSha256": "4e0775fc434767b6258c72b3b6ec67e8add6eefbb0cd273b294a3f03d13779cf",
+      "productionFaces": 20480,
+      "productionSha256": "110aa6cb62941398b9b394f3470be20dafb6851bb2d32c4504f8d7a3e7cdf24b",
+      "equal": false,
+      "sourceUnchanged": true,
+      "globalMs": 349.7381,
+      "productionMs": 513.2598,
+      "productionSummary": "40960 \u2192 20480 triangles. Spatial patch borders preserved.",
+      "stages": [
+        "Preparing bounded polygon reduction",
+        "Measuring scan extent",
+        "Ordering spatial patches",
+        "Reducing spatial patches",
+        "Packing reduced scan",
+        "Polygon reduction complete"
+      ],
+      "memory": {
+        "rss": 204222464,
+        "heapTotal": 63610880,
+        "heapUsed": 38894016,
+        "external": 11875792,
+        "arrayBuffers": 9631929
+      }
+    },
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-global-reduction-routing-baseline-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "0c6650927ef7fb12d8d6429ab198345810302c171e7d8097c5974f5f38614b06",
+      "passed": true,
+      "elapsedSeconds": 1.2197413999820128,
+      "peakOwnedJobBytes": 253571072,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "memoryScope": "Combined process/job peak; separate global versus spatial memory is not measured."
+  },
+  "initialRed": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-task1-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "350230068e7b8d2dbb0413060827cf355e75f6b19d32f1f666b812431995e0c3",
+      "passed": false,
+      "elapsedSeconds": 2.180403500038665,
+      "peakOwnedJobBytes": 392929280,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "globalRuntimeAssertionsFailed": 2,
+    "newModuleImportFailures": 2,
+    "globalRegressionRemainsExpectedRedUntilProductionIntegration": true
+  },
+  "snapshotCancellationRed": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-snapshot-cancel-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "be9d8af3fc32e7fa81199e7613d86d4dce2a0d6ecb42de743560c3e311c9f2b9",
+      "passed": false,
+      "elapsedSeconds": 2.4325472000055015,
+      "peakOwnedJobBytes": 269459456,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "failure": "Snapshot ignored cancellation callback instead of throwing; cancellation now releases scratch admission and preserves stored references."
+  },
+  "storage": {
+    "typedVertexAndFaceColumns": true,
+    "encodedIncidence": "face*3+corner in Uint32 chunks",
+    "chunkEntries": 65536,
+    "independentSnapshotLeases": true,
+    "capacityReuseOnReset": true,
+    "growthAndScratchAdmissionBeforeAllocation": true,
+    "compactTypedWorkingBudgetBytes": 1610612736,
+    "externalValidationCeilingBytes": 4294967296,
+    "productionAdmissionChanged": false
+  },
+  "preparation": {
+    "retainedNativePreparationQuadricNormalErrorMinimumBytesEqual": true,
+    "retainedNativeIncidenceBoundaryCountOffsetOrderEqual": true,
+    "deterministicConnectedGridMatchesLegacyPreparation": true,
+    "sourceArraysUnchanged": true
+  },
+  "focused": {
+    "passed": 659,
+    "failed": 0,
+    "files": 4,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-task1-green-20261026-r3-mirror-focused.receipt.json",
+      "sha256": "6a1eecc429780ef0ba0893015e3de6ac7960a29fa089f7b69ff771d6485c1069",
+      "passed": true,
+      "elapsedSeconds": 1.5226771999732591,
+      "peakOwnedJobBytes": 378974208,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "targetedTypecheck": {
+    "diagnostics": 0,
+    "checkedFiles": 680,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-task1-typecheck-20261026-r2-mirror-focused.receipt.json",
+      "sha256": "20c238b415da172b44ab59658289b32e7a3aa0f47cf6c2323dee767900c74d41",
+      "passed": true,
+      "elapsedSeconds": 4.603418600047007,
+      "peakOwnedJobBytes": 435953664,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "mcpScope": "No application caller uses the new preparation yet. Existing GUI/MCP reduction operation is unchanged; shared integration and public/rendered contract checks remain Task3/4.",
+  "remaining": [
+    "Complete collapse/validity/update/export loop and byte-for-byte differential fixtures.",
+    "Retain source topology validation and bounded weld allocations before changing shared production admission.",
+    "Current global-routing regression is intentionally uncommitted/RED until Task3; do not run or claim the whole local suite green.",
+    "Large native export/deviation-mode and other M2 gates remain open."
+  ]
+}

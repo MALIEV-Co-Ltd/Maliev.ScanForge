@@ -1,4 +1,5 @@
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
+import { reverseMeshEdges } from "./mesh-edge-index";
 
 /** Reverse directed incidence while retaining welded vertices and undirected connectivity. */
 export function flippedTopology(
@@ -20,15 +21,7 @@ export function flippedTopology(
     triangles[face + 1] = triangles[face + 2];
     triangles[face + 2] = second;
   }
-  const edges = new Map<string, import("./mesh-processing").EdgeUse[]>();
-  let index = 0;
-  for (const [key, uses] of source.edges) {
-    if (index++ % 4096 === 0) check();
-    edges.set(
-      key,
-      uses.map(({ face, from, to }) => ({ face, from: to, to: from })),
-    );
-  }
+  const edges = reverseMeshEdges(source.edges, options.signal);
   check();
   return { ...source, triangles, edges };
 }

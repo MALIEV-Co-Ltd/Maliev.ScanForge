@@ -1,5 +1,15 @@
 # Native Re-polygonize field and extraction investigation
 
+## 2026-10-25 native GUI comparison and core integration
+
+The three retained fixed-pose PLY files were imported into native reference build 8.0.123 in millimetres and Re-polygonize ran at 0.500 mm. Its binary STL contains 50,895 facets. The authored production signed-field core, directed repair and existing native reduction kernel reproduce every ordered Float32 coordinate byte of that export; all input positions and indices remain unchanged. The default native caller performs a half-count optimization after extraction, explaining the earlier 101,792-versus-50,895 comparison. A separate tilted indexed box (8 vertices, 12 facets) also matches all 136 exported facets exactly.
+
+The complete core run took about 76 seconds with a 1,091,997,696-byte owned Job peak under the unchanged 4 GiB / 25% CPU policy; roots exited, owned descendants reached zero, handles closed and cleanup errors were empty. This is an application-core comparison, not a native performance benchmark or a completed browser/MCP milestone gate. The native export itself has 4,189 boundary edges, 166 nonmanifold edges, 441 nonmanifold vertices and four duplicate faces under the application's exact-index diagnostics. It must not be called a watertight solid. The [new evidence record](evidence/m2-native-repolygonize-20261025.json) keeps the exact core manifest separate from later integration changes.
+
+The remaining text records historical investigations and their original limitations.
+
+## Historical investigation
+
 Latest comparison-preparation checkpoint: three binary little-endian indexed PLY
 inputs retain all 3,121,976 posed vertices and 6,147,452 triangles from the pinned
 aligned project. The files total 117,381,333 bytes. Independent readback of every
@@ -656,7 +666,7 @@ spacing 0.5 and explicit zero initializer in both cases:
 This is an unresolved prototype quality concern. Source preparation, exact-zero
 classification, partition paths and complete extraction/postprocessing must be
 checked before any native behavior or usable output is claimed. The diagnostic
-does not establish behavior on the original scans or a defect in QuickSurface.
+does not establish behavior on the original scans or a defect in the native reference application.
 
 The static-analysis job peaked at 758,423,552 bytes; the current arithmetic and
 probe jobs stayed below 35 MB. All jobs exited with expected statuses, zero

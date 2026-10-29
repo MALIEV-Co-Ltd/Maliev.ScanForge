@@ -1,0 +1,247 @@
+{
+  "scope": "Installed native Semi/Flat and two Flat Bridge finite controls; corrected shared Flat Bridge passes native oriented geometry, rendered GUI/public-MCP lifecycle, binary persistence and affected/build checks. M2 remains open.",
+  "native": {
+    "version": "native reference 8.0.123",
+    "originalExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "retainedAnalysisImageExecuted": false,
+    "units": "mm",
+    "eachCommittedControlStartedFromOriginalSource": true,
+    "semiFlat": {
+      "session": "R9",
+      "sourceSha256": "ec54d4c2d2b06e1c836bb7d53b700176dd89970919ffd7b5948a3a56c7d39b9b",
+      "sourceTriangles": 8,
+      "firstPoint": [-3, -3, 0],
+      "secondPoint": [3, 3, 0],
+      "nativeSha256": "21b7db9591b1d4c55a79a6d75c4748dbb303014aa99a1ce4a62c637d286b3d17",
+      "nativeBytes": 534,
+      "nativeTriangles": 9,
+      "retainedOriginalOrientedTriangles": 8,
+      "sharedRequest": {
+        "mode": "partial",
+        "indices": [1],
+        "start": 1,
+        "end": 3,
+        "algorithm": "flat",
+        "tolerance": 0.001
+      },
+      "exactOrientedNumericGeometryEqual": true,
+      "reverseArcComparison": {
+        "start": 3,
+        "end": 1,
+        "equal": false,
+        "missingTriangles": 1,
+        "extraTriangles": 1
+      }
+    },
+    "flatBridge": [
+      {
+        "session": "R11",
+        "fixture": "tests/fixtures/bridge-observed-flat-annulus.json",
+        "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+        "nativeSha256": "4ca4e01838d101e893ca4109e55385843adc1cd6e39d441724ecee9ee9c8fe70",
+        "nativeBytes": 4284,
+        "sourceTriangles": 64,
+        "nativeTriangles": 84,
+        "railSegments": [10, 10],
+        "originalApplicationTriangles": 66,
+        "correctedSharedOrientedGeometryEqual": true
+      },
+      {
+        "session": "R13",
+        "fixture": "tests/fixtures/bridge-observed-flat-short-annulus.json",
+        "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+        "nativeSha256": "53b8fa04a3f2da8ba8b2d8b211ba777dc7436924619efeb4085b31d6c628b00a",
+        "nativeBytes": 4134,
+        "sourceTriangles": 64,
+        "nativeTriangles": 81,
+        "railSegments": [9, 8],
+        "originalApplicationTriangles": 66,
+        "correctedSharedOrientedGeometryEqual": true
+      }
+    ],
+    "gesture": "Bridge and Flat selected; two connection lines defined by four boundary-corner clicks. Successful controls committed after the fourth click and changed the native hole count from two to three.",
+    "failedObservationsRetained": [
+      "R8 Semi operation was observed but its export was not confirmed before scheduled cleanup.",
+      "R9 square-ring and R10 one-line Bridge attempts did not establish a committed bridge export.",
+      "R12 and the first R13 span at +/-45 and +/-33.75 degrees did not commit a patch; a region-confirmation click also left two holes. These observations are not exported geometry comparisons."
+    ]
+  },
+  "correction": {
+    "gui": "Edit Scan > Holes > Bridge > Flat",
+    "mcp": "mesh_process with scanEdit/fillHoles, mode bridge and algorithm flat; existing schema and shared worker retained",
+    "spacing": "Mean attachment-edge length; each free rail uses max(1, trunc(length / spacing)) segments independently",
+    "arithmetic": "Float32 endpoint differences, widened interpolation with accumulated double fractions, Float32 inserted coordinates, then smallest-corner rim clipping",
+    "staticSupport": "Retained static-only candidate 14066ff30 provides the spacing/truncation/interpolation hypothesis. Both actual installed-native exports independently match its resulting complete oriented Float32 geometry.",
+    "retainedGeometry": "Original attachment vertices and all source triangles remain unchanged. Already attached rails remain unsplit. Existing retained opposite-corner edges remain forbidden patch diagonals.",
+    "workAdmission": "Reject more than 2048 Flat bridge boundary vertices before allocation, bounding quadratic corner rescans to approximately 2.1 million candidates; do not reduce native sampling density silently.",
+    "rollback": "Cancellation, impossible triangulation, retained-surface intersections and admission errors preserve canonical geometry and history."
+  },
+  "validation": {
+    "initialRed": "Both exported native controls failed with 66 application triangles instead of 84 and 81.",
+    "firstGreen": "85 tests passed across eight affected files, including both native oriented controls and MCP preview artifacts; this preceded review corrections.",
+    "reviewRed": "Retained-diagonal fixture produced one new nonmanifold edge; long narrow strip entered allocation before admission rejection.",
+    "reviewGreen": "Six focused tests passed after retaining diagonal constraints and adding bounded clipping admission.",
+    "earlierBuild": "All 13 TypeScript batches, Vite and offline manifest passed before review corrections; scanforge-ff85bb17809af614. Not final candidate acceptance.",
+    "remaining": "Exact-head hosted CI, live-preview update, broader M2 inventory and final milestone review/merge acceptance.",
+    "correctedCandidate": {
+      "baseCommit": "dac81dcae48e17c43aa5abf3ec1fb576aec3666d",
+      "buildId": "scanforge-b5420f04ca0b12b2",
+      "manifestFiles": 2993,
+      "buildInputsUnchanged": true,
+      "manifestSha256": "b5cb1a453890965051ea6ce5af242df987024337f50273f942af4ede3d5b4571",
+      "typeScriptBatchesPassed": 13,
+      "warnings": 0,
+      "buildElapsedSeconds": 151.66841359995306,
+      "buildPeakJobMemoryBytes": 1717133312,
+      "testsPassed": 308,
+      "testFiles": 32,
+      "testsSkipped": 0,
+      "testFailures": 0,
+      "testElapsedSeconds": 15.118617699947208,
+      "testPeakJobMemoryBytes": 1032404992,
+      "ownedProcessesExited": true,
+      "cleanupErrors": [],
+      "review": "Independent source review reproduced two defects, verified their corrections, and found no remaining actionable issues in the follow-up diff."
+    },
+    "rendered": {
+      "buildId": "scanforge-b5420f04ca0b12b2",
+      "viewport": [1400, 900],
+      "driver": "tests/bridge-drag-browser.mjs",
+      "command": "node tests/bridge-drag-browser.mjs",
+      "browserPath": "Browser skill unavailable; existing Playwright Chrome/WebGL harness",
+      "reports": [
+        {
+          "method": "flat",
+          "scenario": "flat",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 20,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "tangent",
+          "scenario": "tangent",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 22,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "independent-boundaries",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 4,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "fragmented-open",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 4,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true
+        },
+        {
+          "method": "flat",
+          "scenario": "native-flat",
+          "hover": true,
+          "cameraUnchanged": true,
+          "triangles": 20,
+          "guiMcpEqual": true,
+          "undoRedo": true,
+          "cancel": true,
+          "nativeOrientedGeometryEqual": true,
+          "saveReopen": true
+        }
+      ],
+      "pageErrors": [],
+      "nativeScreenshotSha256": "eecc530490af3a789fe4f0d62f231f31accebfb0bee5e3ccd2718072b575ae19",
+      "screenshotVisuallyInspected": true,
+      "elapsedSeconds": 18.193219500011764,
+      "peakJobMemoryBytes": 1019355136,
+      "childJobFinalActive": 0,
+      "allOwnedPortsClosed": true,
+      "allOwnedHelpersExited": true,
+      "cleanupErrors": []
+    }
+  },
+  "resources": [
+    {
+      "session": "R9",
+      "stopReason": "authenticated-finish",
+      "leaseSeconds": 480.0,
+      "scheduledFinishSeconds": 450.0,
+      "elapsedSeconds": 393.89722859999165,
+      "jobMemoryLimitBytes": 4294967296,
+      "peakJobMemoryBytes": 705261568,
+      "cpuRatePercent": 25,
+      "exitCode": 0,
+      "allProcessesExited": true,
+      "ownedProcessExited": true,
+      "watchdogStopped": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "executableHashReverifiedAfterExit": true
+    },
+    {
+      "session": "R11",
+      "stopReason": "authenticated-finish",
+      "leaseSeconds": 480.0,
+      "scheduledFinishSeconds": 450.0,
+      "elapsedSeconds": 327.2079771999852,
+      "jobMemoryLimitBytes": 4294967296,
+      "peakJobMemoryBytes": 685051904,
+      "cpuRatePercent": 25,
+      "exitCode": 0,
+      "allProcessesExited": true,
+      "ownedProcessExited": true,
+      "watchdogStopped": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "executableHashReverifiedAfterExit": true
+    },
+    {
+      "session": "R12",
+      "stopReason": "authenticated-finish",
+      "leaseSeconds": 480.0,
+      "scheduledFinishSeconds": 450.0,
+      "elapsedSeconds": 429.6202956000343,
+      "jobMemoryLimitBytes": 4294967296,
+      "peakJobMemoryBytes": 723513344,
+      "cpuRatePercent": 25,
+      "exitCode": 0,
+      "allProcessesExited": true,
+      "ownedProcessExited": true,
+      "watchdogStopped": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "executableHashReverifiedAfterExit": true
+    },
+    {
+      "session": "R13",
+      "stopReason": "authenticated-finish",
+      "leaseSeconds": 480.0,
+      "scheduledFinishSeconds": 450.0,
+      "elapsedSeconds": 345.28491530002793,
+      "jobMemoryLimitBytes": 4294967296,
+      "peakJobMemoryBytes": 668897280,
+      "cpuRatePercent": 25,
+      "exitCode": 0,
+      "allProcessesExited": true,
+      "ownedProcessExited": true,
+      "watchdogStopped": true,
+      "handlesClosed": true,
+      "cleanupErrors": [],
+      "executableHashReverifiedAfterExit": true
+    }
+  ]
+}

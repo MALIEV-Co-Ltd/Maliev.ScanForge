@@ -6,7 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ReductionProgress, ReductionResults } from "./ReductionResults";
 import type { ReductionStatistics } from "../reduction-report";
 import type { Entity, Vec3 } from "../types";
-import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { mirrorReference } from "../scan-tools-reference";
+import { isUnrollReferenceCandidate } from "../scan-unroll-reference";
 import { Field, VectorField } from "./controls";
 import "./ScanToolsPanel.css";
 import { NoiseComparisonLegend } from "./NoiseComparisonLegend";
@@ -68,7 +69,12 @@ export type ScanToolParameters =
       plane: "OXY" | "OYZ" | "OXZ" | "object";
       referenceId?: string;
     }
-  | { kind: "unroll"; cylinderId: string; offsetDegrees: number };
+  | {
+      kind: "unroll";
+      cylinderId: string;
+      offsetDegrees: number;
+      instances?: number;
+    };
 
 export const scanToolTitles: Record<ScanToolId, string> = {
   reducePolygons: "Reduce polygons",
@@ -110,7 +116,7 @@ export interface ScanToolsPanelProps {
   onToggleComparison?: () => void;
   onApply: (request: ScanToolParameters) => void;
   previewReady?: boolean;
-  previewSettings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+  previewSettings?: import("../scan-preview-request").ScanPreviewParameters;
   onAccept?: (options?: { createNewObject?: boolean }) => void;
   onInvalidatePreview?: () => void;
   onCompare?: (deviation: number, paletteThreshold: number) => void;
@@ -197,13 +203,32 @@ export function ScanToolsPanel({
   }, [tool, selected?.id]);
   useEffect(() => {
     if (!previewSettings) return;
-    setSampleInterval(previewSettings.sampleInterval ?? 0.5);
-    setGapFill(previewSettings.gapFill ?? 0);
-    setOrganicShape(previewSettings.organicShape ?? false);
-    setExtraThickness(previewSettings.extraThickness ?? 0);
-    setMaxDeviation(previewSettings.maxDeviation ?? 0.1);
-    setScope(previewSettings.scope ?? "whole");
-    setTargetIds(previewSettings.targetIds ?? []);
+    if (previewSettings.kind === "shrinkwrap") {
+      setSampleInterval(previewSettings.sampleInterval ?? 0.5);
+      setGapFill(previewSettings.gapFill ?? 0);
+      setOrganicShape(previewSettings.organicShape ?? false);
+      setExtraThickness(previewSettings.extraThickness ?? 0);
+      setMaxDeviation(previewSettings.maxDeviation ?? 0.1);
+      setScope(previewSettings.scope ?? "whole");
+      setTargetIds(previewSettings.targetIds ?? []);
+    } else if (previewSettings.kind === "reduceNoise") {
+      setIterations(previewSettings.iterations ?? 1);
+      setDeviation(previewSettings.deviation ?? 0.05);
+      setSelectionOnly(previewSettings.selectionOnly ?? false);
+      setApplyBoundaryEdges(previewSettings.applyBoundaryEdges ?? true);
+      setMeasureDeviation(previewSettings.measureDeviation ?? false);
+    } else if (previewSettings.kind === "reducePolygons") {
+      setMode(previewSettings.mode);
+      setTargetTriangles(previewSettings.targetTriangles ?? 100000);
+      setPercentage(previewSettings.percentage ?? 50);
+      setDeviation(previewSettings.deviation ?? 0.05);
+    } else if (previewSettings.kind === "scaleMesh") {
+      setFactor(previewSettings.factor);
+      setCenter(previewSettings.center ?? [0, 0, 0]);
+    } else {
+      setPlane(previewSettings.plane);
+      setReferenceId(previewSettings.referenceId ?? "");
+    }
   }, [previewSettings]);
   const [plane, setPlane] = useState<"OXY" | "OYZ" | "OXZ" | "object">("OXY");
   const planes = useMemo(
@@ -219,7 +244,7 @@ export function ScanToolsPanel({
     () =>
       tool === "unroll"
         ? entities.filter(
-            (e) => e.id !== selected?.id && cylinderReference(e) !== null,
+            (e) => e.id !== selected?.id && isUnrollReferenceCandidate(e),
           )
         : [],
     [entities, selected?.id, tool],
@@ -233,9 +258,18 @@ export function ScanToolsPanel({
       !e.parametric &&
       e.positions.length >= (e.kind === "pointcloud" ? 3 : 9),
   );
+  useEffect(() => {
+    if (tool === "repolygonize")
+      setTargetIds(
+        reconstructionMode === "native"
+          ? targets.filter((e) => e.visible).map((e) => e.id)
+          : [],
+      );
+  }, [tool, selected?.id, reconstructionMode]);
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
   const [offsetDegrees, setOffsetDegrees] = useState(0);
+  const [instances, setInstances] = useState(1);
   useEffect(() => {
     if (!pickedReferenceId) return;
     if (tool === "mirrorMesh") {
@@ -352,10 +386,12 @@ export function ScanToolsPanel({
     if (
       tool === "unroll" &&
       (!cylinders.some((e) => e.id === cylinderId) ||
-        !Number.isFinite(offsetDegrees))
+        !Number.isFinite(offsetDegrees) ||
+        !Number.isSafeInteger(instances) ||
+        instances < 1)
     )
       problem =
-        "Select a fitted cylinder with a valid radius and enter a finite angle.";
+        "Select a fitted cylinder, enter a finite angle and a positive whole instance count.";
   }
   const blocked = disabled || busy || !!problem;
   const readyToAccept =
@@ -425,11 +461,11 @@ export function ScanToolsPanel({
         onApply({
           kind: tool,
           plane,
-          referenceId: plane === "object" ? referenceId : undefined,
+          ...(plane === "object" ? { referenceId } : {}),
         });
         break;
       case "unroll":
-        onApply({ kind: tool, cylinderId, offsetDegrees });
+        onApply({ kind: tool, cylinderId, offsetDegrees, instances });
         break;
     }
   }
@@ -772,6 +808,11 @@ export function ScanToolsPanel({
           )}
           {tool === "averageMesh" && (
             <>
+              <p className="hint">
+                Creates a new mesh using the input with the most facets. All
+                inputs are retained; reference contributions follow object-list
+                order. Open boundary hits are excluded.
+              </p>
               <Field
                 label="Search tolerance (mm)"
                 value={tolerance}
@@ -868,7 +909,9 @@ export function ScanToolsPanel({
             <>
               <p className="muted">
                 Unroll cylindrical side surfaces into local XY. Remove end caps
-                first; cap faces cannot be flattened without collapsing.
+                first; cap faces cannot be flattened without collapsing. Facets
+                crossing the angular seam are removed. Instances repeat the
+                flattened surface along the arc-length axis.
               </p>
               <label>
                 Cylinder
@@ -897,6 +940,12 @@ export function ScanToolsPanel({
                 value={offsetDegrees}
                 step={1}
                 onChange={setOffsetDegrees}
+              />
+              <Field
+                label="Instances"
+                value={instances}
+                step={1}
+                onChange={setInstances}
               />
             </>
           )}

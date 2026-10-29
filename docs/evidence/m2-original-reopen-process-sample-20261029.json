@@ -1,0 +1,109 @@
+{
+  "scope": "Process memory sampling during original PLY-3 GUI Split/Extract and public-MCP in-place reopen on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "samplerSha256": "2f09bb6d024465b8a26c4ad351e640f7064435bb85aadb8d0770f5a35a962b4c",
+  "sampling": "psutil descendant enumeration at approximately one-second intervals, reporting Windows process private bytes and working set; concurrent sequential samples are not an atomic job snapshot",
+  "lastSuccessfulSample": {
+    "time": "2026-10-28T21:40:22.122225+00:00",
+    "jobPeakBytes": 4256993280,
+    "processes": [
+      {
+        "pid": 43212,
+        "name": "node.exe",
+        "role": "main",
+        "privateBytes": 155312128,
+        "workingSetBytes": 144715776
+      },
+      {
+        "pid": 16508,
+        "name": "node.exe",
+        "role": "main",
+        "privateBytes": 67829760,
+        "workingSetBytes": 78954496
+      },
+      {
+        "pid": 27768,
+        "name": "chrome.exe",
+        "role": "main",
+        "privateBytes": 595615744,
+        "workingSetBytes": 684990464
+      },
+      {
+        "pid": 16488,
+        "name": "chrome.exe",
+        "role": "crashpad-handler",
+        "privateBytes": 2568192,
+        "workingSetBytes": 11542528
+      },
+      {
+        "pid": 1600,
+        "name": "chrome.exe",
+        "role": "gpu-process",
+        "privateBytes": 539201536,
+        "workingSetBytes": 349220864
+      },
+      {
+        "pid": 4916,
+        "name": "chrome.exe",
+        "role": "utility",
+        "privateBytes": 20275200,
+        "workingSetBytes": 51089408
+      },
+      {
+        "pid": 50364,
+        "name": "chrome.exe",
+        "role": "utility",
+        "privateBytes": 8192000,
+        "workingSetBytes": 21344256
+      },
+      {
+        "pid": 37172,
+        "name": "chrome.exe",
+        "role": "renderer",
+        "privateBytes": 35024896,
+        "workingSetBytes": 80793600
+      },
+      {
+        "pid": 5104,
+        "name": "chrome.exe",
+        "role": "renderer",
+        "privateBytes": 2718167040,
+        "workingSetBytes": 2803052544
+      },
+      {
+        "pid": 43736,
+        "name": "chrome.exe",
+        "role": "renderer",
+        "privateBytes": 14962688,
+        "workingSetBytes": 33685504
+      },
+      {
+        "pid": 50728,
+        "name": "conhost.exe",
+        "role": "main",
+        "privateBytes": 1277952,
+        "workingSetBytes": 8118272
+      }
+    ]
+  },
+  "observations": [
+    "The project import completed and the geometry digest reported Hashing geometry at progress 0.03612253395144133.",
+    "The sampler failed with Windows error 1455 during descendant enumeration after the last successful sample. The guard then terminated the remaining owned descendants and confirmed cleanup."
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4296011776,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true,
+    "elapsedSeconds": 111.0978415000136
+  },
+  "limitations": [
+    "The 4 GiB aggregate limit was exceeded; post-reopen geometry was not verified.",
+    "The sampler failure itself may affect timing and does not establish the system-wide pagefile or physical-memory state.",
+    "Private bytes do not isolate a JavaScript allocation, and sampled process totals do not equal job peak.",
+    "This separate run does not identify the prior timeout cause or establish native parity."
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "scope": "Original scan face Split facet normals on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98; test commit efddda78caada8b19d3f4d9262b9992228d54202",
+  "scriptSha256": "68efdb3044ef9c7f80dda6eae0c033ba5e4ca4f0b6e51bee781dc2d612923b18",
+  "method": "For each output indexed triangle, independently form the cross product after Float32 rounding each vertex coordinate, normalize using the Float32-rounded length and round output components to Float32. Compare against stored facet normals after GUI Redo, MCP Redo and reopen. Compare separately with the original source triangle unit normal.",
+  "result": {
+    "name": "original-scan-face-7207",
+    "outputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 45,
+        "sha256": "9ddc42d376e5fcbe0c41713ca060b74e9f56b3c9690eea4d68b5600e60610b46"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 27,
+        "sha256": "e8b0f6fe23d715211a545e68daf57bd977e4dd71e5b394f008a2ade88d2038c7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 15,
+        "sha256": "396b6867a5bd61cd28196fa21e4c7e7cdcf8f4e035b8168cf560b639e2969861"
+      }
+    ],
+    "outputArea": 0.029055235867555585,
+    "diagnostics": {
+      "affectedFaces": 1,
+      "sourceFaces": 1,
+      "parts": 2,
+      "cutEdges": 1,
+      "sourceIdentity": "exact-corner-index",
+      "changed": true,
+      "topologyCache": "persistent-hit",
+      "topologyCacheBytes": 204
+    },
+    "guiMcpGeometry": true,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "facetPrecision": {
+      "maxOriginalNormalError": 0.0004627899089890697,
+      "maxFloat32OracleError": 0
+    },
+    "normalCaches": {
+      "initial": {
+        "geometryNormals": null,
+        "facetNormals": null
+      },
+      "guiRedo": {
+        "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+        "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+      },
+      "mcpRedo": {
+        "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+        "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+      },
+      "reopened": {
+        "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+        "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+      }
+    }
+  },
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 914489344,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "limitations": [
+    "The comparison explains this one output under the existing native-derived Float32 facet routine; no native Split output was captured.",
+    "Exact numerical equivalence here does not establish general normal accuracy, native behavior, or rendered equivalence.",
+    "The default Split browser suite still fails on a later legacy separate-parts expectation and the original large-scan in-place reopen remains unresolved."
+  ]
+}

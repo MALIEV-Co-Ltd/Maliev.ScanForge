@@ -1,4 +1,5 @@
 import type { Positions } from "./types";
+import { admitAverageInputs } from "./scan-average-request";
 import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
 import { beginWorkingJob } from "./working-job-status";
@@ -19,6 +20,11 @@ import {
 } from "./scan-reconstruction-input";
 import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
+import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
+import { indexedExactAdmission } from "./indexed-exact-admission";
+import { markRestoredCoordinates } from "./finite-typed-values";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 import type { ScanToolsRequest } from "./scan-tools";
 import type { ScanEditRequest, ScanEditResult } from "./scan-edit";
 import type { RegistrationResult } from "./registration";
@@ -133,6 +139,8 @@ export interface TopologySummary {
 export interface ProcessingResult {
   /** Disposable viewport data prepared alongside mesh alignment, never authored. */
   renderData?: ScanRenderData;
+  /** Private display data aligned with component extraction results. */
+  segmentRenderData?: ScanRenderData[];
   /** Host-owned native cloud pose; never serialized from the processing worker. */
   cloudPreview?: import("./types").Entity;
   indexedMesh?: import("./types").IndexedMesh;
@@ -163,7 +171,14 @@ export interface ProcessingResult {
 }
 export type ProcessingResponse =
   | { progress: number; stage: string; details?: HoleFillProgress }
-  | { result: ProcessingResult }
+  | {
+      result: ProcessingResult;
+      packedScanEdit?: { positions: Float64Array; vertices: Float64Array };
+      packedScanSegments?: {
+        positions: Float64Array;
+        vertices: Float64Array;
+      }[];
+    }
   | { error: string };
 export interface ProcessingOptions {
   /** Geometry arrays must be immutable; replace the array after any edit. */
@@ -183,6 +198,23 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "scanEdit" && request.tolerance === undefined)
+    request = { ...request, tolerance: SCAN_TOPOLOGY_TOLERANCE };
+  if (
+    request.kind === "scanTools" &&
+    request.operation.kind === "averageMesh"
+  ) {
+    try {
+      admitAverageInputs(
+        request.positions,
+        request.operation.targets,
+        request.operation.sourceTopology,
+        request.operation.targetTopology,
+      );
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
   if (request.kind === "pointCloudEdit") {
     try {
       validatePointColors(request.pointColors, request.positions.length / 3);
@@ -264,6 +296,53 @@ export function processMesh(
     )
   )
     yieldSpeculativePreparation(request.positions);
+  const tryIndexedExtract =
+    request.kind === "scanEdit" &&
+    request.action === "componentExtract" &&
+    !!request.sourceIndexed &&
+    Array.isArray(request.positions) &&
+    request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD;
+  const tryIndexedInventory =
+    request.kind === "scanEdit" &&
+    request.action === "inventory" &&
+    request.inventoryScope === "components" &&
+    !!request.sourceIndexed &&
+    Array.isArray(request.positions) &&
+    request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD;
+  const runIndexed = async () => {
+    const release = beginPriorityScanPreparation();
+    try {
+      let indexedExtract = false;
+      if (
+        (tryIndexedExtract || tryIndexedInventory) &&
+        request.kind === "scanEdit" &&
+        request.sourceIndexed
+      ) {
+        indexedExtract = await indexedExactAdmission(
+          request.sourceIndexed,
+          request.positions,
+          {
+            check: () => {
+              if (options.signal?.aborted)
+                throw new DOMException("Processing cancelled.", "AbortError");
+            },
+          },
+        );
+      }
+      return await runProcessingRequest(
+        request,
+        indexedExtract ? { ...options, reuseTopology: false } : options,
+        indexedExtract && tryIndexedExtract,
+        indexedExtract && tryIndexedInventory,
+      );
+    } finally {
+      release();
+    }
+  };
+  if (tryIndexedExtract || tryIndexedInventory)
+    return options.reuseTopology
+      ? queueProcessing(request.positions, options.signal, runIndexed)
+      : runIndexed();
   return options.reuseTopology
     ? queueProcessing(request.positions, options.signal, () =>
         runProcessingRequest(request, options),
@@ -287,9 +366,68 @@ function processingJobLabel(request: ProcessingRequest) {
   return label;
 }
 
+function restorePreciseCoordinates(source: Float64Array): number[] {
+  const result = new Array<number>(source.length);
+  for (let i = 0; i < source.length; i++) result[i] = source[i];
+  return markRestoredCoordinates(result);
+}
+
+/** Exclude buffers still referenced by the worker's published result. */
+function excludeRetainedBuffers(root: unknown, candidates: Set<ArrayBuffer>) {
+  const pending: unknown[] = [root],
+    seen = new WeakSet<object>();
+  while (pending.length && candidates.size) {
+    const value = pending.pop();
+    if (!value || typeof value !== "object" || seen.has(value)) continue;
+    seen.add(value);
+    if (value instanceof ArrayBuffer) {
+      candidates.delete(value);
+    } else if (ArrayBuffer.isView(value)) {
+      if (value.buffer instanceof ArrayBuffer) candidates.delete(value.buffer);
+    } else if (Array.isArray(value)) {
+      for (const item of value)
+        if (item && typeof item === "object") pending.push(item);
+    } else {
+      for (const item of Object.values(value))
+        if (item && typeof item === "object") pending.push(item);
+    }
+  }
+}
+
+/** Discard private worker transport buffers once their restored copies exist. */
+function releaseTransportBuffers(buffers: Set<ArrayBuffer>) {
+  for (const buffer of buffers) {
+    const transfer = (
+      buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
+    ).transfer;
+    if (typeof transfer !== "function") continue;
+    try {
+      transfer.call(buffer, 0);
+    } catch {
+      /* Optional memory optimization. */
+    }
+  }
+}
+
+function excludeScanInputBuffers(
+  request: ScanEditRequest,
+  candidates: Set<ArrayBuffer>,
+) {
+  for (const value of [
+    request.positions,
+    request.target,
+    request.selection,
+    ...Object.values(request.sourceIndexed ?? {}),
+  ])
+    if (ArrayBuffer.isView(value) && value.buffer instanceof ArrayBuffer)
+      candidates.delete(value.buffer);
+}
+
 function runProcessingRequest(
   request: ProcessingRequest,
   options: ProcessingOptions,
+  indexedExtract = false,
+  indexedInventory = false,
 ): Promise<ProcessingResult> {
   if (options.signal?.aborted)
     return Promise.reject(
@@ -305,19 +443,37 @@ function runProcessingRequest(
       : undefined;
     const worker = session?.worker ?? createWorker();
     const job = beginWorkingJob(processingJobLabel(request));
+    let packedInputPositions = false;
     let settled = false,
+      workerReleased = false,
       inactivity: ReturnType<typeof setTimeout>;
     const scope = globalThis as typeof globalThis & {
       addEventListener?: (type: string, listener: () => void) => void;
       removeEventListener?: (type: string, listener: () => void) => void;
     };
-    const cleanup = (usable = false, successor?: Positions) => {
+    const cleanup = (
+      usable = false,
+      successor?: Positions,
+      completed = false,
+    ) => {
       job.finish();
       clearTimeout(inactivity);
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
       scope.removeEventListener?.("pagehide", abort);
-      if (session) session.release(usable, successor);
+      if (workerReleased) return;
+      workerReleased = true;
+      if (session)
+        session.release(
+          usable,
+          successor,
+          completed && request.kind === "scanEdit"
+            ? request.sourceIndexed
+            : undefined,
+          completed && request.kind === "scanEdit"
+            ? (request.tolerance ?? 1e-6)
+            : undefined,
+        );
       else worker.terminate();
     };
     const fail = (error: unknown, usable = false) => {
@@ -378,12 +534,118 @@ function runProcessingRequest(
         return;
       }
       if ("error" in event.data) {
-        fail(new Error(event.data.error), true);
+        fail(new Error(event.data.error), !packedInputPositions);
         return;
       }
       if (!event.data.result || event.data.result.kind !== request.kind) {
         fail(new Error("Unexpected mesh processing response."));
         return;
+      }
+      let disposableTransportBuffers: Set<ArrayBuffer> | undefined;
+      if (event.data.packedScanEdit) {
+        try {
+          const packed = event.data.packedScanEdit;
+          const edit = event.data.result.scanEdit,
+            indexed = event.data.result.indexedMesh;
+          if (
+            request.kind !== "scanEdit" ||
+            ![
+              "split",
+              "componentKeep",
+              "componentRemove",
+              "componentFlip",
+            ].includes(request.action) ||
+            !edit ||
+            !indexed ||
+            edit.positions !== undefined ||
+            indexed.vertices.length !== 0 ||
+            !(packed.positions instanceof Float64Array) ||
+            !(packed.vertices instanceof Float64Array) ||
+            packed.positions.length % 9 !== 0 ||
+            packed.vertices.length % 3 !== 0
+          )
+            throw new Error("Unexpected packed scan edit response.");
+          // The result owns transferable buffers and this worker has no
+          // reusable Split adjacency. Retire it before allocating restored
+          // arrays so its private geometry can be reclaimed sooner.
+          if (session) session.release(false);
+          else worker.terminate();
+          workerReleased = true;
+          if (request.action === "split") {
+            disposableTransportBuffers = new Set<ArrayBuffer>();
+            for (const value of [packed.positions, packed.vertices])
+              if (value.buffer instanceof ArrayBuffer)
+                disposableTransportBuffers.add(value.buffer);
+            excludeRetainedBuffers(
+              event.data.result,
+              disposableTransportBuffers,
+            );
+            excludeScanInputBuffers(request, disposableTransportBuffers);
+          }
+          const restored = restorePreciseCoordinates(packed.positions);
+          edit.positions = restored;
+          indexed.vertices =
+            packed.positions === packed.vertices
+              ? restored
+              : restorePreciseCoordinates(packed.vertices);
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
+      if (event.data.packedScanSegments !== undefined) {
+        try {
+          const packed = event.data.packedScanSegments;
+          const edit = event.data.result.scanEdit;
+          const meshes = edit?.segmentIndexedMeshes;
+          if (
+            request.kind !== "scanEdit" ||
+            request.action !== "componentExtract" ||
+            event.data.packedScanEdit ||
+            !Array.isArray(packed) ||
+            !edit ||
+            edit.segments !== undefined ||
+            !Array.isArray(meshes) ||
+            meshes.length !== packed.length ||
+            packed.some(
+              (part, i) =>
+                !(part.positions instanceof Float64Array) ||
+                !(part.vertices instanceof Float64Array) ||
+                part.positions.length % 9 !== 0 ||
+                part.vertices.length % 3 !== 0 ||
+                !meshes[i] ||
+                meshes[i]!.vertices.length !== 0,
+            )
+          )
+            throw new Error("Unexpected packed scan segments response.");
+          if (session) session.release(false);
+          else worker.terminate();
+          workerReleased = true;
+          if (indexedExtract) {
+            disposableTransportBuffers = new Set<ArrayBuffer>();
+            for (const part of packed)
+              for (const value of [part.positions, part.vertices])
+                if (value.buffer instanceof ArrayBuffer)
+                  disposableTransportBuffers.add(value.buffer);
+            excludeRetainedBuffers(
+              event.data.result,
+              disposableTransportBuffers,
+            );
+            if (request.kind === "scanEdit")
+              excludeScanInputBuffers(request, disposableTransportBuffers);
+          }
+          edit.segments = packed.map((part, i) => {
+            const positions = restorePreciseCoordinates(part.positions);
+            meshes[i]!.vertices =
+              part.positions === part.vertices
+                ? positions
+                : restorePreciseCoordinates(part.vertices);
+            return positions;
+          });
+        } catch (error) {
+          fail(error);
+          return;
+        }
       }
       if (request.kind === "pointCloudEdit" && request.pointColors) {
         try {
@@ -415,6 +677,29 @@ function runProcessingRequest(
           return;
         }
       }
+      if (event.data.result.segmentRenderData) {
+        const data = event.data.result.segmentRenderData;
+        const segments = event.data.result.scanEdit?.segments;
+        const meshes = event.data.result.scanEdit?.segmentIndexedMeshes;
+        if (
+          !segments ||
+          !meshes ||
+          data.length !== segments.length ||
+          meshes.length !== segments.length ||
+          data.some(
+            (entry, i) =>
+              !entry ||
+              entry.indexedMesh !== meshes[i] ||
+              !(entry.normals instanceof Float32Array) ||
+              entry.normals.length !== meshes[i]?.vertices.length,
+          )
+        ) {
+          fail(new Error("Unexpected component display data."));
+          return;
+        }
+      }
+      if (disposableTransportBuffers)
+        releaseTransportBuffers(disposableTransportBuffers);
       settled = true;
       if (
         event.data.result.topology &&
@@ -431,14 +716,40 @@ function runProcessingRequest(
           event.data.result.positions,
           event.data.result.renderData,
         );
+      else if (
+        event.data.result.scanEdit?.positions &&
+        event.data.result.renderData
+      )
+        cacheScanRenderData(
+          event.data.result.scanEdit.positions,
+          event.data.result.renderData,
+        );
+      if (
+        event.data.result.segmentRenderData &&
+        event.data.result.scanEdit?.segments
+      ) {
+        const segments = event.data.result.scanEdit.segments;
+        const data = event.data.result.segmentRenderData;
+        for (let i = 0; i < segments.length; i++)
+          cacheScanRenderData(segments[i], data[i]);
+      }
       cleanup(
-        true,
+        // A precise Split builds new topology outside the reusable adjacency
+        // cache. Retiring its worker avoids retaining a second large copy of
+        // the successor; the next operation can initialize from scene data.
+        !event.data.packedScanEdit &&
+          !(
+            packedInputPositions &&
+            request.kind === "scanEdit" &&
+            request.action === "inventory"
+          ),
         request.kind === "scanPreview" ||
           (request.kind === "scanEdit" && request.previewOnly)
           ? undefined
           : (event.data.result.pointCloudEdit?.positions ??
               event.data.result.scanEdit?.positions ??
               event.data.result.positions),
+        true,
       );
       resolve(event.data.result);
     };
@@ -456,6 +767,19 @@ function runProcessingRequest(
     try {
       // Transfer a dedicated copy. Scene geometry and undo history retain their original buffers.
       const transfers: Transferable[] = [];
+      const packedScanEditSource: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+        indexedExtract?: true;
+        indexedInventory?: true;
+      } = {};
+      const packComponentInput =
+        request.kind === "scanEdit" &&
+        (["componentKeep", "componentRemove", "componentFlip"].includes(
+          request.action,
+        ) ||
+          (["componentExtract", "inventory"].includes(request.action) &&
+            !!request.sourceIndexed));
       const borrowReconstruction =
         !session &&
         request.kind === "scanTools" &&
@@ -477,11 +801,32 @@ function runProcessingRequest(
         request.positions instanceof Float32Array &&
         typeof SharedArrayBuffer !== "undefined" &&
         request.positions.buffer instanceof SharedArrayBuffer;
-      const source = session?.initialized
-        ? new Float32Array(0)
-        : borrowedReportSource
-          ? request.positions
-          : clone(request.positions);
+      const packPositions =
+        packComponentInput &&
+        !indexedExtract &&
+        !indexedInventory &&
+        !session?.initialized &&
+        Array.isArray(request.positions) &&
+        request.positions.length >= 65536;
+      if (packPositions) {
+        packedInputPositions = true;
+        packedScanEditSource.positions = Float64Array.from(request.positions);
+        transfers.push(packedScanEditSource.positions.buffer);
+      }
+      if (indexedExtract || indexedInventory) {
+        packedInputPositions = true;
+        if (indexedExtract) packedScanEditSource.indexedExtract = true;
+        if (indexedInventory) packedScanEditSource.indexedInventory = true;
+      }
+      const source =
+        session?.initialized ||
+        packPositions ||
+        indexedExtract ||
+        indexedInventory
+          ? new Float32Array(0)
+          : borrowedReportSource
+            ? request.positions
+            : clone(request.positions);
       const copied: ProcessingRequest =
         request.kind === "icp" ||
         request.kind === "global" ||
@@ -564,31 +909,66 @@ function runProcessingRequest(
       if (
         (copied.kind === "paired" ||
           copied.kind === "icp" ||
-          copied.kind === "global") &&
+          copied.kind === "global" ||
+          copied.kind === "scanEdit") &&
         copied.sourceIndexed
       ) {
         const mesh = copied.sourceIndexed;
-        const sharedConnectivity =
-          copied.kind === "paired" &&
-          mesh.triangles instanceof Uint32Array &&
-          typeof SharedArrayBuffer !== "undefined" &&
-          mesh.triangles.buffer instanceof SharedArrayBuffer;
-        const triangles = sharedConnectivity
-          ? (mesh.triangles as Uint32Array)
-          : Uint32Array.from(mesh.triangles);
-        if (triangles.buffer instanceof ArrayBuffer)
-          transfers.push(triangles.buffer);
-        copied.sourceIndexed = {
-          vertices: clone(mesh.vertices),
-          triangles,
-          ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
-          ...(mesh.geometryNormals
-            ? { geometryNormals: clone(mesh.geometryNormals) }
-            : {}),
-          ...(mesh.facetNormals
-            ? { facetNormals: clone(mesh.facetNormals) }
-            : {}),
-        };
+        if (
+          copied.kind === "scanEdit" &&
+          session?.indexedSource === mesh &&
+          session.indexedTolerance === (copied.tolerance ?? 1e-6) &&
+          !(
+            copied.action === "inventory" &&
+            copied.inventoryScope === "components"
+          ) &&
+          !(
+            copied.action.startsWith("component") &&
+            request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          )
+        )
+          delete copied.sourceIndexed;
+        else {
+          const sharedConnectivity =
+            copied.kind === "paired" &&
+            mesh.triangles instanceof Uint32Array &&
+            typeof SharedArrayBuffer !== "undefined" &&
+            mesh.triangles.buffer instanceof SharedArrayBuffer;
+          const triangles = sharedConnectivity
+            ? (mesh.triangles as Uint32Array)
+            : Uint32Array.from(mesh.triangles);
+          if (triangles.buffer instanceof ArrayBuffer)
+            transfers.push(triangles.buffer);
+          let vertices: Positions;
+          if (
+            packComponentInput &&
+            Array.isArray(mesh.vertices) &&
+            mesh.vertices.length >= 65536
+          ) {
+            const packed =
+              mesh.vertices === request.positions &&
+              packedScanEditSource.positions
+                ? packedScanEditSource.positions
+                : Float64Array.from(mesh.vertices);
+            packedScanEditSource.vertices = packed;
+            if (packed !== packedScanEditSource.positions)
+              transfers.push(packed.buffer);
+            vertices = [];
+          } else vertices = clone(mesh.vertices);
+          copied.sourceIndexed = {
+            vertices,
+            triangles,
+            ...(!indexedExtract && !indexedInventory && mesh.normals
+              ? { normals: clone(mesh.normals) }
+              : {}),
+            ...(!indexedExtract && !indexedInventory && mesh.geometryNormals
+              ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
+            ...(!indexedExtract && !indexedInventory && mesh.facetNormals
+              ? { facetNormals: clone(mesh.facetNormals) }
+              : {}),
+          };
+        }
       }
       if (copied.kind === "scanEdit" && copied.target)
         copied.target = clone(copied.target);
@@ -615,7 +995,11 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
-        if (copied.operation.kind === "repolygonize") {
+        if (
+          copied.operation.kind === "averageMesh" ||
+          copied.operation.kind === "repolygonize" ||
+          copied.operation.kind === "flipNormals"
+        ) {
           const cloneTopology = (
             mesh: import("./types").IndexedMesh | undefined,
           ) => {
@@ -638,8 +1022,9 @@ function runProcessingRequest(
           copied.operation.sourceTopology = cloneTopology(
             copied.operation.sourceTopology,
           );
-          copied.operation.targetTopology =
-            copied.operation.targetTopology?.map(cloneTopology);
+          if (copied.operation.kind !== "flipNormals")
+            copied.operation.targetTopology =
+              copied.operation.targetTopology?.map(cloneTopology);
         }
         if (
           copied.operation.kind === "averageMesh" ||
@@ -688,13 +1073,17 @@ function runProcessingRequest(
         transfers.push(copied.sourceSeedVertices.buffer);
       }
       worker.postMessage(
-        session
-          ? {
-              ...copied,
-              geometryKey: session.key,
-              ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
-            }
-          : copied,
+        {
+          ...copied,
+          ...(session ? { geometryKey: session.key } : {}),
+          ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+          ...(packedScanEditSource.positions ||
+          packedScanEditSource.vertices ||
+          packedScanEditSource.indexedExtract ||
+          packedScanEditSource.indexedInventory
+            ? { packedScanEditSource }
+            : {}),
+        },
         transfers,
       );
     } catch (error) {

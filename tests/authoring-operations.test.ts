@@ -127,9 +127,48 @@ it("manages saved sketches in the same authoring collection without altering geo
     context,
   );
   expect(state.authoring.sketches?.[0].name).toBe("Fixture");
+  ops.sketch_manage(
+    { action: "visibility", sketchId: created.sketchId, visible: true },
+    context,
+  );
+  expect(state.authoring.sketches?.[0].visible).toBe(true);
+  expect(() =>
+    ops.sketch_manage(
+      { action: "visibility", sketchId: created.sketchId },
+      context,
+    ),
+  ).toThrow(/visibility|boolean/i);
   ops.sketch_manage({ action: "delete", sketchId: created.sketchId }, context);
   expect(state.authoring.sketches).toEqual([]);
   expect(state.entities).toBe(geometry);
+});
+it("rejects an invalid visible sketch without publishing authoring changes", () => {
+  const { ops, context, state } = setup();
+  const created = ops.sketch_manage(
+    {
+      action: "create",
+      name: "Outside",
+      sketch: {
+        version: 1,
+        points: [
+          { id: "a", x: 2e9, y: 0 },
+          { id: "b", x: 2e9, y: 1 },
+        ],
+        segments: [{ id: "line", a: "a", b: "b" }],
+        constraints: [],
+      },
+    },
+    context,
+  ) as { sketchId: string };
+  const before = state.authoring;
+  expect(() =>
+    ops.sketch_manage(
+      { action: "visibility", sketchId: created.sketchId, visible: true },
+      context,
+    ),
+  ).toThrow(/world|bound|coordinate/i);
+  expect(state.authoring).toBe(before);
+  expect(state.authoring.sketches![0].visible).toBeUndefined();
 });
 it("saves and restores triangle selections and rejects stale saved slots", () => {
   const { ops, context, state } = setup();

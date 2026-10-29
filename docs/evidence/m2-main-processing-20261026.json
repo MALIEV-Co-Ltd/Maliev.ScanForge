@@ -1,0 +1,315 @@
+{
+  "scope": "Current integrated processing browser acceptance; native comparisons remain limited to retained fixtures",
+  "transportFix": "One shared normal-preserving topology copy for Average and reconstruction; redundant merge copy removed",
+  "regression": {
+    "transportAveragePassed": 27,
+    "affectedPassed": 238,
+    "failed": 0
+  },
+  "build": {
+    "typeBatches": 13,
+    "sourceIdentity": {
+      "head": "1327d0587163ac4d827fb231d284b1c1ed18b71a",
+      "files": 2982,
+      "unchanged": true,
+      "manifestSha256": "116a531cf883ecd632ca1ccc9aef2fbe86ccf3ddf0947b849cb23bc4f4ed69dc"
+    },
+    "warnings": 0,
+    "tag": "scanforge-83e557f8be96d4a9"
+  },
+  "cases": [
+    {
+      "name": "average",
+      "build": "scanforge-83e557f8be96d4a9",
+      "result": {
+        "guiMcpEqual": true,
+        "nativeBaseSelection": true,
+        "multipleReferences": true,
+        "sourcePreserved": true,
+        "undoRedo": true,
+        "retryProtected": true,
+        "cancellationRollback": true,
+        "failureRollback": true,
+        "saveReopen": true,
+        "baseEntityId": "base",
+        "referenceEntityIds": ["first", "last"],
+        "outputCoordinates": [
+          -2, -2, 2, 2, -2, 2, 2, 2, 2, -2, -2, 2, 2, 2, 2, -2, 2, 2
+        ],
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 56228,
+          "closed": true
+        },
+        {
+          "pid": 6760,
+          "exited": true
+        },
+        {
+          "port": 56229,
+          "closed": true
+        },
+        {
+          "pid": 60128,
+          "exited": true
+        }
+      ],
+      "resources": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 5.0613251000177115,
+        "childPeakJobMemoryBytes": 934449152
+      }
+    },
+    {
+      "name": "transforms",
+      "build": "scanforge-2ab3fc2854ef56ae",
+      "result": {
+        "cases": [
+          {
+            "case": "Scale mesh",
+            "coordinateBytesMatchRetainedNative": true,
+            "guiDirectMcpEqual": true,
+            "publicPreview": true,
+            "undoRedo": true,
+            "persistence": true
+          },
+          {
+            "case": "mirror-origin",
+            "coordinateBytesMatchRetainedNative": true,
+            "guiDirectMcpEqual": true,
+            "publicPreview": true,
+            "undoRedo": true,
+            "persistence": true
+          },
+          {
+            "case": "mirror-tilted",
+            "coordinateBytesMatchRetainedNative": true,
+            "guiDirectMcpEqual": true,
+            "publicPreview": true,
+            "undoRedo": true,
+            "persistence": true
+          },
+          {
+            "case": "Flip normals",
+            "coordinateBytesMatchRetainedNative": true,
+            "guiDirectMcpEqual": true,
+            "publicPreview": false,
+            "undoRedo": true,
+            "persistence": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 64413,
+          "closed": true
+        },
+        {
+          "pid": 62524,
+          "exited": true
+        },
+        {
+          "port": 64414,
+          "closed": true
+        },
+        {
+          "pid": 34400,
+          "exited": true
+        }
+      ],
+      "resources": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 8.745039800007362,
+        "childPeakJobMemoryBytes": 917213184
+      }
+    },
+    {
+      "name": "noise",
+      "build": "scanforge-2ab3fc2854ef56ae",
+      "result": {
+        "passed": true,
+        "inputTriangles": 1013888,
+        "previewMs": 5910.7932,
+        "guiGeometrySha256": "ccaf47650753554435f09ea2d7421227b9b1dcad7f937d213bba58a207d2935d",
+        "mcpGeometrySha256": "ccaf47650753554435f09ea2d7421227b9b1dcad7f937d213bba58a207d2935d",
+        "previewGeometrySha256": "ccaf47650753554435f09ea2d7421227b9b1dcad7f937d213bba58a207d2935d",
+        "comparisonBeforePreview": true,
+        "errors": []
+      },
+      "cleanup": [
+        {
+          "port": 57907,
+          "closed": true
+        },
+        {
+          "pid": 66552,
+          "exited": true
+        },
+        {
+          "port": 57908,
+          "closed": true
+        },
+        {
+          "pid": 9328,
+          "exited": true
+        }
+      ],
+      "resources": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 36.24469839996891,
+        "childPeakJobMemoryBytes": 2782711808
+      }
+    },
+    {
+      "name": "defeature",
+      "build": "scanforge-2ab3fc2854ef56ae",
+      "result": {
+        "defeatureCanvasOnlyStatus": true,
+        "largePatch": true,
+        "selectedFacets": 18425,
+        "manufacturedFailureClassOnly": true,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "sourcePreserved": true,
+        "cancellationRollback": true,
+        "failureRollback": true,
+        "saveReopen": true,
+        "beforeViewport": {
+          "projection": "orthographic",
+          "position": [0, 0, 340],
+          "target": [0, 0, 0],
+          "up": [0, 1, 0],
+          "zoom": 1,
+          "near": -10000,
+          "far": 10000,
+          "cameraMatrixFormat": "column-major-4x4",
+          "projectionMatrix": [
+            0.0056953770593025825, 0, 0, 0, 0, 0.009355518512399054, 0, 0, 0, 0,
+            -0.0001, 0, 0, 0, 0, 1
+          ],
+          "cameraWorldMatrix": [
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 340, 1
+          ],
+          "viewport": {
+            "width": 1140,
+            "height": 694,
+            "coordinates": "normalized top-left x/y in [0,1]"
+          },
+          "bounds": {
+            "min": [-64, -64, 1.2777999639511108],
+            "max": [64, 64, 8.60159969329834]
+          },
+          "pointCloudDisplay": [],
+          "navigation": {
+            "orbitMode": "free",
+            "zoomWindowActive": false
+          },
+          "orbitCenter": {
+            "source": null,
+            "point": null,
+            "markerVisible": false
+          }
+        },
+        "afterViewport": {
+          "projection": "orthographic",
+          "position": [0, 0, 340],
+          "target": [0, 0, 0],
+          "up": [0, 1, 0],
+          "zoom": 1,
+          "near": -10000,
+          "far": 10000,
+          "cameraMatrixFormat": "column-major-4x4",
+          "projectionMatrix": [
+            0.0056953770593025825, 0, 0, 0, 0, 0.009355518512399054, 0, 0, 0, 0,
+            -0.0001, 0, 0, 0, 0, 1
+          ],
+          "cameraWorldMatrix": [
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 340, 1
+          ],
+          "viewport": {
+            "width": 1140,
+            "height": 694,
+            "coordinates": "normalized top-left x/y in [0,1]"
+          },
+          "bounds": {
+            "min": [-64, -64, 1.6707849681552034e-7],
+            "max": [64, 64, 8.60159969329834]
+          },
+          "pointCloudDisplay": [],
+          "navigation": {
+            "orbitMode": "free",
+            "zoomWindowActive": false
+          },
+          "orbitCenter": {
+            "source": null,
+            "point": null,
+            "markerVisible": false
+          }
+        },
+        "worstDeviation": 6.477640813962182e-6,
+        "diagnostics": {
+          "removedTriangles": 18425,
+          "prunedTriangles": 0,
+          "filledHoles": 1,
+          "fillAttempts": 1,
+          "insertedVertices": 3529,
+          "curvaturePatches": 1,
+          "curvatureFitRms": 6.176065845264893e-6,
+          "curvatureFallback": "",
+          "method": "Curvature-fitted surface reconstruction with retained indexed adjacency",
+          "topologyCache": "memory-hit"
+        },
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 54079,
+          "closed": true
+        },
+        {
+          "pid": 56980,
+          "exited": true
+        },
+        {
+          "port": 54080,
+          "closed": true
+        },
+        {
+          "pid": 64220,
+          "exited": true
+        }
+      ],
+      "resources": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 16.055975700030103,
+        "childPeakJobMemoryBytes": 1279258624
+      }
+    }
+  ],
+  "retainedFailures": [
+    "1327d05 full CI: 49307 passed, 2 failed, 64 skipped; duplicate topology copy dropped normal carriers",
+    "Average initial reopen assertion omitted newly materialized facet normals; now checks their exact values",
+    "Initial cup failure tests incorrectly required a CAD worker although invalid collars reject before allocation"
+  ],
+  "limitations": [
+    "The 18425-facet Defeature selection is manufactured; original selection is unavailable",
+    "39/40-edge cup rejection preserves source and cache; the separate 41-edge native failure has no equivalent retained input fixture here",
+    "Remaining native mode/dialog/selection comparisons and final whole-branch review are open",
+    "No milestone closure is inferred"
+  ]
+}

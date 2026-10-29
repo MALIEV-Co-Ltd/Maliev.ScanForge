@@ -1,4 +1,8 @@
 import type { Entity } from "./types";
+import {
+  assertReferenceFrameCompatibleMetadata,
+  validateReferenceFrameEntity,
+} from "./reference-frame";
 import type { ProjectSession } from "./project-file-codec";
 import {
   copyReferenceConstruction,
@@ -104,7 +108,9 @@ export function isReferenceEntity(entity: Pick<Entity, "kind">): boolean {
 export function supportsSampledGeometry(
   entity: Pick<Entity, "kind"> | undefined,
 ): boolean {
-  return !!entity && !isReferenceEntity(entity);
+  return (
+    !!entity && !isReferenceEntity(entity) && entity.kind !== "referenceFrame"
+  );
 }
 export function validateConstructionOrderKeys(
   entities: readonly Pick<Entity, "constructionOrderKey">[],
@@ -135,12 +141,15 @@ const incompatible = [
   "scanSource",
   "edgePositions",
   "ascAttributes",
+  "coordinateFrame",
+  "rollMapping",
 ] as const;
 /** Check raw metadata before a codec can normalize or discard its values. */
 export function assertReferenceCompatibleMetadata(
   entity: Pick<Entity, "kind"> &
     Partial<Record<(typeof incompatible)[number], unknown>>,
 ): void {
+  assertReferenceFrameCompatibleMetadata(entity);
   if (
     isReferenceEntity(entity) &&
     incompatible.some((key) => entity[key] !== undefined)
@@ -153,6 +162,11 @@ export function assertReferenceCompatibleMetadata(
 export function validateReferenceEntity(
   entity: Entity,
 ): ReferenceEntityData | undefined {
+  if (entity.kind === "referenceFrame") {
+    validateReferenceFrameEntity(entity);
+    return undefined;
+  }
+  assertReferenceFrameCompatibleMetadata(entity);
   if (!isReferenceEntity(entity)) {
     if (entity.reference !== undefined)
       throw new Error("Reference payload requires a reference entity kind.");

@@ -1,5 +1,19 @@
 import * as THREE from "three";
 import { weldDisplayPositions } from "./display-weld";
+import type { IndexedMesh, Positions } from "./types";
+import { indexedMeshMatches } from "./indexed-mesh";
+
+/** Recenter precise coordinates before Float32 upload. */
+export function localDisplayCoordinates(
+  positions: ArrayLike<number>,
+  origin: THREE.Vector3,
+): Float32Array {
+  const result = new Float32Array(positions.length);
+  for (let i = 0; i < positions.length; i++)
+    result[i] = positions[i] - origin.getComponent(i % 3);
+  return result;
+}
+
 /** Preserve display weld ordering and Float32 normal arithmetic with typed storage. */
 export function smoothDisplayNormals(
   positions: ArrayLike<number>,
@@ -21,6 +35,38 @@ export function smoothDisplayNormals(
       result[i * 3] = source[v];
       result[i * 3 + 1] = source[v + 1];
       result[i * 3 + 2] = source[v + 2];
+    }
+    return result;
+  } finally {
+    geometry.dispose();
+  }
+}
+
+/** Preserve the expanded display's weld and normals in the authored index order. */
+export function smoothIndexedDisplayNormals(
+  positions: Positions,
+  mesh: IndexedMesh,
+  verified = false,
+): Float32Array {
+  if (!verified && !indexedMeshMatches(mesh, positions))
+    throw new Error("Display indices do not match mesh positions.");
+  const welded = weldDisplayPositions(positions);
+  const geometry = new THREE.BufferGeometry();
+  try {
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(welded.positions, 3),
+    );
+    geometry.setIndex(new THREE.BufferAttribute(welded.indices, 1));
+    geometry.computeVertexNormals();
+    const source = geometry.getAttribute("normal").array;
+    const result = new Float32Array(mesh.vertices.length);
+    for (let slot = 0; slot < welded.indices.length; slot++) {
+      const from = welded.indices[slot] * 3,
+        to = mesh.triangles[slot] * 3;
+      result[to] = source[from];
+      result[to + 1] = source[from + 1];
+      result[to + 2] = source[from + 2];
     }
     return result;
   } finally {

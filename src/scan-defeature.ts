@@ -42,6 +42,7 @@ export function runDefeature(
     { ...options, onProgress: undefined },
   );
   let topology = retained.topology;
+  let retainedSourceFaces = retained.oldFaces;
   let target = Uint8Array.from(retained.oldFaces, (f) => marked[f]);
   // Retain the largest area component touching the removed patch, preserving
   // unrelated components. Triangle count is not an area comparison.
@@ -76,6 +77,7 @@ export function runDefeature(
       onProgress: undefined,
     });
     target = Uint8Array.from(next.oldFaces, (f) => target[f]);
+    retainedSourceFaces = next.oldFaces.map((f) => retainedSourceFaces[f]);
     topology = next.topology;
   }
   let attempts = 0,
@@ -147,17 +149,42 @@ export function runDefeature(
     ...options,
     onProgress: undefined,
   });
-  const positions = finiteOutput(
-    Array.from(topology.triangles).flatMap((id) =>
-      pointAt(topology.vertices, id),
-    ),
-  );
-  // Store output precision in the indexed representation. Publication transfers
-  // only a copy; the worker retains this canonical source and adjacency.
+  // Welded adjacency guides the patch, but cannot round unrelated source corners.
+  const coordinates = new Float32Array(topology.triangles.length * 3);
+  let retainedCornersDiffer = false;
+  for (let f = 0; f < topology.triangles.length / 3; f++) {
+    if (f % 4096 === 0) checkProgress(options, 0.9, "Publishing indexed mesh");
+    if (f < retainedSourceFaces.length) {
+      const source = retainedSourceFaces[f] * 9;
+      for (let i = 0; i < 9; i++) {
+        coordinates[f * 9 + i] = r.positions[source + i];
+        const vertex = topology.triangles[f * 3 + Math.floor(i / 3)] * 3;
+        if (
+          !Object.is(
+            coordinates[f * 9 + i],
+            topology.vertices[vertex + (i % 3)],
+          )
+        )
+          retainedCornersDiffer = true;
+      }
+    } else {
+      for (let corner = 0; corner < 3; corner++) {
+        const vertex = topology.triangles[f * 3 + corner] * 3;
+        for (let axis = 0; axis < 3; axis++)
+          coordinates[f * 9 + corner * 3 + axis] =
+            topology.vertices[vertex + axis];
+      }
+    }
+  }
+  const positions = finiteOutput(coordinates);
+  // Reuse adjacency only when it describes the published corner coordinates.
   if (options.topologyCache) {
     options.topologyCache.positions = positions;
     options.topologyCache.tolerance = options.tolerance ?? 1e-6;
-    options.topologyCache.topology = topology;
+    // Raw retained corners may choose different weld representatives on reopening.
+    options.topologyCache.topology = retainedCornersDiffer
+      ? undefined
+      : topology;
   }
   return {
     positions,

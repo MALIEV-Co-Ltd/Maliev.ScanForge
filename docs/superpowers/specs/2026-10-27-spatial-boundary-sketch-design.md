@@ -1,0 +1,7 @@
+# Spatial boundary sketches
+
+The native Boundary editor creates one 3D sketch containing one cubic curve for each selected boundary. Existing retained annulus IGES and QSF observations establish fitting and grouping for the selected and all-boundary controls. Planar saved sketches cannot represent those nonplanar curves.
+
+Add a distinct saved spatial-sketch variant, with authoritative world-space cubic poles, knot vectors and periodic flags; never approximate the stored definition with a planar sketch or render triangles. Preserve one object with multiple curves, stable identity and history ownership. Render sampled lines derived from the stored curves. Provide selected/all creation from the same shared worker operation through GUI and MCP, with validated tolerance, structured diagnostics, cancellation and atomic publication. Persist the variant and its history through an explicitly versioned project format, reject incompatible older-format serialization, and retain existing planar and unrelated authoring state.
+
+The first checkpoint covers creation, visibility, inspection, deletion and undo/redo/save/reopen. It must not claim native interactive curve editing, dependency recomputation, arbitrary imported curves or complete M2 acceptance. Unknown open or degenerate cases reject atomically until independently characterized. Use the existing native fitting fixtures and describe their finite scope.

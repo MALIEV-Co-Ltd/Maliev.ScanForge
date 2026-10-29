@@ -2,6 +2,9 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { projectValueBytes } from "./project-value-stream";
 import type { Entity, Positions } from "./types";
 import { validateReferenceEntity } from "./reference-entity";
+import { validateReferenceFrameEntity } from "./reference-frame";
+import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
+import { beginPriorityScanPreparation } from "./scan-background-preparation";
 
 export interface GeometryDigestBuffer {
   path: string;
@@ -31,6 +34,18 @@ export interface GeometryDigestOptions {
 export async function digestEntityGeometry(
   entity: Entity,
   options: GeometryDigestOptions = {},
+): Promise<GeometryDigest> {
+  const release = beginPriorityScanPreparation();
+  try {
+    return await digestEntityGeometryWithLease(entity, options);
+  } finally {
+    release();
+  }
+}
+
+async function digestEntityGeometryWithLease(
+  entity: Entity,
+  options: GeometryDigestOptions,
 ): Promise<GeometryDigest> {
   const check = () => {
     if (options.signal?.aborted)
@@ -64,7 +79,18 @@ export async function digestEntityGeometry(
     });
   };
   const reference = validateReferenceEntity(entity);
-  if (reference) {
+  const coordinateFrame = validateReferenceFrameEntity(entity);
+  if (coordinateFrame) {
+    for (const name of ["origin", "u", "v", "normal"] as const)
+      add(`coordinateFrame.frame.${name}`, [...coordinateFrame.frame[name]]);
+    add("coordinateFrame.displaySize", [coordinateFrame.displaySize]);
+    const mapping = validateRollMappingEntity(entity);
+    if (mapping) {
+      add("rollMapping.radius", [mapping.radius]);
+      add("rollMapping.offsetDegrees", [mapping.offsetDegrees]);
+      add("rollMapping.instances", [mapping.instances]);
+    }
+  } else if (reference) {
     const geometry = reference.geometry;
     if (geometry.kind === "point")
       add("reference.geometry.position", [...geometry.position]);
@@ -126,7 +152,7 @@ export async function digestEntityGeometry(
     const { path, value, encoding } = field,
       width = encoding === "u8" ? 1 : encoding === "f64" ? 8 : 4;
     const hash = sha256.create(),
-      chunks = projectValueBytes(value, encoding, true);
+      chunks = projectValueBytes(value, encoding, true, true);
     let first = 0;
     try {
       while (first < value.length) {
@@ -134,7 +160,10 @@ export async function digestEntityGeometry(
         const end = Math.min(value.length, first + (1024 * 1024) / width);
         for (let i = first; i < end; i++) {
           const n = value[i];
-          if (typeof n !== "number" || !Number.isFinite(n))
+          if (
+            typeof n !== "number" ||
+            !(n >= -Number.MAX_VALUE && n <= Number.MAX_VALUE)
+          )
             throw new Error(
               `Geometry must contain finite numbers: ${path}[${i}].`,
             );

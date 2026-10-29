@@ -193,6 +193,22 @@ it("gates averaging and unrolling on eligible reference objects", () => {
     'disabled="">Apply',
   );
 });
+it("offers exact capped CAD references without fitting their display vertices", () => {
+  const capped: Entity = {
+    ...mesh,
+    id: "capped",
+    name: "Imported capped cylinder",
+    kind: "cad",
+    kernelId: "exact-capped-cylinder",
+    positions: new Float32Array([
+      0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 1, 2, 0, 1, 2, 0, 0, 2, 0, 1, 0,
+      2, 0,
+    ]),
+  };
+  const html = render("unroll", mesh, [mesh, capped]);
+  expect(html).toContain("Imported capped cylinder");
+  expect(html).not.toContain('disabled="">Apply');
+});
 it("requires mesh copies for exact CAD and explains an empty selection", () => {
   expect(
     render("flipNormals", { ...mesh, kind: "cad", kernelId: "exact" }),

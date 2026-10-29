@@ -1,4 +1,5 @@
 import { CadClient } from "../cad/client";
+import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { DEFAULT_FREEFORM_COLOR } from "../appearance";
 import { cleanupMesh, alignPrincipalAxes } from "../geometry";
 import {
@@ -196,10 +197,18 @@ export function createAuthoringOperations(
         authoring.activeSketchId = sketchId;
       } else {
         if (index < 0) throw new Error("Sketch does not exist");
-        if (a.action === "activate") authoring.activeSketchId = sketchId;
-        else if (a.action === "rename") {
+        if (a.action === "activate") {
+          if (sketches[index].kind === "spatial")
+            throw new Error("Spatial sketch editing is not available yet.");
+          authoring.activeSketchId = sketchId;
+        } else if (a.action === "rename") {
           if (!a.name) throw new Error("Sketch name required");
           sketches[index] = { ...sketches[index], name: a.name };
+        } else if (a.action === "visibility") {
+          if (typeof a.visible !== "boolean")
+            throw Error("Sketch visibility requires a boolean.");
+          sketches[index] = { ...sketches[index], visible: a.visible };
+          if (a.visible) validateSavedSketchDisplay(sketches[index]);
         } else {
           sketches.splice(index, 1);
           if (authoring.activeSketchId === sketchId)

@@ -121,7 +121,7 @@ export async function createAlignmentPool(
   if (fallbackReason) {
     let query: ReturnType<typeof nativeAlignmentTargetGroupQuery> | undefined =
       nativeAlignmentTargetGroupQuery(
-        surfaces.map(createNativeAlignmentSurfaceQuery),
+        surfaces.map((surface) => createNativeAlignmentSurfaceQuery(surface)),
       );
     const close = () => {
       query = undefined;

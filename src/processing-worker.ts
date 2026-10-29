@@ -13,7 +13,12 @@ import {
   reduceScanNoiseAsync,
   type ScanToolResult,
 } from "./scan-tools-reduction";
-import { runScanEdit } from "./scan-edit";
+import {
+  runIndexedComponentExtract,
+  runIndexedComponentInventory,
+  runScanEditAsync,
+} from "./scan-edit";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
 import { SelectedSmoothingPool } from "./scan-smoothing-client";
 import { SELECTED_SMOOTHING_DEFAULTS } from "./scan-selected-smooth";
 import { morphTriangleSelection } from "./selection-morphology";
@@ -21,6 +26,7 @@ import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { extractSketchSection } from "./sketch-section";
 import {
   analyzeMesh,
+  analyzeIndexedMesh,
   classifyRegion,
   decimateMesh,
   repairMesh,
@@ -44,7 +50,10 @@ import { registerNativeLandmarks } from "./native-landmark-registration";
 import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
-import { prepareScanRenderData } from "./scan-render-data";
+import {
+  prepareScanRenderData,
+  prepareSplitRenderData,
+} from "./scan-render-data";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
@@ -108,6 +117,95 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     return;
   }
+  let indexedExtract = false;
+  let indexedInventory = false;
+  let packedSource = (
+    incoming as ProcessingRequest & {
+      packedScanEditSource?: {
+        positions?: Float64Array;
+        vertices?: Float64Array;
+        indexedExtract?: true;
+        indexedInventory?: true;
+      };
+    }
+  ).packedScanEditSource;
+  if (packedSource) {
+    try {
+      if (
+        incoming.kind !== "scanEdit" ||
+        !(
+          incoming.action.startsWith("component") ||
+          incoming.action === "inventory"
+        )
+      )
+        throw new Error("Unexpected packed scan edit input.");
+      const unpack = (values: Float64Array) => {
+        const out = new Array<number>(values.length);
+        for (let i = 0; i < values.length; i++) out[i] = values[i];
+        return out;
+      };
+      const { positions, vertices } = packedSource;
+      indexedExtract = packedSource.indexedExtract === true;
+      indexedInventory = packedSource.indexedInventory === true;
+      if (
+        indexedInventory &&
+        (indexedExtract ||
+          incoming.action !== "inventory" ||
+          incoming.inventoryScope !== "components" ||
+          positions !== undefined ||
+          incoming.positions.length !== 0 ||
+          !incoming.sourceIndexed)
+      )
+        throw new Error("Invalid indexed component inventory input.");
+      if (
+        indexedExtract &&
+        (incoming.action !== "componentExtract" ||
+          positions !== undefined ||
+          incoming.positions.length !== 0 ||
+          !incoming.sourceIndexed)
+      )
+        throw new Error("Invalid indexed extraction input.");
+      if (
+        positions !== undefined &&
+        (!(positions instanceof Float64Array) ||
+          incoming.positions.length !== 0 ||
+          positions.length % 9)
+      )
+        throw new Error("Invalid packed scan positions.");
+      if (
+        vertices !== undefined &&
+        (!(vertices instanceof Float64Array) ||
+          !incoming.sourceIndexed ||
+          incoming.sourceIndexed.vertices.length !== 0 ||
+          vertices.length % 3)
+      )
+        throw new Error("Invalid packed scan vertices.");
+      const restoredPositions = positions
+        ? (positions as unknown as ProcessingRequest["positions"])
+        : incoming.positions;
+      incoming = {
+        ...incoming,
+        positions: restoredPositions,
+        ...(vertices && incoming.sourceIndexed
+          ? {
+              sourceIndexed: {
+                ...incoming.sourceIndexed,
+                vertices: unpack(vertices),
+              },
+            }
+          : {}),
+      };
+      delete (
+        incoming as ProcessingRequest & { packedScanEditSource?: unknown }
+      ).packedScanEditSource;
+      packedSource = undefined;
+    } catch (error) {
+      scope.postMessage({
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return;
+    }
+  }
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;
@@ -137,6 +235,8 @@ scope.onmessage = async ({ data: incoming }) => {
   )
     topologyCache = {};
   const previousCache = { ...topologyCache };
+  let packedSplitRollback:
+    { positions: ProcessingRequest["positions"] | undefined } | undefined;
   let lastProgress = -Infinity;
   let lastStage = "";
   const reportHoles = createHoleFillReporter((fraction, stage, details) =>
@@ -181,7 +281,9 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     const tolerance = preparationTolerance(request);
     const persistent =
-      tolerance !== undefined && typeof indexedDB !== "undefined"
+      tolerance !== undefined &&
+      !(request.kind === "scanEdit" && request.sourceIndexed) &&
+      typeof indexedDB !== "undefined"
         ? await preparePersistentTopology(request.positions, {
             tolerance,
             topologyCache,
@@ -263,6 +365,42 @@ scope.onmessage = async ({ data: incoming }) => {
         summary: outcome.summary,
       });
     } else if (request.kind === "scanEdit") {
+      if (request.sourceIndexed) {
+        if (
+          !indexedExtract &&
+          !indexedInventory &&
+          !indexedMeshMatches(request.sourceIndexed, request.positions)
+        )
+          throw new Error(
+            "Scan edit indices do not match the source geometry.",
+          );
+        if (
+          !indexedExtract &&
+          !indexedInventory &&
+          !(
+            request.action === "inventory" &&
+            request.inventoryScope === "components"
+          ) &&
+          !(
+            request.action.startsWith("component") &&
+            request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          ) &&
+          (request.action !== "split" ||
+            request.plane ||
+            request.targetIsNonMesh)
+        ) {
+          const topology = analyzeIndexedMesh(
+            Float64Array.from(request.sourceIndexed.vertices),
+            Uint32Array.from(request.sourceIndexed.triangles),
+            { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
+          );
+          topologyCache = {
+            positions: request.positions,
+            tolerance: request.tolerance ?? 1e-6,
+            topology,
+          };
+        }
+      }
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
       if (request.action === "smoothSelected") {
         const topology = analyzeMesh(request.positions, {
@@ -278,7 +416,7 @@ scope.onmessage = async ({ data: incoming }) => {
           { onProgress: progress },
         );
       }
-      result.scanEdit = runScanEdit(request, {
+      const editOptions = {
         onProgress: progress,
         topologyCache: request.previewOnly
           ? { ...topologyCache }
@@ -286,9 +424,70 @@ scope.onmessage = async ({ data: incoming }) => {
         selectedSmoothing: selectedVertices
           ? () => selectedVertices!
           : undefined,
-      });
+      };
+      if (indexedExtract) {
+        progress(0, "Grouping indexed components");
+        result.scanEdit = runIndexedComponentExtract(
+          request.sourceIndexed!,
+          request.indices,
+          {
+            ...editOptions,
+            tolerance: request.tolerance,
+            onProgress: (fraction, stage) => progress(fraction * 0.95, stage),
+          },
+        );
+      } else if (indexedInventory) {
+        result.scanEdit = runIndexedComponentInventory(
+          request.sourceIndexed!,
+          {
+            ...editOptions,
+            tolerance: request.tolerance,
+          },
+          true,
+        );
+      } else result.scanEdit = await runScanEditAsync(request, editOptions);
       result.diagnostics = result.scanEdit.diagnostics;
-      if (request.action === "inventory" && topologyCache.topology)
+      if (result.scanEdit.indexedMesh) {
+        if (
+          !result.scanEdit.positions ||
+          !indexedMeshMatches(
+            result.scanEdit.indexedMesh,
+            result.scanEdit.positions,
+          )
+        )
+          throw new Error(
+            "Scan edit indexed output does not match its positions.",
+          );
+        result.indexedMesh = result.scanEdit.indexedMesh;
+        delete result.scanEdit.indexedMesh;
+      }
+      if (
+        (request.action === "boundarySmooth" ||
+          request.action === "smoothSelected") &&
+        result.scanEdit.positions &&
+        result.scanEdit.diagnostics.changed !== false &&
+        topologyCache.positions === result.scanEdit.positions &&
+        topologyCache.topology
+      ) {
+        // Scene/history arrays must not detach the worker's canonical topology.
+        const indexed = {
+          vertices: Array.isArray(result.scanEdit.positions)
+            ? Array.from(topologyCache.topology.vertices)
+            : Float32Array.from(topologyCache.topology.vertices),
+          triangles: Uint32Array.from(topologyCache.topology.triangles),
+        };
+        if (indexedMeshMatches(indexed, result.scanEdit.positions))
+          result.indexedMesh = indexed;
+      }
+      // An unchanged source stays canonical in this worker. No scene/history
+      // successor exists, so do not allocate or transfer a duplicate buffer.
+      if (result.scanEdit.diagnostics.changed === false)
+        delete result.scanEdit.positions;
+      if (
+        request.action === "inventory" &&
+        request.inventoryScope !== "components" &&
+        topologyCache.topology
+      )
         result.topology = summarize(topologyCache.topology);
     } else if (request.kind === "selectionMorphology") {
       result.selection = morphTriangleSelection(
@@ -657,16 +856,37 @@ scope.onmessage = async ({ data: incoming }) => {
     }
     if (persistent) Object.assign(result.diagnostics, persistent);
     const transfers: Transferable[] = [];
+    if (indexedInventory)
+      for (const component of result.scanEdit?.inventory?.components ?? [])
+        if (
+          component.triangles instanceof Uint32Array &&
+          component.triangles.buffer instanceof ArrayBuffer
+        )
+          transfers.push(component.triangles.buffer);
     const successor =
       result.pointCloudEdit?.positions ??
       result.scanEdit?.positions ??
       result.positions;
+    const packPreciseSplit =
+      request.kind === "scanEdit" &&
+      (request.action === "split" ||
+        (["componentKeep", "componentRemove", "componentFlip"].includes(
+          request.action,
+        ) &&
+          ((result.scanEdit?.positions?.length ?? 0) >= 65536 ||
+            (result.scanEdit?.positions as unknown) instanceof
+              Float64Array))) &&
+      (Array.isArray(result.scanEdit?.positions) ||
+        (result.scanEdit?.positions as unknown) instanceof Float64Array) &&
+      Array.isArray(result.indexedMesh?.vertices);
     if (
       geometryKey !== undefined &&
       successor &&
       request.kind !== "scanPreview" &&
       !(request.kind === "scanEdit" && request.previewOnly)
     ) {
+      if (packPreciseSplit)
+        packedSplitRollback = { positions: canonicalPositions };
       // Keep the worker's canonical geometry and any already-built adjacency.
       // Transferring that buffer would detach the successor cache; only the
       // dedicated scene/history copy crosses back to the main thread.
@@ -674,10 +894,11 @@ scope.onmessage = async ({ data: incoming }) => {
       topologyCache.positions = successor;
       canonicalPositions = successor;
       if (result.pointCloudEdit?.positions)
-        result.pointCloudEdit.positions = successor.slice();
-      else if (result.scanEdit?.positions)
-        result.scanEdit.positions = successor.slice();
-      else result.positions = successor.slice();
+        result.pointCloudEdit.positions =
+          result.pointCloudEdit.positions.slice();
+      else if (result.scanEdit?.positions && !packPreciseSplit)
+        result.scanEdit.positions = result.scanEdit.positions.slice();
+      else if (result.positions) result.positions = result.positions.slice();
     }
     if (result.pointCloudEdit?.positions)
       transfers.push(result.pointCloudEdit.positions.buffer);
@@ -687,22 +908,58 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.pointCloudEdit.selection.buffer);
     if (result.pointCloudEdit?.sourceIndices)
       transfers.push(result.pointCloudEdit.sourceIndices.buffer);
-    if (result.scanEdit?.positions)
+    if (result.scanEdit?.positions instanceof Float32Array)
       transfers.push(result.scanEdit.positions.buffer);
     if (result.scanEdit?.selection)
       transfers.push(result.scanEdit.selection.buffer);
     for (const segment of result.scanEdit?.segments ?? [])
-      transfers.push(segment.buffer);
+      if (segment instanceof Float32Array) transfers.push(segment.buffer);
+    for (const mesh of result.scanEdit?.segmentIndexedMeshes ?? []) {
+      if (!mesh) continue;
+      for (const values of [
+        mesh.vertices,
+        mesh.triangles,
+        mesh.normals,
+        mesh.geometryNormals,
+        mesh.facetNormals,
+      ])
+        if (values instanceof Float32Array || values instanceof Uint32Array)
+          transfers.push(values.buffer);
+    }
     if (result.selection) transfers.push(result.selection.buffer);
     // Display borrows the computed state already transformed with the mesh.
     if (result.indexedMesh && result.positions) {
-      progress(0.99, "Preparing aligned mesh display");
+      progress(0.99, "Preparing mesh display");
       result.renderData = prepareScanRenderData(
         result.positions,
         result.indexedMesh,
       );
       if (result.renderData.normals)
         transfers.push(result.renderData.normals.buffer as ArrayBuffer);
+    } else if (packPreciseSplit) {
+      progress(0.99, "Preparing mesh display");
+      result.renderData = prepareSplitRenderData(
+        result.scanEdit!.positions!,
+        result.indexedMesh!,
+      );
+      if (result.renderData.normals)
+        transfers.push(result.renderData.normals.buffer as ArrayBuffer);
+    }
+    if (
+      indexedExtract &&
+      result.scanEdit?.segments &&
+      result.scanEdit.segmentIndexedMeshes
+    ) {
+      const segments = result.scanEdit.segments;
+      const meshes = result.scanEdit.segmentIndexedMeshes;
+      if (segments.length !== meshes.length || meshes.some((mesh) => !mesh))
+        throw new Error("Invalid component display topology.");
+      progress(0.99, "Preparing component display");
+      result.segmentRenderData = segments.map((segment, i) =>
+        prepareSplitRenderData(segment, meshes[i]!, true),
+      );
+      for (const data of result.segmentRenderData)
+        if (data.normals) transfers.push(data.normals.buffer as ArrayBuffer);
     }
     if (result.positions) transfers.push(result.positions.buffer);
     if (result.indexedMesh?.vertices instanceof Float32Array)
@@ -722,14 +979,75 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.noiseComparison?.renderDistances)
       transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
+    let packedScanEdit:
+      { positions: Float64Array; vertices: Float64Array } | undefined;
+    let packedScanSegments:
+      { positions: Float64Array; vertices: Float64Array }[] | undefined;
+    if (packPreciseSplit) {
+      progress(1, "Packing precise scan edit");
+      const edit = result.scanEdit!,
+        indexed = result.indexedMesh!;
+      const positions =
+        (edit.positions as unknown) instanceof Float64Array
+          ? (edit.positions as unknown as Float64Array)
+          : Float64Array.from(edit.positions!);
+      const vertices =
+        edit.positions === indexed.vertices
+          ? positions
+          : Float64Array.from(indexed.vertices);
+      packedScanEdit = { positions, vertices };
+      delete edit.positions;
+      indexed.vertices = [];
+      transfers.push(positions.buffer, vertices.buffer);
+    }
+    if (
+      request.kind === "scanEdit" &&
+      request.action === "componentExtract" &&
+      (indexedExtract ||
+        (request.positions as unknown) instanceof Float64Array) &&
+      result.scanEdit?.segments &&
+      result.scanEdit.segmentIndexedMeshes &&
+      result.scanEdit.segments.length ===
+        result.scanEdit.segmentIndexedMeshes.length
+    ) {
+      const segments = result.scanEdit.segments;
+      const meshes = result.scanEdit.segmentIndexedMeshes;
+      if (
+        segments.some(
+          (segment, i) =>
+            !((segment as unknown) instanceof Float64Array) ||
+            !meshes[i] ||
+            !((meshes[i]!.vertices as unknown) instanceof Float64Array),
+        )
+      )
+        throw new Error("Invalid precise component segment output.");
+      progress(1, "Packing precise scan segments");
+      packedScanSegments = segments.map((segment, i) => {
+        const positions = segment as unknown as Float64Array;
+        const mesh = meshes[i]!;
+        const vertices = mesh.vertices as unknown as Float64Array;
+        mesh.vertices = [];
+        transfers.push(positions.buffer, vertices.buffer);
+        return { positions, vertices };
+      });
+      delete result.scanEdit.segments;
+    }
     // Published shared geometry stays attached; only private buffers transfer.
-    scope.postMessage({ result }, [
-      ...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer)),
-    ]);
+    scope.postMessage(
+      {
+        result,
+        ...(packedScanEdit ? { packedScanEdit } : {}),
+        ...(packedScanSegments ? { packedScanSegments } : {}),
+      },
+      [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
+    );
   } catch (error) {
     // A rejected edit may have analyzed temporary geometry. Never reinterpret
     // that temporary mesh as the next request's original input.
-    if (topologyCache.positions !== canonicalPositions)
+    if (packedSplitRollback) {
+      canonicalPositions = packedSplitRollback.positions;
+      topologyCache = previousCache;
+    } else if (topologyCache.positions !== canonicalPositions)
       topologyCache = previousCache;
     scope.postMessage({
       error: error instanceof Error ? error.message : String(error),

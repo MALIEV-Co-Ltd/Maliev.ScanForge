@@ -8,6 +8,21 @@ import {
   type ProjectValueType,
 } from "../src/project-value-stream";
 
+it("reuses bounded staging only for consumers that finish each hash chunk", () => {
+  const values = Array.from({ length: 131075 }, (_, i) => (i % 2 ? -0 : i / 7));
+  const iterator = projectValueBytes(values, "f64", true, true);
+  const first = iterator.next().value!;
+  const firstCopy = first.slice();
+  const second = iterator.next().value!;
+  expect(second.buffer === first.buffer).toBe(true);
+  expect(second.length).toBe(24);
+  const expected = canonical(values, "f64");
+  expect(firstCopy).toEqual(expected.subarray(0, firstCopy.length));
+  expect(second).toEqual(expected.subarray(firstCopy.length));
+  expect(iterator.next().done).toBe(true);
+  expect(projectValueHash(values, "f64").rawBytes).toBe(expected.length);
+});
+
 function canonical(value: ProjectValue, type: ProjectValueType) {
   if (typeof value === "string") return new TextEncoder().encode(value);
   const width = type === "f64" ? 8 : 4;

@@ -7,12 +7,15 @@ import type { ScanBridgeSession } from "../scan-bridge-gesture";
 import { BridgePreviewController } from "../scan-bridge-preview";
 import { processMesh } from "../processing-client";
 import type { ScanEditRequest } from "../scan-edit";
+import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
 import type { Entity, Positions, Vec3 } from "../types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
+import { COMPACT_COMPONENT_FACE_THRESHOLD } from "../scan-component-groups";
 import "./scan-topology-panels.css";
 
 export interface ScanInventory {
-  components: { triangles: number[]; area: number }[];
+  scope?: "components";
+  components: { triangles: number[] | Uint32Array; area: number }[];
   boundaries: {
     points: number[];
     triangles: number[];
@@ -27,8 +30,16 @@ export interface ScanTopologyPanelsProps {
   entities: Entity[];
   selectedId: string;
   selection?: Uint8Array | null;
-  onReplace: (positions: Float32Array, label: string) => void;
-  onCreate: (segments: Float32Array[], label: string) => void;
+  onReplace: (
+    positions: Positions,
+    label: string,
+    indexedMesh?: Entity["indexedMesh"],
+  ) => void;
+  onCreate: (
+    segments: Positions[],
+    label: string,
+    indexedParts?: (Entity["indexedMesh"] | undefined)[],
+  ) => void;
   onSelection: (mask: Uint8Array) => void;
   onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
   onBridgeSession?: (session: ScanBridgeSession | null) => void;
@@ -38,6 +49,7 @@ export interface ScanTopologyPanelsProps {
     plane: { origin: Vec3; normal: Vec3 },
     label: string,
   ) => void;
+  onSpatial?: (curves: SpatialBoundaryCurve[], label: string) => void;
   onStatus: (message: string) => void;
   onError: (message: string) => void;
   onBusyChange?: (busy: boolean) => void;
@@ -54,17 +66,21 @@ type ScanAction =
   | "componentFlip"
   | "fillHoles"
   | "boundarySmooth"
-  | "boundaryProject";
+  | "boundaryProject"
+  | "boundarySpatialSketch";
 export interface ScanPanelOperation {
   action: ScanAction;
+  inventoryScope?: ScanEditRequest["inventoryScope"];
   indices?: number[];
-  algorithm?: "automatic" | "flat" | "tangent" | "curvature";
+  algorithm?: ScanEditRequest["algorithm"];
   mode?: "entire" | "partial" | "bridge";
   start?: number;
   end?: number;
   endBoundary?: number;
   diameter?: number;
+  batch?: boolean;
   strength?: number;
+  anchors?: ScanEditRequest["anchors"];
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
   tolerance?: number;
@@ -74,6 +90,10 @@ const empty: ScanInventory = { components: [], boundaries: [] };
 
 /** Geometry-scoped worker ownership prevents a late operation from replacing another scan. */
 export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
+  const sourceIndexed = props.entities.find(
+    (entity) =>
+      entity.id === props.selectedId && entity.positions === props.positions,
+  )?.indexedMesh;
   const [inventory, setInventory] = useState<ScanInventory>(empty);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
@@ -99,6 +119,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       const request = {
         kind: "scanEdit",
         positions: props.positions,
+        sourceIndexed,
         tolerance: SCAN_TOPOLOGY_TOLERANCE,
         ...operation,
       } satisfies ScanEditRequest;
@@ -115,10 +136,34 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       if (!outcome) throw new Error("Scan editing worker returned no result.");
       if (outcome.inventory) setInventory(outcome.inventory);
       if (outcome.selection) props.onSelection(outcome.selection);
-      if (outcome.positions) props.onReplace(outcome.positions, label);
-      if (outcome.segments) props.onCreate(outcome.segments, label);
+      if (outcome.positions && outcome.diagnostics.changed !== false) {
+        if (result.indexedMesh)
+          props.onReplace(outcome.positions, label, result.indexedMesh);
+        else props.onReplace(outcome.positions, label);
+      }
+      if (outcome.segments)
+        props.onCreate(outcome.segments, label, outcome.segmentIndexedMeshes);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);
+      if (outcome.spatialCurves) {
+        const current = callbacks.current;
+        const source = current.entities.find(
+          (entity) => entity.id === current.selectedId,
+        );
+        if (
+          current.selectedId !== props.selectedId ||
+          current.positions !== props.positions ||
+          !source ||
+          source.positions !== current.positions ||
+          source.locked
+        )
+          throw new Error(
+            "The source mesh changed or is locked; no sketch was created.",
+          );
+        if (!current.onSpatial)
+          throw new Error("Spatial sketch publication unavailable.");
+        current.onSpatial(outcome.spatialCurves, label);
+      }
       if (operation.action !== "inventory")
         props.onStatus(
           operation.action === "fillHoles"
@@ -145,6 +190,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
           {
             kind: "scanEdit",
             positions: props.positions,
+            sourceIndexed,
             tolerance: SCAN_TOPOLOGY_TOLERANCE,
             ...operation,
           },
@@ -175,14 +221,24 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       bridge.dispose();
       if (bridgeOwner.current === bridge) bridgeOwner.current = null;
     };
-  }, [props.positions, props.selectedId]);
+  }, [props.positions, props.selectedId, sourceIndexed]);
   useEffect(() => {
     cancel();
     setInventory(empty);
     setBusy(false);
-    void run({ action: "inventory" }, "Inspect mesh");
+    void run(
+      {
+        action: "inventory",
+        ...(props.section === "components" &&
+        sourceIndexed &&
+        props.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+          ? { inventoryScope: "components" as const }
+          : {}),
+      },
+      "Inspect mesh",
+    );
     return cancel;
-  }, [props.positions, props.selectedId]);
+  }, [props.positions, props.selectedId, sourceIndexed, props.section]);
   return (
     <ScanTopologyControls
       {...props}
@@ -227,8 +283,12 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
   const [diameter, setDiameter] = useState(0);
   const [cleanup, setCleanup] = useState("triangles"),
     [threshold, setThreshold] = useState(10);
-  const [strength, setStrength] = useState(0.3),
+  const [strength, setStrength] = useState(1),
     [tolerance, setTolerance] = useState(0.05);
+  const [anchorEnabled, setAnchorEnabled] = useState(false);
+  const [anchorPoint, setAnchorPoint] = useState(0);
+  const [secondAnchorEnabled, setSecondAnchorEnabled] = useState(false);
+  const [secondAnchorPoint, setSecondAnchorPoint] = useState(1);
   const [planeId, setPlaneId] = useState("XY");
   const [transparent, setTransparent] = useState(false);
   useEffect(() => {
@@ -258,7 +318,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     current && section !== "components"
       ? inventory.boundaries[current.index]
       : undefined;
+  const anchorDistance = Math.abs(anchorPoint - secondAnchorPoint);
+  const anchorPointCount = (boundary?.points.length ?? 0) / 3;
+  const anchorPairTooClose =
+    Math.min(anchorDistance, anchorPointCount - anchorDistance) < 3;
   useEffect(() => {
+    setAnchorEnabled(false);
+    setAnchorPoint(0);
+    setSecondAnchorEnabled(false);
+    setSecondAnchorPoint(1);
     setStart(0);
     setEnd(Math.max(2, Math.floor((boundary?.points.length ?? 0) / 6)));
   }, [boundary?.points]);
@@ -340,9 +408,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.onOperation(operation, label);
   function choose(index: number) {
     setSelected(index);
-    highlight(index);
+    highlight(index, true);
   }
-  function highlight(index: number) {
+  function highlight(index: number, explicit = false) {
     if (section !== "components") {
       const rim = inventory.boundaries[items[index]?.index];
       props.onBoundaryHighlight?.(rim ? [rim] : []);
@@ -351,6 +419,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
     props.onBoundaryHighlight?.([]);
     const mask = new Uint8Array(Math.floor(props.positions.length / 9));
     for (const triangle of items[index]?.triangles ?? []) mask[triangle] = 1;
+    if (!explicit && props.selection?.length === mask.length) {
+      let matches = true;
+      for (let i = 0; i < mask.length; i++)
+        if (mask[i] !== props.selection[i]) {
+          matches = false;
+          break;
+        }
+      if (matches) return;
+    }
     props.onSelection(mask);
   }
   useEffect(() => {
@@ -387,22 +464,22 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       {
         action: "fillHoles",
         indices: multiple
-          ? items
-              .map((item) => item.index)
-              .filter(
-                (index) =>
-                  diameter <= 0 ||
-                  inventory.boundaries[index].diameter <= diameter,
-              )
+          ? items.map((item) => item.index)
           : current
             ? [current.index]
             : [],
-        algorithm,
+        ...(multiple && algorithm !== "surfaceRecovery"
+          ? { batch: true, diameter }
+          : { algorithm, ...(multiple ? { diameter } : {}) }),
         mode,
         start,
         end,
       },
-      multiple ? "Fill multiple holes" : "Fill selected hole",
+      multiple
+        ? algorithm === "surfaceRecovery"
+          ? "Recover multiple holes"
+          : "Fill multiple holes"
+        : "Fill selected hole",
     );
   return (
     <section
@@ -420,9 +497,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
       </h3>
       <div className="tool-panel-content">
         <p className="scan-topology-summary">
-          {inventory.components.length} meshes ·{" "}
-          {inventory.boundaries.filter((item) => item.closed).length} holes ·{" "}
-          {inventory.boundaries.length} boundaries
+          {inventory.scope === "components"
+            ? `${inventory.components.length} meshes · holes and boundaries not calculated`
+            : `${inventory.components.length} meshes · ${inventory.boundaries.filter((item) => item.closed).length} holes · ${inventory.boundaries.length} boundaries`}
         </p>
         <fieldset disabled={blocked}>
           {!(section === "holes" && mode === "bridge") && (
@@ -545,9 +622,12 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                 Fill mode
                 <AppSelect
                   value={mode}
-                  onChange={(event) =>
-                    setMode(event.target.value as typeof mode)
-                  }
+                  onChange={(event) => {
+                    const next = event.target.value as typeof mode;
+                    setMode(next);
+                    if (next !== "entire" && algorithm === "surfaceRecovery")
+                      setAlgorithm("automatic");
+                  }}
                 >
                   <option value="entire">Entire hole</option>
                   <option value="partial">Semi hole</option>
@@ -566,6 +646,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   <option value="flat">Flat</option>
                   <option value="tangent">Tangent</option>
                   <option value="curvature">Curvature</option>
+                  <option value="surfaceRecovery" disabled={mode !== "entire"}>
+                    Recover surface
+                  </option>
                 </AppSelect>
               </label>
               {mode === "bridge" && (
@@ -636,12 +719,15 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   </label>
                   <p className="scan-topology-summary">
                     0 includes every closed boundary.
+                    {algorithm === "surfaceRecovery"
+                      ? " Recovery applies to each included hole."
+                      : " Multiple-hole filling uses Tangent."}
                   </p>
                   <div className="scan-topology-actions">
                     <button
                       disabled={!boundary}
                       onClick={() => {
-                        setDiameter(boundary!.diameter);
+                        setDiameter(boundary!.diameter + 0.1);
                         props.onStatus(
                           `Hole diameter: ${boundary!.diameter.toFixed(3)} mm`,
                         );
@@ -653,7 +739,9 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                       disabled={!items.length || mode !== "entire"}
                       onClick={() => fill(true)}
                     >
-                      Fill multiple holes
+                      {algorithm === "surfaceRecovery"
+                        ? "Recover multiple holes"
+                        : "Fill multiple holes"}
                     </button>
                   </div>
                 </>
@@ -667,21 +755,126 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   type="range"
                   min="0"
                   max="1"
-                  step="0.05"
+                  step="0.1"
                   value={strength}
                   onChange={(event) => setStrength(Number(event.target.value))}
                 />
               </label>
+              <label className="scan-topology-check">
+                <input
+                  type="checkbox"
+                  checked={anchorEnabled}
+                  onChange={(event) => setAnchorEnabled(event.target.checked)}
+                />
+                Anchor a point on the selected boundary
+              </label>
+              {anchorEnabled && (
+                <p className="scan-topology-summary">
+                  Fitting can move an anchored point in some cases.
+                </p>
+              )}
+              {anchorEnabled && boundary && (
+                <label>
+                  Boundary point index (starts at 0)
+                  <input
+                    type="number"
+                    min="0"
+                    max={Math.max(0, boundary.points.length / 3 - 1)}
+                    step="1"
+                    value={anchorPoint}
+                    onChange={(event) =>
+                      setAnchorPoint(Number(event.target.value))
+                    }
+                  />
+                  <span>
+                    {boundary.points
+                      .slice(anchorPoint * 3, anchorPoint * 3 + 3)
+                      .map((v) => v.toFixed(3))
+                      .join(", ")}{" "}
+                    mm
+                  </span>
+                </label>
+              )}
+              {anchorEnabled && boundary?.closed && (
+                <label className="scan-topology-check">
+                  <input
+                    type="checkbox"
+                    checked={secondAnchorEnabled}
+                    onChange={(event) =>
+                      setSecondAnchorEnabled(event.target.checked)
+                    }
+                  />
+                  Add a second anchor on this boundary
+                </label>
+              )}
+              {anchorEnabled && secondAnchorEnabled && boundary?.closed && (
+                <label>
+                  Second boundary point index (starts at 0)
+                  <input
+                    type="number"
+                    min="0"
+                    max={Math.max(0, boundary.points.length / 3 - 1)}
+                    step="1"
+                    value={secondAnchorPoint}
+                    onChange={(event) =>
+                      setSecondAnchorPoint(Number(event.target.value))
+                    }
+                  />
+                  <span>
+                    {boundary.points
+                      .slice(secondAnchorPoint * 3, secondAnchorPoint * 3 + 3)
+                      .map((v) => v.toFixed(3))
+                      .join(", ")}{" "}
+                    mm
+                  </span>
+                </label>
+              )}
+              {anchorEnabled && secondAnchorEnabled && anchorPairTooClose && (
+                <p className="scan-topology-summary">
+                  Leave at least two boundary points between anchors on each
+                  side.
+                </p>
+              )}
               <div className="scan-topology-actions">
                 <button
-                  disabled={!current}
+                  disabled={
+                    !current ||
+                    (anchorEnabled &&
+                      (!Number.isSafeInteger(anchorPoint) ||
+                        anchorPoint < 0 ||
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3 ||
+                        (secondAnchorEnabled &&
+                          (!boundary?.closed ||
+                            !Number.isSafeInteger(secondAnchorPoint) ||
+                            secondAnchorPoint < 0 ||
+                            secondAnchorPoint >= boundary.points.length / 3 ||
+                            anchorPairTooClose))))
+                  }
                   onClick={() =>
                     run(
                       {
                         action: "boundarySmooth",
                         indices: [current!.index],
                         strength,
-                        iterations: 3,
+                        iterations: 1,
+                        ...(anchorEnabled
+                          ? {
+                              anchors: [
+                                {
+                                  boundary: current!.index,
+                                  point: anchorPoint,
+                                },
+                                ...(secondAnchorEnabled
+                                  ? [
+                                      {
+                                        boundary: current!.index,
+                                        point: secondAnchorPoint,
+                                      },
+                                    ]
+                                  : []),
+                              ],
+                            }
+                          : {}),
                       },
                       "Smooth selected boundary",
                     )
@@ -690,14 +883,45 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   Smooth selected
                 </button>
                 <button
-                  disabled={!items.length}
+                  disabled={
+                    !items.length ||
+                    (anchorEnabled &&
+                      (!current ||
+                        !Number.isSafeInteger(anchorPoint) ||
+                        anchorPoint < 0 ||
+                        anchorPoint >= (boundary?.points.length ?? 0) / 3 ||
+                        (secondAnchorEnabled &&
+                          (!boundary?.closed ||
+                            !Number.isSafeInteger(secondAnchorPoint) ||
+                            secondAnchorPoint < 0 ||
+                            secondAnchorPoint >= boundary.points.length / 3 ||
+                            anchorPairTooClose))))
+                  }
                   onClick={() =>
                     run(
                       {
                         action: "boundarySmooth",
                         indices: items.map((item) => item.index),
                         strength,
-                        iterations: 3,
+                        iterations: 1,
+                        ...(anchorEnabled
+                          ? {
+                              anchors: [
+                                {
+                                  boundary: current!.index,
+                                  point: anchorPoint,
+                                },
+                                ...(secondAnchorEnabled
+                                  ? [
+                                      {
+                                        boundary: current!.index,
+                                        point: secondAnchorPoint,
+                                      },
+                                    ]
+                                  : []),
+                              ],
+                            }
+                          : {}),
                       },
                       "Smooth all boundaries",
                     )
@@ -768,6 +992,41 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
                   }
                 >
                   Project all
+                </button>
+              </div>
+              <div className="scan-topology-actions">
+                <button
+                  disabled={!current || !boundary?.closed}
+                  onClick={() =>
+                    run(
+                      {
+                        action: "boundarySpatialSketch",
+                        indices: [current!.index],
+                        fitTolerance: tolerance,
+                      },
+                      "Create 3D sketch from selected boundary",
+                    )
+                  }
+                >
+                  3D sketch from selected
+                </button>
+                <button
+                  disabled={
+                    !items.length ||
+                    inventory.boundaries.some((item) => !item.closed)
+                  }
+                  onClick={() =>
+                    run(
+                      {
+                        action: "boundarySpatialSketch",
+                        indices: items.map((item) => item.index),
+                        fitTolerance: tolerance,
+                      },
+                      "Create 3D sketch from all boundaries",
+                    )
+                  }
+                >
+                  3D sketch from all
                 </button>
               </div>
             </>

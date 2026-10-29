@@ -171,7 +171,7 @@ it.each([
         sketches: [{ id: "sketch", name: "Datum sketch", sketch }],
       }),
     );
-    expect(project.authoring?.sketches?.[0].sketch.frame).toEqual(frame);
+    expect(project.authoring?.sketches?.[0].sketch?.frame).toEqual(frame);
     expect(sketchWorldPoint(frame, [0, 0])).toEqual([10, -20, 30]);
   },
 );

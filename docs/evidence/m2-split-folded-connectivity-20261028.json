@@ -1,0 +1,11 @@
+{
+  "scope": "Manufactured folded open-cutter geometry in the experimental finite Split candidate; no native Split command executed.",
+  "observation": "The candidate produces one connected indexed component with no nonmanifold edges. Its boundary consists only of the original square perimeter and the L-shaped finite seam. The original perimeter is 8 units, the two sides of the seam total 5 units, and the complete boundary is 13 units. Total area remains 4 square units.",
+  "interpretation": "The former two-versus-one output difference against the earlier side-classification routine is not explained by an absent seam in this control. The shared finite-mesh operation now uses the single-mesh candidate. Native publication semantics remain unknown.",
+  "validation": "The earlier parts-mode check passed 10 tests with one expected failure under m2-folded-seam-location-20261028-r1-guard.json. A subsequent shared runScanEdit control verified the single-mesh route, source and cutter preservation, indexed topology, one component, zero nonmanifold edges, area 4, perimeter plus seam boundary 13 and seam length 5 at the expected coordinates; m2-folded-production-20261028-r2.json. In the combined checkout 52 tests passed; m2-combined-folded-production-20261028-r1.json. A separate production-bundle browser replay imported the same manufactured geometry, compared GUI and public MCP geometry (19 output faces, one component), and verified source/cutter ownership, Undo/Redo, binary project reopening and empty page/console error logs; m2-folded-browser-20261028-r1-guard.json. These are application controls, not native comparisons.",
+  "limitations": [
+    "Boundary location and length are not a native topology or object-count comparison.",
+    "This does not establish correctness for arbitrary open, closed or self-intersecting cutters.",
+    "The original evidence predates production integration; the current single-mesh route is exposed through the shared GUI/MCP operation."
+  ]
+}

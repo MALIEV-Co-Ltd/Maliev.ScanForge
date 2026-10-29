@@ -1,0 +1,94 @@
+{
+  "scope": "Current rendered application/public-MCP bridge lifecycle, not native partial/bridge equivalence",
+  "compiledRuntime": "b250f0ff8e44ddb82c36dff0d66907d36dd97036",
+  "build": "scanforge-8602b889358c497b",
+  "driver": "tests/bridge-drag-browser.mjs",
+  "command": "node tests/bridge-drag-browser.mjs",
+  "checks": {
+    "reports": [
+      {
+        "method": "flat",
+        "scenario": "flat",
+        "hover": true,
+        "cameraUnchanged": true,
+        "triangles": 2,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "cancel": true
+      },
+      {
+        "method": "tangent",
+        "scenario": "tangent",
+        "hover": true,
+        "cameraUnchanged": true,
+        "triangles": 22,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "cancel": true
+      },
+      {
+        "method": "flat",
+        "scenario": "independent-boundaries",
+        "hover": true,
+        "cameraUnchanged": true,
+        "triangles": 2,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "cancel": true
+      },
+      {
+        "method": "flat",
+        "scenario": "fragmented-open",
+        "hover": true,
+        "cameraUnchanged": true,
+        "triangles": 2,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "cancel": true
+      }
+    ],
+    "pageErrors": []
+  },
+  "resources": {
+    "exitCode": 0,
+    "elapsedSeconds": 18.52912479999941,
+    "childPeakJobMemoryBytes": 1022210048,
+    "childJobFinalActive": 0,
+    "cleanupErrors": []
+  },
+  "cleanup": [
+    {
+      "port": 61646,
+      "closed": true
+    },
+    {
+      "pid": 34808,
+      "exited": true
+    },
+    {
+      "port": 61647,
+      "closed": true
+    },
+    {
+      "pid": 47180,
+      "exited": true
+    }
+  ],
+  "retainedFailures": [
+    {
+      "label": "m2-bridge-lifecycle-browser-20261026-r1",
+      "failure": "Driver followed GUI publication with a mutation before the existing workspace BUSY guard cleared."
+    },
+    {
+      "label": "m2-bridge-lifecycle-browser-20261026-r2",
+      "failure": "Panel aria-busy did not fully represent host/model-history readiness; public session_get is authoritative."
+    },
+    {
+      "label": "m2-bridge-lifecycle-browser-20261026-r3",
+      "failure": "Restored geometry was available before derived hole-hover state; driver now awaits viewport_get.bridge.mode before pointer interactions."
+    }
+  ],
+  "productionApplicationChanged": false,
+  "driverChanges": "Use current AI agents Settings tab; poll public session busy/activeJobId before mutation and public viewport bridge.mode before picking. No operation retry is hidden and no geometry/history assertions were removed.",
+  "remaining": "Native outputs/settings for partial/bridge controls and other open inventory modes are still required; M2 remains unmerged."
+}

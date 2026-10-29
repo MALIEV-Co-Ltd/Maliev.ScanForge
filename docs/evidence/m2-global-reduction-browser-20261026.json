@@ -1,0 +1,461 @@
+{
+  "scope": "Final frozen-driver rendered GUI/public MCP global count/percentage reduction lifecycle on three inputs. Not arbitrary installed-native imported-scan parity or M2 closure.",
+  "applicationCommit": "bb952c44fe6bdbf79350f3b144c1cbe5dede7cbc",
+  "testOnlyCheckpoint": "eb4baf689cefd878f31c5a35b125016c6e4b0872",
+  "buildId": "scanforge-ecb2f00867553feb",
+  "buildManifestSha256": "60c005b6f164d7c3ceaef50af0b6cb5f92638ba1666ba4f1a68e90ecbccc0c58",
+  "changedFrozenApplicationInputs": [],
+  "driver": "tests/large-reduction-browser.mjs",
+  "runs": [
+    {
+      "mode": "global",
+      "driver": {
+        "sha256": "3f9e3bec99ed58480c61ee8fa900e3b10880ace28eb7566bd76cc0809f556de7",
+        "mode": "global",
+        "buildId": "scanforge-ecb2f00867553feb",
+        "applicationCommit": "bb952c44fe6bdbf79350f3b144c1cbe5dede7cbc",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-integration-build-20261026-r2\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-global-20261026-r1-artifacts\\large-reduction-browser-ledger.json",
+      "ledgerSha256": "bdebdfa3f50d781bffdfc61520847b5ed06bdbbf2867cb07e41fe18c1bfeb50b",
+      "result": {
+        "passed": true,
+        "inputTriangles": 40960,
+        "inputSha256": "efacf062c2859727989d61ee25f8d991fa931d059fbf78f3b2f0ccd31bf00a5a",
+        "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+        "logicalProcessors": 24,
+        "systemBytes": 34110816256,
+        "renderer": "isolated headless browser, software GPU",
+        "outputTriangles": 20480,
+        "mcpTriangles": 18432,
+        "previewMs": 912.1215999999995,
+        "mcpMs": 968.9299999999985,
+        "guiPreviewAndAccept": true,
+        "comparisonRequired": true,
+        "previewPreservesSource": true,
+        "mcpDirectComparison": true,
+        "sameInputGeometryParity": true,
+        "directCountMatchesGuiPercentage": true,
+        "globalSequenceObserved": true,
+        "sourceFile": null,
+        "rawSourceGeometrySha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+        "sourceGeometrySha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+        "frozenGlobalControl": true,
+        "guiCancelBeforeAccept": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "finalGeometrySha256": "6435f138eb50f47501b3283955c8554d25f1e298b9095bdefc869116cabcbed5",
+        "guiGeometrySha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+        "mcpGeometrySha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+        "errors": []
+      },
+      "importCoordinateDifferences": {
+        "count": 0,
+        "numericallyDifferent": 0,
+        "first": []
+      },
+      "cleanup": [
+        {
+          "port": 58163,
+          "closed": true
+        },
+        {
+          "pid": 56104,
+          "exited": true
+        },
+        {
+          "port": 58164,
+          "closed": true
+        },
+        {
+          "pid": 11076,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-final-global-20261026-r1-full.receipt.json",
+        "sha256": "c21b3963bfd6e6617ac0f6e75f98c3316f8b98638b40119c1edbed3958edbd96",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 11.323090800025966,
+        "outerPeakJobMemoryBytes": 1149943808,
+        "childPeakJobMemoryBytes": 1130598400,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-global-20261026-r1-artifacts\\preview.png",
+        "sha256": "ddc8fa82545e51f9c503b0c47007c49e3dce830529067f402ea3fab7fb4a099c"
+      }
+    },
+    {
+      "mode": "original",
+      "driver": {
+        "sha256": "3f9e3bec99ed58480c61ee8fa900e3b10880ace28eb7566bd76cc0809f556de7",
+        "mode": "original",
+        "buildId": "scanforge-ecb2f00867553feb",
+        "applicationCommit": "bb952c44fe6bdbf79350f3b144c1cbe5dede7cbc",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-integration-build-20261026-r2\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-original-20261026-r1-artifacts\\large-reduction-browser-ledger.json",
+      "ledgerSha256": "09b8846bbc45a84054322a00753beab213954cc1be1e9334e3374cc30316f009",
+      "result": {
+        "passed": true,
+        "inputTriangles": 273139,
+        "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+        "logicalProcessors": 24,
+        "systemBytes": 34110816256,
+        "renderer": "isolated headless browser, software GPU",
+        "outputTriangles": 136569,
+        "mcpTriangles": 122911,
+        "previewMs": 2616.5891,
+        "mcpMs": 4572.357599999999,
+        "guiPreviewAndAccept": true,
+        "comparisonRequired": true,
+        "previewPreservesSource": true,
+        "mcpDirectComparison": true,
+        "sameInputGeometryParity": true,
+        "directCountMatchesGuiPercentage": true,
+        "globalSequenceObserved": true,
+        "sourceFile": "C:/repo/alignment-example-files/scan-1.stl",
+        "rawSourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "frozenGlobalControl": false,
+        "guiCancelBeforeAccept": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "finalGeometrySha256": "059aad260e88757bf1e850ca7cb1b4bec8fc63761e4bcfbec2a2d24ba1537819",
+        "guiGeometrySha256": "80b4efc52823c4d1b7e5518effec5884ed0ccfb3708017479d7b2280fa160ff1",
+        "mcpGeometrySha256": "80b4efc52823c4d1b7e5518effec5884ed0ccfb3708017479d7b2280fa160ff1",
+        "errors": []
+      },
+      "importCoordinateDifferences": {
+        "count": 0,
+        "numericallyDifferent": 0,
+        "first": []
+      },
+      "cleanup": [
+        {
+          "port": 55289,
+          "closed": true
+        },
+        {
+          "pid": 63516,
+          "exited": true
+        },
+        {
+          "port": 55290,
+          "closed": true
+        },
+        {
+          "pid": 67256,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-final-original-20261026-r1-full.receipt.json",
+        "sha256": "e51a94afdcc57e996ee26180bc99280ee0cde9867249b37e9b10e4a58440039d",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 31.993695799959823,
+        "outerPeakJobMemoryBytes": 1633951744,
+        "childPeakJobMemoryBytes": 1615032320,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-original-20261026-r1-artifacts\\preview.png",
+        "sha256": "5d76684c8bd3bbc76c34ab06a8514051a336a7121f49eb526f690deb316a05ac"
+      }
+    },
+    {
+      "mode": "large",
+      "driver": {
+        "sha256": "3f9e3bec99ed58480c61ee8fa900e3b10880ace28eb7566bd76cc0809f556de7",
+        "mode": "large",
+        "buildId": "scanforge-ecb2f00867553feb",
+        "applicationCommit": "bb952c44fe6bdbf79350f3b144c1cbe5dede7cbc",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-integration-build-20261026-r2\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-large-20261026-r1-artifacts\\large-reduction-browser-ledger.json",
+      "ledgerSha256": "fe44c127903a16da1a377a1d471bfc88aaf316bd056023f2e4896ac596d7f2e9",
+      "result": {
+        "passed": true,
+        "inputTriangles": 1152000,
+        "inputSha256": "469f0b2c448c0b2360dca82910fddbf39cc5a11149dd8b5db42e31336588529e",
+        "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+        "logicalProcessors": 24,
+        "systemBytes": 34110816256,
+        "renderer": "isolated headless browser, software GPU",
+        "outputTriangles": 576000,
+        "mcpTriangles": 518400,
+        "previewMs": 8702.978000000001,
+        "mcpMs": 15098.047299999991,
+        "guiPreviewAndAccept": true,
+        "comparisonRequired": true,
+        "previewPreservesSource": true,
+        "mcpDirectComparison": true,
+        "sameInputGeometryParity": true,
+        "directCountMatchesGuiPercentage": true,
+        "globalSequenceObserved": true,
+        "sourceFile": null,
+        "rawSourceGeometrySha256": "18515d1bac2bcc881c0fc59c048148414b20881298b2819d568d9ffdec79f016",
+        "sourceGeometrySha256": "9c4a5c564c73c31d8df24e671c221f4def52517620f85bf8c6da7424217fb798",
+        "frozenGlobalControl": false,
+        "guiCancelBeforeAccept": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "finalGeometrySha256": "62f1d105f507425f773e8d6b9c250a59f058a7d1188e2a245cba32581bf9a07a",
+        "guiGeometrySha256": "3b3edb4be76736132720c8dc145386564a75d716293262841c87ef5efa5c83ad",
+        "mcpGeometrySha256": "3b3edb4be76736132720c8dc145386564a75d716293262841c87ef5efa5c83ad",
+        "errors": []
+      },
+      "importCoordinateDifferences": {
+        "count": 1339,
+        "numericallyDifferent": 0,
+        "first": [
+          {
+            "face": 481501,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 483000,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 483001,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 483001,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 484500,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 484501,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 484501,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 486000,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 486001,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 486001,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 487500,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 487501,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 487501,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 489000,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 489001,
+            "coordinate": 2,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          },
+          {
+            "face": 489001,
+            "coordinate": 8,
+            "sourceBits": 2147483648,
+            "exportedBits": 0,
+            "source": 0,
+            "exported": 0
+          }
+        ]
+      },
+      "cleanup": [
+        {
+          "port": 63688,
+          "closed": true
+        },
+        {
+          "pid": 58872,
+          "exited": true
+        },
+        {
+          "port": 63689,
+          "closed": true
+        },
+        {
+          "pid": 39444,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-final-large-20261026-r1-full.receipt.json",
+        "sha256": "77ee70d5cdb05a9f493e6e41819927ba8a30fd39c46a4d47e992a179cc156382",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 111.96477910003159,
+        "outerPeakJobMemoryBytes": 2557542400,
+        "childPeakJobMemoryBytes": 2539569152,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-compact-reduction-final-large-20261026-r1-artifacts\\preview.png",
+        "sha256": "98abe91f19f4f32f529a2aa0f820d1367365a0aab4d2616e1351144c164e841f"
+      }
+    }
+  ],
+  "semantics": "GUI50% versus public mesh_process exact triangle target floor(sourceFaces/2), then public90% retained. Public preview discard, held-result job_cancel rollback, GUI Cancel-before-Accept, undo/redo and binary project save/reopen use actual shared application boundaries. Final runs assert native collapse stage and no spatial fallback. This is application global-sequence evidence, not a new native UI export.",
+  "signedZero": "Large-source raw/export hashes differ in1339 coordinate slots only: IEEE Float32 negative-zero bits become positive zero through STLExporter identity-world-matrix application. Every numerical coordinate is identical. The final driver computes both raw and zero-canonical export digests, asserts all other bytes and numerical equality, and retains earlier failed strict-hash observations. No application geometry or export change was made.",
+  "ci": {
+    "failedRun": 40345612562,
+    "commit": "bb952c44fe6bdbf79350f3b144c1cbe5dede7cbc",
+    "passedTests": 49891,
+    "failedTests": 2,
+    "conditionalSkips": 64,
+    "failure": "Two5-second test timeouts in five-case large-input source-buffer assertions, not geometry assertion failures. Build succeeded; later CAD/format steps were skipped.",
+    "correction": "eb4baf6 uses exact native Buffer.equals instead of generic numeric deep equality. No timeout, memory, CPU or lease increase. Focused tests pass; replacement full CI40347966527 pending at recording.",
+    "focusedReceipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-ci-byte-check-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "7d734110874c1abcb8f238bf68c14c41ce5a3fea99e332997705a47703018820",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 4.756488100043498,
+      "outerPeakJobMemoryBytes": 531439616,
+      "childPeakJobMemoryBytes": 512991232,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "retainedFailures": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-browser-original-20261026-r1-full.receipt.json",
+      "sha256": "7108caac2958724da7d0ea365932a2a2872b3a8498899519318f8ca2d586bec5",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 0.05735570000251755,
+      "outerPeakJobMemoryBytes": 34222080,
+      "childPeakJobMemoryBytes": 15855616,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-browser-large-20261026-r1-full.receipt.json",
+      "sha256": "b687b6aff0e134196e86f5e9e21cd125ad6ccb7bc2c444b12a52d7440be22aa4",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 11.936951000010595,
+      "outerPeakJobMemoryBytes": 1500897280,
+      "childPeakJobMemoryBytes": 1482100736,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-compact-reduction-browser-large-20261026-r2-full.receipt.json",
+      "sha256": "a6d75b3a40cba8fc3c6657062afde3a79f5d0834fd680cbb6690a243c7ab3b7a",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 11.98472639999818,
+      "outerPeakJobMemoryBytes": 1495613440,
+      "childPeakJobMemoryBytes": 1477308416,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "remaining": "Installed-native large-input/import ordering and deviation-dialog equivalence remain open. R15 input access denied, no new modeling/file input or export. Other M2 inventory gates, final complete-candidate review, exact integrated-head CI and main merge remain required."
+}

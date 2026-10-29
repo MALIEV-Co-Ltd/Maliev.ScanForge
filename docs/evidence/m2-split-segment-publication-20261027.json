@@ -1,0 +1,2300 @@
+{
+  "date": "2026-10-27",
+  "scope": "Shared M2 plane-cutter binding and segment publication/history state with five manufactured split controls and component refresh. No new installed-native numerical/dialog comparisons; M2 remains open/draft/unmerged.",
+  "sourceBaseCommit": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+  "design": "docs/superpowers/specs/2026-10-27-split-segment-publication.md",
+  "rootCauses": [
+    "Current fitted-plane producer persists planeFrame, while legacy GUI split read transient fit and MCP bound only target display geometry. Project loading drops transient fit, so both persisted-input paths missed the authoritative reference plane. Ordinary mesh cutters must remain finite.",
+    "GUI segment publication hid its source without owning that visibility in history, so Undo removed parts but left source hidden. MCP kept source visible/selected and copied source appearance, differing from GUI.",
+    "All-empty segment results resolved through MCP rather than matching GUI atomic rejection.",
+    "The initial plain shared publisher omitted prior MCP source-file provenance; a precommit RED caught it, and the existing mesh-copy constructor now preserves it."
+  ],
+  "sharedChanges": {
+    "cutter": "src/scan-split-cutter.ts validates triangle cutters and resolves reference-plane planeFrame, then legacy live fit, while ordinary meshes remain finite; explicit operation plane remains authoritative.",
+    "publisher": "src/scan-segment-publication.ts validates and adopts independent output buffers, preserves original part/classification indices, normal opaque part appearance and canonical source-name/segment-index names. It retains source/cutter geometry, hides source and returns modelVisibilityFor for owned Undo/Redo/Seek. Both adapters select first created owner after commit. Empty outputs fail atomically. Existing scanMeshCopy constructor retains source filename provenance with adopted immutable output, without cloning original source buffers.",
+    "contracts": "Existing mesh_process/scanEdit and generic segment schemas suffice. Discovery, agent guide and architecture describe updated defaults/state. Locks, cancellation, revision/retry, native geometry algorithms and 4GiB/25% guards retained.",
+    "defaultsAudit": "processing-client already applies SCAN_TOPOLOGY_TOLERANCE=0.001 to omitted scanEdit tolerance. No duplicate tolerance/default change was needed or made."
+  },
+  "build": {
+    "id": "scanforge-2fc7a9818f5df3e7",
+    "sourceIdentity": {
+      "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+      "files": 3037,
+      "unchanged": true,
+      "manifestSha256": "4014811f0d0919c1296d605b800968b943bc7020ef150a125ba5c2aeb560eead"
+    },
+    "receipt": {
+      "mode": "build",
+      "label": "m2-split-publication-build-20261027-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "leaseSeconds": 300,
+      "guardMiB": 4096,
+      "heapMiB": 3072,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r2-build.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r2-build.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r2-build.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11178168320,
+      "immediateChildFreeBytes": 11178160128,
+      "identity": {
+        "pid": 30512,
+        "startFileTime": "134375122746754181",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 1699643392,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 1721131008,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 150.08224299998255,
+      "completed": true
+    },
+    "compiledApplicationInputsUnchangedAfterReplays": 820
+  },
+  "unitRed": {
+    "label": "m2-split-publication-red-20261027-r2",
+    "passed": 1,
+    "failed": 3,
+    "failures": [
+      "Legacy fitted-plane MCP1part expected2",
+      "Extraction original visible true expected false",
+      "All-empty segments resolved instead of rejected"
+    ],
+    "receipt": {
+      "mode": "mirror-focused",
+      "label": "m2-split-publication-red-20261027-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "tests/scan-split-publication.test.ts",
+        "--reporter=json",
+        "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-red-20261027-r2-results.json"
+      ],
+      "leaseSeconds": 300,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-red-20261027-r2-mirror-focused.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-red-20261027-r2-mirror-focused.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-red-20261027-r2-mirror-focused.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 10136461312,
+      "immediateChildFreeBytes": 10136453120,
+      "identity": {
+        "pid": 55488,
+        "startFileTime": "134375098136344041",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 1,
+      "childPeakJobMemoryBytes": 356220928,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 374988800,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 1.8263512999983504,
+      "completed": false
+    },
+    "priorHarnessFailure": "r1 beforeEach accidentally returned mock as Vitest cleanup; corrected hook without weakening domain assertions."
+  },
+  "unitGreen": {
+    "label": "m2-split-publication-provenance-green-20261027-r1",
+    "passed": 208,
+    "failed": 0,
+    "files": [
+      "automation-api.test.ts",
+      "automation-operations.test.ts",
+      "model-sketch-history.test.ts",
+      "object-operations.test.ts",
+      "plane-frame.test.ts",
+      "project-file.test.ts",
+      "scan-average-operations.test.ts",
+      "scan-boundary-projection-operations.test.ts",
+      "scan-edit-general-split.test.ts",
+      "scan-edit.test.ts",
+      "scan-mesh-copy.test.ts",
+      "scan-segment-publication.test.ts",
+      "scan-split-publication.test.ts",
+      "split-mesh-panel.test.tsx"
+    ],
+    "receipt": {
+      "mode": "mirror-focused",
+      "label": "m2-split-publication-provenance-green-20261027-r1",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "tests/scan-split-publication.test.ts",
+        "tests/scan-segment-publication.test.ts",
+        "tests/scan-edit.test.ts",
+        "tests/scan-edit-general-split.test.ts",
+        "tests/automation-operations.test.ts",
+        "tests/split-mesh-panel.test.tsx",
+        "tests/object-operations.test.ts",
+        "tests/scan-average-operations.test.ts",
+        "tests/model-sketch-history.test.ts",
+        "tests/automation-api.test.ts",
+        "tests/project-file.test.ts",
+        "tests/scan-mesh-copy.test.ts",
+        "tests/plane-frame.test.ts",
+        "tests/scan-boundary-projection-operations.test.ts",
+        "--reporter=json",
+        "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-provenance-green-20261027-r1-results.json"
+      ],
+      "leaseSeconds": 300,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-provenance-green-20261027-r1-mirror-focused.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-provenance-green-20261027-r1-mirror-focused.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-provenance-green-20261027-r1-mirror-focused.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11297288192,
+      "immediateChildFreeBytes": 11297210368,
+      "identity": {
+        "pid": 39640,
+        "startFileTime": "134375122460279184",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 531263488,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 549335040,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 9.605143499968108,
+      "completed": true
+    }
+  },
+  "componentBrowserRed": {
+    "label": "m2-component-publication-browser-red-20261027-r3",
+    "identity": {
+      "sha256": "121cacbcf1195f3b3d94447118fccfe6e5347a85ef20d231a5d3d69c5b87b4e8",
+      "buildId": "scanforge-2a46d3d412c3aeea",
+      "sourceIdentity": {
+        "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+        "files": 3028,
+        "unchanged": true,
+        "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+      }
+    },
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'manufactured-components-control.stl'\n",
+    "result": null,
+    "cleanup": [
+      {
+        "port": 51392,
+        "closed": true
+      },
+      {
+        "pid": 28368,
+        "exited": true
+      },
+      {
+        "port": 51393,
+        "closed": true
+      },
+      {
+        "pid": 33924,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "mode": "full",
+      "label": "m2-component-publication-browser-red-20261027-r3",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r3-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r3-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r3-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11196428288,
+      "immediateChildFreeBytes": 11196420096,
+      "identity": {
+        "pid": 17252,
+        "startFileTime": "134375125881076639",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 1,
+      "childPeakJobMemoryBytes": 904384512,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 922750976,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 6.978713900025468,
+      "completed": false
+    },
+    "screenshots": [
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\extract-before.png",
+        "sha256": "fd5843071e837b529efd60925701e251892899baaa97e0b9f2f9f5010c8579bd"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\failure.png",
+        "sha256": "1cf1f887f61349bd67695a7e9182a79c1eff984725ba9d5110adca168d7c92b5"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\flip-after.png",
+        "sha256": "d834c7178937198e8b402e337d54854b1cce6626af645db10ffb367c9e5446db"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\flip-before.png",
+        "sha256": "4a406c499ebece3df2306d890f6552e8649637ff04d7c8c7476f777d6cbfb604"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\keep-after.png",
+        "sha256": "7e3c4e6fd01bbd41e977ee7cfa7c433c733f8e9dc3f5d1e8314cf3b938d5ae27"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r3-artifacts\\keep-before.png",
+        "sha256": "d1591f2a4ec1a5607416c2aae4718482bab64144c01435aeb7504bfdf1119a38"
+      }
+    ]
+  },
+  "componentBrowserGreen": {
+    "label": "m2-component-publication-browser-green-20261027-r3",
+    "identity": {
+      "sha256": "121cacbcf1195f3b3d94447118fccfe6e5347a85ef20d231a5d3d69c5b87b4e8",
+      "buildId": "scanforge-2fc7a9818f5df3e7",
+      "sourceIdentity": {
+        "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+        "files": 3037,
+        "unchanged": true,
+        "manifestSha256": "4014811f0d0919c1296d605b800968b943bc7020ef150a125ba5c2aeb560eead"
+      }
+    },
+    "passed": true,
+    "error": null,
+    "result": {
+      "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+      "componentTriangles": [2, 8, 18],
+      "componentAreas": [1, 4, 9.00000000000002],
+      "inventoryHistoryIsolation": true,
+      "renderedCountsAreasAndNavigation": true,
+      "cases": [
+        {
+          "name": "keep",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "flip",
+          "triangles": 28,
+          "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "extract",
+          "triangles": 8,
+          "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": true
+        },
+        {
+          "name": "triangle-threshold-inclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        },
+        {
+          "name": "area-threshold-exclusive",
+          "triangles": 26,
+          "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+          "guiMcpParity": true,
+          "rawCornerOracle": true,
+          "undoRedo": true,
+          "binarySaveReopen": true,
+          "sourceVisibilityAndSelection": null
+        }
+      ],
+      "mcpHeldResultCancellation": true,
+      "guiCancelAndBack": true,
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 60232,
+        "closed": true
+      },
+      {
+        "pid": 39380,
+        "exited": true
+      },
+      {
+        "port": 60233,
+        "closed": true
+      },
+      {
+        "pid": 57816,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "mode": "full",
+      "label": "m2-component-publication-browser-green-20261027-r3",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r3-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r3-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r3-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11127513088,
+      "immediateChildFreeBytes": 11126796288,
+      "identity": {
+        "pid": 29988,
+        "startFileTime": "134375126124146129",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 949555200,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 967884800,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 10.62008840002818,
+      "completed": true
+    },
+    "screenshots": [
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\area-threshold-exclusive-after.png",
+        "sha256": "15b3f16829a700d95ce42b883f2fb06d730f0a24f81dd7411bdbf30e523557fe"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\area-threshold-exclusive-before.png",
+        "sha256": "cb553c67f2fcfc2d411931d7c593c8bc3b3d19e5f8631b5ee722cf636de88073"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\extract-after.png",
+        "sha256": "3edd53d9d33793f44c8cf7f18d9423da685992479e3cc8602d078c6a94460f99"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\extract-before.png",
+        "sha256": "60bc78eec11d863c517d03964d38133998c6a47854a4599d807b175c8420a478"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\flip-after.png",
+        "sha256": "56bb47a54a85f04256fa12fdacabb701863f5b0b0fbbec23d4a2a52dcac908da"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\flip-before.png",
+        "sha256": "eb520ea2a579d8144b39dc6aa9e0e0f09cc24f9d863de8f6b7cbf54de79c7af2"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\keep-after.png",
+        "sha256": "955a9f0ab139782902d91ad6714aa9c3fcc90bec7a81c5200a7f71ff962f0838"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\keep-before.png",
+        "sha256": "b6b37bf1819ed3e804fc1956bd838e8bcaf7ad7cd718b3705b272c0ed8eea089"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\triangle-threshold-inclusive-after.png",
+        "sha256": "63f26d3093486fbf7f8d77aaf0983259b9163adc16c202d4d0bee8d4b259cf54"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r3-artifacts\\triangle-threshold-inclusive-before.png",
+        "sha256": "e5d347c620c7ad190e1db468f8e0776103aff6181bafceee744e224f36e5ae4c"
+      }
+    ]
+  },
+  "splitBrowserRed": {
+    "label": "m2-split-publication-browser-red-20261027-r4",
+    "identity": {
+      "sha256": "4f2717ddbd9c82b11f6bcc8729f954275897fce6981352d007af71e8257b008c",
+      "buildId": "scanforge-2a46d3d412c3aeea",
+      "sourceIdentity": {
+        "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+        "files": 3028,
+        "unchanged": true,
+        "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+      }
+    },
+    "passed": false,
+    "error": "Split did not honor the requested cutter class\n\n1 !== 2\n",
+    "result": null,
+    "cleanup": [
+      {
+        "port": 55901,
+        "closed": true
+      },
+      {
+        "pid": 15848,
+        "exited": true
+      },
+      {
+        "port": 55902,
+        "closed": true
+      },
+      {
+        "pid": 59820,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "mode": "full",
+      "label": "m2-split-publication-browser-red-20261027-r4",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r4-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r4-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r4-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11164401664,
+      "immediateChildFreeBytes": 11164254208,
+      "identity": {
+        "pid": 36624,
+        "startFileTime": "134375126017918258",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 1,
+      "childPeakJobMemoryBytes": 910237696,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 928710656,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 3.8966801000060514,
+      "completed": false
+    },
+    "screenshots": [
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-red-20261027-r4-artifacts\\failure.png",
+        "sha256": "3973b7d36c6170972d3f2a6b46588cbfc5eca1f4b0fdf78de5eb1745f5fcbf46"
+      }
+    ]
+  },
+  "splitBrowserGreen": {
+    "label": "m2-split-publication-browser-green-20261027-r4",
+    "identity": {
+      "sha256": "4f2717ddbd9c82b11f6bcc8729f954275897fce6981352d007af71e8257b008c",
+      "buildId": "scanforge-2fc7a9818f5df3e7",
+      "sourceIdentity": {
+        "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+        "files": 3037,
+        "unchanged": true,
+        "manifestSha256": "4014811f0d0919c1296d605b800968b943bc7020ef150a125ba5c2aeb560eead"
+      }
+    },
+    "passed": true,
+    "error": null,
+    "result": {
+      "cases": [
+        {
+          "name": "infinite-plane",
+          "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+          "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+          "parts": 2,
+          "outputCoordinateSha256": [
+            "bf787ed6dd85221ba6d1fa4c45350305c6e2ed8450bf4880a4909883d0e5278f",
+            "217e63e9c121466e9bc798624119797fe2a0bb3052f6535da565a17c05a978fa"
+          ],
+          "areas": [0.5, 0.5],
+          "sourceArea": 1,
+          "method": "infinite planar surface",
+          "guiMcpGeometryAndMetadata": true,
+          "sourceAndCutterRetained": true,
+          "sourceVisibilityAndSelection": true,
+          "guiAndMcpUndoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true
+        },
+        {
+          "name": "finite-planar-mesh",
+          "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+          "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+          "parts": 1,
+          "outputCoordinateSha256": [
+            "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f"
+          ],
+          "areas": [1],
+          "sourceArea": 1,
+          "method": "open surface signed nearest grouping",
+          "guiMcpGeometryAndMetadata": true,
+          "sourceAndCutterRetained": true,
+          "sourceVisibilityAndSelection": true,
+          "guiAndMcpUndoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true
+        },
+        {
+          "name": "open-folded-surface",
+          "inputCoordinateSha256": "ccd6607d3ea514eeb1629f7aedf8002b2c63a0bb28e2037a22477e48792910d6",
+          "cutterCoordinateSha256": "cc9cd3b1ec5e6074cf3c419b0eb8c94fbeccf2a4defc61eaeb996c00949cb293",
+          "parts": 2,
+          "outputCoordinateSha256": [
+            "212f73d66ea98b134ed262cac143de30acaa7021ea1573697fd1e44305a080b5",
+            "a79fbb0751af58332ee79189e25f93e64aaee592bc5ba4607c87dbd9964c6c00"
+          ],
+          "areas": [1.625, 2.375],
+          "sourceArea": 4,
+          "method": "open surface signed nearest grouping",
+          "guiMcpGeometryAndMetadata": true,
+          "sourceAndCutterRetained": true,
+          "sourceVisibilityAndSelection": true,
+          "guiAndMcpUndoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true
+        },
+        {
+          "name": "closed-convex",
+          "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+          "cutterCoordinateSha256": "8ec819c760b8aee5ca9eff997d898f96b94826a8612d0db853be328d844fb4c5",
+          "parts": 2,
+          "outputCoordinateSha256": [
+            "97832c9dad9136c7961a3686fdf09d2f06ec3e70ed5a1775784e9a35c5becb1e",
+            "cb2b33e628da053e78e162f19a37b166b3303f69cac5a42e6351447ebe3bfdd6"
+          ],
+          "areas": [1, 15],
+          "sourceArea": 16,
+          "method": "closed convex mesh",
+          "guiMcpGeometryAndMetadata": true,
+          "sourceAndCutterRetained": true,
+          "sourceVisibilityAndSelection": true,
+          "guiAndMcpUndoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true
+        },
+        {
+          "name": "closed-concave",
+          "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+          "cutterCoordinateSha256": "0d4cb18328639515f47d314e1c02c37c697015a4c30a6c9a382c2fdff94e7060",
+          "parts": 2,
+          "outputCoordinateSha256": [
+            "36af6f7e1414010e750af711a810ef441a30bffb6b5df74494fd7591f0488358",
+            "b9205faed1e6e7731ca5dada51073f730567c2ebdc2c8f6414a57ce37d92010c"
+          ],
+          "areas": [3, 13],
+          "sourceArea": 16,
+          "method": "closed mesh ray parity",
+          "guiMcpGeometryAndMetadata": true,
+          "sourceAndCutterRetained": true,
+          "sourceVisibilityAndSelection": true,
+          "guiAndMcpUndoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 54800,
+        "closed": true
+      },
+      {
+        "pid": 28940,
+        "exited": true
+      },
+      {
+        "port": 54801,
+        "closed": true
+      },
+      {
+        "pid": 24520,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "mode": "full",
+      "label": "m2-split-publication-browser-green-20261027-r4",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r4-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r4-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r4-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 11215237120,
+      "immediateChildFreeBytes": 11215020032,
+      "identity": {
+        "pid": 56128,
+        "startFileTime": "134375126569527345",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 899493888,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 917868544,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 16.175720800005365,
+      "completed": true
+    },
+    "screenshots": [
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r4-artifacts\\closed-concave-gui.png",
+        "sha256": "bc9601c3d041640c8365d0e179108a3e1ad92a3f05b8a63c9155cac4b48f5b74"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r4-artifacts\\closed-convex-gui.png",
+        "sha256": "9e90422d40cf95a9afb2fdf5f6bf17a992af4688fe54b8f6e65638e4c2fc4272"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r4-artifacts\\finite-planar-mesh-gui.png",
+        "sha256": "18d394fdd892eb93ddd07a9517c91431b81d550f347226428717e4d60056d3b0"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r4-artifacts\\infinite-plane-gui.png",
+        "sha256": "8d21e9d5ea1f5ddc4789f449b301523fd34c0ff5e3344ff0324458bcb3454d77"
+      },
+      {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r4-artifacts\\open-folded-surface-gui.png",
+        "sha256": "5a5dec71844720a889b9fd115cfda2c4b121ccc1a01d20bafeda3955bbb52f51"
+      }
+    ]
+  },
+  "priorBrowsers": [
+    {
+      "label": "m2-component-publication-browser-red-20261027-r1",
+      "identity": {
+        "sha256": "e6b67628d5ae9cb2bf974cd14b8dbcaed37bb48ec3cc5b0d9595dbb51249944c",
+        "buildId": "scanforge-2a46d3d412c3aeea",
+        "sourceIdentity": {
+          "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+          "files": 3028,
+          "unchanged": true,
+          "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+        }
+      },
+      "passed": false,
+      "error": "History did not restore extracted source visibility\n\nfalse !== true\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 61218,
+          "closed": true
+        },
+        {
+          "pid": 51992,
+          "exited": true
+        },
+        {
+          "port": 61219,
+          "closed": true
+        },
+        {
+          "pid": 6452,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-component-publication-browser-red-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10282795008,
+        "immediateChildFreeBytes": 10282647552,
+        "identity": {
+          "pid": 27208,
+          "startFileTime": "134375102144005782",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 906641408,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 925704192,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 7.232090600009542,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\extract-after.png",
+          "sha256": "a3453464222e41945f1783d927a41a5d0e1dd8a21484f5ab24b698a8a300f852"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\extract-before.png",
+          "sha256": "e98a21d0ff380c21cf6dd29d28e5526a5b9fdd6b171e7d410276e17c8984ca6c"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\failure.png",
+          "sha256": "69da43c146b024c0e0ff1e5b7a667bbde7dd84924fb161ba7ae8b9c0adee8844"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\flip-after.png",
+          "sha256": "25ca2e5ad62a3bf0b73e01f7201c6a8dbfee0943b8010c051abca74ada329d5a"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\flip-before.png",
+          "sha256": "93f3e64269a3536bc52b65667ef124405bc50339f2543fafff710145394385ee"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\keep-after.png",
+          "sha256": "4c817c7612a24554a300fc5909eab41ddb87deba6ecb43360ea5af5dbe91ed00"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r1-artifacts\\keep-before.png",
+          "sha256": "aaf0cd79a9869959929ba77582b30fb6b4694717934ed966b62018a1fa12f9b1"
+        }
+      ],
+      "note": "Retained earlier replay, before final frozen-driver checkpoint."
+    },
+    {
+      "label": "m2-component-publication-browser-green-20261027-r1",
+      "identity": {
+        "sha256": "a1518e8bc7d22bf21e64d09923bbf4a75511fe2cf06814e173f171e3515b14b1",
+        "buildId": "scanforge-be0bc122d6633d5d",
+        "sourceIdentity": {
+          "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+          "files": 3036,
+          "unchanged": true,
+          "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+        }
+      },
+      "passed": true,
+      "error": null,
+      "result": {
+        "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+        "componentTriangles": [2, 8, 18],
+        "componentAreas": [1, 4, 9.00000000000002],
+        "inventoryHistoryIsolation": true,
+        "renderedCountsAreasAndNavigation": true,
+        "cases": [
+          {
+            "name": "keep",
+            "triangles": 8,
+            "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "flip",
+            "triangles": 28,
+            "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "extract",
+            "triangles": 8,
+            "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": true
+          },
+          {
+            "name": "triangle-threshold-inclusive",
+            "triangles": 26,
+            "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "area-threshold-exclusive",
+            "triangles": 26,
+            "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          }
+        ],
+        "mcpHeldResultCancellation": true,
+        "guiCancelAndBack": true,
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 52028,
+          "closed": true
+        },
+        {
+          "pid": 57564,
+          "exited": true
+        },
+        {
+          "port": 52029,
+          "closed": true
+        },
+        {
+          "pid": 17168,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-component-publication-browser-green-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10997280768,
+        "immediateChildFreeBytes": 10997202944,
+        "identity": {
+          "pid": 41720,
+          "startFileTime": "134375112240677240",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 958337024,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 977620992,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 10.770031099964399,
+        "completed": true
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\area-threshold-exclusive-after.png",
+          "sha256": "c886beab95bb2fc4a995181afb246dceea35d0844fd9f371e8d6d94449fe81da"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\area-threshold-exclusive-before.png",
+          "sha256": "4f1561a82e5107b6dcf120e7e23e99a725462f272cdfba91faca66307d44dd22"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\extract-after.png",
+          "sha256": "42096fb4ca82d6a280bff3691e16dd7e9db27962330d85c1a84c4d648e9f878a"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\extract-before.png",
+          "sha256": "448f0e79dac5c47eb5f0bce47ac32d72cb51da1e540bd04eb7b836f6e52cc719"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\flip-after.png",
+          "sha256": "142b019e247f4270e9705f2d65e9a6921c7d4c3207943c448f05de0bda22c731"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\flip-before.png",
+          "sha256": "9232b6e017ee5f4e8f4078ab8860b7b25eba1463ddafe3225b676d662ccf39e0"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\keep-after.png",
+          "sha256": "3508a7ed009502d924ba9ba9e9409a968bf32a2b813786da488b317c682817a5"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\keep-before.png",
+          "sha256": "cfc2f712f706f1f04bb65a708408f4098a3f1a787d3de1c3a4ee3c69adf25b47"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\triangle-threshold-inclusive-after.png",
+          "sha256": "d664fef230a17fa3efc3c63cdf0de6eb62bd73b359cb8b3860c69a0470a27896"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r1-artifacts\\triangle-threshold-inclusive-before.png",
+          "sha256": "101ee5fa6f2058f34e12f27c836575ac71463dd6bbcba5f8c129d91d87720053"
+        }
+      ],
+      "note": "Retained earlier replay, before final frozen-driver checkpoint."
+    },
+    {
+      "label": "m2-split-publication-browser-red-20261027-r1",
+      "identity": {
+        "sha256": "fd6fea685f6f4bf2fb7b1133eadabfd16846e7a9752ebb17777be1417c478f98",
+        "buildId": "scanforge-2a46d3d412c3aeea",
+        "sourceIdentity": {
+          "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+          "files": 3028,
+          "unchanged": true,
+          "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+        }
+      },
+      "passed": false,
+      "error": "GUI split did not publish expected parts",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 52394,
+          "closed": true
+        },
+        {
+          "pid": 60880,
+          "exited": true
+        },
+        {
+          "port": 52395,
+          "closed": true
+        },
+        {
+          "pid": 64696,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-red-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10286071808,
+        "immediateChildFreeBytes": 10287775744,
+        "identity": {
+          "pid": 31916,
+          "startFileTime": "134375103357866156",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 906014720,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 924332032,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 11.221762100001797,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-red-20261027-r1-artifacts\\failure.png",
+          "sha256": "11c8c26f55b354c07a93a9b74afa137398cc5a759447dd89b805187c1756fb5c"
+        }
+      ],
+      "note": "Initial fixture incorrectly relied on transient fit surviving import; replaced with authoritative persisted planeFrame."
+    },
+    {
+      "label": "m2-split-publication-browser-red-20261027-r2",
+      "identity": {
+        "sha256": "30481dd5923dc858fa417f0eb13ca615fbf2597c430048cf33e6b53945bac51f",
+        "buildId": "scanforge-2a46d3d412c3aeea",
+        "sourceIdentity": {
+          "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+          "files": 3028,
+          "unchanged": true,
+          "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+        }
+      },
+      "passed": false,
+      "error": "Split did not honor the requested cutter class\n\n1 !== 2\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 52600,
+          "closed": true
+        },
+        {
+          "pid": 48012,
+          "exited": true
+        },
+        {
+          "port": 52601,
+          "closed": true
+        },
+        {
+          "pid": 21480,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-red-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10233098240,
+        "immediateChildFreeBytes": 10233090048,
+        "identity": {
+          "pid": 21016,
+          "startFileTime": "134375105445915193",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 905224192,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 923447296,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 3.8472418999881484,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-red-20261027-r2-artifacts\\failure.png",
+          "sha256": "38b088a30f4d7128692b5619599f7d59f07e5dda77878fd249c89e87f8c2c2ee"
+        }
+      ],
+      "note": "Retained earlier replay, before final frozen-driver checkpoint."
+    },
+    {
+      "label": "m2-split-publication-browser-green-20261027-r1",
+      "identity": {
+        "sha256": "c98aafd92f3c597ff063c0cfda8eff62911d951cfed37e5b760b3d675ad80bb4",
+        "buildId": "scanforge-be0bc122d6633d5d",
+        "sourceIdentity": {
+          "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+          "files": 3036,
+          "unchanged": true,
+          "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+        }
+      },
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      color: '#d24d57',\n      exactCad: false,\n      hasBrep: false,\n...\n      meshPreparation: {\n+       phase: 'ready',\n+       topology: {\n+         boundaryChains: 0,\n+         boundaryEdges: 3,\n+         boundaryLoops: 1,\n+         components: 1,\n+         degenerateTriangles: 0,\n+         duplicateTriangles: 0,\n+         inconsistentEdges: 0,\n+         nonManifoldEdges: 0,\n+         nonManifoldVertices: 0,\n+         triangles: 1,\n+         vertices: 3\n+       }\n-       phase: 'scheduled'\n      },\n      name: 'Split source',\n      opacity: 0.4,\n      triangles: 1,\n      visible: true\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 63065,
+          "closed": true
+        },
+        {
+          "pid": 26800,
+          "exited": true
+        },
+        {
+          "port": 63066,
+          "closed": true
+        },
+        {
+          "pid": 29276,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-green-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11196235776,
+        "immediateChildFreeBytes": 11195949056,
+        "identity": {
+          "pid": 29420,
+          "startFileTime": "134375112716324476",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 904142848,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 922615808,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 5.765665300015826,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r1-artifacts\\failure.png",
+          "sha256": "096303539522e86f3d4084be0bba4a0c3c4f86422a6ec8bb7b4bde53cbcf380a"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r1-artifacts\\infinite-plane-gui.png",
+          "sha256": "905756d951ac09a00f80d97eb16d4239ed5c205ee29f50bb051a3c7618a9fe2b"
+        }
+      ],
+      "note": "Initial cancellation comparison included changing meshPreparation diagnostics; compare canonical state separately without relaxing geometry/history assertions."
+    },
+    {
+      "label": "m2-split-publication-browser-green-20261027-r2",
+      "identity": {
+        "sha256": "15d08bdcad703f2fa1798af0d5c42ccc5bb882497e08ee4f14b75f972352a7b2",
+        "buildId": "scanforge-be0bc122d6633d5d",
+        "sourceIdentity": {
+          "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+          "files": 3036,
+          "unchanged": true,
+          "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+        }
+      },
+      "passed": true,
+      "error": null,
+      "result": {
+        "cases": [
+          {
+            "name": "infinite-plane",
+            "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+            "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "bf787ed6dd85221ba6d1fa4c45350305c6e2ed8450bf4880a4909883d0e5278f",
+              "217e63e9c121466e9bc798624119797fe2a0bb3052f6535da565a17c05a978fa"
+            ],
+            "areas": [0.5, 0.5],
+            "sourceArea": 1,
+            "method": "infinite planar surface",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "finite-planar-mesh",
+            "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+            "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+            "parts": 1,
+            "outputCoordinateSha256": [
+              "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f"
+            ],
+            "areas": [1],
+            "sourceArea": 1,
+            "method": "open surface signed nearest grouping",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "open-folded-surface",
+            "inputCoordinateSha256": "ccd6607d3ea514eeb1629f7aedf8002b2c63a0bb28e2037a22477e48792910d6",
+            "cutterCoordinateSha256": "cc9cd3b1ec5e6074cf3c419b0eb8c94fbeccf2a4defc61eaeb996c00949cb293",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "212f73d66ea98b134ed262cac143de30acaa7021ea1573697fd1e44305a080b5",
+              "a79fbb0751af58332ee79189e25f93e64aaee592bc5ba4607c87dbd9964c6c00"
+            ],
+            "areas": [1.625, 2.375],
+            "sourceArea": 4,
+            "method": "open surface signed nearest grouping",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "closed-convex",
+            "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+            "cutterCoordinateSha256": "8ec819c760b8aee5ca9eff997d898f96b94826a8612d0db853be328d844fb4c5",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "97832c9dad9136c7961a3686fdf09d2f06ec3e70ed5a1775784e9a35c5becb1e",
+              "cb2b33e628da053e78e162f19a37b166b3303f69cac5a42e6351447ebe3bfdd6"
+            ],
+            "areas": [1, 15],
+            "sourceArea": 16,
+            "method": "closed convex mesh",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "closed-concave",
+            "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+            "cutterCoordinateSha256": "0d4cb18328639515f47d314e1c02c37c697015a4c30a6c9a382c2fdff94e7060",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "36af6f7e1414010e750af711a810ef441a30bffb6b5df74494fd7591f0488358",
+              "b9205faed1e6e7731ca5dada51073f730567c2ebdc2c8f6414a57ce37d92010c"
+            ],
+            "areas": [3, 13],
+            "sourceArea": 16,
+            "method": "closed mesh ray parity",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 57414,
+          "closed": true
+        },
+        {
+          "pid": 13156,
+          "exited": true
+        },
+        {
+          "port": 57415,
+          "closed": true
+        },
+        {
+          "pid": 64748,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-green-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11293286400,
+        "immediateChildFreeBytes": 11293278208,
+        "identity": {
+          "pid": 62752,
+          "startFileTime": "134375113186352156",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 909832192,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 928116736,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 15.768857299990486,
+        "completed": true
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r2-artifacts\\closed-concave-gui.png",
+          "sha256": "32e9f4a6212cc80df3c5bc8ed6c96058bee323975422bc8a77b938d6bb523871"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r2-artifacts\\closed-convex-gui.png",
+          "sha256": "e86a09b10d137649baa063346348caf994288d708e289b00240fe9e025cb5d72"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r2-artifacts\\finite-planar-mesh-gui.png",
+          "sha256": "9455630e3e4371e736ac37176c80acd2d45b692eab4c0a7c40c28bf764236bb4"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r2-artifacts\\infinite-plane-gui.png",
+          "sha256": "0f96fe11f7a04fa5ea73cd05970fb6fe3096d13b3e018dadb230cded825baf4c"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r2-artifacts\\open-folded-surface-gui.png",
+          "sha256": "083b6dad1ff74fffab320343d77027324071658ca68eeef5b423ff2e6259ed76"
+        }
+      ],
+      "note": "Retained earlier replay, before final frozen-driver checkpoint."
+    }
+  ],
+  "comparisonPolicy": {
+    "coordinateDigest": "Complete Float32 coordinate streams read from public object_get geometry artifacts; same source/cutter records before and after operations.",
+    "area": "Independent triangle cross-product areas sum to original source area within1e-5mm2; known control areas retained. All output winding stays positiveZ.",
+    "metadata": "Canonical model metadata, source visibility, selected owner, output name/color/opacity and history match. Only asynchronous meshPreparation cache diagnostics are excluded from cancellation model-state equality; exact source/cutter coordinates remain asserted. Final GUI/MCP parts also retain the fixture-declared source filename.",
+    "native": "Manufactured application controls and existing unit geometry, not installed-native exports or native performance evidence.",
+    "browserFallback": "Browser plugin not available; existing owned Playwright/public-MCP harness."
+  },
+  "precedingCI": {
+    "commit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+    "run": 40368918217,
+    "job": 121734050028,
+    "conclusion": "success",
+    "testsPassed": 49916,
+    "testsSkipped": 64,
+    "build": true,
+    "cad": true,
+    "cadCurvature": true,
+    "format": true
+  },
+  "remaining": [
+    "Installed-native component/boundary/split and other inventory comparisons with equivalent settings/inputs",
+    "Final complete-candidate review and exact-head CI",
+    "M2 issue/milestone closure and main merge"
+  ],
+  "preProvenanceCandidate": {
+    "build": {
+      "id": "scanforge-be0bc122d6633d5d",
+      "sourceIdentity": {
+        "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+        "files": 3036,
+        "unchanged": true,
+        "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+      },
+      "receipt": {
+        "mode": "build",
+        "label": "m2-split-publication-build-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+          "run",
+          "build"
+        ],
+        "leaseSeconds": 300,
+        "guardMiB": 4096,
+        "heapMiB": 3072,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r1-build.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r1-build.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-build-20261027-r1-build.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 9776971776,
+        "immediateChildFreeBytes": 9776824320,
+        "identity": {
+          "pid": 66388,
+          "startFileTime": "134375109804261339",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 1712480256,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 1733705728,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 150.20241800002987,
+        "completed": true
+      },
+      "compiledApplicationInputsUnchangedAfterReplays": 820
+    },
+    "unitGreen": {
+      "label": "m2-split-publication-green-20261027-r3",
+      "passed": 208,
+      "failed": 0,
+      "files": [
+        "automation-api.test.ts",
+        "automation-operations.test.ts",
+        "model-sketch-history.test.ts",
+        "object-operations.test.ts",
+        "plane-frame.test.ts",
+        "project-file.test.ts",
+        "scan-average-operations.test.ts",
+        "scan-boundary-projection-operations.test.ts",
+        "scan-edit-general-split.test.ts",
+        "scan-edit.test.ts",
+        "scan-mesh-copy.test.ts",
+        "scan-segment-publication.test.ts",
+        "scan-split-publication.test.ts",
+        "split-mesh-panel.test.tsx"
+      ],
+      "receipt": {
+        "mode": "mirror-focused",
+        "label": "m2-split-publication-green-20261027-r3",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/scan-split-publication.test.ts",
+          "tests/scan-segment-publication.test.ts",
+          "tests/scan-edit.test.ts",
+          "tests/scan-edit-general-split.test.ts",
+          "tests/automation-operations.test.ts",
+          "tests/split-mesh-panel.test.tsx",
+          "tests/object-operations.test.ts",
+          "tests/scan-average-operations.test.ts",
+          "tests/model-sketch-history.test.ts",
+          "tests/automation-api.test.ts",
+          "tests/project-file.test.ts",
+          "tests/scan-mesh-copy.test.ts",
+          "tests/plane-frame.test.ts",
+          "tests/scan-boundary-projection-operations.test.ts",
+          "--reporter=json",
+          "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-green-20261027-r3-results.json"
+        ],
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-green-20261027-r3-mirror-focused.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-green-20261027-r3-mirror-focused.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-green-20261027-r3-mirror-focused.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 9699586048,
+        "immediateChildFreeBytes": 9699246080,
+        "identity": {
+          "pid": 40112,
+          "startFileTime": "134375109349907269",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 513126400,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 531034112,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 9.555595500045456,
+        "completed": true
+      }
+    },
+    "componentBrowserRed": {
+      "label": "m2-component-publication-browser-red-20261027-r2",
+      "identity": {
+        "sha256": "a1518e8bc7d22bf21e64d09923bbf4a75511fe2cf06814e173f171e3515b14b1",
+        "buildId": "scanforge-2a46d3d412c3aeea",
+        "sourceIdentity": {
+          "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+          "files": 3028,
+          "unchanged": true,
+          "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+        }
+      },
+      "passed": false,
+      "error": "History did not restore extracted source visibility\n\nfalse !== true\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 49495,
+          "closed": true
+        },
+        {
+          "pid": 59724,
+          "exited": true
+        },
+        {
+          "port": 49496,
+          "closed": true
+        },
+        {
+          "pid": 52612,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-component-publication-browser-red-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-red-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11468324864,
+        "immediateChildFreeBytes": 11468378112,
+        "identity": {
+          "pid": 62276,
+          "startFileTime": "134375117132561488",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 915587072,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 934793216,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 6.979275399993639,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\extract-after.png",
+          "sha256": "f7208506e365b76cf0c47d15ad1e67499715f7ddbce116ce75f26e5b85971f75"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\extract-before.png",
+          "sha256": "d352671101fec22eebd12951f703353b4bbcc480115106d02a1184ee33cdf126"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\failure.png",
+          "sha256": "d6ab6a0bbd5629d24840619890ff2ae0b38fdd8197b24f2135628094db8c94c4"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\flip-after.png",
+          "sha256": "e63e17829c13c8b1afa3e44a956aa1333504a0ed35c2e218ffda714a6493da68"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\flip-before.png",
+          "sha256": "893fd143a591cc842a4e6a04aa88a042eabf39eafdf35ec6e335b8d497178059"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\keep-after.png",
+          "sha256": "d4d7a6ebcb5530e850c1260857d049836d40b9abaa05804955c2fec9c16008df"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-red-20261027-r2-artifacts\\keep-before.png",
+          "sha256": "5fc5a92d53121211032e16e55db2acf1613e89937f413f311e3ef5d45e9ba1df"
+        }
+      ]
+    },
+    "componentBrowserGreen": {
+      "label": "m2-component-publication-browser-green-20261027-r2",
+      "identity": {
+        "sha256": "a1518e8bc7d22bf21e64d09923bbf4a75511fe2cf06814e173f171e3515b14b1",
+        "buildId": "scanforge-be0bc122d6633d5d",
+        "sourceIdentity": {
+          "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+          "files": 3036,
+          "unchanged": true,
+          "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+        }
+      },
+      "passed": true,
+      "error": null,
+      "result": {
+        "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+        "componentTriangles": [2, 8, 18],
+        "componentAreas": [1, 4, 9.00000000000002],
+        "inventoryHistoryIsolation": true,
+        "renderedCountsAreasAndNavigation": true,
+        "cases": [
+          {
+            "name": "keep",
+            "triangles": 8,
+            "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "flip",
+            "triangles": 28,
+            "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "extract",
+            "triangles": 8,
+            "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": true
+          },
+          {
+            "name": "triangle-threshold-inclusive",
+            "triangles": 26,
+            "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          },
+          {
+            "name": "area-threshold-exclusive",
+            "triangles": 26,
+            "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+            "guiMcpParity": true,
+            "rawCornerOracle": true,
+            "undoRedo": true,
+            "binarySaveReopen": true,
+            "sourceVisibilityAndSelection": null
+          }
+        ],
+        "mcpHeldResultCancellation": true,
+        "guiCancelAndBack": true,
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 57313,
+          "closed": true
+        },
+        {
+          "pid": 33900,
+          "exited": true
+        },
+        {
+          "port": 57314,
+          "closed": true
+        },
+        {
+          "pid": 42624,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-component-publication-browser-green-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-component-publication-browser-green-20261027-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11518164992,
+        "immediateChildFreeBytes": 11518087168,
+        "identity": {
+          "pid": 52996,
+          "startFileTime": "134375117394412946",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 899321856,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 917823488,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 10.667689200025052,
+        "completed": true
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\area-threshold-exclusive-after.png",
+          "sha256": "6394d5e534bbaae6c8e6df13dcf33e14b13ae91558ee552b5819f0feb16779ab"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\area-threshold-exclusive-before.png",
+          "sha256": "9d87379a086e44e5d078912c84f9669a1a0fcda2a13adbdbfbd704d48c0c084e"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\extract-after.png",
+          "sha256": "67b4c6a77bc46016c55d245dfa586eea10c038305ab5d3fb2498e079503d6f6c"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\extract-before.png",
+          "sha256": "d5b22218e8023fdb1a3ce9746115a0625e26024f6fe6f563c1d0707fa03d3528"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\flip-after.png",
+          "sha256": "6cc3763fac80036aebcf292b14eb1c9305a8157af30cbc2ca24f35d464db25f7"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\flip-before.png",
+          "sha256": "8280026f3ce3de4e25d0457afc841e4c8874fd67dcd8d09835f21f7d2e9acf88"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\keep-after.png",
+          "sha256": "a24f857208a7c834804f2412d0e8fffe93193d7a39d65d7c09eb8a5ef2d0e1a5"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\keep-before.png",
+          "sha256": "97298f3d771b830c2010236ac43110955e8a05ea92bdd1ebd822fda6145f40b0"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\triangle-threshold-inclusive-after.png",
+          "sha256": "3d99ad20e4612a1b3ee80135f103ddf2063a8548372b09cd8fdd70301141f1eb"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-component-publication-browser-green-20261027-r2-artifacts\\triangle-threshold-inclusive-before.png",
+          "sha256": "3c7fd232cfd2df5b67e9d16daf44cd5571388ddc994443629141f742c3f107bb"
+        }
+      ]
+    },
+    "splitBrowserRed": {
+      "label": "m2-split-publication-browser-red-20261027-r3",
+      "identity": {
+        "sha256": "465c809d0c234bf08cbeceb5cd3e54ac2b294d32ea74022ac56bcaccbdc9f932",
+        "buildId": "scanforge-2a46d3d412c3aeea",
+        "sourceIdentity": {
+          "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+          "files": 3028,
+          "unchanged": true,
+          "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+        }
+      },
+      "passed": false,
+      "error": "Split did not honor the requested cutter class\n\n1 !== 2\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 63944,
+          "closed": true
+        },
+        {
+          "pid": 14156,
+          "exited": true
+        },
+        {
+          "port": 63945,
+          "closed": true
+        },
+        {
+          "pid": 36808,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-red-20261027-r3",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r3-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r3-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-red-20261027-r3-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11512295424,
+        "immediateChildFreeBytes": 11512303616,
+        "identity": {
+          "pid": 4368,
+          "startFileTime": "134375117291790515",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 908124160,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 926580736,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 3.8981898999772966,
+        "completed": false
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-red-20261027-r3-artifacts\\failure.png",
+          "sha256": "0c3d981c56e513de1afcfa81e79984fbb09bfae1615a789cf56655179599b05e"
+        }
+      ]
+    },
+    "splitBrowserGreen": {
+      "label": "m2-split-publication-browser-green-20261027-r3",
+      "identity": {
+        "sha256": "465c809d0c234bf08cbeceb5cd3e54ac2b294d32ea74022ac56bcaccbdc9f932",
+        "buildId": "scanforge-be0bc122d6633d5d",
+        "sourceIdentity": {
+          "head": "abb8088f8394c6946ea9f682269e4bff3242f67a",
+          "files": 3036,
+          "unchanged": true,
+          "manifestSha256": "72fbdaa10a0a585a6ffa62082e4ff3f81620223b59d761de0f91faceb20df063"
+        }
+      },
+      "passed": true,
+      "error": null,
+      "result": {
+        "cases": [
+          {
+            "name": "infinite-plane",
+            "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+            "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "bf787ed6dd85221ba6d1fa4c45350305c6e2ed8450bf4880a4909883d0e5278f",
+              "217e63e9c121466e9bc798624119797fe2a0bb3052f6535da565a17c05a978fa"
+            ],
+            "areas": [0.5, 0.5],
+            "sourceArea": 1,
+            "method": "infinite planar surface",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "finite-planar-mesh",
+            "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+            "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+            "parts": 1,
+            "outputCoordinateSha256": [
+              "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f"
+            ],
+            "areas": [1],
+            "sourceArea": 1,
+            "method": "open surface signed nearest grouping",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "open-folded-surface",
+            "inputCoordinateSha256": "ccd6607d3ea514eeb1629f7aedf8002b2c63a0bb28e2037a22477e48792910d6",
+            "cutterCoordinateSha256": "cc9cd3b1ec5e6074cf3c419b0eb8c94fbeccf2a4defc61eaeb996c00949cb293",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "212f73d66ea98b134ed262cac143de30acaa7021ea1573697fd1e44305a080b5",
+              "a79fbb0751af58332ee79189e25f93e64aaee592bc5ba4607c87dbd9964c6c00"
+            ],
+            "areas": [1.625, 2.375],
+            "sourceArea": 4,
+            "method": "open surface signed nearest grouping",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "closed-convex",
+            "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+            "cutterCoordinateSha256": "8ec819c760b8aee5ca9eff997d898f96b94826a8612d0db853be328d844fb4c5",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "97832c9dad9136c7961a3686fdf09d2f06ec3e70ed5a1775784e9a35c5becb1e",
+              "cb2b33e628da053e78e162f19a37b166b3303f69cac5a42e6351447ebe3bfdd6"
+            ],
+            "areas": [1, 15],
+            "sourceArea": 16,
+            "method": "closed convex mesh",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          },
+          {
+            "name": "closed-concave",
+            "inputCoordinateSha256": "d11204cb39ca90010178f0af913d2b8f9a6f2a12d7da75248949fc8d5696a6b8",
+            "cutterCoordinateSha256": "0d4cb18328639515f47d314e1c02c37c697015a4c30a6c9a382c2fdff94e7060",
+            "parts": 2,
+            "outputCoordinateSha256": [
+              "36af6f7e1414010e750af711a810ef441a30bffb6b5df74494fd7591f0488358",
+              "b9205faed1e6e7731ca5dada51073f730567c2ebdc2c8f6414a57ce37d92010c"
+            ],
+            "areas": [3, 13],
+            "sourceArea": 16,
+            "method": "closed mesh ray parity",
+            "guiMcpGeometryAndMetadata": true,
+            "sourceAndCutterRetained": true,
+            "sourceVisibilityAndSelection": true,
+            "guiAndMcpUndoRedo": true,
+            "binaryReopen": true,
+            "mcpHeldResultCancellation": true,
+            "guiCloseCancellation": true
+          }
+        ],
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 52140,
+          "closed": true
+        },
+        {
+          "pid": 15700,
+          "exited": true
+        },
+        {
+          "port": 52141,
+          "closed": true
+        },
+        {
+          "pid": 27424,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-split-publication-browser-green-20261027-r3",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-split-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r3-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r3-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-split-publication-browser-green-20261027-r3-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11497390080,
+        "immediateChildFreeBytes": 11497312256,
+        "identity": {
+          "pid": 67012,
+          "startFileTime": "134375117803582411",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 903856128,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 922021888,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 15.568092999979854,
+        "completed": true
+      },
+      "screenshots": [
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r3-artifacts\\closed-concave-gui.png",
+          "sha256": "bf444be888d8ba69048cbdf92948840d6161fc6925e58f58056c6e5a541ded08"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r3-artifacts\\closed-convex-gui.png",
+          "sha256": "9d5d5cc40f10c68f160f28b9582b07905c2f07b28c0f9a4392c8757c536cd33a"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r3-artifacts\\finite-planar-mesh-gui.png",
+          "sha256": "18d394fdd892eb93ddd07a9517c91431b81d550f347226428717e4d60056d3b0"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r3-artifacts\\infinite-plane-gui.png",
+          "sha256": "23f113dcf3a164768c68f8021d607fe126fedfe073495dfe857492b041754ddb"
+        },
+        {
+          "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-split-publication-browser-green-20261027-r3-artifacts\\open-folded-surface-gui.png",
+          "sha256": "e34263f0e9f9d6e6e5b12e0074001181b7c3392de4111e5cd4e4518863de549f"
+        }
+      ]
+    },
+    "note": "These scoped geometry/state passes precede the provenance compatibility fix and do not verify retention of source filename metadata."
+  },
+  "provenanceRegression": {
+    "red": {
+      "label": "m2-segment-provenance-red-20261027-r1",
+      "passed": 2,
+      "failed": 1,
+      "error": "Expected new part.source to retain source.stl, received undefined.",
+      "receipt": {
+        "mode": "mirror-focused",
+        "label": "m2-segment-provenance-red-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/scan-segment-publication.test.ts",
+          "--reporter=json",
+          "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-segment-provenance-red-20261027-r1-results.json"
+        ],
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-segment-provenance-red-20261027-r1-mirror-focused.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-segment-provenance-red-20261027-r1-mirror-focused.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-segment-provenance-red-20261027-r1-mirror-focused.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 11274788864,
+        "immediateChildFreeBytes": 11274715136,
+        "identity": {
+          "pid": 59232,
+          "startFileTime": "134375121027498325",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 301686784,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 320225280,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 0.8664358999812976,
+        "completed": false
+      }
+    },
+    "fix": "Reuse existing scanMeshCopy(source,id,positions) immutable adoption, preserving source-file provenance while stripping exact/parametric/construction identity and applying common GUI appearance. No cloning of original positions is needed.",
+    "browser": "Both final drivers assert declared manufactured source filenames on GUI/MCP created parts. The labels are fixture metadata, not a claim that those manufactured STLs were physically imported."
+  }
+}

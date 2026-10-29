@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Restore can reuse verified live numeric arrays from successful exports; stale or unavailable candidates fall back to independent reconstruction. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1 to 10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10 to 100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -543,7 +543,9 @@
         },
         "tolerance": {
           "type": "number",
-          "exclusiveMinimum": 0
+          "exclusiveMinimum": 0,
+          "default": 0.001,
+          "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
         }
       },
       "required": ["entityId"],
@@ -552,7 +554,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Finite mesh Split updates the source as one indexed mesh and reports connected components; unchanged cuts return changed:false. Uncertain floating-point face coverage is checked against exact binary-coordinate area vectors before rejection; winding, edge and constraint checks still apply. Sampled CAD and other non-mesh cutters retain the existing segment-producing path. Reference-plane Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -748,7 +750,8 @@
                         },
                         "tolerance": {
                           "type": "number",
-                          "exclusiveMinimum": 0
+                          "exclusiveMinimum": 0,
+                          "description": "Search radius in mm, narrowed to positive finite Float32 (default 10). Boundary-region hits on open edges and hits exactly at the radius are excluded. Contributions accumulate in Float32 in object-list order."
                         }
                       },
                       "required": ["kind"],
@@ -817,10 +820,46 @@
                           "exclusiveMinimum": 0
                         },
                         "offsetDegrees": {
-                          "type": "number"
+                          "type": "number",
+                          "description": "Positive rotation of the cylinder radial frame in degrees. Seam-crossing facets are removed, using native swap-last deletion order."
+                        },
+                        "instances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3000000,
+                          "default": 1,
+                          "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
                         }
                       },
                       "required": ["kind", "center", "axis", "radius"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["unroll"]
+                        },
+                        "offsetDegrees": {
+                          "type": "number",
+                          "description": "Positive rotation of the cylinder radial frame in degrees. Seam-crossing facets are removed, using native swap-last deletion order."
+                        },
+                        "instances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3000000,
+                          "default": 1,
+                          "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
+                        },
+                        "cylinderId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200,
+                          "description": "Existing cylinder reference object. Exact CAD uses its analytic cylinder parameters; one cylinder face with optional planar caps is required. Multiple cylinders and mixed curved bodies reject without changing geometry. Construction cylinders retain their existing binding."
+                        }
+                      },
+                      "required": ["kind", "cylinderId"],
                       "additionalProperties": false
                     }
                   ]
@@ -1166,10 +1205,20 @@
                     "fillHoles",
                     "boundarySmooth",
                     "boundaryProject",
+                    "boundarySpatialSketch",
                     "smoothSelected",
                     "defeature",
                     "split"
                   ]
+                },
+                "inventoryScope": {
+                  "type": "string",
+                  "enum": ["components"],
+                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. The inventory scope identifies this partial result; omit for the full inventory."
+                },
+                "createSketches": {
+                  "type": "boolean",
+                  "description": "Boundary projection only. Omit or false for the existing read-only XYZ curve artifact. true publishes validated saved planar sketches in one model-history transaction, retains the source and active authoring session, and returns sketchIds plus the curve artifact. Undo/Redo/Seek and project reopening retain the operation-owned sketch identities. Locked source publication is rejected before processing."
                 },
                 "indices": {
                   "type": "array",
@@ -1182,7 +1231,14 @@
                 },
                 "algorithm": {
                   "type": "string",
-                  "enum": ["automatic", "flat", "tangent", "curvature"]
+                  "enum": [
+                    "automatic",
+                    "flat",
+                    "tangent",
+                    "curvature",
+                    "surfaceRecovery"
+                  ],
+                  "description": "Entire-hole Automatic selects Tangent for at most 40 rim edges and Curvature above 40. Entire-hole Curvature fits a local surface and remeshes the adjacent collar, including the original rim; it is not an append-only cap. surfaceRecovery explicitly continues the retained collar with bounded fallback; it requires mode entire. Partial/bridge Automatic retains its boundary-based choice."
                 },
                 "mode": {
                   "type": "string",
@@ -1203,16 +1259,41 @@
                 },
                 "diameter": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "minimum": 0,
+                  "description": "Maximum enclosing-sphere diameter in mm for hole filling; 0 or omission includes all selected boundaries."
+                },
+                "batch": {
+                  "type": "boolean",
+                  "description": "Native multiple-hole Tangent dispatch, entire holes only. Omit algorithm or specify tangent; selected-hole Flat/Automatic/Curvature and surfaceRecovery require batch omitted or false. Optional indices restrict the batch."
+                },
+                "anchors": {
+                  "type": "array",
+                  "maxItems": 2,
+                  "description": "Boundary smoothing only: zero-based boundary and point indices from the current scanEdit inventory. Two anchors must be on the same closed boundary, with at least two points between them on each side. Obtain a fresh inventory after geometry changes.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "boundary": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "point": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": ["boundary", "point"],
+                    "additionalProperties": false
+                  }
                 },
                 "strength": {
-                  "description": "Selected-area smoothing defaults to 0.5; boundary smoothing defaults to 0.3.",
+                  "description": "Selected-area smoothing defaults to 0.5 and requires (0,1]. Boundary smoothing defaults to 1; [0,1] maps to native slider positions 0–10, rounded to the nearest step. Zero selects minimum native strength, not a disabled operation.",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 "iterations": {
-                  "description": "Selected-area smoothing defaults to 6 passes; boundary smoothing defaults to 3. Explicit values override these defaults.",
+                  "description": "Selected-area smoothing defaults to 6 vertex passes. Boundary smoothing defaults to 1 complete command repetition, each with 10–20 vertex passes plus fitted-curve projection and boundary-preserving correction. Explicit values override these defaults.",
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 100
@@ -1242,11 +1323,14 @@
                 },
                 "tolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "default": 0.001,
+                  "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
                 },
                 "fitTolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Positive boundary projection simplification tolerance or spatial-sketch fitting tolerance in mm. Spatial fitting defaults to 0.05 and is limited to 1024 closed boundaries and 200000 boundary points."
                 }
               },
               "required": ["kind", "action"],
@@ -3452,7 +3536,7 @@
   },
   {
     "name": "sketch_get",
-    "description": "Inspect current sketch, including frame, curves and constraints.",
+    "description": "Inspect the active planar draft and saved sketches. Spatial boundary sketches use kind:spatial and retain cubic poles, knots, periodic flags and fitting diagnostics in world millimetres; spatial editing is not yet available.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -3636,7 +3720,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside +/-1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3823,7 +3907,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Verified large numeric arrays from successful exports may be reused weakly during restore; changed or unavailable arrays are independently reconstructed. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4670,7 +4754,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "description": "Create/activate/rename/delete a saved sketch, or set its independent saved visibility with action:visibility and visible:boolean. Spatial sketches may be renamed, deleted or shown/hidden but cannot be activated in the planar editor. Uses the same authoring state and display as the editor. Unset visibility is hidden; Unroll creates its auxiliary sketch visible without replacing the active edit session.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4678,7 +4762,7 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["create", "activate", "rename", "delete"]
+          "enum": ["create", "activate", "rename", "delete", "visibility"]
         },
         "sketchId": {
           "type": "string",
@@ -4694,6 +4778,10 @@
         },
         "sketch": {
           "type": "object"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Required for action:visibility; independent of active sketch editing."
         },
         "expectedRevision": {
           "type": "integer",
@@ -5039,7 +5127,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2 to 32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -6677,7 +6765,7 @@
   },
   {
     "name": "scan_preview",
-    "description": "Preview ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply.",
+    "description": "Preview Reduce noise, Reduce polygons, Scale mesh, Mirror mesh or ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply. Mirror uses a principal plane or referenceId with plane=object. Noise selectionOnly resolves the current source selection. Reduction GUI compares after create; agents can explicitly compare the same retained output before acceptance. Threshold changes never rerun the geometry operation.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -6696,49 +6784,159 @@
           "minLength": 1
         },
         "operation": {
-          "type": "object",
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": ["shrinkwrap"]
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["shrinkwrap"]
+                },
+                "sampleInterval": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Requested sampling spacing in mm; never silently coarsened."
+                },
+                "gapFill": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+                },
+                "organicShape": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "extraThickness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Additional outward offset in mm, tapering at local fixed seams."
+                },
+                "maxDeviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.1,
+                  "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": ["whole", "selected", "isolated"],
+                  "default": "whole",
+                  "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "sampleInterval": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.5,
-              "description": "Requested sampling spacing in mm; never silently coarsened."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reduceNoise"]
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "selectionOnly": {
+                  "type": "boolean"
+                },
+                "applyBoundaryEdges": {
+                  "type": "boolean"
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "gapFill": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reducePolygons"]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["triangles", "percentage", "deviation"]
+                },
+                "targetTriangles": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "percentage": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "paletteThreshold": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind", "mode"],
+              "additionalProperties": false
             },
-            "organicShape": {
-              "type": "boolean",
-              "default": false
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["scaleMesh"]
+                },
+                "factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "center": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["kind", "factor"],
+              "additionalProperties": false
             },
-            "extraThickness": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Additional outward offset in mm, tapering at local fixed seams."
-            },
-            "maxDeviation": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.1,
-              "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
-            },
-            "scope": {
-              "type": "string",
-              "enum": ["whole", "selected", "isolated"],
-              "default": "whole",
-              "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["mirrorMesh"]
+                },
+                "plane": {
+                  "type": "string",
+                  "enum": ["OXY", "OYZ", "OXZ", "object"]
+                },
+                "referenceId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": ["kind", "plane"],
+              "additionalProperties": false
             }
-          },
-          "required": ["kind"],
-          "additionalProperties": false
+          ]
         },
         "targetIds": {
           "type": "array",
@@ -6767,6 +6965,16 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200
+        },
+        "paletteThreshold": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison color threshold in mm; defaults to deviation."
+        },
+        "displayRange": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison display range in mm; defaults to deviation for polygon reduction."
         }
       },
       "required": ["action", "entityId", "expectedRevision", "requestId"],
@@ -6775,7 +6983,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2 to 32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {

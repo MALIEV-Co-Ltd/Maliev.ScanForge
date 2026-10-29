@@ -1,0 +1,142 @@
+{
+  "status": "integrated-local-regression-checkpoint-m2-open",
+  "runtimeCandidate": "fcb30426552279945c065f73bfbfbb7430f24f4b",
+  "assetBuildId": "scanforge-80b7e925df4a40e5",
+  "sourceBeforeSha256": "af59cd5f07199513b3f8b47f8b8e98f61800d1fc4c06b10e57202c883aba5779",
+  "enumeratedSourceInputs": 2111,
+  "sourceComparisonReports": {
+    "build-after": {
+      "sha256": "e992d828a9a663b158dfe48c48f7d3206e7aabc536c10252b86c858c5a64d90f",
+      "unchanged": true
+    },
+    "full-after": {
+      "sha256": "4a050ff19cfeb551d54b5a42aa92b22bce64c362143e3a7a068db49fadc35582",
+      "unchanged": true
+    }
+  },
+  "fullSuite": {
+    "passed": 49051,
+    "failed": 0,
+    "fixtureGatedSkipped": 64,
+    "canonicalFiles": 699
+  },
+  "checks": [
+    {
+      "label": "m2-main-final-build-20261026-r1",
+      "receiptSha256": "df6907dd7740330f5eb96e9d411e28ed1eb5493a60d83d706850b260415e7320",
+      "peakAggregateBytes": 1536135168,
+      "elapsedSeconds": 170.20919429999776,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-final-full-20261026-r1",
+      "receiptSha256": "00178907a04e2c62ee3568aac070e2994dff99bf230645f49467c8c4fda4d088",
+      "peakAggregateBytes": 1009483776,
+      "elapsedSeconds": 307.5123289000476,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-final-cad-20261026-r1",
+      "receiptSha256": "bddd8cd41832459e02be2549fccf725e57217c8e51069f75ffd5d515412e8ed3",
+      "peakAggregateBytes": 745988096,
+      "elapsedSeconds": 7.029158200020902,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-final-format-check-20261026-r2",
+      "receiptSha256": "cf717c27b3eda8bdd45b34f93b91fca002ffadca4ec084bc50e4a218a3b923ef",
+      "peakAggregateBytes": 504365056,
+      "elapsedSeconds": 30.073583799996413,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-unroll-reopen-browser-20261026-r1",
+      "receiptSha256": "86868bf881eb38bc5fa42f657a2458d78c6f5aa73fc394debf3f9bea79a5ea9f",
+      "peakAggregateBytes": 1469554688,
+      "elapsedSeconds": 7.9406980000203475,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-average-browser-20261026-r1",
+      "receiptSha256": "951ca0dd7ab19f77a4f8f57410c12d7fd7f5a0179e39d512fa0a1d39333cb277",
+      "peakAggregateBytes": 945524736,
+      "elapsedSeconds": 7.434474000008777,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-repolygon-browser-full-20261026-r1",
+      "receiptSha256": "dd546d4d3cc704d6ea6bae4b72ba753e3385d6cfd42f8e2e2a95fd0c53a5f74b",
+      "peakAggregateBytes": 2253717504,
+      "elapsedSeconds": 172.03428109997185,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-transform-browser-20261026-r1",
+      "receiptSha256": "5116c95db7a9bd4089498b2103f5650235577be4fe5d86f6d112e3558c5a0dd5",
+      "peakAggregateBytes": 950919168,
+      "elapsedSeconds": 10.356285299989395,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-defeature-large-browser-20261026-r1",
+      "receiptSha256": "cd00259255e9a5271263169c4af74e52714ac2484b9ece39e8b2541df652dc4a",
+      "peakAggregateBytes": 1229934592,
+      "elapsedSeconds": 13.906249199993908,
+      "cleanupComplete": true
+    },
+    {
+      "label": "m2-main-noise-browser-20261026-r1",
+      "receiptSha256": "9647df3df523b62789362155b259268276a6008d0ad23d9a0b23d2ffb3d57b39",
+      "peakAggregateBytes": 2641063936,
+      "elapsedSeconds": 45.81477989995619,
+      "cleanupComplete": true
+    }
+  ],
+  "browserScope": "Average lifecycle and Unroll lifecycle including actual GUI rerun after CAD-reference reopen; retained native fixtures only, not new native exports. Browser driver and documentation edits after runtime candidate are excluded from its immutable full-suite identity.",
+  "limits": {
+    "aggregateJobBytes": 4294967296,
+    "cpuRatePercent": 25
+  },
+  "remaining": "Native per-mode acceptance, final whole-candidate review, PR CI, merge and M2 closure.",
+  "repolygonizeBrowser": {
+    "ledgerSha256": "e692ea3732cb8e04915eb6685f68804a502b23b2beb2f5296b98f16c285fece1",
+    "results": {
+      "guiMcpNativeOrderedCoordinatesEqual": true,
+      "facetCount": 136,
+      "newOwner": true,
+      "hiddenUnchangedInputs": true,
+      "undoRedo": true,
+      "retryProtected": true,
+      "cancellationRollback": true,
+      "failureRollback": true,
+      "indexedSaveReopen": true,
+      "pageErrors": [],
+      "originalThreeScans": {
+        "inputTriangles": 6147452,
+        "outputTriangles": 50895,
+        "orderedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+        "guiMcpNativeEqual": true,
+        "allSourceBuffersUnchanged": true,
+        "historyVisibilityRollback": true
+      }
+    },
+    "cleanup": [
+      {
+        "port": 65484,
+        "closed": true
+      },
+      {
+        "pid": 44608,
+        "exited": true
+      },
+      {
+        "port": 65485,
+        "closed": true
+      },
+      {
+        "pid": 2416,
+        "exited": true
+      }
+    ]
+  }
+}

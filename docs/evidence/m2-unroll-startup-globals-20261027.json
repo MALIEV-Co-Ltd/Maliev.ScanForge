@@ -1,0 +1,294 @@
+{
+  "scope": "Passive startup capture of two Unroll-referenced globals and focused static instructions; no Unroll command or cylinder selection executed",
+  "nativeExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "staticImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "sourceImageRelationship": "Existing retained analysis image; static bytes and runtime executable have separate pinned hashes",
+  "capture": {
+    "startupSeconds": 5,
+    "ownedFreshProcess": true,
+    "uiInputSent": false,
+    "targetAbiCalled": false,
+    "readBytes": 96,
+    "stableAcrossTwoReads": true,
+    "globals": [
+      {
+        "rva": "0x15d0118",
+        "littleEndianFloat64Values": [1.0, 0.0, 0.0],
+        "bytesHex": "000000000000f03f00000000000000000000000000000000",
+        "bytesSha256": "725c4777db328932b197731b1c986c84913a069a2090deb3667b697624551c8b"
+      },
+      {
+        "rva": "0x15d01b0",
+        "littleEndianFloat64Values": [0.0, 1.0, 0.0],
+        "bytesHex": "0000000000000000000000000000f03f0000000000000000",
+        "bytesSha256": "17550ce418055ff4cd54b803e704300eac4212c3edcef00f92f1e6e506a5b069"
+      }
+    ],
+    "runtimeMeaning": "Raw no-argument startup values; no selected-cylinder command or all-states stability is established"
+  },
+  "staticUse": {
+    "start": "0x140691694",
+    "endExclusive": "0x140691760",
+    "instructions": [
+      {
+        "address": "0x140691694",
+        "bytes": "f20f590584eaf300",
+        "text": "mulsd xmm0, qword ptr [rip + 0xf3ea84]"
+      },
+      {
+        "address": "0x14069169c",
+        "bytes": "0f28cf",
+        "text": "movaps xmm1, xmm7"
+      },
+      {
+        "address": "0x14069169f",
+        "bytes": "f20f590d71eaf300",
+        "text": "mulsd xmm1, qword ptr [rip + 0xf3ea71]"
+      },
+      {
+        "address": "0x1406916a7",
+        "bytes": "f20f58c1",
+        "text": "addsd xmm0, xmm1"
+      },
+      {
+        "address": "0x1406916ab",
+        "bytes": "0f28d6",
+        "text": "movaps xmm2, xmm6"
+      },
+      {
+        "address": "0x1406916ae",
+        "bytes": "f20f591572eaf300",
+        "text": "mulsd xmm2, qword ptr [rip + 0xf3ea72]"
+      },
+      {
+        "address": "0x1406916b6",
+        "bytes": "f20f58c2",
+        "text": "addsd xmm0, xmm2"
+      },
+      {
+        "address": "0x1406916ba",
+        "bytes": "e817b96c00",
+        "text": "call 0x140d5cfd6"
+      },
+      {
+        "address": "0x1406916bf",
+        "bytes": "0f28c8",
+        "text": "movaps xmm1, xmm0"
+      },
+      {
+        "address": "0x1406916c2",
+        "bytes": "f20f593de6eaf300",
+        "text": "mulsd xmm7, qword ptr [rip + 0xf3eae6]"
+      },
+      {
+        "address": "0x1406916ca",
+        "bytes": "f2440f5905e5eaf300",
+        "text": "mulsd xmm8, qword ptr [rip + 0xf3eae5]"
+      },
+      {
+        "address": "0x1406916d3",
+        "bytes": "f2410f58f8",
+        "text": "addsd xmm7, xmm8"
+      },
+      {
+        "address": "0x1406916d8",
+        "bytes": "f20f5935e0eaf300",
+        "text": "mulsd xmm6, qword ptr [rip + 0xf3eae0]"
+      },
+      {
+        "address": "0x1406916e0",
+        "bytes": "f20f58fe",
+        "text": "addsd xmm7, xmm6"
+      },
+      {
+        "address": "0x1406916e4",
+        "bytes": "66440f2fd7",
+        "text": "comisd xmm10, xmm7"
+      },
+      {
+        "address": "0x1406916e9",
+        "bytes": "760b",
+        "text": "jbe 0x1406916f6"
+      },
+      {
+        "address": "0x1406916eb",
+        "bytes": "410f28c1",
+        "text": "movaps xmm0, xmm9"
+      },
+      {
+        "address": "0x1406916ef",
+        "bytes": "f20f5cc1",
+        "text": "subsd xmm0, xmm1"
+      },
+      {
+        "address": "0x1406916f3",
+        "bytes": "0f28c8",
+        "text": "movaps xmm1, xmm0"
+      },
+      {
+        "address": "0x1406916f6",
+        "bytes": "0f28c1",
+        "text": "movaps xmm0, xmm1"
+      },
+      {
+        "address": "0x1406916f9",
+        "bytes": "f2410f5ec5",
+        "text": "divsd xmm0, xmm13"
+      },
+      {
+        "address": "0x1406916fe",
+        "bytes": "f20f2cc0",
+        "text": "cvttsd2si eax, xmm0"
+      },
+      {
+        "address": "0x140691702",
+        "bytes": "83f803",
+        "text": "cmp eax, 3"
+      },
+      {
+        "address": "0x140691705",
+        "bytes": "7f09",
+        "text": "jg 0x140691710"
+      },
+      {
+        "address": "0x140691707",
+        "bytes": "85c0",
+        "text": "test eax, eax"
+      },
+      {
+        "address": "0x140691709",
+        "bytes": "790a",
+        "text": "jns 0x140691715"
+      },
+      {
+        "address": "0x14069170b",
+        "bytes": "418bc4",
+        "text": "mov eax, r12d"
+      },
+      {
+        "address": "0x14069170e",
+        "bytes": "eb05",
+        "text": "jmp 0x140691715"
+      },
+      {
+        "address": "0x140691710",
+        "bytes": "b803000000",
+        "text": "mov eax, 3"
+      },
+      {
+        "address": "0x140691715",
+        "bytes": "894320",
+        "text": "mov dword ptr [rbx + 0x20], eax"
+      },
+      {
+        "address": "0x140691718",
+        "bytes": "f2410f5ec9",
+        "text": "divsd xmm1, xmm9"
+      },
+      {
+        "address": "0x14069171d",
+        "bytes": "f2410f59cb",
+        "text": "mulsd xmm1, xmm11"
+      },
+      {
+        "address": "0x140691722",
+        "bytes": "0f57c0",
+        "text": "xorps xmm0, xmm0"
+      },
+      {
+        "address": "0x140691725",
+        "bytes": "f20f5ac1",
+        "text": "cvtsd2ss xmm0, xmm1"
+      },
+      {
+        "address": "0x140691729",
+        "bytes": "f30f1103",
+        "text": "movss dword ptr [rbx], xmm0"
+      },
+      {
+        "address": "0x14069172d",
+        "bytes": "66410f5ace",
+        "text": "cvtpd2ps xmm1, xmm14"
+      },
+      {
+        "address": "0x140691732",
+        "bytes": "f30f114b04",
+        "text": "movss dword ptr [rbx + 4], xmm1"
+      },
+      {
+        "address": "0x140691737",
+        "bytes": "0f57c0",
+        "text": "xorps xmm0, xmm0"
+      },
+      {
+        "address": "0x14069173a",
+        "bytes": "f2410f5ac4",
+        "text": "cvtsd2ss xmm0, xmm12"
+      },
+      {
+        "address": "0x14069173f",
+        "bytes": "f30f114308",
+        "text": "movss dword ptr [rbx + 8], xmm0"
+      },
+      {
+        "address": "0x140691744",
+        "bytes": "ffc7",
+        "text": "inc edi"
+      },
+      {
+        "address": "0x140691746",
+        "bytes": "413bff",
+        "text": "cmp edi, r15d"
+      },
+      {
+        "address": "0x140691749",
+        "bytes": "0f8231feffff",
+        "text": "jb 0x140691580"
+      },
+      {
+        "address": "0x14069174f",
+        "bytes": "488b8d10010000",
+        "text": "mov rcx, qword ptr [rbp + 0x110]"
+      },
+      {
+        "address": "0x140691756",
+        "bytes": "488b01",
+        "text": "mov rax, qword ptr [rcx]"
+      },
+      {
+        "address": "0x140691759",
+        "bytes": "ff5020",
+        "text": "call qword ptr [rax + 0x20]"
+      },
+      {
+        "address": "0x14069175c",
+        "bytes": "8bf8",
+        "text": "mov edi, eax"
+      }
+    ],
+    "interpretation": "Candidate uses these global components in two multiply/add sequences, invokes another routine, then compares a value and conditionally subtracts. Register inputs and full routine boundaries are not independently established here."
+  },
+  "verification": {
+    "helperSha256": "85d7c472140d530ed9914b3f16dadff2778fefa0659cc68cefad46363a3c2fb1",
+    "helperAndDescendantsExited": true,
+    "nativeChildExited": true,
+    "jobLimitBytes": 4294967296,
+    "cpuLimitPercent": 25,
+    "cleanupErrors": []
+  },
+  "limitations": [
+    "The candidate code and captured initial values do not establish behavior after user input or across all reference orientations.",
+    "No GUI comparison or native Unroll command was performed in this capture."
+  ],
+  "focusedCandidate": {
+    "address": "0x140691270",
+    "ghidraSelectedBody": "0x140691270 through 0x140691aea, inferred without default auto-analysis",
+    "ghidraEvidenceSha256": "0dc900402bda8126ea4503c107aabbb62d4e49fc5c90bde5cb59ea1c69f65a71",
+    "independentCapstoneMnemonicStartsMatched": 507,
+    "instructionStartsSha256": "19fbb0435dc63ba2528c6617881c22b78e3458bfacd8f909e68c41ead3828afb",
+    "decoderAliases": "Normalized equivalent jump mnemonics such as jz/je",
+    "initialCheck": "First comparison rejected equivalent jz/je spelling; bounded job terminated its owned child and reported zero remaining processes.",
+    "observedSequence": "Decompiled candidate applies an inverse local frame to source coordinates, narrows two radial coordinates to Float32 before normalizing, evaluates the first captured global against normalized coordinates, then uses the second in a sign comparison. Exact local-frame construction and called math helper semantics are not proven by this trace alone.",
+    "limits": "A byte-backed mnemonic match at selected starts does not prove function boundaries, operands, reachability or that captured globals remain stable during a command."
+  }
+}

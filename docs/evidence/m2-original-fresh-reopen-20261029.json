@@ -1,0 +1,76 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract and public-MCP binary reopen after creating an empty project, application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "testScriptSha256": "4fcc50ec6ba78a9395f60d67aa54d1541cfaf63cb3f9b0c588e4dc166408b90d",
+  "build": "Exact application snapshot, Vite build followed by the production offline-manifest postbuild; service worker cache scanforge-b8bfbb2f06154578.",
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiOutputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 16012539,
+        "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 2699811,
+        "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 5337513,
+        "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+      }
+    ],
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "binaryReopen": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "gui-extract-project-exported",
+    "gui-extract-fresh-project",
+    "gui-extract-project-imported",
+    "gui-extract-reopen-verified",
+    "gui-extract-redo-verified"
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4136673280,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "elapsedSeconds": 118.2360821000184
+  },
+  "firstAttempt": {
+    "outcome": "All post-reopen digest assertions completed, but the test failed due to a browser 404 console error. The isolated Vite-only build omitted dist/sw.js; production registers it. This is a plausible cause, not a captured request binding.",
+    "jobPeakBytes": 3949461504,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "This explicitly creates a new empty project before import; it does not verify in-place project replacement.",
+    "The earlier in-place runs used a different static build and independent browser executions; the comparison does not prove retained old-project ownership or causality.",
+    "This run covers one original scan, one Split/Extract and core geometry digests, not all M2 behavior or native parity.",
+    "The 4 GiB guard passed on this run; memory and scheduling can vary."
+  ]
+}

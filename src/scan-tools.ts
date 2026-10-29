@@ -47,7 +47,7 @@ export type ScanToolOperation =
       selection?: Uint8Array;
     }
   | { kind: "scaleMesh"; factor: number; center?: Vec3 }
-  | { kind: "flipNormals" }
+  | { kind: "flipNormals"; sourceTopology?: IndexedMesh }
   | {
       kind: "repolygonize";
       resolution?: number;
@@ -58,7 +58,13 @@ export type ScanToolOperation =
       targetTopology?: (IndexedMesh | undefined)[];
       method?: "native" | "voxel";
     }
-  | { kind: "averageMesh"; targets: Positions[]; tolerance?: number }
+  | {
+      kind: "averageMesh";
+      targets: Positions[];
+      targetTopology?: (IndexedMesh | undefined)[];
+      sourceTopology?: IndexedMesh;
+      tolerance?: number;
+    }
   | { kind: "mirrorMesh"; center: Vec3; normal: Vec3; tangent?: Vec3 }
   | {
       kind: "unroll";
@@ -66,6 +72,7 @@ export type ScanToolOperation =
       axis: Vec3;
       radius: number;
       offsetDegrees?: number;
+      instances?: number;
     };
 export interface ScanToolsRequest {
   kind: "scanTools";
@@ -121,7 +128,7 @@ export function runScanTool(
     case "scaleMesh":
       return scaleScanMesh(positions, { ...operation, ...options });
     case "flipNormals":
-      return flipScanNormals(positions, options);
+      return flipScanNormals(positions, { ...operation, ...options });
     case "averageMesh":
       return averageScanMesh(positions, { ...operation, ...options });
     case "mirrorMesh":

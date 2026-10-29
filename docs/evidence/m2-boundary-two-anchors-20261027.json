@@ -1,0 +1,34 @@
+{
+  "scope": "Two opposite anchors on the inner boundary of the 64-facet annulus; one native and GUI/public MCP control. This does not establish general multi-anchor parity or close M2.",
+  "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+  "nativeExportSha256": "0e41ffcd09793b0fb079b009f83ba72a7334b8bbcc1382a200369eae0f66b26a",
+  "nativeCoordinatesSha256": "667cda7e19d7f846da8de60b33f34a07e515fbafc1023e4957d4444bf854cd81",
+  "settings": {
+    "strength": 0.5,
+    "repetitions": 1,
+    "boundary": 1,
+    "points": [29, 13]
+  },
+  "nativeBinding": "The displayed marker positions agree with the two inner source vertices retained exactly in the native output; native internal identity was not independently decoded.",
+  "geometry": {
+    "guiAndMcpFloat32Sha256": "a69cf2ed1a7a9a800b19bd1f4027b16d13245e82058fb3f14a55776c8e60d61b",
+    "guiMcpExact": true,
+    "nativeCoordinatesCompared": 576,
+    "nativeMismatchOutsideZeroTolerance": 0,
+    "maximumAbsoluteDifferenceMm": 1.9984014443252818e-15,
+    "zeroTolerance": "16 * Number.EPSILON * input scale"
+  },
+  "validation": {
+    "focusedTests": "67 passed across two files including separation, progress and cancellation between projection batches",
+    "browser": "Fresh isolated 5175 tab; GUI Smooth all and public MCP mesh_process after undo; equal geometry digests.",
+    "cleanup": "Native capture and public MCP validation Jobs exited with zero children and no cleanup errors; port 5199 released.",
+    "build": "Production build scanforge-79f504b4d9652662 passed after the reviewed runtime and test changes under the 4 GiB Job limit."
+  },
+  "limitations": [
+    "Two anchors only; same closed boundary with at least two points between anchors on each side.",
+    "Other native spacing, open and folded boundaries, larger meshes and more than two anchors remain unverified.",
+    "GUI uses point indices rather than native viewport click placement.",
+    "Binary reopen and active nested-CAD cancellation are not established by this control.",
+    "M2 and final-head CI remain open."
+  ]
+}

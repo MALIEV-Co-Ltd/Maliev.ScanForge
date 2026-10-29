@@ -1,0 +1,128 @@
+{
+  "scope": "Observed Unroll auxiliary sketch and tangent roll frame; not complete M2 acceptance",
+  "staticEvidence": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "execution": "Static only; retained image was not executed or instrumented",
+    "acceptance": "1406906b0",
+    "frameConstructor": "14041cd20",
+    "frameDataConstructor": "14041ca30",
+    "frameInitialization": "1406904e0",
+    "cylinderFrameConversion": "1401e2160",
+    "rigidInverse": "1401dd230",
+    "rotation": "140b30740",
+    "conversionAngleRadians": -1.5707963267948966,
+    "inference": "For effective cylinder basis (U,V,N) and origin C, retained tangent frame is (V,N,U), origin C+radius*U; radius remains a separate scalar. This derives from the two recovered minus-90-degree rotations, not from a runtime capture of the frame payload."
+  },
+  "implementation": {
+    "publication": "One existing revision-checked mesh_process transaction publishes mesh, visible saved Sketch, hidden tangent referenceFrame and retained rollMapping",
+    "history": "Only transaction-owned saved identities enter model history; live edited owned values invert into redo/undo, unrelated authoring is preserved",
+    "mcp": "Existing mesh_process, object_get/object_geometry_digest, sketch_get and sketch_manage action:visibility; GUI uses shared operations",
+    "formats": "Binary manifest 6 preserves owned deltas, mapping and visibility; JSON wire 4 preserves mapping and visibility. Older feature/version combinations reject."
+  },
+  "build": {
+    "tag": "scanforge-662952da8b8d36cc",
+    "all13TypeBatches": true,
+    "inputIdentity": {
+      "head": "5ada756b6439eb1705a6842f84884a0e9765308e",
+      "files": 2855,
+      "unchanged": true,
+      "manifestSha256": "3649a6a3f1072c37cfaad35fe9a8355f3441fea2c53e3e4489be31167e52b9c7"
+    },
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 149.78773580002598,
+      "childPeakJobMemoryBytes": 1664929792,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    }
+  },
+  "regression": {
+    "passed": 77,
+    "failed": 0,
+    "suites": 14,
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 5.917373200005386,
+      "childPeakJobMemoryBytes": 435965952,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    },
+    "displayAdmissionFollowupPassed": 34
+  },
+  "browser": {
+    "passed": true,
+    "result": {
+      "guiMcpEqual": true,
+      "observedExportEqual": true,
+      "twoInstances": true,
+      "sourcePreserved": true,
+      "undoRedo": true,
+      "retryProtected": true,
+      "cancellationRollback": true,
+      "failureRollback": true,
+      "saveReopen": true,
+      "visibleSavedSketch": true,
+      "hiddenTangentRollFrame": true,
+      "auxiliaryUndoRedoAndSeek": true,
+      "unrelatedSketchEditsPreserved": true,
+      "guiMcpSketchVisibility": true,
+      "rerunAfterCadReopen": true,
+      "importedReferenceSeamTangent": "+Y",
+      "baseEntityId": "source",
+      "referenceEntityIds": ["6171bc9a-68c5-4120-872b-519efb09abb2"],
+      "pageErrors": []
+    },
+    "screenshot": "m2-unroll-ownership-20261026/unroll.png",
+    "screenshotViewed": true,
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 7.68488829996204,
+      "childPeakJobMemoryBytes": 1481867264,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    },
+    "cleanup": [
+      {
+        "port": 61805,
+        "closed": true
+      },
+      {
+        "pid": 5256,
+        "exited": true
+      },
+      {
+        "port": 61806,
+        "closed": true
+      },
+      {
+        "pid": 42816,
+        "exited": true
+      }
+    ]
+  },
+  "retainedFailures": {
+    "historyRed": "Missing owned-sketch history module",
+    "auxiliaryRed": "Missing auxiliary publication and helper",
+    "displayRed": "Missing saved-sketch visibility and display",
+    "displayAdmissionRed": "Invalid display visibility initially published authoring; corrected before host mutation",
+    "initialBuild": "Frame display union exposed unchecked point/line preview geometry access; narrowed the shared inspection branch, then all thirteen batches passed"
+  },
+  "resourceSerialization": {
+    "earlierException": "M2 static child 04:14:34.5503733 UTC plus 13.545 seconds overlapped the M4 04:14:42.514016 to 04:14:44.608858 UTC focused run. Both Jobs cleaned up; that pair is not serialized validation evidence.",
+    "correction": "Both task runners now enforce the same zero-wait Local\\ScanForge.BoundedValidation mutex before admission/spawn, releasing after verified Job cleanup. Cross-process contention rejected before validation spawn; subsequent clean build/browser use this guard.",
+    "m2WrapperSha256": "e50d44ab3aa939976274d94022347965d592164d87c491f1ed24bbde8a2f8f94"
+  },
+  "remaining": {
+    "integration": "Main advanced to 57c77aae0727763a63e1c4a451cb85a708846ae8 during the frozen build; integration and fresh validation are required.",
+    "milestone": "Other M2 native/mode/input gates, final whole-branch review, exact-head CI, merge and closure remain required."
+  }
+}

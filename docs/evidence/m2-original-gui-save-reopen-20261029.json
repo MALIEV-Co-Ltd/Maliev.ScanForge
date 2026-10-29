@@ -1,0 +1,69 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract, GUI Save and in-place GUI Open. The final run attempted GUI Undo/Redo but did not complete under the 4 GiB guard.",
+  "applicationCommit": "9df3ae1faf184d2819b2a2d319b2dc1a82571cae",
+  "build": "scanforge-edea62e4b86207d8",
+  "browser": "Isolated Playwright/Chrome; Browser plugin unavailable. GUI open uses Chrome local file input; user preview untouched.",
+  "finalHarness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-save-reopen-local.mjs",
+    "sha256": "a7f382bd6abe2ad875ddd4c10940b752f8198fab47df46b5006ec6753e7b09ef"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "guardPassed": false,
+      "peakJobBytes": 4132610048,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r1-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r1.log",
+      "result": "Harness could not choose between two Save buttons; no save or reopen occurred."
+    },
+    {
+      "run": 2,
+      "guardPassed": false,
+      "peakJobBytes": 4116955136,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r2-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r2.log",
+      "result": "GUI download completed; harness timed out waiting for a transient status message before reopen."
+    },
+    {
+      "run": 3,
+      "guardPassed": false,
+      "peakJobBytes": 4117991424,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r3-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r3.log",
+      "result": "GUI save and in-place reopen reached matching source, cutter and extracted geometry below limit; harness then timed out because it had not selected the Edit / View tab. This is not a complete lifecycle pass."
+    },
+    {
+      "run": 4,
+      "guardPassed": false,
+      "peakJobBytes": 4295229440,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r4-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-save-reopen-20261029-r4.log",
+      "result": "GUI save and reopen reached matching source, cutter and extracted geometry; the job exceeded 4 GiB before post-reopen Undo completed. Overall resource gate failed."
+    }
+  ],
+  "limitations": [
+    "The run that reached matching reopened geometry within the limit failed later on a test locator; it does not establish a complete lifecycle pass.",
+    "The final run crossed the job cap after reopen and before post-reopen Undo finished. Aggregate process peak does not identify a specific allocation.",
+    "No native Split comparison was performed."
+  ],
+  "separatedHistoryDiagnostic": {
+    "guardPassed": false,
+    "peakJobBytes": 4295946240,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1-guard.json",
+    "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1.log",
+    "samples": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-history-diagnostic-20261029-r1-samples.jsonl",
+    "harnessSha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4",
+    "observed": "Reopen geometry verified, Edit / View tab selected, and Undo clicked; the process sampler then failed with Windows error 1455. Guard peak exceeded 4 GiB and descendants required termination. Undo result was not verified.",
+    "limitations": "The failing interval is after the Undo click, but no specific allocation or component is established."
+  }
+}

@@ -2,13 +2,56 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { randomUUID, randomBytes } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { randomUUID, randomBytes, createHash } from "node:crypto";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
 const root = new URL("../", import.meta.url),
-  out = new URL("../.resources/bridge-response-browser/", import.meta.url);
+  out = new URL(
+    process.env.SCANFORGE_BRIDGE_OUTPUT ??
+      (process.env.SCANFORGE_SEMI_TANGENT === "1"
+        ? "../.resources/m2-partial-tangent-browser-20261027/"
+        : "../.resources/bridge-response-browser/"),
+    import.meta.url,
+  );
+const builtRoot = process.env.SCANFORGE_QA_DIST
+  ? pathToFileURL(`${process.env.SCANFORGE_QA_DIST}/`)
+  : new URL("dist/", root);
+const semiTangent = process.env.SCANFORGE_SEMI_TANGENT === "1";
+const semiFlatFixture = JSON.parse(
+  await readFile(
+    new URL(
+      semiTangent
+        ? "fixtures/hole-observed-semi-tangent-curved.json"
+        : "fixtures/hole-observed-semi-flat-square.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const nativeFlatFixture = JSON.parse(
+  await readFile(
+    new URL("fixtures/bridge-observed-flat-annulus.json", import.meta.url),
+    "utf8",
+  ),
+);
+function orientedFaces(positions) {
+  const faces = [];
+  for (let i = 0; i < positions.length; i += 9) {
+    const vertices = [0, 3, 6].map((offset) =>
+      [0, 1, 2].map((axis) => positions[i + offset + axis]).join(","),
+    );
+    faces.push(
+      [0, 1, 2]
+        .map((offset) =>
+          [...vertices.slice(offset), ...vertices.slice(0, offset)].join(";"),
+        )
+        .sort()[0],
+    );
+  }
+  return faces.sort();
+}
 const admission = spawnSync(
   process.execPath,
   [fileURLToPath(new URL("scripts/resource-check.mjs", root))],
@@ -51,10 +94,9 @@ try {
       const name = new URL(req.url, "http://127.0.0.1").pathname;
       const file = new URL(
         name === "/" ? "index.html" : name.slice(1),
-        new URL("dist/", root),
+        builtRoot,
       );
-      if (!file.href.startsWith(new URL("dist/", root).href))
-        throw Error("Invalid path");
+      if (!file.href.startsWith(builtRoot.href)) throw Error("Invalid path");
       const data = await readFile(file);
       const ext = file.pathname.split(".").pop();
       res.writeHead(200, {
@@ -151,6 +193,7 @@ try {
   });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -171,14 +214,21 @@ try {
     assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
-  const mutate = async (name, args) =>
-    call(name, {
-      ...args,
-      expectedRevision: (await call("project_get")).revision,
-      requestId: randomUUID(),
-    });
+  const mutate = async (name, args) => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const session = (await call("session_get")).result;
+      if (!session.busy && session.activeJobId === null)
+        return call(name, {
+          ...args,
+          expectedRevision: (await call("project_get")).revision,
+          requestId: randomUUID(),
+        });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error(`Workspace did not settle before ${name}`);
+  };
   const job = async (receipt, expected = "succeeded") => {
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 1200; i++) {
       const state = (await call("job_get", { jobId: receipt.result.jobId }))
         .result;
       if (state.status !== "running") {
@@ -206,13 +256,16 @@ try {
       chunks.push(bytes);
       offset += bytes.length;
     } while (offset < artifact.bytes);
-    return JSON.parse(Buffer.concat(chunks).toString());
+    const result = JSON.parse(Buffer.concat(chunks).toString());
+    await call("artifact_delete", { artifactId: artifact.artifactId });
+    return result;
   };
+  let targetId = "rim";
   const runEdit = async (operation, previewOnly) =>
     (
       await job(
         await mutate("mesh_process", {
-          entityId: "rim",
+          entityId: targetId,
           operation,
           ...(previewOnly ? { previewOnly: true } : {}),
         }),
@@ -224,6 +277,14 @@ try {
         .result.geometry,
     );
   const history = async () => (await call("history_get")).result.cursor;
+  const bridgeReady = async (mode) => {
+    for (let attempt = 0; attempt < 120; attempt++) {
+      const view = (await call("viewport_get")).result;
+      if (view.bridge?.mode === mode) return view;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    throw Error(`Bridge interaction did not become ready: ${mode}`);
+  };
   const canvas = page.locator(".viewport canvas").first();
   const reports = [];
   const requestedCases = process.env.SCANFORGE_BRIDGE_CASES?.split(",");
@@ -232,22 +293,27 @@ try {
     { curved: true },
     { curved: false, separate: true },
     { curved: false, separate: true, fragmented: true },
+    { curved: false, native: true },
   ].filter(
-    ({ curved, separate, fragmented }) =>
+    ({ curved, separate, fragmented, native }) =>
       !requestedCases ||
       requestedCases.includes(
-        fragmented
-          ? "fragmented-open"
-          : separate
-            ? "independent-boundaries"
-            : curved
-              ? "tangent"
-              : "flat",
+        native
+          ? "native-flat"
+          : fragmented
+            ? "fragmented-open"
+            : separate
+              ? "independent-boundaries"
+              : curved
+                ? "tangent"
+                : "flat",
       ),
   );
+  const semiCase = requestedCases?.includes("native-semi-flat");
+  const realPartial = requestedCases?.includes("original-partial");
   const convergenceCase = process.env.SCANFORGE_HOLE_CONVERGENCE === "1";
   assert(
-    cases.length > 0 || convergenceCase,
+    cases.length > 0 || convergenceCase || semiCase || realPartial,
     "No requested browser cases matched",
   );
   if (convergenceCase) {
@@ -321,6 +387,7 @@ try {
         b.points.every((v, i) => i % 3 !== 0 || (v >= 0 && v <= 2.5)),
     );
     assert(hole >= 0);
+    assert(hole >= 0);
     const result = await runEdit({
       kind: "scanEdit",
       action: "fillHoles",
@@ -380,14 +447,369 @@ try {
       undoRedo: true,
     });
   }
-  for (const { curved, separate, fragmented } of cases) {
-    const scenario = fragmented
-      ? "fragmented-open"
-      : separate
-        ? "independent-boundaries"
-        : curved
-          ? "tangent"
-          : "flat";
+  if (semiCase) {
+    const project = {
+      format: "maliev-scanforge",
+      version: 1,
+      name: semiTangent
+        ? "Native Semi Tangent annulus"
+        : "Native Semi Flat square",
+      units: "mm",
+      entities: [
+        {
+          id: "rim",
+          name: semiTangent ? "Native curved annulus" : "Native square annulus",
+          kind: "mesh",
+          positions: semiFlatFixture.source,
+          visible: true,
+          color: "#b4bec4",
+          opacity: 1,
+        },
+      ],
+    };
+    const upload = (
+      await call("artifact_put", {
+        name: "semi-flat.json",
+        offset: 0,
+        base64: Buffer.from(JSON.stringify(project)).toString("base64"),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: upload.artifactId,
+        replace: true,
+      }),
+    );
+    await mutate("object_select", { entityId: "rim" });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    const original = await geometry(),
+      beforeHistory = await history();
+    assert.deepEqual(original.positions, semiFlatFixture.source);
+    const inventory = await artifactJson(
+      (await runEdit({ kind: "scanEdit", action: "inventory" })).artifact,
+    );
+    const hole = inventory.inventory.boundaries.findIndex(
+      (b) =>
+        b.closed && b.points.every((v, i) => i % 3 === 2 || Math.abs(v) <= 3),
+    );
+    if (!semiTangent) assert.equal(hole, semiFlatFixture.boundary);
+    const points = inventory.inventory.boundaries[hole].points;
+    const endpoint = (sign) => {
+      for (let i = 0; i < points.length; i += 3)
+        if (
+          Math.abs(points[i] - sign * 2.12132025) < 0.00001 &&
+          Math.abs(points[i + 1] - sign * 2.12132025) < 0.00001
+        )
+          return i / 3;
+      throw Error("Missing native endpoint");
+    };
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: semiTangent ? "tangent" : "flat",
+      indices: [hole],
+      start: semiTangent ? endpoint(1) : semiFlatFixture.start,
+      end: semiTangent ? endpoint(-1) : semiFlatFixture.end,
+      tolerance: semiFlatFixture.tolerance,
+    };
+    const expectedResult = await runEdit(operation);
+    const expectedGeometry = await geometry();
+    const patch = {
+      positions: expectedGeometry.positions.slice(original.positions.length),
+    };
+    assert.equal(patch.positions.length, semiTangent ? 900 : 9);
+    await mutate("history_undo", {});
+    assert.equal(await history(), beforeHistory);
+    assert.deepEqual((await geometry()).positions, original.positions);
+    const openSemi = async () => {
+      await page
+        .getByRole("button", { name: "Edit holes", exact: true })
+        .click();
+      const controls = page.locator(".scan-topology-panel");
+      await controls.locator(".app-select > button").first().click();
+      await page
+        .getByRole("option", { name: "Semi hole", exact: true })
+        .click();
+      await controls.locator(".app-select > button").nth(1).click();
+      await page
+        .getByRole("option", {
+          name: semiTangent ? "Tangent" : "Flat",
+          exact: true,
+        })
+        .click();
+      await controls.locator(".scan-topology-list button").nth(hole).click();
+      await controls
+        .getByRole("spinbutton", { name: "Start vertex", exact: true })
+        .fill(String(operation.start));
+      await controls
+        .getByRole("spinbutton", { name: "End vertex", exact: true })
+        .fill(String(operation.end));
+      return controls;
+    };
+    let controls = await openSemi();
+    await controls.getByRole("button", { name: "Back", exact: true }).click();
+    assert.deepEqual((await geometry()).positions, original.positions);
+    assert.equal(await history(), beforeHistory);
+    controls = await openSemi();
+    await page.screenshot({
+      path: fileURLToPath(
+        new URL(
+          `native-semi-${semiTangent ? "tangent" : "flat"}-settings.png`,
+          out,
+        ),
+      ),
+    });
+    await controls
+      .getByRole("button", { name: "Fill selected hole", exact: true })
+      .click();
+    for (let i = 0; i < 120 && (await history()) === beforeHistory; i++)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    assert.equal(await history(), beforeHistory + 1);
+    await mutate("viewport_control", { action: "fit", entityId: "rim" });
+    const gui = await geometry();
+    assert.deepEqual(
+      orientedFaces(gui.positions),
+      orientedFaces(semiFlatFixture.native),
+    );
+    assert.deepEqual(
+      gui.positions.slice(0, original.positions.length),
+      original.positions,
+    );
+    assert.deepEqual(
+      gui.positions.slice(original.positions.length),
+      patch.positions,
+    );
+    await mutate("viewport_control", { action: "fit", entityId: "rim" });
+    await page.screenshot({
+      path: fileURLToPath(
+        new URL(
+          `native-semi-${semiTangent ? "tangent" : "flat"}-filled.png`,
+          out,
+        ),
+      ),
+    });
+    await page.keyboard.press("Control+z");
+    assert.deepEqual((await geometry()).positions, original.positions);
+    await mutate("history_redo", {});
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    await mutate("history_undo", {});
+    await runEdit(operation);
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    assert.equal(await history(), beforeHistory + 1);
+    await controls.getByRole("button", { name: "Back", exact: true }).click();
+    const saved = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: saved.result.artifactId,
+        replace: true,
+      }),
+    );
+    assert.deepEqual((await geometry()).positions, gui.positions);
+    reports.push({
+      scenario: semiTangent ? "native-semi-tangent" : "native-semi-flat",
+      sourceTriangles: original.positions.length / 9,
+      outputTriangles: gui.positions.length / 9,
+      patchTriangles: patch.positions.length / 9,
+      method: expectedResult.diagnostics.method,
+      guiMcpEqual: true,
+      nativeOrientedGeometryEqual: true,
+      retainedSourceCornersExact: true,
+      mcpCommitUndoRestoresSourceAndHistory: true,
+      guiBackBeforeApplyPreservesSourceAndHistory: true,
+      undoRedo: true,
+      saveReopen: true,
+    });
+  }
+  if (realPartial) {
+    await mutate("project_new", { discard: true });
+    const sourcePath = process.env.SCANFORGE_ORIGINAL_PARTIAL_SOURCE;
+    assert(
+      sourcePath,
+      "Set SCANFORGE_ORIGINAL_PARTIAL_SOURCE to the original STL",
+    );
+    const sourceBytes = await readFile(sourcePath);
+    assert.equal(
+      createHash("sha256").update(sourceBytes).digest("hex"),
+      "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    );
+    const sourceCount = sourceBytes.readUInt32LE(80);
+    assert.equal(sourceCount, 273139);
+    await page
+      .locator('input[type=file][accept*=".stl"]')
+      .setInputFiles(sourcePath);
+    await page.getByRole("button", { name: "Import", exact: true }).click();
+    await page
+      .getByRole("button", { name: "scan-1.stl", exact: true })
+      .waitFor({ timeout: 120000 });
+    const object = (await call("project_get")).result.objects.find(
+      (o) => o.name === "scan-1.stl",
+    );
+    assert(object);
+    targetId = object.id;
+    await mutate("object_select", { entityId: targetId });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    const hashGeometry = async () => {
+      for (let i = 0; i < 1200; i++) {
+        const state = (await call("session_get")).result;
+        if (!state.busy && state.activeJobId === null) break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (i === 1199) throw Error("Workspace remained busy before export");
+      }
+      const exported = (
+        await job(
+          await call("project_export", { format: "stl", visible: true }),
+        )
+      ).result;
+      const all = createHash("sha256"),
+        original = createHash("sha256");
+      let at = 84,
+        faces = 0;
+      try {
+        while (at < exported.bytes) {
+          const part = (
+            await call("artifact_read", {
+              artifactId: exported.artifactId,
+              offset: at,
+              length: 262100,
+            })
+          ).result;
+          const bytes = Buffer.from(part.base64, "base64");
+          assert(bytes.length > 0 && bytes.length % 50 === 0);
+          for (let i = 0; i < bytes.length; i += 50) {
+            const coords = bytes.subarray(i + 12, i + 48);
+            all.update(coords);
+            if (faces < sourceCount) original.update(coords);
+            faces++;
+          }
+          at = part.nextOffset;
+        }
+        return {
+          faces,
+          all: all.digest("hex"),
+          original: original.digest("hex"),
+        };
+      } finally {
+        await call("artifact_delete", { artifactId: exported.artifactId });
+      }
+    };
+    const before = await hashGeometry(),
+      beforeHistory = await history();
+    assert.equal(before.faces, sourceCount);
+    assert.equal(
+      before.all,
+      "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    );
+    const inventory = await artifactJson(
+      (
+        await runEdit({
+          kind: "scanEdit",
+          action: "inventory",
+          tolerance: 0.001,
+        })
+      ).artifact,
+    );
+    const hole = inventory.inventory.boundaries.findIndex(
+      (b) => b.closed && b.points.length / 3 === 899,
+    );
+    assert(hole >= 0, "Expected original 899-point boundary");
+    const displayIndex = inventory.inventory.holeOrder.indexOf(hole);
+    assert(displayIndex >= 0);
+    console.log(
+      JSON.stringify({
+        hole,
+        displayIndex,
+        holeOrder: inventory.inventory.holeOrder,
+      }),
+    );
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: "tangent",
+      indices: [hole],
+      start: 0,
+      end: 4,
+      tolerance: 0.001,
+    };
+    const mcpResult = await runEdit(operation);
+    const expected = await hashGeometry();
+    assert.equal(mcpResult.diagnostics.filledHoles, 1);
+    assert.equal(expected.original, before.all);
+    assert.equal(
+      expected.all,
+      "5d47cd39a2afc3005a5cdb72de5c1008f25fe7de27f195b95aeba159c8c9c2e1",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(await hashGeometry(), before);
+    assert.equal(await history(), beforeHistory);
+    await page.getByRole("button", { name: "Edit holes", exact: true }).click();
+    const controls = page.locator(".scan-topology-panel");
+    await controls.locator(".app-select > button").first().click();
+    await page.getByRole("option", { name: "Semi hole", exact: true }).click();
+    await controls.locator(".app-select > button").nth(1).click();
+    await page.getByRole("option", { name: "Tangent", exact: true }).click();
+    await controls
+      .locator(".scan-topology-list button")
+      .nth(displayIndex)
+      .click();
+    console.log(
+      "Selected hole",
+      await controls
+        .locator(".scan-topology-list button[aria-pressed=true]")
+        .innerText(),
+    );
+    await controls
+      .getByRole("spinbutton", { name: "Start vertex", exact: true })
+      .fill("0");
+    await controls
+      .getByRole("spinbutton", { name: "End vertex", exact: true })
+      .fill("4");
+    await controls
+      .getByRole("button", { name: "Fill selected hole", exact: true })
+      .click();
+    for (let i = 0; i < 200 && (await history()) === beforeHistory; i++)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    console.log("Panel status", await controls.innerText());
+    await page.screenshot({
+      path: fileURLToPath(new URL("original-partial-status.png", out)),
+    });
+    assert.equal(await history(), beforeHistory + 1);
+    const gui = await hashGeometry();
+    assert.deepEqual(gui, expected);
+    await mutate("history_undo", {});
+    assert.deepEqual(await hashGeometry(), before);
+    await mutate("history_redo", {});
+    assert.deepEqual(await hashGeometry(), gui);
+    reports.push({
+      scenario: "original-scan-partial-tangent",
+      sourceFacets: sourceCount,
+      outputFacets: gui.faces,
+      addedFacets: gui.faces - sourceCount,
+      boundary: hole,
+      start: 0,
+      end: 4,
+      guiMcpEqual: true,
+      sourceCornersPreserved: true,
+      undoRedo: true,
+      sourceDigest: before.all,
+      outputDigest: gui.all,
+      nativeComparison: false,
+    });
+  }
+  for (const { curved, separate, fragmented, native } of cases) {
+    targetId = "rim";
+    const scenario = native
+      ? "native-flat"
+      : fragmented
+        ? "fragmented-open"
+        : separate
+          ? "independent-boundaries"
+          : curved
+            ? "tangent"
+            : "flat";
     const positions = [];
     const point = (i, r) => {
       const a = (i * Math.PI) / 16,
@@ -464,6 +886,8 @@ try {
           }
       }
     }
+    if (native)
+      positions.splice(0, positions.length, ...nativeFlatFixture.source);
     const project = {
       format: "maliev-scanforge",
       version: 1,
@@ -523,8 +947,12 @@ try {
       }
       throw Error(`Missing facing edge ${x}`);
     };
-    const source = separate ? findEdge(-2) : { boundary: hole, edge: 0 };
-    const destination = separate ? findEdge(2) : { boundary: hole, edge: 16 };
+    const source = separate
+      ? findEdge(-2)
+      : { boundary: hole, edge: native ? nativeFlatFixture.start : 0 };
+    const destination = separate
+      ? findEdge(2)
+      : { boundary: hole, edge: native ? nativeFlatFixture.end : 16 };
     const operation = {
       kind: "scanEdit",
       action: "fillHoles",
@@ -533,7 +961,7 @@ try {
       ...(separate ? { endBoundary: destination.boundary } : {}),
       start: source.edge,
       end: destination.edge,
-      algorithm: "automatic",
+      algorithm: native ? "flat" : "automatic",
       tolerance: 0.001,
     };
     const beforeHistory = await history(),
@@ -551,6 +979,10 @@ try {
     // Leave the default, unrelated hole selected. Bridge must ignore that selection.
     await controls.locator(".app-select > button").first().click();
     await page.getByRole("option", { name: "Bridge", exact: true }).click();
+    if (native) {
+      await controls.locator(".app-select > button").nth(1).click();
+      await page.getByRole("option", { name: "Flat", exact: true }).click();
+    }
     assert.equal(await controls.locator(".scan-topology-list").count(), 0);
     assert.equal(
       await controls.getByRole("spinbutton", { name: "Start vertex" }).count(),
@@ -654,6 +1086,7 @@ try {
         );
       }
       if (scenario === "flat") {
+        await bridgeReady("holes");
         const unit = box.height / (2 * 22 * Math.tan((21 * Math.PI) / 180));
         await page.mouse.move(
           box.x + box.width / 2 + 4.5 * unit,
@@ -669,6 +1102,7 @@ try {
       await page.getByRole("option", { name: "Bridge", exact: true }).click();
     }
 
+    await bridgeReady("bridge");
     await page.mouse.move(a.x, a.y);
     await page.waitForFunction(
       () =>
@@ -759,6 +1193,11 @@ try {
       "bridge commit and inventory must reuse topology",
     );
     const gui = await geometry();
+    if (native)
+      assert.deepEqual(
+        orientedFaces(gui.positions),
+        orientedFaces(nativeFlatFixture.native),
+      );
     assert.deepEqual(
       gui.positions.slice(original.positions.length),
       patch.positions,
@@ -785,6 +1224,20 @@ try {
       cancel: true,
     });
     await controls.getByRole("button", { name: "Back", exact: true }).click();
+    if (native) {
+      const saved = await job(
+        await call("project_export", { format: "project" }),
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: saved.result.artifactId,
+          replace: true,
+        }),
+      );
+      assert.deepEqual((await geometry()).positions, gui.positions);
+      reports.at(-1).nativeOrientedGeometryEqual = true;
+      reports.at(-1).saveReopen = true;
+    }
   }
   assert.deepEqual(errors, []);
   ledger.result = { reports, pageErrors: errors };

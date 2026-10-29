@@ -1,0 +1,135 @@
+{
+  "scope": "One installed-native partial Tangent curved-annulus control; other partial and bridge controls and M2 remain open.",
+  "native": {
+    "version": "8.0.123",
+    "units": "mm",
+    "sourceSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+    "nativeStlSha256": "d7a0034352028a3a7ffa857b559e166d534b3eace33deae6d8b9032f0cda1753",
+    "sourceFacets": 64,
+    "outputFacets": 164,
+    "fixture": "tests/fixtures/hole-observed-semi-tangent-curved.json",
+    "selection": "Two endpoints inferred from the exported partial patch boundary; native operation was observed in the installed application."
+  },
+  "investigation": {
+    "previousSharedFacets": 79,
+    "nativeChordWithInterpolatedNormals": "98 added facets; oriented geometry did not match",
+    "nativeChordWithZeroNormals": "100 added facets and all 100 native oriented patch facets match",
+    "curve": "Ten Hermite segments on this control, with endpoint tangents derived from retained vertex normals.",
+    "staticEvidence": "The partial fill caller creates intermediate vertex records with zero normal fields before the spatial solver."
+  },
+  "validation": {
+    "nativeFixtureAndMcpOperationTests": "91 focused tests passed in four files after intersection and proximity guards; six native-fixture tests passed after the multi-boundary correction",
+    "neighboringScanEditTests": "66 passed in six files before the retained browser driver update",
+    "typescript": "All 13 batches passed under a 4 GiB job limit before a subsequent test-only addition",
+    "vite": "Production Vite build passed under a 4 GiB job limit",
+    "browser": {
+      "driver": "tests/bridge-drag-browser.mjs",
+      "case": "SCANFORGE_BRIDGE_CASES=native-semi-flat and SCANFORGE_SEMI_TANGENT=1",
+      "guiAndPublicMcpMatchNativeOrientedFacets": true,
+      "retainedSourceCornersExact": true,
+      "backUndoRedoAndBinaryReopen": true,
+      "pageErrors": [],
+      "jobPeakBytes": 714674176,
+      "cleanupConfirmed": true
+    },
+    "existingSemiFlatBrowserControl": "Passed GUI/public MCP, native oriented geometry and lifecycle; job cleanup confirmed",
+    "secondOriginalTopology": {
+      "sourceFileSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "facets": 2547405,
+      "toleranceMm": 0.001,
+      "nonManifoldEdges": 1,
+      "inconsistentEdges": 0,
+      "closedBoundaries": 31,
+      "optInTest": "tests/original-partial-topology.test.ts",
+      "jobPeakBytes": 1342070784,
+      "jobLimitBytes": 4294967296,
+      "nodeOldSpaceLimitMiB": 3072,
+      "cleanupConfirmed": true,
+      "scope": "Position-welded topology analysis only; no hole fill, GUI/MCP or native comparison. This topology reports a nonmanifold edge; it is not the application's imported indexed representation.",
+      "indexedImport": {
+        "acceptedFacets": 2547403,
+        "mappedRepeatedVertexFacetsRejected": 2,
+        "nonManifoldEdges": 0,
+        "inconsistentEdges": 0,
+        "closedBoundaries": 42,
+        "jobPeakBytes": 1351397376,
+        "cleanupConfirmed": true,
+        "scope": "Shared indexed importer and topology analysis; no fill, rendered GUI/MCP or native comparison."
+      },
+      "successfulPartialCacheMemory": {
+        "boundaryIndex": 3,
+        "startVertex": 255,
+        "endVertex": 263,
+        "addedFacets": 13,
+        "sourceCoordinatesSha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945",
+        "outputCoordinatesSha256": "db9794c41df6c16bb56a2d292cf1679be4542a31f2a42a9bcffef3bf42d9bb9d",
+        "sourceUnchanged": true,
+        "oldJobPeakBytes": 3907825664,
+        "newJobPeakBytes": 2352549888,
+        "jobLimitBytes": 4294967296,
+        "nodeOldSpaceLimitMiB": 3072,
+        "cleanupConfirmed": true,
+        "scope": "Matched isolated indexed worker fill with topology cache; no GUI, public MCP, native comparison, or full serialization memory measurement.",
+        "serialization": {
+          "packedBytes": 158647600,
+          "jobPeakBytes": 2504290304,
+          "cleanupConfirmed": true,
+          "scope": "Isolated fill, topology packing and hydration under the same 4 GiB job; not a full project or browser save/reopen.",
+          "optInTest": "tests/original-partial-cache-serialization.test.ts"
+        }
+      }
+    },
+    "thirdOriginalMemory": {
+      "sourceFileSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "facets": 3326910,
+      "toleranceMm": 0.001,
+      "sourceEdges": 5009433,
+      "rimAllocationProbe": {
+        "oldJobPeakBytes": 3660705792,
+        "newJobPeakBytes": 1722908672,
+        "oldRimMs": 5534.7754,
+        "newRimMs": 9.8956,
+        "selectedArcVertices": 5,
+        "newRimEdgeEntries": 7
+      },
+      "sixPartialAttempts": {
+        "boundaryIndices": [0, 1, 2],
+        "startVertex": 0,
+        "endVertices": [4, 8],
+        "oldJobPeakBytes": 3817005056,
+        "newJobPeakBytes": 1756082176,
+        "allSkippedAndSourceUnchanged": true
+      },
+      "jobLimitBytes": 4294967296,
+      "nodeOldSpaceLimitMiB": 3072,
+      "cleanupConfirmed": true,
+      "scope": "Worker-level isolated diagnostics; all six tested arcs were skipped. Not a successful large-scan fill or a GUI/MCP/native comparison."
+    },
+    "originalScan": {
+      "sourceFileSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "sourceFacets": 273139,
+      "boundaryIndex": 0,
+      "displayRow": 1,
+      "startVertex": 0,
+      "endVertex": 4,
+      "toleranceMm": 0.001,
+      "outputFacets": 273143,
+      "sourceCoordinatesSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+      "outputCoordinatesSha256": "5d47cd39a2afc3005a5cdb72de5c1008f25fe7de27f195b95aeba159c8c9c2e1",
+      "guiPublicMcpEqual": true,
+      "sourceCornersAndUndoRedo": true,
+      "nativeComparison": false,
+      "jobPeakBytes": 1551011840,
+      "cleanupConfirmed": true,
+      "driver": "SCANFORGE_BRIDGE_CASES=original-partial and SCANFORGE_ORIGINAL_PARTIAL_SOURCE pointing to the pinned scan-1.stl",
+      "failedRuns": "The first driver selected by topology index rather than displayed order. The second selected correctly but exported while the workspace was busy. Both failed and cleaned up; the corrected driver passed.",
+      "mixedDriverRegression": "The native Semi/Tangent, original-scan partial Tangent and native Flat Bridge cases passed in one isolated run after resetting the test project and target between scenarios."
+    }
+  },
+  "limitations": [
+    "One manufactured partial Tangent native control; no general native parity claim.",
+    "The other directed arc was checked for cache consistency, not compared with a separate native export.",
+    "Multi-boundary separated-patch cache and crossing-patch rejection controls are manufactured; their large-input cost is not measured.",
+    "Other partial and bridge algorithms and the M2 acceptance gates remain open."
+  ]
+}

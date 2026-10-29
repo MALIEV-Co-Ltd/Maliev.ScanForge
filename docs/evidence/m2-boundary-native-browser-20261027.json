@@ -1,0 +1,59 @@
+{
+  "scope": "Finite captured annulus: latest-code rendered GUI and public MCP lifecycle; not M2 closure",
+  "sourceHead": "5977a5bdf0f662f75f2cce36a5b1124b1e319445",
+  "sourceManifestSha256": "8210d9bcb431da037c7ffd582424bdac3ba2766cb49a1d4be1d65f3c0becde11",
+  "buildId": "scanforge-83a2ca2e8c172ece",
+  "applicationOrigin": "http://127.0.0.1:5175",
+  "uiAutomation": "CUA only; public SDK operations use the application MCP bridge",
+  "nativeRecord": "native-boundary-smoothing-20261027.json",
+  "geometry": {
+    "coordinates": 576,
+    "facets": 64,
+    "guiDigest": "f199701f0d929db203a16175d41d6f5102aa1c927e46553f55fe32f834e948a5",
+    "mcpDigest": "f199701f0d929db203a16175d41d6f5102aa1c927e46553f55fe32f834e948a5",
+    "reopenDigest": "f199701f0d929db203a16175d41d6f5102aa1c927e46553f55fe32f834e948a5",
+    "secondGuiDigest": "8e9fe4504abc723ed5b342a9ecbcd39305e74dc296df8a6640850ba8171ff76a",
+    "secondMcpDigest": "8e9fe4504abc723ed5b342a9ecbcd39305e74dc296df8a6640850ba8171ff76a",
+    "nativeComparison": "Exact Float32 bits outside the predeclared 16*DoubleEPS*input-scale zero neighborhood",
+    "reopenedIndex": {
+      "vertices": 64,
+      "triangles": 64
+    }
+  },
+  "history": {
+    "guiNewSteps": 1,
+    "undoOriginalSourceBits": true,
+    "redoRestoresEditedMesh": true,
+    "binaryReopen": true,
+    "secondCommandParity": true
+  },
+  "cancellation": {
+    "publicStatus": "cancelled",
+    "requested": true,
+    "geometryUnchanged": true,
+    "revisionUnchanged": true,
+    "historyUnchanged": true,
+    "scope": "Immediate SDK cancellation at progress zero; this does not prove cancellation after nested CAD initialization",
+    "earlierAttemptsRetained": "r1 job finished before cancellation; GUI cancellation button disappeared after completion. Neither is counted as cancelled."
+  },
+  "failedDispatchRetained": "r1 first MCP edit during post-Undo preparation returned BUSY. Fresh session_get confirmed idle before the successful new request. No admission rules changed.",
+  "renderedObservation": "CUA 1280x720 screenshot shows annulus, boundaries, strength 1 and one history step; no separate exported screenshot artifact retained.",
+  "resourceReceipts": [
+    {
+      "receipt": "project-index-validation-m2-boundary-cua-mcp-20261027-r1-cad.receipt.json",
+      "exitCode": 0,
+      "cleanupErrors": []
+    },
+    {
+      "receipt": "project-index-validation-m2-boundary-cua-mcp-20261027-r2-cad.receipt.json",
+      "exitCode": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "remaining": [
+    "Independent native open/anchor/selected/folded controls and slider binding",
+    "GUI active-kernel cancellation; public cancellation after nested CAD initialization",
+    "Full current checks and fresh review",
+    "Native 3D Sketch and remaining M2 inventory gates; exact-head CI and authorized main merge/closure"
+  ]
+}

@@ -20,10 +20,13 @@ const lease = setTimeout(() => scope.close(), 120000);
 scope.onmessage = async ({ data }) => {
   try {
     const sharedChunks: ProjectSharedChunk[] = [];
+    const decodedFloat64 = new WeakMap<number[], Float64Array>();
     let session = await decodeProjectContents(data.file, {
       sharedReadonlyBuffers: true,
+      privateFloat64Chunks: true,
       reusableChunks: data.reusableChunks,
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
+      onDecodedFloat64: (values, bytes) => decodedFloat64.set(values, bytes),
     });
     assertReferenceWorkspaceAdmission(session);
     session = prepareRestoredProjectDisplays(session);
@@ -36,7 +39,11 @@ scope.onmessage = async ({ data }) => {
     });
     const encoded = await packProjectTransport(
       { snapshot: projectEncodingSnapshot(session), displays, sharedChunks },
-      { ownedTypedArrays: true, cooperative: false },
+      {
+        ownedTypedArrays: true,
+        cooperative: false,
+        reuseNumericBuffer: (values) => decodedFloat64.get(values),
+      },
     );
     scope.postMessage({ packet: encoded.packet }, encoded.transfers);
   } catch (error) {

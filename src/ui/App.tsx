@@ -1,3 +1,6 @@
+import { scanSplitCutter, isScanSplitCutter } from "../scan-split-cutter";
+import { scanSegmentPublication } from "../scan-segment-publication";
+import { indexedMeshMatches } from "../indexed-mesh";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
@@ -9,9 +12,13 @@ import {
 import {
   cancelScanToolOnSourceChange,
   cancelShrinkwrapOperation,
-  runShrinkwrapPreviewCommand,
+  runScanPreviewCommand,
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
+import { runAverageCommand } from "./average-command";
+import { runUnrollCommand } from "./unroll-command";
+import { prepareModelSketchPublication } from "../model-sketch-history";
+import { validateSavedSketchDisplay } from "../saved-sketch-display";
 import { prepareMeshInBackground } from "../scan-background-preparation";
 import { primitiveFitSamples } from "../primitive-fit-samples";
 import { getWorkingJobStatus } from "../working-job-status";
@@ -99,7 +106,7 @@ import {
   StatusBar,
   OperationStatus,
 } from "./StatusFeedback";
-import { linearProgress, type ReductionStatistics } from "../reduction-report";
+import type { ReductionStatistics } from "../reduction-report";
 import { holeFillCounts, holeFillOutcomes } from "../hole-fill-progress";
 import { ReductionColorScale } from "./ReductionResults";
 import { toleranceCoverage } from "../reduction-display";
@@ -117,11 +124,11 @@ import {
   type ScanToolId,
   type ScanToolParameters,
 } from "./ScanToolsPanel";
-import { mirrorReference, cylinderReference } from "../scan-tools-reference";
+import { mirrorReference } from "../scan-tools-reference";
+import { isUnrollReferenceCandidate } from "../scan-unroll-reference";
 import { transformPlaneFrame } from "../plane-frame";
-import { scanToolRequest } from "./scan-tool-request";
+import { stagedScanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
-import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SavedSketch } from "../types";
@@ -155,7 +162,9 @@ import {
   type ScanSelectionControl,
 } from "../automation/scan-selection-operations";
 import type { ScanEditRequest } from "../scan-edit";
-import { boundarySketches } from "../scan-boundary-sketch";
+import { projectedBoundarySketches } from "../scan-boundary-sketch";
+import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
+import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { ScanTopologyPanels } from "./ScanTopologyPanels";
 import type { ScanBridgeSession } from "../scan-bridge-gesture";
@@ -207,7 +216,6 @@ import {
 import {
   changeLabel,
   modelChanged,
-  restoreModelDisplay,
   seekModelRevision,
   type Revision,
 } from "../history";
@@ -256,6 +264,7 @@ import type {
   FitResult,
   KernelPrimitive,
   KernelMesh,
+  Positions,
   Vec3,
 } from "../types";
 import { Viewport } from "../viewport";
@@ -586,7 +595,7 @@ export function App() {
     entityId: string;
     source: Entity["positions"];
     output: Float32Array;
-    settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+    settings?: import("../scan-preview-request").ScanPreviewParameters;
   } | null>(null);
   const [pickedScanReference, setPickedScanReference] = useState<string>();
   const scanToolAbort = useRef<AbortController | null>(null);
@@ -1095,11 +1104,9 @@ export function App() {
     activeScanPreview,
   ]);
   useEffect(() => {
-    if (scanPreview?.kind === "shrinkwrap")
-      queueMicrotask(() => workspaceApi.validateScanPreview());
+    if (scanPreview) queueMicrotask(() => workspaceApi.validateScanPreview());
     if (scanPreview && !activeScanPreview) {
-      if (scanPreview.kind === "shrinkwrap")
-        queueMicrotask(() => workspaceApi.discardScanPreview(scanPreview.id));
+      queueMicrotask(() => workspaceApi.discardScanPreview(scanPreview.id));
       setScanPreview(null);
       releaseProcessingSession();
     }
@@ -1386,6 +1393,7 @@ export function App() {
   ]);
   useEffect(() => {
     viewport.current?.setSketchEditor(
+      // The saved display remains independent of this temporary edit session.
       workspace === "sketch" && toolPanelOpen && !createSketch
         ? {
             sketch: sketchDraft,
@@ -1427,6 +1435,14 @@ export function App() {
         createPlaneSketch(coordinateSketchFrame(plane, 0));
       };
   }, [originVisible, planePicking, savedSketches.length]);
+  useEffect(() => {
+    viewport.current?.setSavedSketchDisplays(
+      savedSketches,
+      workspace === "sketch" && toolPanelOpen && !createSketch
+        ? (activeSketchId ?? undefined)
+        : undefined,
+    );
+  }, [savedSketches, activeSketchId, workspace, toolPanelOpen, createSketch]);
   useEffect(() => {
     if (!planePicking) return;
     const cancel = (event: KeyboardEvent) => {
@@ -1714,9 +1730,10 @@ export function App() {
     }
   }
   function replaceScanPositions(
-    positions: Float32Array,
+    positions: Positions,
     label: string,
     retainFacetSelection = false,
+    indexedMesh?: Entity["indexedMesh"],
   ) {
     if (!selected || !sampledSelected) return;
     if (!positions.length) {
@@ -1745,7 +1762,8 @@ export function App() {
       surfaceScanId: undefined,
       fit: undefined,
       parametric: undefined,
-      normals: undefined,
+      normals: indexedRenderNormals(indexedMesh),
+      indexedMesh,
       meshSelection: retainSelection ? selected.meshSelection : undefined,
       scanSource: undefined,
     });
@@ -1859,6 +1877,9 @@ export function App() {
           positions: selected.positions,
           tolerance: SCAN_TOPOLOGY_TOLERANCE,
           ...operation,
+          ...(indexedMeshMatches(selected.indexedMesh, selected.positions)
+            ? { sourceIndexed: selected.indexedMesh }
+            : {}),
         },
         {
           signal: controller.signal,
@@ -1877,9 +1898,15 @@ export function App() {
           result.scanEdit.positions,
           label,
           operation.action === "smoothSelected",
+          result.indexedMesh,
         );
       if (result.scanEdit?.segments)
-        createSegments(result.scanEdit.segments, label);
+        createSegments(
+          result.scanEdit.segments,
+          label,
+          undefined,
+          result.scanEdit.segmentIndexedMeshes,
+        );
       if (
         operation.action === "fillHoles" &&
         operation.mode !== "bridge" &&
@@ -1908,11 +1935,27 @@ export function App() {
     plane: { origin: Vec3; normal: Vec3 },
     label: string,
   ) {
-    const created = boundarySketches(curves, plane, label);
-    if (!created.length) throw new Error("No boundary curves were produced.");
-    setSavedSketches((previous) => [...previous, ...created]);
-    setDirty(true);
+    const created = projectedBoundarySketches(curves, plane);
+    operationLabel.current = label;
+    try {
+      commit(entities, undefined, { newModelSketches: created });
+    } finally {
+      operationLabel.current = null;
+    }
     setMessage(`${created.length} projected boundary sketch(es) created`);
+  }
+  function createSpatialBoundarySketch(
+    curves: SpatialBoundaryCurve[],
+    label: string,
+  ) {
+    const created = spatialBoundarySketch(curves);
+    operationLabel.current = label;
+    try {
+      commit(entities, undefined, { newModelSketches: [created] });
+    } finally {
+      operationLabel.current = null;
+    }
+    setMessage("3D boundary sketch created");
   }
   function selectionUndo(redo = false, owned = false) {
     wandRegion.current = null;
@@ -2482,7 +2525,13 @@ export function App() {
     });
     entityFeatureModel(next);
     next = next.map(canonicalCloud);
-    if (!modelChanged(entities, next)) {
+    const sketchPublication = policy?.newModelSketches?.length
+      ? prepareModelSketchPublication(
+          { sketches: savedSketches },
+          policy.newModelSketches,
+        )
+      : undefined;
+    if (!modelChanged(entities, next) && !sketchPublication) {
       setEntities(next);
       setDirty(true);
       return;
@@ -2494,12 +2543,17 @@ export function App() {
       {
         entities,
         label,
+        ...(sketchPublication
+          ? { sketchChanges: sketchPublication.changes }
+          : {}),
         ...(policy?.modelVisibilityFor?.length
           ? { restoreVisibilityFor: [...policy.modelVisibilityFor] }
           : {}),
       },
     ]);
     setFuture([]);
+    if (sketchPublication)
+      setSavedSketches(sketchPublication.authoring.sketches!);
     setEntities(next);
     setDirty(true);
   }
@@ -2523,48 +2577,46 @@ export function App() {
   function undoModel() {
     if (history.length) {
       const next = history[history.length - 1];
-      setFuture((p) => [{ ...next, entities }, ...p]);
-      setEntities(
-        restoreModelDisplay(
-          next.entities,
-          entities,
-          new Set(next.restoreVisibilityFor),
-        ),
-      );
-      setSelectedId(
-        next.entities.some((entity) => entity.id === selectedId)
-          ? selectedId
-          : (next.entities[0]?.id ?? null),
-      );
-      setHistory((p) => p.slice(0, -1));
-      setDirty(true);
+      applyModelRevision(history.length - 1);
       setMessage(`Undid ${next.label}`);
     }
   }
   function redoModel() {
     if (future.length) {
       const next = future[0];
-      setHistory((p) => [...p, { ...next, entities }]);
-      setEntities(
-        restoreModelDisplay(
-          next.entities,
-          entities,
-          new Set(next.restoreVisibilityFor),
-        ),
-      );
-      setSelectedId(
-        next.entities.some((entity) => entity.id === selectedId)
-          ? selectedId
-          : (next.entities[0]?.id ?? null),
-      );
-      setFuture((p) => p.slice(1));
-      setDirty(true);
+      applyModelRevision(history.length + 1);
       setMessage(`Redid ${next.label}`);
     }
   }
   function restoreRevision(index: number) {
     if (busy || index === history.length) return;
-    const next = seekModelRevision(history, entities, future, index);
+    const next = applyModelRevision(index);
+    setMessage(
+      index === 0
+        ? "Restored starting state"
+        : `Restored model after ${next.history[index - 1].label}`,
+    );
+  }
+  function applyModelRevision(index: number) {
+    const next = seekModelRevision(history, entities, future, index, {
+      sketches: savedSketches,
+      ...(activeSketchId ? { activeSketchId } : {}),
+    });
+    const crossed = [...history, ...future].slice(
+      Math.min(index, history.length),
+      Math.max(index, history.length),
+    );
+    if (crossed.some((row) => row.sketchChanges?.length)) {
+      setSavedSketches(next.authoring!.sketches ?? []);
+      if (activeSketchId && !next.authoring!.activeSketchId) {
+        setActiveSketchId(null);
+        setSketchDraft(legacySketch.current);
+      }
+      pruneSketchUndoSessions(
+        sketchUndoSessions.current,
+        next.authoring!.sketches ?? [],
+      );
+    }
     setEntities(next.entities);
     setSelectedId(
       next.entities.some((entity) => entity.id === selectedId)
@@ -2574,11 +2626,7 @@ export function App() {
     setHistory(next.history);
     setFuture(next.future);
     setDirty(true);
-    setMessage(
-      index === 0
-        ? "Restored starting state"
-        : `Restored model after ${next.history[index - 1].label}`,
-    );
+    return next;
   }
   function showTools(nextWorkspace: string) {
     nextWorkspace =
@@ -2609,7 +2657,7 @@ export function App() {
   }
   function dismissScanTool() {
     workspaceApi.discardScanPreview();
-    if (scanPreview?.kind === "shrinkwrap")
+    if (scanPreview)
       releaseProcessingPreview(scanPreview.source, scanPreview.id);
     setScanToolFraction(undefined);
     setScanPreview(null);
@@ -2645,6 +2693,7 @@ export function App() {
       showTools(tool === "reduceNoise" ? "pointNoise" : "pointReduce");
       return;
     }
+    workspaceApi.discardScanPreview();
     setScanToolFraction(undefined);
     setScanPreview(null);
     releaseProcessingSession();
@@ -2668,7 +2717,7 @@ export function App() {
       !reference ||
       !(kind === "plane"
         ? mirrorReference(reference)
-        : cylinderReference(reference))
+        : isUnrollReferenceCandidate(reference))
     ) {
       setMessage(
         `Pick a ${kind === "plane" ? "planar CAD or construction object" : "cylinder reference"}.`,
@@ -2701,15 +2750,16 @@ export function App() {
     setPickedScanReference(undefined);
     setScanToolResult("");
   }, [selected?.id]);
-  async function runGuiShrinkwrap(args: Record<string, unknown>) {
+  async function runGuiScanPreview(args: Record<string, unknown>) {
     const controller = new AbortController();
     scanToolAccepting.current = args.action === "accept";
     scanToolAbort.current = controller;
     setError("");
     try {
-      return await runShrinkwrapPreviewCommand(workspaceApi, args, {
+      return await runScanPreviewCommand(workspaceApi, args, {
         signal: controller.signal,
         onProgress: (fraction, stage) => {
+          setScanToolFraction(fraction);
           setScanToolProgress(`${stage}   ${Math.round(fraction * 100)}%`);
         },
       });
@@ -2725,12 +2775,17 @@ export function App() {
         scanToolAccepting.current = false;
       }
       setScanToolProgress("");
+      setScanToolFraction(undefined);
     }
   }
   async function applyScanTool(parameters: ScanToolParameters) {
     if (!selected || busy || scanToolAbort.current) return;
     if (!referencePreviewAllowsTools()) return;
-    if (parameters.kind === "repolygonize") {
+    if (
+      parameters.kind === "repolygonize" ||
+      parameters.kind === "averageMesh" ||
+      parameters.kind === "unroll"
+    ) {
       const sourceId = selected.id;
       const controller = new AbortController();
       scanToolAbort.current = controller;
@@ -2738,31 +2793,60 @@ export function App() {
       setError("");
       setScanToolResult("");
       setScanToolFraction(undefined);
-      setScanToolProgress("Preparing reconstruction");
+      setScanToolProgress(
+        `Preparing ${scanToolTitles[parameters.kind].toLowerCase()}`,
+      );
       try {
-        const result = await runReconstructionCommand(
-          workspaceApi,
-          {
-            entityId: sourceId,
-            resolution: parameters.resolution,
-            method: parameters.method,
-            ...(parameters.targetIds?.length || parameters.method === "native"
-              ? { targetIds: parameters.targetIds }
-              : {}),
+        const options = {
+          signal: controller.signal,
+          onProgress: (fraction: number, stage: string) => {
+            const message = `${stage} · ${Math.round(fraction * 100)}%`;
+            setScanToolProgress(message);
+            setMessage(message);
           },
-          {
-            signal: controller.signal,
-            onProgress: (fraction, stage) => {
-              const message = `${stage} · ${Math.round(fraction * 100)}%`;
-              setScanToolProgress(message);
-              setMessage(message);
-            },
-          },
-        );
+        };
+        const result = await (parameters.kind === "repolygonize"
+          ? runReconstructionCommand(
+              workspaceApi,
+              {
+                entityId: sourceId,
+                resolution: parameters.resolution,
+                method: parameters.method,
+                ...(parameters.targetIds?.length ||
+                parameters.method === "native"
+                  ? { targetIds: parameters.targetIds }
+                  : {}),
+              },
+              options,
+            )
+          : parameters.kind === "unroll"
+            ? runUnrollCommand(
+                workspaceApi,
+                sourceId,
+                {
+                  kind: "unroll",
+                  cylinderId: parameters.cylinderId,
+                  offsetDegrees: parameters.offsetDegrees,
+                  ...(parameters.instances !== undefined
+                    ? { instances: parameters.instances }
+                    : {}),
+                },
+                options,
+              )
+            : runAverageCommand(
+                workspaceApi,
+                {
+                  entityId: sourceId,
+                  targetIds: parameters.targetIds,
+                  tolerance: parameters.tolerance,
+                },
+                options,
+              ));
         const diagnostics = result.diagnostics as
           Record<string, unknown> | undefined;
         const summary = String(
-          diagnostics?.summary ?? "Reconstruction complete.",
+          diagnostics?.summary ??
+            `${scanToolTitles[parameters.kind]} complete.`,
         );
         // The shared host commit flushes React before its terminal job receipt.
         const outputId =
@@ -2788,224 +2872,128 @@ export function App() {
       }
       return;
     }
-    if (parameters.kind === "shrinkwrap") {
-      const { targetIds, ...operation } = parameters;
-      await runGuiShrinkwrap({
+    if (parameters.kind !== "flipNormals") {
+      const { targetIds, ...operation } =
+        parameters.kind === "shrinkwrap"
+          ? parameters
+          : { ...parameters, targetIds: undefined };
+      const created = await runGuiScanPreview({
         action: "create",
         entityId: selected.id,
         operation,
         ...(targetIds?.length ? { targetIds } : {}),
       });
+      if (
+        created &&
+        (parameters.kind === "reducePolygons" ||
+          (parameters.kind === "reduceNoise" && parameters.measureDeviation))
+      )
+        await runGuiScanPreview({
+          action: "compare",
+          entityId: selected.id,
+          previewId: created.previewId,
+          deviation: parameters.deviation,
+          paletteThreshold:
+            parameters.kind === "reducePolygons"
+              ? parameters.paletteThreshold
+              : parameters.deviation,
+        });
       return;
     }
-    const source = selected;
     const controller = new AbortController();
-    const reduction = parameters.kind === "reducePolygons";
-    const reportEvent = (fraction: number, stage: string) => {
-      if (controller.signal.aborted) return;
-      setScanToolFraction(reduction ? fraction : undefined);
-      setScanToolProgress(
-        reduction ? stage : `${stage} · ${Math.round(fraction * 100)}%`,
-      );
-      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
-    };
-    const report = reduction
-      ? linearProgress(reportEvent)
-      : (_start: number, _end: number) => reportEvent;
-    setScanToolFraction(reduction ? 0 : undefined);
-    setScanToolProgress(
-      `Preparing ${scanToolTitles[parameters.kind].toLowerCase()}`,
-    );
+    scanToolAbort.current = controller;
+    setProcessingBusy(true);
+    setError("");
+    if (parameters.kind === "flipNormals") {
+      setScanToolProgress("Preparing flip normals");
+      setScanToolFraction(0);
+      setMessage("Preparing flip normals · 0%");
+    }
     try {
-      const request = scanToolRequest(
-        source,
-        parameters,
-        entities,
-        triangleMask,
-      );
-      const isPreview =
-        parameters.kind === "reduceNoise" ||
-        parameters.kind === "reducePolygons" ||
-        parameters.kind === "scaleMesh" ||
-        parameters.kind === "mirrorMesh";
-      const previewId = crypto.randomUUID();
-      setScanPreview(null);
-      scanToolAbort.current = controller;
-      setNoiseComparison(null);
-      setProcessingBusy(true);
-      setError("");
-      setScanToolResult("");
+      const checkScanSource = () => {
+        controller.signal.throwIfAborted();
+        if (
+          parameters.kind === "flipNormals" &&
+          entitiesRef.current !== entities
+        )
+          throw new Error(
+            "The workspace changed while Flip Normals was running.",
+          );
+      };
       const result = await processMesh(
-        isPreview
-          ? {
-              kind: "scanPreview",
-              phase: "create",
-              previewId,
-              positions: source.positions,
-              operation: request.operation,
-            }
-          : request,
+        await stagedScanToolRequest(
+          selected,
+          parameters,
+          entities,
+          triangleMask,
+          checkScanSource,
+          (fraction, stage) => {
+            setScanToolProgress(stage);
+            setScanToolFraction(fraction);
+            setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+          },
+        ),
         {
           signal: controller.signal,
           reuseTopology: true,
-          onProgress: report(0, reduction ? 0.75 : 1),
+          onProgress: (fraction, stage) => {
+            setScanToolProgress(stage);
+            setScanToolFraction(fraction);
+            setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+          },
         },
       );
       if (controller.signal.aborted || !result.positions) return;
-      let summary = String(result.diagnostics.summary ?? "Mesh tool complete");
-      if (isPreview) {
-        setScanPreview({
-          id: previewId,
-          kind: parameters.kind as
-            | "reduceNoise"
-            | "reducePolygons"
-            | "scaleMesh"
-            | "mirrorMesh"
-            | "shrinkwrap",
-          entityId: source.id,
-          source: source.positions,
-          output: result.positions,
-        });
-        if (
-          parameters.kind === "reducePolygons" ||
-          (parameters.kind === "reduceNoise" && parameters.measureDeviation)
-        ) {
-          const compared = await processMesh(
-            {
-              kind: "scanPreview",
-              phase: "compare",
-              positions: source.positions,
-              previewId,
-              deviation: parameters.deviation,
-              displayRange: reduction ? parameters.deviation : undefined,
-              paletteThreshold:
-                parameters.kind === "reducePolygons"
-                  ? parameters.paletteThreshold
-                  : parameters.deviation,
-            },
-            {
-              signal: controller.signal,
-              reuseTopology: true,
-              onProgress: report(reduction ? 0.75 : 0, reduction ? 0.99 : 1),
-            },
-          );
-          if (controller.signal.aborted) return;
-          summary += ` ${String(compared.diagnostics.summary)}`;
-          if (compared.noiseComparison)
-            setNoiseComparison({
-              kind: parameters.kind,
-              entityId: source.id,
-              source: source.positions,
-              output: result.positions,
-              ...compared.noiseComparison,
-              visible: true,
-            });
-        }
-      } else {
-        replaceScanPositions(
-          result.positions,
-          scanToolTitles[parameters.kind],
-          false,
-        );
-        scanToolOutput.current = result.positions;
-      }
-      if (
-        (parameters.kind === "reduceNoise" ||
-          parameters.kind === "reducePolygons") &&
-        result.noiseComparison
-      )
-        setNoiseComparison({
-          kind: parameters.kind,
-          entityId: source.id,
-          source: source.positions,
-          output: result.positions,
-          ...result.noiseComparison,
-          visible: true,
-        });
+      checkScanSource();
+      replaceScanPositions(
+        result.positions,
+        scanToolTitles[parameters.kind],
+        false,
+        result.indexedMesh,
+      );
+      scanToolOutput.current = result.positions;
+      const summary = String(
+        result.diagnostics.summary ?? "Mesh tool complete",
+      );
       setScanToolResult(summary);
       setMessage(summary);
-      if (reduction) report(1, 1)(1, "Reduction and comparison complete");
     } catch (error) {
-      if (controller.signal.aborted)
-        setMessage("Mesh operation cancelled; original geometry retained.");
-      else setError(errorText(error));
-      setScanToolFraction(undefined);
-      setScanToolProgress("");
+      if (controller.signal.aborted) setMessage("Flip normals cancelled.");
+      else {
+        setMessage("Flip normals failed.");
+        setError(errorText(error));
+      }
     } finally {
       if (scanToolAbort.current === controller) {
         scanToolAbort.current = null;
         setProcessingBusy(false);
-        if (!reduction) setScanToolProgress("");
-        if (controller.signal.aborted) setScanToolFraction(undefined);
+        setScanToolProgress("");
       }
     }
   }
   async function acceptScanPreview(options?: { createNewObject?: boolean }) {
     if (!activeScanPreview || busy) return;
-    if (activeScanPreview.kind === "shrinkwrap") {
-      const result = await runGuiShrinkwrap({
-        action: "accept",
-        entityId: activeScanPreview.entityId,
-        previewId: activeScanPreview.id,
-        createNew: options?.createNewObject ?? false,
-      });
-      if (result) {
-        dismissScanTool();
-        setMessage("Mesh preview accepted.");
-      }
-      return;
-    }
     if (
       activeScanPreview.kind === "reducePolygons" &&
       !activeNoiseComparison?.statistics
     )
       return;
-    if (
-      (activeScanPreview.kind === "scaleMesh" ||
-        activeScanPreview.kind === "mirrorMesh") &&
-      options?.createNewObject &&
-      selected
-    ) {
-      const copy = (
-        activeScanPreview.kind === "mirrorMesh"
-          ? mirroredMeshCopy
-          : scaledMeshCopy
-      )(selected, activeScanPreview.output, crypto.randomUUID());
-      operationLabel.current = `${scanToolTitles[activeScanPreview.kind]} · create new object`;
-      try {
-        commit([...entities, copy]);
-        setSelectedId(copy.id);
-      } finally {
-        operationLabel.current = null;
-      }
-    } else {
-      replaceScanPositions(
-        activeScanPreview.output,
-        scanToolTitles[activeScanPreview.kind],
-        activeScanPreview.kind === "reduceNoise",
-      );
+    const result = await runGuiScanPreview({
+      action: "accept",
+      entityId: activeScanPreview.entityId,
+      previewId: activeScanPreview.id,
+      createNew: options?.createNewObject ?? false,
+    });
+    if (result) {
+      dismissScanTool();
+      setMessage("Mesh preview accepted.");
     }
-    scanToolOutput.current = activeScanPreview.output;
-    setScanPreview(null);
-    setNoiseComparison(null);
-    closeScanTool();
-    setMessage("Mesh preview accepted.");
   }
   async function updateScanComparison(
     deviation: number,
     paletteThreshold: number,
   ) {
     const preview = activeScanPreview;
-    if (preview?.kind === "shrinkwrap") {
-      if (!busy && !scanToolAbort.current)
-        await runGuiShrinkwrap({
-          action: "compare",
-          entityId: preview.entityId,
-          previewId: preview.id,
-          deviation,
-        });
-      return;
-    }
     if (
       !preview ||
       preview.kind === "scaleMesh" ||
@@ -3014,59 +3002,14 @@ export function App() {
       scanToolAbort.current
     )
       return;
-    const controller = new AbortController();
-    scanToolAbort.current = controller;
-    setProcessingBusy(true);
-    setError("");
-    const report = linearProgress((fraction, stage) => {
-      setScanToolFraction(
-        preview.kind === "reducePolygons" ? fraction : undefined,
-      );
-      setScanToolProgress(stage);
-      setMessage(`${stage} · ${Math.floor(fraction * 100)}%`);
+    await runGuiScanPreview({
+      action: "compare",
+      entityId: preview.entityId,
+      previewId: preview.id,
+      deviation,
+      paletteThreshold:
+        preview.kind === "reduceNoise" ? deviation : paletteThreshold,
     });
-    report(0, 1)(0, "Preparing surface comparison");
-    try {
-      const result = await processMesh(
-        {
-          kind: "scanPreview",
-          phase: "compare",
-          positions: preview.source,
-          previewId: preview.id,
-          deviation,
-          displayRange:
-            preview.kind === "reducePolygons" ? deviation : undefined,
-          paletteThreshold:
-            preview.kind === "reduceNoise" ? deviation : paletteThreshold,
-        },
-        {
-          signal: controller.signal,
-          reuseTopology: true,
-          onProgress: report(0, 0.99),
-        },
-      );
-      if (!controller.signal.aborted && result.noiseComparison) {
-        setNoiseComparison({
-          kind: preview.kind,
-          entityId: preview.entityId,
-          source: preview.source,
-          output: preview.output,
-          ...result.noiseComparison,
-          visible: true,
-        });
-        setScanToolResult(String(result.diagnostics.summary));
-        report(1, 1)(1, "Surface comparison complete");
-      }
-    } catch (error) {
-      if (!controller.signal.aborted) setError(errorText(error));
-      setScanToolFraction(undefined);
-    } finally {
-      if (scanToolAbort.current === controller) {
-        scanToolAbort.current = null;
-        setProcessingBusy(false);
-        if (preview.kind !== "reducePolygons") setScanToolProgress("");
-      }
-    }
   }
   function cancelSurfaceFit() {
     surfaceFitAbort.current?.abort();
@@ -4247,6 +4190,9 @@ export function App() {
     );
   }
   function updateSketchDraft(sketch: Sketch) {
+    const saved = savedSketches.find((row) => row.id === activeSketchId);
+    if (saved?.visible && saved.kind !== "spatial")
+      validateSavedSketchDisplay({ ...saved, sketch });
     const key = activeSketchId ? `saved:${activeSketchId}` : "legacy";
     let session = sketchUndoSessions.current.get(key);
     if (!session) {
@@ -4280,7 +4226,11 @@ export function App() {
     if (!activeSketchId) legacySketch.current = sketch;
     if (activeSketchId)
       setSavedSketches((previous) =>
-        previous.map((s) => (s.id === activeSketchId ? { ...s, sketch } : s)),
+        previous.map((s) =>
+          s.id === activeSketchId && s.kind !== "spatial"
+            ? { ...s, sketch }
+            : s,
+        ),
       );
     setDirty(true);
   }
@@ -4355,33 +4305,29 @@ export function App() {
     });
   }
   function createSegments(
-    parts: Float32Array[],
+    parts: Entity["positions"][],
     label: string,
     classifications?: RegionClassification[],
+    indexedParts?: (Entity["indexedMesh"] | undefined)[],
   ) {
-    const created = parts
-      .filter((positions) => positions.length)
-      .map((positions, index): Entity => ({
-        id: crypto.randomUUID(),
-        name: `${label} ${index + 1}${classifications?.[index] ? ` · ${classifications[index].kind === "freeform" ? "unclassified" : classifications[index].kind}` : ""}`,
-        kind: "mesh",
-        positions,
-        fit: classifications?.[index]?.fit,
-        color: DEFAULT_PART_COLOR,
-        opacity: 1,
-        visible: true,
-      }));
-    if (!created.length) throw new Error("Segmentation produced no meshes.");
-    operationLabel.current = `${label} (${created.length} meshes)`;
-    commit([
-      ...entities.map((entity) =>
-        entity.id === selected?.id ? { ...entity, visible: false } : entity,
-      ),
-      ...created,
-    ]);
-    operationLabel.current = null;
-    setSelectedId(created[0].id);
-    setMessage(`Created ${created.length} segmented meshes`);
+    if (!selected)
+      throw Error("Choose the source object before publishing mesh segments.");
+    const publication = scanSegmentPublication(
+      entities,
+      selected.id,
+      parts,
+      classifications,
+      undefined,
+      indexedParts,
+    );
+    operationLabel.current = `${label} (${publication.created.length} meshes)`;
+    try {
+      commit(publication.entities, undefined, publication.policy);
+    } finally {
+      operationLabel.current = null;
+    }
+    setSelectedId(publication.created[0].id);
+    setMessage(`Created ${publication.created.length} segmented meshes`);
   }
   function cadOperation(
     label: string,
@@ -4675,9 +4621,7 @@ export function App() {
     launchCommand: runRepeatable,
     clearScanPreview: (previewId) => {
       setScanPreview((current) => (current?.id === previewId ? null : current));
-      setNoiseComparison((current) =>
-        current?.kind === "shrinkwrap" ? null : current,
-      );
+      setNoiseComparison(null);
     },
     showScanPreview: (preview) => {
       if (!preview) {
@@ -4687,21 +4631,25 @@ export function App() {
       }
       workspaceApi.requireReferencePreviewIdle();
       setSelectedId(preview.entityId);
-      setScanTool("shrinkwrap");
+      setScanTool(preview.settings.kind);
       setMode("inspect");
       showTools("scanTools");
       setScanPreview({
         id: preview.id,
-        kind: "shrinkwrap",
+        kind: preview.settings.kind,
         entityId: preview.entityId,
         source: preview.source,
         output: preview.output,
         settings: preview.settings,
       });
       setScanToolResult(preview.summary);
-      if (preview.comparison)
+      if (
+        preview.comparison &&
+        preview.settings.kind !== "scaleMesh" &&
+        preview.settings.kind !== "mirrorMesh"
+      )
         setNoiseComparison({
-          kind: "shrinkwrap",
+          kind: preview.settings.kind,
           entityId: preview.entityId,
           source: preview.source,
           output: preview.output,
@@ -4910,9 +4858,28 @@ export function App() {
           `Unlock ${protectedObject.name} before editing or deleting it.`,
         );
       entityFeatureModel(next);
+      const preserveId = policy?.preserveFacetSelectionFor;
+      if (preserveId) {
+        const source = entities.find((e) => e.id === preserveId);
+        const output = next.find((e) => e.id === preserveId);
+        if (
+          !source ||
+          !output ||
+          source.kind !== "mesh" ||
+          output.kind !== "mesh" ||
+          source.positions.length !== output.positions.length
+        )
+          throw Error(
+            "Facet selection retention requires unchanged mesh facet identities.",
+          );
+        selectionSessions.current.set(preserveId, {
+          positions: output.positions,
+          session: sessionFor(source),
+        });
+      }
       operationLabel.current = label;
       try {
-        commit(next, undefined, policy);
+        commit(next, preserveId, policy);
       } finally {
         operationLabel.current = null;
       }
@@ -5668,6 +5635,12 @@ export function App() {
                     <button
                       className="object-name"
                       onClick={() => {
+                        if (item.kind === "spatial") {
+                          setMessage(
+                            "Spatial sketch editing is not available yet.",
+                          );
+                          return;
+                        }
                         setSelectedId(null);
                         setActiveSketchId(item.id);
                         setSketchDraft(item.sketch);
@@ -5676,6 +5649,18 @@ export function App() {
                     >
                       <ScanLine size={16} />
                       <span>{item.name}</span>
+                    </button>
+                    <button
+                      aria-label={`${item.visible ? "Hide" : "Show"} ${item.name}`}
+                      onClick={() => {
+                        void uiCommand("sketch_manage", {
+                          action: "visibility",
+                          sketchId: item.id,
+                          visible: !item.visible,
+                        });
+                      }}
+                    >
+                      {item.visible ? <Eye size={15} /> : <EyeOff size={15} />}
                     </button>
                     <button
                       aria-label={`Delete ${item.name}`}
@@ -6143,7 +6128,10 @@ export function App() {
               splitMeshOpen ? (
               <SplitMeshPanel
                 key={selected.id}
-                cutters={entities.filter((entity) => entity.id !== selected.id)}
+                cutters={entities.filter(
+                  (entity) =>
+                    entity.id !== selected.id && isScanSplitCutter(entity),
+                )}
                 busy={busy}
                 onSplit={(targetId) => {
                   const target = entities.find(
@@ -6153,14 +6141,7 @@ export function App() {
                     void runScanEdit(
                       {
                         action: "split",
-                        target: target.positions,
-                        plane:
-                          target.kind === "plane" && target.fit
-                            ? {
-                                origin: target.fit.center,
-                                normal: target.fit.axis,
-                              }
-                            : undefined,
+                        ...scanSplitCutter(target),
                       },
                       "Split mesh",
                     );
@@ -6182,13 +6163,18 @@ export function App() {
                 entities={entities}
                 selectedId={selected.id}
                 selection={triangleMask}
-                onReplace={replaceScanPositions}
-                onCreate={createSegments}
+                onReplace={(positions, label, indexedMesh) =>
+                  replaceScanPositions(positions, label, false, indexedMesh)
+                }
+                onCreate={(parts, label, indexedParts) =>
+                  createSegments(parts, label, undefined, indexedParts)
+                }
                 onSelection={changeSelection}
                 onBoundaryHighlight={setScanBoundaryPaths}
                 onBridgeSession={setScanBridgeSession}
                 onBridgeDisplay={displayScanBridge}
                 onProject={projectScanBoundaries}
+                onSpatial={createSpatialBoundarySketch}
                 onStatus={setMessage}
                 onError={setError}
                 onBusyChange={setProcessingBusy}
@@ -6335,19 +6321,34 @@ export function App() {
                               ? "Reference point"
                               : selected.kind === "referenceLine"
                                 ? "Reference line"
-                                : selected.kind === "pointcloud"
-                                  ? "Point cloud"
-                                  : selected.kernelId
-                                    ? "Exact CAD + display mesh"
-                                    : selected.kind === "plane"
-                                      ? "Reference surface"
-                                      : "Triangle mesh"}{" "}
+                                : selected.kind === "referenceFrame"
+                                  ? selected.rollMapping
+                                    ? "Cylindrical roll frame"
+                                    : "Coordinate system"
+                                  : selected.kind === "pointcloud"
+                                    ? "Point cloud"
+                                    : selected.kernelId
+                                      ? "Exact CAD + display mesh"
+                                      : selected.kind === "plane"
+                                        ? "Reference surface"
+                                        : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
                       </div>
                       <ToolSection tools={["properties", "measure"]}>
                         <Panel title="Geometry" className="geometry-panel">
+                          {selected.coordinateFrame && (
+                            <p className="muted">
+                              Origin (
+                              {selected.coordinateFrame.frame.origin
+                                .map((value) => number(value))
+                                .join(", ")}
+                              ) mm
+                              {selected.rollMapping &&
+                                ` · Roll radius ${number(selected.rollMapping.radius)} mm · ${selected.rollMapping.instances} instance(s) · ${number(selected.rollMapping.offsetDegrees)}°`}
+                            </p>
+                          )}
                           {selected.fit && (
                             <p className="muted">
                               {selected.fit.kind} fit · RMS{" "}
@@ -7817,6 +7818,11 @@ export function App() {
                   : undefined
               }
               busy={busy}
+              onCancel={
+                processingBusy && !toolPanelOpen && scanToolAbort.current
+                  ? () => scanToolAbort.current?.abort()
+                  : undefined
+              }
             />
           )
         }

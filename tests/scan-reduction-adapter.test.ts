@@ -79,9 +79,14 @@ it("retains source for the native caller's below-four target and cancellation", 
 
 it("admits bounded working records and rejects oversized reductions before allocation", () => {
   expect(() => admitReductionRecords(10_201, 20_000)).not.toThrow();
-  expect(() => admitReductionRecords(100_000, 200_000)).toThrow(
+  expect(() => admitReductionRecords(100_000, 200_000)).not.toThrow();
+  expect(() => admitReductionRecords(10_000_000, 20_000_000)).toThrow(
     "working-memory",
   );
+  for (const value of [NaN, Infinity, -1, 1.5, Number.MAX_SAFE_INTEGER])
+    expect(() => admitReductionRecords(value, 20_000)).toThrow(
+      "working-memory",
+    );
 });
 
 it("keeps the native below-four shortcut independent of large-mesh admission", () => {

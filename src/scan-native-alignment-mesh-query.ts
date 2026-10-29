@@ -32,6 +32,7 @@ export type AlignmentWorkerSurface = Omit<
 /** Query an already prepared target. Construction and native vertex ordering remain separate gates. */
 export function createNativeAlignmentSurfaceQuery(
   surface: AlignmentWorkerSurface,
+  options: { includeTriangle?: boolean } = {},
 ) {
   const count = surface.points.length / 9;
   if (
@@ -113,6 +114,7 @@ export function createNativeAlignmentSurfaceQuery(
     if (!hit) return undefined;
     const offset = hit.triangle * 3;
     return {
+      ...(options.includeTriangle ? { triangle: hit.triangle } : {}),
       distance: hit.distance,
       closest: bestClosest,
       normal: [

@@ -1,6 +1,7 @@
 export type Vec3 = [number, number, number];
 import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
+import type { SketchFrame } from "./sketch-frame";
 import type { ParametricFeature } from "./parametric";
 import type { ScanSourceCounts } from "./scan-source";
 import type { ReferenceEntityData } from "./reference-entity";
@@ -30,7 +31,8 @@ export type EntityKind =
   | "cone"
   | "box"
   | "referencePoint"
-  | "referenceLine";
+  | "referenceLine"
+  | "referenceFrame";
 export interface Entity {
   id: string;
   name: string;
@@ -40,6 +42,10 @@ export interface Entity {
   constructionOrderKey?: string;
   /** Authoritative reference geometry and recipe; positions is empty for these kinds. */
   reference?: ReferenceEntityData;
+  /** One authoritative rigid coordinate system; rendered axes are derived, positions empty. */
+  coordinateFrame?: { version: 1; frame: SketchFrame; displaySize: number };
+  /** Baked cylindrical mapping retained with Unroll's hidden tangent frame. */
+  rollMapping?: import("./scan-unroll-auxiliary").RollMapping;
   /** Immutable local cloud buffers and native accumulated pose; positions remains a world-space view. */
   pointCloudPlacement?: {
     matrixBits: string;
@@ -124,11 +130,23 @@ export interface Project {
     activeSketchId?: string;
   };
 }
-export interface SavedSketch {
+type SavedSketchBase = {
   id: string;
   name: string;
+  /** Saved display independent of the active sketch edit session; unset is hidden. */
+  visible?: boolean;
+};
+export type PlanarSavedSketch = SavedSketchBase & {
+  kind?: "planar";
   sketch: Sketch;
-}
+  curves?: never;
+};
+export type SpatialSavedSketch = SavedSketchBase & {
+  kind: "spatial";
+  curves: import("./scan-boundary-spatial").SpatialBoundaryCurve[];
+  sketch?: never;
+};
+export type SavedSketch = PlanarSavedSketch | SpatialSavedSketch;
 export type KernelPrimitive =
   | { kind: "box"; center: Vec3; size: Vec3 }
   | { kind: "sphere"; center: Vec3; radius: number }

@@ -133,7 +133,7 @@ export interface WorkspaceHost {
       source: Entity["positions"];
       output: Float32Array;
       summary: string;
-      settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+      settings: import("../scan-preview-request").ScanPreviewParameters;
       comparison?: NonNullable<
         import("../processing-client").ProcessingResult["noiseComparison"]
       >;
@@ -468,7 +468,8 @@ export class ApplicationApi {
       sketches: next.authoring.sketches?.map((s) => [
         s.id,
         s.name,
-        identity(s.sketch),
+        s.kind === "spatial" ? identity(s.curves) : identity(s.sketch),
+        s.visible,
       ]),
       activeSketchId: next.authoring.activeSketchId,
       inspections: next.authoring.inspections,

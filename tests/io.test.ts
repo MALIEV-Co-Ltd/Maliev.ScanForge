@@ -9,6 +9,20 @@ import {
 import type { Entity } from "../src/types";
 import { createGridPatch } from "../src/surfaces";
 import { rectangleSketch } from "../src/sketch";
+import { markRestoredCoordinates } from "../src/finite-typed-values";
+
+it("revalidates restored coordinates after mutation with the same sparse-array semantics", () => {
+  const coordinates = markRestoredCoordinates([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  expect(() => validatePositions(coordinates)).not.toThrow();
+  coordinates[2] = Number.NaN;
+  expect(() => validatePositions(coordinates)).toThrow();
+  delete coordinates[2];
+  expect(() => validatePositions(coordinates)).not.toThrow();
+  coordinates[2] = undefined as unknown as number;
+  expect(() => validatePositions(coordinates)).toThrow();
+  coordinates[2] = -0;
+  expect(() => validatePositions(coordinates)).not.toThrow();
+});
 const entity: Entity = {
   id: "test",
   name: "Triangle",
@@ -251,7 +265,20 @@ describe("file boundaries", () => {
       ),
     ).toThrow();
     expect(() => validatePositions([0, 0, NaN, 1, 0, 0, 0, 1, 0])).toThrow();
+    expect(() =>
+      validatePositions(new Float32Array([0, 0, Infinity, 1, 0, 0, 0, 1, 0])),
+    ).toThrow();
+    expect(() =>
+      validatePositions(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0])),
+    ).not.toThrow();
     expect(() => validatePositions([0, 0, 0])).toThrow();
+    const sparse = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    delete sparse[2];
+    expect(() => validatePositions(sparse)).not.toThrow();
+    sparse[2] = undefined as unknown as number;
+    expect(() => validatePositions(sparse)).toThrow();
+    sparse[2] = Number.MAX_VALUE;
+    expect(() => validatePositions(sparse)).not.toThrow();
   });
   it("imports an ASCII STL triangle preserving millimetre coordinates", () => {
     const stl =

@@ -1,0 +1,242 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract then GUI opening of same-session saved project under the 4 GiB guard. Three failed diagnostic runs.",
+  "applicationCommit": "9df3ae1faf184d2819b2a2d319b2dc1a82571cae",
+  "build": "scanforge-edea62e4b86207d8",
+  "runs": [
+    {
+      "method": "Playwright remote setInputFiles",
+      "guardPassed": false,
+      "peakJobBytes": 4469448704,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "ownedDescendantsRequiredTermination": true,
+      "lastObservedStage": "saved-artifact-streamed-to-file",
+      "savedFileBytes": 475929265,
+      "savedFileSha256": "a4f11196e766ab1754ee462febdb114a71aa0ddc828cde72a1d62bc44cd2ab31",
+      "temporarySavedFileRemovedAfterRecording": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r1-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r1.log",
+      "harness": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-reopen-local.mjs",
+        "sha256": "15c4ad954c0c76122c6cba89b85b0dc0e3cabd8074a80888d53d2136e227af48"
+      }
+    },
+    {
+      "method": "Chrome DOM.setFileInputFiles with local path",
+      "guardPassed": false,
+      "peakJobBytes": 4517822464,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "ownedDescendantsRequiredTermination": true,
+      "lastObservedStage": "gui-file-input-dispatched",
+      "savedFileBytes": 475929265,
+      "savedFileSha256": "e17d827abfaea469bfeb95a44b497c71531f3e3471784c7e3f9dc7c283983476",
+      "temporarySavedFileRemovedAfterRecording": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r2-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r2.log",
+      "harness": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-reopen-cdp-local.mjs",
+        "sha256": "5e8f2aa23e6bb6380efdf506f3244900bfdc5c8eaf18debd6d764c10922943d4"
+      }
+    },
+    {
+      "method": "Chrome local file input with per-process sampling",
+      "guardPassed": false,
+      "peakJobBytes": 4559982592,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "ownedDescendantsRequiredTermination": true,
+      "lastObservedStage": "gui-file-input-dispatched",
+      "savedFileBytes": 475929265,
+      "savedFileSha256": "406e7ec01da52d3efe98df1ff7288a2f6f04d351a2ebd24bffb26c8959d15728",
+      "temporarySavedFileRemovedAfterRecording": true,
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r3-guard.json",
+      "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r3.log",
+      "harness": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-reopen-cdp-local.mjs",
+        "sha256": "5e8f2aa23e6bb6380efdf506f3244900bfdc5c8eaf18debd6d764c10922943d4"
+      },
+      "sampler": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-process-memory-timeline.py",
+      "samples": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-gui-reopen-20261029-r3-samples.jsonl",
+      "lastCompleteSample": {
+        "time": "2026-10-28T23:01:37.783611+00:00",
+        "jobPeakBytes": 4103880704,
+        "processes": [
+          {
+            "pid": 46840,
+            "name": "node.exe",
+            "role": "main",
+            "privateBytes": 219422720,
+            "workingSetBytes": 208539648
+          },
+          {
+            "pid": 46428,
+            "name": "node.exe",
+            "role": "main",
+            "privateBytes": 108306432,
+            "workingSetBytes": 90071040
+          },
+          {
+            "pid": 26788,
+            "name": "chrome.exe",
+            "role": "main",
+            "privateBytes": 713531392,
+            "workingSetBytes": 802713600
+          },
+          {
+            "pid": 28468,
+            "name": "chrome.exe",
+            "role": "crashpad-handler",
+            "privateBytes": 2605056,
+            "workingSetBytes": 11567104
+          },
+          {
+            "pid": 27748,
+            "name": "chrome.exe",
+            "role": "gpu-process",
+            "privateBytes": 441466880,
+            "workingSetBytes": 303194112
+          },
+          {
+            "pid": 18208,
+            "name": "chrome.exe",
+            "role": "utility",
+            "privateBytes": 27164672,
+            "workingSetBytes": 57315328
+          },
+          {
+            "pid": 30000,
+            "name": "chrome.exe",
+            "role": "utility",
+            "privateBytes": 8183808,
+            "workingSetBytes": 21323776
+          },
+          {
+            "pid": 46572,
+            "name": "chrome.exe",
+            "role": "renderer",
+            "privateBytes": 36294656,
+            "workingSetBytes": 82767872
+          },
+          {
+            "pid": 18120,
+            "name": "chrome.exe",
+            "role": "renderer",
+            "privateBytes": 2388578304,
+            "workingSetBytes": 2425315328
+          },
+          {
+            "pid": 10136,
+            "name": "chrome.exe",
+            "role": "renderer",
+            "privateBytes": 14966784,
+            "workingSetBytes": 33697792
+          },
+          {
+            "pid": 36328,
+            "name": "chrome.exe",
+            "role": "gpu-process",
+            "privateBytes": 1601536,
+            "workingSetBytes": 7434240
+          },
+          {
+            "pid": 7032,
+            "name": "conhost.exe",
+            "role": "main",
+            "privateBytes": 1273856,
+            "workingSetBytes": 8118272
+          }
+        ]
+      },
+      "nextSample": {
+        "time": "2026-10-28T23:01:38.823971+00:00",
+        "jobPeakBytes": 4559982592,
+        "processes": [
+          {
+            "pid": 46840,
+            "name": "node.exe",
+            "role": "main",
+            "privateBytes": 201900032,
+            "workingSetBytes": 191877120
+          },
+          {
+            "pid": 46428,
+            "name": "node.exe",
+            "role": "main",
+            "privateBytes": 111345664,
+            "workingSetBytes": 92844032
+          },
+          {
+            "pid": 26788,
+            "name": "chrome.exe",
+            "role": "main",
+            "privateBytes": 152002560,
+            "workingSetBytes": 257835008
+          },
+          {
+            "pid": 28468,
+            "name": "chrome.exe",
+            "role": "crashpad-handler",
+            "privateBytes": 3018752,
+            "workingSetBytes": 12587008
+          },
+          {
+            "pid": 27748,
+            "name": "chrome.exe",
+            "role": "gpu-process",
+            "privateBytes": 457076736,
+            "workingSetBytes": 286294016
+          },
+          {
+            "pid": 18208,
+            "name": "chrome.exe",
+            "role": "utility",
+            "privateBytes": 27418624,
+            "workingSetBytes": 57634816
+          },
+          {
+            "pid": 30000,
+            "name": "chrome.exe",
+            "role": "utility",
+            "privateBytes": 8183808,
+            "workingSetBytes": 21413888
+          },
+          {
+            "pid": 46572,
+            "name": "chrome.exe",
+            "role": "renderer",
+            "privateBytes": 36294656,
+            "workingSetBytes": 82767872
+          },
+          {
+            "pid": 10136,
+            "name": "chrome.exe",
+            "role": "renderer",
+            "privateBytes": 14966784,
+            "workingSetBytes": 33697792
+          },
+          {
+            "pid": 7032,
+            "name": "conhost.exe",
+            "role": "main",
+            "privateBytes": 1273856,
+            "workingSetBytes": 8118272
+          }
+        ]
+      }
+    }
+  ],
+  "observations": [
+    "Both runs exported the project and streamed it to a temporary local file.",
+    "The second run dispatched a Chrome file-input command directly and exceeded the job limit before GUI open completed.",
+    "No post-open geometry, GUI Undo or GUI Redo result was observed.",
+    "At the final complete pre-peak sample, the largest renderer had 2,388,578,304 private bytes; that process was absent from the next sample after the job peak exceeded the cap. Sequential process samples are not atomic and do not identify the allocation."
+  ],
+  "limitations": [
+    "The process guard reports aggregate peak; neither run isolates a responsible allocation or process.",
+    "Harness artifact transfer, browser file handling, GUI restore and concurrent retained scene can all contribute.",
+    "The passing MCP reopen comparison uses a different artifact route and does not establish GUI parity.",
+    "The stopped harness was terminated before its final browser ledger could be completed; the guard reports zero remaining owned processes.",
+    "Native Split comparison remains open."
+  ]
+}

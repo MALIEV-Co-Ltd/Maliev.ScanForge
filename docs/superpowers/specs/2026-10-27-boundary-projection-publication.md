@@ -1,0 +1,9 @@
+# M2 boundary projection publication
+
+M2 requires equivalent GUI/MCP actions with model history and binary reopening. Current GUI projection appends saved sketches outside model history; the public operation returns only XYZ curve reports. The owner authorized completing M2 autonomously and explicitly opted out of manual intervention.
+
+Use the existing boundary projection worker, planar sketch conversion and identity-scoped model-sketch history. Preserve the existing read-only curve report by default. Add explicit `createSketches:true` on `scanEdit/boundaryProject`; both GUI and this option publish new saved sketches through one conversion helper and the existing model commit policy. Return `sketchIds` and keep the curve artifact. Generated names use `Projected boundary N` on both paths. The source mesh, existing sketch bank and active authoring session stay unchanged.
+
+The trusted model commit may add validated saved sketches without a geometry change; it still records one model revision with only the owned sketch identities. Undo/Redo/Seek and binary save/reopen use existing sketch changes, preserving unrelated or later authoring edits. Empty/malformed projections, locked source publication, stale revision, cancellation and retry follow existing guards and publish nothing. Read-only projection/inspection retain protected-source access; geometry editing protections are unchanged. `createSketches` is boolean and valid only for boundary projection; it is removed before the worker request.
+
+Validate actual failing GUI history and public schema/operation behavior first, then focused contract/geometry/history tests, all TypeScript/build checks and same-input rendered GUI/public-MCP projection, source/authoring isolation, history/seek, cancellation and binary reopening. Native boundary comparisons remain separate M2 gates; this change does not waive them. No dummy mesh edit, kernel change, dependency or guard increase.

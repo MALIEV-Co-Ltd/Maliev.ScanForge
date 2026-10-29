@@ -343,3 +343,118 @@ it("does not attach an already cancelled caller to another consumer's encode", a
   EncodingWorker.instances[0].onmessage!({ data: { file } });
   expect(await active).toBe(file);
 });
+
+it("publishes numeric reuse candidates only after a successful stored export", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const { projectNumericReuse } = await import("../src/project-numeric-reuse");
+  projectNumericReuse.clear();
+  const positions = Array.from({ length: 65538 }, (_, i) => i / 7);
+  const value = {
+    project: {
+      ...session.project,
+      entities: [{ id: "x", kind: "mesh", positions }],
+    },
+    history: [],
+    future: [],
+  } as unknown as ProjectSession;
+  const saving = encodeProjectInBackground(value);
+  await vi.waitFor(() =>
+    expect(EncodingWorker.instances[0]?.postMessage).toHaveBeenCalled(),
+  );
+  expect(
+    await projectNumericReuse.match(Float64Array.from(positions), () => {}),
+  ).toBeUndefined();
+  EncodingWorker.instances[0].onmessage!({
+    data: { file: new Blob(["saved"]) },
+  });
+  await saving;
+  expect(
+    await projectNumericReuse.match(Float64Array.from(positions), () => {}),
+  ).toBe(positions);
+  projectNumericReuse.clear();
+});
+
+it("does not publish numeric reuse candidates when export fails", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const { projectNumericReuse } = await import("../src/project-numeric-reuse");
+  projectNumericReuse.clear();
+  const positions = new Array<number>(65538).fill(1);
+  const value = {
+    project: {
+      ...session.project,
+      entities: [{ id: "x", kind: "mesh", positions }],
+    },
+    history: [],
+    future: [],
+  } as unknown as ProjectSession;
+  const saving = encodeProjectInBackground(value);
+  const rejected = expect(saving).rejects.toThrow("Invalid geometry");
+  await vi.waitFor(() =>
+    expect(EncodingWorker.instances[0]?.postMessage).toHaveBeenCalled(),
+  );
+  EncodingWorker.instances[0].onmessage!({
+    data: { error: "Invalid geometry" },
+  });
+  await rejected;
+  expect(
+    await projectNumericReuse.match(Float64Array.from(positions), () => {}),
+  ).toBeUndefined();
+});
+
+it("does not publish numeric candidates when export storage fails", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  vi.stubGlobal("indexedDB", {
+    open: () => {
+      throw new Error("Storage denied");
+    },
+  });
+  const { projectNumericReuse } = await import("../src/project-numeric-reuse");
+  projectNumericReuse.clear();
+  const positions = new Array<number>(65538).fill(7);
+  const value = {
+    project: {
+      ...session.project,
+      entities: [{ id: "x", kind: "mesh", positions }],
+    },
+    history: [],
+    future: [],
+  } as unknown as ProjectSession;
+  const saving = encodeProjectInBackground(value);
+  const rejected = expect(saving).rejects.toThrow("Storage denied");
+  await vi.waitFor(() =>
+    expect(EncodingWorker.instances[0]?.postMessage).toHaveBeenCalled(),
+  );
+  const file = new Blob(["fixture"]);
+  Object.defineProperty(file, "size", { value: 64 * 1024 * 1024 });
+  EncodingWorker.instances[0].onmessage!({ data: { file } });
+  await rejected;
+  expect(
+    await projectNumericReuse.match(Float64Array.from(positions), () => {}),
+  ).toBeUndefined();
+});
+
+it("does not publish numeric candidates when export is cancelled", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const { projectNumericReuse } = await import("../src/project-numeric-reuse");
+  projectNumericReuse.clear();
+  const positions = new Array<number>(65538).fill(3);
+  const value = {
+    project: {
+      ...session.project,
+      entities: [{ id: "x", kind: "mesh", positions }],
+    },
+    history: [],
+    future: [],
+  } as unknown as ProjectSession;
+  const controller = new AbortController();
+  const saving = encodeProjectInBackground(value, controller.signal);
+  const rejected = expect(saving).rejects.toMatchObject({ name: "AbortError" });
+  await vi.waitFor(() =>
+    expect(EncodingWorker.instances[0]?.postMessage).toHaveBeenCalled(),
+  );
+  controller.abort();
+  await rejected;
+  expect(
+    await projectNumericReuse.match(Float64Array.from(positions), () => {}),
+  ).toBeUndefined();
+});

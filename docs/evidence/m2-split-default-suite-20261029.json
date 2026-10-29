@@ -1,0 +1,543 @@
+{
+  "scope": "Default Split browser lifecycle suite on application commit 182a740a054009514a1a4d61e6f2bcfcc747acbd and test commit 62889f99c3da1d2f0d7bb13d63c76d6e9ac49a30",
+  "testSha256": "fffdcaa8bf7bd75ad1724ea3664b9899c339e8e3cfac9147cf9db11d5ef94931",
+  "result": {
+    "cases": [
+      {
+        "name": "original-scan-face-7207",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 45,
+            "sha256": "9ddc42d376e5fcbe0c41713ca060b74e9f56b3c9690eea4d68b5600e60610b46"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 27,
+            "sha256": "e8b0f6fe23d715211a545e68daf57bd977e4dd71e5b394f008a2ade88d2038c7"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 15,
+            "sha256": "396b6867a5bd61cd28196fa21e4c7e7cdcf8f4e035b8168cf560b639e2969861"
+          }
+        ],
+        "outputArea": 0.029055235867555585,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 2,
+          "cutEdges": 1,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 204
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "facetPrecision": {
+          "maxOriginalNormalError": 0.0004627899089890697,
+          "maxFloat32OracleError": 0
+        },
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          },
+          "mcpRedo": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          },
+          "reopened": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          }
+        }
+      },
+      {
+        "name": "sloped-edge-crossing",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 27,
+            "sha256": "0e35f2c51070d7bec3e3e17b3525b2b6ef840300dbac077e8335c49ba5e8c1cf"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 15,
+            "sha256": "912370138ada703d8dbd84862035928dad46dedb7f0abdf5c3017f8db71fd074"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 9,
+            "sha256": "ac5377d10f9d138e071378b00d9f701940b94cda5aa6760726784f70725dfc84"
+          }
+        ],
+        "outputArea": 2,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 1,
+          "cutEdges": 1,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 204
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+            "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+          },
+          "mcpRedo": {
+            "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+            "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+          },
+          "reopened": {
+            "geometryNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e",
+            "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+          }
+        }
+      },
+      {
+        "name": "finite-interior-cut",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 63,
+            "sha256": "965763573d6279bcbcce61111d5625904e213676afe582b79bafcadfa4e0ee6e"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 21,
+            "sha256": "0e08b8f24b462cc787ba8335395725d4c4039e734910f18c771ef40f7092b7ac"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 21,
+            "sha256": "4ffb8d1f0e0d74a9c8909acd96cd32d0fb4f8282e937ed3d6236464edf56952e"
+          }
+        ],
+        "outputArea": 0.5,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 1,
+          "cutEdges": 1,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 204
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "finiteSeamLength": 0.2,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+            "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+          },
+          "mcpRedo": {
+            "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+            "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+          },
+          "reopened": {
+            "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+            "facetNormals": "c579441b75dbcfe332acfa8b8c9b15fba57ac83e6bda051557b5487f833305a3"
+          }
+        }
+      },
+      {
+        "name": "tilted-coplanar-identical",
+        "guiMcpNoChange": true,
+        "unchangedHistory": true
+      },
+      {
+        "name": "coplanar-shared-edge",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 90,
+            "sha256": "eb70994befe6bd190416b7b6937eacd84186a5ffe4adfbf135f18abb50274dd7"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 30,
+            "sha256": "e60e7a36328dc42ab159d5421b2d45d5fe4fb47ae85a6838719023a68a455e0f"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 30,
+            "sha256": "b64ea3d8f217b88bdbd9ed70143e30f9bd0039e51135181f77737dcde635ddae"
+          }
+        ],
+        "outputArea": 1,
+        "diagnostics": {
+          "affectedFaces": 2,
+          "sourceFaces": 2,
+          "parts": 1,
+          "cutEdges": 1,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 280
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+            "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+          },
+          "mcpRedo": {
+            "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+            "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+          },
+          "reopened": {
+            "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+            "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+          }
+        }
+      },
+      {
+        "name": "tolerance-shared-edge",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 81,
+            "sha256": "776c63f1e4878bac44411c066f22d4f4209ab86c0f42af0a8a089803ba5bf504"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 39,
+            "sha256": "4bb5c88f4b487fcbc56b99594f23b111f130b1881429a6fc42d84b97b5e13410"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 27,
+            "sha256": "47f1354f0bf8783a49f9948150b48f4be48671f1c1117d8b6064599eb6e24e5e"
+          }
+        ],
+        "outputArea": 1.4999999999988938e-6,
+        "diagnostics": {
+          "affectedFaces": 2,
+          "sourceFaces": 2,
+          "parts": 2,
+          "cutEdges": 2,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 188
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "mcpRedo": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          },
+          "reopened": {
+            "geometryNormals": "b7b3a03c610720b5dc5f66240274677ccd623bf1f6393aa39e6346e51c5f47cb",
+            "facetNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3"
+          }
+        }
+      },
+      {
+        "name": "near-plane-crossing",
+        "sourceMode": "project fixture",
+        "inputCoordinateSha256": "355907efa6a6e2b7d79e76987e3c2c44a517c7e72e0d00cf4797364658aa2604",
+        "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+        "parts": 2,
+        "outputCoordinateSha256": [
+          "daff8d8b6128c1789239f84854fc71e0aac54a96ad8497bea2617a20837c1ad7",
+          "c882ea752e5fcf69d76781416c669dfc6b75d1ba226a7ec46069caef5fa6e2ad"
+        ],
+        "areas": [1.2499987547511853e-6, 0.4999993039536008],
+        "sourceArea": 0.50000055,
+        "method": "infinite planar surface",
+        "guiMcpGeometryAndMetadata": true,
+        "sourceAndCutterRetained": true,
+        "sourceVisibilityAndSelection": true,
+        "guiAndMcpUndoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true
+      },
+      {
+        "name": "infinite-plane",
+        "sourceMode": "project fixture",
+        "inputCoordinateSha256": "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f",
+        "cutterCoordinateSha256": "5c1b2b0933fa8fd7da52f9914405102505cc49bd21364e5a9592531798a7c62a",
+        "parts": 2,
+        "outputCoordinateSha256": [
+          "bf787ed6dd85221ba6d1fa4c45350305c6e2ed8450bf4880a4909883d0e5278f",
+          "217e63e9c121466e9bc798624119797fe2a0bb3052f6535da565a17c05a978fa"
+        ],
+        "areas": [0.5, 0.5],
+        "sourceArea": 1,
+        "method": "infinite planar surface",
+        "guiMcpGeometryAndMetadata": true,
+        "sourceAndCutterRetained": true,
+        "sourceVisibilityAndSelection": true,
+        "guiAndMcpUndoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true
+      },
+      {
+        "name": "finite-planar-mesh",
+        "guiMcpNoChange": true,
+        "unchangedHistory": true
+      },
+      {
+        "name": "open-folded-surface",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 171,
+            "sha256": "5fecdd7800f226de3af4ca582e8dae30e5901b18cdbc93c478546857bf0361bb"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 63,
+            "sha256": "fa6868845f43831de3654ed1f0c8abd71e80b1339c4780fb30404392a3399692"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 57,
+            "sha256": "9bc67cd83294bad57febd77462bdb0dcc172fb51290a0c9c7206947e7bbb5181"
+          }
+        ],
+        "outputArea": 4,
+        "diagnostics": {
+          "affectedFaces": 2,
+          "sourceFaces": 2,
+          "parts": 1,
+          "cutEdges": 4,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 280
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "26cb095e3e13e5a9ff6d8dcf505805cde01aa99268f256a0b0abb6004bc44a07",
+            "facetNormals": "5c53b067ee23c8755565e4839129944a1483803308db68a4265b87a3b3ae5d9d"
+          },
+          "mcpRedo": {
+            "geometryNormals": "26cb095e3e13e5a9ff6d8dcf505805cde01aa99268f256a0b0abb6004bc44a07",
+            "facetNormals": "5c53b067ee23c8755565e4839129944a1483803308db68a4265b87a3b3ae5d9d"
+          },
+          "reopened": {
+            "geometryNormals": "26cb095e3e13e5a9ff6d8dcf505805cde01aa99268f256a0b0abb6004bc44a07",
+            "facetNormals": "5c53b067ee23c8755565e4839129944a1483803308db68a4265b87a3b3ae5d9d"
+          }
+        }
+      },
+      {
+        "name": "closed-convex",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 306,
+            "sha256": "2014d1095106044a0402391b0abb24156f960e1c3b5afaf8e193a27d7202fd0b"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 108,
+            "sha256": "85add6f733ebf865efb005a021b4c47f990de7abac2e93d545d7a9c026557bd0"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 102,
+            "sha256": "2697b95f170a71dd768f55d2205887bac151cf3922dd5af83fa95d6f590bd5eb"
+          }
+        ],
+        "outputArea": 16,
+        "diagnostics": {
+          "affectedFaces": 2,
+          "sourceFaces": 2,
+          "parts": 2,
+          "cutEdges": 8,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 280
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "componentAreas": [1, 15],
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "c2d0eb054ca6df95bae3484d9116c357d6302f7418d8d09a4bbab1582a497821",
+            "facetNormals": "5f95fa16aeb6f2bbe74c1db49c65a3504fa8fe6e948403f3b52ac57cd49fc083"
+          },
+          "mcpRedo": {
+            "geometryNormals": "c2d0eb054ca6df95bae3484d9116c357d6302f7418d8d09a4bbab1582a497821",
+            "facetNormals": "5f95fa16aeb6f2bbe74c1db49c65a3504fa8fe6e948403f3b52ac57cd49fc083"
+          },
+          "reopened": {
+            "geometryNormals": "c2d0eb054ca6df95bae3484d9116c357d6302f7418d8d09a4bbab1582a497821",
+            "facetNormals": "5f95fa16aeb6f2bbe74c1db49c65a3504fa8fe6e948403f3b52ac57cd49fc083"
+          }
+        }
+      },
+      {
+        "name": "closed-concave",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 594,
+            "sha256": "3c677da5c2a8c20e1439f82ccbaf9f5f9f0c0866d33718408341908651d16b3d"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 204,
+            "sha256": "e2e18627aaa57e0d4ab344ee1d2a263f862133cb2b58074448a871d25a8f9f4f"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 198,
+            "sha256": "4e21cbac2dc96dcd1f1ad2befdf11a40ac3bc1822201f1b82084c7338a2d163f"
+          }
+        ],
+        "outputArea": 16,
+        "diagnostics": {
+          "affectedFaces": 2,
+          "sourceFaces": 2,
+          "parts": 2,
+          "cutEdges": 16,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 280
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "componentAreas": [3, 13],
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "f40675f51307510e1b44bee4c8a6f25e67a85a276dbed90ca74364a815ce25ff",
+            "facetNormals": "1f970800db552c8c624c5b58a31b9707927e7f6c6922faf7095ca81df6bf8cdc"
+          },
+          "mcpRedo": {
+            "geometryNormals": "f40675f51307510e1b44bee4c8a6f25e67a85a276dbed90ca74364a815ce25ff",
+            "facetNormals": "1f970800db552c8c624c5b58a31b9707927e7f6c6922faf7095ca81df6bf8cdc"
+          },
+          "reopened": {
+            "geometryNormals": "f40675f51307510e1b44bee4c8a6f25e67a85a276dbed90ca74364a815ce25ff",
+            "facetNormals": "1f970800db552c8c624c5b58a31b9707927e7f6c6922faf7095ca81df6bf8cdc"
+          }
+        }
+      },
+      {
+        "name": "float32-precision",
+        "guiAndMcpFailure": true,
+        "unchangedGeometryAndHistory": true,
+        "retry": true
+      }
+    ],
+    "pageErrors": []
+  },
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 970694656,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "limitations": [
+    "These are manufactured small controls, including one extracted original scan face, not native Split comparisons.",
+    "Held-result cancellation checks cancellation before publication; they do not prove active-kernel interruption.",
+    "The no-op cases check geometry and history, not a nonexistent undo/reopen transaction.",
+    "The default sequence does not include the separately controlled radius fixtures or the original large-scan in-place reopen."
+  ]
+}

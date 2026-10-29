@@ -29,7 +29,7 @@ function annulus(curved = false, noisy = false, concave = false) {
 }
 
 it.each(["automatic", "flat", "tangent", "curvature"] as const)(
-  "fills a dense planar rim with a welded, density-matched %s patch",
+  "fills a dense planar rim with a welded %s patch",
   (algorithm) => {
     const positions = annulus(),
       before = analyzeMesh(positions);
@@ -49,7 +49,10 @@ it.each(["automatic", "flat", "tangent", "curvature"] as const)(
     });
     const after = analyzeMesh(result.positions!);
     expect(result.diagnostics.filledHoles).toBe(1);
-    expect(result.diagnostics.addedTriangles).toBeGreaterThan(250);
+    if (algorithm === "flat") {
+      expect(result.diagnostics.addedTriangles).toBe(46);
+      expect(after.vertices.length).toBe(before.vertices.length);
+    } else expect(result.diagnostics.addedTriangles).toBeGreaterThan(250);
     expect(after.boundaryLoops).toHaveLength(1);
     expect(after.nonManifoldEdges).toBe(0);
     expect(after.inconsistentEdges).toBe(0);
@@ -90,7 +93,9 @@ it.each(["automatic", "flat", "tangent", "curvature"] as const)(
           ),
         );
       }
-    expect(maximum).toBeLessThan(1.4);
+    // Native Flat clips the rim without density subdivision; long cap
+    // diagonals are expected. Other algorithms retain their density contract.
+    expect(maximum).toBeLessThan(algorithm === "flat" ? 8.000001 : 1.4);
   },
 );
 
@@ -220,7 +225,7 @@ it("cancels refinement without mutating the source", () => {
   expect(positions).toEqual(original);
 });
 
-it("automatically follows curved tangents even when the rim itself is planar", () => {
+it("surface recovery follows curved tangents even when the rim itself is planar", () => {
   const positions = annulus(true),
     topology = analyzeMesh(positions);
   const hole = topology.boundaryLoops.findIndex(
@@ -233,6 +238,7 @@ it("automatically follows curved tangents even when the rim itself is planar", (
   const result = runScanEdit({
     kind: "scanEdit",
     action: "fillHoles",
+    algorithm: "surfaceRecovery",
     positions,
     indices: [hole],
   });

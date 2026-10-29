@@ -5,6 +5,7 @@ import {
 } from "../src/mesh-processing";
 import { runScanEdit } from "../src/scan-edit";
 import { smoothSelectedVertices } from "../src/scan-selected-smooth";
+import { indexedMeshMatches } from "../src/indexed-mesh";
 import type { Positions } from "../src/types";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../src/scan-topology-tolerance";
 
@@ -32,6 +33,33 @@ const faces = [
 ];
 const openCube = faces.flatMap((f) => f.flatMap((i) => vertices[i]));
 const cube = [...openCube, ...[4, 5, 6, 4, 6, 7].flatMap((i) => vertices[i])];
+it("preserves untouched precise coordinates when smoothing a separate component", () => {
+  const untouched = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+  const positions = [...cube, ...untouched];
+  const selection = new Uint8Array(positions.length / 9);
+  selection.fill(1, 0, cube.length / 9);
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "smoothSelected",
+    positions,
+    selection,
+  });
+  expect(Array.from(result.positions!.slice(-9))).toEqual(untouched);
+  expect(Array.from(result.positions!.slice(0, cube.length))).not.toEqual(cube);
+});
+it("does not round a precise boundary when smoothing makes no change", () => {
+  const positions = openCube.map(
+    (value, i) => value + (i % 3 === 0 ? 2 ** -30 : 0),
+  );
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "boundarySmooth",
+    positions,
+    strength: 0.5,
+  });
+  expect(result.positions).toEqual(positions);
+  expect(result.diagnostics.changed).toBe(false);
+});
 it("publishes precomputed worker smoothing with the same geometry and successor topology", () => {
   const positions = new Float32Array(cube);
   const selection = new Uint8Array(positions.length / 9).fill(1);
@@ -294,6 +322,128 @@ it("fills an inner planar hole while preserving the outer sheet boundary", () =>
 });
 
 describe("scan edit inventory and components", () => {
+  it("returns explicitly scoped indexed component inventory without implying boundary results", () => {
+    const first = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    const positions = [
+      ...first,
+      ...first.map((value, i) => value + (i % 3 === 0 ? 3 : 0)),
+    ];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const full = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+      sourceIndexed,
+    });
+    const scoped = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      inventoryScope: "components",
+      positions,
+      sourceIndexed,
+    });
+    expect(scoped.inventory!.scope).toBe("components");
+    expect(scoped.inventory!.components).toEqual(full.inventory!.components);
+    expect(scoped.inventory!.boundaries).toEqual([]);
+    expect(scoped.diagnostics).toMatchObject({
+      scope: "components",
+      components: 2,
+    });
+    expect(scoped.diagnostics).not.toHaveProperty("holes");
+  });
+  it("keeps coincident indexed components separate without a worker cache", () => {
+    const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+    const positions = [...triangle, ...triangle];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const inventory = runScanEdit({
+      kind: "scanEdit",
+      action: "inventory",
+      positions,
+      sourceIndexed,
+    });
+    expect(inventory.inventory!.components).toHaveLength(2);
+    const topologyCache: NonNullable<MeshProcessingOptions["topologyCache"]> =
+      {};
+    analyzeMesh(positions, { topologyCache });
+    expect(
+      runScanEdit(
+        { kind: "scanEdit", action: "inventory", positions, sourceIndexed },
+        { topologyCache },
+      ).inventory!.components,
+    ).toHaveLength(2);
+    const result = runScanEdit({
+      kind: "scanEdit",
+      action: "componentKeep",
+      positions,
+      sourceIndexed,
+      indices: [0],
+    });
+    expect(Array.from(result.positions!)).toEqual(triangle);
+    expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(
+      true,
+    );
+  });
+  it("preserves precise indexed corners through component edits", () => {
+    const first = [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0];
+    const second = [100000028, 0, 0, 100000036, 0, 0, 100000028, 8, 0];
+    const positions = [...first, ...second];
+    const sourceIndexed = {
+      vertices: [...positions],
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    for (const action of [
+      "componentKeep",
+      "componentRemove",
+      "componentFlip",
+    ] as const) {
+      const result = runScanEdit({
+        kind: "scanEdit",
+        action,
+        positions,
+        sourceIndexed,
+        indices: [0],
+      });
+      const expected =
+        action === "componentKeep"
+          ? first
+          : action === "componentRemove"
+            ? second
+            : [
+                ...first.slice(0, 3),
+                ...first.slice(6, 9),
+                ...first.slice(3, 6),
+                ...second,
+              ];
+      expect(Array.from(result.positions!)).toEqual(expected);
+      expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(
+        true,
+      );
+    }
+    const extracted = runScanEdit({
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions,
+      sourceIndexed,
+      indices: [0, 1],
+    });
+    expect(extracted.segments!.map((part) => Array.from(part))).toEqual([
+      first,
+      second,
+    ]);
+    for (let i = 0; i < 2; i++)
+      expect(
+        indexedMeshMatches(
+          extracted.segmentIndexedMeshes![i],
+          extracted.segments![i],
+        ),
+      ).toBe(true);
+  });
   it("reports individual areas, holes, lengths and geometric diameter", () => {
     const result = runScanEdit({
       kind: "scanEdit",
@@ -484,15 +634,17 @@ describe("patch and boundary edits", () => {
     ]);
     expect(result.positions).toBeUndefined();
   });
-  it("smooths boundary neighbors and repatches a selected cube top", () => {
+  it("retains a small convex boundary without a fitted curve and repatches a selected cube top", () => {
     const smooth = runScanEdit({
       kind: "scanEdit",
       action: "boundarySmooth",
       positions: openCube,
       iterations: 1,
       strength: 0.5,
-    }).positions!;
-    expect(smooth).not.toEqual(new Float32Array(openCube));
+    });
+    expect(smooth.positions).toEqual(new Float32Array(openCube));
+    expect(smooth.diagnostics.changed).toBe(false);
+    expect(smooth.diagnostics.unfittedBoundaries).toBe(1);
     const selection = new Uint8Array(12);
     selection.fill(1, 10);
     const patch = runScanEdit({
@@ -544,17 +696,10 @@ describe("triangle fragment splitting", () => {
         positions,
         target,
       });
-      expect(result.diagnostics.cutter).toBe("closed convex mesh");
-      expect(result.segments![0].length).toBeGreaterThan(0);
-      expect(result.segments![1].length).toBeGreaterThan(0);
-      expect(area(result.segments![0]) + area(result.segments![1])).toBeCloseTo(
-        area(positions),
-      );
-      expect(
-        [...result.segments![0]]
-          .filter((_, i) => i % 3 === 0)
-          .every((x) => x >= 0 && x <= 1),
-      ).toBe(true);
+      expect(result.diagnostics.parts).toBe(2);
+      expect(result.positions?.length).toBeGreaterThan(positions.length);
+      expect(area(result.positions!)).toBeCloseTo(area(positions));
+      expect(result.indexedMesh).toBeDefined();
     }
   });
   it("preserves unselected triangles exactly and responds to cancellation", () => {

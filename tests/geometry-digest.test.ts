@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { digestEntityGeometry } from "../src/geometry-digest";
+import { priorityScanPreparationCount } from "../src/scan-background-preparation";
 import type { Entity } from "../src/types";
 const entity = (positions: Entity["positions"] = []) =>
   ({
@@ -23,6 +24,17 @@ function hash(values: number[], type: "f32" | "f64" | "u32") {
   return createHash("sha256").update(b).digest("hex");
 }
 describe("canonical entity geometry digest", () => {
+  it("holds a foreground preparation lease during hashing and releases it on cancellation", async () => {
+    const baseline = priorityScanPreparationCount();
+    const controller = new AbortController();
+    const pending = digestEntityGeometry(entity(new Float32Array([0, 1, 2])), {
+      signal: controller.signal,
+    });
+    expect(priorityScanPreparationCount()).toBe(baseline + 1);
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+    expect(priorityScanPreparationCount()).toBe(baseline);
+  });
   it("hashes F32 signed zero and F64 arrays using independent canonical bytes", async () => {
     const e = entity(new Float32Array([1, -0, 2.5]));
     e.normals = [0, -0, 1];
@@ -168,6 +180,22 @@ describe("canonical entity geometry digest", () => {
       ).rejects.toThrow(/finite|number|numeric/i);
     },
   );
+  it("accepts finite double extrema and preserves signed zero", async () => {
+    const values = [
+      Number.MAX_VALUE,
+      -Number.MAX_VALUE,
+      0,
+      -0,
+      Number.MIN_VALUE,
+    ];
+    const result = await digestEntityGeometry(entity(values));
+    const expected = new ArrayBuffer(values.length * 8);
+    const view = new DataView(expected);
+    values.forEach((value, index) => view.setFloat64(index * 8, value, true));
+    expect(result.buffers[0].sha256).toBe(
+      createHash("sha256").update(Buffer.from(expected)).digest("hex"),
+    );
+  });
   it("yields after bounded 1MiB chunks and honors abort before publishing", async () => {
     const e = entity(new Float32Array(600000)),
       controller = new AbortController(),

@@ -1,5 +1,16 @@
 # ScanForge shared application API and MCP
 
+Precise finite-mesh Split returns indexed coordinates through an internal
+transferable binary64 worker message. The processing client restores the
+existing number-array result before GUI or MCP publication. The worker restores
+its previous source if publication fails; after receiving a valid precise Split
+result, the client retires the worker before restoring the transferred arrays,
+instead of retaining a duplicate successor. Project
+formats and public MCP schemas are unchanged.
+The worker also prepares compact indexed display normals using the same welded
+normal calculation as the expanded viewport fallback. The client caches those
+disposable buffers for the shared GUI/MCP result without changing authored normals.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates
@@ -91,7 +102,15 @@ encoding snapshot/transport. The worker returns validated hashes and source
 tokens only; successful storage rebinds these to the original live wrappers.
 Thus weak-cache reachability follows editor ownership rather than temporary
 worker-returned wrappers. Malformed or sparse token replies fail before storage
-or cache publication. It reads and validates the entire
+or cache publication. Separately, successful stored exports register up to 128
+weak references to large ordinary geometry arrays. Main-thread restoration can
+reuse a candidate only after bounded, cancellable element comparison including
+signed zero, followed by synchronous rechecks after cooperative yields and at
+the transport handoff. One candidate cannot replace two distinct transport arrays;
+existing aliases remain shared. Missing, stale or over-budget candidates use
+independent reconstruction; page exit clears
+the cache. This follows the existing immutable geometry ownership contract and
+does not rely on shared-buffer availability. It reads and validates the entire
 incoming file even on a cache hit: matching streamed bytes borrow the earlier
 backing, mismatches allocate an independent chunk, and the final SHA-256 remains
 mandatory. Worker transport preserves SharedArrayBuffer backing without transfer
@@ -649,6 +668,12 @@ The App now mounts the Interactive session store and viewport/mirror adapters, w
 ## Project restoration and numeric transport
 
 GUI save/export, automatic backups and MCP project export use the same codec. Numeric encoding hashes canonical little-endian values incrementally in chunks of at most 1 MiB, then streams those values through gzip into Blob payloads. Content and identity deduplication, decoded bytes, project formats and restoration remain unchanged. The chunk limit bounds numeric staging only; retained output, browser compression storage and BRep text can still consume additional memory. Existing encoding cancellation, queue ownership and the two-minute worker lease remain in force.
+
+The disposable encoder may keep transferred Float64 staging buffers for mesh
+positions and indexed vertices when every reference to the array has one of
+those roles. Buffers used elsewhere retain ordinary arrays. The private worker
+validation accepts only these marked buffers; public project geometry contracts,
+file encodings and decoded array types remain unchanged.
 
 In cross-origin-isolated browsers, the shared GUI/MCP scan importer allocates final indexed PLY/STL expanded positions and PLY corner normals in shared buffers before publication. Packed binary PLY also shares final indexed vertices, normals and triangle indices; the binary STL path shares its final indexed vertices and triangle indices. Computed geometry normals use the same immutable shared-storage policy and are borrowed by display data. Decoder scratch stays private, and the general PLY loader retains ordinary indexed coordinate buffers. Unit conversion and origin placement finish before publication. Published geometry is immutable. Speculative topology reports may borrow shared positions in their retained worker; before any later non-report operation, that worker copies its canonical source and rebinds cached source identities while retaining adjacency. Other processing requests receive private copies. Save/export/automatic-backup workers read shared storage without cloning those buffers. Nonisolated browsers retain ordinary buffers. Project format versions and tool inputs are unchanged; geometry artifacts expose the optional computed field.
 
@@ -1393,3 +1418,89 @@ revision/retry, job admission/cancellation, artifact quotas and owner-lifetime
 checks remain active.
 
 `inspection_display` also accepts `action: "measurement"` with an `analysis_measure`-shaped `measurement`, or `action: "section"` with selected `entityId`, `axis` and millimetre `offset`. These guarded actions display the shared validated measurement markers or visible triangle section in the GUI and return its numerical result without modeling history. `clear` removes all inspection overlays; API disposal releases them. Point clouds cannot supply triangle sections.
+
+### Unroll publication
+
+`runUnrollCommand` routes the GUI through `mesh_process`, including the shared worker and terminal publication. The public scan-tool schema exposes `instances` alongside cylinder center, axis, radius and angular offset. Unroll and Average create a new owner by default; explicit `createNew:false` retains replacement. Unroll does not publish partial seam-removal or repetition results. Its original-cylinder tangent binding remains an acceptance gap documented in the agent guide.
+
+Average mesh submits the GUI action through `runAverageCommand` and
+`runApplicationJobCommand` to public `mesh_process`. `bindAverageMeshes` resolves
+the participating raw meshes in scene order and chooses the first greatest-facet
+base. The executor binds reference positions and their original indexed topology;
+these private numeric carriers cannot be supplied through the public schema.
+Worker transport clones coordinates and indices without detaching authored data.
+The common numeric kernel uses ordered native surface queries, open-boundary
+rejection, strict radius exclusion and Float32 accumulation. The common executor
+creates a result owner by default (explicit replacement remains available), then
+commits once and selects the created owner. Structured results identify the base,
+references and output. Existing job, revision, request, cancellation, lock and
+history boundaries remain authoritative.
+
+### Shared Scan Data preview owner
+
+`createScanPreviewOperation` owns Noise, Reduction, Scale, Mirror and ShrinkWrap previews for both GUI and MCP. It binds workspace references/selection, retains immutable worker output and comparison state under a 60-second lease, validates source/reference identity, and commits acceptance as one tracked mutation. The editor adapter only presents that owner. Comparison threshold updates reuse worker caches. A trusted commit policy preserves facet selection only for noise replacement with unchanged facet identities; transport callers cannot supply this policy.
+
+### Native reconstruction publication
+
+Native Re-polygonize binds visible or explicitly requested raw meshes in scene order and transports immutable indexed carriers through the existing disposable `mesh_process` worker. Admission accounts for source coordinates, copied indices and unshared vertex carriers before cloning. Authored/shared buffers are never transferred. Signed-field extraction and directed boundary repair precede the observed half-count native reduction; disposable field graphs retire before mutable output records allocate. Publication adopts indexed output in one history mutation, creates a distinct construction identity and hides unchanged input owners. Explicit replacement and the existing voxel method remain available. Source/reference selection, retry protection, lock checks, cancellation and failure rollback stay on the shared application boundary.
+
+Reconstruction publication records input visibility as modeling history metadata. GUI and public MCP undo/redo/timeline seek restore those visibility changes together with the owner, including after binary project save/reopen. Ordinary display toggles retain their existing independence from modeling history. Legacy project revisions without the optional metadata preserve their previous behavior.
+
+### Indexed scan repair and unchanged results
+
+GUI scan-edit requests and the shared MCP executor bind the current entity's
+validated imported indexed mesh internally. Geometry remains unavailable as a
+caller-supplied MCP parameter. `processing-client` isolates these buffers before
+transfer and records the original carrier identity in the geometry-scoped
+session. A repeated request for that carrier reuses the worker's authoritative
+index; the first indexed request replaces a generic welded warmup cache. The
+worker checks that indices expand to its canonical source before adopting them.
+Replacement, cancellation, failed transport and session retirement preserve the
+existing ownership boundaries.
+
+Hole-fill boundary ordering and enclosing-sphere measurement share the retained
+native boundary tree. Native batch Tangent and selected-hole algorithms are
+explicit shared request modes. Surface recovery retains its own discoverable
+algorithm. An empty or all-skipped fill reports `changed:false`; neither GUI nor
+MCP publishes a replacement or model revision. The retained worker keeps its
+canonical geometry and returns no duplicate successor buffer for that result.
+Successful patch publication allocates one Float32 successor and creates
+successor adjacency only after a patch is accepted.
+
+## Exact CAD restoration
+
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace.
+
+## Request-owned Curvature surface
+
+Whole-hole Curvature and the corresponding Automatic dispatch run through the
+same async scan-edit driver in the processing worker for GUI and MCP. The driver
+owns one lazy CAD worker and releases each temporary surface before publishing a
+successor. Its fixed internal 23 by 23 cubic surface and UV evaluation messages
+are private worker protocols, not public scene handles or new public surface limits.
+The resulting collar is validated and newly allocated orphan records are compacted
+before successor topology publication. Failed/cancelled work preserves source,
+revision/history and retry semantics; terminating the processing owner also retires
+its nested CAD worker. Browser cancellation evidence observes the actual nested
+worker before cancelling and confirms that its target disappears afterward.
+
+M2 Unroll uses the existing `mesh_process` executor and GUI job command to publish its mesh, hidden tangent `referenceFrame` (binary64 `coordinateFrame` plus separate cylindrical `rollMapping`) and visible saved sketch atomically. The coordinate-frame model/display helper is the minimal foundation reused from M4 commit `04c7026`; no broader M4 operations are imported. Trusted `ModelCommitPolicy.newModelSketches` admits only fresh sketch identities after model validation, then writes owned `Revision.sketchChanges`. Shared model traversal captures live owned values before applying the target delta. It preserves unrelated authoring and persists the inverted deltas on both sides of history. Missing authoring state cannot silently traverse an owned-sketch revision.
+
+The binary codec selects manifest version 6 for roll mappings, owned sketch deltas or explicit saved visibility, retaining the existing immutable geometry chunk transport. JSON exports select wire version 4 for roll mapping/visibility; binary64 frame bits use the existing exact coordinate-frame encoding. Older versions remain supported and malformed feature/version combinations reject. `sketch_manage action:visibility` shares the GUI eye control and saved render layer; `sketch_get` exposes visibility and geometry, while `object_get` exposes the tangent frame, retained radius and mapping identities. Cancellation, revision protection and request retry rules remain on the existing shared job path.
+
+Boundary projection keeps its read-only XYZ report contract by default. Explicit `mesh_process` / `scanEdit/boundaryProject` with `createSketches:true` publishes saved planar sketches, returning `sketchIds` alongside the curve artifact. GUI and MCP use `projectedBoundarySketches` and the same identity-scoped model-sketch commit policy. A validated sketch-only publication may advance model history without replacing mesh geometry; Undo/Redo/Seek changes only the transaction-owned sketch identities. Source geometry, the active authoring session and unrelated saved sketches remain independent. The application adapter retains revision, retry, cancellation and lock checks; the publication option is action-bound and removed before geometry-worker dispatch.
+
+Mesh split cutter binding is shared by the GUI and `mesh_process` in `scan-split-cutter.ts`; persisted reference-plane frames take precedence over legacy transient fits, while ordinary meshes retain finite bounds. Shared `scan-segment-publication.ts` publishes split/extracted/segmented meshes for both adapters, retaining source geometry and original classification indices. It returns an existing `modelVisibilityFor` policy so source hiding is owned by the model transaction and reverses independently of unrelated display choices. Both adapters select the first result after successful commit; empty/invalid results publish nothing.
+
+## Request-owned boundary smoothing
+
+GUI boundary smoothing and MCP `mesh_process` / `scanEdit/boundarySmooth` share the async processing-worker driver. Native imported vertex identity determines boundary order. The driver applies vertex passes, a bounded cubic fit, temporary OCCT curve projection, boundary-locked correction and swap-last face cleanup. One lazy CAD worker belongs to the request and is disposed before publication; no scene CAD handle is retained. The existing processing owner also retires its nested worker on cancellation.
+
+Changed output publishes independent indexed buffers only after coordinate correspondence validation. Both the GUI adapter and MCP executor adopt those buffers, preserving imported identity for subsequent edits; authored source buffers and canonical cache arrays are never transferred. No-op output retains the source cache and creates no history. Existing lock/revision/retry/cancellation rules still govern the one model commit. Strength defaults to one; zero still runs ten native vertex passes and a 0.05 mm fit. Iterations count full command repetitions. See the agent guide and native evidence for finite comparison scope and remaining gates.
+
+Spatial boundary sketch creation uses `scanEdit/boundarySpatialSketch` through the same processing worker and owned `newModelSketches` commit path. The saved-sketch discriminant retains either a planar sketch or ordered spatial cubic curves, never a planar approximation of those curves. `sketch_get` exposes spatial poles, knots, periodic flags and fitting diagnostics; `sketch_manage` rejects planar activation of spatial sketches. JSON project version 5 and binary version 7 signal the new representation, including retained history records; older version labels cannot carry it. GUI publication rechecks the selected source and lock after worker completion; MCP retains its revision, retry, cancellation and lock checks. Both paths reject unsupported triangle-mask selection. The display is derived from validated curves with bounded segment and basis/knot work admission before sampling.

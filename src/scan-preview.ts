@@ -16,7 +16,7 @@ import { comparePreparedReductionSurface } from "./scan-reduction-comparison";
 import { nativeNoiseColor } from "./scan-noise-color";
 import { linearProgress, type ReductionStatistics } from "./reduction-report";
 import { reductionDisplayColor } from "./reduction-display";
-import { weldScanSamples } from "./scan-resident-samples";
+import { prepareReductionSamples } from "./scan-reduction-adapter";
 
 export type ScanPreviewRequest = {
   kind: "scanPreview";
@@ -73,18 +73,30 @@ export class ScanPreviewSession {
       operation.kind === "mirrorMesh" ||
       operation.kind === "shrinkwrap"
         ? undefined
-        : (operation.kind === "reducePolygons" ? weldScanSamples : analyzeMesh)(
-            request.positions,
-            {
-              ...options,
-              tolerance: 1e-6,
-              onProgress: progress(0, 0.2),
-            },
-          );
+        : (operation.kind === "reducePolygons"
+            ? prepareReductionSamples
+            : analyzeMesh)(request.positions, {
+            ...options,
+            tolerance: 1e-6,
+            onProgress: progress(0, 0.2),
+          });
     // Edit successor adoption must not replace the original's retained topology.
     const editOptions = {
       ...options,
-      topologyCache: { ...options.topologyCache },
+      topologyCache: {
+        ...options.topologyCache,
+        ...(operation.kind === "reducePolygons" && original
+          ? {
+              positions: request.positions,
+              tolerance: 1e-6,
+              reductionSource: original,
+              topology:
+                options.topologyCache?.topology === original
+                  ? options.topologyCache.topology
+                  : undefined,
+            }
+          : {}),
+      },
       onProgress: progress(original ? 0.2 : 0, 1),
     };
     const outcome =

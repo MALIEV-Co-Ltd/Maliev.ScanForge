@@ -114,7 +114,7 @@ export function refineHolePatch(
     return target;
   };
   let triangles = seed.map((f) => [...f] as Face);
-  legalizePatch(projected, triangles, options, forbiddenEdges, 0);
+  legalizeHolePatch(projected, triangles, options, forbiddenEdges, 0);
   const cap = 100000;
   for (let pass = 0; pass < 32; pass++) {
     checkProgress(
@@ -183,9 +183,9 @@ export function refineHolePatch(
 
 /** Legalize constrained interior edges before density refinement so long ear-cut
  * fans do not multiply into slivers. Rim edges have one incident patch face. */
-function legalizePatch(
+export function legalizeHolePatch(
   projected: Vector2[],
-  triangles: Face[],
+  triangles: number[][],
   options: MeshProcessingOptions,
   forbiddenEdges: ReadonlySet<string>,
   progress = 0.9,
@@ -279,7 +279,7 @@ function improvePatch(
   options: MeshProcessingOptions,
   forbiddenEdges: ReadonlySet<string>,
 ) {
-  legalizePatch(projected, triangles, options, forbiddenEdges);
+  legalizeHolePatch(projected, triangles, options, forbiddenEdges);
   const neighbors = Array.from(
     { length: points.length },
     () => new Set<number>(),
