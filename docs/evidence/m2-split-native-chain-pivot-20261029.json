@@ -39,5 +39,20 @@
     "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-math-guard-20261029-r1.json",
     "guardSha256": "2ea3d92d6056f472a3b316122c5b45eb807857d0d74a64843c073b029ab30cde",
     "peakJobBytes": 676282368
+  },
+  "arithmeticFollowup": {
+    "method": "Read-only Ghidra import with automatic analysis disabled and three selected helper entries.",
+    "bodies": [
+      "1403305e0..1403306fa",
+      "140330700..14033092e",
+      "140333630..140333843"
+    ],
+    "observation": "The selected helper at 1403305e0 multiplies sign fields, adds exponent-like fields and calls a word-array operation. The helper at 140330700 copies the first operand if the third is zero and negates the third if the first is zero; 140333630 copies the nonzero operand in either case. These observations are consistent with multiplication, subtraction and addition, respectively, but their types and full contracts are not established.",
+    "hypothesis": "Under those arithmetic interpretations, 140332120 combines two coordinate differences with a baseline vector, branches on their projections, and in one branch forms squared-length products minus a squared projection. This is consistent with a scaled point-to-segment distance calculation. The choice of extremum, return convention, exact geometry types and native Split runtime binding remain unverified.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-arithmetic-static-20261029-r1/evidence.json",
+    "evidenceSha256": "c80a743b66b435467c728815323c832e15cb19f71d5c5304b7c4bb4e7d50b2af",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-arithmetic-guard-20261029-r1.json",
+    "guardSha256": "bc24e654dda21a5adc620da1cd04e4bdf9e696fa0e59ac8619afde20b72db320",
+    "peakJobBytes": 675753984
   }
 }
