@@ -14,13 +14,46 @@ export type CadPattern =
       axis: Vec3;
       angleDegrees: number;
     };
+export interface CadEdgeReference {
+  index: number;
+  kind: string;
+  curveType: number | null;
+  degenerate: boolean;
+  endpoints?: [Vec3, Vec3];
+  boundsMm?: { min: Vec3; max: Vec3 };
+  lengthMm: number;
+}
+export interface CadInspectionOptions {
+  edgeOffset?: number;
+  edgeLimit?: number;
+}
+export interface CadInspection {
+  units: "mm";
+  valid: boolean;
+  solids: number;
+  shells: number;
+  faces: number;
+  edges: number;
+  vertices: number;
+  areaMm2: number;
+  signedVolumeMm3: number;
+  volumeMm3: number;
+  topologyVisits: number;
+  edgeReferences?: {
+    offset: number;
+    total: number;
+    nextOffset: number | null;
+    items: CadEdgeReference[];
+  };
+}
 type Result =
   | KernelMesh
   | KernelMesh[]
   | Uint8Array
   | boolean
   | CadAlignmentInput[]
-  | IndexedMesh;
+  | IndexedMesh
+  | CadInspection;
 type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -57,6 +90,31 @@ export class CadClient {
 
   primitive(input: KernelPrimitive): Promise<KernelMesh> {
     return this.request("primitive", input) as Promise<KernelMesh>;
+  }
+
+  /** Read saved topology in a caller-owned diagnostic worker, without display meshing. */
+  inspectBrep(
+    brep: string,
+    options: CadInspectionOptions = {},
+  ): Promise<CadInspection> {
+    return this.request("inspectBrep", {
+      brep,
+      ...options,
+    }) as Promise<CadInspection>;
+  }
+
+  trimSurfaces(
+    kernelId: string,
+    cutterIds: string[],
+    keepPoints: Vec3[],
+    toleranceMm = 0.1,
+  ): Promise<KernelMesh> {
+    return this.request("trimSurfaces", {
+      kernelId,
+      cutterIds,
+      keepPoints,
+      toleranceMm,
+    }) as Promise<KernelMesh>;
   }
 
   /** Read exact face inputs for shared alignment conversion; does not mutate the body. */
@@ -115,6 +173,17 @@ export class CadClient {
       xDirection: [inverse[0], inverse[4], inverse[8]],
       zDirection: [inverse[2], inverse[6], inverse[10]],
     }) as Promise<KernelMesh & { placementMatrix: number[] }>;
+  }
+
+  sketchSurface(
+    edges: SketchProfileEdge[],
+    frame?: SketchFrame,
+  ): Promise<KernelMesh> {
+    if (frame !== undefined) validateSketchFrame(frame);
+    return this.request("sketchSurface", {
+      edges,
+      frame,
+    }) as Promise<KernelMesh>;
   }
 
   extrudeCurves(

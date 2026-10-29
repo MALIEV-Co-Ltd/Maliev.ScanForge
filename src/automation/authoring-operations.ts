@@ -6,6 +6,7 @@ import {
   insertPatchKnot,
   preparePatchCrease,
   joinPatchBoundary,
+  blendPatchBoundaries,
   snapControlPoint,
   importQuadGridObj,
   assemblePatchShell,
@@ -18,11 +19,52 @@ import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 import { lockedObjectEdit } from "../object-operations";
 import { assertSampledGeometry } from "../reference-entity";
+import {
+  createCadCreateOperation,
+  createCadRebuildOperation,
+} from "./operations";
+import { featureDependencies } from "../parametric";
+
+function fixedSurfaceReference(
+  entities: Entity[],
+  target: Entity,
+  reference: Entity | undefined,
+  operation: string,
+) {
+  if (!target.kernelId || !reference?.parametric || target.id === reference.id)
+    return;
+  const targetId = target.parametric!.feature.id;
+  const features = new Map(
+    entities.flatMap((entity) =>
+      entity.parametric
+        ? [[entity.parametric.feature.id, entity.parametric.feature] as const]
+        : [],
+    ),
+  );
+  const pending = [reference.parametric.feature.id],
+    seen = new Set<string>();
+  while (pending.length) {
+    const id = pending.pop()!;
+    if (id === targetId)
+      throw Error(
+        `A fixed ${operation} reference cannot depend on the target being rebuilt.`,
+      );
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const feature = features.get(id);
+    if (feature)
+      pending.push(
+        ...featureDependencies(feature.recipe).map((ref) => ref.featureId),
+      );
+  }
+}
 
 /** Authoring tools reuse the same helpers as the editor's surface/sketch/selection controls. */
 export function createAuthoringOperations(
   host: WorkspaceHost,
 ): Record<string, Handler> {
+  const rebuildExact = createCadRebuildOperation(host);
+  const createExact = createCadCreateOperation(host);
   const find = (id: string) => {
     const e = host.snapshot().entities.find((e) => e.id === id);
     if (!e) throw new Error("Object does not exist");
@@ -243,7 +285,18 @@ export function createAuthoringOperations(
       const s = host.snapshot();
       let e = a.entityId ? find(a.entityId) : undefined;
       let patch: NurbsPatch;
-      if (e) editable(e);
+      let joinResult: Record<string, unknown> | undefined;
+      if (e && (e.kernelId || e.parametric)) {
+        if (e.locked) throw Error("Surface object is locked");
+        if (!e.kernelId || e.parametric?.feature.recipe.kind !== "surface")
+          throw Error(
+            "Exact surface edits require an authored parametric NURBS surface target.",
+          );
+      } else if (e) editable(e);
+      if (e?.kind === "pointcloud")
+        throw new Error(
+          "Surface edits require a triangle mesh target; create a new patch from the point cloud instead.",
+        );
       if (a.operation === "grid")
         patch = createGridPatch(
           a.countU,
@@ -266,13 +319,82 @@ export function createAuthoringOperations(
           patch = insertPatchKnot(patch, a.axis, a.parameter, a.repetitions);
         else if (a.operation === "crease")
           patch = preparePatchCrease(patch, a.axis, a.parameter);
-        else if (a.operation === "snap")
-          patch = snapControlPoint(patch, a.index, find(a.scanId).positions);
-        else if (a.operation === "join") {
-          const reference = find(a.referenceId).surfacePatch;
+        else if (a.operation === "snap") {
+          const associatedScanId = e.surfaceScanId;
+          const scan =
+            a.scanId !== undefined
+              ? find(a.scanId)
+              : (s.entities.find((entity) => entity.id === associatedScanId) ??
+                e);
+          fixedSurfaceReference(s.entities, e, scan, "snap");
+          patch = snapControlPoint(patch, a.index, scan.positions);
+        } else if (a.operation === "join" || a.operation === "blend") {
+          const blend = a.operation === "blend";
+          const hasId = a.referenceId !== undefined,
+            hasRaw = a.referencePatch !== undefined;
+          if (hasId === hasRaw)
+            throw Error(
+              `Choose exactly one referenceId or referencePatch for ${blend ? "blending" : "joining"}.`,
+            );
+          if (hasId && a.referenceId === e.id)
+            throw Error(
+              `A ${a.operation} reference must differ from its target.`,
+            );
+          if (!a.options || typeof a.options !== "object")
+            throw Error(
+              `${blend ? "Blend" : "Join"} boundary and continuity options are required.`,
+            );
+          const referenceEntity = hasId ? find(a.referenceId) : undefined;
+          const reference = hasId
+            ? referenceEntity?.surfacePatch
+            : a.referencePatch;
           if (!reference) throw new Error("Reference has no NURBS patch");
+          if (!blend)
+            fixedSurfaceReference(s.entities, e, referenceEntity, "join");
+          c.check();
+          const referenceSource = hasId
+            ? { kind: "entity", entityId: a.referenceId }
+            : { kind: "patch" };
+          const options = { ...a.options, reverse: a.options.reverse ?? false };
+          if (blend) {
+            const bridge = blendPatchBoundaries(reference, patch, a.options);
+            const created = await createExact(
+              {
+                name: a.name ?? "NURBS transition surface",
+                recipe: { kind: "surface", patch: bridge },
+              },
+              c,
+            );
+            return {
+              entityId: created.entityIds[0],
+              featureId: created.featureId,
+              representation: "exactCad",
+              options,
+              referenceSource,
+            };
+          }
+          const original = patch;
           patch = joinPatchBoundary(reference, patch, a.options);
+          joinResult = {
+            representation: e.kernelId ? "exactCad" : "mesh",
+            options,
+            referenceSource,
+            changedControlIndices: patch.points.flatMap((point, index) =>
+              point.some(
+                (value, axis) => value !== original.points[index][axis],
+              ) || patch.weights[index] !== original.weights[index]
+                ? [index]
+                : [],
+            ),
+          };
         } else throw new Error("Unsupported surface operation");
+      }
+      if (e?.kernelId) {
+        const rebuilt = await rebuildExact(
+          { entityId: e.id, recipe: { kind: "surface", patch } },
+          c,
+        );
+        return { entityId: e.id, ...joinResult, ...rebuilt };
       }
       e ??= {
         id: crypto.randomUUID(),
@@ -287,6 +409,12 @@ export function createAuthoringOperations(
         ...e,
         positions: tessellatePatch(patch),
         surfacePatch: patch,
+        normals: undefined,
+        edgePositions: undefined,
+        fit: undefined,
+        planeFrame: undefined,
+        scanSource: undefined,
+        indexedMesh: undefined,
         meshSelection: undefined,
       };
       const next = a.entityId
@@ -296,7 +424,7 @@ export function createAuthoringOperations(
       if (locked) throw new Error("Surface object is locked");
       c.check();
       host.commit(next, `Surface ${a.operation}`);
-      return { entityId: e.id };
+      return { entityId: e.id, ...joinResult };
     },
     surface_shell: (a, c) => {
       const patches =

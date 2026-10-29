@@ -10,6 +10,7 @@ import {
 const ready: RibbonState = {
   disabled: false,
   hasSelection: true,
+  hasSketchSurfaceSource: true,
   canUndo: true,
   canRedo: true,
 };
@@ -25,6 +26,33 @@ it("opens the verified coordinate Align entry only with a selection and an idle 
     ribbonToolAvailability(tool, { ...ready, disabled: true }, actions)
       .available,
   ).toBe(false);
+});
+
+it("admits a sketch surface from an editable sketch independently of object selection", () => {
+  const tool = getRibbonToolMetadata("surface2dSketch")!;
+  const actions = { surface2dSketch: vi.fn() };
+  expect(RIBBON_ACTION_IDS).toContain("surface2dSketch");
+  expect(tool.action).toBe("surface2dSketch");
+  expect(tool.requiresSelection).not.toBe(true);
+  const savedSketch = { ...ready, hasSelection: false };
+  expect(ribbonToolAvailability(tool, savedSketch, actions).available).toBe(
+    true,
+  );
+  expect(
+    ribbonToolAvailability(
+      tool,
+      { ...savedSketch, hasSketchSurfaceSource: false },
+      actions,
+    ),
+  ).toMatchObject({
+    available: false,
+    reason: expect.stringMatching(/sketch profile/i),
+  });
+  expect(
+    ribbonToolAvailability(tool, { ...savedSketch, disabled: true }, actions)
+      .available,
+  ).toBe(false);
+  expect(ribbonToolAvailability(tool, savedSketch, {}).available).toBe(false);
 });
 describe("ribbon command inventory", () => {
   it("keeps Main to common workflows and advanced tools on dedicated tabs", () => {
@@ -208,16 +236,9 @@ describe("ribbon command inventory", () => {
       expect(getRibbonToolMetadata(id)?.action, id).toBe(action);
     for (const id of [
       "quadObj",
-      "nurbsSurface",
-      "loft",
-      "sweep",
-      "shell",
-      "fillet",
-      "chamfer",
       "repairMesh",
       "segmentMesh",
       "sketch2d",
-      "splitSolid",
       "circularPattern",
       "linearPattern",
       "mirrorBody",

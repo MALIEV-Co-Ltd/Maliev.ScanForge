@@ -1,0 +1,68 @@
+{
+  "scope": "Actual owned blank QuickSurface lifecycle and read-only live routing/capture attempt. Capture failed; input viability remains untested. No CAD operation or file-load evidence.",
+  "status": "capture-failed-input-untested-lifecycle-clean",
+  "actualNativeIdentity": {
+    "pid": 28716,
+    "creationTimeFiletime": "134375134695819158",
+    "toolReturnedWindowId": 25624726,
+    "title": "QUICKSURFACE Pro 8.0.123",
+    "liveCreationTimeVerified": true,
+    "bindingReceipt": "native-blank-viability-r2-binding.json",
+    "routingHelperSha256": "a6fa52feeda0de02453f89464ca50aed19f3f7f21a6e47481c99bee815a02a74"
+  },
+  "observations": {
+    "visible": true,
+    "minimized": false,
+    "foregroundWindowId": 0,
+    "foregroundOwned": false,
+    "cuaAppBound": true,
+    "accessibility": "Normal blank QuickSurface toolbar and Coordinate System tree observed",
+    "screenshot": "All black except pointer",
+    "nativePixelsVerified": false,
+    "captureEvidenceSource": "Authorized root coordinator actual CUA observation; no screenshot artifact copied in this archival",
+    "raisePerformed": false,
+    "inputPerformed": false,
+    "menuPerformed": false,
+    "escapePerformed": false,
+    "cadOrFileLoaded": false,
+    "securityPromptInteraction": false,
+    "getCursorPosFailureEstablished": false
+  },
+  "finish": {
+    "method": "Immediate authenticated finish after black capture",
+    "scheduledFinishUsed": false,
+    "allCuaBindingsRetired": true
+  },
+  "guard": {
+    "observedWrapperTerminalExitCode": 0,
+    "elapsedSecondsBeforeReceipt": 56.25177170004463,
+    "peakJobBytes": 722214912,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "activeZeroObserved": true,
+    "cleanupConfirmed": true,
+    "allHandlesClosed": true,
+    "mutexReleased": true,
+    "terminalObservationSource": "Authorized root coordinator",
+    "jobReceiptAcceptance": "Provisional receipt combined with observed actual wrapper terminal result"
+  },
+  "artifacts": [
+    {
+      "source": ".resources/m5/native-blank-viability-r2-job.json",
+      "sourceSha256": "d02dac63cf02bc44e2fc67dc3c69dffce81a544934df67b04b59b92fada4d5e6",
+      "archive": "native-blank-viability-r2-job.json",
+      "archiveSha256": "b470279d35c93ded25fa9b28c7963737312ef73ce99c9988cd7b6f51be206e44",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    },
+    {
+      "source": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-blank-viability-r2/window-blank-viability-r2.json",
+      "sourceSha256": "513f5633484e6fd99c0f0a33aaf941729b9ff2674d31cdf414e17d5230d3a7eb",
+      "archive": "native-blank-viability-r2-binding.json",
+      "archiveSha256": "bfea4600e85cee29f4ba8b0bc8ec52f69ce5a669a0fbada8892e08316a53c586",
+      "format": "Two-space JSON; UTF-8 without BOM; LF; final LF"
+    }
+  ],
+  "privateReadyAndLauncherArchived": false,
+  "originalResourcesPreserved": true,
+  "nextAttempt": "No automatic retry or new probe authorized by this note; any diagnosis or input requires separate coordinator approval"
+}

@@ -1,0 +1,5 @@
+{"gprop":["LinearProperties"],"curve":["length","name","arguments","caller","prototype","values","GeomAbs_Line","GeomAbs_Circle","GeomAbs_Ellipse","GeomAbs_Hyperbola","GeomAbs_Parabola","GeomAbs_BezierCurve","GeomAbs_BSplineCurve","GeomAbs_OffsetCurve","GeomAbs_OtherCurve"]}
+{"curveType":{},"first":0,"last":30}
+{"method":"LinearProperties","count":2,"error":"function BRepGProp.LinearProperties called with 2 arguments, expected 4 args!"}
+{"method":"LinearProperties","count":3,"error":"function BRepGProp.LinearProperties called with 3 arguments, expected 4 args!"}
+{"method":"LinearProperties","count":4,"length":30}

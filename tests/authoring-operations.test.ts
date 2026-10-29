@@ -105,6 +105,54 @@ function setup() {
   };
   return { state, host, context, ops: createAuthoringOperations(host), patch };
 }
+it("invalidates derived normals and fit metadata when a surface control grid changes", async () => {
+  const { ops, state, context, patch } = setup();
+  const prior = state.entities[0];
+  prior.normals = [0, 0, 1, 0, 0, 1, 0, 0, 1];
+  prior.edgePositions = [0, 0, 0, 1, 0, 0];
+  prior.surfaceScanId = "original-scan";
+  prior.planeFrame = {
+    center: [0, 0, 0],
+    normal: [0, 0, 1],
+    tangent: [1, 0, 0],
+  };
+  const originalNormals = prior.normals;
+  await ops.surface_operation(
+    { entityId: prior.id, operation: "knot", axis: "u", parameter: 0.5 },
+    context,
+  );
+  const edited = state.entities[0];
+  expect(edited.surfacePatch!.countU).toBe(patch.countU + 1);
+  expect(edited.normals).toBeUndefined();
+  expect(edited.edgePositions).toBeUndefined();
+  expect(edited.planeFrame).toBeUndefined();
+  expect(edited.meshSelection).toBeUndefined();
+  expect(edited.surfaceScanId).toBe("original-scan");
+  expect(prior.normals).toBe(originalNormals);
+  expect(prior.surfacePatch).toBe(patch);
+});
+
+it("does not replace point-cloud source records with surface triangles", async () => {
+  const { ops, state, context, host } = setup();
+  state.entities[0].kind = "pointcloud";
+  const prior = state.entities;
+  host.commit = vi.fn();
+  await expect(
+    ops.surface_operation(
+      {
+        entityId: "surface",
+        operation: "grid",
+        countU: 4,
+        countV: 4,
+        width: 10,
+        height: 10,
+      },
+      context,
+    ),
+  ).rejects.toThrow("triangle mesh");
+  expect(state.entities).toBe(prior);
+  expect(host.commit).not.toHaveBeenCalled();
+});
 it("requires explicit discard for a new project and prevents selecting locked objects", () => {
   const { ops, context, state, host } = setup();
   expect(() => ops.project_new({ discard: false }, context)).toThrow("discard");

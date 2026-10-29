@@ -1,0 +1,66 @@
+Starting format-resolutions
+docs/MCP_ARCHITECTURE.md 209ms (unchanged)
+src/automation/operations.ts 186ms (unchanged)
+Starting resource-check
+Resource admission: 9831 MiB available; 1536 MiB required.
+Starting prepare-kernel
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+public/kernel/sketch-backend.js  118.75 kB │ gzip: 22.62 kB
+✓ built in 186ms
+Local CAD kernel prepared at C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\public\kernel\
+Starting typecheck
+Typecheck 1/13: source (575 root files; 1536 MiB heap)
+Typecheck 2/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 3/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 4/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 5/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 6/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 7/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 8/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 9/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 10/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 11/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 12/13: source and test batch (639 root files; 1536 MiB heap)
+Typecheck 13/13: source and test batch (592 root files; 1536 MiB heap)
+Starting build
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 512 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                            0.76 kB │ gzip:   0.41 kB
+dist/assets/scan-noise-worker-Bj2yl9jW.js                  1.37 kB
+dist/assets/scan-smoothing-worker-BiJz00c-.js              1.39 kB
+dist/assets/datum-transform-worker-DSJ-VX6g.js             1.60 kB
+dist/assets/scan-alignment-worker-BeIrQg-V.js              5.83 kB
+dist/assets/interactive-bounds-worker-BLfFs376.js          8.00 kB
+dist/assets/global-alignment-input-worker-tZ-Of2hy.js      8.41 kB
+dist/assets/scan-global-scene-worker-CXEyabhO.js           8.76 kB
+dist/assets/surface-worker-O-OueH5t.js                    14.95 kB
+dist/assets/project-encoding-worker-CdhiohEV.js           56.49 kB
+dist/assets/scan-global-query-worker-DYbgljo8.js          64.85 kB
+dist/assets/scan-global-controller-worker-By6GTdWu.js    104.26 kB
+dist/assets/viewport-picking-worker-C1t_UCCA.js          136.86 kB
+dist/assets/project-decoding-worker-CNj5nD2U.js          137.26 kB
+dist/assets/screen-selection-worker-DOxtAEg_.js          151.66 kB
+dist/assets/import-worker-DUumS09O.js                    167.61 kB
+dist/assets/processing-worker-BeBTQGKy.js                504.05 kB
+dist/assets/index-CpbrFo5O.css                            77.84 kB │ gzip:  15.25 kB
+dist/assets/global-alignment-input-DRQsarxU.js             9.11 kB │ gzip:   3.26 kB
+dist/assets/index-DoLiZPBX.js                             12.93 kB │ gzip:   5.17 kB
+dist/assets/scan-global-registration-DA_1_tEZ.js          92.92 kB │ gzip:  35.07 kB
+dist/assets/index-BR65V2tx.js                            802.57 kB │ gzip: 241.10 kB
+dist/assets/agent-api-xexpX37f.js                      1,159.68 kB │ gzip: 315.97 kB
+✓ built in 6.50s
+Starting manifest
+Offline manifest generated: 273 local assets, scanforge-6df43e18c921f0bd
+Starting standard-cad
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+{"nativeInputBrepChecks":{"thicken":25,"transform":8,"boolean":18,"split":11,"edges":11,"shell":4,"datumTransform":341,"pattern":5,"offset":1,"sew":1,"mirror":3},"nativeInputBrepMutations":[]}
+CAD smoke passed: read-only alignment face references and matching triangle ranges, primitives, exchange, booleans, transforms, extrusion/revolution, exact NURBS faces, loft, straight/bent sweep, fillet/chamfer, offset, sewing, shell/thicken, linear/circular patterns, arbitrary plane mirrors, atomic solid split, STEP roundtrips, invalid geometry rejection, handle release and virtual-file cleanup.
+Exact sketch surface geometry, thickening direction, validation, ownership and extrusion regression checks passed.

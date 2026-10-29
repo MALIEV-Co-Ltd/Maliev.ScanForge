@@ -1,0 +1,23 @@
+Resource admission: 12374 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.click: Error: strict mode violation: getByRole('button', { name: 'Thicken', exact: true }) resolved to 2 elements:
+    1) <button type="button" title="Thicken" aria-label="Thicken" class="ribbon-button" aria-description="Thicken" data-verification="verified" data-command="surfaceThicken">…</button> aka getByRole('button', { name: 'Thicken', description: 'Thicken' })
+    2) <button class="object-name" aria-pressed="false">…</button> aka getByRole('main').getByRole('button', { name: 'Thicken', exact: true })
+
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Thicken', exact: true })[22m
+
+    at thickenGui (C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\tests\helpers\sketch-surface-acceptance.mjs:208:70)
+    at async replayRealSketchSurface (C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\tests\helpers\sketch-surface-real-browser.mjs:541:22)
+    at async completeSketchSurfaceAcceptance (C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\tests\helpers\sketch-surface-acceptance.mjs:914:3)
+    at async replaySketchSurface (C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\tests\helpers\sketch-surface-browser.mjs:205:3)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1165:5 {
+  log: [
+    "  - waiting for getByRole('button', { name: 'Thicken', exact: true })"
+  ]
+}
+
+Node.js v22.22.0

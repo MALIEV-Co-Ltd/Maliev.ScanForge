@@ -1,0 +1,853 @@
+{
+  "owner": "surface-fit-browser",
+  "applicationOrigin": "http://127.0.0.1:5196",
+  "expiresAt": "2026-10-25T19:19:04.990Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "pid": 52956,
+      "startedAt": "2026-10-25T19:16:04.5404252Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "port-reservation",
+      "port": 50664,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 54384,
+      "startedAt": "2026-10-25T19:16:05.3496478Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "mcp-server",
+      "port": 50664,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 60976,
+      "startedAt": "2026-10-25T19:16:05.8850874Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "kind": "browser",
+      "persistentData": false
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "mcp-server",
+      "pid": 54384,
+      "originalStart": "2026-10-25T19:16:05.3496478Z",
+      "absent": true
+    },
+    {
+      "kind": "browser",
+      "pid": 60976,
+      "originalStart": "2026-10-25T19:16:05.8850874Z",
+      "absent": true
+    },
+    {
+      "port": 50664,
+      "closed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "guiLaunch": "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
+      "hiddenState": "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
+      "requestedTriangles": 288,
+      "fittedTriangles": 287,
+      "selectedIds": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+        57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+        93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+        109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+        137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150,
+        151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+        165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+        179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+        221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+        235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+        249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+        263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287
+      ],
+      "sourceId": "0ff1e657-fc94-4952-8078-b874715cad53",
+      "guiId": "a4244030-922c-4222-b1c8-8c1b755567f8",
+      "mcpId": "f16e7b41-3642-4111-9325-8f5745e73cab",
+      "options": {
+        "countU": 4,
+        "countV": 4,
+        "degree": 3,
+        "projection": "xy",
+        "sampleLimit": 10000
+      },
+      "previewNoCommit": true,
+      "guiOneHistoryStep": true,
+      "mcpOneHistoryStep": true,
+      "exactPatchEquality": true,
+      "exactRenderGeometryEquality": true,
+      "sourceGeometryPreserved": true,
+      "mcpResult": {
+        "entityId": "f16e7b41-3642-4111-9325-8f5745e73cab",
+        "samples": 861,
+        "rms": 1.2518105224974623e-14,
+        "maxError": 1.0302869668521453e-13,
+        "projection": "xy",
+        "solverBytes": 22968
+      },
+      "limitations": [
+        "Hidden-selected filtering is checked by GUI region count and the MCP fit sample count; the planar fixture does not prove behavior on unrestricted surfaces.",
+        "Authored planar fixture establishes GUI/MCP refactor equality, not native numerical parity, unrestricted input sizes or point-cloud browser behavior."
+      ]
+    },
+    {
+      "controlEdit": "GUI Z control and public surface_set",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true
+    },
+    {
+      "exactSurface": "GUI control edit and public cad_rebuild",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true,
+      "stepExport": 5997,
+      "projectReopenExactCad": true
+    },
+    {
+      "exactInspectionGuiMcpEquality": true,
+      "unchangedRevision": true,
+      "report": {
+        "entityId": "8566277e-bc58-48fc-8fdb-1ac7a92d0c2c",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 148.67578360074663,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      }
+    },
+    {
+      "compatibleJoins": {
+        "scope": "Authored compatible C0/C1 patch joins; not a persistent seam constraint, general blend or native-reference equivalence",
+        "cases": [
+          {
+            "continuity": "C0",
+            "representation": "mesh",
+            "entry": "actual NURBS surface ribbon",
+            "guiMcpRawAndIdEquality": true,
+            "oneGuiHistoryStep": true,
+            "referenceAndSourcePreserved": true,
+            "projectPatchPreserved": true,
+            "changedControlIndices": [0, 4, 8, 12],
+            "rejectedMessage": "Patch seam control counts, degrees and normalized knots must be compatible."
+          },
+          {
+            "continuity": "C1",
+            "representation": "mesh",
+            "entry": "actual NURBS surface ribbon",
+            "guiMcpRawAndIdEquality": true,
+            "oneGuiHistoryStep": true,
+            "referenceAndSourcePreserved": true,
+            "projectPatchPreserved": true,
+            "changedControlIndices": [0, 1, 4, 5, 8, 9, 12, 13],
+            "rejectedMessage": "Patch seam control counts, degrees and normalized knots must be compatible."
+          },
+          {
+            "continuity": "C0",
+            "representation": "exactCad",
+            "entry": "actual NURBS surface ribbon",
+            "guiMcpRawAndIdEquality": true,
+            "oneGuiHistoryStep": true,
+            "referenceAndSourcePreserved": true,
+            "projectPatchPreserved": true,
+            "changedControlIndices": [0, 4, 8, 12],
+            "rejectedMessage": "Patch seam control counts, degrees and normalized knots must be compatible.",
+            "report": {
+              "entityId": "74fd98f4-ab67-4121-9bbc-2b41c7f299d6",
+              "units": "mm",
+              "valid": true,
+              "solids": 0,
+              "shells": 1,
+              "faces": 1,
+              "edges": 4,
+              "vertices": 4,
+              "areaMm2": 81.56386202843935,
+              "signedVolumeMm3": 0,
+              "volumeMm3": 0,
+              "topologyVisits": 14
+            },
+            "stepReport": {
+              "entityId": "c09f529b-675c-4383-8274-9dd04fb0a6a0",
+              "units": "mm",
+              "valid": true,
+              "solids": 0,
+              "shells": 1,
+              "faces": 1,
+              "edges": 4,
+              "vertices": 4,
+              "areaMm2": 81.56386202843949,
+              "signedVolumeMm3": 0,
+              "volumeMm3": 0,
+              "topologyVisits": 14
+            }
+          },
+          {
+            "continuity": "C1",
+            "representation": "exactCad",
+            "entry": "actual NURBS surface ribbon",
+            "guiMcpRawAndIdEquality": true,
+            "oneGuiHistoryStep": true,
+            "referenceAndSourcePreserved": true,
+            "projectPatchPreserved": true,
+            "changedControlIndices": [0, 1, 4, 5, 8, 9, 12, 13],
+            "rejectedMessage": "Patch seam control counts, degrees and normalized knots must be compatible.",
+            "report": {
+              "entityId": "475a63cb-d6d1-4930-aed8-20a50ade7334",
+              "units": "mm",
+              "valid": true,
+              "solids": 0,
+              "shells": 1,
+              "faces": 1,
+              "edges": 4,
+              "vertices": 4,
+              "areaMm2": 81.025578065672,
+              "signedVolumeMm3": 0,
+              "volumeMm3": 0,
+              "topologyVisits": 14
+            },
+            "stepReport": {
+              "entityId": "e8717d39-c4d4-4812-8293-c114bb4e9b57",
+              "units": "mm",
+              "valid": true,
+              "solids": 0,
+              "shells": 1,
+              "faces": 1,
+              "edges": 4,
+              "vertices": 4,
+              "areaMm2": 81.02557806567167,
+              "signedVolumeMm3": 0,
+              "volumeMm3": 0,
+              "topologyVisits": 14
+            }
+          }
+        ]
+      }
+    },
+    {
+      "realInput": {
+        "name": "scan-1.stl",
+        "bytes": 13657034,
+        "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+      },
+      "selectedFacets": 200,
+      "connectedRegion": {
+        "source": "scan-1.stl",
+        "seed": 0,
+        "radiusMm": 4,
+        "minimumNormalDot": 0.9,
+        "adjacency": "shared exact float32 vertex",
+        "count": 200,
+        "areaMm2": 5.7779869601387475,
+        "min": [-3.405958652496338, -37.81879806518555, -314.744384765625],
+        "max": [-0.04079938307404518, -35.772239685058594, -314.4330139160156],
+        "triangleIds": [
+          0, 1, 2, 3, 5, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 50, 51,
+          52, 53, 54, 55, 78, 79, 80, 81, 226, 227, 228, 229, 14452, 14453,
+          14454, 14828, 14829, 14830, 14831, 14832, 14833, 14834, 14835, 14836,
+          14837, 14838, 14839, 38820, 38821, 38822, 38823, 38824, 38825, 38826,
+          38827, 38828, 38829, 58359, 58365, 58865, 58866, 58867, 58868, 58869,
+          58871, 58927, 58928, 58929, 58930, 58931, 58932, 58958, 59056, 59057,
+          59058, 59059, 59060, 59061, 59062, 59063, 59064, 59065, 59066, 59067,
+          59088, 59089, 59090, 59091, 59092, 59093, 59199, 59200, 93220, 93221,
+          93222, 93223, 93224, 93225, 93226, 93249, 93250, 93251, 93252, 93325,
+          93326, 93327, 93328, 93329, 93330, 93331, 93332, 133985, 134812,
+          134813, 134814, 134815, 134816, 134817, 134840, 134841, 134842,
+          134843, 182328, 182329, 182330, 182331, 182332, 182333, 182334,
+          182335, 182336, 182337, 182338, 182339, 182340, 182341, 182555,
+          182556, 183140, 183141, 183142, 183143, 183166, 183167, 183168,
+          183169, 183170, 183171, 183172, 183173, 183174, 183175, 183176,
+          183667, 183668, 183669, 183670, 183671, 209068, 209069, 209070,
+          209071, 209072, 209073, 250677, 250678, 250679, 250680, 250681,
+          250682, 250683, 250684, 250685, 250686, 250842, 250843, 250844,
+          250845, 250846, 250868, 250869, 250870, 250871, 250872, 250873,
+          250874, 250875, 250876, 250877, 250878, 250879, 251447, 251448,
+          251449, 251450, 251451, 251452, 251475, 251476, 251477, 251478
+        ]
+      },
+      "guiMcpPatchEquality": true,
+      "fit": {
+        "entityId": "d655b3b4-34d0-49a7-acd6-c530c5f8f307",
+        "samples": 600,
+        "rms": 0.006583489565586009,
+        "maxError": 0.03186297917528691,
+        "projection": "xy",
+        "solverBytes": 16704
+      },
+      "exactFace": true,
+      "thickenedRegionGuiMcpEquality": true,
+      "solidReport": {
+        "entityId": "9865cf5a-9797-42cb-8d5a-345badb73e12",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 15.00587142227191,
+        "signedVolumeMm3": 0.6959681191105266,
+        "volumeMm3": 0.6959681191105266,
+        "topologyVisits": 80
+      },
+      "surfaceReport": {
+        "entityId": "f330d1e6-f4ea-4a5d-a4c1-d3512f5c6efe",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 6.942309509295891,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      },
+      "stepReport": {
+        "entityId": "a54834a2-9724-4b02-872f-4dbf806c6f7a",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 15.00587142220024,
+        "signedVolumeMm3": 0.6959681190811776,
+        "volumeMm3": 0.6959681190811776,
+        "topologyVisits": 80
+      },
+      "projectReport": {
+        "entityId": "9865cf5a-9797-42cb-8d5a-345badb73e12",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 15.00587142227191,
+        "signedVolumeMm3": 0.6959681191105266,
+        "volumeMm3": 0.6959681191105266,
+        "topologyVisits": 80
+      },
+      "exchangeTolerance": {
+        "relative": 1e-8,
+        "absolute": 0.000001
+      },
+      "sourceDigestPreservedAfterReopen": true,
+      "sourceDigest": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "rawBytes": 9833004,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+        }
+      ],
+      "regionDigest": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 1800,
+          "rawBytes": 7200,
+          "sha256": "4f9b52852406763a4db5b94e20df530a635ca1b452246ff548610155cd07fbe7"
+        }
+      ],
+      "nativeFiles": [
+        {
+          "filename": "real-region-input.stl",
+          "bytes": 10084,
+          "sha256": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e"
+        },
+        {
+          "filename": "real-region-surface.step",
+          "bytes": 7600,
+          "sha256": "c8d8446e72708258ab62d81f2cfee23a11f59d05cad7ba62ff516506849be460"
+        },
+        {
+          "filename": "real-region-solid.step",
+          "bytes": 31638,
+          "sha256": "4acc7e644a8347ae34a0fc064dab4fb9eabbe79629037d9060734419a97d6ce6"
+        }
+      ],
+      "commonNativeInputRefitEquality": true,
+      "limitation": "A selected real scan region with kernel validity and exchange checks; not whole-part reconstruction, a global self-intersection certificate or native application parity."
+    },
+    {
+      "guardedCadLoft": {
+        "sharedGuiJob": "2042a975-6f1e-45b0-9dab-882104246fc0",
+        "guiMcpGeometryEquality": true,
+        "report": {
+          "entityId": "893ad1ab-bd1d-4e89-b5e6-bcafa8b65c1b",
+          "units": "mm",
+          "valid": true,
+          "solids": 1,
+          "shells": 1,
+          "faces": 6,
+          "edges": 12,
+          "vertices": 8,
+          "areaMm2": 3200,
+          "signedVolumeMm3": 12000,
+          "volumeMm3": 12000,
+          "topologyVisits": 80
+        },
+        "entry": "actual ribbon entry with matching command_get availability"
+      }
+    },
+    {
+      "edgeDiscovery": {
+        "workspace": "fillet",
+        "discoveredIndex": 1,
+        "reference": {
+          "index": 1,
+          "kind": "line",
+          "curveType": 0,
+          "degenerate": false,
+          "endpoints": [
+            [-5, -5, 5],
+            [-5, 5, 5]
+          ],
+          "lengthMm": 10,
+          "boundsMm": {
+            "min": [-5.0000001, -5.0000001, 4.9999999],
+            "max": [-4.9999999, 5.0000001, 5.0000001]
+          }
+        },
+        "unchangedHistory": true,
+        "staleRevisionRejected": true,
+        "reachableCancellation": true
+      }
+    },
+    {
+      "edgeDiscovery": {
+        "workspace": "chamfer",
+        "discoveredIndex": 1,
+        "reference": {
+          "index": 1,
+          "kind": "line",
+          "curveType": 0,
+          "degenerate": false,
+          "endpoints": [
+            [-5, -5, 5],
+            [-5, 5, 5]
+          ],
+          "lengthMm": 10,
+          "boundsMm": {
+            "min": [-5.0000001, -5.0000001, 4.9999999],
+            "max": [-4.9999999, 5.0000001, 5.0000001]
+          }
+        },
+        "unchangedHistory": true,
+        "staleRevisionRejected": false,
+        "reachableCancellation": false
+      }
+    },
+    {
+      "edgePaging": {
+        "total": 36,
+        "pageSizes": [32, 4, 32, 4],
+        "selectedIndex": 35,
+        "unchangedHistory": true,
+        "geometryUnchanged": true,
+        "reference": {
+          "index": 35,
+          "kind": "line",
+          "curveType": 0,
+          "degenerate": false,
+          "endpoints": [
+            [35, 5, 5],
+            [45, 5, 5]
+          ],
+          "lengthMm": 10,
+          "boundsMm": {
+            "min": [34.9999999, 4.9999999, 4.9999999],
+            "max": [45.0000001, 5.0000001, 5.0000001]
+          }
+        }
+      }
+    },
+    {
+      "guardedCadMatrix": {
+        "entry": "actual CAD ribbon with optional exact edge discovery",
+        "matrix": [
+          {
+            "workspace": "sweep",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "59dbccec-4b16-4ecc-a9bd-1d592422e02d",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "26fe883b-904c-460a-9877-b077b87365dc",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 1032,
+                "signedVolumeMm3": 1440,
+                "volumeMm3": 1440,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Sweep"]
+          },
+          {
+            "workspace": "revolve",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "6d60b88f-0762-43b2-9aaf-52beee19305e",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "1ee66abe-aad9-4d15-b4b0-4c856911503c",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 4,
+                "edges": 6,
+                "vertices": 4,
+                "areaMm2": 4712.388980384692,
+                "signedVolumeMm3": 14137.166941154075,
+                "volumeMm3": 14137.166941154075,
+                "topologyVisits": 42
+              }
+            ],
+            "outputNames": ["Revolved solid"]
+          },
+          {
+            "workspace": "boolean",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "10dd1e22-4b62-482f-8021-1affef07b3b9",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "c652840e-746a-401c-9c6c-8b04133d1ad3",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["subtract result"]
+          },
+          {
+            "workspace": "splitSolid",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "920b7c7c-9ada-4db1-9677-5b8c9d7b7500",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "ada18c40-bf93-4870-a20f-0135ee8c6a7f",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              },
+              {
+                "entityId": "9b5c70d6-2526-493c-8533-6717a078766f",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 399.99999999999994,
+                "signedVolumeMm3": 499.9999999999999,
+                "volumeMm3": 499.9999999999999,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Split inside", "Split outside"]
+          },
+          {
+            "workspace": "boolean",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "dd24f861-2a62-4a36-9f9f-c4a85f252a6d",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "de2fcfe9-5969-416d-9e3b-648e3c1cf03d",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 10,
+                "edges": 20,
+                "vertices": 12,
+                "areaMm2": 599.9999999999999,
+                "signedVolumeMm3": 999.9999999999998,
+                "volumeMm3": 999.9999999999998,
+                "topologyVisits": 132
+              }
+            ],
+            "outputNames": ["union result"]
+          },
+          {
+            "unusedSplitSiblingPreserved": true
+          },
+          {
+            "workspace": "fillet",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "89203852-f608-41cd-90e5-62cfc96b14c2",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "a1713c52-dd54-4ffc-a09c-8631ac8b4439",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 7,
+                "edges": 15,
+                "vertices": 10,
+                "areaMm2": 595.2787595947439,
+                "signedVolumeMm3": 997.8539816339744,
+                "volumeMm3": 997.8539816339744,
+                "topologyVisits": 99
+              }
+            ],
+            "outputNames": ["fillet"]
+          },
+          {
+            "workspace": "chamfer",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "78e2033b-9331-4692-89ae-baa210fa94b8",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "b1fabf19-24fb-469b-9ff7-c4106a8dddfe",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 7,
+                "edges": 15,
+                "vertices": 10,
+                "areaMm2": 593.1421356237311,
+                "signedVolumeMm3": 995,
+                "volumeMm3": 995,
+                "topologyVisits": 99
+              }
+            ],
+            "outputNames": ["chamfer"]
+          },
+          {
+            "workspace": "shell",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "c5717524-f496-46ac-8a91-e6a8e7c70c9b",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "87d45dda-66e1-43b5-b60f-20696bd2ee32",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 11,
+                "edges": 24,
+                "vertices": 16,
+                "areaMm2": 887.9999999999999,
+                "signedVolumeMm3": 423.99999999999983,
+                "volumeMm3": 423.99999999999983,
+                "topologyVisits": 157
+              }
+            ],
+            "outputNames": ["Shell"]
+          },
+          {
+            "workspace": "extrude",
+            "entry": "actual ribbon entry with matching command_get availability",
+            "sharedGuiJob": "ecc3397d-4a1a-473e-a508-3c4510c76fbc",
+            "guiMcpGeometryEquality": true,
+            "reports": [
+              {
+                "entityId": "b95a88c6-1ab1-4787-8029-18b07b468b75",
+                "units": "mm",
+                "valid": true,
+                "solids": 1,
+                "shells": 1,
+                "faces": 6,
+                "edges": 12,
+                "vertices": 8,
+                "areaMm2": 3800,
+                "signedVolumeMm3": 12000,
+                "volumeMm3": 12000,
+                "topologyVisits": 80
+              }
+            ],
+            "outputNames": ["Polygon extrusion"]
+          }
+        ]
+      }
+    },
+    {
+      "surfaceTrim": {
+        "actualRibbonEntry": true,
+        "actualViewportPick": true,
+        "escapeNoCommit": true,
+        "closeReopenCancelsPick": true,
+        "guiMcpFailureEquality": true,
+        "rejectedKeepPointMessage": "Retained point 1 is outside the surface tolerance (95 mm).",
+        "picked": [[-2.000060897880782, 0, 0]],
+        "guiMcpGeometryEquality": true,
+        "sourceDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 18,
+            "rawBytes": 144,
+            "sha256": "4f5acb8b4201dd8123c4c0454fb3cdf103f9c2d5b0a33dd6c552f68baec08feb"
+          },
+          {
+            "path": "normals",
+            "encoding": "f64",
+            "elements": 18,
+            "rawBytes": 144,
+            "sha256": "ced5b88ecbb703c17089878fd45097da5be7d1049d67f7e443ee00cff08dfd01"
+          },
+          {
+            "path": "edgePositions",
+            "encoding": "f64",
+            "elements": 24,
+            "rawBytes": 192,
+            "sha256": "dcce3e4f6b2ab50c587245777b00ca3280f554892e41641b6605324534bda15a"
+          }
+        ],
+        "cutterDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 18,
+            "rawBytes": 144,
+            "sha256": "164989992a7a6ca244bea9ac52cd752238b815795dd8ec8c7047f239d706d58f"
+          },
+          {
+            "path": "normals",
+            "encoding": "f64",
+            "elements": 18,
+            "rawBytes": 144,
+            "sha256": "d8294483bc70f6a99cb48cdac0de1084f7169deb12af869dd1cef4af8877a813"
+          },
+          {
+            "path": "edgePositions",
+            "encoding": "f64",
+            "elements": 24,
+            "rawBytes": 192,
+            "sha256": "1828259dc644b63d322774dcab8fdf9b0b859440e1a24dd0c8e20ad1318f35f1"
+          }
+        ],
+        "dependencyRebuildAreas": [50, 40, 50, 40],
+        "projectRecipePreserved": true,
+        "stepReport": {
+          "entityId": "162ad8c7-6335-48cc-815f-34551b44e68b",
+          "units": "mm",
+          "valid": true,
+          "solids": 0,
+          "shells": 1,
+          "faces": 1,
+          "edges": 4,
+          "vertices": 4,
+          "areaMm2": 40,
+          "signedVolumeMm3": 0,
+          "volumeMm3": 0,
+          "topologyVisits": 14
+        },
+        "report": {
+          "entityId": "fe341f45-b198-44c8-a2cd-884dfe0b0fda",
+          "units": "mm",
+          "valid": true,
+          "solids": 0,
+          "shells": 0,
+          "faces": 1,
+          "edges": 4,
+          "vertices": 4,
+          "areaMm2": 40,
+          "signedVolumeMm3": 0,
+          "volumeMm3": 0,
+          "topologyVisits": 13
+        }
+      }
+    },
+    {
+      "invalidBrepRejectedBeforePublication": true,
+      "guiMcpSameFailure": true,
+      "unchangedRevisionAndHistory": true,
+      "liveKernelHandlesPreserved": true,
+      "fixtureSha256": "a80669795c5bbf836e159d9234cec7b5c2e80a29d5f270d492d1a75826e55f8b"
+    }
+  ],
+  "runner": {
+    "pid": 52956,
+    "startedAt": "2026-10-25T19:16:04.5404252Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "fixture": {
+    "provenance": "Authored planar binary STL, not native application output",
+    "planarFacets": 288,
+    "outlierFacets": 1,
+    "bytes": 14534
+  },
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "browserErrors": [],
+  "existingApplicationPreserved": true,
+  "finishedAt": "2026-10-25T19:17:00.612Z",
+  "passed": true
+}

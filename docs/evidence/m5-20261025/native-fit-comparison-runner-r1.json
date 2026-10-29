@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-10-26T00:13:50.927Z",
+  "owner": "m5-native-comparison",
+  "children": [
+    {
+      "label": "kernel-probe",
+      "pid": 35728,
+      "startedAt": "2026-10-26T00:13:50.991Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T00:13:52.468Z"
+    },
+    {
+      "label": "preview",
+      "pid": 51104,
+      "startedAt": "2026-10-26T00:13:52.476Z",
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "finishedAt": "2026-10-26T00:14:00.330Z"
+    },
+    {
+      "label": "browser",
+      "pid": 3628,
+      "startedAt": "2026-10-26T00:13:52.755Z",
+      "exitCode": 1,
+      "signal": null,
+      "finishedAt": "2026-10-26T00:14:00.320Z"
+    }
+  ],
+  "cleanupErrors": [],
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: Native GUI/public MCP replay failed\n\n1 !== 0\n",
+  "previewPortClosed": true,
+  "finishedAt": "2026-10-26T00:14:00.332Z"
+}

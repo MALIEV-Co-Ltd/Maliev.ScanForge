@@ -1,10 +1,205 @@
 # ScanForge shared application API and MCP
 
+## Shared STEP export and local artifact delivery
+
+GUI STEP export dispatches the existing read-only `project_export` job with
+`cadOnly:true`. The shared operation filters its visibility scope, reports
+excluded non-CAD IDs and rejects empty exact selections. Omitted/false `cadOnly`
+retains strict agent defaults; supplying it for another format rejects.
+The GUI receives the same leased artifact via `ApplicationApi.readArtifactBlob`,
+which checks owner state and refreshes the existing artifact lease. Blob bytes
+are immutable and need no base64 transport or copy; agents retain `artifact_read`.
+The GUI downloads then deletes its artifact. Existing quota/admission/revision
+and late-cancellation checks apply to both paths. An owned abort controller and
+cancel portal retire pending GUI work on cancellation or unmount.
+
+## Paged exact edge references
+
+Optional `cad_inspect` edge paging extends its existing isolated diagnostic worker.
+The EDGE topology pass preserves first-unique `IsSame` encounter order (including
+degenerate edges), matching live edge-treatment indexing. Duplicate wrappers are
+deleted immediately; only requested items allocate adaptors, bounds, points and
+GProp objects, all retired in finally. The existing BREP/visit/time bounds remain;
+pages admit at most 128 items. Length uses analytic `BRepGProp.LinearProperties`,
+not endpoint distance. No shape registration or tessellation is added.
+
+`CommandContext.revision` exposes the API-owned snapshot revision. Paged reports
+return it only after `context.check`; default summary replies remain unchanged.
+The GUI job adapter can retain an inspected `expectedRevision` rather than
+refreshing it at dispatch. Edge controls reset on source/kernel change, abort
+their owned read job on unmount, and reject stale references. Owned CAD cancel
+controls render outside the inert tool panel so cancellation remains reachable.
+The same existing `job_cancel` contract serves agents and GUI abort signals.
+
+## CAD GUI job dispatch
+
+Recipe-based GUI CAD operations and rebuilds use `runApplicationJobCommand`
+against `cad_create`/`cad_rebuild`, including Boolean, revolve and grouped split
+outputs. The API owns busy state and the transaction; GUI handlers do not wrap
+these calls in a second busy owner or publish native results themselves. Existing
+feature references or imported entity aliases are resolved inside the shared
+operation without a separate binding transaction. Input hiding is keyed by both
+feature ID and output index, so deriving from a split output preserves siblings.
+The GUI consumes shared cleanup diagnostics after rebuilding. This dispatch does
+not widen the deliberate ribbon verification allowlist.
+
+Exact datum placement retains its native Transform(copy=false) partner topology.
+Its registration supplies an internal preparedPartner; only an IsPartner result
+can reuse existing face triangulations. Mandatory BRepCheck geometric validation
+runs on an owned Copy_2(true,false) for that partner because the analyzer writes
+native face flags. The original result keeps its shared-topology identity.
+Location-aware vertex/normal extraction, edge/frame output reads and BREP
+serialization still run. The mesh
+reader skips Clean/remeshing for that partner and rejects a missing triangulation
+before dereferencing it, preserving source and retained-result UV/triangle slots.
+Other registrations retain ordinary meshing. These are private register/mesh
+arguments, not public schema flags or a source-preservation exception.
+
+Body patterns deep-copy both geometry and mesh for their first instance before
+adding it to the compound. Compound meshing therefore cannot replace source or
+prior datum-result caches. Remaining transformed copies, count, spacing and
+angles are unchanged. Copy_2(true,true) provides this ownership; copyGeom=false
+would not establish independent triangulation ownership. GUI and MCP continue
+through the existing shared alignment and CAD recipe operations.
+
+Boolean union/subtract/intersection makers operate on private deep copies of
+both exact inputs. Split gives its common and cut makers separate private copy
+pairs, preserving sources and independence between the two outputs. Native
+construction and result meshing can add p-curves and triangulation metadata;
+these writes must not reach live source or prior-result BREP. Temporary copy
+wrappers are disposed on every exit, and a failed split still retires any first
+registered output before rejecting the shared atomic transaction. GUI and MCP
+reach this same worker through their existing cad_create/cad_rebuild recipes;
+public schemas, output ordering and history semantics are unchanged.
+
+Fillet/chamfer also enumerate edges and build their maker on a private deep
+copy, including paths whose result is rejected by native validity checks. Hollow
+shell enumerates removable faces and its closing list on its private body before
+offset construction. These copies preserve public edge/face encounter order
+while preventing native flags or meshing metadata from changing source/prior
+result BREP. This ownership boundary does not widen accepted geometry or replace
+the existing BRepCheck validity gate.
+
+App owns one abort controller for GUI generic CAD creation/rebuilding, polygon
+or sketch extrusion, and revolve. Its **Cancel CAD operation** portal remains
+outside the inert inspector. The controller forwards to the same `job_cancel`
+contract agents use; `job_get` and `session_get` expose the job and cleanup state.
+App disposal detaches the owner before aborting, and asynchronous GUI completion
+and error writes require matching ownership. Selection of a newly published
+output does not retire the job. The shared API remains the sole busy/history
+owner. Extrusion retains its shorter 95-second observation lease; the native
+90-second operation timeout and other shared job leases are unchanged.
+Sketch-surface, surface blend and STEP export retain their separate existing
+owners. The inherited Construct primitive direct creation path is outside this
+generic-job cancellation scope and remains subject to the M4 integration audit.
+
+## Exact surface trimming
+
+The GUI Trim surfaces panel submits the `trimSurfaces` recipe through the shared
+`cad_create` job; `cad_rebuild` evaluates the same recipe and dependency graph.
+Both catalog schemas expose source/cutter references, retained world points and
+distance tolerance. The worker deep-copies exact inputs before face splitting,
+selects unique face regions by bounded distance queries, and publishes one valid
+surface compound through the common BRepCheck gate. Copies prevent splitter
+flags from mutating BREP owned by inputs or history. Temporary native wrappers
+are retired on every exit; existing job cancellation and revision fences govern
+publication. Panel unmount cancels picking and its owned pending job.
+
+## Freeform patch edits
+
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace.
+
+`cad_inspect` is a read-only asynchronous operation used by MCP and the GUI
+properties panel. It snapshots saved BREP and opens a dedicated CadClient worker,
+parses the BREP without tessellation or shape registration, and reads unique
+topology counts, BRepCheck validity and analytic GProp mass properties. Native
+wrappers and the temporary virtual file are retired in finally; the shared
+operation disposes its worker on success, failure or abort and fences late
+results by the normal revision check. Its timeout cannot reset the live modeling
+client. Bounds are 64 MiB UTF-8 input and 200,000 topology visits before analysis,
+plus the existing kernel lease. This adds no modeling transaction or history.
+The GUI job adapter can omit mutation guards for explicitly read-only jobs;
+mutating callers retain their existing revision and retry fields.
+
+The kernel's common `register` boundary checks BRepCheck validity before meshing
+or storing a shape. Every import and modeled result uses that boundary. Rejection
+deletes the unpublished shape; import finally retires its temporary virtual file.
+The diagnostic parser stays separate so it can report invalid BREP as invalid
+without publishing it. GUI and MCP receive the same failure from the worker.
+
+The GUI control-grid editor dispatches `surface_set` through the existing shared
+API, preserving revision admission, retry receipts, locks and model history.
+Optional `scanId` records an existing mesh/point-cloud source on creation or
+update; omission retains an existing association. `surface_get` exposes it.
+Source validation precedes geometry publication. Derived mesh normals, edges,
+plane/fit metadata and scan-count caches are invalidated on patch edits, including
+`surface_operation`. Exact parametric surfaces use `cad_rebuild` and retain their
+BREP and dependent-feature rebuild semantics.
+
+Compatible joins dispatch `surface_operation` from both the GUI and MCP. Its
+bounded raw `referencePatch` alternative lets the panel submit its imported
+reference without creating another workspace object. Workspace reference IDs
+remain supported, including locked readable references. The operation rejects
+self/downstream references and target/dependent locks before native work.
+It evaluates `joinPatchBoundary` once, then either commits a mesh patch or invokes
+the extracted `createCadRebuildOperation` handler with the same command context.
+This preserves the existing revision fence, cancellation, dependency transaction
+and late-created handle cleanup without nesting jobs. Exact targets must have a
+`surface` recipe. Structured results report applied join options, representation,
+reference source and changed control indices. The reference is a fixed input,
+not a persistent dependency. The GUI awaits publication before success and aborts
+its owned job on close/unmount; its cancel control remains outside inert content.
+
+Compatible transition creation uses `surface_operation` with `operation:"blend"`
+and the same bounded reference/options contract. It evaluates
+`blendPatchBoundaries` and invokes the extracted `createCadCreateOperation(host)`
+directly with the same command context and an independent `surface` recipe.
+Ordinary `cad_create` calls that identical handler. There is no nested API job,
+source-feature binding or persistent source/seam dependency. The shared creator
+retains its revision/cancellation publication fence, retry/history behavior and
+late/failed-publication native-handle cleanup. It leaves source objects,
+metadata, saved BREP and history-owned handles untouched. The blend does not
+request created-entity selection, preserving the panel's selected target while
+its owned operation is pending.
+
+Blend retains existing unlocked mesh/authored-exact target eligibility and
+rejects self-reference. Locked references remain readable. Unlike join/snap,
+it accepts downstream reference snapshots because no source is rebuilt.
+Structured output identifies the new `entityId`/`featureId`,
+`representation:"exactCad"`, normalized option defaults and reference source.
+`surface_get` and `cad_inspect` expose editable geometry and exact diagnostics.
+The bridge is materialized: C0 is transverse linear, C1 is homogeneous cubic
+Hermite with normalized transverse derivatives, and incompatible seams or invalid
+generated weights reject before native publication. General CAD-edge blending,
+G2 and persistent seam constraints remain outside this contract.
+
+The same authored-surface guard and rebuild dispatch cover `grid`, `quadImport`,
+`knot`, `crease` and `snap`. Mesh-only/point-cloud guards remain for unsupported
+targets. Snapping resolves explicit source IDs or the GUI's associated-source /
+own-display fallback, then uses the shared fixed-reference dependency check.
+It rejects downstream read sources before rebuilding; this prevents the source
+from changing as a dependent. GUI snapping uses this same operation and shares
+the panel's existing owned join cancellation lifecycle. Both join and snap
+report success only after the shared job resolves.
+
+Project restore copies shared text chunks into an ordinary byte view before
+UTF-8 decoding, because browser TextDecoder rejects SharedArrayBuffer views.
+Numeric geometry chunks retain their original immutable shared backing and
+reuse/aliasing behavior. The shared project import and GUI open/backup paths use
+this same codec; no format or transport contract changes.
+
 The shared CAD worker owns construction inputs for Boolean/split, edge treatment,
 shell and thickening makers. Datum partners retain prepared source triangulations
 and patterns deep-copy their first instance before compound meshing. Existing GUI
 and MCP CAD/alignment operations share these fixes; revision, cancellation, output
 ownership, history and public edge/face indexing retain their current contracts.
+
+## Shared fine alignment and target binding
 
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
@@ -25,6 +220,8 @@ vertices are excluded and cloud/exact-CAD carriers retain their existing route.
 The exact nearest-point tree stores Float64 subtree bounds to prune unmatched
 regions; conservative workspace admission includes those bounds. Its public
 `distanceTests` result makes direct distance work observable.
+
+## Scan selection and reference preview admission
 
 Scan screen selection is shared by GUI gestures and MCP `scan_select_region`
 through `Viewport.selectScanRegion` and the existing asynchronous screen-selection
@@ -840,6 +1037,89 @@ Sketch Undo/Redo controls dispatch the existing `history_undo`/`history_redo` sh
 ### Analytic extrusion profile compatibility
 
 `cad_create` and `cad_rebuild` accept the explicit `sketch-curves` profile discriminant. The shared parametric evaluator solves the inline sketch and emits an ordered exact line/arc descriptor to `CadClient.extrudeCurves`; the worker constructs analytic edges, checks the planar face and resulting prism, then registers the CAD body. The sketch GUI submits the same shared `cad_create` operation. Discovery schemas expose this variant. Existing `sketch` profiles continue through the sampled polygon evaluator, preserving historical geometry; no automatic migration changes saved recipes.
+
+### Embedded sketch surface recipes
+
+The GUI `surface2dSketch` ribbon action, public command discovery and command
+repeat share one sketch-source admission flag, independent of object selection.
+The `sketchSurface` workspace is exposed by the existing `ui_set` schema. Its
+dedicated `SketchSurfaceTools` panel clones the active draft for an ordinary
+`cad_create` submission through `runApplicationJobCommand`; it does not solve or
+publish authoring state locally. The API retains revision/request guards, model
+history, busy ownership, cancellation and publication.
+
+The panel's AbortController belongs to the active saved/legacy sketch key and
+draft identity. Closing, unmounting or replacing that source aborts the owner;
+selecting the published face does not. Saved-sketch selection preserves an open
+surface panel while replacing its source. The existing `CadJobCancel` portal
+keeps owned cancellation outside the inert inspector. The ordinary ParametricTools
+and `cad_rebuild` paths edit the embedded recipe and its dependents.
+
+Both CAD catalog schemas expose `{kind:"sketchSurface",sketch:Sketch}` through
+ordinary `cad_create` and `cad_rebuild`. Recipe validation calls `validateSketch`;
+the shared parametric evaluator calls `solveSketch`, rejects unconverged results,
+then passes `sketchCurveProfile(solution.sketch)` and the solved frame to
+`CadClient.sketchSurface`. This preserves analytic line/arc edges and uses the
+same single closed nonconstruction profile contract as analytic extrusion.
+Scan reference samples remain separate from the editable profile.
+
+All three CAD sketch consumers share a cheap admission guard in a submitted
+feature prepass before detailed `validateSketch` and before direct evaluator
+solving. It counts all authored
+points, explicit constraints, stored segments/arcs (including construction),
+implicit arc residuals and the current solver's exact relation row widths.
+Limits are 128 points, 256 constraints, 10,000 stored curves, 512 residual rows,
+65,536 dense cells and 250,000,000 estimated work units. For `N=2P` and `R` rows,
+the estimate is `N*N*R + 4*N*R + N*N`, plus
+`100*(2*N*N*N + N*N*R + 4*N*R)` only when `R>0`. The final finite-difference
+Jacobian runs even at convergence; a zero-row sketch cannot enter the iterative
+dense solve. Admission fails before repeated validation scans or dense allocation
+with shared count/budget diagnostics. This CAD boundary does not change the
+global sketch solver, its iteration/tolerance/convergence semantics or authoring
+history. It is an allocation/work estimate rather than an RSS or wall-time cap.
+
+General `validateParametricModel` defaults to structural stored-recipe checks;
+its optional `admitFeatureIds` selects the execution/submission prepass. Shared
+CAD creation selects only the new feature ID. Shared rebuild passes its explicit
+replacement ID even for an identical recipe; `rebuildParametric` additionally
+selects new/changed recipes and forced features. Previous model reads remain
+structural. This preserves older oversized cached extrusion BREP, project/history
+restore and unrelated edits without silently granting execution admission. All
+three direct evaluator branches retain their guards when actual solving is needed.
+Unchanged recipes with missing/invalid cached outputs also enter the admission
+prepass before any detailed model validation. Admission and dirty detection share
+the same cached-output check, preventing a cache miss from bypassing this fence.
+
+The embedded snapshot is cloned and frozen by the existing parametric rebuild
+boundary, retaining authored IDs, constraints, frame and scan reference metadata.
+It has no feature dependency on a saved sketch or source scan. Authoring state is
+never replaced with solved coordinates. Explicit replacement through
+`cad_rebuild` changes the face and rebuilds downstream feature references, such
+as `thicken`; `object_get` exposes the editable recipe in normal entity metadata.
+No new executor, editor adapter, job, history or selection implementation is
+introduced. Existing revision fences, retry receipts, locks, cancellation and
+failed/late publication cleanup govern these results and retain Undo-owned BREP.
+
+The worker shares the bounded analytic wire/face builder with curve extrusion.
+Extrusion consumes the face as a temporary prism input; sketch surface transfers
+the owned face directly to common BRepCheck/registration. Temporary wrappers are
+retired independently of the transferred face, including on failure. Existing
+edge-count, coordinate, radius, area and right-handed-frame checks remain active.
+
+Sketch surfaces opt into an explicit plane constructed from the authored frame
+origin and normal, with the finite boundary oriented on that plane independently
+of curve winding. Curve extrusion retains its existing inferred-plane builder
+and explicit prism direction. Ordinary `thicken` deep-copies native topology and
+geometry before construction so generated pcurves and display meshing cannot
+mutate the source BREP. A true single FACE with analytic Plane support uses a
+canonical exact prism along its world plane normal, reversed for a REVERSED
+face and scaled by signed thickness. This retains inner wires and produces
+supports compatible with later fillet/chamfer operations. Other surface/body
+types keep the existing Simple offset algorithm; hollow shell keeps its Join
+algorithm. No planarity is inferred from display facets or published frames.
+Thickening requires one closed solid, applies the shared
+finite-volume orientation check and transfers that typed, oriented solid wrapper
+to registration. The shell operation retains its existing join/closing-face path.
 
 ### Atomic sketch constraint application
 

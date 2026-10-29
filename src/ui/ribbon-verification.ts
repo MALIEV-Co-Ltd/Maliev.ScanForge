@@ -6,6 +6,33 @@ export interface RibbonVerification {
 
 /** Deliberate allowlist: a registered handler or numerical unit test is insufficient. */
 const verifiedWorkflows: Record<string, string> = {
+  surface2dSketch:
+    "docs/AGENT_GUIDE.md: exact planar sketch surfaces; tests/helpers/sketch-surface-browser.mjs: GUI/public MCP source admission, snapshot ownership, analytic geometry, rebuild and exact exchange",
+  nurbsSurface:
+    "docs/M5_ACCEPTANCE.md: shared mesh/exact patch edits and compatible C1 joins, reference preservation, history and exact exchange",
+  fillet:
+    "docs/M5_ACCEPTANCE.md: revision-fenced exact edge discovery, intended native edge treatment and GUI/public MCP geometry equality",
+  chamfer:
+    "docs/M5_ACCEPTANCE.md: revision-fenced exact edge discovery, intended native edge treatment and GUI/public MCP geometry equality",
+  loft: "docs/M5_ACCEPTANCE.md: shared CAD jobs, analytic loft volume and GUI/public MCP exact geometry equality",
+  sweep:
+    "docs/M5_ACCEPTANCE.md: shared CAD jobs, straight sweep volume and GUI/public MCP exact geometry equality",
+  extrude:
+    "docs/M5_ACCEPTANCE.md: shared polygon extrusion, analytic volume, exact geometry and history",
+  revolve:
+    "docs/M5_ACCEPTANCE.md: shared full revolution, analytic volume, exact geometry and history",
+  boolean:
+    "docs/M5_ACCEPTANCE.md: shared subtract/union, output-aware input hiding and exact GUI/public MCP equality",
+  splitSolid:
+    "docs/M5_ACCEPTANCE.md: grouped inside/outside outputs, one shared job/history entry and exact geometry equality",
+  shell:
+    "docs/M5_ACCEPTANCE.md: shared hollow shell creation, valid exact topology and GUI/public MCP equality",
+  trimSurfaces:
+    "docs/M5_ACCEPTANCE.md: exact retained-region trimming; tests/kernel-smoke.mjs and GUI/public MCP trim workflow",
+  fitSurface:
+    "docs/M5_ACCEPTANCE.md: matched built GUI/public MCP projected and approximate fitting, source preservation and exact conversion",
+  surfaceThicken:
+    "docs/M5_ACCEPTANCE.md: real-region GUI/public MCP thickening, valid solid inspection and exact exchange",
   sketchFromSection:
     "docs/AGENT_GUIDE.md: scan section references; tests/create-sketch-dialog.test.tsx and automation section original-slot parity; GUI/MCP section workflow",
   globalFineAlign:

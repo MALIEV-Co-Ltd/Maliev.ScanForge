@@ -1,0 +1,27 @@
+{
+  "status": "incomplete-blank-viewport",
+  "scope": "Native fillet comparison attempt, no selected edge or fillet result",
+  "inputQsfSha256": "32d526a68e5a9b01845581e059b249121747284331d2f3ffb1a0465208f6b8d5",
+  "binding": {
+    "ownedPid": 39460,
+    "creationTimeFiletime": "134377114194087690",
+    "expectedCreationTimeFiletime": "134377114194087690",
+    "liveCreationTimeVerified": true,
+    "processRunningAtObservation": true,
+    "toolReturnedWindowId": 659048,
+    "windowTitle": "QUICKSURFACE Pro 8.0.123",
+    "visible": true,
+    "minimized": false,
+    "ownedWindowRect": [-8, -8, 1928, 1040],
+    "windowDpi": 96,
+    "rootOwnerWindowId": 659048,
+    "rootOwnerPid": 39460,
+    "foregroundMatchesOwnedWindow": false,
+    "uiInputPerformed": false,
+    "activationPerformed": false,
+    "capturePerformed": false,
+    "processQueryHandleClosed": true
+  },
+  "observation": "Owned session activated and opened QSF with one solid in the object tree; successive viewport captures were blank white. No edge selected, no fillet applied and no STEP output created. No screenshot file was saved.",
+  "finish": "Authenticated owner finish completed; other QuickSurface and CloudCompare windows were preserved."
+}

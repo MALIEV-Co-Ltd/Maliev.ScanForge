@@ -1,0 +1,21 @@
+{
+  "headRevision": "43f6637044f87b547e43bd039221f784af835871",
+  "workflowRun": 40307672374,
+  "job": 121520712826,
+  "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40307672374/job/121520712826",
+  "conclusion": "success",
+  "build": "scanforge-c5026733e6e566fd",
+  "gates": {
+    "standardBuildAnd12TypecheckBatches": "passed",
+    "unit": {
+      "passed": 49193,
+      "skipped": 64,
+      "filesPassed": 684,
+      "filesSkipped": 18,
+      "durationSeconds": 317.7
+    },
+    "cadSmokeIncludingSketchSurfaceKernel": "passed",
+    "formatCheck": "passed"
+  },
+  "scope": "Exact committed sketch-surface feature gates. The earlier local combined check timed out during formatting and remains a failed receipt; this hosted run independently passed repository formatting. Broader M5 native/matrix/M4 acceptance and final main integration remain open."
+}

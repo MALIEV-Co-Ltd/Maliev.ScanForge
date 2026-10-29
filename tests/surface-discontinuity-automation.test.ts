@@ -110,3 +110,38 @@ it("keeps prior disconnected geometry/history atomic when a later invalid update
   expect(api.currentRevision()).toBe(revision);
   expect(host.commit).toHaveBeenCalledTimes(1);
 });
+
+it("retains an explicit scan association for GUI and MCP patch creation", async () => {
+  const { state, host, api } = setup();
+  state.entities = [
+    {
+      id: "scan",
+      name: "Scan",
+      kind: "mesh",
+      positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+    },
+  ];
+  const response = await api.invoke("surface_set", {
+    patch: separatedPatch(),
+    scanId: "scan",
+    expectedRevision: api.currentRevision(),
+    requestId: "with-source",
+  });
+  expect(response.ok).toBe(true);
+  expect(state.entities[1].surfaceScanId).toBe("scan");
+  expect(host.commit).toHaveBeenCalledTimes(1);
+  const revision = api.currentRevision();
+  const rejected = await api.invoke("surface_set", {
+    patch: separatedPatch(),
+    scanId: "missing",
+    expectedRevision: revision,
+    requestId: "missing-source",
+  });
+  expect(rejected.ok).toBe(false);
+  expect(api.currentRevision()).toBe(revision);
+  expect(host.commit).toHaveBeenCalledTimes(1);
+  api.dispose();
+});

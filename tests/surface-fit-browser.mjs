@@ -1,12 +1,24 @@
 import assert from "node:assert/strict";
+import { replaySurfaceJoins } from "./helpers/surface-join-browser.mjs";
+import { replayStepExport } from "./helpers/step-export-browser.mjs";
+import { replayExactFreeform } from "./helpers/exact-freeform-browser.mjs";
+import { replayCadTimeout } from "./helpers/cad-timeout-browser.mjs";
+import { replayNativeFit } from "./helpers/native-fit-browser.mjs";
+import { replaySurfaceBlend } from "./helpers/surface-blend-browser.mjs";
+import { replaySketchSurface } from "./helpers/sketch-surface-browser.mjs";
+import { replayCadCancellation } from "./helpers/cad-cancellation-browser.mjs";
+import { replayRealCadMatrix } from "./helpers/real-cad-matrix-browser.mjs";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
-import { randomBytes, randomUUID } from "node:crypto";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { basename } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 import http from "node:http";
 import net from "node:net";
 import { chromium } from "playwright";
+import { Matrix4, Vector3 } from "three";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
@@ -82,7 +94,10 @@ const timer = setTimeout(() => {
   void transport?.close().catch(() => {});
 }, 180000);
 try {
-  assert(await portOpen(5173), "Existing application server is unavailable");
+  assert(
+    await portOpen(Number(targetOrigin.port || 80)),
+    "Existing application server is unavailable",
+  );
   reserve = http.createServer();
   await new Promise((resolve, reject) => {
     reserve.once("error", reject);
@@ -141,6 +156,26 @@ try {
     viewport: { width: 1400, height: 1000 },
   });
   const page = await context.newPage();
+  if (process.env.SCANFORGE_TEST_STEP_EXPORT === "1")
+    await page.addInitScript(() => {
+      window.__m5HoldStepExport = false;
+      window.__m5HeldStepExports = [];
+      window.__m5ExportWorkerTerminations = 0;
+      const send = Worker.prototype.postMessage;
+      const terminate = Worker.prototype.terminate;
+      Worker.prototype.terminate = function (...args) {
+        if (this.__m5CadExportWorker) window.__m5ExportWorkerTerminations++;
+        return terminate.apply(this, args);
+      };
+      Worker.prototype.postMessage = function (...args) {
+        if (args[0]?.operation === "export") this.__m5CadExportWorker = true;
+        if (window.__m5HoldStepExport && args[0]?.operation === "export") {
+          window.__m5HeldStepExports.push(() => send.apply(this, args));
+          return;
+        }
+        return send.apply(this, args);
+      };
+    });
   page.setDefaultTimeout(10000);
   page.setDefaultNavigationTimeout(20000);
   const errors = [];
@@ -153,6 +188,7 @@ try {
   });
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -166,7 +202,7 @@ try {
   await page
     .getByRole("button", { name: "Close settings", exact: true })
     .click();
-  const call = async (name, args = {}) => {
+  const call = async (name, args = {}, allowFailure = false) => {
     lease.signal.throwIfAborted();
     const response = await client.callTool(
       { name, arguments: args },
@@ -175,7 +211,7 @@ try {
     );
     const wire =
       response.structuredContent ?? JSON.parse(response.content[0].text);
-    assert(wire.ok, JSON.stringify(wire));
+    if (!allowFailure) assert(wire.ok, JSON.stringify(wire));
     return wire;
   };
   const mutate = async (name, args) =>
@@ -198,7 +234,8 @@ try {
   }
   async function job(receipt) {
     const jobId = receipt.result.jobId;
-    for (let i = 0; i < 100; i++) {
+    const expires = Date.now() + 95000;
+    while (Date.now() < expires) {
       const status = (await call("job_get", { jobId })).result;
       if (status.status !== "running") {
         assert.equal(status.status, "succeeded", JSON.stringify(status));
@@ -231,6 +268,38 @@ try {
       await call("object_get", { entityId, includeGeometry: true })
     ).result;
     return { object, geometry: await artifactJson(object.geometry) };
+  }
+  async function geometryDigest(entityId) {
+    const digest = await job(
+      await call("object_geometry_digest", { entityId }),
+    );
+    return digest.buffers.map(
+      ({ path, encoding, elements, rawBytes, sha256 }) => ({
+        path,
+        encoding,
+        elements,
+        rawBytes,
+        sha256,
+      }),
+    );
+  }
+  async function artifactBytes(artifact) {
+    const chunks = [];
+    let offset = 0;
+    while (offset < 16 * 1024 * 1024) {
+      const part = (
+        await call("artifact_read", {
+          artifactId: artifact.artifactId,
+          offset,
+          length: 65536,
+        })
+      ).result;
+      chunks.push(Buffer.from(part.base64, "base64"));
+      if (part.eof) return Buffer.concat(chunks);
+      assert(part.nextOffset > offset);
+      offset = part.nextOffset;
+    }
+    throw Error("Native fixture export exceeds the 16 MiB read budget");
   }
   // Authored planar grid plus one deliberately unselected remote outlier.
   const triangles = [];
@@ -296,10 +365,9 @@ try {
   });
   const selected = (await call("selection_get", { entityId: sourceId })).result;
   const selectedIds = await artifactJson(selected.artifact);
-  // selection_set preserves explicitly supplied slots, including hidden ones.
-  // The fitting operation must exclude hidden facets from this actual mask.
-  assert.equal(selected.count, planarFacets);
-  assert(selectedIds.includes(0));
+  // Shared selection admission excludes hidden slots even when explicitly requested.
+  assert.equal(selected.count, planarFacets - 1);
+  assert(!selectedIds.includes(0));
   assert(!selectedIds.includes(planarFacets));
   const original = await geometry(sourceId);
   const before = (await call("project_get")).result;
@@ -310,7 +378,8 @@ try {
     ),
     JSON.stringify(commands),
   );
-  await mutate("command_run", { name: "ribbon:fitSurface" });
+  await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+  await page.getByRole("button", { name: "Fit surface", exact: true }).click();
   const panel = page.getByRole("complementary", {
     name: "Fit Surface",
     exact: true,
@@ -362,6 +431,11 @@ try {
     "Apply preview must not commit history",
   );
   assert.equal(previewState.objects.length, 1);
+  await mutate("viewport_control", {
+    action: "camera",
+    position: [25, -25, 30],
+    target: [6, 6, 4],
+  });
   await page.screenshot({
     path: fileURLToPath(new URL("surface-fit-preview.png", out)),
   });
@@ -424,9 +498,9 @@ try {
   assert(mcpResult.maxError < 1e-5, JSON.stringify(mcpResult));
   ledger.scenarios.push({
     guiLaunch:
-      "public command_run ribbon:fitSurface; actual Apply/Analysis/OK buttons",
+      "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
     hiddenState:
-      "one facet hidden through Edit Scan; explicit public selection retains it and both fitting paths exclude it",
+      "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
     requestedTriangles: requestedSelection.length,
     fittedTriangles: mcpResult.samples / 3,
     selectedIds,
@@ -447,6 +521,1759 @@ try {
     ],
   });
   await save();
+  await mutate("object_select", { entityId: mcpResult.entityId });
+  await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+  await page
+    .getByRole("button", { name: "NURBS surface", exact: true })
+    .click();
+  const surfacePanel = page.locator(".surface-panels");
+  const beforeControl = (await call("project_get")).result;
+  const zControl = surfacePanel
+    .locator("label.field")
+    .filter({ hasText: /^Z \(mm\)$/ })
+    .getByRole("spinbutton");
+  await zControl.fill("2");
+  await eventually(async () => {
+    const changed = (
+      await call("surface_get", { entityId: mcpResult.entityId })
+    ).result;
+    assert.equal(changed.patch.points[0][2], 2);
+  });
+  const afterControl = (await call("project_get")).result;
+  assert.equal(afterControl.undo, beforeControl.undo + 1);
+  const guiEdited = await geometry(mcpResult.entityId);
+  await mutate("history_undo", {});
+  await eventually(async () =>
+    assert.deepEqual(
+      (await call("surface_get", { entityId: mcpResult.entityId })).result
+        .patch,
+      mcpPatch.patch,
+    ),
+  );
+  const editedPatch = structuredClone(mcpPatch.patch);
+  editedPatch.points[0][2] = 2;
+  await mutate("surface_set", {
+    entityId: mcpResult.entityId,
+    patch: editedPatch,
+  });
+  assert.deepEqual(
+    (await geometry(mcpResult.entityId)).geometry,
+    guiEdited.geometry,
+  );
+  ledger.scenarios.push({
+    controlEdit: "GUI Z control and public surface_set",
+    exactRenderGeometryEquality: true,
+    guiOneHistoryStep: true,
+  });
+  const face = await job(
+    await mutate("cad_create", {
+      name: "Fitted exact surface",
+      recipe: { kind: "surface", patch: editedPatch },
+      selectCreated: true,
+    }),
+  );
+  const faceId = face.entityIds[0];
+  const faceBefore = (await call("project_get")).result;
+  const beforeRebuildJobs = new Set(
+    (await call("session_get")).result.jobs.map((x) => x.jobId),
+  );
+  await zControl.fill("3");
+  await eventually(async () =>
+    assert.equal(
+      (await call("surface_get", { entityId: faceId })).result.patch
+        .points[0][2],
+      3,
+    ),
+  );
+  const faceAfter = (await call("project_get")).result;
+  assert.equal(faceAfter.undo, faceBefore.undo + 1);
+  const guiRebuildJobs = (await call("session_get")).result.jobs.filter(
+    (x) => !beforeRebuildJobs.has(x.jobId) && x.command === "cad_rebuild",
+  );
+  async function openCad(workspace) {
+    const labels = {
+      loft: "Loft",
+      sweep: "Sweep",
+      extrude: "Extrude",
+      revolve: "Revolve",
+      boolean: "Boolean tools",
+      splitSolid: "Split solid",
+      shell: "Shell",
+      fillet: "Fillet",
+      chamfer: "Chamfer",
+    };
+    const command = (await call("command_get")).result.commands.find(
+      (x) => x.name === `ribbon:${workspace}`,
+    );
+    if (!labels[workspace]) {
+      assert.equal(command.available, false);
+      await mutate("ui_set", { workspace, toolPanelOpen: true });
+      return `public ui_set experimental panel; command_get ribbon:${workspace} unavailable`;
+    }
+    assert.equal(command.available, true, workspace);
+    await page
+      .getByRole("tab", {
+        name: ["loft", "sweep"].includes(workspace) ? "Surfacing" : "CAD",
+        exact: true,
+      })
+      .click();
+    await page
+      .getByRole("button", { name: labels[workspace], exact: true })
+      .click();
+    return "actual ribbon entry with matching command_get availability";
+  }
+  if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
+    assert.equal(guiRebuildJobs.length, 1);
+    assert.equal(guiRebuildJobs[0].status, "succeeded");
+  }
+  const guiFace = await geometry(faceId);
+  assert(guiFace.object.exactCad && guiFace.object.hasBrep);
+  await mutate("history_undo", {});
+  await eventually(async () =>
+    assert.equal(
+      (await call("surface_get", { entityId: faceId })).result.patch
+        .points[0][2],
+      2,
+    ),
+  );
+  const rebuiltPatch = structuredClone(editedPatch);
+  rebuiltPatch.points[0][2] = 3;
+  await job(
+    await mutate("cad_rebuild", {
+      entityId: faceId,
+      recipe: { kind: "surface", patch: rebuiltPatch },
+    }),
+  );
+  assert.deepEqual((await geometry(faceId)).geometry, guiFace.geometry);
+  await mutate("object_update", {
+    entityId: sourceId,
+    patch: { visible: false },
+  });
+  await mutate("object_update", {
+    entityId: mcpResult.entityId,
+    patch: { visible: false },
+  });
+  const step = await job(await call("project_export", { format: "step" }));
+  const header = (
+    await call("artifact_read", {
+      artifactId: step.artifactId,
+      offset: 0,
+      length: 1024,
+    })
+  ).result;
+  assert(
+    Buffer.from(header.base64, "base64").toString().includes("ISO-10303-21"),
+  );
+  const saved = await job(await call("project_export", { format: "project" }));
+  await job(
+    await mutate("project_import", {
+      artifactId: saved.artifactId,
+      replace: true,
+    }),
+  );
+  const reopened = await geometry(faceId);
+  assert(reopened.object.exactCad && reopened.object.hasBrep);
+  assert.deepEqual(
+    (await call("surface_get", { entityId: faceId })).result.patch,
+    rebuiltPatch,
+  );
+  assert.deepEqual(reopened.object.parametric.feature.recipe, {
+    kind: "surface",
+    patch: rebuiltPatch,
+  });
+  ledger.scenarios.push({
+    exactSurface: "GUI control edit and public cad_rebuild",
+    exactRenderGeometryEquality: true,
+    guiOneHistoryStep: true,
+    stepExport: step.bytes,
+    projectReopenExactCad: true,
+  });
+  await mutate("object_update", {
+    entityId: sourceId,
+    patch: { visible: false },
+  });
+  await mutate("viewport_control", { action: "fit", entityId: faceId });
+  const faceReport = await job(await call("cad_inspect", { entityId: faceId }));
+  assert(faceReport.valid && faceReport.solids === 0 && faceReport.faces === 1);
+  await mutate("object_select", { entityId: faceId });
+  await mutate("ui_set", { workspace: "properties", toolPanelOpen: true });
+  const inspectionPanel = page.getByRole("region", {
+    name: "Exact CAD inspection",
+    exact: true,
+  });
+  const beforeInspection = await call("project_get");
+  await inspectionPanel
+    .getByRole("button", { name: "Inspect exact CAD", exact: true })
+    .click();
+  await inspectionPanel.getByText("Valid BREP", { exact: true }).waitFor();
+  assert(
+    await inspectionPanel
+      .getByText(faceReport.areaMm2.toPrecision(10), { exact: true })
+      .isVisible(),
+  );
+  const afterInspection = await call("project_get");
+  assert.equal(afterInspection.revision, beforeInspection.revision);
+  assert.equal(afterInspection.result.undo, beforeInspection.result.undo);
+  await page.screenshot({
+    path: fileURLToPath(new URL("cad-inspection.png", out)),
+  });
+  ledger.scenarios.push({
+    exactInspectionGuiMcpEquality: true,
+    unchangedRevision: true,
+    report: faceReport,
+  });
+  if (process.env.SCANFORGE_TEST_NATIVE_STEP)
+    await replayNativeFit({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      sourceId,
+      path: process.env.SCANFORGE_TEST_NATIVE_STEP,
+    });
+  if (process.env.SCANFORGE_TEST_EXACT_FREEFORM === "1")
+    await replayExactFreeform({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_STEP_EXPORT === "1")
+    await replayStepExport({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      artifactBytes,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_CAD_TIMEOUT === "1")
+    await replayCadTimeout({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
+    });
+  if (process.env.SCANFORGE_TEST_SURFACE_JOIN === "1")
+    await replaySurfaceJoins({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      ledger,
+      out,
+      sourceId,
+    });
+  let realBlendInput;
+  if (process.env.SCANFORGE_TEST_REAL_SCAN) {
+    const realControls =
+      process.env.SCANFORGE_TEST_MATCH_NATIVE_CONTROLS === "1" ? 5 : 4;
+    const realFitOptions = {
+      countU: realControls,
+      countV: realControls,
+      degree: 3,
+      projection: "xy",
+      sampleLimit: 10000,
+    };
+    const file = await readFile(process.env.SCANFORGE_TEST_REAL_SCAN);
+    const connectedRegion =
+      process.env.SCANFORGE_TEST_CONNECTED_REGION === "1"
+        ? JSON.parse(
+            await readFile(
+              new URL("fixtures/m5-connected-region.json", import.meta.url),
+              "utf8",
+            ),
+          )
+        : null;
+    if (connectedRegion)
+      assert.equal(
+        createHash("sha256").update(file).digest("hex"),
+        "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      );
+    const realTriangleIds =
+      connectedRegion?.triangleIds ?? Array.from({ length: 200 }, (_, i) => i);
+    assert(
+      file.length <= 16 * 1024 * 1024,
+      "Real-input replay is bounded to 16 MiB",
+    );
+    const name = basename(process.env.SCANFORGE_TEST_REAL_SCAN);
+    let artifactId;
+    for (let offset = 0; offset < file.length; offset += 1048576) {
+      artifactId = (
+        await call("artifact_put", {
+          name,
+          offset,
+          ...(artifactId ? { artifactId } : {}),
+          base64: file.subarray(offset, offset + 1048576).toString("base64"),
+        })
+      ).result.artifactId;
+    }
+    const idsBefore = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(await mutate("project_import", { artifactId, unit: "mm" }));
+    const scan = (await call("project_get")).result.objects.find(
+      (x) => !idsBefore.has(x.id),
+    );
+    assert(scan && scan.triangles >= 200);
+    const sourceDigest = await geometryDigest(scan.id);
+    await mutate("object_select", { entityId: scan.id });
+    await mutate("selection_set", {
+      entityId: scan.id,
+      triangles: realTriangleIds,
+    });
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Fit surface", exact: true })
+      .click();
+    const realPanel = page.getByRole("complementary", {
+      name: "Fit Surface",
+      exact: true,
+    });
+    await realPanel
+      .getByRole("spinbutton", { name: "U count", exact: true })
+      .fill(String(realControls));
+    await realPanel
+      .getByRole("spinbutton", { name: "V count", exact: true })
+      .fill(String(realControls));
+    await realPanel
+      .locator("label.field")
+      .filter({ hasText: "Orientation" })
+      .locator('button[aria-haspopup="listbox"]')
+      .click();
+    await page.getByRole("option", { name: "OXY", exact: true }).click();
+    await realPanel.getByRole("button", { name: "Apply", exact: true }).click();
+    await eventually(async () =>
+      assert(
+        await realPanel
+          .getByRole("button", { name: "OK", exact: true })
+          .isEnabled(),
+      ),
+    );
+    await realPanel.getByRole("button", { name: "OK", exact: true }).click();
+    const guiRealId = await eventually(async () => {
+      const objects = (await call("project_get")).result.objects;
+      const fitted = objects.find(
+        (x) => !idsBefore.has(x.id) && x.id !== scan.id,
+      );
+      assert(fitted);
+      return fitted.id;
+    });
+    const realGuiPatch = (await call("surface_get", { entityId: guiRealId }))
+      .result.patch;
+    await mutate("history_undo", {});
+    await mutate("object_select", { entityId: scan.id });
+    await mutate("selection_set", {
+      entityId: scan.id,
+      triangles: realTriangleIds,
+    });
+    const realFit = await job(
+      await mutate("surface_fit", {
+        entityId: scan.id,
+        selectionOnly: true,
+        options: realFitOptions,
+      }),
+    );
+    const realMcpPatch = (
+      await call("surface_get", { entityId: realFit.entityId })
+    ).result.patch;
+    assert.deepEqual(realMcpPatch, realGuiPatch);
+    const realCad = await job(
+      await mutate("cad_create", {
+        name: "Real scan fitted face",
+        recipe: { kind: "surface", patch: realMcpPatch },
+      }),
+    );
+    const exact = (await call("object_get", { entityId: realCad.entityIds[0] }))
+      .result;
+    assert(exact.exactCad && exact.hasBrep);
+    const surfaceReport = await job(
+      await call("cad_inspect", { entityId: realCad.entityIds[0] }),
+    );
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== realCad.entityIds[0] && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const realSurfaceStep = await job(
+      await call("project_export", { format: "step" }),
+    );
+    await mutate("object_select", { entityId: realCad.entityIds[0] });
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page.getByRole("button", { name: "Thicken", exact: true }).click();
+    const thickenPanel = page.getByRole("region", {
+      name: "Thicken surface",
+      exact: true,
+    });
+    await thickenPanel
+      .getByRole("spinbutton", {
+        name: "Signed wall thickness (mm)",
+        exact: true,
+      })
+      .fill("-0.1");
+    const beforeThicken = (await call("project_get")).result;
+    await thickenPanel
+      .getByRole("button", { name: "Thicken surface", exact: true })
+      .click();
+    const guiSolidId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, beforeThicken.objects.length + 1);
+      return current.objects.find(
+        (x) => !beforeThicken.objects.some((prior) => prior.id === x.id),
+      ).id;
+    });
+    const guiSolid = (await call("object_get", { entityId: guiSolidId }))
+      .result;
+    const guiSolidDigest = await geometryDigest(guiSolidId);
+    assert(guiSolid.exactCad && guiSolid.hasBrep);
+    await mutate("history_undo", {});
+    await mutate("history_redo", {});
+    assert.deepEqual(await geometryDigest(guiSolidId), guiSolidDigest);
+    await mutate("history_undo", {});
+    const realSolid = await job(
+      await mutate("cad_create", {
+        name: "Real scan thickened part",
+        recipe: {
+          kind: "thicken",
+          source: { featureId: realCad.featureId, output: 0 },
+          thickness: -0.1,
+        },
+      }),
+    );
+    assert.deepEqual(
+      await geometryDigest(realSolid.entityIds[0]),
+      guiSolidDigest,
+    );
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
+    const solidReport = await job(
+      await call("cad_inspect", { entityId: realSolid.entityIds[0] }),
+    );
+    assert(
+      solidReport.valid &&
+        solidReport.solids === 1 &&
+        solidReport.volumeMm3 > 0,
+      JSON.stringify(solidReport),
+    );
+    const compareExact = (report) => {
+      assert(report.valid);
+      for (const key of ["solids", "shells", "faces", "edges", "vertices"])
+        assert.equal(report[key], solidReport[key], key);
+      for (const key of ["areaMm2", "signedVolumeMm3"])
+        assert(
+          Math.abs(report[key] - solidReport[key]) <=
+            Math.max(1e-6, Math.abs(solidReport[key]) * 1e-8),
+          `${key}: ${report[key]} versus ${solidReport[key]}`,
+        );
+    };
+    const solidId = realSolid.entityIds[0];
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== solidId && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const realStep = await job(
+      await call("project_export", { format: "step" }),
+    );
+    const beforeStep = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", { artifactId: realStep.artifactId }),
+    );
+    const stepId = (await call("project_get")).result.objects.find(
+      (x) => !beforeStep.has(x.id),
+    ).id;
+    const stepReport = await job(
+      await call("cad_inspect", { entityId: stepId }),
+    );
+    compareExact(stepReport);
+    const realProject = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: realProject.artifactId,
+        replace: true,
+      }),
+    );
+    const reopenedSolid = await job(
+      await call("cad_inspect", { entityId: solidId }),
+    );
+    compareExact(reopenedSolid);
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
+    assert.equal(
+      (await call("object_get", { entityId: solidId })).result.parametric
+        .feature.recipe.kind,
+      "thicken",
+    );
+    await mutate("object_update", {
+      entityId: scan.id,
+      patch: { visible: true },
+    });
+    await mutate("object_select", { entityId: scan.id });
+    await mutate("selection_set", {
+      entityId: scan.id,
+      triangles: realTriangleIds,
+    });
+    const copiedRegion = (
+      await mutate("selection_edit", { entityId: scan.id, operation: "copy" })
+    ).result.entityId;
+    const regionDigest = await geometryDigest(copiedRegion);
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== copiedRegion && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const regionStl = await job(
+      await call("project_export", { format: "stl" }),
+    );
+    const beforeCommonInput = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: regionStl.artifactId,
+        unit: "mm",
+        placeAtOrigin: false,
+      }),
+    );
+    const commonInputId = (await call("project_get")).result.objects.find(
+      (x) => !beforeCommonInput.has(x.id),
+    ).id;
+    const commonFit = await job(
+      await mutate("surface_fit", {
+        entityId: commonInputId,
+        options: realFitOptions,
+      }),
+    );
+    assert.deepEqual(
+      (await call("surface_get", { entityId: commonFit.entityId })).result
+        .patch,
+      realMcpPatch,
+    );
+    const nativeFiles = [];
+    for (const [filename, artifact] of [
+      ["real-region-input.stl", regionStl],
+      ["real-region-surface.step", realSurfaceStep],
+      ["real-region-solid.step", realStep],
+    ]) {
+      const bytes = await artifactBytes(artifact);
+      await writeFile(new URL(filename, out), bytes);
+      nativeFiles.push({
+        filename,
+        bytes: bytes.length,
+        sha256: createHash("sha256").update(bytes).digest("hex"),
+      });
+    }
+    await writeFile(
+      new URL("real-region-fit.json", out),
+      JSON.stringify(
+        {
+          patch: realMcpPatch,
+          connectedRegion,
+          options: realFitOptions,
+          thicknessMm: -0.1,
+          report: solidReport,
+          surfaceReport,
+          sourceDigest,
+          regionDigest,
+          files: nativeFiles,
+        },
+        null,
+        2,
+      ),
+    );
+    for (const item of (await call("project_get")).result.objects)
+      if (item.id !== solidId && item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    await mutate("object_update", {
+      entityId: solidId,
+      patch: { visible: true },
+    });
+    assert.deepEqual(await geometryDigest(scan.id), sourceDigest);
+    ledger.scenarios.push({
+      realInput: {
+        name,
+        bytes: file.length,
+        sha256: createHash("sha256").update(file).digest("hex"),
+      },
+      selectedFacets: 200,
+      fitOptions: realFitOptions,
+      connectedRegion,
+      guiMcpPatchEquality: true,
+      fit: realFit,
+      exactFace: true,
+      thickenedRegionGuiMcpEquality: true,
+      solidReport,
+      surfaceReport,
+      stepReport,
+      projectReport: reopenedSolid,
+      exchangeTolerance: { relative: 1e-8, absolute: 1e-6 },
+      sourceDigestPreservedAfterReopen: true,
+      sourceDigest,
+      regionDigest,
+      nativeFiles,
+      commonNativeInputRefitEquality: true,
+      limitation:
+        "A selected real scan region with kernel validity and exchange checks; not whole-part reconstruction, a global self-intersection certificate or native application parity.",
+    });
+    realBlendInput = { patch: realMcpPatch, sourceId: scan.id };
+    await mutate("viewport_control", {
+      action: "fit",
+      entityId: solidId,
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("real-region-solid.png", out)),
+    });
+  }
+  if (process.env.SCANFORGE_TEST_SURFACE_BLEND === "1")
+    await replaySurfaceBlend({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId: realBlendInput?.sourceId ?? sourceId,
+      realPatch: realBlendInput?.patch,
+    });
+  if (process.env.SCANFORGE_TEST_SKETCH_SURFACE === "1")
+    await replaySketchSurface({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_CAD_CANCELLATION === "1")
+    await replayCadCancellation({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_REAL_CAD_MATRIX === "1")
+    await replayRealCadMatrix({
+      page,
+      call,
+      mutate,
+      job,
+      eventually,
+      geometryDigest,
+      artifactBytes,
+      ledger,
+      out,
+      sourceId,
+    });
+  if (process.env.SCANFORGE_TEST_CAD_GUARDS === "1") {
+    const before = (await call("project_get")).result;
+    const oldJobs = new Set(
+      (await call("session_get")).result.jobs.map((x) => x.jobId),
+    );
+    const loftEntry = await openCad("loft");
+    await page
+      .getByRole("button", { name: "Create exact loft", exact: true })
+      .click();
+    const guiId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, before.objects.length + 1);
+      assert.equal(current.undo, before.undo + 1);
+      return current.objects.find(
+        (x) => !before.objects.some((y) => y.id === x.id),
+      ).id;
+    });
+    const guiJobs = (await call("session_get")).result.jobs.filter(
+      (x) => !oldJobs.has(x.jobId) && x.command === "cad_create",
+    );
+    assert.equal(
+      guiJobs.length,
+      1,
+      "GUI loft must publish through one shared cad_create job",
+    );
+    assert.equal(guiJobs[0].status, "succeeded");
+    const recipe = (await call("object_get", { entityId: guiId })).result
+      .parametric.feature.recipe;
+    const digest = await geometryDigest(guiId);
+    const guiReport = await job(await call("cad_inspect", { entityId: guiId }));
+    assert(
+      guiReport.valid &&
+        guiReport.solids === 1 &&
+        Math.abs(guiReport.volumeMm3 - 12000) < 1e-6,
+    );
+    await mutate("history_undo", {});
+    const mcp = await job(
+      await mutate("cad_create", { recipe, name: "MCP loft" }),
+    );
+    assert.deepEqual(await geometryDigest(mcp.entityIds[0]), digest);
+    ledger.scenarios.push({
+      guardedCadLoft: {
+        sharedGuiJob: guiJobs[0].jobId,
+        guiMcpGeometryEquality: true,
+        report: guiReport,
+        entry: loftEntry,
+      },
+    });
+    const matrix = [];
+    async function checkGuiCad(workspace, button, options = {}) {
+      const entry = await openCad(workspace);
+      if (options.prepare) await options.prepare();
+      const before = (await call("project_get")).result;
+      const oldJobs = new Set(
+        (await call("session_get")).result.jobs.map((x) => x.jobId),
+      );
+      await page.getByRole("button", { name: button, exact: true }).click();
+      const added = await eventually(async () => {
+        const current = (await call("project_get")).result;
+        const added = current.objects.filter(
+          (x) => !before.objects.some((y) => y.id === x.id),
+        );
+        assert.equal(added.length, options.outputs ?? 1);
+        assert.equal(current.undo, before.undo + 1);
+        return added;
+      });
+      const jobs = (await call("session_get")).result.jobs.filter(
+        (x) => !oldJobs.has(x.jobId) && x.command === "cad_create",
+      );
+      assert.equal(jobs.length, 1);
+      assert.equal(jobs[0].status, "succeeded");
+      const objects = await Promise.all(
+        added.map(
+          async (x) => (await call("object_get", { entityId: x.id })).result,
+        ),
+      );
+      const reports = [],
+        digests = [];
+      for (const item of added) {
+        reports.push(
+          await job(
+            await call("cad_inspect", {
+              entityId: item.id,
+              ...(options.inspectEdges
+                ? { edgeOffset: 0, edgeLimit: 128 }
+                : {}),
+            }),
+          ),
+        );
+        digests.push(await geometryDigest(item.id));
+      }
+      assert(
+        reports.every(
+          (r) => r.valid && r.solids === (options.expectedSolids ?? 1),
+        ),
+      );
+      if (options.volume !== undefined)
+        assert(Math.abs(reports[0].volumeMm3 - options.volume) < 1e-6);
+      if (options.verify)
+        await options.verify(
+          added.map((item) => item.id),
+          reports,
+          "GUI",
+        );
+      if (options.redo) {
+        await mutate("history_undo", {});
+        const undone = (await call("project_get")).result;
+        assert.equal(undone.undo, before.undo);
+        assert(
+          added.every(
+            (item) => !undone.objects.some((object) => object.id === item.id),
+          ),
+        );
+        await mutate("history_redo", {});
+        assert.equal((await call("project_get")).result.undo, before.undo + 1);
+        for (let i = 0; i < added.length; i++)
+          assert.deepEqual(await geometryDigest(added[i].id), digests[i]);
+        if (options.verify)
+          await options.verify(
+            added.map((item) => item.id),
+            reports,
+            "GUI Redo",
+          );
+      }
+      await mutate("history_undo", {});
+      const beforeMcp = (await call("project_get")).result;
+      const mcp = await job(
+        await mutate("cad_create", {
+          recipe: objects[0].parametric.feature.recipe,
+          name: objects[0].parametric.feature.name,
+          hideInputs: options.hideInputs ?? false,
+          selectCreated: true,
+        }),
+      );
+      assert.equal(mcp.entityIds.length, added.length);
+      assert.equal((await call("project_get")).result.undo, beforeMcp.undo + 1);
+      for (let i = 0; i < added.length; i++)
+        assert.deepEqual(await geometryDigest(mcp.entityIds[i]), digests[i]);
+      if (options.verify) {
+        const mcpReports = [];
+        for (const entityId of mcp.entityIds)
+          mcpReports.push(
+            await job(
+              await call("cad_inspect", {
+                entityId,
+                ...(options.inspectEdges
+                  ? { edgeOffset: 0, edgeLimit: 128 }
+                  : {}),
+              }),
+            ),
+          );
+        assert(
+          mcpReports.every(
+            (report) =>
+              report.valid && report.solids === (options.expectedSolids ?? 1),
+          ),
+        );
+        if (options.volume !== undefined)
+          assert(Math.abs(mcpReports[0].volumeMm3 - options.volume) < 1e-6);
+        await options.verify(mcp.entityIds, mcpReports, "MCP");
+      }
+      matrix.push({
+        workspace,
+        entry,
+        sharedGuiJob: jobs[0].jobId,
+        guiMcpGeometryEquality: true,
+        guiUndoRedoVerified: options.redo === true,
+        reports,
+        outputNames: objects.map((x) => x.name),
+      });
+      return mcp.entityIds;
+    }
+    await checkGuiCad("sweep", "Create exact sweep", { volume: 1440 });
+    await checkGuiCad("revolve", "Revolve profile to CAD", {
+      volume: 4500 * Math.PI,
+    });
+    const base = await job(
+      await mutate("cad_create", {
+        name: "Matrix base",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [0, 0, 0], size: [10, 10, 10] },
+        },
+      }),
+    );
+    const tool = await job(
+      await mutate("cad_create", {
+        name: "Matrix cutter",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [5, 0, 0], size: [10, 10, 10] },
+        },
+      }),
+    );
+    await mutate("object_select", { entityId: base.entityIds[0] });
+    await checkGuiCad("boolean", "Create boolean result", {
+      volume: 500,
+      hideInputs: true,
+      prepare: async () => {
+        await page
+          .getByRole("button", { name: "Boolean tool body", exact: true })
+          .click();
+        await page
+          .getByRole("option", { name: "Matrix cutter", exact: true })
+          .click();
+      },
+    });
+    await mutate("object_select", { entityId: base.entityIds[0] });
+    const splitOutputs = await checkGuiCad(
+      "splitSolid",
+      "Split into inside / outside",
+      {
+        outputs: 2,
+        volume: 500,
+        hideInputs: true,
+        prepare: async () => {
+          await page
+            .getByRole("button", { name: "Split cutting solid", exact: true })
+            .click();
+          await page
+            .getByRole("option", { name: "Matrix cutter", exact: true })
+            .click();
+        },
+      },
+    );
+    await mutate("object_select", { entityId: splitOutputs[0] });
+    await checkGuiCad("boolean", "Create boolean result", {
+      volume: 1000,
+      hideInputs: true,
+      prepare: async () => {
+        await page
+          .getByRole("button", { name: "Boolean operation", exact: true })
+          .click();
+        await page.getByRole("option", { name: "Union", exact: true }).click();
+        await page
+          .getByRole("button", { name: "Boolean tool body", exact: true })
+          .click();
+        await page
+          .getByRole("option", { name: "Matrix cutter", exact: true })
+          .click();
+      },
+    });
+    assert.equal(
+      (await call("object_get", { entityId: splitOutputs[1] })).result.visible,
+      true,
+    );
+    assert.equal(
+      (await call("object_get", { entityId: splitOutputs[0] })).result.visible,
+      false,
+    );
+    matrix.push({ unusedSplitSiblingPreserved: true });
+    for (const [workspace, button] of [
+      ["fillet", "Create fillet"],
+      ["chamfer", "Create chamfer"],
+      ["shell", "Create hollow shell"],
+    ]) {
+      await mutate("object_select", { entityId: base.entityIds[0] });
+      await checkGuiCad(
+        workspace,
+        button,
+        process.env.SCANFORGE_TEST_CAD_EDGES === "1" && workspace !== "shell"
+          ? {
+              prepare: async () => {
+                const edgePanel = page.getByRole("region", {
+                  name: "Exact CAD edge references",
+                  exact: true,
+                });
+                for (const object of (await call("project_get")).result
+                  .objects) {
+                  const visible = object.id === base.entityIds[0];
+                  if (object.visible !== visible)
+                    await mutate("object_update", {
+                      entityId: object.id,
+                      patch: { visible },
+                    });
+                }
+                await mutate("viewport_control", {
+                  action: "fit",
+                  entityId: base.entityIds[0],
+                });
+                const beforeEdges = await call("project_get");
+                if (workspace === "fillet") {
+                  let release;
+                  const held = new Promise((resolve) => {
+                    release = resolve;
+                  });
+                  const routeHandler = async (route) => {
+                    await held;
+                    await route.continue().catch(() => {});
+                  };
+                  await page.route("**/cad-worker.js", routeHandler);
+                  try {
+                    const oldJobs = new Set(
+                      (await call("session_get")).result.jobs.map(
+                        (x) => x.jobId,
+                      ),
+                    );
+                    await edgePanel
+                      .getByRole("button", {
+                        name: "Inspect CAD edges",
+                        exact: true,
+                      })
+                      .click();
+                    await page.screenshot({
+                      path: fileURLToPath(
+                        new URL("edge-cancellation.png", out),
+                      ),
+                    });
+                    await page
+                      .getByRole("button", {
+                        name: "Cancel edge inspection",
+                        exact: true,
+                      })
+                      .click();
+                    await eventually(async () => {
+                      const session = (await call("session_get")).result;
+                      assert.equal(session.activeJobId, null);
+                      assert(
+                        session.jobs.some(
+                          (x) =>
+                            !oldJobs.has(x.jobId) &&
+                            x.command === "cad_inspect" &&
+                            x.status === "cancelled",
+                        ),
+                      );
+                    });
+                  } finally {
+                    release();
+                    await page.unroute("**/cad-worker.js", routeHandler);
+                  }
+                  const afterCancel = await call("project_get");
+                  assert.equal(afterCancel.revision, beforeEdges.revision);
+                  assert.equal(
+                    afterCancel.result.undo,
+                    beforeEdges.result.undo,
+                  );
+                }
+                const discovered = await job(
+                  await call("cad_inspect", {
+                    entityId: base.entityIds[0],
+                    edgeOffset: 0,
+                    edgeLimit: 32,
+                  }),
+                );
+                assert.equal(discovered.edgeReferences.total, 12);
+                await edgePanel
+                  .getByRole("button", {
+                    name: "Inspect CAD edges",
+                    exact: true,
+                  })
+                  .click();
+                await eventually(async () =>
+                  assert.equal(
+                    await edgePanel.getByRole("checkbox").count(),
+                    12,
+                  ),
+                );
+                await edgePanel
+                  .getByRole("checkbox", { name: "Edge 0 line", exact: true })
+                  .uncheck();
+                await edgePanel
+                  .getByRole("checkbox", { name: "Edge 1 line", exact: true })
+                  .check();
+                assert.equal(
+                  await page
+                    .getByRole("textbox", {
+                      name: "CAD edge indices",
+                      exact: true,
+                    })
+                    .inputValue(),
+                  "1",
+                );
+                await page.screenshot({
+                  path: fileURLToPath(
+                    new URL(`cad-edges-${workspace}.png`, out),
+                  ),
+                });
+                if (workspace === "fillet") {
+                  await mutate("object_update", {
+                    entityId: base.entityIds[0],
+                    patch: { name: "Matrix base updated" },
+                  });
+                  assert(
+                    await page
+                      .getByRole("button", { name: button, exact: true })
+                      .isDisabled(),
+                  );
+                  const response = await client.callTool({
+                    name: "cad_create",
+                    arguments: {
+                      name: "Stale edge test",
+                      recipe: {
+                        kind: "edges",
+                        source: { featureId: base.entityIds[0], output: 0 },
+                        edgeIndices: [1],
+                        amount: 1,
+                        operation: "fillet",
+                      },
+                      expectedRevision: discovered.inspectedRevision,
+                      requestId: randomUUID(),
+                    },
+                  });
+                  const wire =
+                    response.structuredContent ??
+                    JSON.parse(response.content[0].text);
+                  assert(
+                    !wire.ok && wire.error.code === "REVISION_CONFLICT",
+                    JSON.stringify(wire),
+                  );
+                  await edgePanel
+                    .getByRole("button", {
+                      name: "Inspect CAD edges",
+                      exact: true,
+                    })
+                    .click();
+                  await eventually(async () =>
+                    assert(
+                      await page
+                        .getByRole("button", { name: button, exact: true })
+                        .isEnabled(),
+                    ),
+                  );
+                }
+                ledger.scenarios.push({
+                  edgeDiscovery: {
+                    workspace,
+                    discoveredIndex: 1,
+                    reference: discovered.edgeReferences.items[1],
+                    unchangedHistory: true,
+                    staleRevisionRejected: workspace === "fillet",
+                    reachableCancellation: workspace === "fillet",
+                  },
+                });
+              },
+            }
+          : {},
+      );
+    }
+    if (process.env.SCANFORGE_TEST_CAD_EDGES === "1") {
+      const patterned = await job(
+        await mutate("cad_create", {
+          name: "Paged edge source",
+          selectCreated: true,
+          recipe: {
+            kind: "pattern",
+            source: { featureId: base.entityIds[0], output: 0 },
+            pattern: { kind: "linear", count: 3, step: [20, 0, 0] },
+          },
+        }),
+      );
+      await openCad("fillet");
+      const edgePanel = page.getByRole("region", {
+        name: "Exact CAD edge references",
+        exact: true,
+      });
+      const before = await call("project_get"),
+        digest = await geometryDigest(patterned.entityIds[0]);
+      const metadata = await job(
+        await call("cad_inspect", {
+          entityId: patterned.entityIds[0],
+          edgeOffset: 32,
+          edgeLimit: 32,
+        }),
+      );
+      assert.equal(metadata.edgeReferences.total, 36);
+      assert.equal(metadata.edgeReferences.items.length, 4);
+      assert.equal(metadata.edgeReferences.nextOffset, null);
+      await edgePanel
+        .getByRole("button", { name: "Inspect CAD edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 32),
+      );
+      await edgePanel
+        .getByRole("button", { name: "Next edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 4),
+      );
+      await page
+        .getByRole("textbox", { name: "CAD edge indices", exact: true })
+        .fill("");
+      await edgePanel
+        .getByRole("checkbox", { name: "Edge 35 line", exact: true })
+        .check();
+      assert.equal(
+        await page
+          .getByRole("textbox", { name: "CAD edge indices", exact: true })
+          .inputValue(),
+        "35",
+      );
+      await edgePanel
+        .getByRole("button", { name: "Previous edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert.equal(await edgePanel.getByRole("checkbox").count(), 32),
+      );
+      await edgePanel
+        .getByRole("button", { name: "Next edges", exact: true })
+        .click();
+      await eventually(async () =>
+        assert(
+          await edgePanel
+            .getByRole("checkbox", { name: "Edge 35 line", exact: true })
+            .isChecked(),
+        ),
+      );
+      const after = await call("project_get");
+      assert.equal(after.revision, before.revision);
+      assert.equal(after.result.undo, before.result.undo);
+      assert.deepEqual(await geometryDigest(patterned.entityIds[0]), digest);
+      ledger.scenarios.push({
+        edgePaging: {
+          total: 36,
+          pageSizes: [32, 4, 32, 4],
+          selectedIndex: 35,
+          unchangedHistory: true,
+          geometryUnchanged: true,
+          reference: metadata.edgeReferences.items[3],
+        },
+      });
+    }
+    // A curved source exercises the pattern's first-instance mesh ownership;
+    // the earlier box pattern is MCP-only edge-paging setup, not GUI parity.
+    const cylinder = await job(
+      await mutate("cad_create", {
+        name: "Curved GUI pattern source",
+        recipe: {
+          kind: "primitive",
+          input: {
+            kind: "cylinder",
+            center: [0, 0, 4],
+            axis: [0, 0, 1],
+            radius: 3,
+            height: 8,
+          },
+        },
+      }),
+    );
+    const cylinderId = cylinder.entityIds[0];
+    const sourceDigest = await geometryDigest(cylinderId);
+    const sourceReferences = await job(
+      await call("alignment_references", {
+        entityId: cylinderId,
+        offset: 0,
+        limit: 100,
+      }),
+    );
+    assert.equal(sourceReferences.total, 3);
+    assert.equal(sourceReferences.nextOffset, null);
+    assert.equal(
+      sourceReferences.references.filter(
+        (reference) =>
+          reference.surfaceKind === "cylinder" && reference.radiusMm === 3,
+      ).length,
+      1,
+    );
+    const ranges = sourceReferences.references
+      .slice()
+      .sort((a, b) => a.firstTriangle - b.firstTriangle);
+    let nextTriangle = 0;
+    for (const reference of ranges) {
+      assert.equal(reference.firstTriangle, nextTriangle);
+      assert(
+        Number.isInteger(reference.triangleCount) &&
+          reference.triangleCount > 0,
+      );
+      nextTriangle += reference.triangleCount;
+    }
+    assert.equal(
+      nextTriangle,
+      sourceDigest.find((buffer) => buffer.path === "positions").elements / 9,
+    );
+    const projectBrepDigest = async (entityId) => {
+      const artifact = await job(
+        await call("project_export", { format: "project" }),
+      );
+      let operationError;
+      try {
+        const bytes = await artifactBytes(artifact);
+        assert.equal(bytes.subarray(0, 8).toString(), "SCANFRG2");
+        const manifestBytes = bytes.readUInt32LE(8);
+        const manifest = JSON.parse(
+          bytes.subarray(16, 16 + manifestBytes).toString("utf8"),
+        );
+        const record = manifest.current
+          .map((index) => manifest.records[index])
+          .find((item) => item.id === entityId);
+        assert.equal(record?.brep?.type, "text");
+        const chunk = manifest.chunks[record.brep.chunk];
+        const stored = bytes.subarray(
+          16 + manifestBytes + chunk.offset,
+          16 + manifestBytes + chunk.offset + chunk.bytes,
+        );
+        const raw = chunk.codec === "gzip" ? gunzipSync(stored) : stored;
+        const sha256 = createHash("sha256").update(raw).digest("hex");
+        assert.equal(raw.length, chunk.rawBytes);
+        assert.equal(sha256, chunk.sha256);
+        return { bytes: raw.length, sha256 };
+      } catch (error) {
+        operationError = error;
+        throw error;
+      } finally {
+        try {
+          await call("artifact_delete", { artifactId: artifact.artifactId });
+        } catch (cleanupError) {
+          ledger.cleanup.push({
+            kind: "curved-pattern-project-artifact",
+            artifactId: artifact.artifactId,
+            error: cleanupError.message,
+          });
+          if (!operationError) throw cleanupError;
+        }
+      }
+    };
+    const sourceBrepDigest = await projectBrepDigest(cylinderId);
+    const patternRecipe = {
+      kind: "pattern",
+      source: { featureId: cylinder.featureId, output: 0 },
+      pattern: { kind: "linear", count: 3, step: [200, 0, 0] },
+    };
+    let guiPatternBrep;
+    const patternEvidence = [];
+    await mutate("object_select", { entityId: cylinderId });
+    await checkGuiCad("linearPattern", "Create exact body pattern", {
+      expectedSolids: 3,
+      inspectEdges: true,
+      redo: true,
+      volume: 216 * Math.PI,
+      prepare: async () => {
+        await page
+          .getByRole("spinbutton", {
+            name: "Pattern copies including original",
+            exact: true,
+          })
+          .fill("3");
+        for (const [axis, value] of [
+          ["X", "200"],
+          ["Y", "0"],
+          ["Z", "0"],
+        ])
+          await page
+            .getByRole("spinbutton", {
+              name: `Pattern spacing (mm) ${axis}`,
+              exact: true,
+            })
+            .fill(value);
+      },
+      verify: async ([entityId], [report], via) => {
+        assert.deepEqual(
+          (await call("object_get", { entityId })).result.parametric.feature
+            .recipe,
+          patternRecipe,
+        );
+        assert(report.signedVolumeMm3 > 0);
+        assert(Math.abs(report.signedVolumeMm3 - 216 * Math.PI) < 1e-6);
+        assert(Math.abs(report.areaMm2 - 198 * Math.PI) < 1e-6);
+        const edges = report.edgeReferences;
+        assert.equal(edges.nextOffset, null);
+        assert.equal(edges.items.length, edges.total);
+        const bounds = Object.fromEntries(
+          ["min", "max"].map((key) => [
+            key,
+            [0, 1, 2].map((axis) => {
+              const values = edges.items.map((edge) => {
+                assert(edge.boundsMm);
+                return edge.boundsMm[key][axis];
+              });
+              return (key === "min" ? Math.min : Math.max)(...values);
+            }),
+          ]),
+        );
+        for (const [key, expected] of [
+          ["min", [-3, -3, 0]],
+          ["max", [403, 3, 8]],
+        ])
+          assert(
+            bounds[key].every(
+              (value, axis) => Math.abs(value - expected[axis]) <= 1e-6,
+            ),
+            JSON.stringify({ bounds, expected, key }),
+          );
+        const brep = await projectBrepDigest(entityId);
+        if (via === "GUI") guiPatternBrep = brep;
+        else
+          assert.deepEqual(
+            brep,
+            guiPatternBrep,
+            "GUI/MCP pattern saved BREP must match exactly",
+          );
+        assert.deepEqual(await geometryDigest(cylinderId), sourceDigest);
+        assert.deepEqual(await projectBrepDigest(cylinderId), sourceBrepDigest);
+        assert.deepEqual(
+          await job(
+            await call("alignment_references", {
+              entityId: cylinderId,
+              offset: 0,
+              limit: 100,
+            }),
+          ),
+          sourceReferences,
+        );
+        patternEvidence.push({
+          via,
+          brep,
+          bounds,
+          sourcePublishedBuffersAndSavedBrepExact: true,
+          publicAlignmentReferencesAndTriangleSlotsExact: true,
+        });
+      },
+    });
+    ledger.scenarios.push({
+      curvedPatternGuiMcp: {
+        sourceId: cylinderId,
+        recipe: patternRecipe,
+        expectedSolids: 3,
+        independentVolumeMm3: 216 * Math.PI,
+        independentAreaMm2: 198 * Math.PI,
+        sourceBrepDigest,
+        patternEvidence,
+        readerScope:
+          "Public alignment_references metadata and triangle ranges match their initial snapshot; raw D1 reader buffers remain covered by the actual kernel regression, not a new public tool.",
+        entryScope:
+          "Existing public ui_set experimental panel admission; rendered GUI controls submit through shared cad_create. Ribbon remains unverified and unavailable.",
+      },
+    });
+    await checkGuiCad("extrude", "Extrude sketch to CAD", { volume: 12000 });
+    ledger.scenarios.push({
+      guardedCadMatrix: {
+        entry:
+          "verified CAD ribbon entries plus explicit public ui_set experimental panel for gated patterns; optional exact edge discovery",
+        matrix,
+      },
+    });
+  }
+  if (process.env.SCANFORGE_TEST_SURFACE_TRIM === "1") {
+    const patch = (width = 10) => ({
+      format: "scanforge-nurbs",
+      version: 1,
+      countU: 2,
+      countV: 2,
+      degreeU: 1,
+      degreeV: 1,
+      knotsU: [0, 0, 1, 1],
+      knotsV: [0, 0, 1, 1],
+      weights: [1, 1, 1, 1],
+      points: [
+        [-width / 2, -5, 0],
+        [width / 2, -5, 0],
+        [-width / 2, 5, 0],
+        [width / 2, 5, 0],
+      ],
+    });
+    for (const item of (await call("project_get")).result.objects)
+      if (item.visible)
+        await mutate("object_update", {
+          entityId: item.id,
+          patch: { visible: false },
+        });
+    const source = await job(
+      await mutate("cad_create", {
+        name: "Trim source",
+        recipe: { kind: "surface", patch: patch() },
+        selectCreated: true,
+      }),
+    );
+    const cutterPatch = {
+      ...patch(),
+      points: [
+        [0, -10, -10],
+        [0, 10, -10],
+        [0, -10, 10],
+        [0, 10, 10],
+      ],
+    };
+    const cutter = await job(
+      await mutate("cad_create", {
+        name: "Trim cutter",
+        recipe: { kind: "surface", patch: cutterPatch },
+      }),
+    );
+    const sourceId = source.entityIds[0],
+      cutterId = cutter.entityIds[0];
+    await mutate("object_update", {
+      entityId: cutterId,
+      patch: { visible: false },
+    });
+    const sourceDigest = await geometryDigest(sourceId),
+      cutterDigest = await geometryDigest(cutterId);
+    await page.getByRole("tab", { name: "Surfacing", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Trim surfaces", exact: true })
+      .click();
+    const trimPanel = page.getByRole("region", {
+      name: "Trim surfaces",
+      exact: true,
+    });
+    await trimPanel
+      .getByRole("checkbox", { name: "Trim cutter", exact: true })
+      .check();
+    const beforeRejectedTrim = await call("project_get");
+    await trimPanel
+      .getByRole("textbox", { name: "Retained points (world mm)", exact: true })
+      .fill("[[100,0,0]]");
+    await trimPanel
+      .getByRole("button", { name: "Apply surface trim", exact: true })
+      .click();
+    const trimError = page.locator(".error-banner");
+    await trimError.filter({ hasText: /tolerance|surface/i }).waitFor();
+    const guiTrimError = await trimError.textContent();
+    const invalidTrim = await mutate("cad_create", {
+      name: "Invalid trim",
+      recipe: {
+        kind: "trimSurfaces",
+        source: { featureId: sourceId, output: 0 },
+        cutters: [{ featureId: cutterId, output: 0 }],
+        keepPoints: [[100, 0, 0]],
+        toleranceMm: 0.1,
+      },
+    });
+    const rejectedTrim = await eventually(async () => {
+      const result = (
+        await call("job_get", { jobId: invalidTrim.result.jobId })
+      ).result;
+      assert.equal(result.status, "failed");
+      return result;
+    });
+    assert(guiTrimError.includes(rejectedTrim.error.message));
+    const afterRejectedTrim = await call("project_get");
+    assert.equal(afterRejectedTrim.revision, beforeRejectedTrim.revision);
+    assert.deepEqual(
+      afterRejectedTrim.result.objects,
+      beforeRejectedTrim.result.objects,
+    );
+    assert.equal(afterRejectedTrim.result.undo, beforeRejectedTrim.result.undo);
+    await mutate("ui_set", { dismissError: true });
+    await trimPanel
+      .getByRole("textbox", { name: "Retained points (world mm)", exact: true })
+      .fill("[]");
+    await mutate("viewport_control", {
+      action: "camera",
+      position: [0, -15, 20],
+      target: [0, 0, 0],
+    });
+    const camera = (await call("viewport_get")).result;
+    const world = new Vector3(-2, 0, 0)
+      .applyMatrix4(new Matrix4().fromArray(camera.cameraWorldMatrix).invert())
+      .applyMatrix4(new Matrix4().fromArray(camera.projectionMatrix));
+    const canvas = page.locator("canvas").first(),
+      box = await canvas.boundingBox();
+    assert(box);
+    const clickPoint = {
+      x: (box.width * (world.x + 1)) / 2,
+      y: (box.height * (1 - world.y)) / 2,
+    };
+    const beforePick = (await call("project_get")).result;
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await page.keyboard.press("Escape");
+    await canvas.click({ position: clickPoint });
+    assert.equal(
+      await trimPanel
+        .getByRole("textbox", {
+          name: "Retained points (world mm)",
+          exact: true,
+        })
+        .inputValue(),
+      "[]",
+    );
+    assert.equal((await call("project_get")).result.undo, beforePick.undo);
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Close tool options", exact: true })
+      .click();
+    await canvas.click({ position: clickPoint });
+    await page
+      .getByRole("button", { name: "Trim surfaces", exact: true })
+      .click();
+    assert.equal(
+      await trimPanel
+        .getByRole("textbox", {
+          name: "Retained points (world mm)",
+          exact: true,
+        })
+        .inputValue(),
+      "[]",
+    );
+    await trimPanel
+      .getByRole("checkbox", { name: "Trim cutter", exact: true })
+      .check();
+    await trimPanel
+      .getByRole("button", { name: "Pick retained region", exact: true })
+      .click();
+    await canvas.click({ position: clickPoint });
+    const picked = await eventually(async () => {
+      const points = JSON.parse(
+        await trimPanel
+          .getByRole("textbox", {
+            name: "Retained points (world mm)",
+            exact: true,
+          })
+          .inputValue(),
+      );
+      assert.equal(points.length, 1);
+      return points;
+    });
+    const before = (await call("project_get")).result;
+    await trimPanel
+      .getByRole("button", { name: "Apply surface trim", exact: true })
+      .click();
+    const guiId = await eventually(async () => {
+      const current = (await call("project_get")).result;
+      assert.equal(current.objects.length, before.objects.length + 1);
+      return current.objects.find(
+        (item) => !before.objects.some((old) => old.id === item.id),
+      ).id;
+    });
+    assert.equal((await call("project_get")).result.undo, before.undo + 1);
+    const guiGeometry = await geometryDigest(guiId),
+      guiObject = (await call("object_get", { entityId: guiId })).result;
+    const guiReport = await job(await call("cad_inspect", { entityId: guiId }));
+    assert(guiReport.valid && Math.abs(guiReport.areaMm2 - 50) < 1e-6);
+    assert.deepEqual(guiObject.parametric.feature.recipe.keepPoints, picked);
+    await mutate("history_undo", {});
+    const mcp = await job(
+      await mutate("cad_create", {
+        name: "MCP retained surface",
+        recipe: guiObject.parametric.feature.recipe,
+        hideInputs: true,
+      }),
+    );
+    const trimId = mcp.entityIds[0];
+    assert.deepEqual(await geometryDigest(trimId), guiGeometry);
+    assert.deepEqual(await geometryDigest(sourceId), sourceDigest);
+    assert.deepEqual(await geometryDigest(cutterId), cutterDigest);
+    await job(
+      await mutate("cad_rebuild", {
+        entityId: sourceId,
+        recipe: { kind: "surface", patch: patch(8) },
+      }),
+    );
+    let report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 40) < 1e-6);
+    await mutate("history_undo", {});
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 50) < 1e-6);
+    await mutate("history_redo", {});
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(Math.abs(report.areaMm2 - 40) < 1e-6);
+    const savedTrim = await job(
+      await call("project_export", { format: "project" }),
+    );
+    await job(
+      await mutate("project_import", {
+        artifactId: savedTrim.artifactId,
+        replace: true,
+      }),
+    );
+    const restored = (await call("object_get", { entityId: trimId })).result;
+    assert.equal(restored.parametric.feature.recipe.kind, "trimSurfaces");
+    report = await job(await call("cad_inspect", { entityId: trimId }));
+    assert(report.valid && Math.abs(report.areaMm2 - 40) < 1e-6);
+    const trimStep = await job(
+      await call("project_export", { format: "step" }),
+    );
+    const beforeStep = new Set(
+      (await call("project_get")).result.objects.map((x) => x.id),
+    );
+    await job(
+      await mutate("project_import", { artifactId: trimStep.artifactId }),
+    );
+    const stepId = (await call("project_get")).result.objects.find(
+      (x) => !beforeStep.has(x.id),
+    ).id;
+    const stepReport = await job(
+      await call("cad_inspect", { entityId: stepId }),
+    );
+    assert(
+      stepReport.valid &&
+        stepReport.solids === 0 &&
+        stepReport.faces === 1 &&
+        Math.abs(stepReport.areaMm2 - 40) < 1e-6,
+    );
+    await mutate("object_update", {
+      entityId: stepId,
+      patch: { visible: false },
+    });
+    ledger.scenarios.push({
+      surfaceTrim: {
+        actualRibbonEntry: true,
+        actualViewportPick: true,
+        escapeNoCommit: true,
+        closeReopenCancelsPick: true,
+        guiMcpFailureEquality: true,
+        rejectedKeepPointMessage: rejectedTrim.error.message,
+        picked,
+        guiMcpGeometryEquality: true,
+        sourceDigest,
+        cutterDigest,
+        dependencyRebuildAreas: [50, 40, 50, 40],
+        projectRecipePreserved: true,
+        stepReport,
+        report,
+      },
+    });
+    await mutate("viewport_control", { action: "fit", entityId: trimId });
+    await page.screenshot({
+      path: fileURLToPath(new URL("surface-trim.png", out)),
+    });
+  }
+  if (process.env.SCANFORGE_TEST_INVALID_BREP) {
+    const bad = await readFile(process.env.SCANFORGE_TEST_INVALID_BREP);
+    assert(bad.length <= 1048576);
+    const upload = await call("artifact_put", {
+      name: "invalid-one-face.brep",
+      offset: 0,
+      base64: bad.toString("base64"),
+    });
+    const beforeInvalid = await call("project_get");
+    const receipt = await mutate("project_import", {
+      artifactId: upload.result.artifactId,
+    });
+    const expires = Date.now() + 95000;
+    let failed;
+    do {
+      failed = (await call("job_get", { jobId: receipt.result.jobId })).result;
+      if (failed.status !== "running") break;
+      await pause();
+    } while (Date.now() < expires);
+    assert.equal(failed.status, "failed", JSON.stringify(failed));
+    assert.match(failed.error.message, /invalid topology or geometry/i);
+    const afterInvalid = await call("project_get");
+    assert.equal(afterInvalid.revision, beforeInvalid.revision);
+    assert.deepEqual(afterInvalid.result.objects, beforeInvalid.result.objects);
+    assert.equal(afterInvalid.result.undo, beforeInvalid.result.undo);
+    await page
+      .locator('input[type=file][accept*=".stl"]')
+      .setInputFiles(process.env.SCANFORGE_TEST_INVALID_BREP);
+    const guiError = page.locator(".error-banner");
+    await guiError
+      .filter({ hasText: /invalid topology or geometry/i })
+      .waitFor();
+    assert((await guiError.textContent()).includes(failed.error.message));
+    const afterGuiInvalid = await call("project_get");
+    assert.equal(afterGuiInvalid.revision, beforeInvalid.revision);
+    assert.equal(afterGuiInvalid.result.undo, beforeInvalid.result.undo);
+    await page
+      .getByRole("button", { name: "Dismiss error", exact: true })
+      .click();
+    const references = await job(
+      await call("alignment_references", {
+        entityId: faceId,
+        offset: 0,
+        limit: 10,
+      }),
+    );
+    assert(
+      references.total > 0,
+      "The live modeling kernel must retain its pre-error exact handles",
+    );
+    ledger.scenarios.push({
+      invalidBrepRejectedBeforePublication: true,
+      guiMcpSameFailure: true,
+      unchangedRevisionAndHistory: true,
+      liveKernelHandlesPreserved: true,
+      fixtureSha256: createHash("sha256").update(bad).digest("hex"),
+    });
+  }
   assert.deepEqual(errors, []);
   assert.deepEqual(consoleErrors, []);
   ledger.consoleErrors = consoleErrors;

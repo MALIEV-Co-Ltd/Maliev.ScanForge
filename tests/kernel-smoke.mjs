@@ -4,8 +4,11 @@ import vm from "node:vm";
 import { webcrypto, createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { nativeDatumInverseFrame } from "../src/scan-native-datum-apply.ts";
-import { checkCadCacheOwnership } from "./helpers/cad-cache-ownership-kernel.mjs";
 import { noiseNormals } from "../src/scan-native-noise.ts";
+import { checkBooleanOwnership } from "./helpers/boolean-ownership-kernel.mjs";
+import { checkEdgeShellOwnership } from "./helpers/edge-shell-ownership-kernel.mjs";
+import { checkPlanarThickening } from "./helpers/planar-thickening-kernel.mjs";
+import { checkCadCacheOwnership } from "./helpers/cad-cache-ownership-kernel.mjs";
 
 // Exercise the actual classic-worker protocol without a server or detached worker.
 // Run only after resource admission: WASM initialization requires substantial RAM.
@@ -189,6 +192,9 @@ function close(actual, expected, message) {
 try {
   const oc = await vm.runInContext("kernel()", context);
   ownershipKernel = oc;
+  await checkBooleanOwnership({ context, oc, request, root });
+  await checkPlanarThickening({ context, oc, request });
+  await checkEdgeShellOwnership({ context, oc, request, root });
   await checkCadCacheOwnership({ context, oc, request });
   const nativeFaces = JSON.parse(
     readFileSync(
@@ -829,6 +835,301 @@ try {
     size: [10, 20, 30],
   });
   assert.equal(box.positions.length, 108);
+  const shapesBeforeInspection = vm.runInContext("shapes.size", context);
+  const boxInspection = await request("inspectBrep", { brep: box.brep });
+  assert.equal(boxInspection.valid, true);
+  assert.equal(boxInspection.solids, 1);
+  assert.equal(boxInspection.shells, 1);
+  assert.equal(boxInspection.faces, 6);
+  assert.equal(boxInspection.edges, 12);
+  assert.equal(boxInspection.vertices, 8);
+  close(boxInspection.areaMm2, 2200, "Exact inspection box area");
+  close(boxInspection.volumeMm3, 6000, "Exact inspection box volume");
+  async function verifyEdgeReferences(body) {
+    const handles = [],
+      unique = [],
+      expected = [];
+    const keep = (handle) => (handles.push(handle), handle);
+    try {
+      const shape = vm.runInContext(
+        `shapes.get(${JSON.stringify(body.kernelId)})`,
+        context,
+      );
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum.TopAbs_EDGE,
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      for (; explorer.More(); explorer.Next()) {
+        const current = keep(explorer.Current()),
+          edge = keep(oc.TopoDS.Edge_1(current));
+        if (unique.some((prior) => prior.IsSame(edge))) continue;
+        unique.push(edge);
+        const degenerate = oc.BRep_Tool.Degenerated(edge);
+        if (degenerate) {
+          expected.push({ degenerate: true });
+          continue;
+        }
+        const curve = keep(new oc.BRepAdaptor_Curve_2(edge));
+        const a = keep(curve.Value(curve.FirstParameter())),
+          b = keep(curve.Value(curve.LastParameter()));
+        const props = keep(new oc.GProp_GProps_1());
+        oc.BRepGProp.LinearProperties(edge, props, true, false);
+        expected.push({
+          degenerate: false,
+          curveType: curve.GetType().value,
+          lengthMm: props.Mass(),
+          endpoints: [
+            [a.X(), a.Y(), a.Z()],
+            [b.X(), b.Y(), b.Z()],
+          ],
+        });
+      }
+      const actual = [];
+      for (let offset = 0; offset < expected.length; offset += 5) {
+        const report = await request("inspectBrep", {
+          brep: body.brep,
+          edgeOffset: offset,
+          edgeLimit: 5,
+        });
+        assert.equal(report.edgeReferences.total, expected.length);
+        assert.equal(
+          report.edgeReferences.nextOffset,
+          offset + 5 < expected.length ? offset + 5 : null,
+        );
+        actual.push(...report.edgeReferences.items);
+      }
+      assert.equal(actual.length, expected.length);
+      actual.forEach((edge, index) => {
+        assert.equal(edge.index, index);
+        assert.equal(edge.degenerate, expected[index].degenerate);
+        if (edge.degenerate) return;
+        assert.equal(edge.curveType, expected[index].curveType);
+        close(
+          edge.lengthMm,
+          expected[index].lengthMm,
+          "Saved BREP edge length keeps live treatment index",
+        );
+        for (let end = 0; end < 2; end++)
+          for (let axis = 0; axis < 3; axis++)
+            close(
+              edge.endpoints[end][axis],
+              expected[index].endpoints[end][axis],
+              "Saved BREP endpoint keeps live treatment index",
+            );
+      });
+      return actual;
+    } finally {
+      context.cleanup(handles);
+    }
+  }
+  const allBoxEdges = await verifyEdgeReferences(box);
+  const cylinderEdgesBody = await request("primitive", {
+    kind: "cylinder",
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    radius: 3,
+    height: 8,
+  });
+  const cylinderEdges = await verifyEdgeReferences(cylinderEdgesBody);
+  const circleEdges = cylinderEdges.filter((edge) => edge.kind === "circle");
+  assert.equal(circleEdges.length, 2);
+  circleEdges.forEach((edge) =>
+    close(edge.lengthMm, 6 * Math.PI, "Circular edge analytic circumference"),
+  );
+  assert.equal(
+    cylinderEdges.filter((edge) => edge.kind === "line").length,
+    1,
+    "Cylinder seam retains one unique edge index",
+  );
+  const targetEdge = allBoxEdges[0],
+    a = targetEdge.endpoints[0],
+    direction = targetEdge.endpoints[1].map((v, i) => v - a[i]);
+  const distanceToLine = (p) => {
+    const v = p.map((x, i) => x - a[i]);
+    return (
+      Math.hypot(
+        v[1] * direction[2] - v[2] * direction[1],
+        v[2] * direction[0] - v[0] * direction[2],
+        v[0] * direction[1] - v[1] * direction[0],
+      ) / Math.hypot(...direction)
+    );
+  };
+  for (const operation of ["fillet", "chamfer"]) {
+    const treated = await request("edges", {
+      kernelId: box.kernelId,
+      edgeIndices: [targetEdge.index],
+      amount: 0.5,
+      operation,
+    });
+    const treatedEdges = await verifyEdgeReferences(treated);
+    if (operation === "fillet") {
+      const arcs = treatedEdges.filter((edge) => edge.kind === "circle");
+      assert.equal(arcs.length, 2);
+      arcs.forEach((edge) =>
+        close(
+          edge.lengthMm,
+          Math.PI / 4,
+          "Quarter-circle fillet edge analytic length",
+        ),
+      );
+    }
+    assert(
+      !treatedEdges.some(
+        (edge) =>
+          edge.kind === "line" &&
+          edge.endpoints.every((point) => distanceToLine(point) < 1e-7),
+      ),
+      "Discovered treatment index removes the intended supporting edge",
+    );
+    await request("release", [treated.kernelId]);
+  }
+  await request("release", [cylinderEdgesBody.kernelId]);
+  const sphereEdgesBody = await request("primitive", {
+    kind: "sphere",
+    center: [0, 0, 0],
+    radius: 3,
+  });
+  const sphereEdges = await verifyEdgeReferences(sphereEdgesBody);
+  assert(
+    sphereEdges.some((edge) => edge.degenerate),
+    "Degenerate sphere edges retain discovery indices",
+  );
+  await request("release", [sphereEdgesBody.kernelId]);
+  assert.equal(boxInspection.edgeReferences, undefined);
+  const boxEdges = await request("inspectBrep", {
+    brep: box.brep,
+    edgeOffset: 0,
+    edgeLimit: 5,
+  });
+  assert.equal(boxEdges.edgeReferences.total, 12);
+  assert.equal(boxEdges.edgeReferences.nextOffset, 5);
+  assert.deepEqual(
+    Array.from(boxEdges.edgeReferences.items, (e) => e.index),
+    [0, 1, 2, 3, 4],
+  );
+  for (const edge of boxEdges.edgeReferences.items) {
+    assert.equal(edge.kind, "line");
+    assert.equal(edge.degenerate, false);
+    close(
+      Math.hypot(...edge.endpoints[1].map((v, i) => v - edge.endpoints[0][i])),
+      edge.lengthMm,
+      "Straight edge analytic length",
+    );
+  }
+  await assert.rejects(
+    request("inspectBrep", { brep: box.brep, edgeLimit: 129 }),
+    /128/,
+  );
+  await assert.rejects(
+    request("inspectBrep", { brep: box.brep, edgeOffset: -1 }),
+    /offset/i,
+  );
+  await assert.rejects(request("inspectBrep", { brep: "not BREP" }), /BREP/);
+  assert.equal(vm.runInContext("shapes.size", context), shapesBeforeInspection);
+  assert.equal(oc.FS.analyzePath("check.brp").exists, false);
+  const reversedBox = vm.runInContext(
+    `shapes.get(${JSON.stringify(box.kernelId)}).Reversed()`,
+    context,
+  );
+  try {
+    const reversed = await request("inspectBrep", {
+      brep: context.serializeBrep(oc, reversedBox),
+    });
+    close(
+      reversed.signedVolumeMm3,
+      -6000,
+      "Inspection retains reversed solid orientation",
+    );
+    close(
+      reversed.volumeMm3,
+      6000,
+      "Inspection reports absolute volume separately",
+    );
+  } finally {
+    reversedBox.delete();
+  }
+  const invalidHandles = [];
+  try {
+    const wire = context.polygonWire(
+      oc,
+      [
+        [0, 0, 0],
+        [2, 2, 0],
+        [0, 2, 0],
+        [2, 0, 0],
+      ],
+      invalidHandles,
+    );
+    const maker = new oc.BRepBuilderAPI_MakeFace_15(wire, true);
+    invalidHandles.push(maker);
+    const face = maker.Face();
+    invalidHandles.push(face);
+    const invalid = await request("inspectBrep", {
+      brep: context.serializeBrep(oc, face),
+    });
+    assert.equal(
+      invalid.valid,
+      false,
+      "Self-crossing exact face must be reported invalid",
+    );
+    assert.equal(
+      vm.runInContext("shapes.size", context),
+      shapesBeforeInspection,
+    );
+  } finally {
+    context.cleanup(invalidHandles);
+  }
+  const reversedFaceHandles = [];
+  try {
+    const builder = new oc.BRep_Builder(),
+      shell = new oc.TopoDS_Shell();
+    reversedFaceHandles.push(builder, shell);
+    builder.MakeShell(shell);
+    const boxShape = vm.runInContext(
+      `shapes.get(${JSON.stringify(box.kernelId)})`,
+      context,
+    );
+    const explorer = new oc.TopExp_Explorer_2(
+      boxShape,
+      oc.TopAbs_ShapeEnum.TopAbs_FACE,
+      oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+    );
+    reversedFaceHandles.push(explorer);
+    let firstFace = true;
+    for (; explorer.More(); explorer.Next()) {
+      const face = explorer.Current();
+      reversedFaceHandles.push(face);
+      const placed = firstFace ? face.Reversed() : face;
+      if (firstFace) reversedFaceHandles.push(placed);
+      builder.Add(shell, placed);
+      firstFace = false;
+    }
+    const maker = new oc.BRepBuilderAPI_MakeSolid_1();
+    reversedFaceHandles.push(maker);
+    maker.Add(shell);
+    const invalidSolid = maker.Solid();
+    reversedFaceHandles.push(invalidSolid);
+    const brep = context.serializeBrep(oc, invalidSolid);
+    if (process.env.SCANFORGE_CAD_INVALID_FIXTURE === "1")
+      writeFileSync(new URL(".resources/m5/invalid-one-face.brep", root), brep);
+    assert.equal((await request("inspectBrep", { brep })).valid, false);
+    await assert.rejects(
+      request("import", {
+        data: new TextEncoder().encode(brep),
+        extension: "brep",
+      }),
+      /invalid/i,
+    );
+    assert.equal(
+      vm.runInContext("shapes.size", context),
+      shapesBeforeInspection,
+    );
+  } finally {
+    context.cleanup(reversedFaceHandles);
+  }
   assert.equal(
     box.planeFrame,
     undefined,
@@ -856,6 +1157,129 @@ try {
     ],
     weights: [1, 1, 1, 1],
   });
+  const trimSource = await request(
+    "surface",
+    planarPatch([-5, -5, 0], [10, 0, 0], [0, 10, 0]),
+  );
+  const trimCutter = await request(
+    "surface",
+    planarPatch([0, -10, -10], [0, 20, 0], [0, 0, 20]),
+  );
+  const exactBrep = (kernelId) =>
+    context.serializeBrep(
+      oc,
+      vm.runInContext(`shapes.get(${JSON.stringify(kernelId)})`, context),
+    );
+  const sourceBeforeTrim = exactBrep(trimSource.kernelId),
+    cutterBeforeTrim = exactBrep(trimCutter.kernelId);
+  const leftTrim = await request("trimSurfaces", {
+    kernelId: trimSource.kernelId,
+    cutterIds: [trimCutter.kernelId],
+    keepPoints: [[-2, 0, 0]],
+    toleranceMm: 0.001,
+  });
+  const leftReport = await request("inspectBrep", { brep: leftTrim.brep });
+  assert(leftReport.valid && leftReport.solids === 0 && leftReport.faces === 1);
+  close(leftReport.areaMm2, 50, "Retained exact plane region area");
+  assert.deepEqual(bounds(leftTrim.positions), [-5, -5, 0, 0, 5, 0]);
+  assert.equal(exactBrep(trimSource.kernelId), sourceBeforeTrim);
+  assert.equal(exactBrep(trimCutter.kernelId), cutterBeforeTrim);
+  const bothTrim = await request("trimSurfaces", {
+    kernelId: trimSource.kernelId,
+    cutterIds: [trimCutter.kernelId],
+    keepPoints: [
+      [-2, 0, 0],
+      [2, 0, 0],
+    ],
+    toleranceMm: 0.001,
+  });
+  close(
+    (await request("inspectBrep", { brep: bothTrim.brep })).areaMm2,
+    100,
+    "Multiple retained regions preserve exact area",
+  );
+  const beforeBadTrim = vm.runInContext("shapes.size", context);
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: [[0, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /ambiguous/i,
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: [[100, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /surface|tolerance/i,
+  );
+  assert.equal(vm.runInContext("shapes.size", context), beforeBadTrim);
+  assert.equal(exactBrep(trimSource.kernelId), sourceBeforeTrim);
+  assert.equal(exactBrep(trimCutter.kernelId), cutterBeforeTrim);
+  const disjointCutter = await request(
+    "surface",
+    planarPatch([20, -10, -10], [0, 20, 0], [0, 0, 20]),
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [disjointCutter.kernelId],
+      keepPoints: [[-2, 0, 0]],
+      toleranceMm: 0.001,
+    }),
+    /intersect/i,
+  );
+  await assert.rejects(
+    request("trimSurfaces", {
+      kernelId: trimSource.kernelId,
+      cutterIds: [trimCutter.kernelId],
+      keepPoints: Array.from({ length: 129 }, () => [-2, 0, 0]),
+      toleranceMm: 0.001,
+    }),
+    /128/,
+  );
+  const quadrant = await request("surface", {
+    format: "scanforge-nurbs",
+    version: 1,
+    countU: 3,
+    countV: 2,
+    degreeU: 2,
+    degreeV: 1,
+    knotsU: [0, 0, 0, 1, 1, 1],
+    knotsV: [0, 0, 1, 1],
+    weights: [1, Math.SQRT1_2, 1, 1, Math.SQRT1_2, 1],
+    points: [
+      [1, 0, 0],
+      [1, 1, 0],
+      [0, 1, 0],
+      [1, 0, 2],
+      [1, 1, 2],
+      [0, 1, 2],
+    ],
+  });
+  const crossPlane = await request(
+    "surface",
+    planarPatch([-2, -2, 1], [4, 0, 0], [0, 4, 0]),
+  );
+  const curvedTrim = await request("trimSurfaces", {
+    kernelId: quadrant.kernelId,
+    cutterIds: [crossPlane.kernelId],
+    keepPoints: [[Math.SQRT1_2, Math.SQRT1_2, 0.5]],
+    toleranceMm: 0.001,
+  });
+  const curvedReport = await request("inspectBrep", { brep: curvedTrim.brep });
+  assert(
+    curvedReport.valid && curvedReport.faces === 1 && curvedReport.solids === 0,
+  );
+  close(
+    curvedReport.areaMm2,
+    Math.PI / 2,
+    "Trim retains exact rational curved surface area",
+  );
   const shellPatches = [
     planarPatch([0, 0, 0], [0, 0, 30], [0, 20, 0]),
     planarPatch([10, 0, 0], [0, 20, 0], [0, 0, 30]),
@@ -994,6 +1418,7 @@ try {
       secondId: second.kernelId,
     });
     close(volume(result.positions), expectedVolume, `${operation} volume`);
+    await verifyEdgeReferences(result);
     assert.ok(result.brep.length > 100);
     const encoded = await request("export", [result.kernelId]);
     const roundtrip = await request("import", {
@@ -1374,6 +1799,11 @@ try {
     weights: [1, 1, 1, 1],
   };
   const nurbs = await request("surface", patch);
+  const faceInspection = await request("inspectBrep", { brep: nurbs.brep });
+  assert.equal(faceInspection.valid, true);
+  assert.equal(faceInspection.solids, 0);
+  assert.equal(faceInspection.faces, 1);
+  assert.equal(faceInspection.volumeMm3, 0);
   assert.ok(nurbs.planeFrame, "Planar NURBS retains an exact UV plane frame");
   assertPlaneFrame(nurbs);
   [5, 10, 0].forEach((value, axis) =>
@@ -1711,8 +2141,10 @@ try {
     cutterId: second.kernelId,
   });
   assert.equal(splitParts.length, 2);
-  for (const part of splitParts)
+  for (const part of splitParts) {
     close(exactVolume(part.kernelId), 500, "Split half native volume");
+    await verifyEdgeReferences(part);
+  }
   close(
     splitParts.reduce((sum, part) => sum + exactVolume(part.kernelId), 0),
     exactVolume(first.kernelId),
@@ -1856,3 +2288,5 @@ try {
 } finally {
   clearTimeout(expiry);
 }
+
+await import("./sketch-surface-kernel.mjs");

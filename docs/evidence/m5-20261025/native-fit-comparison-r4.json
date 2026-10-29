@@ -1,0 +1,121 @@
+{
+  "nativeUi": {
+    "method": "Simple",
+    "uLabel": 4,
+    "vLabel": 4,
+    "degree": 3,
+    "orientation": "OXY",
+    "expand": 0,
+    "smoothness": 0
+  },
+  "nativeSerialized": {
+    "countU": 5,
+    "countV": 5,
+    "degreeU": 3,
+    "degreeV": 3,
+    "knotsU": [0, 0, 0, 0, 0.500025251021, 1, 1, 1, 1],
+    "knotsV": [0, 0, 0, 0, 0.50043632345, 1, 1, 1, 1]
+  },
+  "sourceHash": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
+  "scanforgeFitSha256": "a52b9d9b3691281e6084bd07f07a7d1916044dab3c1b325937ad5660f71f0a65",
+  "nativeStepSha256": "1c7bf1331f1294b387f4b059cbd60ed66671abe9e629b3b16307f6d2c6bfdfd7",
+  "reports": {
+    "native": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.947693035595898,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    },
+    "reconstructed": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.947693035595955,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    },
+    "scanforge": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.942309509295891,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    }
+  },
+  "nativeProjectedResidual": {
+    "scope": "Projected Z residual at source XY, not closest-point/native UI RMS",
+    "samples": 600,
+    "rmsMm": 0.006061076916250271,
+    "maxAbsMm": 0.024178628080392173,
+    "maxInverseXyResidualMm": 0.000001907355684893494
+  },
+  "scanforgeProjectedResidual": {
+    "scope": "Projected Z residual at source XY, not closest-point/native UI RMS",
+    "samples": 600,
+    "rmsMm": 0.006583489565586009,
+    "maxAbsMm": 0.03186297917528691,
+    "maxInverseXyResidualMm": 1.4238583238573986e-14
+  },
+  "commonDomain": {
+    "scope": "Intersection of control-net XY bounds, with projected inverse residual checked at every sample; includes extrapolation outside the scanned region",
+    "inverseXyToleranceMm": 0.00001,
+    "maxInverseXyResidualMm": 9.120106647678277e-12,
+    "min": [-3.405958652496, -37.81879615783],
+    "max": [-0.04079938307404518, -35.772239685058594],
+    "samples": 289,
+    "maxAbsZDifferenceMm": 0.04350237034515203,
+    "rmsZDifferenceMm": 0.007512013768687687,
+    "normalSamples": 289,
+    "minimumNormalDot": 0.9731316333729886,
+    "maximumNormalAngleDegrees": 13.311760256620706
+  },
+  "scanforgeKernelThickeningOfNativeSurface": {
+    "scope": "ScanForge kernel on actual native fit; not a native QuickSurface thicken result",
+    "thicknessMm": -0.1,
+    "report": {
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 15.059736029491646,
+      "signedVolumeMm3": 0.6985898570432448,
+      "volumeMm3": 0.6985898570432448,
+      "topologyVisits": 80
+    }
+  },
+  "scannedTriangleCentroids": {
+    "scope": "200 source-triangle XY centroids; reported alongside the full rectangular domain, not substituted for it",
+    "samples": 200,
+    "inverseXyToleranceMm": 0.00001,
+    "maxInverseXyResidualMm": 8.69043802726737e-12,
+    "maxAbsZDifferenceMm": 0.01355066324344989,
+    "rmsZDifferenceMm": 0.004344839309236202,
+    "minimumNormalDot": 0.9981137992602004,
+    "maximumNormalAngleDegrees": 3.519653197362887
+  },
+  "cleanup": {
+    "remainingKernelHandles": 0,
+    "sourceUnchanged": true
+  }
+}

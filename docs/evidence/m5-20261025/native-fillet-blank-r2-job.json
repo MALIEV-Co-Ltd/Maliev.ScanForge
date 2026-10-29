@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "exitCode": 0,
+  "activeAfter": 0,
+  "activeZeroObserved": true,
+  "ownedProcessExitObserved": true,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "closedHandles": {
+    "thread": true,
+    "process": true,
+    "job": true,
+    "mutex": true
+  },
+  "elapsedSecondsBeforeReceipt": 54.550867800000105,
+  "peakJobBytes": 699273216,
+  "totalProcesses": 4,
+  "errors": [],
+  "cleanupErrors": [],
+  "jobLimitBytes": 4294967296,
+  "jobCpuRate": 2500
+}

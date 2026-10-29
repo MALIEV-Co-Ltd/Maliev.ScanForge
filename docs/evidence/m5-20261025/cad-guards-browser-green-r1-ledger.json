@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "scope": "Existing integrated CAD guards cover GUI/public-MCP loft, sweep, revolve, Booleans, split, fillet, chamfer, shell and extrusion plus fitting, control edits and exact restoration. This run has no positive GUI pattern case; that verification gap remains open.",
+  "artifactDirectory": ".resources/surface-fit/be535215-66ba-4de7-9e2e-11d72e9620bc/",
+  "hashManifest": "cad-guards-browser-green-r1-files.json",
+  "observedWrapperExitCode": 0,
+  "terminalObservationSource": "Coordinator reported actual wrapper terminal 0 and all cleanup; runner records browser exit 0 and preview closure.",
+  "elapsedSecondsBeforeReceipt": 23.40493309998419,
+  "peakJobBytes": 2652192768,
+  "totalProcesses": 41,
+  "activeAfter": 0,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "previewPort5206Closed": true,
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "browserErrors": [],
+  "allRedEvidenceRetained": true,
+  "positiveGuiCurvedPatternVerified": false,
+  "remainingGates": [
+    "Positive GUI and public-MCP curved-cylinder pattern parity and source preservation",
+    "Native interoperability and procedural equivalence",
+    "Integrated hosted CI"
+  ]
+}

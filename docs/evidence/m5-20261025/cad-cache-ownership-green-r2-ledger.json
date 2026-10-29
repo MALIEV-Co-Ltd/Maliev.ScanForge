@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "scope": "Focused actual CAD worker datum/pattern source and reader ownership regression only. Full standard CAD, 338 placement goldens, browser matrix and integrated checks remain pending.",
+  "workerSha256": "7d83eab37ddde8df19e4a736d0732447cb6eb06576938324aa1a0b887365b297",
+  "command": "node --max-old-space-size=768 tests/cad-cache-ownership-kernel.mjs",
+  "receipt": "cad-cache-ownership-green-r2-job.json",
+  "receiptSha256": "7dfff6d01c78175e9c8890bd3321d971f3fc850e22f94c9e15342af5af33b990",
+  "log": "cad-cache-ownership-green-r2.log",
+  "logSha256": "0acc77b7f0f5b9b96688a9060470373e1a039e5136d7a74a755a82c4031890e7",
+  "receiptStatus": "provisional",
+  "observedWrapperExitCode": 0,
+  "observedWrapperSeconds": 1.1688,
+  "terminalObservationSource": "Coordinator explicitly reported wrapper exit 0 after receipt, active-zero and cleanup confirmation.",
+  "elapsedSecondsBeforeReceipt": 1.02394640003331,
+  "peakJobBytes": 481775616,
+  "totalProcesses": 2,
+  "activeAfter": 0,
+  "activeZeroObserved": true,
+  "ownedProcessExitObserved": true,
+  "cleanupConfirmed": true,
+  "mutexReleased": true,
+  "closedHandles": {
+    "thread": true,
+    "process": true,
+    "job": true,
+    "mutex": true
+  },
+  "errors": [],
+  "cleanupErrors": [],
+  "checks": {
+    "sourceRawBrepAndPublishedBuffersExact": true,
+    "datumIsPartnerRetained": true,
+    "ownedPatternFirstInstance": true,
+    "alignmentReaderAndFaceRangesMatchInitial": true,
+    "displayEqualsInitialReader": false,
+    "independentExactProperties": true,
+    "publishedBrepReconstruction": true,
+    "missingPreparedTriangulationRejectedSafely": true,
+    "releasedAllHandles": true
+  },
+  "displayBaselineInterpretation": "The initial display Nodes and alignment D1 reader differ before the operations. This observation is not a failed preservation check. Subsequent reader buffers and face ranges must match their initial reader snapshot exactly; source published buffers and BREP have separate exact fences.",
+  "redEvidencePreserved": [
+    "cad-cache-ownership-red-r1-ledger.json",
+    "cad-cache-stage-isolation-red-r1-ledger.json",
+    "datum-pattern-cache-consumer-red.json"
+  ]
+}

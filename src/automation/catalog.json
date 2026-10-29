@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1â€“10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10â€“100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -1609,6 +1609,36 @@
     }
   },
   {
+    "name": "cad_inspect",
+    "description": "Inspect saved exact CAD in an isolated temporary kernel without changing model/history or the live modeling kernel. Returns units:mm, BRepCheck validity, unique solid/shell/face/edge/vertex counts, analytic areaMm2, signedVolumeMm3 and absolute volumeMm3 (zero for surfaces), plus topologyVisits. Bounds: 64 MiB UTF-8 BREP, 200000 topology visits and the existing 90-second kernel lease. Cancellation/failure disposes only the diagnostic worker. Validity is the kernel BRepCheck result, not a global self-intersection or native application equivalence certificate.",
+    "readOnly": true,
+    "job": true,
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "edgeOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200000,
+          "description": "Request an edge-reference page starting at this zero-based index. If either paging field is supplied, omitted edgeOffset is 0 and omitted edgeLimit is 32. Omit both to preserve the summary-only response."
+        },
+        "edgeLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128,
+          "description": "Maximum edge references in the requested page. References include treatment index, curve kind/type, degeneracy, parameter-order endpoints, tolerance-inclusive kernel bounds and analytic lengthMm. The response adds inspectedRevision; rebuilds invalidate prior references."
+        },
+        "entityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": ["entityId"],
+      "additionalProperties": false
+    }
+  },
+  {
     "name": "cad_create",
     "description": "Create exact CAD from a validated recipe. Dependency refs use featureId/output from project_get; use cad_bind for imported exact bodies. Edge/face indices are valid only at expectedRevision. Analytic sketch-curves and legacy sketch extrusion recipes join exactly equal local UV endpoints in the derived wire even when point IDs differ; authored IDs, constraints and recipe graphs remain unchanged. Real gaps are not snapped, and zero-length edges, branches and disconnected cycles are rejected.",
     "readOnly": false,
@@ -1832,7 +1862,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1, validated by validateSketch"
+                          "description": "Sketch v1, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         },
                         "chordTolerance": {
                           "type": "number",
@@ -1851,7 +1881,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
                       "required": ["kind", "sketch"],
@@ -1864,6 +1894,21 @@
                 }
               },
               "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sketchSurface"]
+                },
+                "sketch": {
+                  "type": "object",
+                  "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
+                }
+              },
+              "required": ["kind", "sketch"],
               "additionalProperties": false
             },
             {
@@ -2500,6 +2545,82 @@
                 }
               },
               "required": ["kind", "sources", "tolerance"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "description": "Split exact source faces with CAD cutters and retain the regions nearest explicit world-mm points. Returns exact surface geometry; use split for solid-volume cutting.",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["trimSurfaces"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "cutters": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 16,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "featureId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "description": "Feature ID from project_get; never a worker handle"
+                      },
+                      "output": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": ["featureId"],
+                    "additionalProperties": false
+                  }
+                },
+                "keepPoints": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "items": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    }
+                  }
+                },
+                "toleranceMm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000,
+                  "default": 0.1,
+                  "description": "Maximum retained-point distance from an exact resulting surface, in millimetres. Boundary ties reject."
+                }
+              },
+              "required": ["kind", "source", "cutters", "keepPoints"],
               "additionalProperties": false
             }
           ]
@@ -2763,7 +2884,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1, validated by validateSketch"
+                          "description": "Sketch v1, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         },
                         "chordTolerance": {
                           "type": "number",
@@ -2782,7 +2903,7 @@
                         },
                         "sketch": {
                           "type": "object",
-                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch"
+                          "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
                       "required": ["kind", "sketch"],
@@ -2795,6 +2916,21 @@
                 }
               },
               "required": ["kind", "profile", "height"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["sketchSurface"]
+                },
+                "sketch": {
+                  "type": "object",
+                  "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
+                }
+              },
+              "required": ["kind", "sketch"],
               "additionalProperties": false
             },
             {
@@ -3432,6 +3568,82 @@
               },
               "required": ["kind", "sources", "tolerance"],
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "description": "Split exact source faces with CAD cutters and retain the regions nearest explicit world-mm points. Returns exact surface geometry; use split for solid-volume cutting.",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["trimSurfaces"]
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "featureId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "description": "Feature ID from project_get; never a worker handle"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": ["featureId"],
+                  "additionalProperties": false
+                },
+                "cutters": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 16,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "featureId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
+                        "description": "Feature ID from project_get; never a worker handle"
+                      },
+                      "output": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": ["featureId"],
+                    "additionalProperties": false
+                  }
+                },
+                "keepPoints": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "items": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": -1000000000,
+                      "maximum": 1000000000
+                    }
+                  }
+                },
+                "toleranceMm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000,
+                  "default": 0.1,
+                  "description": "Maximum retained-point distance from an exact resulting surface, in millimetres. Boundary ties reject."
+                }
+              },
+              "required": ["kind", "source", "cutters", "keepPoints"],
+              "additionalProperties": false
             }
           ]
         },
@@ -3636,7 +3848,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside Â±1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3712,7 +3924,7 @@
   },
   {
     "name": "surface_set",
-    "description": "Create/update a validated rational NURBS control grid, weights and knots; exact CAD edits require rebuilding.",
+    "description": "Create/update a validated rational NURBS control grid, weights and knots; optional scanId retains its source mesh/point-cloud association. Exact CAD edits require rebuilding.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3720,6 +3932,12 @@
       "properties": {
         "patch": {
           "type": "object"
+        },
+        "scanId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Existing mesh or point-cloud source; omitted updates retain the prior association."
         },
         "entityId": {
           "type": "string",
@@ -4454,8 +4672,8 @@
                   "type": "array",
                   "items": {
                     "type": "number",
-                    "minimum": -1000000000000.0,
-                    "maximum": 1000000000000.0
+                    "minimum": -1000000000000,
+                    "maximum": 1000000000000
                   },
                   "minItems": 3,
                   "maxItems": 3
@@ -4464,8 +4682,8 @@
                   "type": "array",
                   "items": {
                     "type": "number",
-                    "minimum": -1000000000000.0,
-                    "maximum": 1000000000000.0
+                    "minimum": -1000000000000,
+                    "maximum": 1000000000000
                   },
                   "minItems": 3,
                   "maxItems": 3
@@ -4749,7 +4967,7 @@
   },
   {
     "name": "surface_operation",
-    "description": "Use editor NURBS helpers: grid, ordered quad import, knot insertion, crease preparation, scan control snapping or compatible C0/C1 joining.",
+    "description": "Use shared editor NURBS helpers on mesh patches or exact authored surface targets: grid, ordered quad import, knot insertion, crease preparation, scan control snapping, compatible C0/C1 joining or transition-surface blending. Exact edits use the ordinary guarded dependent rebuild and return rebuiltFeatureIds/cleanupFailures. Snap defaults to the associated scan, or the target display geometry. Join/blend accept exactly one workspace referenceId or bounded referencePatch and required boundary/continuity options. Join changes the target and returns changed control indices. Blend creates a NEW independently editable exact surface recipe through ordinary CAD creation, preserves both sources and target selection, and returns entityId/featureId/representation:exactCad/options/referenceSource. Optional name names the new transition. Compatible seam degree/count/normalized knots must match; C0 is linear and C1 matches normalized transverse homogeneous derivatives. Invalid generated weights/native faces reject. No persistent seam/source dependency, general CAD-edge blend, G2 or native-reference equivalence is promised.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -4757,7 +4975,15 @@
       "properties": {
         "operation": {
           "type": "string",
-          "enum": ["grid", "quadImport", "knot", "crease", "snap", "join"]
+          "enum": [
+            "grid",
+            "quadImport",
+            "knot",
+            "crease",
+            "snap",
+            "join",
+            "blend"
+          ]
         },
         "entityId": {
           "type": "string",
@@ -4828,7 +5054,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200,
-          "description": ""
+          "description": "Fixed workspace NURBS reference for operation:join or blend. Must differ from the target; exact joins reject downstream references, while blend reads their snapshot. Locked references are readable."
         },
         "options": {
           "type": "object",
@@ -4861,6 +5087,91 @@
           "minLength": 1,
           "maxLength": 200,
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
+        },
+        "referencePatch": {
+          "type": "object",
+          "description": "Fixed compatible NURBS reference value for operation:join or blend. Supply exactly one of referencePatch or referenceId. Target must be an unlocked mesh patch or an unlocked exact authored surface recipe; no persistent seam dependency is created. Blend materializes a separate exact surface and leaves both inputs unchanged.",
+          "properties": {
+            "format": {
+              "type": "string",
+              "enum": ["scanforge-nurbs"]
+            },
+            "version": {
+              "type": "integer",
+              "enum": [1]
+            },
+            "countU": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "countV": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 16
+            },
+            "degreeU": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "degreeV": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "knotsU": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 22
+            },
+            "knotsV": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 22
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "minItems": 4,
+              "maxItems": 256
+            },
+            "weights": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "minItems": 4,
+              "maxItems": 256
+            }
+          },
+          "required": [
+            "format",
+            "version",
+            "countU",
+            "countV",
+            "degreeU",
+            "degreeV",
+            "knotsU",
+            "knotsV",
+            "points",
+            "weights"
+          ],
+          "additionalProperties": false
         }
       },
       "required": ["operation", "expectedRevision", "requestId"],
@@ -5043,7 +5354,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. sketchSurface opens Surface from sketch for the active saved/current editable draft independently of object selection; create geometry with ordinary cad_create sketchSurface recipe. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2–32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5105,6 +5416,7 @@
             "sewSurfaces",
             "shell",
             "surfaceThicken",
+            "sketchSurface",
             "splitSolid",
             "circularPattern",
             "linearPattern",
@@ -5115,7 +5427,8 @@
             "fit",
             "pointNoise",
             "pointReduce",
-            "objectColor"
+            "objectColor",
+            "trimSurfaces"
           ]
         },
         "mode": {
@@ -6779,7 +7092,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview Global Fine Align for 2–32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
     "readOnly": false,
     "job": true,
     "inputSchema": {

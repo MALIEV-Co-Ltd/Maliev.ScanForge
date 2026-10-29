@@ -991,10 +991,10 @@ The recovered geometric gate rejects landmarks lying on a line or clustered too 
 | Scan processing          | `mesh_process`: polygon/noise reduction, scale, winding flip, repolygonize, average, mirror, unroll; repair, smoothing, decimation, segmentation; paired/ICP/global registration; scan components, eligible hole fill, boundary processing, defeature and split |
 | Region operations        | Connected selection, morphology and scan section extraction through `mesh_process`; `selectionOnly` uses the selection on the specified selected object                                                                                                         |
 | Analysis                 | Mesh topology, primitive fitting, sections, signed primitive deviations, distance/angle/radius/diameter measurements                                                                                                                                            |
-| Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                                                   |
+| Exact CAD                | `cad_create` recipes: primitives, BREP, extrude, sketchSurface planar face, revolve, loft, sweep, NURBS face, compatible closed patches, patterns, mirror, transform, booleans, split, fillet/chamfer, offset, sewing, shell and thicken                        |
 | Parametric edits         | `cad_rebuild`, persistent feature/output references, dependency validation and rollback                                                                                                                                                                         |
-| Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit extrusion of solved profiles                                                                                                                |
-| NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, C0/C1 joins and shell diagnostics; exact face/closed-patch conversion through recipes                                               |
+| Sketches                 | Read/write active Sketch v1, solve constraints, create/activate/rename/delete saved sketches; sketch recipes permit exact planar faces and extrusion of solved profiles                                                                                         |
+| NURBS                    | Control grids, weights/degrees/knots, projected scan fit; grid creation, quad OBJ import, knot/crease operations, snapping, compatible C0/C1 joins/transition surfaces and shell diagnostics; exact face/closed-patch conversion through recipes                |
 | History and interaction  | Modeling undo/redo and timeline seeking, standard camera views/fit, display/theme/grid settings                                                                                                                                                                 |
 | Files and execution      | Local artifact upload/download, project/scan/CAD import, project/STL/STEP export, job status/cancel                                                                                                                                                             |
 
@@ -1007,6 +1007,189 @@ Full Sketch and NurbsPatch wire structures are shown below. Existing domain vali
 Sketch v1 contains `version:1`, `points:[{id,x,y}]`, `segments:[{id,a,b,construction?}]`, optional `arcs:[{id,a,b,center,clockwise,construction?}]`, and `constraints`. Constraint kinds include fixed, coincident, horizontal, vertical, distance, horizontalDistance, verticalDistance, radius, tangent, parallel, perpendicular, equal and angle. Inspect an existing sketch or the source `src/sketch.ts` for each constraint's fields. Optional `frame` defines its position and orientation; frame definitions live in `src/sketch-frame.ts`.
 
 NurbsPatch contains `format:"scanforge-nurbs"`, `version:1`, `countU`, `countV`, `degreeU`, `degreeV`, `knotsU`, `knotsV`, row-major `points:[[x,y,z],...]`, and `weights`. Surface fitting takes `options:{countU,countV,degree?,projection:"xy"|"xz"|"yz",sampleLimit}`. Knots and weights must satisfy the existing rational surface validator.
+
+`surface_set` also accepts optional `scanId`, the ID of an existing mesh or
+point-cloud source. `surface_get` returns that association as `scanId`; omitted
+updates retain it. Missing sources and CAD sources fail before publication. The
+GUI's freeform control-grid editor uses this same revision/retry guarded write;
+each accepted edit adds one model-history step. Exact parametric CAD faces still
+use `cad_rebuild` with a `surface` recipe. Mesh patch edits through `surface_set`
+or `surface_operation` invalidate derived normals, edges, fitted-plane and scan
+count caches while retaining the editable patch and source association. These
+caches must be recomputed from the edited geometry.
+
+Join compatible patches with `surface_operation` using `entityId`,
+`operation:"join"`, exactly one of `referenceId` or `referencePatch`, and
+`options:{referenceEdge:"u1",targetEdge:"u0",continuity:"C1",reverse:false}`.
+Boundaries are `u0`, `u1`, `v0` or `v1`; continuity is `C0` or `C1`.
+The target may be a mesh patch or exact CAD authored by a `surface` recipe.
+Raw references use the NurbsPatch structure above, bounded to 2–16 controls per
+direction and degrees 1–5. Seam degree, control count and normalized knots must
+match. The reference stays fixed; locked workspace references remain readable.
+Self-reference and exact-target downstream references reject before rebuilding.
+Target and affected dependent locks also reject without publication.
+
+The result includes `entityId`, `representation`, applied `options`,
+`referenceSource` and `changedControlIndices`. Exact joins also return
+`rebuiltFeatureIds` and `cleanupFailures` from the ordinary atomic CAD rebuild path.
+One accepted join adds one model-history step; identical request retries reuse
+the result. Use `job_cancel` to cancel. The GUI's NURBS surface panel submits this
+same operation and exposes its owned cancellation outside the busy panel.
+The joined patch is materialized, with no persistent seam dependency. C1 matches
+transverse homogeneous derivatives in normalized parameters; it is not a general
+surface blend or a native-reference equivalence claim.
+
+Create a separate compatible transition with the same `surface_operation`
+reference/options contract and `operation:"blend"`; optional `name` names the
+new surface. The existing target must be an unlocked mesh patch or unlocked
+exact authored `surface` target. Both sources, their metadata and native/BREP
+handles stay unchanged, and the current target selection is retained. Locked
+references are readable, including a snapshot of a feature downstream from the
+target; blend does not rebuild either source. Self-reference is rejected.
+
+Blend returns `entityId`, `featureId`, `representation:"exactCad"`, applied
+`options` (including default `reverse:false`) and `referenceSource` as either
+`{kind:"entity",entityId}` or `{kind:"patch"}`. Use `surface_get` to inspect the
+new control net and `cad_inspect` for exact diagnostics. The new entity has an
+independent editable `surface` recipe. Later source edits do not update its seams.
+One accepted blend adds one model-history step; identical request retries reuse
+the same job receipt. Native failure, cancellation or stale revision prevents
+publication and retires newly created handles while retaining source/history
+handles. Cancel the owned operation with `job_cancel`.
+
+The supported bridge uses source coordinates in millimetres, compatible seam
+degree/control count/normalized knots and the same 2–16 controls/degree 1–5
+limits. C0 creates a linear transverse patch; C1 creates a cubic homogeneous
+Hermite patch matching outward reference and inward target derivatives in
+normalized parameters. `reverse:true` reverses reference seam order. Invalid
+generated rational weights and invalid native faces reject. This materialized
+transition has no persistent seam/source constraint and does not provide general
+CAD-edge blends, G2 continuity or native-reference equivalence.
+
+`surface_operation` also accepts exact authored `surface` targets for `grid`,
+`quadImport`, `knot`, `crease` and `snap`, using the same dependent rebuild path.
+Grid/quad control counts are bounded by the surface validator to 2–16 per axis,
+with degrees 1–5. Quad import reads an uploaded ordered OBJ artifact; refinement
+uses `axis:"u"|"v"` and a normalized interior `parameter`, with optional knot
+`repetitions`. Snap takes the control `index` and optional `scanId`. Omission
+reads the associated source if present, otherwise the target's display geometry,
+matching the panel. Explicit missing IDs reject. External downstream CAD snap
+sources reject before native work so the rebuild cannot change the read source;
+own-display snapping remains available. GUI snapping submits this same job and
+awaits publication with an owned cancel control. Other GUI control edits use the
+same pure surface helpers followed by `surface_set` or `cad_rebuild`. Exact
+results include `rebuiltFeatureIds` and `cleanupFailures`; all edits retain the
+editable recipe, BREP, dependency locks and one-commit history semantics.
+
+If a modeling job reports **CAD operation exceeded 90 seconds; kernel reset**,
+its worker and native handles have been retired. Saved BREP, display geometry
+and model history remain in the workspace. Export `format:"project"`, then
+reopen that artifact with `project_import` and `replace:true` to restore exact
+handles before further modeling or STEP export. GUI recovery uses Save project
+and Open that `.scanforge` file. Preserve unsaved work with that project export;
+do not replace the scene with a display-mesh export. The bounded browser timeout
+test verifies project reopen, exact validity and subsequent GUI STEP export.
+
+Use read-only job `cad_inspect` with `{entityId}` to inspect the object's saved
+exact BREP. Poll `job_get`; `job_cancel` stops its separate diagnostic worker.
+The Properties panel's **Inspect exact CAD** button calls this same operation.
+It returns `units:"mm"`, BRepCheck `valid`, unique `solids`, `shells`, `faces`,
+`edges`, `vertices`, analytic `areaMm2`, `signedVolumeMm3`, absolute `volumeMm3`,
+and `topologyVisits`. Surface-only objects have zero solids and volume. Negative
+signed volume remains visible instead of being silently reoriented. This is a
+kernel validity report, not a global self-intersection or native-reference
+equivalence certificate. Compare properties and topology after exact exchange;
+display mesh counts and volume estimates are separate observations.
+
+Trim exact surfaces with `cad_create` (or edit with `cad_rebuild`) using
+`recipe:{kind:"trimSurfaces",source:{featureId,output:0},cutters:[{featureId,output:0}],keepPoints:[[-2,0,0]],toleranceMm:0.1}`.
+The source and cutters must resolve to exact CAD. The Surfacing **Trim surfaces**
+panel uses this same recipe; its point picker records world coordinates in mm.
+Keep points choose the nearest unique split face region within the tolerance.
+Use multiple points to retain multiple regions. Output is one exact surface
+compound; this operation does not create solid caps. Inputs remain unchanged.
+Use `hideInputs` and `selectCreated` on `cad_create` for presentation options.
+
+Limits are 1–16 distinct cutters, 1–128 finite keep points, positive tolerance up
+to 1,000,000 mm, 4,096 source faces, 4,096 total cutter faces, 1,000,000 face
+pairs, 16,384 output regions and 65,536 region/point queries. Ambiguous points
+on cut boundaries, off-surface points and nonintersecting cutters fail without
+committing history. Source/cutter dependencies rebuild atomically; world points
+that no longer identify a region must be corrected. Cancellation uses `job_cancel`.
+The GUI also cancels pending picking/work when its panel closes. Projects retain
+the editable recipe and exact BREP; STEP retains the exact trimmed shape.
+
+GUI recipe-based CAD creation, Boolean, revolve, split and parametric rebuilding
+submit the same `cad_create`/`cad_rebuild` jobs used by agents. Inspect them with
+`session_get`, poll `job_get` and cancel with `job_cancel`. Their revision fences,
+validation, late-result cleanup and one-commit history are shared. `hideInputs`
+hides only referenced feature outputs, preserving unused siblings from a split.
+A split's ordered output 0 is named `<name> inside` and output 1 `<name> outside`.
+Boolean union/subtract/intersection and both split makers use private deep copies
+of exact inputs. Repeated operations preserve live source and earlier-result
+BREP, including native p-curve and triangulation metadata. Split's two outputs
+have separate maker inputs, and a failed split publishes neither output. These
+ownership guarantees use the same worker for GUI and MCP recipes; no extra
+binding, parameter or command is required.
+Fillet/chamfer and hollow shell likewise use private input copies before edge or
+face enumeration. Successful and rejected native operations preserve live source
+and previous-result BREP. Public indices and validity errors retain their
+existing meaning; source preservation does not imply that an otherwise rejected
+edge treatment is supported.
+Several CAD ribbon commands remain gated pending full workflow verification;
+experimental panel access is not evidence that their ordinary ribbon entry or
+native-reference behavior is accepted.
+
+Generic GUI CAD creation and parametric rebuilding, including polygon/sketch
+extrusion and revolve, provide **Cancel CAD operation** outside the busy tool
+panel. It requests cancellation of that GUI-started shared job. Agents use the
+same `job_cancel` operation, then poll `job_get` until terminal and `session_get`
+until the busy lane is released; native work and late-handle cleanup may still
+be settling after a cancellation request. Output selection on successful creation
+does not cancel the job. GUI extrusion retains its 95-second observation lease
+and CAD's 90-second native-operation limit remains unchanged. The existing
+sketch-surface, blend and export controls keep their own job owners. This generic
+cancel control does not cover the inherited Construct primitive direct path,
+whose M4 integration audit is separate.
+
+`command_get`/`command_run` ribbon launchers now share the visible ribbon's
+verification, source-selection and busy gates. A disabled experimental ribbon
+entry is no longer advertised as an available command. The underlying shared
+modeling tools remain discoverable independently. Loft, sweep, polygon extrusion,
+revolve, Boolean, solid split and shell have matched ordinary ribbon/public-MCP
+workflow receipts. Fillet/chamfer use the exact edge discovery described below.
+
+For edge treatment, call `cad_inspect` with `{entityId,edgeOffset:0,edgeLimit:32}`.
+Supplying either paging field requests `edgeReferences:{offset,total,nextOffset,items}`
+and `inspectedRevision`; omitted offset is 0 and omitted limit is 32. Limits are
+offset 0–200,000 and 1–128 items per page. Omit both fields to retain the existing
+summary-only result. Each item has treatment `index`, curve `kind`/numeric
+`curveType`, `degenerate`, analytic `lengthMm`, and available `endpoints` and
+`boundsMm:{min,max}`. Endpoints follow curve parameter order, not topological
+orientation; a closed curve can have equal endpoints. Bounds include kernel
+tolerance. Degenerate edges retain indices but have kind `degenerate`, null
+curve type, zero length and no editable curve endpoints.
+
+Use discovered indices in the existing `edges` recipe with `operation:"fillet"`
+or `"chamfer"`, positive `amount` in mm and the source feature/output reference.
+Pass the report's `inspectedRevision` as `expectedRevision`. Rebuilds invalidate
+references; re-inspect instead of replacing the old revision with the current
+one. GUI Fillet/Chamfer use these same paged references, show curve geometry and
+retain the inspected revision through Apply. Both ordinary ribbon entries now
+have matched GUI/public-MCP discovery and modeling receipts. Owned CAD inspection
+and trim cancellation stays reachable outside the busy tool panel and uses the
+existing job cancellation path, preserving the live modeling kernel.
+
+Inspection admits up to 64 MiB of UTF-8 BREP and 200,000 topology visits. Its
+kernel has the existing 90-second timeout. Invalid BREP, missing exact geometry,
+resource exhaustion and changed revision fail without modifying model/history.
+Failure, timeout and cancellation dispose only the inspection worker; the live
+modeling kernel and Undo-owned handles remain intact.
+
+CAD import and modeling results pass BRepCheck before display tessellation or
+native-handle publication. Invalid topology/geometry fails with the same repair
+message through GUI and MCP, preserving the current model and history. Maker
+completion or a renderable mesh alone is insufficient for exact CAD acceptance.
 
 Surface fitting additionally accepts `method:"projected-grid"|"approximate"`.
 Omitting it preserves projected-grid behavior. Approximate uses the recovered
@@ -1087,6 +1270,16 @@ Alignment `parallel` defaults to true. Large scan streams (at least 1,048,576 ve
 Identity frames take the native early no-op path: no coordinate buffers or CPU workers are created, the model and history remain unchanged, and bounds reporting stays cancellable. The shared result identifies this as `identity transform`.
 
 Coordinate alignment results also return `cadMatrix`, the recovered exact-CAD placement matrix. It can differ slightly from the scan `matrix` because the original CAD path normalizes and orthogonalizes its axis frame. Exact CAD targets use OpenCascade axis-frame placement through the same GUI/MCP Preview and Apply operations, with a byte-exact matrix check before presentation. Scan targets continue to use `matrix`. CAD results retain exact BRep topology and rebuild display geometry; fitted centers/directions and scalar parameters are preserved through verified native primitive handlers; stale authoring recipes and display-facet selections are cleared. Each CAD target reports `execution.backend: "OpenCascade"` and `copyGeometry: false`. Preview replacement, discard, failure and cancellation release temporary CAD handles; Apply preserves both committed source and result for Undo/Redo. Identity alignment produces no new shape or history entry. The broad ribbon Align workflow remains gated independently.
+
+Exact CAD placement keeps its native shared-topology identity while reading
+already prepared face triangulations through each face's world placement. It
+validates an owned geometry copy so native analyzer flags do not change shared
+source faces. It does not remesh shared source or retained-result caches. A missing prepared
+triangulation fails safely; recreate or reimport that body before retrying.
+Body patterns own their first instance's geometry and mesh, preserving live
+source buffers and alignment-reader triangle slots during compound meshing.
+Existing alignment/CAD operations expose this behavior without new parameters;
+command availability and the remaining native controller gates are unchanged.
 
 The coordinate-alignment panel exposes an explicit **Objects to move** list when several eligible objects exist. It calls the same `alignment_preview` / `alignment_apply` contract with the checked `entityIds` (maximum 32). Meshes, point clouds and exact CAD bodies can share one frame and one history transaction; locked and unsupported targets are excluded. Changing targets invalidates the preview. An empty or unavailable target set disables Preview/Apply. If a later target fails, previously prepared CAD handles are released and every committed object remains unchanged. Explicit targeting is distinct from the original automatic model-selection policy, which remains under investigation.
 
@@ -1823,6 +2016,103 @@ tessellation does not certify a closed or valid exact CAD solid.
 Use `cad_create` with `recipe:{kind:"extrude",profile:{kind:"sketch-curves",sketch:<Sketch v1>},height:10}` and the usual revision/request fields. The sketch must solve into one closed unbranched line/arc cycle; construction geometry is excluded. Height is positive millimetres, at most one billion. The optional sketch frame places the profile and defines its extrusion normal. Circular arcs remain exact CAD curves; no `chordTolerance` is accepted for this profile kind. Invalid topology, inconsistent radii, unsolved constraints and intersecting profiles fail before a body is committed. Inspect the job receipt and `project_get`; use `cad_rebuild` with the same recipe kind to edit the feature. Both the GUI's solved-profile extrusion and MCP call the shared `cad_create` operation, with existing cancellation, revision, retry and model-history behavior.
 
 Existing `profile:{kind:"sketch",sketch:...,chordTolerance:...}` recipes retain their sampled polygon geometry on rebuild. Use `sketch-curves` explicitly to migrate a legacy feature to analytic curves. The sketch panel's arc preview tolerance affects drawing only. CAD meshes remain tessellated for display. Exact-cylinder volume and STEP round-trip checks establish kernel correctness; native workflow equivalence remains unverified.
+
+### Exact planar surfaces from sketches
+
+In the GUI, select a saved sketch or use the current editable sketch, then choose
+**Surfacing → From 2D sketch → Create surface**. Object selection is not required;
+selecting a saved sketch clears it. The dedicated **Surface from sketch** panel
+follows a different saved sketch selected while it is open. It submits one cloned
+snapshot through the same `cad_create` job and selects the completed face without
+adding a sketch-authoring edit. Empty or construction-only sketches are unavailable;
+invalid nonempty profiles receive the shared CAD validation error. **Cancel sketch
+surface** remains reachable while the inspector is busy. Closing the panel or
+changing its source cancels its owned work; publication's output selection is not
+a sketch-source change. Agents can inspect the same admission with `command_get`
+for `ribbon:surface2dSketch`, open it through `command_run` / `command_repeat` or
+`ui_set` with `workspace:"sketchSurface"`, and create geometry directly with the
+recipe below. For the resulting face, use **Object properties → Parametric feature
+recipe → Rebuild feature and dependents** or ordinary `cad_rebuild`; analytic
+sketch faces do not have a freeform control grid.
+
+Use `cad_create` with `recipe:{kind:"sketchSurface",sketch:<Sketch v1>}`,
+`name`, the current `expectedRevision` and a fresh `requestId`. Read the active
+editable sketch with `sketch_get` and embed its full snapshot, including optional
+frame, constraints and scan reference. The shared evaluator solves a copy and
+requires convergence before forming one exact planar face from the ordered
+nonconstruction line/arc cycle. Underconstrained sketches are allowed when they
+converge. Circular arcs remain analytic; no height or chord tolerance is accepted.
+
+The profile must have 2–10,000 edges and nonzero analytic area. Open profiles,
+branches, disconnected cycles/holes, zero-length edges, inconsistent radii,
+invalid frames and invalid native faces reject without a model edit. Coordinates
+must be finite and within the existing one-billion-millimetre local/world limits;
+frames must be orthonormal and right-handed. Reference samples alone do not form
+an editable profile. Exactly equal UV endpoints join in the derived wire without
+changing authored point IDs; real gaps are not snapped or silently closed.
+
+CAD sketch consumers (`sketchSurface` and both extrusion sketch profiles) admit
+new/replacement submissions before detailed sketch validation, and every actual
+solve before solver work: at most 128 authored
+points, 256 explicit constraints, 10,000 stored segments/arcs, 512 scalar residual
+rows and 65,536 dense normal-matrix cells. Unused points and construction curves
+count. Every stored arc adds an implicit radius row; fixed/coincident/collinear
+relations add two, symmetric line pairs add four, symmetric arc pairs add six,
+and other constraints add one. Exceeding a count or the 250,000,000 estimated
+work-unit budget fails the CAD job before solver/native acquisition without
+changing authoring or history. Reduce the embedded sketch's points, construction
+curves or relations and submit a fresh request after reviewing its revision.
+
+For `N=2*pointCount` and `R=residualRows`, the estimate is
+`N*N*R + 4*N*R + N*N`, plus
+`100*(2*N*N*N + N*N*R + 4*N*R)` when `R>0`. Residual-free sketches skip the
+iterative charge because the solver loop cannot run; final Jacobian/copy work
+is still counted. This is a conservative CAD admission estimate, not an elapsed
+time or process-memory guarantee. Global sketch authoring/solve behavior and
+native profile limits are unchanged.
+
+Stored recipes are structurally validated separately from execution admission.
+An older oversized sketch recipe can reopen with its retained exact BREP and
+display geometry, bind into the feature model, and remain cached while unrelated
+features are edited. Reading or restoring that geometry does not solve the sketch.
+Explicit `cad_create`/`cad_rebuild` submissions still require admission, including
+an identical replacement of a cached recipe. A changed or forced feature and any
+feature that actually reaches the evaluator must also pass the limits. To modify
+an oversized cached sketch feature, reduce its embedded input before rebuilding;
+retained exact shape inspection/export does not require solving it.
+
+Poll `job_get`. Success returns the ordinary `{entityIds,featureId}` and adds one
+model-history step, preserving the source scan and sketch authoring. Optional
+`selectCreated:true` selects the face before success; the default preserves
+selection. `object_get` exposes `parametric.feature.recipe` with the full embedded
+snapshot. Change that snapshot explicitly through `cad_rebuild` to edit the face
+and rebuild its dependents. Later saved-sketch edits do not change an existing
+face automatically, and the scan reference is metadata rather than a feature
+dependency. Rebuild locks, revision/retry protection, cancellation via `job_cancel`,
+late-handle cleanup, Undo/Redo and project persistence use the ordinary CAD path.
+
+To continue to a solid, create a `thicken` recipe with
+`source:{featureId:<face featureId>,output:0}` and finite nonzero `thickness` in
+millimetres, then use exact STEP export. Inspect the result with `cad_inspect`;
+the face's analytic area and zero solid count are separate from display-mesh
+measurements. Kernel checks do not establish native application equivalence.
+
+An exact sketch surface's face normal follows its embedded `frame.normal`,
+independent of line/arc traversal direction. For these planar faces, positive
+`thickness` extends along that normal and negative thickness extends opposite
+it. Ordinary `thicken` preserves the source BREP and returns an outward-oriented
+closed solid. A result that cannot enclose a finite orientable volume fails
+before publication; reduce thickness or repair the source face and retry with
+fresh revision/request fields. Curved faces use their local surface orientation
+and do not acquire a global sketch-plane normal.
+
+For a single exact FACE with analytic Plane support, thickening constructs the
+equivalent canonical prism along that signed face normal. A reversed FACE flips
+the direction, and inner wires remain holes. This preserves usable exact
+supports for subsequent fillet/chamfer; requested edge indices, treatment amounts
+and native validity checks are unchanged. Curved thickening and hollow shell
+retain their existing algorithms. The same `thicken` recipe through GUI or MCP
+uses this shared worker path; existing saved BREP is retained until rebuilding.
 
 ### Symmetry and atomic sketch solving
 

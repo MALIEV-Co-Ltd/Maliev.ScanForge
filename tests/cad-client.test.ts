@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CadClient } from "../src/cad/client";
 import { coordinateSketchFrame } from "../src/sketch-frame";
+import type { SketchProfileEdge } from "../src/sketch";
+import type { KernelMesh } from "../src/types";
 class WorkerDouble {
   static instances: WorkerDouble[] = [];
   messages: { id: number; operation: string; payload: unknown }[] = [];
@@ -39,6 +41,75 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("CAD worker ownership and cancellation", () => {
+  it("requests an exact sketch face with analytic edges and its frame", async () => {
+    const client = new CadClient();
+    const edges: SketchProfileEdge[] = [
+      {
+        kind: "arc",
+        start: [2, 0],
+        end: [-2, 0],
+        center: [0, 0],
+        clockwise: false,
+      },
+      { kind: "line", start: [-2, 0], end: [2, 0] },
+    ];
+    const frame = coordinateSketchFrame("OYZ", 7);
+    const pending: Promise<KernelMesh> = client.sketchSurface(edges, frame);
+    await vi.advanceTimersByTimeAsync(0);
+    const worker = WorkerDouble.instances[0];
+    expect(worker.messages[0]).toMatchObject({
+      operation: "sketchSurface",
+      payload: { edges, frame },
+    });
+    expect(worker.messages[0].payload).not.toHaveProperty("height");
+    const result: KernelMesh = {
+      kernelId: "sketch-face",
+      positions: [7, 2, 0, 7, -2, 0, 7, 0, 2],
+      normals: [1, 0, 0, 1, 0, 0, 1, 0, 0],
+      edgePositions: [7, 2, 0, 7, -2, 0],
+      brep: "exact analytic face",
+    };
+    worker.reply(result);
+    await expect(pending).resolves.toEqual(result);
+    const defaultFrame = client.sketchSurface(edges);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(worker.messages[1]).toMatchObject({
+      operation: "sketchSurface",
+      payload: { edges, frame: undefined },
+    });
+    worker.reply(result);
+    await expect(defaultFrame).resolves.toEqual(result);
+    client.dispose();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("rejects an invalid sketch surface frame before creating a worker", () => {
+    const client = new CadClient();
+    const frame = coordinateSketchFrame("OXY", 0);
+    expect(() =>
+      client.sketchSurface([], { ...frame, normal: [0, 0, -1] }),
+    ).toThrow(/right-handed/);
+    expect(WorkerDouble.instances).toHaveLength(0);
+    expect(vi.getTimerCount()).toBe(0);
+    client.dispose();
+  });
+  it("cancels active and queued sketch surfaces and ignores the late result", async () => {
+    const client = new CadClient();
+    const first = client.sketchSurface([]);
+    const queued = client.sketchSurface([]);
+    const firstCheck = expect(first).rejects.toThrow(/reset/);
+    const queuedCheck = expect(queued).rejects.toThrow(/cancelled/);
+    await vi.advanceTimersByTimeAsync(0);
+    const worker = WorkerDouble.instances[0];
+    expect(worker.messages).toHaveLength(1);
+    client.reset();
+    worker.reply({ kernelId: "late-face", positions: [], brep: "late" });
+    await firstCheck;
+    await queuedCheck;
+    expect(worker.terminated).toBe(true);
+    expect(worker.messages).toHaveLength(1);
+    expect(vi.getTimerCount()).toBe(0);
+    client.dispose();
+  });
   it("routes import progress without completing the request or clearing its timeout", async () => {
     const client = new CadClient();
     const progress = vi.fn();
@@ -76,6 +147,7 @@ describe("CAD worker ownership and cancellation", () => {
       [0, 2],
     ];
     const cases: [() => Promise<unknown>, string, unknown][] = [
+      [() => client.inspectBrep("BREP"), "inspectBrep", { brep: "BREP" }],
       [
         () =>
           client.transformDatum(

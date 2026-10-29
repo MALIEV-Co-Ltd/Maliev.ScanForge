@@ -1,0 +1,190 @@
+{
+  "owner": "surface-fit-browser",
+  "applicationOrigin": "http://127.0.0.1:5206",
+  "expiresAt": "2026-10-26T11:18:04.596Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "pid": 57380,
+      "startedAt": "2026-10-26T11:15:04.1098162Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "port-reservation",
+      "port": 57308,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 64992,
+      "startedAt": "2026-10-26T11:15:04.9675978Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "mcp-server",
+      "port": 57308,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 56720,
+      "startedAt": "2026-10-26T11:15:05.5305556Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "kind": "browser",
+      "persistentData": false
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "cad-cancellation-test-cleanup",
+      "jobId": "95f6f7c4-8a52-478c-9741-83bc6b76e450",
+      "scope": "Public MCP cancellation of this helper's held GUI job"
+    },
+    {
+      "kind": "cad-cancellation-red-cleanup-proof",
+      "jobId": "95f6f7c4-8a52-478c-9741-83bc6b76e450",
+      "proof": {
+        "created": [
+          {
+            "requestId": 3,
+            "operation": "loft",
+            "kernelId": "cad-f43ae18a-e232-49f0-b8a8-f61a751fecfd-3"
+          }
+        ],
+        "releaseAcknowledgements": [
+          {
+            "requestId": 4,
+            "kernelIds": ["cad-f43ae18a-e232-49f0-b8a8-f61a751fecfd-3"],
+            "result": true
+          }
+        ]
+      },
+      "sourcesAndHistoryPreserved": true,
+      "scope": "Test cleanup through existing MCP job_cancel, not a GUI owned-cancel pass"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 64992,
+      "originalStart": "2026-10-26T11:15:04.9675978Z",
+      "absent": true
+    },
+    {
+      "kind": "browser",
+      "pid": 56720,
+      "originalStart": "2026-10-26T11:15:05.5305556Z",
+      "absent": true
+    },
+    {
+      "port": 57308,
+      "closed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "guiLaunch": "actual Surfacing ribbon Fit surface entry and Apply/Analysis/OK buttons",
+      "hiddenState": "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
+      "requestedTriangles": 288,
+      "fittedTriangles": 287,
+      "selectedIds": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+        57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+        93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+        109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+        137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150,
+        151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+        165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+        179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+        221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+        235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+        249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+        263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287
+      ],
+      "sourceId": "9420f276-2f59-44a6-990d-642a8b340494",
+      "guiId": "5f4ff9aa-5722-4fdd-8e7e-38b79d60a8b9",
+      "mcpId": "8309bbe3-3df3-451a-a5b3-8dfe91cf1a67",
+      "options": {
+        "countU": 4,
+        "countV": 4,
+        "degree": 3,
+        "projection": "xy",
+        "sampleLimit": 10000
+      },
+      "previewNoCommit": true,
+      "guiOneHistoryStep": true,
+      "mcpOneHistoryStep": true,
+      "exactPatchEquality": true,
+      "exactRenderGeometryEquality": true,
+      "sourceGeometryPreserved": true,
+      "mcpResult": {
+        "entityId": "8309bbe3-3df3-451a-a5b3-8dfe91cf1a67",
+        "samples": 861,
+        "rms": 1.2518105224974623e-14,
+        "maxError": 1.0302869668521453e-13,
+        "projection": "xy",
+        "solverBytes": 22968
+      },
+      "limitations": [
+        "Hidden-selected filtering is checked by GUI region count and the MCP fit sample count; the planar fixture does not prove behavior on unrestricted surfaces.",
+        "Authored planar fixture establishes GUI/MCP refactor equality, not native numerical parity, unrestricted input sizes or point-cloud browser behavior."
+      ]
+    },
+    {
+      "controlEdit": "GUI Z control and public surface_set",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true
+    },
+    {
+      "exactSurface": "GUI control edit and public cad_rebuild",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true,
+      "stepExport": 5997,
+      "projectReopenExactCad": true
+    },
+    {
+      "exactInspectionGuiMcpEquality": true,
+      "unchangedRevision": true,
+      "report": {
+        "entityId": "4d258b6a-6a49-4b91-9d40-c649f977676e",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 148.67578360074663,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      }
+    },
+    {
+      "genericCadCancellationAdmission": {
+        "command": "cad_create",
+        "jobId": "95f6f7c4-8a52-478c-9741-83bc6b76e450",
+        "heldWorkerOperation": "loft",
+        "ownedCancelButtons": 0,
+        "sourceEntityIds": ["9420f276-2f59-44a6-990d-642a8b340494"],
+        "scope": "GUI job admission observation; cancellation and cleanup assertions follow"
+      }
+    }
+  ],
+  "runner": {
+    "pid": 57380,
+    "startedAt": "2026-10-26T11:15:04.1098162Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "fixture": {
+    "provenance": "Authored planar binary STL, not native application output",
+    "planarFacets": 288,
+    "outlierFacets": 1,
+    "bytes": 14534
+  },
+  "existingApplicationPreserved": true,
+  "finishedAt": "2026-10-26T11:15:12.018Z",
+  "passed": false,
+  "error": "GUI-started cad_create must expose one reachable owned Cancel CAD operation button\n\n0 !== 1\n"
+}

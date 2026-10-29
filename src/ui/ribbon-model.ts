@@ -44,6 +44,7 @@ export const RIBBON_ACTION_IDS = [
   "autoColorize",
   "fitSurface",
   "nurbsSurface",
+  "surface2dSketch",
   "newFreeform",
   "autoFreeform",
   "quadObj",
@@ -72,6 +73,7 @@ export const RIBBON_ACTION_IDS = [
   "sewSurfaces",
   "shell",
   "surfaceThicken",
+  "trimSurfaces",
   "splitSolid",
   "circularPattern",
   "linearPattern",
@@ -387,7 +389,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("nurbsSurface", "NURBS surface", "surface"),
         tool("loft", "Loft", "surface"),
         planned("fillSurface", "Fill surface", "surface"),
-        planned("surface2dSketch", "From 2D sketch", "surface"),
+        tool("surface2dSketch", "From 2D sketch", "surface"),
         tool("sweep", "Sweep", "surface"),
         planned("pipe", "Pipe", "cylinder"),
         planned("sketch3d", "3D sketch", "curve"),
@@ -399,6 +401,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         planned("duplicateFace", "Duplicate face", "surface"),
         tool("surfaceOffset", "Offset", "surface"),
         tool("surfaceThicken", "Thicken", "extrude"),
+        tool("trimSurfaces", "Trim surfaces", "surface", true),
         planned("extendSurface", "Extend surface", "surface"),
         tool("sewSurfaces", "Sew surfaces", "boolean"),
         planned("projectSketch", "Project sketch", "curve"),
@@ -533,6 +536,7 @@ export interface RibbonState {
   globalAlignmentError?: string | null;
   disabled: boolean;
   hasSelection: boolean;
+  hasSketchSurfaceSource?: boolean;
   canUndo: boolean;
   canRedo: boolean;
 }
@@ -561,6 +565,11 @@ export function ribbonToolAvailability(
     return {
       available: false,
       reason: "Wait for the current operation to finish",
+    };
+  if (tool.action === "surface2dSketch" && !state.hasSketchSurfaceSource)
+    return {
+      available: false,
+      reason: "Create or select an editable sketch profile first",
     };
   if (tool.action === "alignNPoints" && !state.landmarkSourceId)
     return {
@@ -606,4 +615,16 @@ export function ribbonToolAvailability(
   if (tool.action === "redo" && !state.canRedo)
     return { available: false, reason: "Nothing to redo" };
   return { available: true, reason: tool.label };
+}
+
+/** Agent launchers and the visible ribbon share verification and selection gates. */
+export function ribbonCommandAvailability(
+  name: string,
+  state: RibbonState,
+  actions: RibbonActions,
+): { available: boolean; reason: string } {
+  const tool = getRibbonToolMetadata(name);
+  return tool
+    ? ribbonToolAvailability(tool, state, actions)
+    : { available: false, reason: "Not implemented yet" };
 }

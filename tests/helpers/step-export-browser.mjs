@@ -172,11 +172,20 @@ export async function replayStepExport({
     assert(
       Math.abs(areaMm2 - 600) < 1e-6 && Math.abs(signedVolumeMm3 - 1000) < 1e-6,
     );
+    const exact = await job(
+      await call("cad_inspect", { entityId: reopened.id }),
+    );
+    assert(exact.valid && exact.solids === 1 && exact.faces === 6);
+    assert(
+      Math.abs(exact.areaMm2 - 600) < 1e-6 &&
+        Math.abs(exact.volumeMm3 - 1000) < 1e-6,
+    );
     const report = {
       exactCad: reopened.exactCad,
       areaMm2,
       signedVolumeMm3,
       triangles: positions.length / 9,
+      exact,
     };
     roundTrips.push(report);
     await mutate("object_update", {

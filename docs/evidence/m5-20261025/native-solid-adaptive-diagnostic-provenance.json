@@ -1,0 +1,14 @@
+{
+  "scope": "Private mass-integration diagnostic only; production inspector unchanged; requested epsilon is not a measured accuracy guarantee",
+  "nativeSolidSha256": "6e2a1ded4afd3b644b4cb64675d9b9f6bebfbfb9097eb327c14a70feedfabdbe",
+  "baseWorkerSha256": "be0ea2096358dbaba7b09ceb0ea1746b8699c332c61a26ab6f4fb9a29ce1c9d8",
+  "privateWorkerSha256": "bb11756bce70d492dfc1f4089decc19c5cbbf46d0c8c0c24b59c5967c1786ca3",
+  "helperSha256": "225da9e959f2ed228da2863d27d8b504a4fe1e2f1c8d0ec73bb765f56bdd0a88",
+  "changes": [
+    "SurfaceProperties_1(shape, area, true, false) -> SurfaceProperties2(shape, area, 1e-9, true)",
+    "VolumeProperties_1(shape, volume, true, true, false) -> VolumeProperties2(shape, volume, 1e-9, true, true)"
+  ],
+  "fixtureGeometryChanged": false,
+  "productionChanged": false,
+  "nativeEquivalenceEstablished": false
+}

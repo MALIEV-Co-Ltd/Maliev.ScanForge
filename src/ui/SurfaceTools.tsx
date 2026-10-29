@@ -5,28 +5,40 @@ import {
   createGridPatch,
   editControlPoint,
   importQuadGridObj,
-  joinPatchBoundary,
   insertPatchKnot,
   preparePatchCrease,
   parsePatch,
   serializePatch,
-  snapControlPoint,
   tessellatePatch,
   type NurbsPatch,
   type SurfaceFitOptions,
   type PatchEdge,
   type PatchAxis,
+  type PatchJoinOptions,
   createBoxPatchShell,
   assemblePatchShell,
   type PatchShellResult,
 } from "../surfaces";
 import { fitGridSurfaceAsync } from "../surface-client";
+import { CadJobCancel } from "./CadJobCancel";
 
 export interface SurfaceToolsProps {
   selectionId?: string;
   scan?: Positions;
   patch?: NurbsPatch;
   onPatchChange: (patch: NurbsPatch) => void;
+  onJoin: (
+    reference: NurbsPatch,
+    options: PatchJoinOptions,
+    signal: AbortSignal,
+  ) => Promise<unknown>;
+  onBlend: (
+    reference: NurbsPatch,
+    options: PatchJoinOptions,
+    signal: AbortSignal,
+  ) => Promise<unknown>;
+  onSnap: (index: number, signal: AbortSignal) => Promise<unknown>;
+  active?: boolean;
   onCreateMesh: (positions: Float32Array, name: string) => void;
   onExportPatch: (json: string) => void;
   onError?: (message: string) => void;
@@ -41,6 +53,10 @@ export function SurfaceTools({
   scan,
   patch,
   onPatchChange,
+  onJoin,
+  onBlend,
+  onSnap,
+  active = true,
   onCreateMesh,
   onExportPatch,
   onError,
@@ -49,6 +65,17 @@ export function SurfaceTools({
   onCreateClosedCad,
 }: SurfaceToolsProps) {
   const fitting = useRef<AbortController | null>(null);
+  const joining = useRef<AbortController | null>(null);
+  const [joinBusy, setJoinBusy] = useState(false);
+  const [cancelLabel, setCancelLabel] = useState("Cancel surface join");
+  useEffect(() => {
+    setJoinBusy(false);
+    return () => {
+      const run = joining.current;
+      joining.current = null;
+      run?.abort();
+    };
+  }, [selectionId, active]);
   const busyCallback = useRef(onBusyChange);
   busyCallback.current = onBusyChange;
   const [fitBusy, setFitBusy] = useState(false);
@@ -118,6 +145,65 @@ export function SurfaceTools({
       onError?.(text);
     }
   };
+  async function edit(
+    task: (signal: AbortSignal) => Promise<unknown>,
+    pending: string,
+    success: string,
+    cancel: string,
+  ) {
+    if (joinBusy || !active) return;
+    const controller = new AbortController();
+    joining.current = controller;
+    setJoinBusy(true);
+    setCancelLabel(cancel);
+    setMessage(pending);
+    try {
+      await task(controller.signal);
+      if (!controller.signal.aborted) setMessage(success);
+    } catch (error) {
+      if (controller.signal.aborted) {
+        if (joining.current === controller)
+          setMessage("Surface edit cancellation requested.");
+      } else {
+        const text = error instanceof Error ? error.message : String(error);
+        setMessage(text);
+        onError?.(text);
+      }
+    } finally {
+      if (joining.current === controller) {
+        joining.current = null;
+        setJoinBusy(false);
+      }
+    }
+  }
+  async function join() {
+    if (!referencePatch || !patch) return;
+    await edit(
+      (signal) =>
+        onJoin(
+          referencePatch,
+          { referenceEdge, targetEdge, continuity, reverse: reverseSeam },
+          signal,
+        ),
+      "Joining compatible patch boundaries…",
+      `${continuity} boundary applied to active patch. Reference remains fixed.`,
+      "Cancel surface join",
+    );
+  }
+  async function blend() {
+    if (!referencePatch || !patch) return;
+    await edit(
+      (signal) =>
+        onBlend(
+          referencePatch,
+          { referenceEdge, targetEdge, continuity, reverse: reverseSeam },
+          signal,
+        ),
+      "Creating compatible transition surface…",
+      `${continuity} transition surface created. Both input patches remain fixed.`,
+      "Cancel surface blend",
+    );
+  }
   const fitScan = async () => {
     if (!scan?.length || fitting.current) return;
     const controller = new AbortController();
@@ -192,7 +278,7 @@ export function SurfaceTools({
           Cancel surface fit
         </button>
       )}
-      <fieldset disabled={disabled || fitBusy}>
+      <fieldset disabled={disabled || fitBusy || joinBusy}>
         {number("U controls", u, setU, 2, 16)}
         {number("V controls", v, setV, 2, 16)}
         {number("Degree", degree, setDegree, 1, 5)}
@@ -291,8 +377,11 @@ export function SurfaceTools({
             <button
               disabled={!scan?.length}
               onClick={() =>
-                run(() =>
-                  onPatchChange(snapControlPoint(patch, controlIndex, scan!)),
+                void edit(
+                  (signal) => onSnap(controlIndex, signal),
+                  "Snapping control point to source…",
+                  "Control point snapped to source.",
+                  "Cancel surface snap",
                 )
               }
             >
@@ -443,6 +532,7 @@ export function SurfaceTools({
                   Fixed reference boundary
                   <AppSelect
                     value={referenceEdge}
+                    aria-label="Fixed reference boundary"
                     onChange={(event) =>
                       setReferenceEdge(event.target.value as PatchEdge)
                     }
@@ -458,6 +548,7 @@ export function SurfaceTools({
                   Active patch boundary
                   <AppSelect
                     value={targetEdge}
+                    aria-label="Active patch boundary"
                     onChange={(event) =>
                       setTargetEdge(event.target.value as PatchEdge)
                     }
@@ -473,6 +564,7 @@ export function SurfaceTools({
                   Continuity
                   <AppSelect
                     value={continuity}
+                    aria-label="Join continuity"
                     onChange={(event) =>
                       setContinuity(event.target.value as "C0" | "C1")
                     }
@@ -492,23 +584,21 @@ export function SurfaceTools({
                   Reverse reference seam direction
                 </label>
                 <button
-                  onClick={() =>
-                    run(() => {
-                      onPatchChange(
-                        joinPatchBoundary(referencePatch, patch, {
-                          referenceEdge,
-                          targetEdge,
-                          continuity,
-                          reverse: reverseSeam,
-                        }),
-                      );
-                      setMessage(
-                        `${continuity} boundary applied to active patch. Reference remains fixed.`,
-                      );
-                    })
-                  }
+                  disabled={disabled || joinBusy}
+                  onClick={() => void join()}
                 >
                   Apply boundary join
+                </button>
+                <p className="muted">
+                  Create an independently editable exact transition surface
+                  between these compatible boundaries. Both input patches stay
+                  fixed; later edits do not maintain their seams.
+                </p>
+                <button
+                  disabled={disabled || joinBusy}
+                  onClick={() => void blend()}
+                >
+                  Create transition surface
                 </button>
                 <button
                   onClick={() =>
@@ -755,6 +845,12 @@ export function SurfaceTools({
           </>
         )}
       </fieldset>
+      {joinBusy && active && (
+        <CadJobCancel
+          label={cancelLabel}
+          onCancel={() => joining.current?.abort()}
+        />
+      )}
       <p role="status">{message}</p>
     </section>
   );

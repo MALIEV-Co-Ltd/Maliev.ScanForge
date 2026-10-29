@@ -1,0 +1,183 @@
+Shared bounded validation mutex acquired (wait status 0).
+Starting affected-gui-api
+
+ RUN  v5.0.3 C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge
+
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves cached legacy extrusion BREP and display buffers while creating and rebuilding an unrelated face 48ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketchSurface solver input before solving or mutating shared model/authoring 2ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketch-curves solver input before solving or mutating shared model/authoring 2ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rejects oversized sketch solver input before solving or mutating shared model/authoring 2ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > creates one retry-safe model edit and preserves sketch/scan (selectCreated=true) 3ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > creates one retry-safe model edit and preserves sketch/scan (selectCreated=false) 4ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > creates one retry-safe model edit and preserves sketch/scan (selectCreated=undefined) 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > rebuilds an explicit embedded snapshot and preserves previous outputs and authoring through undo/redo 31ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves ordinary downstream thicken dependencies when the embedded profile is rebuilt 46ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > keeps request/revision and locked feature guards before native acquisition 16ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves source, authoring, history and revision after conflict failure 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves source, authoring, history and revision after open failure 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves source, authoring, history and revision after frame failure 1ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > preserves source, authoring, history and revision after native failure 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > releases a late native face after cancel while preserving source/history 16ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > releases a late native face after stale while preserving source/history 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > releases only newly owned output when model publication fails 15ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > retires a cancelled late rebuild while retaining the face referenced by model history 31ms
+ ✓ tests/sketch-surface-api.test.ts > shared sketch surface CAD API > advertises the same editable sketchSurface contract in both recipe schemas and discovery 3ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > retains cached legacy CAD sketch recipes through project reopen and model binding without solving 39ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketchSurface CAD sketch solving 44ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketch-curves CAD sketch solving 33ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > admits solver work before sketch CAD sketch solving 27ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > preserves admissible sketchSurface CAD solver boundaries including residual-free sketches 33ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > preserves admissible sketch-curves CAD solver boundaries including residual-free sketches 27ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > preserves admissible sketch CAD solver boundaries including residual-free sketches 26ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > retains a cloned full snapshot with no feature dependency on the scan or saved sketch 2ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > passes exact arcs and placement to the typed face operation without chord conversion 1ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > keeps mixed analytic profiles and excludes construction curves 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > solves centrally without publishing solved coordinates into authored input 1ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects unconverged constraints before native acquisition and preserves authoring 1ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects open profiles without silently closing or changing authored curves 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects branch profiles without silently closing or changing authored curves 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects disconnected profiles without silently closing or changing authored curves 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects radius profiles without silently closing or changing authored curves 1ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects reference-only profiles without silently closing or changing authored curves 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > validates malformed sketches and frame invariants before native evaluation 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects extraneous recipe options {"chordTolerance":0.1} 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects extraneous recipe options {"height":2} 0ms
+ ✓ tests/parametric-sketch-surface.test.ts > editable analytic sketch surface recipes > rejects extraneous recipe options {"source":{"featureId":"saved-sketch"}} 0ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > exposes verified coordinate and fine alignment while retaining the separate coordinate-system gate 2ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > blocks every unverified and planned command even with a supplied callback 5ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > renders the verified point-pair entry disabled without a resolved source 17ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > never promotes an unknown command just because it has an implementation 0ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > covers additional screenshot commands in their matching tabs 1ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > renders disabled buttons and status icons on every tab without visible status labels 49ms
+ ✓ tests/ribbon-verification.test.tsx > ribbon verification gate > keeps option menus usable while independently gating their commands 6ms
+ ✓ tests/ribbon-verification.test.tsx > renders From 2D sketch using the sketch source gate with no selected object 8ms
+ ✓ tests/ribbon-verification.test.tsx > renders the reachable section command with its guarded callback 8ms
+ ✓ tests/workflow-operations.test.ts > opens and closes the dedicated sketch surface workspace through MCP 11ms
+ ✓ tests/workflow-operations.test.ts > opens a specific settings category through the shared interface operation 1ms
+ ✓ tests/workflow-operations.test.ts > previews landmarks as a retry-protected cancellable job and accepts through the shared host 2ms
+ ✓ tests/workflow-operations.test.ts > cancels the owning landmark preview job when its preview is discarded 14ms
+ ✓ tests/workflow-operations.test.ts > rejects a stale asynchronous landmark preview before publication 16ms
+ ✓ tests/workflow-operations.test.ts > reports GUI cancellation of an agent landmark preview as cancelled 15ms
+ ✓ tests/workflow-operations.test.ts > opens coordinate alignment through MCP with the shared ribbon defaults and validates targets 1ms
+ ✓ tests/workflow-operations.test.ts > MCP launches and repeats the shared current command with revision, busy and retry guards 1ms
+ ✓ tests/workflow-operations.test.ts > returns ordered history labels compatible with the retained cursor 1ms
+ ✓ tests/workflow-operations.test.ts > sets UI visibility through the shared host and rejects empty settings 0ms
+ ✓ tests/workflow-operations.test.ts > renames without replacing geometry/history and guards stale writes 0ms
+ ✓ tests/workflow-operations.test.ts > validates navigation variants and refuses empty selection frames 1ms
+ ✓ tests/workflow-operations.test.ts > exposes paired normalized surface-orbit coordinates through MCP 1ms
+ ✓ tests/workflow-operations.test.ts > returns an image and readable artifact, recoverable through session metadata 1ms
+ ✓ tests/workflow-operations.test.ts > preserves screenshot failure codes and supports compact tool discovery 1ms
+ ✓ tests/workflow-operations.test.ts > discards a named GUI preview while busy without releasing unrelated work 0ms
+ ✓ tests/workflow-operations.test.ts > discovers nested modeling subcommands and parameters without returning their full schemas 1ms
+ ✓ tests/workflow-operations.test.ts > returns viewport mirror readiness and failure diagnostics through the existing MCP read operation 0ms
+ ✓ tests/workflow-operations.test.ts > exposes constrained orbit, rectangle zoom, and window-tool cancellation through MCP 1ms
+ ✓ tests/workflow-operations.test.ts > retains MCP revision and retry protection for navigation settings 1ms
+ ✓ tests/workflow-operations.test.ts > routes MCP camera inspection, control and ray picks to isolated landmark views 1ms
+ ✓ tests/workflow-operations.test.ts > exposes retry-protected landmark layout edits through the existing MCP contract 0ms
+ ✓ tests/workflow-operations.test.ts > exposes indexed and per-canvas point deselection through MCP 0ms
+ ✓ tests/tool-panel-isolation.test.tsx > isolates the sketch surface panel and keeps closed tools inactive 8ms
+ ✓ tests/tool-panel-isolation.test.tsx > Fine Align renders alignment controls without unrelated mesh commands 3ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > repairMesh includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > segmentMesh includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > smoothMesh includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > decimateMesh includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > fineAlign includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > globalAlignment includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > mesh tool panels > landmarkAlignment includes only its operation 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > loft excludes other CAD operations 3ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > sweep excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > fillet excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > chamfer excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > surfaceOffset excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > sewSurfaces excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > shell excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > surfaceThicken excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > mirrorBody excludes other CAD operations 2ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > splitSolid excludes other CAD operations 4ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > linearPattern excludes other CAD operations 3ms
+ ✓ tests/tool-panel-isolation.test.tsx > CAD tool panels > circularPattern excludes other CAD operations 3ms
+ ✓ tests/tool-panel-isolation.test.tsx > extrude excludes other reconstruction operations 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > revolve excludes other reconstruction operations 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > boolean excludes other reconstruction operations 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > does not mount unrelated shared inspector sections 0ms
+ ✓ tests/tool-panel-isolation.test.tsx > MCP exposes every command-specific workspace 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > point-cloud reduce shows only relevant operations 1ms
+ ✓ tests/tool-panel-isolation.test.tsx > point-cloud noise shows only relevant operations 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > retains an inspected CAD reference revision instead of silently refreshing it 3ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels only the owned cad_create job while its poll is still pending 4ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels only the owned cad_rebuild job while its poll is still pending 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > preserves extrusion's shorter 95-second lease through the shared CAD observer 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > routes the GUI reconstruction branch through the shared application job 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > dispatches only the public reconstruction job with captured revision and request identity 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > omits optional public arguments and leaves reconstruction defaults to the executor 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > reports running and terminal progress without refreshing revision 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > surfaces failed terminal errors without another mutation 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > surfaces cancelled terminal errors without another mutation 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > surfaces submission and polling API errors 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels a running job if its progress callback throws 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > does not submit already aborted work 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels a job when abort raced with its receipt, without polling or publishing 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels during an in-flight poll and removes the abort listener 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > returns authoritative success even if terminal progress triggers abort 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > cancels an in-flight poll at the bounded 15-minute lease 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > keeps ShrinkWrap messages and routes its wrapper through the same lifecycle 0ms
+ ✓ tests/reconstruction-ui-command.test.ts > preserves ShrinkWrap's exact lease message and clears successful abort subscriptions 1ms
+ ✓ tests/reconstruction-ui-command.test.ts > uses a fresh guarded request ID for each submission and ignores caller revision overrides 0ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > requests an exact sketch face with analytic edges and its frame 5ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > rejects an invalid sketch surface frame before creating a worker 1ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > cancels active and queued sketch surfaces and ignores the late result 1ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > routes import progress without completing the request or clearing its timeout 1ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > sends advanced CAD operation contracts without substituting display meshes 2ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > serializes native requests and releases native handles through the protocol 1ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > sends radius/Z revolve profiles and cone parameters through the worker contract 0ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > terminates a timed-out worker and rejects active and queued operations 1ms
+ ✓ tests/cad-client.test.ts > CAD worker ownership and cancellation > dispose rejects pending requests and prevents later worker creation 1ms
+ ✓ tests/ribbon-model.test.ts > opens the verified coordinate Align entry only with a selection and an idle application 1ms
+ ✓ tests/ribbon-model.test.ts > admits a sketch surface from an editable sketch independently of object selection 1ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > keeps Main to common workflows and advanced tools on dedicated tabs 1ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > offers a new document without requiring an object and disables it during an operation 0ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > exposes the requested workflow tabs in order and unique commands in each tab 0ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > groups Main in workflow order and keeps deeper tools in compact options 0ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > never enables an unimplemented operation even if a caller injects a same-name callback 2ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > requires a real registered action and honors selection, busy, and history state 0ms
+ ✓ tests/ribbon-model.test.ts > ribbon command inventory > retains implementation routes without enabling unverified reconstruction 3ms
+ ✓ tests/ribbon-model.test.ts > offers Section to sketch on Main and Sketch with selected idle scan admission 0ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > rejects malformed mesh outputs and cleans newly owned invalid handles 4ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > topologically rebuilds only edited feature descendants and replaces dependency handles 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > propagates a changed dependency reference and supports the second split output 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > validates missing dependencies, cycles, invalid output slots and malformed recipes before evaluation 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > rolls back all newly generated native outputs when a descendant fails and preserves old state 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > cancels after an in-flight operation resolves and releases its generated handles 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > retains history-protected native handles and releases removed features 0ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > reports cleanup failure without losing successful new results or hiding rollback failures 1ms
+ ✓ tests/parametric.test.ts > dependent parametric feature rebuild > uses exact CAD adapter inputs and never releases borrowed handles returned by a faulty evaluator 1ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > validates and routes the explicit curve recipe with its solved frame and exact arcs 5ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > rejects fields that have no analytic meaning: {"chordTolerance":0.1} 0ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > rejects fields that have no analytic meaning: {"extra":true} 0ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > retains the chordal path for legacy sketch recipes 1ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > rejects an invalid curve before acquiring a CAD handle 1ms
+ ✓ tests/parametric-sketch-curves.test.ts > analytic sketch extrusion recipes > rejects conflicting constraints before acquiring a CAD handle 2ms
+ ✓ tests/parametric-entities.test.ts > parametric entity bindings > seeds imported CAD immutably and reuses the output reference 4ms
+ ✓ tests/parametric-entities.test.ts > parametric entity bindings > rejects duplicate outputs, conflicting recipes and incomplete split outputs 1ms
+ ✓ tests/parametric-entities.test.ts > parametric entity bindings > requires restored native handles before rebuild and rejects null bindings 0ms
+ ✓ tests/ribbon-command-availability.test.ts > keeps agent ribbon launch availability equal to the visible tool's verification and busy gates 4ms
+ ✓ tests/ribbon-command-availability.test.ts > discovers the saved sketch surface command without an object and rejects an empty sketch 0ms
+ ✓ tests/ribbon-command-availability.test.ts > does not invent a supported ribbon command for an unknown action 0ms
+ ✓ tests/command-repeat.test.ts > repeats the identity with the latest selection and preserves it across unavailable commands 2ms
+ ✓ tests/command-repeat.test.ts > Space uses the normal editing, modal, busy and held-key guards 2ms
+
+ Test Files  13 passed (13)
+      Tests  162 passed (162)
+   Start at  18:34:09
+   Duration  3.70s (transform 39%, tests 32%, import 28%, worker 2%)
+
+    Isolate  13 workers spawned · ~81ms startup each (spawn + environment, per file)
+             at least ~973ms faster with isolate: false — reuses workers across files instead of one per file
+
+Starting scoped-types
+Starting app-types
+src/automation/global-alignment-operations.ts(417,25): error TS2339: Property 'unref' does not exist on type 'never'.
+src/automation/inspection-operations.ts(106,13): error TS2339: Property 'unref' does not exist on type 'number'.
+src/automation/scan-preview-operations.ts(134,64): error TS2339: Property 'unref' does not exist on type 'never'.
+{"command": ["C:/Program Files/nodejs/node.exe", ".resources/m5/check-cad-cancel-focused.mjs", "green-r1"], "jobLimitBytes": 4294967296, "leaseSeconds": 55, "exitCode": 1, "peakJobBytes": 491008000, "totalProcesses": 23, "activeAfter": 0, "passed": false, "elapsedSeconds": 14.428555299993604}
+Shared bounded validation mutex released after guard cleanup.

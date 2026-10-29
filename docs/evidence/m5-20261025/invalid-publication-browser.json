@@ -1,0 +1,281 @@
+{
+  "owner": "surface-fit-browser",
+  "applicationOrigin": "http://127.0.0.1:5195",
+  "expiresAt": "2026-10-25T16:01:24.958Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "pid": 53092,
+      "startedAt": "2026-10-25T15:58:21.9132988Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "port-reservation",
+      "port": 58774,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 45088,
+      "startedAt": "2026-10-25T15:58:25.3346089Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "kind": "mcp-server",
+      "port": 58774,
+      "bind": "127.0.0.1",
+      "persistentData": false
+    },
+    {
+      "pid": 56292,
+      "startedAt": "2026-10-25T15:58:25.9130201Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "kind": "browser",
+      "persistentData": false
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "mcp-server",
+      "pid": 45088,
+      "originalStart": "2026-10-25T15:58:25.3346089Z",
+      "absent": true
+    },
+    {
+      "kind": "browser",
+      "pid": 56292,
+      "originalStart": "2026-10-25T15:58:25.9130201Z",
+      "absent": true
+    },
+    {
+      "port": 58774,
+      "closed": true
+    }
+  ],
+  "scenarios": [
+    {
+      "guiLaunch": "public command_run ribbon:fitSurface; actual Apply/Analysis/OK buttons",
+      "hiddenState": "one facet hidden through Edit Scan; public selection and both fitting paths exclude it",
+      "requestedTriangles": 288,
+      "fittedTriangles": 287,
+      "selectedIds": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
+        57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74,
+        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
+        93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
+        109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+        123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
+        137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150,
+        151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+        165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+        179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206,
+        207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+        221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234,
+        235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248,
+        249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262,
+        263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276,
+        277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287
+      ],
+      "sourceId": "6665cf65-a3a7-458d-a89a-1168769e01dc",
+      "guiId": "9821bbcb-c83a-4c38-a809-9b5a8e58287f",
+      "mcpId": "dcec1592-ed59-43fd-9ed8-60854150ffe4",
+      "options": {
+        "countU": 4,
+        "countV": 4,
+        "degree": 3,
+        "projection": "xy",
+        "sampleLimit": 10000
+      },
+      "previewNoCommit": true,
+      "guiOneHistoryStep": true,
+      "mcpOneHistoryStep": true,
+      "exactPatchEquality": true,
+      "exactRenderGeometryEquality": true,
+      "sourceGeometryPreserved": true,
+      "mcpResult": {
+        "entityId": "dcec1592-ed59-43fd-9ed8-60854150ffe4",
+        "samples": 861,
+        "rms": 1.2518105224974623e-14,
+        "maxError": 1.0302869668521453e-13,
+        "projection": "xy",
+        "solverBytes": 22968
+      },
+      "limitations": [
+        "Hidden-selected filtering is checked by GUI region count and the MCP fit sample count; the planar fixture does not prove behavior on unrestricted surfaces.",
+        "Authored planar fixture establishes GUI/MCP refactor equality, not native numerical parity, unrestricted input sizes or point-cloud browser behavior."
+      ]
+    },
+    {
+      "controlEdit": "GUI Z control and public surface_set",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true
+    },
+    {
+      "exactSurface": "GUI control edit and public cad_rebuild",
+      "exactRenderGeometryEquality": true,
+      "guiOneHistoryStep": true,
+      "stepExport": 5997,
+      "projectReopenExactCad": true
+    },
+    {
+      "exactInspectionGuiMcpEquality": true,
+      "unchangedRevision": true,
+      "report": {
+        "entityId": "2f362dcf-c823-4940-8b96-5ff8770429df",
+        "units": "mm",
+        "valid": true,
+        "solids": 0,
+        "shells": 1,
+        "faces": 1,
+        "edges": 4,
+        "vertices": 4,
+        "areaMm2": 148.67578360074663,
+        "signedVolumeMm3": 0,
+        "volumeMm3": 0,
+        "topologyVisits": 14
+      }
+    },
+    {
+      "realInput": {
+        "name": "scan-1.stl",
+        "bytes": 13657034,
+        "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+      },
+      "selectedFacets": 200,
+      "guiMcpPatchEquality": true,
+      "fit": {
+        "entityId": "f5a224b4-8ea6-4d9f-a2be-db2a58a2f28d",
+        "samples": 600,
+        "rms": 0.24469684494336,
+        "maxError": 0.8491197149648428,
+        "projection": "xy",
+        "solverBytes": 16704
+      },
+      "exactFace": true,
+      "thickenedRegionGuiMcpEquality": true,
+      "solidReport": {
+        "entityId": "6ee2d8f1-0465-43d4-a640-15bada2d600e",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 156773.02271710781,
+        "signedVolumeMm3": 7849.205500441478,
+        "volumeMm3": 7849.205500441478,
+        "topologyVisits": 80
+      },
+      "stepReport": {
+        "entityId": "e62866bd-4769-40b8-a8ee-a1500a3ae532",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 156773.022717127,
+        "signedVolumeMm3": 7849.205500443527,
+        "volumeMm3": 7849.205500443527,
+        "topologyVisits": 80
+      },
+      "projectReport": {
+        "entityId": "6ee2d8f1-0465-43d4-a640-15bada2d600e",
+        "units": "mm",
+        "valid": true,
+        "solids": 1,
+        "shells": 1,
+        "faces": 6,
+        "edges": 12,
+        "vertices": 8,
+        "areaMm2": 156773.02271710781,
+        "signedVolumeMm3": 7849.205500441478,
+        "volumeMm3": 7849.205500441478,
+        "topologyVisits": 80
+      },
+      "exchangeTolerance": {
+        "relative": 1e-8,
+        "absolute": 0.000001
+      },
+      "sourceDigestPreservedAfterReopen": true,
+      "sourceDigest": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "rawBytes": 9833004,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "rawBytes": 3277668,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "rawBytes": 1672056,
+          "sha256": "4255bf2ca5d7858dc617629e8e93a06710705c99ae9bd891c77deeaa217e01f8"
+        }
+      ],
+      "regionDigest": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 1800,
+          "rawBytes": 7200,
+          "sha256": "780cfc65f8073d7905254466b1f32422a4e9003234bdac7a506ba5b79d52cd5c"
+        }
+      ],
+      "nativeFiles": [
+        {
+          "filename": "real-region-input.stl",
+          "bytes": 10084,
+          "sha256": "355b571639f517717c485ebf883365466a7bda42694514e64f3715af9b44e0ad"
+        },
+        {
+          "filename": "real-region-solid.step",
+          "bytes": 117847,
+          "sha256": "ade308e452e39ea70df29f9120f942d82da2e44c39c87d144c4e970b2982733c"
+        }
+      ],
+      "commonNativeInputRefitEquality": true,
+      "limitation": "A selected real scan region with kernel validity and exchange checks; not whole-part reconstruction, a global self-intersection certificate or native application parity."
+    },
+    {
+      "invalidBrepRejectedBeforePublication": true,
+      "guiMcpSameFailure": true,
+      "unchangedRevisionAndHistory": true,
+      "liveKernelHandlesPreserved": true,
+      "fixtureSha256": "a80669795c5bbf836e159d9234cec7b5c2e80a29d5f270d492d1a75826e55f8b"
+    }
+  ],
+  "runner": {
+    "pid": 53092,
+    "startedAt": "2026-10-25T15:58:21.9132988Z",
+    "executable": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "fixture": {
+    "provenance": "Authored planar binary STL, not native application output",
+    "planarFacets": 288,
+    "outlierFacets": 1,
+    "bytes": 14534
+  },
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "browserErrors": [],
+  "existingApplicationPreserved": true,
+  "finishedAt": "2026-10-25T15:58:57.518Z",
+  "passed": true
+}

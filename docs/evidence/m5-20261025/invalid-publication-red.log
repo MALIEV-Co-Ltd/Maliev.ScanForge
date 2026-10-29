@@ -1,0 +1,21 @@
+
+> scanforge@0.1.0 test:cad
+> node --max-old-space-size=768 tests/kernel-smoke.mjs
+
+{"nativeCadAlignmentFaces":24,"nativeCadAlignmentBoxes":3,"nativeCachedCylinders":3,"exactFloat32Normals":true,"brepPreserved":true,"cacheReused":true}
+CAD datum parity: 338 native matrices, shared exact topology, display bounds and handle releases passed.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Missing expected rejection.
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/kernel-smoke.mjs:833:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: /invalid/i,
+  operator: 'rejects',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

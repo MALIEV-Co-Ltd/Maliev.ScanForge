@@ -527,11 +527,31 @@ function register(oc, shape, onProgress = () => {}, preparedPartner) {
   try {
     if (shape.IsNull())
       throw new Error("CAD operation returned an empty shape.");
+    const reusePreparedTriangulation =
+      !!preparedPartner && shape.IsPartner(preparedPartner);
+    let validationCopy, validationShape, checker;
+    try {
+      // Analyzer updates native face flags. Datum results share their source's
+      // topology, so validate owned geometry without touching that live partner.
+      if (reusePreparedTriangulation) {
+        validationCopy = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
+        validationShape = validationCopy.Shape();
+      }
+      checker = new oc.BRepCheck_Analyzer(validationShape ?? shape, true);
+      if (!checker.IsValid_2())
+        throw new Error(
+          "CAD shape has invalid topology or geometry. Repair the input or change the operation parameters.",
+        );
+    } finally {
+      checker?.delete();
+      validationShape?.delete();
+      validationCopy?.delete();
+    }
     const { positions, normals, edgePositions, planeFrame } = mesh(
       oc,
       shape,
       onProgress,
-      !!preparedPartner && shape.IsPartner(preparedPartner),
+      reusePreparedTriangulation,
     );
     const kernelId = `cad-${sessionId}-${++nextShape}`;
     const brep = serializeBrep(oc, shape);
@@ -603,6 +623,381 @@ function importFile(oc, payload, onProgress = () => {}) {
   } finally {
     cleanup(handles);
     if (oc.FS.analyzePath(path).exists) oc.FS.unlink(path);
+  }
+}
+
+function inspectCadEdge(oc, shape, index) {
+  const handles = [];
+  const keep = (handle) => (handles.push(handle), handle);
+  const coordinates = (point, bounded = true) => {
+    const value = [point.X(), point.Y(), point.Z()];
+    if (
+      !value.every(
+        (v) => Number.isFinite(v) && (!bounded || Math.abs(v) <= 1e9),
+      )
+    )
+      throw Error(
+        "CAD edge reference coordinates are outside the supported range.",
+      );
+    return value;
+  };
+  try {
+    const edge = keep(oc.TopoDS.Edge_1(shape));
+    const degenerate = oc.BRep_Tool.Degenerated(edge);
+    const bounds = keep(new oc.Bnd_Box_1());
+    oc.BRepBndLib.Add(edge, bounds, false);
+    const boundsMm = bounds.IsVoid()
+      ? undefined
+      : {
+          min: coordinates(keep(bounds.CornerMin()), false),
+          max: coordinates(keep(bounds.CornerMax()), false),
+        };
+    if (degenerate)
+      return {
+        index,
+        kind: "degenerate",
+        curveType: null,
+        degenerate: true,
+        lengthMm: 0,
+        ...(boundsMm ? { boundsMm } : {}),
+      };
+    const curve = keep(new oc.BRepAdaptor_Curve_2(edge));
+    const curveType = curve.GetType().value;
+    const kinds = [
+      "Line",
+      "Circle",
+      "Ellipse",
+      "Hyperbola",
+      "Parabola",
+      "BezierCurve",
+      "BSplineCurve",
+      "OffsetCurve",
+      "OtherCurve",
+    ];
+    const names = [
+      "line",
+      "circle",
+      "ellipse",
+      "hyperbola",
+      "parabola",
+      "bezier",
+      "bspline",
+      "offset",
+      "other",
+    ];
+    const kind =
+      names[
+        kinds.findIndex(
+          (name) => oc.GeomAbs_CurveType[`GeomAbs_${name}`].value === curveType,
+        )
+      ] ?? "other";
+    const first = curve.FirstParameter(),
+      last = curve.LastParameter();
+    if (![first, last].every(Number.isFinite))
+      throw Error("CAD edge reference has unbounded parameters.");
+    const endpoints = [
+      coordinates(keep(curve.Value(first))),
+      coordinates(keep(curve.Value(last))),
+    ];
+    const properties = keep(new oc.GProp_GProps_1());
+    oc.BRepGProp.LinearProperties(edge, properties, true, false);
+    const lengthMm = properties.Mass();
+    if (!Number.isFinite(lengthMm) || lengthMm < 0)
+      throw Error("CAD edge reference has invalid analytic length.");
+    return {
+      index,
+      kind,
+      curveType,
+      degenerate: false,
+      endpoints,
+      lengthMm,
+      boundsMm,
+    };
+  } finally {
+    cleanup(handles);
+  }
+}
+
+function inspectBrep(oc, input) {
+  const includeEdges =
+    input.edgeOffset !== undefined || input.edgeLimit !== undefined;
+  const edgeOffset = input.edgeOffset ?? 0,
+    edgeLimit = input.edgeLimit ?? 32;
+  if (
+    includeEdges &&
+    (!Number.isInteger(edgeOffset) || edgeOffset < 0 || edgeOffset > 200000)
+  )
+    throw Error("CAD edge offset must be an integer from 0 to 200000.");
+  if (
+    includeEdges &&
+    (!Number.isInteger(edgeLimit) || edgeLimit < 1 || edgeLimit > 128)
+  )
+    throw Error("CAD edge page limit must be an integer from 1 to 128.");
+  const edgeItems = [];
+  if (
+    typeof input.brep !== "string" ||
+    !input.brep.length ||
+    input.brep.length > 64 * 1024 * 1024
+  )
+    throw new Error("CAD inspection requires BREP text up to 64 MiB.");
+  const bytes = new TextEncoder().encode(input.brep);
+  if (bytes.length > 64 * 1024 * 1024)
+    throw new Error("CAD inspection BREP exceeds the 64 MiB resource limit.");
+  const path = "check.brp",
+    handles = [];
+  const keep = (handle) => (handles.push(handle), handle);
+  try {
+    oc.FS.writeFile(path, bytes);
+    const shape = keep(new oc.TopoDS_Shape());
+    const builder = keep(new oc.BRep_Builder());
+    const progress = keep(new oc.Handle_Message_ProgressIndicator_1());
+    if (!oc.BRepTools.Read_2(shape, path, builder, progress) || shape.IsNull())
+      throw new Error("BREP inspection could not read an exact shape.");
+    let visits = 0;
+    const count = (kind) => {
+      const buckets = new Map();
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum[kind],
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      let total = 0;
+      for (; explorer.More(); explorer.Next()) {
+        if (++visits > 200000)
+          throw new Error(
+            "CAD inspection exceeds its 200000 topology-visit resource limit.",
+          );
+        const current = explorer.Current();
+        let retained = false;
+        try {
+          const hash = current.HashCode(2147483647);
+          const bucket = buckets.get(hash) ?? [];
+          if (!bucket.some((prior) => prior.IsSame(current))) {
+            bucket.push(keep(current));
+            retained = true;
+            buckets.set(hash, bucket);
+            if (
+              includeEdges &&
+              kind === "TopAbs_EDGE" &&
+              total >= edgeOffset &&
+              total < edgeOffset + edgeLimit
+            )
+              edgeItems.push(inspectCadEdge(oc, current, total));
+            total++;
+          }
+        } finally {
+          if (!retained) current.delete();
+        }
+      }
+      return total;
+    };
+    const solids = count("TopAbs_SOLID"),
+      shells = count("TopAbs_SHELL"),
+      faces = count("TopAbs_FACE"),
+      edges = count("TopAbs_EDGE"),
+      vertices = count("TopAbs_VERTEX");
+    const checker = keep(new oc.BRepCheck_Analyzer(shape, true));
+    const area = keep(new oc.GProp_GProps_1()),
+      volume = keep(new oc.GProp_GProps_1());
+    oc.BRepGProp.SurfaceProperties_1(shape, area, true, false);
+    if (solids)
+      oc.BRepGProp.VolumeProperties_1(shape, volume, true, true, false);
+    const areaMm2 = area.Mass(),
+      signedVolumeMm3 = solids ? volume.Mass() : 0;
+    if (![areaMm2, signedVolumeMm3].every(Number.isFinite))
+      throw new Error("CAD inspection produced non-finite mass properties.");
+    return {
+      units: "mm",
+      valid: checker.IsValid_2(),
+      solids,
+      shells,
+      faces,
+      edges,
+      vertices,
+      areaMm2,
+      signedVolumeMm3,
+      volumeMm3: Math.abs(signedVolumeMm3),
+      topologyVisits: visits,
+      ...(includeEdges
+        ? {
+            edgeReferences: {
+              offset: edgeOffset,
+              total: edges,
+              nextOffset:
+                edgeOffset + edgeItems.length < edges
+                  ? edgeOffset + edgeItems.length
+                  : null,
+              items: edgeItems,
+            },
+          }
+        : {}),
+    };
+  } finally {
+    cleanup(handles);
+    if (oc.FS.analyzePath(path).exists) oc.FS.unlink(path);
+  }
+}
+
+function trimSurfaces(oc, input) {
+  const tolerance = input.toleranceMm ?? 0.1;
+  if (
+    !Array.isArray(input.cutterIds) ||
+    !input.cutterIds.length ||
+    input.cutterIds.length > 16 ||
+    new Set(input.cutterIds).size !== input.cutterIds.length ||
+    input.cutterIds.includes(input.kernelId)
+  )
+    throw new Error(
+      "Surface trim requires distinct source and cutter objects (at most 16 cutters).",
+    );
+  if (
+    !Array.isArray(input.keepPoints) ||
+    !input.keepPoints.length ||
+    input.keepPoints.length > 128 ||
+    !input.keepPoints.every(
+      (point) =>
+        Array.isArray(point) &&
+        point.length === 3 &&
+        point.every(
+          (value) => Number.isFinite(value) && Math.abs(value) <= 1e9,
+        ),
+    )
+  )
+    throw new Error(
+      "Choose 1 to 128 finite retained-region points in world millimetres.",
+    );
+  if (!Number.isFinite(tolerance) || tolerance <= 0 || tolerance > 1e6)
+    throw new Error(
+      "Surface trim point tolerance must be positive and at most one million millimetres.",
+    );
+  const source = getShape(input.kernelId),
+    cutters = input.cutterIds.map(getShape);
+  const handles = [],
+    keep = (handle) => (handles.push(handle), handle);
+  let output,
+    handedOff = false;
+  try {
+    const facesOf = (shape, maximum) => {
+      const explorer = keep(
+        new oc.TopExp_Explorer_2(
+          shape,
+          oc.TopAbs_ShapeEnum.TopAbs_FACE,
+          oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
+        ),
+      );
+      const faces = [],
+        buckets = new Map();
+      let visits = 0;
+      for (; explorer.More(); explorer.Next()) {
+        if (++visits > maximum * 2)
+          throw new Error(
+            "Surface trim exceeds its topology visit resource limit.",
+          );
+        const face = keep(explorer.Current()),
+          hash = face.HashCode(2147483647),
+          bucket = buckets.get(hash) ?? [];
+        if (bucket.some((prior) => prior.IsSame(face))) continue;
+        bucket.push(face);
+        buckets.set(hash, bucket);
+        faces.push(face);
+        if (faces.length > maximum)
+          throw new Error(
+            "Surface trim exceeds its face-count resource limit.",
+          );
+      }
+      return faces;
+    };
+    const sourceCount = facesOf(source, 4096).length;
+    const toolCount = cutters.reduce(
+      (total, shape) => total + facesOf(shape, 4096).length,
+      0,
+    );
+    if (!sourceCount || !toolCount)
+      throw new Error("Surface trim inputs must contain exact CAD faces.");
+    if (toolCount > 4096 || sourceCount * toolCount > 1000000)
+      throw new Error(
+        "Surface trim exceeds its source/cutter pair resource limit.",
+      );
+    const copy = (shape) => {
+      // Splitter's non-destructive flag alone can change input BREP flags/caches.
+      const maker = keep(new oc.BRepBuilderAPI_Copy_2(shape, true, false));
+      return keep(maker.Shape());
+    };
+    const sourceCopy = copy(source),
+      sourceFaces = facesOf(sourceCopy, 4096);
+    const argumentsList = keep(new oc.TopTools_ListOfShape_1()),
+      tools = keep(new oc.TopTools_ListOfShape_1());
+    for (const face of sourceFaces) argumentsList.Append_1(face);
+    for (const cutter of cutters) tools.Append_1(copy(cutter));
+    const splitter = keep(new oc.BRepAlgoAPI_Splitter_1());
+    splitter.SetArguments(argumentsList);
+    splitter.SetTools(tools);
+    splitter.SetNonDestructive(true);
+    splitter.Build();
+    if (!splitter.IsDone())
+      throw new Error(
+        "Surface intersection failed. Check the source and cutters.",
+      );
+    const split = keep(splitter.Shape());
+    if (split.IsNull())
+      throw new Error("Surface trim produced no surface regions.");
+    const regions = facesOf(split, 16384);
+    if (regions.length <= sourceCount)
+      throw new Error(
+        "Cutters must intersect the source to create distinct surface regions.",
+      );
+    if (regions.length * input.keepPoints.length > 65536)
+      throw new Error(
+        "Surface trim exceeds its retained-point query resource limit.",
+      );
+    const selected = new Set(),
+      tie = Math.max(1e-7, tolerance * 1e-6);
+    for (const [pointIndex, point] of input.keepPoints.entries()) {
+      const position = keep(new oc.gp_Pnt_3(...point)),
+        maker = keep(new oc.BRepBuilderAPI_MakeVertex(position)),
+        vertex = keep(maker.Vertex());
+      const query = keep(new oc.BRepExtrema_DistShapeShape_1());
+      query.LoadS1(vertex);
+      let nearest = Infinity,
+        index = -1,
+        ambiguous = false;
+      for (const [regionIndex, region] of regions.entries()) {
+        query.LoadS2(region);
+        query.Perform();
+        if (!query.IsDone())
+          throw new Error(
+            "Could not locate a retained point on the split surfaces.",
+          );
+        const distance = query.Value();
+        if (!Number.isFinite(distance))
+          throw new Error("Surface trim distance is not finite.");
+        if (distance < nearest - tie) {
+          nearest = distance;
+          index = regionIndex;
+          ambiguous = false;
+        } else if (Math.abs(distance - nearest) <= tie) ambiguous = true;
+      }
+      if (nearest > tolerance || index < 0)
+        throw new Error(
+          `Retained point ${pointIndex + 1} is outside the surface tolerance (${nearest} mm).`,
+        );
+      if (ambiguous)
+        throw new Error(
+          `Retained point ${pointIndex + 1} is ambiguous at a surface boundary; choose a region interior.`,
+        );
+      selected.add(index);
+    }
+    const builder = keep(new oc.BRep_Builder());
+    output = new oc.TopoDS_Compound();
+    builder.MakeCompound(output);
+    for (const index of selected) builder.Add(output, regions[index]);
+    handedOff = true;
+    return register(oc, output);
+  } finally {
+    if (output && !handedOff) output.delete();
+    cleanup(handles);
   }
 }
 
@@ -1482,14 +1877,8 @@ function extrudeShape(oc, input) {
   }
 }
 
-// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
-function extrudeCurvesShape(oc, input) {
-  const { edges, height } = input;
-  const frame = sketchPlacement(input.frame);
-  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
-    throw new Error(
-      "Extrusion height must be positive and at most one billion.",
-    );
+// Returns one owned face; all construction wrappers are temporary.
+function sketchProfileFace(oc, edges, frame, authoredPlane = false) {
   if (!Array.isArray(edges) || edges.length < 2 || edges.length > 10000)
     throw new Error("Choose a closed profile with 2 to 10000 edges.");
   const point = (p) =>
@@ -1545,6 +1934,28 @@ function extrudeCurvesShape(oc, input) {
   }
   if (!Number.isFinite(area) || Math.abs(area) < 1e-8)
     throw new Error("Sketch profile has zero area.");
+  // Native face validation can accept two loops touching at a contour vertex.
+  const vertices = new Map();
+  for (let i = 0; i < edges.length; i++) {
+    const start = edges[i].start,
+      x = Math.floor(start[0] / 1e-8),
+      y = Math.floor(start[1] / 1e-8);
+    for (let dx = -1; dx <= 1; dx++)
+      for (let dy = -1; dy <= 1; dy++)
+        for (const prior of vertices.get(`${x + dx},${y + dy}`) ?? [])
+          if (
+            prior !== i - 1 &&
+            !(prior === 0 && i === edges.length - 1) &&
+            distance(start, edges[prior].start) <= 1e-8
+          )
+            throw new Error(
+              "Sketch profile intersects itself or has invalid geometry.",
+            );
+    const key = `${x},${y}`,
+      bucket = vertices.get(key) ?? [];
+    bucket.push(i);
+    vertices.set(key, bucket);
+  }
   const handles = [];
   const keep = (h) => (handles.push(h), h);
   const placed = (uv) => {
@@ -1555,7 +1966,7 @@ function extrudeCurvesShape(oc, input) {
       throw new Error("Placed sketch coordinates must be finite and bounded.");
     return keep(new oc.gp_Pnt_3(...world));
   };
-  let solid;
+  let face;
   try {
     const wireMaker = keep(new oc.BRepBuilderAPI_MakeWire_1());
     for (let i = 0; i < edges.length; i++) {
@@ -1587,16 +1998,49 @@ function extrudeCurvesShape(oc, input) {
       wireMaker.Add_1(keep(maker.Edge()));
       if (!wireMaker.IsDone()) throw new Error("CAD wire construction failed.");
     }
-    const wire = keep(wireMaker.Wire()),
-      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
+    const wire = keep(wireMaker.Wire());
+    let faceMaker;
+    if (authoredPlane) {
+      const origin = keep(new oc.gp_Pnt_3(...frame.origin)),
+        normal = keep(new oc.gp_Dir_4(...frame.normal)),
+        plane = keep(new oc.gp_Pln_3(origin, normal));
+      faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_16(plane, wire, true));
+    } else faceMaker = keep(new oc.BRepBuilderAPI_MakeFace_15(wire, true));
     if (!faceMaker.IsDone())
       throw new Error("CAD sketch face construction failed.");
-    const face = keep(faceMaker.Face()),
-      faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
+    face = faceMaker.Face();
+    const faceCheck = keep(new oc.BRepCheck_Analyzer(face, true));
     if (!faceCheck.IsValid_2())
       throw new Error(
         "Sketch profile intersects itself or has invalid geometry.",
       );
+    const owned = face;
+    face = undefined;
+    return owned;
+  } finally {
+    face?.delete();
+    cleanup(handles);
+  }
+}
+
+function sketchSurfaceShape(oc, input) {
+  const frame = sketchPlacement(input.frame);
+  return register(oc, sketchProfileFace(oc, input.edges, frame, true));
+}
+
+// Analytic profiles have their own operation so saved polygon recipes retain their geometry.
+function extrudeCurvesShape(oc, input) {
+  const { edges, height } = input;
+  const frame = sketchPlacement(input.frame);
+  if (!Number.isFinite(height) || height <= 0 || height > 1e9)
+    throw new Error(
+      "Extrusion height must be positive and at most one billion.",
+    );
+  const handles = [];
+  const keep = (h) => (handles.push(h), h);
+  let solid;
+  try {
+    const face = keep(sketchProfileFace(oc, edges, frame));
     const direction = keep(
       new oc.gp_Vec_4(...frame.normal.map((n) => n * height)),
     );
@@ -1680,12 +2124,9 @@ function thicknessShape(oc, input, hollow) {
   const handles = [],
     maker = new oc.BRepOffsetAPI_MakeThickSolid_1();
   handles.push(maker);
+  const keep = (handle) => (handles.push(handle), handle);
+  let solid, output;
   try {
-    // Both makers and their result meshing must own their input geometry.
-    const copy = new oc.BRepBuilderAPI_Copy_2(shape, true, false);
-    handles.push(copy);
-    const working = copy.Shape();
-    handles.push(working);
     if (hollow) {
       if (
         !Array.isArray(input.faceIndices) ||
@@ -1693,6 +2134,10 @@ function thicknessShape(oc, input, hollow) {
         input.faceIndices.some((i) => !Number.isInteger(i) || i < 0)
       )
         throw new Error("Shell requires zero-based faces to remove.");
+      // Enumerate and remove faces from a private body: the offset maker and
+      // result meshing can otherwise update source or earlier-result BREP data.
+      const copy = keep(new oc.BRepBuilderAPI_Copy_2(shape, true, false)),
+        working = keep(copy.Shape());
       const faces = [],
         explorer = new oc.TopExp_Explorer_2(
           working,
@@ -1722,13 +2167,65 @@ function thicknessShape(oc, input, hollow) {
         oc.GeomAbs_JoinType.GeomAbs_Arc,
         false,
       );
-    } else maker.MakeThickSolidBySimple(working, input.thickness);
-    if (!maker.IsDone())
+    } else {
+      // Offset construction and output meshing must not change the source BREP.
+      const copy = keep(new oc.BRepBuilderAPI_Copy_2(shape, true, false)),
+        working = keep(copy.Shape());
+      if (working.ShapeType().value === oc.TopAbs_ShapeEnum.TopAbs_FACE.value) {
+        const face = keep(oc.TopoDS.Face_1(working)),
+          adaptor = keep(new oc.BRepAdaptor_Surface_2(face, true));
+        if (
+          adaptor.GetType().value === oc.GeomAbs_SurfaceType.GeomAbs_Plane.value
+        ) {
+          // A planar face's exact signed offset is a prism. Canonical prism
+          // supports remain usable by later edge treatments, including holes.
+          const plane = keep(adaptor.Plane()),
+            axes = keep(plane.Position()),
+            normal = keep(axes.Direction());
+          const sign =
+            face.Orientation_1().value ===
+            oc.TopAbs_Orientation.TopAbs_REVERSED.value
+              ? -1
+              : 1;
+          const vector = keep(
+            new oc.gp_Vec_4(
+              ...[normal.X(), normal.Y(), normal.Z()].map(
+                (value) => value * sign * input.thickness,
+              ),
+            ),
+          );
+          const prism = keep(
+            new oc.BRepPrimAPI_MakePrism_1(face, vector, true, true),
+          );
+          if (!prism.IsDone())
+            throw new Error(
+              "CAD wall construction failed. Reduce thickness or choose other faces.",
+            );
+          output = keep(prism.Shape());
+        }
+      }
+      if (!output) maker.MakeThickSolidBySimple(working, input.thickness);
+    }
+    if (!output) {
+      if (!maker.IsDone())
+        throw new Error(
+          "CAD wall construction failed. Reduce thickness or choose other faces.",
+        );
+      if (hollow) return register(oc, maker.Shape());
+      output = keep(maker.Shape());
+    }
+    if (output.ShapeType().value !== oc.TopAbs_ShapeEnum.TopAbs_SOLID.value)
+      throw new Error("CAD thickening did not produce one closed solid.");
+    solid = oc.TopoDS.Solid_1(output);
+    if (!oc.BRepLib.OrientClosedSolid(solid))
       throw new Error(
-        "CAD wall construction failed. Reduce thickness or choose other faces.",
+        "CAD thickening does not enclose a finite orientable volume.",
       );
-    return register(oc, maker.Shape());
+    const owned = solid;
+    solid = undefined;
+    return register(oc, owned);
   } finally {
+    solid?.delete();
     cleanup(handles);
   }
 }
@@ -2236,6 +2733,8 @@ self.onmessage = (event) => {
       let result;
       if (operation === "import") result = importFile(oc, payload, onProgress);
       else if (operation === "primitive") result = primitive(oc, payload);
+      else if (operation === "inspectBrep") result = inspectBrep(oc, payload);
+      else if (operation === "trimSurfaces") result = trimSurfaces(oc, payload);
       else if (operation === "alignmentReferences")
         result = alignmentReferences(oc, payload);
       else if (operation === "alignmentMesh") {
@@ -2255,6 +2754,8 @@ self.onmessage = (event) => {
       else if (operation === "extrude") result = extrudeShape(oc, payload);
       else if (operation === "extrudeCurves")
         result = extrudeCurvesShape(oc, payload);
+      else if (operation === "sketchSurface")
+        result = sketchSurfaceShape(oc, payload);
       else if (operation === "revolve") result = revolveShape(oc, payload);
       else if (operation === "loft") result = loftShape(oc, payload);
       else if (operation === "sweep") result = sweepShape(oc, payload);

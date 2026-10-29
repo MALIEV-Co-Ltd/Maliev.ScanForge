@@ -1,0 +1,17 @@
+Resource admission: 9603 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('textbox', { name: 'Local bridge URL' })
+
+    at C:\Users\Shoung\.codex\worktrees\m5-surfaces-cad\Maliev.ScanForge\.resources\m5\datum-metadata-browser-current.mjs:185:6 {
+  log: [
+    "  - waiting for getByRole('textbox', { name: 'Local bridge URL' })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0

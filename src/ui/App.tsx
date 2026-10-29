@@ -41,7 +41,10 @@ import {
 } from "../import-batch";
 import { entityDisplayStats } from "../entity-display-stats";
 import { GeometryStatistics } from "./GeometryStatistics";
+import { CadDiagnostics } from "./CadDiagnostics";
 import { CadJobCancel } from "./CadJobCancel";
+import { SurfaceTrimTools } from "./SurfaceTrimTools";
+import { SketchSurfaceTools } from "./SketchSurfaceTools";
 import { runApplicationJobCommand } from "./application-job-command";
 import {
   selectObject,
@@ -79,8 +82,8 @@ import { SettingsTabs, type SettingsSection } from "./SettingsTabs";
 import { useWorkspaceApi } from "../automation/use-workspace-api";
 import { captureApplicationImage } from "../automation/visual-capture";
 import { inspectApplicationDom } from "../automation/application-observation";
-import { RIBBON_TABS } from "./ribbon-model";
-import { createCadFeature, rebuildCadFeature } from "../automation/operations";
+import { RIBBON_TABS, ribbonCommandAvailability } from "./ribbon-model";
+import { createCadFeature } from "../automation/operations";
 import {
   duplicateObject,
   lockedObjectEdit,
@@ -253,13 +256,7 @@ import type { RegionClassification } from "../mesh-processing";
 import { readTheme, resolveTheme, storeTheme, type Theme } from "../theme";
 import { ImportUnitsDialog } from "./ImportUnitsDialog";
 import { SCAN_UNITS, type ScanUnit } from "../import-units";
-import type {
-  Entity,
-  FitResult,
-  KernelPrimitive,
-  KernelMesh,
-  Vec3,
-} from "../types";
+import type { Entity, FitResult, KernelPrimitive, Vec3 } from "../types";
 import { Viewport } from "../viewport";
 import { applyWandRegion } from "../wand-selection";
 import { Field, Panel, VectorField } from "./controls";
@@ -301,11 +298,7 @@ import { EditScanDialog } from "./EditScanDialog";
 import { ScanQuickTools } from "./ScanQuickTools";
 import { AdvancedCadTools } from "./AdvancedCadTools";
 import { ParametricTools } from "./ParametricTools";
-import {
-  bindFeatureInputs,
-  entityFeatureModel,
-  entityFeatureState,
-} from "../parametric-entities";
+import { entityFeatureModel, entityFeatureState } from "../parametric-entities";
 import {
   createCadEvaluator,
   rebuildParametric,
@@ -313,7 +306,7 @@ import {
   type ParametricRecipe,
   type ParametricProfile,
 } from "../parametric";
-import { tessellatePatch, type NurbsPatch } from "../surfaces";
+import type { NurbsPatch } from "../surfaces";
 import { rectangleSketch, type Sketch } from "../sketch";
 const number = (n: number) =>
   n.toLocaleString("en", { maximumFractionDigits: 3 });
@@ -451,6 +444,10 @@ export function App() {
   const [sketchDraft, setSketchDraft] = useState<Sketch>(() =>
     rectangleSketch(),
   );
+  const hasSketchSurfaceSource =
+    sketchDraft.points.length > 0 &&
+    (sketchDraft.segments.some((curve) => !curve.construction) ||
+      sketchDraft.arcs?.some((curve) => !curve.construction) === true);
   const [spaceMouseStatus, setSpaceMouseStatus] = useState(
     "Move the SpaceMouse cap to detect it",
   );
@@ -761,6 +758,17 @@ export function App() {
   surfaceFitRef.current = surfaceFit;
   const surfaceFitAbort = useRef<AbortController | null>(null);
   const cad = useRef<CadClient | null>(null);
+  const cadJobAbort = useRef<AbortController | null>(null);
+  const [cadJobRunning, setCadJobRunning] = useState(false);
+  // Publication selects a new output; only App disposal retires this owner.
+  useEffect(
+    () => () => {
+      const owned = cadJobAbort.current;
+      cadJobAbort.current = null;
+      owned?.abort();
+    },
+    [],
+  );
   const stepExportAbort = useRef<AbortController | null>(null);
   const [stepExportBusy, setStepExportBusy] = useState(false);
   useEffect(() => () => stepExportAbort.current?.abort(), []);
@@ -2073,8 +2081,14 @@ export function App() {
     sewSurfaces: () => showTools("sewSurfaces"),
     shell: () => showTools("shell"),
     surfaceThicken: () => showTools("surfaceThicken"),
+    trimSurfaces: selected?.kernelId
+      ? () => showTools("trimSurfaces")
+      : undefined,
     fitSurface: openSurfaceFit,
     nurbsSurface: () => showTools("surface"),
+    surface2dSketch: () => {
+      if (hasSketchSurfaceSource) showTools("sketchSurface");
+    },
     newFreeform: () => showTools("surface"),
     autoFreeform: () => showTools("surface"),
     quadObj: () => showTools("surface"),
@@ -2133,26 +2147,14 @@ export function App() {
     "exportStl",
     "settings",
   ]);
-  const globalRibbonCommands = new Set([
-    "globalFineAlign",
-    "fitView",
-    "iso",
-    "top",
-    "bottom",
-    "left",
-    "right",
-    "front",
-    "back",
-    "primitive",
-    "wireframe",
-    "newFreeform",
-  ]);
   const repeatableRibbonActions = Object.fromEntries(
     Object.entries(ribbonActions).map(([name, run]) => [
       name,
       excludedRepeatCommands.has(name)
         ? run
-        : () => launchRepeatable(`ribbon:${name}`),
+        : run
+          ? () => launchRepeatable(`ribbon:${name}`)
+          : undefined,
     ]),
   ) as typeof ribbonActions;
   function launchRepeatable(name?: string) {
@@ -2275,13 +2277,24 @@ export function App() {
       .filter(([name]) => !excludedRepeatCommands.has(name))
       .map(([name, run]) => [
         `ribbon:${name}`,
-        name === "alignNPoints"
-          ? landmarkSource
-            ? run
-            : undefined
-          : selected || globalRibbonCommands.has(name)
-            ? run
-            : undefined,
+        ribbonCommandAvailability(
+          name,
+          {
+            disabled:
+              editingBlocked || !!nPoints || !!surfaceFit || !!createSketch,
+            interactiveTargetError,
+            globalAlignmentError,
+            hasSelection: !!selected,
+            hasSketchSurfaceSource,
+            selectionKind: selected?.kind,
+            landmarkSourceId: landmarkSource?.id ?? null,
+            canUndo: !!history.length,
+            canRedo: !!future.length,
+          },
+          ribbonActions,
+        ).available
+          ? run
+          : undefined,
       ]),
     ...Object.entries(actions)
       .filter(
@@ -4011,14 +4024,6 @@ export function App() {
     if (selected?.kernelId) {
       cadOperation(
         "Transform body",
-        () =>
-          cad.current!.transform(
-            selected.kernelId!,
-            translation,
-            rotation,
-            scale,
-          ),
-        undefined,
         (refs) => ({
           kind: "transform",
           source: refs[0],
@@ -4068,42 +4073,21 @@ export function App() {
     operation: "union" | "subtract" | "intersect",
     otherId: string,
   ) {
-    void action(`CAD ${operation}…`, async () => {
-      const other = entities.find((e) => e.id === otherId);
-      if (!selected?.kernelId || !other?.kernelId)
-        throw new Error("Select two exact CAD bodies.");
-      const result = await cad.current!.boolean(
+    if (!selected?.kernelId) {
+      setError("Select two exact CAD bodies.");
+      return;
+    }
+    cadOperation(
+      operation + " result",
+      (refs) => ({
+        kind: "boolean",
         operation,
-        selected.kernelId,
-        other.kernelId,
-      );
-      const bound = bindFeatureInputs(entities, [selected.id, other.id]);
-      const entity: Entity = {
-        id: crypto.randomUUID(),
-        name: `${operation} result`,
-        kind: "cad",
-        ...result,
-        color: DEFAULT_PART_COLOR,
-        visible: true,
-        opacity: 1,
-        parametric: featureBinding(`${operation} result`, {
-          kind: "boolean",
-          operation,
-          first: bound.refs[0],
-          second: bound.refs[1],
-        }),
-      };
-      commit([
-        ...bound.entities.map((e) =>
-          e.id === selected.id || e.id === other.id
-            ? { ...e, visible: false }
-            : e,
-        ),
-        entity,
-      ]);
-      setSelectedId(entity.id);
-      setMessage(`Created exact ${operation} result`);
-    });
+        first: refs[0],
+        second: refs[1],
+      }),
+      [selected.id, otherId],
+      true,
+    );
   }
   function cancelSketchCreation() {
     sketchSectionAbort.current?.abort();
@@ -4290,33 +4274,19 @@ export function App() {
     setDirty(true);
   }
   function extrude(profile: ParametricProfile, height: number) {
-    void (async () => {
-      const receipt = await uiCommand("cad_create", {
+    runOwnedCadJob(
+      "cad_create",
+      () => ({
         recipe: { kind: "extrude", profile, height },
         selectCreated: true,
         name:
           profile.kind === "polygon" ? "Polygon extrusion" : "Sketch extrusion",
-      });
-      if (!receipt.ok) return;
-      const { jobId } = receipt.result as { jobId: string };
-      const expires = Date.now() + 95_000;
-      while (Date.now() < expires) {
-        const response = await workspaceApi.invoke("job_get", { jobId });
-        if (!response.ok) throw new Error(response.error.message);
-        const job = response.result as {
-          status: string;
-          result?: { entityIds: string[] };
-          error?: { message: string };
-        };
-        if (job.status === "succeeded" && job.result) return;
-        if (job.status !== "running")
-          throw new Error(job.error?.message ?? "Extrusion cancelled.");
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-      await workspaceApi.invoke("job_cancel", { jobId });
-      throw new Error("Extrusion exceeded its time limit.");
-    })().catch((error: unknown) =>
-      setError(error instanceof Error ? error.message : String(error)),
+      }),
+      {
+        cancelledMessage: "Extrusion cancelled.",
+        leaseMessage: "Extrusion exceeded its time limit.",
+        leaseMs: 95_000,
+      },
     );
   }
   function createMesh(
@@ -4340,24 +4310,66 @@ export function App() {
     setSelectedId(entity.id);
     setMessage(`${label} created`);
   }
+  async function runSurfaceOperation(
+    args: Record<string, unknown>,
+    signal: AbortSignal,
+  ) {
+    setError("");
+    const result = await runApplicationJobCommand(
+      workspaceApi,
+      "surface_operation",
+      { entityId: selected?.id, ...args },
+      {
+        signal,
+        cancelledMessage: "Surface edit cancelled.",
+        leaseMessage: "Surface edit exceeded its time limit.",
+      },
+    );
+    const failures = result.cleanupFailures as
+      { message: string }[] | undefined;
+    if (failures?.length)
+      setError(failures.map((failure) => failure.message).join("; "));
+    return result;
+  }
+  async function createSketchSurface(snapshot: Sketch, signal: AbortSignal) {
+    setError("");
+    const result = await runApplicationJobCommand(
+      workspaceApi,
+      "cad_create",
+      {
+        name: "Sketch surface",
+        recipe: { kind: "sketchSurface", sketch: snapshot },
+        selectCreated: true,
+      },
+      {
+        signal,
+        cancelledMessage: "Sketch surface cancelled.",
+        leaseMessage: "Sketch surface exceeded its time limit.",
+      },
+    );
+    if (!signal.aborted) setMessage("Surface created from sketch");
+    return result;
+  }
   function editSurface(patch: NurbsPatch) {
     if (selected?.parametric?.feature.recipe.kind === "surface") {
       rebuildFeature({ kind: "surface", patch });
       return;
     }
-    void action("Editing NURBS control grid…", () => {
-      const positions = tessellatePatch(patch, 32, 32);
-      if (selected?.surfacePatch)
-        updateSelected({
-          positions,
-          surfacePatch: patch,
-          kind: "mesh",
-          kernelId: undefined,
-          brep: undefined,
-        });
-      else createMesh(positions, "NURBS surface", patch);
+    void (async () => {
+      const response = await uiCommand("surface_set", {
+        ...(selected?.surfacePatch ? { entityId: selected.id } : {}),
+        ...(!selected?.surfacePatch &&
+        (selected?.kind === "mesh" || selected?.kind === "pointcloud")
+          ? { scanId: selected.id }
+          : {}),
+        patch,
+      });
+      if (!response.ok) return;
+      setSelectedId((response.result as { entityId: string }).entityId);
       setMessage("NURBS patch updated · control grid retained in project");
-    });
+    })().catch((error: unknown) =>
+      setError(error instanceof Error ? error.message : String(error)),
+    );
   }
   function createSegments(
     parts: Float32Array[],
@@ -4388,86 +4400,98 @@ export function App() {
     setSelectedId(created[0].id);
     setMessage(`Created ${created.length} segmented meshes`);
   }
+  function runOwnedCadJob(
+    command: "cad_create" | "cad_rebuild",
+    args: () => Record<string, unknown>,
+    options: Omit<Parameters<typeof runApplicationJobCommand>[3], "signal">,
+    onSuccess?: (result: Record<string, unknown>) => void,
+  ) {
+    if (busy || cadJobAbort.current) return;
+    const controller = new AbortController();
+    cadJobAbort.current = controller;
+    setCadJobRunning(true);
+    setError("");
+    void (async () => {
+      try {
+        const result = await runApplicationJobCommand(
+          workspaceApi,
+          command,
+          args(),
+          { ...options, signal: controller.signal },
+        );
+        if (cadJobAbort.current === controller && !controller.signal.aborted)
+          onSuccess?.(result);
+      } catch (failure) {
+        if (cadJobAbort.current !== controller) return;
+        if (controller.signal.aborted) setMessage(options.cancelledMessage);
+        else setError(errorText(failure));
+      } finally {
+        if (cadJobAbort.current === controller) {
+          cadJobAbort.current = null;
+          setCadJobRunning(false);
+        }
+      }
+    })();
+  }
   function cadOperation(
     label: string,
-    run: () => Promise<KernelMesh>,
-    patch?: NurbsPatch,
-    recipe?: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
+    recipe: ParametricRecipe | ((refs: FeatureRef[]) => ParametricRecipe),
     inputIds: string[] = [],
     hideInputs = false,
+    expectedRevision?: number,
   ) {
-    void action(label, async () => {
-      const bound = bindFeatureInputs(entities, inputIds);
-      if (recipe) {
-        const resolved =
-          typeof recipe === "function" ? recipe(bound.refs) : recipe;
-        const result = await createCadFeature(
-          cad.current!,
-          bound.entities,
-          resolved,
-          label.replace(/…$/, ""),
-          { hideInputs },
-        );
-        commit(result.entities);
-        setSelectedId(result.created[0].id);
-        setMessage(`${result.created[0].name} created as exact CAD`);
-        return;
-      }
-      const result = await run();
-      const entity: Entity = {
-        ...result,
-        id: crypto.randomUUID(),
-        name: label.replace(/…$/, ""),
-        kind: "cad",
-        color: DEFAULT_PART_COLOR,
-        opacity: 1,
-        visible: true,
-        surfacePatch: patch,
-        parametric: undefined,
-      };
-      commit([
-        ...bound.entities.map((input) =>
-          hideInputs && inputIds.includes(input.id)
-            ? { ...input, visible: false }
-            : input,
-        ),
-        entity,
-      ]);
-      setSelectedId(entity.id);
-      setMessage(`${entity.name} created as exact CAD`);
-    });
-  }
-  function featureBinding(
-    label: string,
-    recipe: ParametricRecipe,
-  ): NonNullable<Entity["parametric"]> {
-    return {
-      feature: {
-        id: crypto.randomUUID(),
-        name: label,
-        recipe: structuredClone(recipe),
+    runOwnedCadJob(
+      "cad_create",
+      () => {
+        const refs = inputIds.map((id): FeatureRef => {
+          const input = entities.find((entity) => entity.id === id);
+          if (!input?.kernelId)
+            throw Error("Choose available exact CAD inputs.");
+          return {
+            featureId: input.parametric?.feature.id ?? input.id,
+            output: input.parametric?.output ?? 0,
+          };
+        });
+        return {
+          recipe: typeof recipe === "function" ? recipe(refs) : recipe,
+          name: label.replace(/…$/, ""),
+          hideInputs,
+          selectCreated: true,
+        };
       },
-      output: 0,
-    };
+      {
+        cancelledMessage: "CAD creation cancelled.",
+        leaseMessage: "CAD creation exceeded its time limit.",
+        expectedRevision,
+      },
+      () => setMessage(label + " created as exact CAD"),
+    );
   }
+
   function rebuildFeature(recipe: ParametricRecipe) {
-    void action("Rebuilding parametric features…", async () => {
-      if (!selected) throw new Error("Select a parametric body.");
-      const result = await rebuildCadFeature(
-        cad.current!,
-        entities,
-        history,
-        future,
-        selected.id,
-        recipe,
-      );
-      commit(result.entities);
-      if (result.cleanupFailures.length)
-        setError(result.cleanupFailures.map((f) => f.message).join("; "));
-      setMessage(
-        `Rebuilt ${result.rebuiltFeatureIds.length} dependent features · previous CAD retained for Undo`,
-      );
-    });
+    if (busy) return;
+    if (!selected) {
+      setError("Select a parametric body.");
+      return;
+    }
+    runOwnedCadJob(
+      "cad_rebuild",
+      () => ({ entityId: selected.id, recipe }),
+      {
+        cancelledMessage: "CAD rebuild cancelled.",
+        leaseMessage: "CAD rebuild exceeded its time limit.",
+      },
+      (result) => {
+        const failures = result.cleanupFailures as { message: string }[];
+        if (failures.length)
+          setError(failures.map((f) => f.message).join("; "));
+        setMessage(
+          "Rebuilt " +
+            (result.rebuiltFeatureIds as string[]).length +
+            " dependent features · previous CAD retained for Undo",
+        );
+      },
+    );
   }
   function save() {
     setSaveDialogOpen(true);
@@ -4491,27 +4515,22 @@ export function App() {
     });
   }
   function revolve(points: [number, number][], angle: number) {
-    void action("Revolving profile…", async () => {
-      const result = await cad.current!.revolve(points, angle);
-      const entity: Entity = {
-        id: crypto.randomUUID(),
+    runOwnedCadJob(
+      "cad_create",
+      () => ({
         name: "Revolved solid",
-        kind: "cad",
-        ...result,
-        color: DEFAULT_PART_COLOR,
-        visible: true,
-        opacity: 1,
-        parametric: featureBinding("Revolved solid", {
-          kind: "revolve",
-          points,
-          angleDegrees: angle,
-        }),
-      };
-      commit([...entities, entity]);
-      setSelectedId(entity.id);
-      setMessage("Profile revolved to exact CAD");
-      requestAnimationFrame(() => viewport.current?.fitView());
-    });
+        recipe: { kind: "revolve", points, angleDegrees: angle },
+        selectCreated: true,
+      }),
+      {
+        cancelledMessage: "Revolve cancelled.",
+        leaseMessage: "Revolve exceeded its time limit.",
+      },
+      () => {
+        setMessage("Profile revolved to exact CAD");
+        requestAnimationFrame(() => viewport.current?.fitView());
+      },
+    );
   }
   function exportStep() {
     if (busy || stepExportAbort.current) return;
@@ -5139,6 +5158,12 @@ export function App() {
         if (files.length && !editingBlocked) void openFiles(files);
       }}
     >
+      {cadJobRunning && (
+        <CadJobCancel
+          label="Cancel CAD operation"
+          onCancel={() => cadJobAbort.current?.abort()}
+        />
+      )}
       {stepExportBusy && (
         <CadJobCancel
           label="Cancel STEP export"
@@ -5227,6 +5252,7 @@ export function App() {
         interactiveTargetError={interactiveTargetError}
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
+        hasSketchSurfaceSource={hasSketchSurfaceSource}
         selectionKind={selected?.kind}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
@@ -5715,7 +5741,11 @@ export function App() {
                         setSelectedId(null);
                         setActiveSketchId(item.id);
                         setSketchDraft(item.sketch);
-                        showTools("sketch");
+                        showTools(
+                          workspace === "sketchSurface" && toolPanelOpen
+                            ? "sketchSurface"
+                            : "sketch",
+                        );
                       }}
                     >
                       <ScanLine size={16} />
@@ -6413,6 +6443,13 @@ export function App() {
                               </p>
                             )}
                           <GeometryStatistics stats={stats} />
+                          {selected.kernelId && selected.brep && (
+                            <CadDiagnostics
+                              key={`${selected.id}:${selected.kernelId}`}
+                              entityId={selected.id}
+                              api={workspaceApi}
+                            />
+                          )}
                         </Panel>
                       </ToolSection>
                       {workspace === "properties" &&
@@ -7083,7 +7120,8 @@ export function App() {
                       )}
                     </div>
                   </>
-                ) : activeSketchId && workspace === "sketch" ? (
+                ) : activeSketchId &&
+                  ["sketch", "sketchSurface"].includes(workspace) ? (
                   <div className="selected-title">
                     <ScanLine size={25} />
                     <div>
@@ -7110,6 +7148,25 @@ export function App() {
                 {workspaceGroup(workspace) === "surface" && (
                   <div className="surface-panels">
                     <SurfaceTools
+                      active={toolPanelOpen}
+                      onJoin={(referencePatch, options, signal) =>
+                        runSurfaceOperation(
+                          { operation: "join", referencePatch, options },
+                          signal,
+                        )
+                      }
+                      onBlend={(referencePatch, options, signal) =>
+                        runSurfaceOperation(
+                          { operation: "blend", referencePatch, options },
+                          signal,
+                        )
+                      }
+                      onSnap={(index, signal) =>
+                        runSurfaceOperation(
+                          { operation: "snap", index },
+                          signal,
+                        )
+                      }
                       selectionId={selected?.id}
                       scan={
                         entities.find(
@@ -7122,12 +7179,11 @@ export function App() {
                         createMesh(positions, label)
                       }
                       onCreateClosedCad={(patches, tolerance) =>
-                        cadOperation(
-                          "Closed patch solid",
-                          () => cad.current!.closedShell(patches, tolerance),
-                          undefined,
-                          { kind: "closedShell", patches, tolerance },
-                        )
+                        cadOperation("Closed patch solid", {
+                          kind: "closedShell",
+                          patches,
+                          tolerance,
+                        })
                       }
                       onExportPatch={(json) =>
                         download(
@@ -7143,17 +7199,30 @@ export function App() {
                     <button
                       disabled={busy || !selected?.surfacePatch}
                       onClick={() =>
-                        cadOperation(
-                          "NURBS CAD face",
-                          () => cad.current!.surface(selected!.surfacePatch!),
-                          selected?.surfacePatch,
-                          { kind: "surface", patch: selected!.surfacePatch! },
-                        )
+                        cadOperation("NURBS CAD face", {
+                          kind: "surface",
+                          patch: selected!.surfacePatch!,
+                        })
                       }
                     >
                       Create exact NURBS CAD face
                     </button>
                   </div>
+                )}
+                {workspace === "sketchSurface" && (
+                  <SketchSurfaceTools
+                    sourceKey={activeSketchId ?? "legacy"}
+                    sourceName={
+                      savedSketches.find((item) => item.id === activeSketchId)
+                        ?.name
+                    }
+                    sketch={sketchDraft}
+                    available={hasSketchSurfaceSource}
+                    active={toolPanelOpen}
+                    disabled={busy}
+                    onCreate={createSketchSurface}
+                    onError={setError}
+                  />
                 )}
                 {workspaceGroup(workspace) === "sketch" && (
                   <div className="sketch-panels">
@@ -7280,28 +7349,41 @@ export function App() {
                     />
                   </div>
                 )}
+                {toolPanelOpen &&
+                  workspace === "trimSurfaces" &&
+                  selected?.kernelId && (
+                    <SurfaceTrimTools
+                      key={`${selected.id}:${selected.kernelId}`}
+                      entity={selected}
+                      entities={entities}
+                      api={workspaceApi}
+                      disabled={busy}
+                      onError={setError}
+                      onPickPoint={(callback) => {
+                        datumPointPick.current = callback;
+                        if (callback) {
+                          datumFacePick.current = null;
+                          setMode("inspect");
+                        }
+                      }}
+                    />
+                  )}
                 {workspaceGroup(workspace) === "advancedCad" && (
                   <div className="advanced-cad-panels">
                     <AdvancedCadTools
-                      key={`${workspace}:${selected?.id}`}
+                      key={`${workspace}:${selected?.id}:${selected?.kernelId}`}
+                      api={workspaceApi}
+                      active={toolPanelOpen}
                       entities={entities}
                       selected={selected}
                       disabled={busy}
                       onError={setError}
                       onLoft={(profiles, ruled) =>
-                        cadOperation(
-                          "Loft",
-                          () => cad.current!.loft(profiles, ruled),
-                          undefined,
-                          { kind: "loft", profiles, ruled },
-                        )
+                        cadOperation("Loft", { kind: "loft", profiles, ruled })
                       }
                       onPattern={(pattern) =>
                         cadOperation(
                           `${pattern.kind} pattern`,
-                          () =>
-                            cad.current!.pattern(selected!.kernelId!, pattern),
-                          undefined,
                           (refs) => ({
                             kind: "pattern",
                             source: refs[0],
@@ -7313,13 +7395,6 @@ export function App() {
                       onMirror={(origin, normal) =>
                         cadOperation(
                           "Mirror body",
-                          () =>
-                            cad.current!.mirror(
-                              selected!.kernelId!,
-                              origin,
-                              normal,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "mirror",
                             source: refs[0],
@@ -7330,69 +7405,32 @@ export function App() {
                         )
                       }
                       onSplit={(cutterId) => {
-                        void action("Splitting solid…", async () => {
-                          const cutter = entities.find(
-                            (entity) => entity.id === cutterId,
-                          );
-                          if (!selected?.kernelId || !cutter?.kernelId)
-                            throw new Error("Choose two exact CAD bodies.");
-                          const bound = bindFeatureInputs(entities, [
-                            selected.id,
-                            cutter.id,
-                          ]);
-                          const binding = featureBinding("Split solid", {
+                        if (!selected?.kernelId) {
+                          setError("Choose two exact CAD bodies.");
+                          return;
+                        }
+                        cadOperation(
+                          "Split",
+                          (refs) => ({
                             kind: "split",
-                            source: bound.refs[0],
-                            cutter: bound.refs[1],
-                          });
-                          const results = await cad.current!.split(
-                            selected.kernelId,
-                            cutter.kernelId,
-                          );
-                          const created = results.map(
-                            (result, index): Entity => ({
-                              ...result,
-                              id: crypto.randomUUID(),
-                              name: `Split ${index === 0 ? "inside" : "outside"}`,
-                              kind: "cad",
-                              color: DEFAULT_PART_COLOR,
-                              visible: true,
-                              opacity: 1,
-                              parametric: { ...binding, output: index },
-                            }),
-                          );
-                          commit([
-                            ...bound.entities.map((entity) =>
-                              entity.id === selected.id ||
-                              entity.id === cutter.id
-                                ? { ...entity, visible: false }
-                                : entity,
-                            ),
-                            ...created,
-                          ]);
-                          setSelectedId(created[0].id);
-                          setMessage("Created exact inside and outside bodies");
-                        });
+                            source: refs[0],
+                            cutter: refs[1],
+                          }),
+                          [selected.id, cutterId],
+                          true,
+                        );
                       }}
                       onSweep={(points, path) =>
-                        cadOperation(
-                          "Sweep",
-                          () => cad.current!.sweep(points, path),
-                          undefined,
-                          { kind: "sweep", points, path },
-                        )
+                        cadOperation("Sweep", { kind: "sweep", points, path })
                       }
-                      onEdges={(indices, amount, operation) =>
+                      onEdges={(
+                        indices,
+                        amount,
+                        operation,
+                        inspectedRevision,
+                      ) =>
                         cadOperation(
                           operation,
-                          () =>
-                            cad.current!.edgeTreatment(
-                              selected!.kernelId!,
-                              indices,
-                              amount,
-                              operation,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "edges",
                             source: refs[0],
@@ -7401,14 +7439,13 @@ export function App() {
                             operation,
                           }),
                           [selected!.id],
+                          false,
+                          inspectedRevision,
                         )
                       }
                       onOffset={(distance) =>
                         cadOperation(
                           "Offset",
-                          () =>
-                            cad.current!.offset(selected!.kernelId!, distance),
-                          undefined,
                           (refs) => ({
                             kind: "offset",
                             source: refs[0],
@@ -7420,16 +7457,6 @@ export function App() {
                       onSew={(ids, tolerance) =>
                         cadOperation(
                           "Sew surfaces",
-                          () =>
-                            cad.current!.sew(
-                              ids.map(
-                                (id) =>
-                                  entities.find((entity) => entity.id === id)!
-                                    .kernelId!,
-                              ),
-                              tolerance,
-                            ),
-                          undefined,
                           (refs) => ({ kind: "sew", sources: refs, tolerance }),
                           ids,
                         )
@@ -7437,13 +7464,6 @@ export function App() {
                       onShell={(indices, thickness) =>
                         cadOperation(
                           "Shell",
-                          () =>
-                            cad.current!.shell(
-                              selected!.kernelId!,
-                              indices,
-                              thickness,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "shell",
                             source: refs[0],
@@ -7456,12 +7476,6 @@ export function App() {
                       onThicken={(thickness) =>
                         cadOperation(
                           "Thicken",
-                          () =>
-                            cad.current!.thicken(
-                              selected!.kernelId!,
-                              thickness,
-                            ),
-                          undefined,
                           (refs) => ({
                             kind: "thicken",
                             source: refs[0],

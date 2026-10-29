@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/check-kernel-owned-r1.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 0,
+  "peakJobBytes": 661921792,
+  "totalProcesses": 5,
+  "activeAfter": 0,
+  "passed": true,
+  "elapsedSeconds": 2.718357899982948
+}

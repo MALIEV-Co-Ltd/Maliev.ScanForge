@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/run-sketch-focused-r1.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 16,
+  "exitCode": 1,
+  "peakJobBytes": 508350464,
+  "totalProcesses": 3,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 0.9028858999954537
+}

@@ -194,6 +194,8 @@ export interface ArtifactInfo {
   bytes: number;
 }
 export interface CommandContext {
+  /** Revision of the owned snapshot; changes only after an owned mutation. */
+  readonly revision?: number;
   /** API-owned operation identity; retained previews may outlive the job receipt. */
   jobId?: string;
   signal: AbortSignal;
@@ -897,6 +899,9 @@ export class ApplicationApi {
       };
       const createdArtifacts: string[] = [];
       const context: CommandContext = {
+        get revision() {
+          return startRevision;
+        },
         jobId: job.jobId,
         signal: job.controller.signal,
         progress: (fraction, stage, details) => {

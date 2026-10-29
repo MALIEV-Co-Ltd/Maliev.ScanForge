@@ -1,0 +1,57 @@
+{
+  "nativeVersion": "QUICKSURFACE Pro8.0.123",
+  "ownedPid": 3660,
+  "ownedWindowId": 44632374,
+  "creationTimeFiletime": "134374719594722782",
+  "startedUtc": "2026-10-26T07:05:59.491401+00:00",
+  "finishedUtc": "2026-10-26T07:08:59.654757+00:00",
+  "ownedIdentityVerified": true,
+  "foregroundIdentityVerified": true,
+  "nativePixelsVerified": true,
+  "activationOnlyRaiseSucceeded": true,
+  "inputProject": {
+    "path": "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/owned-fit-exchange-r4/native-output/m5-native-thickened-0p1.qsf",
+    "sha256": "d60588900e6720e9acb641489db9363753c1bd214c87f8dfe4f7ffea74bf223c",
+    "bytes": 139145
+  },
+  "actualSavedSolidReopened": true,
+  "observedTree": "Solids(1) / [1] Thicken(1); History Thicken(1) (Solid)",
+  "sourceScanAndFittedSurfaceHidden": true,
+  "nativeSolidStepExported": false,
+  "analyticSolidComparisonVerified": false,
+  "scope": "Native input recovered and the accepted solid QSF was actually reopened. Export not reached before finite scheduled finish; no input against retired binding.",
+  "cleanup": {
+    "status": "finished",
+    "stopReason": "scheduled-owned-finish",
+    "ownedProcessExited": true,
+    "watchdogStopped": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "cleanupErrors": []
+  },
+  "job": {
+    "command": [
+      "C:/Python314/python.exe",
+      "C:/repo/alignment-example-files/m5-native-ui-20261026-01a1737c-r1/run_owned_ui_session.py",
+      "--authorized-owned-ui-session",
+      "--output-name",
+      "owned-fit-exchange-r5",
+      "--lease-seconds",
+      "210",
+      "--finish-after-seconds",
+      "180",
+      "--interactive-window"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 600,
+    "exitCode": 0,
+    "peakJobBytes": 668446720,
+    "totalProcesses": 4,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 180.42615319998004
+  },
+  "resourceScope": "Per-owned-Job result only. Coordinator reported overlapping M4 headless validation despite reservation; not isolated whole-workflow memory evidence.",
+  "mutexReleased": true,
+  "existingNativeWindowsOperated": false
+}

@@ -86,6 +86,81 @@ it("retains an inspected CAD reference revision instead of silently refreshing i
   expect(api.currentRevision).not.toHaveBeenCalled();
 });
 
+it.each(["cad_create", "cad_rebuild"])(
+  "cancels only the owned %s job while its poll is still pending",
+  async (command) => {
+    vi.useFakeTimers();
+    const controller = new AbortController();
+    let resolvePoll!: (value: ApiResult) => void;
+    const invoke = vi.fn((name: string, _args: Record<string, unknown>) =>
+      name === "job_get"
+        ? new Promise<ApiResult>((resolve) => {
+            resolvePoll = resolve;
+          })
+        : Promise.resolve(ok({ jobId: "owned-cad-job" })),
+    );
+    const pending = runApplicationJobCommand(
+      apiWith(invoke),
+      command,
+      { entityId: "source", recipe: { kind: "loft" } },
+      {
+        signal: controller.signal,
+        cancelledMessage: "CAD cancelled.",
+        leaseMessage: "CAD lease expired.",
+      },
+    );
+    const rejected = expect(pending).rejects.toThrow();
+    await vi.advanceTimersByTimeAsync(0);
+    controller.abort();
+    await rejected;
+    resolvePoll(done({ entityIds: ["late-output"] }));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(invoke.mock.calls.map(([name]) => name)).toEqual([
+      command,
+      "job_get",
+      "job_cancel",
+    ]);
+    expect(invoke.mock.calls[0][1]).toMatchObject({
+      expectedRevision: 7,
+      requestId: expect.any(String),
+    });
+    expect(invoke.mock.calls[2][1]).toEqual({ jobId: "owned-cad-job" });
+  },
+);
+
+it("preserves extrusion's shorter 95-second lease through the shared CAD observer", async () => {
+  vi.useFakeTimers();
+  const invoke = vi.fn((command: string, _args: Record<string, unknown>) =>
+    command === "job_get"
+      ? new Promise<never>(() => {})
+      : Promise.resolve(ok({ jobId: "extrusion-job" })),
+  );
+  const pending = runApplicationJobCommand(
+    apiWith(invoke),
+    "cad_create",
+    { name: "Polygon extrusion", recipe: { kind: "extrude" } },
+    {
+      leaseMs: 95_000,
+      cancelledMessage: "Extrusion cancelled.",
+      leaseMessage: "Extrusion exceeded its time limit.",
+    },
+  );
+  const rejected = expect(pending).rejects.toThrow(
+    "Extrusion exceeded its time limit.",
+  );
+  await vi.advanceTimersByTimeAsync(94_999);
+  expect(invoke.mock.calls.map(([command]) => command)).toEqual([
+    "cad_create",
+    "job_get",
+  ]);
+  await vi.advanceTimersByTimeAsync(1);
+  await rejected;
+  expect(invoke.mock.calls[2]).toEqual([
+    "job_cancel",
+    { jobId: "extrusion-job" },
+  ]);
+});
+
 it("routes the GUI reconstruction branch through the shared application job", () => {
   const app = readFileSync(
     new URL("../src/ui/App.tsx", import.meta.url),

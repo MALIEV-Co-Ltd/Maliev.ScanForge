@@ -1,0 +1,1026 @@
+# M5 acceptance ledger
+
+Status: in progress. Issue [#5](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/5), milestone 6. This ledger is not a milestone closure receipt.
+
+The 2026-10-29 merge candidate combines M5 `6dc75a3` with main `3c0f2fb`
+(including independently merged PRs #20, #21 and #22). Its tested source tree
+was `79e983546348ec7f17efb11bf047fa04e18d00e1`; the evidence-only ledger and
+receipts are added afterward. A [first combined run](evidence/m5-20261025/merged-main-validation-r1-job.json)
+hit its 200-second cutoff during type-check batch 12 and cleaned up; it is not
+a passing build. The same 13 batches then passed in two bounded sets
+([1–7](evidence/m5-20261025/merged-typecheck-a-r2-job.json),
+[8–13](evidence/m5-20261025/merged-typecheck-b-r1-job.json)). The
+[production build and CAD run](evidence/m5-20261025/merged-runtime-r1-job.json)
+passed with build `scanforge-5b25ee215b8f4afa`, 338 datum goldens, zero live
+BREP mutations across 11 families, exact-sketch checks, and 31 focused tests.
+The [isolated STEP browser replay](evidence/m5-20261025/merged-step-browser-r1.json)
+passed GUI/public-MCP export, strict mixed-scene rejection, cancellation and
+both exact reimports; its [guard](evidence/m5-20261025/merged-step-browser-r1-job.json)
+confirmed active-zero and handle/mutex cleanup. The first real-scan replay
+[admission](evidence/m5-20261025/sketch-browser-green-r5-job.json) found the
+shared mutex busy and spawned no child. Its fresh [r6 replay](evidence/m5-20261025/merged-sketch-real-scan-r6.json)
+passed the newly authored scan-section profile through GUI and public MCP to a
+valid 18-face solid, STEP and project reopen, with bit-exact face/solid display
+geometry and unchanged source. The [GUI STEP](evidence/m5-20261025/merged-sketch-real-gui-r6.step)
+SHA-256 is `c380de8610662439ad99afe2e7d568841f94fa06d6cd08c90c6407c7e8528c4f`;
+the [MCP STEP](evidence/m5-20261025/merged-sketch-real-mcp-r6.step) SHA-256 is
+`04fb6d77d690d2a5d8000ec502f931d14d635e552ac982eaa8cf641a461bde44`.
+The [r6 guard](evidence/m5-20261025/merged-sketch-browser-r6-job.json) recorded
+69.697 s, peak 3,105,161,216 bytes, terminal exit 0, active-zero, closed
+handles and mutex, and the owned preview port closed. Native modeling and M4
+remain open; none of these checks closes the milestone.
+
+On 2026-10-27, the supported Windows controller launched a fresh QuickSurface
+8.0.123 session and accepted menu and file-dialog input. Its earlier intermittent
+GetCursorPos access denial has not been explained or proven permanently fixed.
+The final GUI-authored STEP (`705c54384db0a013b84c46c7ecd77fe1cc25460590023219feb86180f7e784b1`)
+imported as one visible solid. QuickSurface exported [AP214 STEP](evidence/m5-20261025/native-real-solid-roundtrip-20261027.stp)
+with Z-to-Y mapping unchecked (65,455 bytes, SHA-256
+`8f9ff6a788ab46e15abb64ffc0e273b020f8f180f4e71ec36e7baa7577cf5c0b`),
+and the imported scene was saved as [QSF](evidence/m5-20261025/native-real-solid-roundtrip-20261027.qsf)
+(13,754 bytes, SHA-256 `32d526a68e5a9b01845581e059b249121747284331d2f3ffb1a0465208f6b8d5`).
+The [independent comparison](evidence/m5-20261025/native-real-solid-interop-r1.json)
+passed its frozen millimetre, positive-solid, boundary/frame, bounds, area and volume
+checks; the area difference was 5.03e-11 mm² and volume difference 1.23e-11 mm³.
+The [bounded job receipt](evidence/m5-20261025/native-real-solid-interop-r1-job.json)
+records 1.682 s, 705,363,968 peak bytes, exit 0, active zero and handle/mutex cleanup.
+This establishes scoped exchange of that prism; it does not establish native
+construction equivalence, general blend/trim parity or whole-scan acceptance.
+The [comparison source](evidence/m5-20261025/native-real-solid-interop-comparison.mjs.txt)
+is archived byte-for-byte (SHA-256 `2834cff4abdf76390983836e8f683724d129c0ea5b0812dfa0f5e2a73a77e0ea`);
+its relative paths refer to its original location in `.resources/m5`.
+The M5 native operation matrix and M4 acceptance remain open.
+
+On 2026-10-29 a [matched fillet attempt](evidence/m5-20261025/native-fillet-blank-r2.json)
+opened the verified QSF in a fresh owned QuickSurface session. The object tree
+showed one solid, but successive viewport captures were blank white, so the
+specified edge could not be identified. No fillet was applied or exported. The
+[guard receipt](evidence/m5-20261025/native-fillet-blank-r2-job.json) records
+terminal exit 0 for authenticated cleanup, 54.551 s, 699,273,216 peak bytes,
+active zero and closed handles/mutex. This is an incomplete observation, not a
+passing native comparison; the separately owned desktop scenes were preserved.
+
+The integration of M5 `d5eb684` with main `57c77aa`, committed as `b6c2453`, passes the
+[local pre-commit integration runtime](evidence/m5-20261025/main-integration-r1-ledger.json),
+build `scanforge-6df43e18c921f0bd`. All seven phases exit 0: formatting the
+two conflict resolutions, resource check, kernel preparation, all 13 TypeScript
+batches, Vite build with no warnings/errors, offline manifest and full standard
+CAD. CAD retains all 338 datum goldens and zero live-input BREP mutations across
+11 families, followed by the exact sketch-surface phase. The guarded run took
+136.212 s at 1,553,100,800 peak Job bytes with terminal exit 0, active zero and
+complete handle/mutex cleanup. The final integrated GUI authoring chain, CAD
+guards with positive curved-pattern parity, and scoped datum browser replay
+below also pass. Exact application/evidence head `46046a6b7857d70a28e2edbcdc581f178895ad4c`
+passes both [hosted CI builds](evidence/m5-20261025/cad-final-head-hosted-ci.json):
+all 13 typecheck batches/build, 49,361 tests passed/64 skipped (702 files passed,
+18 skipped), CAD smoke, trailing exact sketch phase and global formatting.
+The parsed pinned job took 317.03 s. Base `8574263`'s earlier CI receipt remains
+historical. This follow-up changes receipts only; the worker and build identity
+are unchanged. Native M4 acceptance is still open, and the PR/milestone remain
+unmerged/unclosed. Earlier evidence retains its historical scope.
+
+Earlier native viability attempts did not establish input. [R1](evidence/m5-20261025/native-blank-viability-r1-operator.json)
+expired its 24-second operator window before binding or input. [R2](evidence/m5-20261025/native-blank-viability-r2-operator.json)
+authenticated live identity and exposed normal accessibility controls, but its
+capture was black except for the pointer; no input was attempted. It finished
+immediately through the authenticated owner at 56.252 s/722,214,912 peak Job
+bytes. [R3](evidence/m5-20261025/native-blank-viability-r3-operator.json)
+authenticated a fresh identity, then official CUA Raise failed with GetCursorPos
+AccessDenied `0x80070005` before post-Raise accessibility or screenshot reads.
+It finished immediately at 57.140 s/706,125,824 peak Job bytes. All three left
+active zero with handles and mutex released. None establishes CAD/file input or
+native acceptance.
+
+The [read-only desktop metadata](evidence/m5-20261025/native-desktop-metadata-r1-ledger.json)
+places the exec diagnostic helper in session 1 and the active console in session 3. The actual CUA backend and retired native process session IDs are unavailable;
+the difference is not causal proof. The root coordinator separately reports a
+documented ordinary `cua.launch_app` attempt using the exact inventory ID,
+immediate GetCursorPos denial and no observed QuickSurface window. That is a
+coordinator report, not this archiver's own observation or proof of a resource
+cap cause. No permission changes, desktop switches or new native probes are
+part of this checkpoint. [M4 issue #4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4)
+remains open.
+
+Previous restore candidate: `e1a4a9a07ac7f60dd4b4722fd486cfc3324f4b71`, build
+`scanforge-c869395b41d3f42a`. Preceding candidate `1594c78` had a
+[hosted run](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40228120807)
+failed before execution: GitHub reports recent account payments failed or the
+spending limit needs increasing. The [check annotations](evidence/m5-20261025/hosted-ci-billing-block.json)
+confirm no job started in that attempt. The owner subsequently made the repository
+public; the rerun of evidence head `b6c0477` actually started (job121338654444).
+That rerun passed. Updated evidence head `0b409ae` also passed
+[all hosted gates](evidence/m5-20261025/restore-hosted-ci.json): twelve-batch
+typecheck/build,49,050unit tests passed/64skipped (680files passed/18skipped),
+CAD smoke and formatting. Build identity matches the local browser replay.
+Final integrated-candidate CI remains required after future runtime changes.
+Native QuickSurface UI initialization recovered at 19:56 UTC on 2026-10-25
+([observation](evidence/m5-20261025/native-runtime-recovered.json)). Existing
+windows were preserved. The user subsequently authorized coordination, and the first fresh
+owned session imported/saved the connected scan region with verified cleanup
+([receipt](evidence/m5-20261025/native-import-r1.json)). Fitting control routing
+failed before acceptance. A second owned session accepted the native fit and
+exported actual QSF/STEP; the measured comparison below shows a fitting gap.
+The native operation matrix and M4 acceptance remain incomplete.
+Session r3 was blocked before input by Windows AccessDenied. After the user's
+current readiness confirmation and a CUA runtime reset, r4 accepted native
+thickening and saved a QSF. Session r6 exported the saved solid to STEP; numerical
+comparison confirms valid solid topology but retains an unexplained volume gap.
+Local checks are retained below; M5 is not merged or closed.
+
+The compatible transition-surface candidate adds shared GUI/MCP C0/C1 blending
+with build `scanforge-88f56117136cbb52`; its source hashes and actual receipts are
+retained in [validation](evidence/m5-20261025/compatible-blend-validation.json).
+This is a new independently editable exact face between compatible NURBS
+boundaries. General CAD-edge/G2 blending, persistent seams and native blend
+equivalence are not established. Exact-head `7a0bedc` now passes the full
+[hosted gates](evidence/m5-20261025/compatible-blend-hosted-ci.json): all12
+typecheck batches/build,49,145tests passed/64skipped, CAD smoke and formatting.
+The two test-fixture readonly assignments from the first hosted attempt were
+corrected without production changes and independently re-reviewed. Final main
+integration commit and hosted/browser checks remain required; the restore
+candidate/CI above is historical.
+
+## Operation matrix
+
+| Required area                                           | Application/shared MCP path                                                          | Evidence and remaining gate                                                                                                                                                                                                                                                      |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scan fitting                                            | Fit Surface / `surface_fit`                                                          | Both projected-grid and approximate GUI/public-SDK equality passed on an authored planar region. A 200-facet region of original scan-1.stl also passed GUI/MCP equality and exact-face conversion. Full native fitting initialization/iteration is not established.              |
+| Patch/control edits                                     | SurfaceTools / `surface_set`, `surface_operation`                                    | Shared mesh write, source association, derived-cache invalidation, one history entry, exact display equality and source immutability covered. Knot/crease/snapping/C0/C1 joins retain existing numerical suites; complete native workflow comparison remains open.               |
+| Exact surface editing                                   | SurfaceTools / shared rebuild helper / `cad_rebuild`                                 | GUI/public-MCP exact tessellation equality, BREP retention, STEP export and project reopen passed on an authored fitted patch. Real whole-part seams/normals/topology still need acceptance evidence.                                                                            |
+| Loft/sweep                                              | AdvancedCadTools / `cad_create` recipes                                              | Real scan-derived retained-profile GUI/MCP loft/sweep pass exact display/BREP equality, independent geometry, history, error recovery and STEP in the nine-case browser matrix. Native operation equivalence and final integration remain open.                                  |
+| Surface trimming/blends                                 | Retained-region trim and compatible C0/C1 transition faces through shared operations | GUI/public-MCP exact transition geometry, cancellation, history and exchange pass. Native trim/blend equivalence, general CAD-edge/G2 blending and persistent seams remain unverified.                                                                                           |
+| Extrude/revolve, Boolean, fillet/chamfer, shell/thicken | GUI CAD tools / shared recipes / `cad_create`, `cad_rebuild`                         | Retained real-profile and final integrated authoring chains pass paired GUI/MCP analytic/history/STEP checks. Final CAD guards pass curved-cylinder pattern GUI/Redo/MCP equality through the gated experimental panel. Exact-head CI passes; native M4 acceptance remains open. |
+| Persistence/exchange                                    | Shared project codec and kernel exchange / `project_import`, `project_export`        | Nine real-derived operation cases pass GUI/MCP STEP export/reimport. GUI and MCP project reopen preserve 13 saved BREPs and display buffers bit-exactly, with unchanged sources. Native interoperability and final integration remain open.                                      |
+| Resources                                               | Existing admission guards, owned browser/MCP process leases                          | Nine-case matrix passes in118.806s at3,270,778,880peak Job bytes, terminal0/active0, all handles/mutex/artifacts released and port5206closed. Existing app preserved; console/browser errors empty. Failed receipts retained. Native workflow resource gates remain open.        |
+
+## Candidate history and validation
+
+### CAD maker ownership and the real-input matrix
+
+The first [real-input matrix attempt](evidence/m5-20261025/real-cad-matrix-first-failure.json)
+completed loft, sweep and revolve through GUI/public MCP, independent geometry,
+history and STEP checks. It stopped at Boolean subtraction when equal display
+geometry produced different saved BREP hashes. This is a partial matrix, not a
+passing complete replay. Its46.041-second Job left zero active processes and
+closed owned preview5206.
+
+The [focused RED](evidence/m5-20261025/boolean-source-mutation-red.json)
+then proved live-source mutation: the first subtraction added pcurves to both
+operands, and the second also changed the first result. Repeated serialization
+of an unchanged live object was stable. Boolean construction now deep-copies
+both inputs; split uses separate copy pairs for its common and cut makers.
+The [actual-worker GREEN](evidence/m5-20261025/boolean-ownership-kernel-green-job.json)
+passes all three Boolean modes, repeated geometry, exact live source/prior-result
+BREP fences, split siblings, injected second-output rollback and handle recovery.
+It took2.739s, peaked at471,969,792bytes and released every handle/process.
+
+The [edge/shell RED](evidence/m5-20261025/edge-shell-source-mutation-red.json)
+also caught input metadata mutation after a rejected fillet, plus source and
+earlier-result mutation during successful shell creation. Those makers now
+enumerate and operate on private copies. Their [ownership GREEN](evidence/m5-20261025/edge-shell-ownership-kernel-green-job.json)
+passes failure preservation, repeated valid shell mass, exact live BREP fences,
+recovery and cleanup in1.707s, peak487,555,072bytes. Both new regression phases
+are wired into ordinary CAD smoke. Independent source reviews found no P1/P2
+ownership defect. The later standard/browser and base-head CI receipts below
+supersede the remaining checks at this earlier implementation checkpoint.
+
+The [matched construction-route diagnostic](evidence/m5-20261025/planar-thicken-edge-red.json)
+proved that direct extrusion accepts the fixed0.05mm fillet/chamfer twice at the
+same real-profile corner, while the previous face-thickening route rejects all
+four attempts. Both report Plane supports; an OffsetSurface-type explanation
+is not established. Ordinary single planar-face thickening now uses a prism
+along the signed face normal. The [focused production replay](evidence/m5-20261025/planar-thickening-kernel-green-job.json)
+passes20 authored-frame cases covering both windings, reversed faces, both
+thickness signs and holes, two curved legacy cases, and the real-profile edge
+treatments with independent geometry and source-preservation checks. It took
+4.419s, peaked at655,036,416bytes and left zero active processes. The complete
+browser matrix subsequently passed as recorded below; no geometry tolerance or
+GUI/MCP equality assertion was relaxed.
+
+The next [full CAD attempt](evidence/m5-20261025/cad-all-input-ownership-red.json)
+passed its core geometry checks but failed the new raw live-BREP fence:
+243 datum-transform and two pattern operations changed earlier inputs. All11
+source-operation families were exercised; the trailing sketch phase did not
+run after that failure. A [focused consumer diagnostic](evidence/m5-20261025/datum-pattern-cache-consumer-red.json)
+also proved that large-pattern construction changes a curved source's alignment
+triangles. Equal reconstructed geometry alone does not accept this mutation.
+The first prepared-triangulation fix still failed its [focused raw-BREP fence](evidence/m5-20261025/cad-cache-ownership-red-r1-ledger.json).
+A [stage-isolated RED](evidence/m5-20261025/cad-cache-stage-isolation-red-r1-ledger.json)
+then located source face-flag changes between registration entry and mesh entry;
+repeated observer serialization was stable. Prepared datum partners now retain
+native shared topology and existing triangulations while mandatory geometric
+validation uses an owned copy. The first pattern instance owns its geometry and
+mesh. The [focused actual-worker GREEN r2](evidence/m5-20261025/cad-cache-ownership-green-r2-ledger.json)
+passes exact live source BREP/published-buffer fences, IsPartner identity,
+pattern ownership, unchanged alignment-reader buffers/face ranges, independent
+exact properties, persisted BREP reconstruction, missing-triangulation recovery
+and complete handle cleanup. It took 1.024 s at 481,775,616 peak Job bytes;
+the coordinator observed wrapper exit 0 at 1.169 s, active zero and all handles
+and mutex released. The initially different display Nodes and alignment D1
+reader remain distinct baselines; post-operation readers match the initial
+reader exactly. All RED evidence is retained.
+
+The subsequent [full standard GREEN r2](evidence/m5-20261025/cad-maker-standard-green-r2-ledger.json)
+passes all 338 native datum matrices with shared topology, display bounds and
+handle release. Its strict raw live-BREP fence reports zero mutations across
+all 11 source-operation families: thicken 25, transform 8, Boolean 18, split 11,
+edge treatments 11, shell 4, datum 341, pattern 5, offset 1, sew 1 and mirror 3.
+Standard CAD smoke, the trailing exact sketch-surface geometry/direction/
+validation/ownership phase, scoped formatting and diff check all pass. It took
+15.845 s at 841,142,272 peak Job bytes; the coordinator observed terminal exit 0,
+active zero and complete handle/mutex cleanup with no errors. The post-format
+worker SHA256 is `ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5`.
+The subsequent [real-input browser GREEN r3](evidence/m5-20261025/real-cad-matrix-green-r3-ledger.json)
+passes all nine retained-profile cases: loft, sweep, revolve, subtract,
+intersection, union, fillet, chamfer and shell. Each has exact paired GUI/MCP
+display/BREP equality, independent geometry, history/Undo/Redo, error recovery
+and STEP checks. GUI/MCP project reopen preserves 13 BREPs and display buffers
+bit-exactly, with source preservation and released artifact ownership. All nine
+result PNGs and their hashes are retained; the coordinator visually observed
+coherent unclipped bodies and an open shell. The run took 118.806 s at
+3,270,778,880 peak Job bytes with terminal exit 0, active zero, all handle/mutex
+cleanup, port 5206 closed and no browser/console errors. This replay explicitly
+has `fullGuiProfileAuthoringReplayed:false`: it reuses the retained real profile.
+The matrix's retained-profile scope remains distinct from the final fresh GUI
+authoring replay below. Exact-head hosted CI now passes as recorded above;
+native M4 acceptance remains pending and these passes do not close the milestone.
+
+The [final integrated GUI authoring GREEN r4](evidence/m5-20261025/sketch-browser-green-r4-ledger.json)
+uses the actual real STL with SHA256 `6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9`.
+It authors 16 profile points and 30 acknowledged endpoint edits through rendered
+controls against the real section references. The continuous profile bound is
+0.16138845486 mm. Section metadata, exact face and solid match public MCP;
+Undo/Redo and source preservation pass. GUI/MCP project reopen retains four
+BREPs and display buffers bit-exactly. The valid solid has 18 faces, 48 edges,
+32 vertices and signed volume 151.7188928871384 mm3. Both GUI and MCP STEP
+exports reimport correctly; the retained GUI file is 63,386 bytes with SHA256
+`705c54384db0a013b84c46c7ecd77fe1cc25460590023219feb86180f7e784b1`.
+The authored-profile PNG, full receipts and both STEP files are retained. The
+run took 55.074 s at 3,101,900,800 peak Job bytes, terminal exit 0, active zero,
+complete handle/mutex cleanup and port 5206 closed, with no console/browser
+errors. Exact-head hosted CI now passes; native M4 acceptance remains pending.
+
+The [final CAD guards GREEN r2](evidence/m5-20261025/cad-guards-browser-green-r2-ledger.json)
+also passes positive curved-cylinder linear-pattern creation through the actual
+rendered experimental panel. The ribbon remains unavailable and unverified.
+GUI creation, GUI Undo/Redo and the public-MCP clone retain bit-exact published
+buffers and the same 145,481-byte saved BREP. Three radius-3, height-8 cylinders
+at 200 mm spacing satisfy independent volume 216*pi, area 198*pi and bounds
+[-3,-3,0] to [403,3,8]. Source published buffers, the 49,068-byte saved BREP and
+public face-reference/triangle-slot baselines stay unchanged. Live native BREP
+and raw D1-reader immutability have separate kernel proof. Existing CAD guards,
+history and error recovery remain passing. This run took 25.440 s at
+2,630,705,152 peak Job bytes with terminal exit 0, active zero, complete cleanup,
+port 5206 closed and no browser/console errors.
+
+The [datum browser GREEN r2](evidence/m5-20261025/datum-metadata-browser-green-r2-ledger.json)
+passes actual GUI Apply/public-MCP Preview for fitted parameters and imported
+exact CAD, dependency discovery, authoring identity/history, and BREP project
+save/reopen. Its raw native UV/D1 scope remains the separate kernel regression.
+It took 8.533 s at 1,805,025,280 peak Job bytes with terminal exit 0 and complete
+owned process/port/mutex cleanup. The runtime worker remains
+`ba20e0b67504015436506eec055028e45b55a156d05428cb6249210b6f88dcd5`.
+The added browser test and evidence were committed at `46046a6`; both exact-head
+CI builds pass as recorded above. Base `8574263`'s CI remains historical and is
+not used as a substitute for that final application/evidence-head result.
+
+### Generic CAD cancellation
+
+Generic GUI CAD creation and parametric rebuilding now own an AbortController
+and expose **Cancel CAD operation** outside the busy inspector. Extrusion and
+revolve use the same owner; extrusion retains its95-second observation lease.
+The GUI requests the existing shared `job_cancel`, with `job_get` and
+`session_get` reporting terminal status and lane cleanup. Separate sketch,
+blend and export owners remain independent. Legacy Construct primitive creation
+is outside this generic owner and has not gained cancellation from this change.
+
+The [actual browser replay](evidence/m5-20261025/cad-cancellation-browser-green.json)
+holds real creation and rebuild results, clicks the rendered cancel control,
+and verifies acknowledged release of both late native handles. Revision,
+model/authoring history, source display buffers and raw saved BREP stay unchanged.
+Recovery creates an84mm³ loft and rebuilds it to108mm³, including a dependent
+body; consuming the original source handle still works. Output selection does
+not abort successful publication. The matching initial missing-control RED is
+retained. Both held-state screenshots were visually inspected.
+
+Affected regressions pass162tests across13files, and API/UI scoped TypeScript
+passes. The initial App-only type configuration omitted Node ambient types and
+failed on three inherited timer.unref diagnostics; that failed receipt remains.
+The corrected private App configuration passes separately in6.513s with
+512,208,896bytes peak and zero active processes. No application source correction
+was needed for those configuration diagnostics.
+
+Fresh Vite build and offline manifest pass. The [browser Job receipt](evidence/m5-20261025/cad-cancellation-browser-green-job.json)
+records18.313s, peak2,551,500,800bytes under4GiB, zero active processes, closed
+owned preview5206 and released mutex. Console/page errors and warnings are empty.
+Independent source review found no actionable P1/P2 cancellation defect.
+Implementation commit `88a9c1a6d0c191198aeff9cf750e354854e41d01` and its
+receipt-only correction `b106d465cb36ff98f4a6d21a6fdd12c4c8199c1c` pass
+[exact-head hosted CI](evidence/m5-20261025/cad-cancellation-hosted-ci.json):
+all12 typecheck batches/build,49,196tests passed/64skipped, CAD smoke and global
+formatting. The first hosted run failed only because the formatter receipt was
+copied afterward without its final newline; its failure remains recorded.
+The real-input operation matrix, later Boolean ownership fix and final
+integration remain required.
+
+### Exact sketch surfaces and real scan section chain
+
+Build `scanforge-c5026733e6e566fd` passes the complete new sketch-surface replay
+through the GUI and public MCP. The retained [browser ledger](evidence/m5-20261025/sketch-surface-browser-ledger.json)
+covers analytic circles, saved/current sketch admission without object selection,
+one model edit without authoring edits, dependent recipe rebuild, Undo/Redo,
+matching errors, owned cancellation and acknowledged late-handle release.
+Both GUI and MCP project reopen preserve display buffers and raw saved BREP
+chunks exactly; face/solid STEP imports preserve numerical geometry and placement.
+Selection of the new output does not abort creation, and idle in-place saved
+source switching uses the replacement snapshot. Unmount and busy-source-change
+ownership remain source-review scope rather than forced runtime claims.
+
+The actual `scan-1.stl` import is bit-equal through GUI and MCP. Its full section
+at OXY Z=-323.2705535888672mm supplies the reference for a newly authored closed
+16-point line profile. All points, coordinates and segments were entered through
+rendered controls, with public-state acknowledgements for endpoint edits. The
+measured continuous deviation bound is0.16138845486272677mm, below0.25mm, including
+reference-join displacement. The exact face area is84.28827382618779mm²;
+positive1.8mm thickening gives a valid one-solid body with18faces/48edges and
+signed volume151.71889288713894mm³. GUI/MCP face and solid display geometry agree
+exactly; both STEP paths, Undo/Redo and exact project reopen pass. This is a
+bounded scan-section-derived part, not whole-scan curved reconstruction or native
+Thicken equivalence. The [rendered solid](evidence/m5-20261025/sketch-surface-real-solid.png)
+was visually inspected.
+
+The actual native radius3mm circle extrusion baseline separately matches the
+new sketch-face/thicken chain within1e-7mm³ volume and1e-6mm bounds. Actual-worker
+[kernel checks](evidence/m5-20261025/sketch-surface-kernel-green.json) cover
+CW/CCW profiles in offset/rotated frames, both thickness signs, outward solid
+orientation and unchanged source BREP, including curved-face compatibility.
+Those checks caught and fixed inferred-plane winding dependence, inward solids
+and shared-source metadata mutation. The same native fitted-input comparison
+retains the0.067% absolute-volume gap after those fixes; no native equivalence
+claim follows.
+
+CAD sketch solver admission now bounds submitted/evaluated work before detailed
+validation and synchronous solving, through the shared CAD path. Cached legacy
+recipes remain structurally readable without forcing a solve: a129-point cached
+extrusion survives binary project/history reopen and unrelated CAD edits.
+Focused affected suites pass159tests across13files plus scoped TypeScript.
+Exact feature commit `43f6637044f87b547e43bd039221f784af835871` passes
+[hosted CI](evidence/m5-20261025/sketch-surface-hosted-ci.json): all12 typecheck
+batches/build,49,193unit tests/64skipped (684files/18skipped), standard CAD smoke
+including the new kernel phase, and repository formatting. The interrupted local
+combined formatting check remains a failed receipt; hosted formatting passed
+independently. Final main-integrated checks remain required. Both initial driver
+failures are retained: endpoint
+assignment created an invalid intermediate segment, then a page-wide Thicken
+selector collided with an object name. Corrections change only the driver and
+preserve application validation and all geometry assertions.
+
+Fresh Vite build and normal offline manifest passed. Browser errors and warnings
+are empty. The [Job receipt](evidence/m5-20261025/sketch-surface-browser-job.json)
+records84.565s, peak2,803,449,856bytes under4GiB, zero active processes, closed
+owned preview5206 and released mutex. Existing applications were preserved.
+M4 acceptance, broader native matrix/seam gates and final main integration remain
+open; this section does not close M5.
+
+### Compatible transition surfaces and matching control-count scan replay
+
+The [browser ledger](evidence/m5-20261025/compatible-blend-browser-ledger.json)
+passes GUI/public-MCP mesh and exact targets crossed with C0/C1 continuity.
+Raw reference and reference-ID paths produce equal patches/display buffers,
+preserve both inputs and selection, and record one history step. Invalid
+references have matching errors and no edits. Both GUI/MCP project reopen
+preserve saved geometry exactly; STEP area matches the original within
+max(1e-6mm², originalArea×1e-8). Explicit cancellation releases the late-created
+native handle, and a dependent transform proves the retained source handle
+still works. Selection-change/closure/unmount paths are source-reviewed rather
+than blend-specific runtime claims.
+
+Rational planar bridges of analytic area80mm² inspect as79.99983591090583mm².
+The inspector's nonadaptive integration is approximate; the fixture explicitly
+uses max(1e-6mm², expectedArea×1e-5), not an inspector-wide accuracy guarantee.
+The initial too-strict fixture failure and missing-GUI-control RED are retained.
+Math suites passed96tests; API focused18passed after fixture corrections, while
+64affected regressions passed on the unchanged production source in the earlier
+run. These are separate run counts, not a fabricated single combined pass.
+
+The same browser run fits the connected200-facet original scan region through
+GUI and MCP using5×5controls/degree3/XY, matching the native serialized count.
+Both patches agree, RMS0.004591297951926558mm/max0.018220739978460188mm.
+Its thickened part is valid1solid/6faces, area15.106088543277144mm² and
+volume0.700819433669289mm³. A scan-derived C1bridge is a valid exact face with
+area16.51170359149748mm². Matching control counts and GUI/MCP results do not
+establish native fitting/seam/solid equivalence.
+
+Fresh build and manifest passed with no browser console errors/warnings or page
+errors. The bounded run took61.612s, peaked2,936,479,744bytes under4GiB and
+finished with zero processes, own preview5206closed and the existing application
+preserved. The [rendered C1 result](evidence/m5-20261025/compatible-blend-exact-c1.png)
+was visually inspected. Complete sketch-chain/native/M4 gates remain open.
+
+### Native solid export r6 and measured comparison
+
+The [r6 receipt](evidence/m5-20261025/native-solid-export-r6.json) records actual
+reopen of the saved r4 solid and STEP AP214 export without axis remapping. The
+47,505-byte file has SHA-256
+`6e2a1ded4afd3b644b4cb64675d9b9f6bebfbfb9097eb327c14a70feedfabdbe`.
+The source QSF remained unchanged. Authenticated finish and Job cleanup passed,
+with zero active processes, closed handles/watchdog, and a 668,844,032-byte peak.
+The earlier [r5 reopen](evidence/m5-20261025/native-solid-reopen-r5.json) ended
+before export and records another headless run overlapping its reservation;
+it does not establish isolated workflow resource usage.
+
+The separate [numerical comparison](evidence/m5-20261025/native-solid-comparison-r1.json)
+imports that actual native solid: valid, one solid/shell, six faces, twelve edges,
+eight vertices, area15.060617015013978mm², volume0.6990570748014502mm³.
+ScanForge thickening of the same native fitted surface at -0.1mm produces
+volume0.6985898570432448mm³, a relative difference0.0006683542375106542.
+The +0.1mm direction produces absolute volume0.6909659689179515mm³ and negative
+signed volume. Both directions are retained; the native icon's signed-normal
+convention and native equivalence remain unestablished. A private-copy
+[adaptive integration diagnostic](evidence/m5-20261025/native-solid-adaptive-diagnostic-r1.json)
+using SurfaceProperties2/VolumeProperties2 with requested epsilon1e-9 gives native
+volume0.6990278588007794mm³ versus ScanForge -0.1mm volume0.6985318471203524mm³,
+relative gap0.0007095735515862645. It does not remove the discrepancy. The
+[diagnostic Job](evidence/m5-20261025/native-solid-adaptive-diagnostic-r1-job.json)
+passed in1.346s, peak648,077,312bytes, zero active processes/handles and unchanged
+source hashes. This diagnostic changes only a private worker copy; no production
+accuracy change or relaxed parity tolerance follows from this comparison. The
+[provenance](evidence/m5-20261025/native-solid-adaptive-diagnostic-provenance.json)
+pins both worker hashes and exact substitutions; requested epsilon is not a
+measured accuracy guarantee.
+
+The [comparison Job](evidence/m5-20261025/native-solid-comparison-r1-job.json)
+exited0 in1.347s, peaked642,322,432bytes, left zero active processes and zero
+kernel handles, and preserved source hashes. Matching 5×5 fitting counts still
+leave a maximum sampled rectangular height difference0.041302661mm and normal
+angle10.43085589degrees; the 200 scanned-triangle centroid metrics remain
+separately reported. Full native fitting/solid equivalence remains open.
+
+### Native solid session r4: accepted thickness and saved QSF
+
+The [r4 receipt](evidence/m5-20261025/native-thicken-r4.json) records restored
+input capability in a fresh owned instance. The saved native fitted surface was
+reopened, isolated from the scan and selected in the viewport. Tree focus alone
+did not enable surface modeling. Native Thicken used default Depth1=0.1mm,
+Depth2 disabled and the middle one-sided direction icon. Accepting it produced
+`Solids(1) / [1] Thicken(1)` and history `Thicken(1) (Solid)`.
+
+Save As created `m5-native-thickened-0p1.qsf`,139,145bytes, SHA-256
+`d60588900e6720e9acb641489db9363753c1bd214c87f8dfe4f7ffea74bf223c`.
+The previous fitted QSF remains byte-identical. The save completed at01:08:28.660UTC,
+slightly after the planned01:08:27input-stop reserve. Scheduled owned finish
+occurred at01:08:42.616; the later export-ribbon attempt reported no foreground
+PID, so no further input followed. Next captures must check the clock before
+each UI batch and reserve30seconds for cleanup.
+
+Actual scheduled cleanup passed: zero active Job processes, owned process exited,
+handles closed, watchdog stopped, no errors; peak669,134,848bytes under4GiB/25%.
+The original three windows remained present. The session ended before STEP
+export. This proves native acceptance/save only; signed-normal interpretation,
+exact solid topology/properties and comparison remain unverified. Export from
+this saved QSF is queued for a later explicitly granted owned session.
+
+### Native solid session r3: desktop input blocked
+
+The next coordinated fresh instance bound exact PID64776/HWND134288746 under
+the unchanged4GiB/25% Job. Its first Raise operation failed
+`GetCursorPos failed: Access is denied. (0x80070005)`; a fresh window rebind and
+one activation retry failed identically. No native modeling/file input was sent,
+and no native artifacts were created. No security/system setting or bypass was
+attempted. The user was asked to check an unlocked, normal Windows desktop.
+
+The [retained receipt](evidence/m5-20261025/native-thicken-input-block-r3.json)
+records authenticated early finish, exited owned process, closed process/thread
+handles, stopped watchdog, no cleanup errors and zero active Job processes.
+Peak allocation was723,509,248bytes. The original three native windows remained
+present. Actual cleanup was relayed before slot release. This is lifecycle
+evidence only; native solid/thickening comparison remains open.
+
+### Exact CAD restore parity and native-input replay
+
+Native-input [browser r2](evidence/m5-20261025/native-fit-browser-failure-r2.log)
+passed GUI/MCP import/thickening equality and history, then exposed position
+buffer drift after public-MCP project reopen. Shared restoration was replacing
+saved buffers/BREP with freshly imported kernel output; GUI restore already
+retained saved fields. Commit `e1a4a9a` now refreshes only the kernel handle and
+caches kernel-ID strings, avoiding retained duplicate remesh buffers. Current,
+undo and redo states preserve saved positions, normals, edge data and BREP.
+Both `project_import` and `backup_restore` reproduce the issue in the
+[red regression](evidence/m5-20261025/restore-retessellation-red.log); the
+[green suite](evidence/m5-20261025/restore-retessellation-green.log) passes5/5.
+The affected [Vite build](evidence/m5-20261025/restore-retessellation-build.log)
+passed. The [hosted receipt](evidence/m5-20261025/restore-hosted-ci.json) now
+confirms the full typecheck/build,49,050tests/64skipped, CAD smoke and formatting
+for evidence head `0b409ae`, which includes this runtime delta.
+
+The corrected [numerical comparison r4](evidence/m5-20261025/native-fit-comparison-r4.json)
+passes inverse-XY checks at every sample. Rectangle maximum inverse error is
+9.12e-12mm; centroid maximum is8.69e-12mm (limit1e-5mm). The earlier rectangle
+height/normal differences are reproduced. Additionally,200 scanned-triangle
+centroids show maximum height difference0.01355066324344989mm, RMS difference
+0.004344839309236202mm and maximum normal angle3.519653197362887degrees. These
+scanned-region metrics accompany, rather than replace, the full-rectangle result.
+Different method/control-count conventions still prevent a native-equivalence claim.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/native-fit-browser-r4.json)
+passes actual native STEP import/inspection, identical GUI/MCP thickening
+buffers, one history step for each operation, Undo/Redo, both GUI and MCP project
+reopen with exact display geometry, source preservation and solid STEP exchange.
+The solid is valid, with1solid/1shell/6faces/12edges/8vertices; area is
+15.059736029491646mm² and volume0.6985898570432448mm³. Reimport matches analytic
+properties within1e-8 relative/1e-6 absolute tolerance. This thickening is
+ScanForge's modeling of native-fitted input, not native QuickSurface thickening.
+
+[Runner](evidence/m5-20261025/native-fit-comparison-runner-r4.json) and
+[Job](evidence/m5-20261025/native-fit-comparison-job-r4.json) confirm actual
+cleanup: exit0, zero active processes, no cleanup errors, port5206 closed,
+peak2,704,715,776bytes under4GiB and13seconds elapsed. Browser console and page
+error lists are empty. [Intermediate r3](evidence/m5-20261025/native-fit-browser-failure-r3.log)
+passed geometry/persistence but failed the console gate because the validation
+build omitted normal postbuild service-worker generation. That failure is
+retained; normal postbuild generation preceded passing r4.
+
+### Captured native fit and numerical comparison
+
+The [second native session](evidence/m5-20261025/native-fit-r2.json) accepted
+Simple fitting on the connected 200-triangle scan: explicit degree3, OXY,
+expansion0 and smoothness0. Native UI U4/V4 serialized a **5×5 cubic control
+net**. These labels cannot be equated with ScanForge's 4×4 control counts.
+The native GUI saved a fresh QSF and exported STEP AP214 in millimetres without
+axis remapping. The owned process exited after authenticated finish, all handles
+closed, zero Job processes remained, and peak allocation was706,473,984 bytes
+under the unchanged4GiB/25% CPU limits. Other native windows were preserved.
+
+The [first numerical comparison](evidence/m5-20261025/native-fit-comparison-r1.json)
+imported actual native STEP and reconstructed its serialized control net.
+Both exact faces were valid and their areas agreed within1e-8 relative/1e-6
+absolute tolerance (6.947693035595898 vs6.947693035595955mm²). Projected Z
+residuals at600 source vertices were RMS0.006061076916250271mm for native and
+0.006583489565586009mm for ScanForge. This is a projected metric, not native
+UI RMS or a closest-point distance. Maximum inverse-XY residual was1.91e-6mm.
+Across289 samples of the shared rectangular domain, maximum height difference
+was0.04350237034515203mm and maximum normal angle13.311760256620706degrees.
+That rectangle includes extrapolation outside the irregular scanned region;
+the complete measured result remains retained. Run r1 did not assert inverse XY
+coverage at those rectangle samples, so these metrics are preliminary. The
+prepared retry rejects any sample exceeding1e-5mm inverse residual and records
+the observed maximum. No native equivalence is claimed.
+
+ScanForge's kernel thickened the native-generated face by-0.1mm into a valid
+one-solid/six-face BREP. This checks our modeling of native input; it is not a
+native QuickSurface thickening result. Kernel cleanup left zero handles and
+source bytes unchanged. The [browser retry predecessor](evidence/m5-20261025/native-fit-browser-failure-r1.log)
+failed because its harness requested a geometry digest before the GUI import job
+settled (BUSY). The [runner](evidence/m5-20261025/native-fit-comparison-runner-r1.json)
+and [Job receipt](evidence/m5-20261025/native-fit-comparison-job-r1.json) retain
+that failure and actual cleanup: port5206 closed, zero active processes.
+The harness now waits for idle after GUI import/thickening; passing r4 above
+supersedes this failed browser attempt without discarding its receipt.
+
+### First owned native session: import and retained fitting-control failure
+
+After explicit coordinator release, a fresh installed QuickSurface 8.0.123
+instance ran under the unchanged 4 GiB / 25% CPU Job and finite lease. Exact
+PID33172/HWND114756374 ownership was checked before input. The connected-region
+STL imported as 200 triangles with explicit millimetre units. The native GUI
+saved `m5-imported-connected-region.qsf` (5,322 bytes; SHA-256 and private output
+path are in the [receipt](evidence/m5-20261025/native-import-r1.json)).
+
+Fitting was not accepted: accessibility indices were unavailable after refresh,
+and coordinate routing around an offscreen window/floating panel was unreliable.
+The existing three windows were left untouched. Authenticated early finish
+completed before the input deadline: native handles closed, no cleanup errors,
+zero active Job processes, peak Job allocation 685,514,752 bytes. Actual cleanup
+was reported to the coordinator before releasing the slot. This establishes
+native import/save and bounded lifecycle only, not fit/continuity/STEP parity.
+
+### Exact freeform admission and timeout recovery
+
+`surface_operation` now admits grid/quad import, knot/crease and snapping on
+authored exact surface targets through the same guarded dependent rebuild used
+by ordinary CAD edits. Snap defaults match the panel's associated-source or
+own-display input. Review found downstream snap sources could change during
+rebuild; the shared fixed-reference guard now rejects them before native work.
+The GUI Snap control submits this same job and shares owned join cancellation.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/exact-freeform-browser.json)
+(`scanforge-853c3b899398f72d`) uses actual grid, knot, crease, snap and ordered
+quad import controls. All five produce identical editable patches and complete
+geometry digests through MCP, one history step, valid exact faces, Undo/Redo and
+project/BREP reopen. Source geometry stays unchanged. Invalid normalized endpoint
+parameters reject before publication through both paths (GUI helper and public
+schema validation). The same run also replays C0/C1 joins and STEP parity.
+
+The [downstream-source red receipt](evidence/m5-20261025/exact-snap-downstream-red.txt)
+reproduces successful mutation of explicit and associated downstream sources.
+The [passing focused checks](evidence/m5-20261025/exact-freeform-focused.txt)
+verify rejection before native work, own-display fallback, explicit missing IDs,
+all five exact helpers, retry/history, source preservation, locks and join cleanup.
+Both static reviews confirm the corrected guard and owned GUI Snap lifecycle.
+
+The separate [timeout/recovery replay](evidence/m5-20261025/cad-timeout-browser.json)
+holds one owned export request until the unchanged 90-second kernel lease fires
+(observed 90.153 s). It verifies worker termination, unchanged source geometry,
+revision/history and no late scene publication. Shared project export/reopen
+restores all exact handles and valid BREP; GUI STEP export then succeeds.
+This is an injected transport stall on bounded authored fixtures, not a native
+algorithm timing or full-project peak-memory claim. Existing admission, kernel
+and three-minute browser guards remain unchanged. Browser/bridge cleanup passes.
+
+An earlier standard build found a TypeScript narrowing error in the snap-source
+callback; capturing its source ID resolves it. The failed build remains in
+`.resources/m5/exact-freeform-build.log`. Provisional receipts are retained and
+are not substituted for the final build. Native operation/continuity/blend
+acceptance, the complete real scan/sketch chain and M4 dependency remain open.
+
+The [final standard build](evidence/m5-20261025/exact-freeform-build.txt) passes
+all twelve typecheck batches. The [full suite](evidence/m5-20261025/exact-freeform-unit.txt)
+passes 49,048 tests, 64 skipped (680 passed files, 18 skipped; 278.58 s).
+The preceding STEP commit `6385d16` passed
+[hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40226919973).
+This new candidate requires its own hosted run; M5 is not ready to merge or close.
+
+### Shared exact-only STEP export
+
+The GUI's exact-only STEP behavior is now an explicit `cadOnly:true` option on
+the existing shared `project_export` job. Strict agent defaults still reject
+mixed scenes. Exact-only export reports excluded IDs within the visibility
+scope and rejects an empty exact selection. GUI delivery uses the same leased,
+quota-bounded immutable artifact and deletes it after download. Owned
+cancellation remains reachable outside inert content.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/step-export-browser.json)
+(`scanforge-5486a5e4f93f43bf`) downloads an actual GUI STEP with a visible scan
+reference and compares it to the agent export. Only FILE_NAME header fields and
+the OpenCascade translator product export counter are normalized. Both files
+reopen as valid one-solid, six-face boxes, with area 600 mm² and volume
+1,000 mm³. Empty-selection GUI/MCP errors match; strict mixed-scene rejection is
+retained. A held owned worker transport enables GUI cancellation before releasing
+the late native reply; no artifact publishes and a subsequent export succeeds.
+Export success/cancellation leaves source geometry, revision and history unchanged.
+This is a bounded transport-cancellation test, not a native algorithm stall.
+
+The [focused API/owner/artifact checks](evidence/m5-20261025/step-export-focused.txt)
+pass 33 tests, including local Blob lifetime, disposed-owner rejection, visibility
+scope, unchanged strict defaults and rejection of this option on other formats.
+Both static reviews found no actionable issue. Earlier harness failures remain
+in `.resources/m5/step-export-browser*.log`: remote download path handling,
+translator counter normalization and a missing upload offset. No failed run is
+counted as a pass. Native operation/continuity/blend acceptance, the full sketch
+chain, other exact freeform admission, resource/recovery and M4 remain open.
+
+The [standard build](evidence/m5-20261025/step-export-build.txt) passes all twelve
+typecheck batches; the [full suite](evidence/m5-20261025/step-export-unit.txt)
+passes 49,040 tests with 64 skipped (680 passed files, 18 skipped; 284.79 s).
+Native UI initialization was retried after this replay and still fails with the
+same kernel-assets path error; no QuickSurface interaction was performed.
+
+### Shared compatible patch joins
+
+GUI joins now submit `surface_operation` with a bounded raw reference; agents can
+use that same input or an existing workspace reference. Mesh and exact `surface`
+recipe targets share one join calculation. Exact publication reuses the ordinary
+guarded rebuild handler and late-result cleanup. Reference geometry stays fixed;
+self/downstream references and target/dependent locks reject before native work.
+The GUI awaits completion, owns cancellation and uses ordinary NURBS ribbon entry.
+
+The [combined built GUI/public-MCP receipt](evidence/m5-20261025/compatible-join-browser.json)
+(`scanforge-ec90a019b73ac134`) exercises C0 and C1 on both representations,
+raw-reference and workspace-reference equality, incompatible seams, unchanged
+failure revision/history/geometry, one accepted history step, source/reference
+preservation, Undo/Redo and editable project reopen. Exact joined faces pass
+BREP inspection and STEP round-trip area/topology checks. The
+[rendered exact controls](evidence/m5-20261025/exact-surface-join.png) were checked.
+The same replay includes edge discovery/cancellation, CAD operations, trim,
+connected real-scan fitting/exchange and invalid BREP rejection.
+
+The [standard twelve-batch build](evidence/m5-20261025/compatible-join-build.txt),
+[full suite](evidence/m5-20261025/compatible-join-unit.txt) (49,038 passed, 64 skipped;
+679 passed files, 18 skipped; 274.13 s) and
+[CAD smoke](evidence/m5-20261025/compatible-join-cad.txt) pass. API/domain and GUI
+static reviews found no actionable defect. Earlier failed browser attempts are
+retained in `.resources/m5/surface-join-browser*.log`; they exposed selector,
+background preparation metadata and mixed-scene STEP fixture assumptions.
+
+This proves authored compatible joins, not persistent seam constraints, general
+blends or native continuity equivalence. The GUI currently skips mesh references
+in STEP export while MCP rejects mixed scenes; that export parity gap remains
+open. Other exact freeform operation admission, native operation/continuity/blend
+acceptance, the sketch chain, resource/recovery coverage and M4 remain gates.
+The preceding edge commit `a533596` passed hosted run `40220590721`; the new join
+candidate still requires its own hosted CI before integration.
+
+### Exact edge discovery and reachable cancellation
+
+Existing read-only `cad_inspect` now optionally returns bounded edge-reference
+pages and the inspected revision. Omission preserves its original summary.
+References include curve kind/type, degeneracy, parameter-order endpoints,
+tolerance-inclusive bounds and analytic length. GUI Fillet/Chamfer use the same
+operation and retain its revision through the shared modeling request.
+
+The [kernel receipt](evidence/m5-20261025/edge-discovery-cad.txt) verifies saved-BREP
+inspection indices against live treatment order for a box, cylinder seam, sphere
+degenerates, all Boolean outcomes and split outputs. Straight, circular and
+quarter-circle lengths match analytic expectations. Fillet/chamfer using a
+discovered index remove the intended supporting edge. Default inspection,
+page bounds, native-store preservation and temporary-file cleanup pass. Retained
+[worker red](evidence/m5-20261025/edge-discovery-red.txt),
+[MCP schema red](evidence/m5-20261025/edge-api-red.txt) and
+[revision-adapter red](evidence/m5-20261025/edge-revision-red.txt) receipts distinguish
+the reproduced gaps from passing checks.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/edge-discovery-browser.json)
+(`scanforge-7d1184beaf6be387`) uses actual Fillet/Chamfer ribbon entry, reads exact
+edge references and selects index 1. Modeling results match complete MCP geometry
+digests. A 36-edge compound exercises GUI pages 32 → 4 → 32 → 4, selection
+retention and unchanged geometry/revision/history. A source revision change
+disables stale GUI application and the public stale request rejects; refreshing
+inspection restores application. The [rendered edge controls](evidence/m5-20261025/cad-edges-fillet.png)
+were visually checked with the source body isolated in the viewport.
+
+The cancellation regression holds the owned diagnostic worker script, clicks
+[Cancel outside the inert panel](evidence/m5-20261025/edge-cancellation.png), verifies
+the shared job is cancelled without scene/history/revision changes, then inspects
+and models successfully. This verifies pending diagnostic cancellation, not every
+mid-algorithm modeling cancellation case. CAD summary inspection and surface trim
+also use this reachable owned-job cancel control. The modeling kernel is retained.
+
+The [standard build](evidence/m5-20261025/edge-discovery-build.txt) passes all twelve
+typecheck batches; [full unit suite](evidence/m5-20261025/edge-discovery-unit.txt)
+passes 49,031 tests, 64 skipped (678 passed files, 18 skipped; 277.13 s). Focused
+contracts, CAD smoke, formatting and diff checks pass. Both static API/worker and
+GUI reviews found no actionable issue. The preceding integrated commit `6cc92cd`
+passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40217826303);
+the new edge candidate needs its own hosted run. Compatible join contracts,
+native/continuity/blend acceptance, sketch chain and M4 dependency remain open.
+
+### Integrated ordinary CAD ribbon access
+
+Merged current main `fcf6e3b` (shared foundation/metrology/style changes) into the
+M5 branch as `9abe1e5`. The [integrated browser receipt](evidence/m5-20261025/ribbon-cad-browser.json)
+uses build `scanforge-d3b3a71d7aca46d3` and actual ribbon buttons for loft, sweep,
+extrude, revolve, Boolean, split and shell. It retains the same shared-job,
+history, exact geometry, analytic solid, connected real-input and exchange
+checks. Fillet/chamfer remain explicit `ui_set` experimental checks; arbitrary
+edge discovery is still open. Reference/native and blend/continuity gates are
+unchanged. Disabled commands now have matching `command_get` availability;
+repeat launchers retain missing handlers as unavailable. Underlying MCP geometry
+operations remain available. Unit tests cover busy/selection/verification gates.
+
+The [integrated standard build](evidence/m5-20261025/integrated-ribbon-build.txt)
+passes all twelve typecheck batches. The [full suite](evidence/m5-20261025/integrated-ribbon-unit.txt)
+passes 49,028 tests, 64 skipped; 678 passed files, 18 skipped (288.12 s).
+The [M6 browser replay](evidence/m5-20261025/integrated-m6-browser.txt) also passes
+measurement/export equality, read-only history, signed/reference deviation,
+heatmap, indexed-source visibility and project reopen. Static review found no
+remaining defect in this ribbon/discovery delta. The preceding dispatch commit
+`85350f7` passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40216697554);
+the new integrated candidate needs its own hosted run after pushing.
+
+### Guarded CAD GUI dispatch
+
+Review found direct GUI writes for recipe-based CAD creation, rebuilding,
+Boolean, revolve and split. They now submit shared `cad_create`/`cad_rebuild`
+jobs. The [red browser receipt](evidence/m5-20261025/cad-dispatch-red.txt) records
+zero shared jobs for a GUI loft before the fix. The [passing combined replay](evidence/m5-20261025/cad-dispatch-browser.json)
+uses build `scanforge-334e87c94a77663a` and verifies one discoverable shared job
+and one history entry for each GUI operation, with public-MCP geometry digest
+equality: loft, sweep, revolve, subtract/union, split, fillet, chamfer, shell and
+polygon extrusion. GUI exact control editing also produces a shared rebuild job.
+Analytic loft/extrusion volume is 12,000 mm³, straight sweep is 1,440 mm³,
+revolve is 4,500π mm³ and matched-box subtraction is 500 mm³.
+
+Review also caught hiding of unused sibling outputs when deriving from one
+split result. Shared input hiding now matches feature ID and output index.
+Both [red regressions](evidence/m5-20261025/cad-output-red.txt) and
+[51 passing focused checks](evidence/m5-20261025/cad-output-green.txt) are retained.
+The browser verifies unused sibling preservation through GUI and MCP Boolean
+operations. Split output names retain their inside/outside roles. Static review
+confirmed both corrections. Ordinary ribbon admission, arbitrary edge selection,
+native parity and the broader operation matrix remain separate gates: these
+core CAD panels were deliberately opened through `ui_set` in this receipt.
+
+Real-input limitation found on further audit: the earlier first-200-triangle
+sample has area 5.913158692150287 mm² but spans approximately 63 × 99 × 18 mm.
+It contains scattered regions. Its fitting/exchange receipts establish those
+specific transaction/geometry checks; they do not establish a useful connected
+scan-derived part. A connected local region and matched native comparison are
+still required before closing the real-part acceptance gate.
+
+The follow-up [connected-region replay](evidence/m5-20261025/connected-region-browser.json)
+uses the source-SHA-fenced [200-facet selection](../tests/fixtures/m5-connected-region.json),
+connected by shared vertices with normal agreement ≥0.9 in a 4 mm seed radius.
+It spans 3.365 × 2.047 × 0.311 mm and has source area 5.7779869601387475 mm².
+Projected 4×4 fitting over 600 samples gives RMS 0.006583489565586009 mm and
+maximum 0.03186297917528691 mm. Its exact surface area is 6.942309509295891 mm²;
+the fitted rectangular domain extends beyond the selected facets. Thickening
+by -0.1 mm yields a valid six-face solid with volume 0.6959681191105266 mm³.
+GUI/MCP complete geometry digests match; STEP round-trip and editable project
+reopen retain topology and analytic properties within 1e-8 relative / 1e-6 absolute.
+The complete source digest remains unchanged. Native r3 fixtures are prepared
+under `C:/repo/alignment-example-files/m5-native-validation-20261026-01a1737c-r3`;
+earlier scattered-region packages remain preserved. This closes the local-region
+fixture gap, not whole-part, sketch-chain or native acceptance.
+The [rendered connected solid](evidence/m5-20261025/connected-region.png) was
+visually inspected after fitting the camera to the visible exact body.
+
+Dispatch candidate checks: standard twelve-batch build/typecheck passes; full unit
+suite passes 48,983 tests with 64 skipped (672 passed files, 18 skipped; 283.26 s);
+CAD smoke, changed-file formatting and diff checks pass. Retained raw
+[build](evidence/m5-20261025/cad-dispatch-build.txt),
+[unit](evidence/m5-20261025/cad-dispatch-unit.txt) and
+[CAD](evidence/m5-20261025/cad-dispatch-cad.txt) receipts identify actual commands.
+The preceding trim commit `f02a924` passed [hosted CI](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40215075254);
+new dispatch changes require their own hosted run after pushing.
+
+### Retained-region exact surface trim
+
+The Surfacing ribbon now opens a shared `trimSurfaces` recipe editor. The worker
+splits copied exact source faces with exact cutters and retains regions selected
+by world points. Inputs and Undo-owned BREP remain unchanged. This is surface
+trimming, distinct from the existing solid-volume split operation.
+
+The production browser replay (`scanforge-8515b03d2fb6942e`) passed actual ribbon
+entry and viewport picking, Escape and close/reopen cancellation, one GUI history
+commit, public-MCP geometry digest equality, and unchanged source/cutter digests.
+Off-surface keep points fail through GUI and public MCP with equal errors and
+unchanged scene, revision and history, followed by a successful trim. Fit surface
+and Thicken also use their actual ribbon buttons in this final replay.
+Analytic areas follow 50 → 40 → 50 → 40 mm² through dependent source rebuild,
+Undo and Redo. Project reopen preserves the editable recipe; STEP round-trip
+preserves a valid 40 mm² exact face with zero solids. The same run also replays
+the real scan fitting/thickening/exchange and invalid-BREP recovery scenarios.
+See [structured receipt](evidence/m5-20261025/surface-trim-browser.json) and
+[rendered retained face](evidence/m5-20261025/surface-trim.png).
+
+Actual-kernel cases also cover retaining both planar regions, a rational curved
+face (area π/2), exact input BREP preservation, ambiguous/off-surface seeds and
+nonintersection rejection. Focused API tests cover single-commit retry behavior,
+failure atomicity, cancellation disposal and locked rebuild. Static review found
+and prompted correction of hidden-panel picking/work ownership; browser replay
+now covers close → viewport click → reopen. These checks do not establish native
+QuickSurface trim equivalence or the broader blend/continuity acceptance gates.
+
+Candidate verification: `npm run build` passes all twelve typecheck batches and
+production build; `npm test` passes 48,981 tests with 64 skipped across 671 passed
+and 18 skipped files (281.93 seconds); `npm run test:cad` passes. Changed-file
+Prettier and `git diff --check` pass. Raw [build](evidence/m5-20261025/surface-trim-build.txt),
+[unit](evidence/m5-20261025/surface-trim-unit.txt) and [CAD](evidence/m5-20261025/surface-trim-cad.txt)
+receipts retain the actual commands and output. Unit tests' temporary release
+fixture emits Git line-ending notices; the application build has no warning or
+error. Native computer-use initialization still fails before acquiring a window.
+
+Initial isolated source base: `e367262fc46b2fee8588c7b3c84ccd41fa7424fa`.
+Baseline build: `scanforge-137c079968291db3`; 49 focused tests passed.
+Surface-edit candidate build: `scanforge-ce836e872afca62d`; 71 focused tests in eight files passed, including retained native arithmetic fixtures. CAD smoke passed. Changed-file formatting and `git diff --check` passed. Full formatting found two pre-existing files: `docs/FEATURE_EVIDENCE.md` and `docs/evidence/global-fine-wrapper-dispatch-20261023.json`.
+
+First full-suite run encountered a newly added test during its intentional red phase: 47,695 passed, one failed, 64 skipped. It is excluded from passing acceptance. The subsequent frozen-source run passed 47,697 tests, with 64 skipped, across 588 passed and 18 skipped files (275.49 seconds). This predates integration of the newer remote main.
+
+Browser ledgers (ignored raw artifacts):
+
+- `.resources/surface-fit/73274cb7-7ae0-47fc-94e7-f90cb3b053e2/ledger.json`: projected fit, control edit, exact CAD edit, STEP export and project reopen.
+- `.resources/surface-fit/8c81c42e-f216-424e-a515-4f6ea9bd594c/ledger.json`: same exact workflow with approximate fitting.
+- `.resources/surface-fit/77555041-e3cb-4e67-85fa-17fdef8bcbc6/ledger.json`: additional original scan-1.stl region. File SHA-256 `6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9`, 13,657,034 bytes. 600 selected vertex samples, projected RMS 0.24469684494336 mm, maximum residual 0.8491197149648428 mm. These are measured residuals, not an accepted native tolerance or whole-part fit certificate.
+
+Browser errors/warnings were empty on these passing runs. Raw failed locator/schema/admission receipts remain in `.resources/m5`; their retries do not erase them. Browser plugin was unavailable; the repository Playwright and official MCP SDK harness was used on separate loopback port 5195 with disposable profiles.
+
+Independent static review found no actionable defects in the initial patch; subsequent test expansion and point-cloud-target guard require final review. No whole-milestone acceptance is inferred from that scoped review.
+
+## Integration and closure gates
+
+Remote `main` was refreshed and is `7e42e81da07d9677a24b8d17c07aecf3e94456ec` (M1 merged). Integrate it into this isolated branch and repeat source/build, application and public MCP checks before any final merge. Earlier evidence belongs to its earlier source only.
+
+### Integration follow-up
+
+Local commit `3fa039e` integrates that main into the M5 branch. The only merge
+conflict was an additive documentation section; both sets of content were kept.
+M1's shared hidden-selection admission is retained; the browser test now expects
+hidden facet 0 to be filtered from explicitly requested selections.
+
+Actual browser project reopen then found a release-relevant codec failure:
+shared BREP text bytes reached TextDecoder, which browsers reject. The codec now
+copies only shared text bytes for decoding. Numeric shared buffer reuse and
+aliasing remain intact. A browser-contract regression failed before the fix;
+33 project/transport/surface tests passed afterward. The actual browser exact
+CAD reopen passed after the fix. Independent review found no actionable defect.
+
+Integrated development-source replay:
+`.resources/surface-fit/25e27b87-6bf9-4004-8370-468b272ec431/ledger.json`.
+Both GUI and public MCP thickened the real scan region by -0.1 mm and produced
+identical complete geometry digests. The original full scan digest was unchanged.
+Browser errors/warnings were empty and both owned browser/MCP processes exited.
+This remains a local real region, not whole-part reconstruction or native
+application parity. Final frozen-source build/suite and exchange/solid-validity
+acceptance remain separate gates.
+
+The final integrated build passed all 12 bounded typecheck batches and Vite,
+with 272 offline assets and identity `scanforge-0cfe7f2dc3750e24`.
+Its production preview on port 5195 passed the same real-region replay:
+[built application receipt](evidence/m5-20261025/built-real-region.json).
+[Build](evidence/m5-20261025/integrated-build.log),
+[CAD smoke](evidence/m5-20261025/integrated-cad.log),
+[formatting](evidence/m5-20261025/integrated-format.log),
+[BREP failure](evidence/m5-20261025/brep-browser-failure.log),
+[red regression](evidence/m5-20261025/brep-shared-red.log) and
+[green regressions](evidence/m5-20261025/brep-shared-green.log) are retained.
+This production check is application/public-MCP evidence; it does not run the
+native reference application or certify exact solid validity.
+
+Candidate `be256edce438e3767fd609147d7d1a2dcd8ad506` passed the final
+[integrated full suite](evidence/m5-20261025/integrated-unit.log): 48,968 passed,
+64 skipped, 668 passed files and 18 skipped files, in 274.81 seconds. The skipped
+entries are not substitutes for any required M5 acceptance replay. This candidate
+includes main `7e42e81`, the shared freeform fix and the BREP decoder fix. It was
+unpublished at that checkpoint; the later pushed inspection candidate includes it.
+
+Next verification gap: thickening currently checks the maker's completion and
+non-null result, but `register` does not expose exact validity, solid/shell counts
+or exact mass properties. Matching display digests alone does not certify a
+valid solid boundary. Add shared exact inspection needed by GUI/MCP acceptance,
+then verify the real-region output and exchange with that stronger evidence.
+
+### Exact inspection and real-region exchange
+
+The shared `cad_inspect` operation and Properties inspection panel now expose
+saved exact BREP validity, unique topology counts and analytic mass properties.
+Inspection runs in a disposable kernel, so cancellation or timeout does not
+reset the live model. Source limits, cancellation, stale revision rejection,
+read-only history/revision behavior and native-handle/virtual-file cleanup are
+covered. Box area/volume and topology, surface-only zero volume and reversed
+signed solid volume passed actual OpenCascade tests. Static review found no
+actionable defect.
+
+Build `scanforge-b3dd01c1e92112e4` passed all 12 bounded typecheck batches.
+The full suite passed **48,974 tests / 64 skipped**, across 669 passed and 18
+skipped files, in 277.99 seconds. CAD smoke and repository formatting passed.
+Retained [build](evidence/m5-20261025/inspection-build.log),
+[unit](evidence/m5-20261025/inspection-unit.log),
+[CAD](evidence/m5-20261025/inspection-cad.log) and
+[format](evidence/m5-20261025/inspection-format.log) receipts identify this
+inspection slice. Earlier suite counts above remain historical.
+
+The [public-MCP/browser exchange receipt](evidence/m5-20261025/exact-inspection-exchange.json)
+and [GUI inspection screenshot](evidence/m5-20261025/cad-inspection.png) verify:
+
+- GUI and MCP exact inspection agree and leave revision/history unchanged.
+- The real 200-facet region produces matching GUI/MCP fitted patches and
+  thickening digests, including Undo/Redo. Kernel inspection reports valid BREP,
+  one solid, one shell, six faces, twelve edges and eight vertices.
+- Analytic area is 156773.02271710781 mm² and signed volume is
+  7849.205500441478 mm³. STEP reopen retains those topology counts and properties
+  within 1e-8 relative / 1e-6 absolute tolerance. Project reopen reproduces them
+  exactly and retains the editable thickening recipe and original scan digest.
+- The native-input STL is exported through shared selection copy, then reopened
+  and refitted to prove identical controls. Source/region digests and derived
+  STL/STEP file hashes are retained. Inputs and expected outputs are saved outside
+  Git at `C:/repo/alignment-example-files/m5-native-validation-20261025-01a1737c-r1`.
+
+An earlier expanded replay exceeded the fixture's five-second job observation
+budget during project reopen. The failed receipt remains in `.resources/m5`.
+The harness now polls within the existing 90-second kernel lease plus five
+seconds for settlement; application/resource guards and the three-minute outer
+browser lease are unchanged. The complete replay subsequently passed.
+
+Native capture remains unrun: both computer-use runtimes fail initialization
+with `failed to write kernel assets: The system cannot find the path specified.
+(os error 3)`, including after reset. No native window was opened or operated.
+The coordinator's M2/M4/M6 exclusive native input slots remain respected.
+Exact OpenCascade inspection is not native QuickSurface workflow equivalence or
+a global self-intersection certificate. General trimming/blends, complete
+scan-to-sketch/whole-part operation-matrix acceptance and M4's dependency gate
+remain open; M5 merge and closure are still pending.
+
+The verified inspection source is commit
+`4bd9cc4f157bc405b4b70370950d792e7002d499`, pushed on branch
+`codex/m5-surfaces-cad` and attached as draft [PR #12](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/pull/12).
+Hosted validation run `40208687084` passed for that exact head. The PR
+remains a work-in-progress M5 candidate; all remaining acceptance gates must pass
+before merge or tracker closure.
+
+### Invalid CAD publication guard
+
+Inspection found a renderable but invalid box with one reversed face was accepted
+by CAD import. The [red regression](evidence/m5-20261025/invalid-publication-red.log)
+reproduces that missing rejection. The common kernel registration boundary now
+runs BRepCheck before meshing or handle publication; rejected shapes are deleted.
+The [green CAD suite](evidence/m5-20261025/invalid-publication-green.log) passes all
+existing operation/exchange checks plus invalid topology, signed orientation and
+unchanged native-store checks.
+
+The [built GUI/public-MCP replay](evidence/m5-20261025/invalid-publication-browser.json)
+confirms both import paths reject the same invalid BREP, preserve revision/history
+and retain live modeling handles for subsequent exact reference inspection. The
+complete positive real-region/exchange replay also passed after the guard. This
+JavaScript-worker-only runtime delta passed an affected Vite build (identity
+`scanforge-da02130741814812`); TypeScript sources are unchanged from the preceding
+12-batch build/full suite. New exact-head hosted CI is required after pushing it.
+
+The prepared native STL remains byte-identical to the newer replay. STEP payloads
+also match after removing only the FILE_NAME header timestamp; raw STEP hashes
+differ because export times differ. Both hashes and the normalized comparison
+are [retained separately](evidence/m5-20261025/fixture-header-comparison.json).
+The earlier private native fixtures are preserved, not overwritten.
+
+M1 issue #1 is closed with reviewed evidence and merge #10. M4 issue #4 remains open as of this audit and must satisfy its dependency gate. The native QuickSurface window is shared with M2–M6 coordination; do not clear or operate it without an ownership handoff. M5 needs a dedicated native scan-fitting/surface/CAD/exchange validation window.
+
+Remaining: complete the approved operation matrix and prepared fixes, real scan-to-sketch-to-surface-to-solid workflow, matching native settings/tolerances, solid validity/seams/normals, complete exact exchange round-trips, resource/recovery coverage, final review and exact-candidate CI. Merge and tracker closure follow verified acceptance; neither has been performed for M5.

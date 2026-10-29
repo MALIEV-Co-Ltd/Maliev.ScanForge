@@ -1,0 +1,50 @@
+[
+  {
+    "file": "sketch-browser-green-r4-job.json",
+    "sha256": "5f86fa3f1a0a78ad87e01f840e7f648323cf032658cca9c9d9062e7a15d19827"
+  },
+  {
+    "file": "sketch-browser-green-r4-runner.json",
+    "sha256": "b5afe746de56e7dac291694fe8f36ec63632615128020e412ed3eaf878a82e2d"
+  },
+  {
+    "file": "sketch-browser-green-r4-session-ledger.json",
+    "sha256": "1ac8b5da4cff2e4d7fc492e42d888500c5caf54bc12ff2ca3d71eb7f5fb667b3"
+  },
+  {
+    "file": "sketch-browser-green-r4-real-scan.json",
+    "sha256": "cb4b7fbddd87cdef44355f90e6d3666533ba7d14ba3e162552392240b447bf89"
+  },
+  {
+    "file": "sketch-browser-green-r4-gui-mcp.json",
+    "sha256": "de860cafcbd54582e022001cc22445cb1cc82344f39c74e574840c67aea173e5"
+  },
+  {
+    "file": "sketch-browser-green-r4-analytic-mcp.json",
+    "sha256": "e1516ac4f0d622b59fb91db510a19bd5f25104581af84c34f90f3d9b3ff9560f"
+  },
+  {
+    "file": "sketch-browser-green-r4-job.log",
+    "sha256": "e67fb971845ab4530f7454cb7a6c69fde27392a42fba102828ce0e7de9a973d5"
+  },
+  {
+    "file": "sketch-browser-green-r4-browser.log",
+    "sha256": "d3d6fb05b6ff78a401eeb5baedbb314c46bef31f04afec1d9cd1d19f33a93601"
+  },
+  {
+    "file": "sketch-browser-green-r4-authored-profile.png",
+    "sha256": "8471088353b0b9807b85b6f98bd2a02e037f59d9b772d73ffc0dc55c4705c470"
+  },
+  {
+    "file": "sketch-browser-green-r4-gui.step",
+    "sha256": "705c54384db0a013b84c46c7ecd77fe1cc25460590023219feb86180f7e784b1"
+  },
+  {
+    "file": "sketch-browser-green-r4-mcp.step",
+    "sha256": "495ced53b04482e8325eea2424b7d35b84280979214a885af308df79cff7e549"
+  },
+  {
+    "file": "sketch-browser-green-r4-ledger.json",
+    "sha256": "bb16e4135f5e8d669281d3857295415bcfe3074d00c76654ba4c75b5c23798cf"
+  }
+]

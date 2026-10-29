@@ -19,6 +19,8 @@ export const commandWorkspaces = {
   sewSurfaces: ["advancedCad", "Sew surfaces"],
   shell: ["advancedCad", "Shell"],
   surfaceThicken: ["advancedCad", "Thicken surface"],
+  sketchSurface: ["sketchSurface", "Surface from sketch"],
+  trimSurfaces: ["trimSurfaces", "Trim surfaces"],
   splitSolid: ["advancedCad", "Split solid"],
   circularPattern: ["advancedCad", "Circular pattern"],
   linearPattern: ["advancedCad", "Linear pattern"],

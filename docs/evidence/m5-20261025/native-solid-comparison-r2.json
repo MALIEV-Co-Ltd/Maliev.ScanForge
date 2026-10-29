@@ -1,0 +1,195 @@
+{
+  "nativeUi": {
+    "method": "Simple",
+    "uLabel": 4,
+    "vLabel": 4,
+    "degree": 3,
+    "orientation": "OXY",
+    "expand": 0,
+    "smoothness": 0
+  },
+  "nativeSerialized": {
+    "countU": 5,
+    "countV": 5,
+    "degreeU": 3,
+    "degreeV": 3,
+    "knotsU": [0, 0, 0, 0, 0.500025251021, 1, 1, 1, 1],
+    "knotsV": [0, 0, 0, 0, 0.50043632345, 1, 1, 1, 1]
+  },
+  "sourceHash": "b2b80efc269999188cae65751f408d70a8c462b93f20524b57f3ce0850b2576e",
+  "cachedScanforgeFitSha256": "a52b9d9b3691281e6084bd07f07a7d1916044dab3c1b325937ad5660f71f0a65",
+  "comparedScanforgeFit": {
+    "provenance": "Fresh shared fitter on hash-pinned connected STL; matching serialized control counts, not native UI labels or algorithm identity",
+    "options": {
+      "countU": 5,
+      "countV": 5,
+      "degree": 3,
+      "projection": "xy",
+      "sampleLimit": 10000
+    },
+    "samples": 600,
+    "rmsMm": 0.004591297951926558,
+    "maxErrorMm": 0.018220739978460188,
+    "guiMcpFiveControlFitVerified": false
+  },
+  "nativeStepSha256": "1c7bf1331f1294b387f4b059cbd60ed66671abe9e629b3b16307f6d2c6bfdfd7",
+  "reports": {
+    "native": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.947693035595898,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    },
+    "reconstructed": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.947693035595955,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    },
+    "scanforge": {
+      "units": "mm",
+      "valid": true,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 4,
+      "vertices": 4,
+      "areaMm2": 6.954012894977299,
+      "signedVolumeMm3": 0,
+      "volumeMm3": 0,
+      "topologyVisits": 14
+    }
+  },
+  "nativeProjectedResidual": {
+    "scope": "Projected Z residual at source XY, not closest-point/native UI RMS",
+    "samples": 600,
+    "rmsMm": 0.006061076916250271,
+    "maxAbsMm": 0.024178628080392173,
+    "maxInverseXyResidualMm": 0.000001907355684893494
+  },
+  "scanforgeProjectedResidual": {
+    "scope": "Projected Z residual at source XY, not closest-point/native UI RMS",
+    "samples": 600,
+    "rmsMm": 0.004591297951926558,
+    "maxAbsMm": 0.018220739978460188,
+    "maxInverseXyResidualMm": 2.1316282072803006e-14
+  },
+  "commonDomain": {
+    "scope": "Intersection of control-net XY bounds, with projected inverse residual checked at every sample; includes extrapolation outside the scanned region",
+    "inverseXyToleranceMm": 0.00001,
+    "maxInverseXyResidualMm": 9.120106647678277e-12,
+    "min": [-3.405958652496, -37.81879615783],
+    "max": [-0.04079938307404518, -35.772239685058594],
+    "samples": 289,
+    "maxAbsZDifferenceMm": 0.04130266100753488,
+    "rmsZDifferenceMm": 0.007301890196953432,
+    "normalSamples": 289,
+    "minimumNormalDot": 0.9834741119744427,
+    "maximumNormalAngleDegrees": 10.430855889612687
+  },
+  "scanforgeKernelThickeningOfNativeSurface": {
+    "scope": "ScanForge kernel on actual native fit; not a native QuickSurface thicken result",
+    "thicknessMm": -0.1,
+    "report": {
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 15.059736029491646,
+      "signedVolumeMm3": 0.6985898570432448,
+      "volumeMm3": 0.6985898570432448,
+      "topologyVisits": 80
+    }
+  },
+  "capturedNativeSolid": {
+    "sha256": "6e2a1ded4afd3b644b4cb64675d9b9f6bebfbfb9097eb327c14a70feedfabdbe",
+    "report": {
+      "units": "mm",
+      "valid": true,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "areaMm2": 15.060617015013978,
+      "signedVolumeMm3": 0.6990570748014502,
+      "volumeMm3": 0.6990570748014502,
+      "topologyVisits": 80
+    },
+    "scope": "Actual native Thicken default Depth1=0.1mm, middle one-sided icon; compare both signed ScanForge directions rather than infer the icon's normal convention",
+    "signedComparisons": [
+      {
+        "thicknessMm": -0.1,
+        "report": {
+          "units": "mm",
+          "valid": true,
+          "solids": 1,
+          "shells": 1,
+          "faces": 6,
+          "edges": 12,
+          "vertices": 8,
+          "areaMm2": 15.059736029491646,
+          "signedVolumeMm3": 0.6985898570432448,
+          "volumeMm3": 0.6985898570432448,
+          "topologyVisits": 80
+        },
+        "areaDifferenceMm2": -0.0008809855223326224,
+        "volumeDifferenceMm3": -0.0004672177582053516,
+        "relativeAreaDifference": 0.0000584959780501931,
+        "relativeVolumeDifference": 0.0006683542375106542
+      },
+      {
+        "thicknessMm": 0.1,
+        "report": {
+          "units": "mm",
+          "valid": true,
+          "solids": 1,
+          "shells": 1,
+          "faces": 6,
+          "edges": 12,
+          "vertices": 8,
+          "areaMm2": 14.903473000578963,
+          "signedVolumeMm3": 0.6909659689179515,
+          "volumeMm3": 0.6909659689179515,
+          "topologyVisits": 80
+        },
+        "areaDifferenceMm2": -0.15714401443501558,
+        "volumeDifferenceMm3": -0.008091105883498706,
+        "relativeAreaDifference": 0.01043410202107644,
+        "relativeVolumeDifference": 0.011574313707928332
+      }
+    ],
+    "nativeEquivalenceEstablished": false
+  },
+  "scannedTriangleCentroids": {
+    "scope": "200 source-triangle XY centroids; reported alongside the full rectangular domain, not substituted for it",
+    "samples": 200,
+    "inverseXyToleranceMm": 0.00001,
+    "maxInverseXyResidualMm": 8.69043802726737e-12,
+    "maxAbsZDifferenceMm": 0.011657127712510373,
+    "rmsZDifferenceMm": 0.0033765028230709556,
+    "minimumNormalDot": 0.9953367452212163,
+    "maximumNormalAngleDegrees": 5.535426843831786
+  },
+  "cleanup": {
+    "remainingKernelHandles": 0,
+    "sourceUnchanged": true
+  }
+}

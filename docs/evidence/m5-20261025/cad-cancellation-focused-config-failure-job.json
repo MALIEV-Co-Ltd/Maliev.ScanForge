@@ -1,0 +1,15 @@
+{
+  "command": [
+    "C:/Program Files/nodejs/node.exe",
+    ".resources/m5/check-cad-cancel-focused.mjs",
+    "green-r1"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 55,
+  "exitCode": 1,
+  "peakJobBytes": 491008000,
+  "totalProcesses": 23,
+  "activeAfter": 0,
+  "passed": false,
+  "elapsedSeconds": 14.428555299993604
+}

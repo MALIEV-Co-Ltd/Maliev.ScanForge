@@ -1,0 +1,24 @@
+Resource admission: 12642 MiB available; 1536 MiB required.
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: GUI/MCP exact saved BREP bytes must match
++ actual - expected
+
++ '8fbe3eaec34431e9056c862ded358fc4053d6b861bccddc3a476c256cd3c7f30'
+- '6242f39520d82dfb8192de6e43bb683f924df61f4b63da5c58c158971de3671c'
+
+    at runPair (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:545:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async replayRealCadMatrix (file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/helpers/real-cad-matrix-browser.mjs:626:7)
+    at async file:///C:/Users/Shoung/.codex/worktrees/m5-surfaces-cad/Maliev.ScanForge/tests/surface-fit-browser.mjs:1193:5 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '8fbe3eaec34431e9056c862ded358fc4053d6b861bccddc3a476c256cd3c7f30',
+  expected: '6242f39520d82dfb8192de6e43bb683f924df61f4b63da5c58c158971de3671c',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

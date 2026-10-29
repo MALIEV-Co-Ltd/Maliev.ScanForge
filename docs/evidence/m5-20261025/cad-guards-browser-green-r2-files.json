@@ -1,0 +1,26 @@
+[
+  {
+    "file": "cad-guards-browser-green-r2-job.json",
+    "sha256": "caaf8066ba0faa9cc59923a5a41d5d189acfbe0c00937ff753d766fada1df160"
+  },
+  {
+    "file": "cad-guards-browser-green-r2-runner.json",
+    "sha256": "0e6b10c2a51240fae5f4e145491f46287984d79d015171737930a938444d3ffb"
+  },
+  {
+    "file": "cad-guards-browser-green-r2-session-ledger.json",
+    "sha256": "9a05cd7e41809a3e57ccf8fd9a889b55bfb6ffdc30379a664c3ee253b3aa0dc5"
+  },
+  {
+    "file": "cad-guards-browser-green-r2-job.log",
+    "sha256": "871b84c3e3cf7f5bac87547c7b5ad1fa53b9ddaee4cf2c051446bc52cf783643"
+  },
+  {
+    "file": "cad-guards-browser-green-r2-browser.log",
+    "sha256": "e6d382313579171eb13b157f4fa82a3d9178f96d22cb16c6d88e96a1e68bad69"
+  },
+  {
+    "file": "cad-guards-browser-green-r2-ledger.json",
+    "sha256": "b89ed03006e2dee8415474f4499d2e9c54ee8336f77cb6a6b9523b9f1911d144"
+  }
+]

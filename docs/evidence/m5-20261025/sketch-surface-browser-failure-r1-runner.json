@@ -1,0 +1,41 @@
+{
+  "startedAt": "2026-10-26T09:49:38.375Z",
+  "children": [
+    {
+      "label": "build",
+      "pid": 62692,
+      "startedAt": "2026-10-26T09:49:38.386Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T09:49:47.999Z"
+    },
+    {
+      "label": "manifest",
+      "pid": 48856,
+      "startedAt": "2026-10-26T09:49:48.009Z",
+      "exitCode": 0,
+      "signal": null,
+      "finishedAt": "2026-10-26T09:49:48.670Z"
+    },
+    {
+      "label": "preview",
+      "pid": 25460,
+      "startedAt": "2026-10-26T09:49:48.677Z",
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "finishedAt": "2026-10-26T09:50:33.760Z"
+    },
+    {
+      "label": "browser",
+      "pid": 24304,
+      "startedAt": "2026-10-26T09:49:48.927Z",
+      "exitCode": 1,
+      "signal": null,
+      "finishedAt": "2026-10-26T09:50:33.753Z"
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Sketch surface browser replay failed\n\n1 !== 0\n",
+  "passed": false,
+  "previewPortClosed": true,
+  "finishedAt": "2026-10-26T09:50:33.761Z"
+}
