@@ -43,5 +43,16 @@
     "logSha256": "30eb057fd7d245d0c5948e3659934b22f49c3fb8283f528641893a44d8f7e43f",
     "guardSha256": "2e21bcbd8cc9b4f8f0e6641a86a70d6267e1034dec67dcfa2e013baedf4810c8"
   },
+  "reuseYieldAndBase64Diagnostics": {
+    "method": "Instrument the second array's cooperative reuse comparison. The first run uses the existing base64 conversion; the second uses native Uint8Array.toBase64 with the original conversion as fallback in the combined experimental build. Both use the real downloaded file and no forced collection.",
+    "yieldTrace": "Build scanforge-aeb73f968795d07f timed out before the decoder returned, so the new reuse events were not reached. Peak job bytes 4324261888 exceeded the nominal limit; cleanup confirmed. Log SHA-256 104ae88ab49fbd1197147abf752551f13652f934a73a1a57d95664c767a50dd4; guard SHA-256 54f35cf73bf32456e54d42a311a94a5da762b9084c8a531ccd5d4e92aeb362a4.",
+    "nativeBase64": "Build scanforge-2684aee0e4a5ebab downloaded and reopened the 475566423-byte file, matched source, cutter and extracted geometry digests, and reported no page errors. All four numeric arrays reused existing arrays; the second comparison and its observed yields completed. Peak job bytes 4295688192 exceeded the 4294967296-byte limit by 720896 bytes, so this is not resource acceptance despite the guard's success status. Cleanup confirmed. The download hash 2e5cac8f284f04de396cdb2b63880053d2e8e9aea1b4b419a68749d56bf03680 has no independent reference.",
+    "browserControl": "Installed headless Chrome 156 native conversion matched the existing btoa path for nine deterministic lengths from 0 to 1048576 bytes, including 262144. Browser control guard SHA-256 02c7b3bdd795c8d500859f37962b5371c95e17d829b8790ba39a87110b66a87b.",
+    "apiSha256": "5b3dea3a9374c984558dbc618913996ac8fedebf95ca0ee679c8559a13c5cf0a",
+    "numericReuseSha256": "1b4f0a51b1affb3f7a5979842fc43b0c706e0161e98be3927d51029f357c07e2",
+    "logSha256": "95fd660d9dcc62bd44be208a3ff520cfaa42a7668b37a8b804633dd13bd971be",
+    "guardSha256": "161252d6e1f4df86e53fab0b93e297b09900d2afd3e3f3b08906edbd3b148e54",
+    "limits": "Separate single runs cannot prove the base64 change caused the difference. The worker, deferred decoder, hash, conversion and tracing are unreviewed experimental changes; the strict resource gate, independent transfer integrity, public-MCP reopen and native acceptance remain open."
+  },
   "limits": "Single instrumented run with three experimental changes; their individual effects are not established. The worker lacks production lifecycle, cancellation, error, authorization and compatibility review. No independent full-download integrity, public-MCP import after download, post-reopen history, full suite, native Split acceptance or resource guarantee is established. No application change was integrated."
 }

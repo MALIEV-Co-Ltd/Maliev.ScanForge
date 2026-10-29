@@ -522,3 +522,5 @@ A [combined response-worker and decoder experiment](evidence/m2-response-worker-
 Another combined run opened the actual MCP-downloaded file, whose on-disk hash matched the incremental download hash. The decoder validated the project chunks and returned, but GUI open timed out and the nominal memory limit was exceeded. It did not verify reopened geometry or establish equality to an independent original export.
 
 An instrumented repeat localized its last reported main-thread stage: the first numeric buffer reused an existing array, while the second buffer's reuse check started without reporting completion before timeout. This trace does not establish the exact cause of the stall or close the resource gate.
+
+Further [reuse and native-base64 diagnostics](evidence/m2-response-worker-reopen-experiment-20261029.json) include one run that timed out before decoder return and one that reopened the actual downloaded project with matching geometry. The latter reused all four numeric arrays but peaked 720896 bytes above the nominal 4 GiB limit. These isolated runs do not prove the cause of the difference or satisfy resource acceptance.
