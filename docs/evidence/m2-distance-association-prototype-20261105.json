@@ -24,5 +24,13 @@
     "The 0.0001 association is an inferred hypothesis, not a proven general native rule. Unique nearby contacts can be unrelated and the candidate changes authored geometry.",
     "The prototype has not had full tests, type checking, code review, GUI or MCP replay, native winding or topology comparison, or a worst-case JS-map memory bound. It is not integrated.",
     "The four radius native discrepancies with source-area loss, broader M2 acceptance and final CI remain open."
-  ]
+  ],
+  "nativeDisjointFollowup": {
+    "fixture": "tests/fixtures/m2-nearby-disjoint-cuts-20261105/README.md",
+    "result": "Two separate cutter faces with endpoints about 0.000064 mm apart were imported in mm. QuickSurface exported six facets joining their near endpoints; the cutter round trip retained unordered input vertices. The isolated prototype matched the native unordered facets; the current shared operation does not. This fixture has on-plane cutter edges and does not prove behavior for all unrelated cuts.",
+    "prototypeTest": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105/tests/m2-nearby-disjoint-native.test.ts",
+    "prototypeTestSha256": "1dd7435df896f22199978d7f15d42c82c94cb2a10184a645dda3d2d7be0c0ff6",
+    "guardSha256": "bc80fec76ef206003674fd1b68a5ee0dae8e410ff0909c04ef7f837b382dda1b",
+    "validation": "2 passed; 4 GiB job peak 329375744 bytes; cleanup confirmed."
+  }
 }
