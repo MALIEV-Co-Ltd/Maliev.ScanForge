@@ -32,5 +32,12 @@
     "prototypeTestSha256": "1dd7435df896f22199978d7f15d42c82c94cb2a10184a645dda3d2d7be0c0ff6",
     "guardSha256": "bc80fec76ef206003674fd1b68a5ee0dae8e410ff0909c04ef7f837b382dda1b",
     "validation": "2 passed; 4 GiB job peak 329375744 bytes; cleanup confirmed."
-  }
+  },
+  "review20261105": {
+    "topology": "Independent review reproduced a closed cut-edge fan whose endpoints also belong to unrelated boundary fans. The prototype counts the vertices as boundary and skips the midpoint, leaving the closed fan cut unopened. tests/m2-seam-branching.test.ts now pins the baseline behavior; the prototype fails it.",
+    "workBudget": "A face with 1100 unrelated interior segments and 1100 boundary contacts exceeds the default work budget in the prototype because every unbound endpoint scans all contacts. tests/scan-split-finite-face-input.test.ts pins the baseline case; the prototype fails it.",
+    "memory": "The prototype collects unaccounted string-keyed edge maps for isolated tips before checking its typed-memory allowance. A high-valence tip or many isolated tips can retain O(triangles) extra objects. An explicitly bounded approach is required before integration.",
+    "scope": "The disjoint on-plane cutter native control supports association on that fixture but does not establish native handling of an unrelated short interior segment whose two ends are both near the same boundary contact."
+  },
+  "status": "Prototype rejected pending topology, bounded-work and bounded-memory fixes; no production source change integrated."
 }

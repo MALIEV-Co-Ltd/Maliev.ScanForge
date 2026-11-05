@@ -130,6 +130,37 @@ it("binds distinct precise contacts by their exact edge parameters", () => {
   ).toThrow(/ambiguous/);
 });
 
+it("handles many unrelated interior endpoints and boundary contacts within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = (i + 1) / (count + 1);
+    return {
+      points: [[x, 0.1, 0] as Vec3, [x, 0.2, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t = (i + 1) / (count + 1);
+        return {
+          t,
+          point: [t, 0, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.boundaryContacts).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
 it("binds actual finite intersections through the indexed contact registry for adjacent faces", () => {
   const vertices: Vec3[] = [
     [0, 0, 0],
