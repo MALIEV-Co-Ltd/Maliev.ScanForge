@@ -1,0 +1,51 @@
+{
+  "scope": "Synthetic QuickSurface Pro 8.0.123 boundary-to-interior and folded finite mesh Split controls, Envelope off; not general Split parity.",
+  "nativeFixtures": [
+    "tests/fixtures/m2-nearby-short-disjoint-20261105",
+    "tests/fixtures/m2-subdivided-boundary-20261105",
+    "tests/fixtures/m2-folded-open-native-20261105"
+  ],
+  "build": "scanforge-45ac513066238984",
+  "applicationAndPublicMcp": {
+    "folded": {
+      "nativeFacetCount": 11,
+      "nativeFacetMultisetMatch": true,
+      "boundaryLengthMm": 8,
+      "guiMcpIndexedGeometryMatch": true,
+      "undoRedo": true,
+      "binaryReopen": true,
+      "heldResultCancellation": true,
+      "guiCloseCancellation": true,
+      "pageErrors": 0,
+      "initialReplay": "native facets matched, then held GUI cancellation wait timed out after 12 seconds; cleanup succeeded; retry passed"
+    },
+    "subdivided": {
+      "nativeFacetCount": 6,
+      "nativeFacetMultisetMatch": true,
+      "sharedCutEdges": 2,
+      "guiMcpIndexedGeometryMatch": true,
+      "undoRedo": true,
+      "binaryReopen": true,
+      "heldResultCancellation": true,
+      "guiCloseCancellation": true,
+      "pageErrors": 0
+    }
+  },
+  "guardedValidation": {
+    "splitSuite": "400 passed, 6 expected failures, 5 skipped on preceding edge-sort revision; final start-bit revision included in full suite",
+    "originalPly3": "one exact-revision low-level precise candidate test passed; peak Job bytes 2126401536; not GUI/MCP lifecycle",
+    "mixedLoopStress": "100000-edge loop with a short path passed tight stage allowance; peak Job bytes 370593792",
+    "build": "14 typecheck batches and production build passed; peak Job bytes 1670963200",
+    "browserFoldedPeakJobBytes": 919797760,
+    "browserSubdividedPeakJobBytes": 922828800,
+    "jobLimitBytes": 4294967296,
+    "fullSuite": "50648 passed, 7 expected failures, 76 skipped; 360-second attempt timed out, 900-second retry passed",
+    "fullSuitePeakJobBytes": 1400569856
+  },
+  "limits": [
+    "Packed-value and lookup-entry estimates have separate ceilings and do not establish combined process memory.",
+    "Broader native geometry, corner and radius discrepancies, large GUI/MCP lifecycle, final validation and merge remain open.",
+    "The folded GUI cancellation replay timed out once before the passing retry; the cause is not established.",
+    "The precise packed-value and lookup-entry estimates are independent of the full Job peak."
+  ]
+}

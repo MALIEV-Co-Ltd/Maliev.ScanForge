@@ -76,34 +76,36 @@ it("pins native subdivided boundary-to-interior topology and exported facets", (
     ).toHaveLength(2);
 });
 
-it.fails(
-  "matches both native shared indexed segments for the subdivided cutter",
-  () => {
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "split",
-      positions: source(),
-      target: cutter(),
-    });
-    const m = result.indexedMesh!;
-    const faces = Array.from({ length: m.triangles.length / 3 }, (_, i) =>
-      Array.from(m.triangles.slice(i * 3, i * 3 + 3)),
-    );
-    const ids = [1, 1.15, 1.3].map((y) =>
-      Array.from({ length: m.vertices.length / 3 }, (_, i) => i).find(
-        (i) =>
-          m.vertices[i * 3] === 0.5 &&
-          Math.abs(m.vertices[i * 3 + 1] - y) < 1e-6 &&
-          m.vertices[i * 3 + 2] === 0,
-      ),
-    );
-    expect(ids.every((id) => id !== undefined)).toBe(true);
-    for (const [a, c] of [
-      [ids[0]!, ids[1]!],
-      [ids[1]!, ids[2]!],
-    ])
-      expect(
-        faces.filter((face) => face.includes(a) && face.includes(c)),
-      ).toHaveLength(2);
-  },
-);
+it("matches both native shared indexed segments for the subdivided cutter", () => {
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: source(),
+    target: cutter(),
+  });
+  const native = mesh(
+    "native-result.stl",
+    "a824ebbfbcc5ab913f18ee3920f4073f2e385dc4e1519cd2fca1127c2b2f4d09",
+  );
+  expect(facets(result.positions!)).toEqual(facets(native));
+  const m = result.indexedMesh!;
+  const faces = Array.from({ length: m.triangles.length / 3 }, (_, i) =>
+    Array.from(m.triangles.slice(i * 3, i * 3 + 3)),
+  );
+  const ids = [1, 1.15, 1.3].map((y) =>
+    Array.from({ length: m.vertices.length / 3 }, (_, i) => i).find(
+      (i) =>
+        m.vertices[i * 3] === 0.5 &&
+        Math.abs(m.vertices[i * 3 + 1] - y) < 1e-6 &&
+        m.vertices[i * 3 + 2] === 0,
+    ),
+  );
+  expect(ids.every((id) => id !== undefined)).toBe(true);
+  for (const [a, c] of [
+    [ids[0]!, ids[1]!],
+    [ids[1]!, ids[2]!],
+  ])
+    expect(
+      faces.filter((face) => face.includes(a) && face.includes(c)),
+    ).toHaveLength(2);
+});

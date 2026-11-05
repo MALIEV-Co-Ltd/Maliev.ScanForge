@@ -152,54 +152,51 @@ it("processes large closed loops and branches with native retention under the st
   }
 }, 30000);
 
-it.fails(
-  "retains a simple path in a mixed loop while rejecting a disconnected intermediate fan",
-  () => {
-    const base = [
-      0, 2, 0, 0, 1, 0, 1, 1, 0, 0.5, 1, 0, 0.5, 1.15, 0, 0.5, 1.3, 0,
-    ];
-    const faces = [5, 1, 4, 4, 1, 3, 5, 4, 2, 5, 0, 1, 4, 3, 2, 5, 2, 0];
-    const tetra = [3, 0, 0, 4, 0, 0, 3, 1, 0, 3, 0, 1];
-    const tetraFaces = [6, 8, 7, 6, 7, 9, 7, 8, 9, 8, 6, 9];
-    const cuts = new Uint32Array([3, 4, 4, 5, 6, 7, 7, 8, 8, 6]);
-    const run = (v: number[], f: number[]) =>
-      materializeFiniteSeams(new Float32Array(v), new Uint32Array(f), cuts, {
-        retainIsolatedInterior: true,
-      });
-    const retained = run([...base, ...tetra], [...faces, ...tetraFaces]);
-    const incident = (m: ReturnType<typeof run>, a: number, b: number) => {
-      const coord = (i: number) =>
-        Array.from(m.vertices.slice(3 * i, 3 * i + 3)).join(",");
-      const wantedA = Array.from(
-        new Float32Array(base.slice(3 * a, 3 * a + 3)),
-      ).join(",");
-      const wantedB = Array.from(
-        new Float32Array(base.slice(3 * b, 3 * b + 3)),
-      ).join(",");
-      const counts = new Map<string, number>();
-      for (let i = 0; i < m.triangles.length; i += 3)
-        for (let j = 0; j < 3; j++) {
-          const x = m.triangles[i + j],
-            y = m.triangles[i + ((j + 1) % 3)];
-          if (
-            (coord(x) === wantedA && coord(y) === wantedB) ||
-            (coord(y) === wantedA && coord(x) === wantedB)
-          ) {
-            const k = [x, y].sort((u, v) => u - v).join(":");
-            counts.set(k, (counts.get(k) ?? 0) + 1);
-          }
+it("retains a simple path in a mixed loop while rejecting a disconnected intermediate fan", () => {
+  const base = [
+    0, 2, 0, 0, 1, 0, 1, 1, 0, 0.5, 1, 0, 0.5, 1.15, 0, 0.5, 1.3, 0,
+  ];
+  const faces = [5, 1, 4, 4, 1, 3, 5, 4, 2, 5, 0, 1, 4, 3, 2, 5, 2, 0];
+  const tetra = [3, 0, 0, 4, 0, 0, 3, 1, 0, 3, 0, 1];
+  const tetraFaces = [6, 8, 7, 6, 7, 9, 7, 8, 9, 8, 6, 9];
+  const cuts = new Uint32Array([3, 4, 4, 5, 6, 7, 7, 8, 8, 6]);
+  const run = (v: number[], f: number[]) =>
+    materializeFiniteSeams(new Float32Array(v), new Uint32Array(f), cuts, {
+      retainIsolatedInterior: true,
+    });
+  const retained = run([...base, ...tetra], [...faces, ...tetraFaces]);
+  const incident = (m: ReturnType<typeof run>, a: number, b: number) => {
+    const coord = (i: number) =>
+      Array.from(m.vertices.slice(3 * i, 3 * i + 3)).join(",");
+    const wantedA = Array.from(
+      new Float32Array(base.slice(3 * a, 3 * a + 3)),
+    ).join(",");
+    const wantedB = Array.from(
+      new Float32Array(base.slice(3 * b, 3 * b + 3)),
+    ).join(",");
+    const counts = new Map<string, number>();
+    for (let i = 0; i < m.triangles.length; i += 3)
+      for (let j = 0; j < 3; j++) {
+        const x = m.triangles[i + j],
+          y = m.triangles[i + ((j + 1) % 3)];
+        if (
+          (coord(x) === wantedA && coord(y) === wantedB) ||
+          (coord(y) === wantedA && coord(x) === wantedB)
+        ) {
+          const k = [x, y].sort((u, v) => u - v).join(":");
+          counts.set(k, (counts.get(k) ?? 0) + 1);
         }
-      return Math.max(0, ...counts.values());
-    };
-    expect(incident(retained, 3, 4)).toBe(2);
-    expect(incident(retained, 4, 5)).toBe(2);
-    const disconnected = run(
-      [...base, ...tetra, 0.3, 1.4, 0, 0.6, 1.5, 0],
-      [...faces, ...tetraFaces, 4, 10, 11],
-    );
-    expect(incident(disconnected, 3, 4)).toBeLessThan(2);
-  },
-);
+      }
+    return Math.max(0, ...counts.values());
+  };
+  expect(incident(retained, 3, 4)).toBe(2);
+  expect(incident(retained, 4, 5)).toBe(2);
+  const disconnected = run(
+    [...base, ...tetra, 0.3, 1.4, 0, 0.6, 1.5, 0],
+    [...faces, ...tetraFaces, 4, 10, 11],
+  );
+  expect(incident(disconnected, 3, 4)).toBeLessThan(2);
+});
 
 it("does not allocate path scratch for loops or branches mixed with an isolated cut", () => {
   const n = 20000,
@@ -259,37 +256,33 @@ it("does not charge path scratch for subdivided branches under a tight stage bud
   expect(actual.triangles.length).toBe(baseline.triangles.length);
 }, 30000);
 
-it.fails(
-  "handles a small native-retained path on a sparse indexed mesh under its stage budget",
-  () => {
-    const vertices = new Float32Array(1000000 * 3);
-    vertices.set([
-      0, 2, 0, 0, 1, 0, 1, 1, 0, 0.5, 1, 0, 0.5, 1.15, 0, 0.5, 1.3, 0,
-    ]);
-    const faces = new Uint32Array([
-      5, 1, 4, 4, 1, 3, 5, 4, 2, 5, 0, 1, 4, 3, 2, 5, 2, 0,
-    ]);
-    const result = materializeFiniteSeams(
-      vertices,
-      faces,
-      new Uint32Array([3, 4, 4, 5]),
-      { retainIsolatedInterior: true, maxTypedBytes: 5000000 },
-    );
-    expect(result.triangles.length).toBe(faces.length);
-    const edges = new Map<string, number>();
-    for (let i = 0; i < result.triangles.length; i += 3)
-      for (let j = 0; j < 3; j++) {
-        const a = result.triangles[i + j],
-          b = result.triangles[i + ((j + 1) % 3)],
-          k = [a, b].sort((x, y) => x - y).join(":");
-        edges.set(k, (edges.get(k) ?? 0) + 1);
-      }
-    expect(
-      Array.from(edges.values()).filter((count) => count === 1),
-    ).toHaveLength(4);
-  },
-  30000,
-);
+it("handles a small native-retained path on a sparse indexed mesh under its stage budget", () => {
+  const vertices = new Float32Array(1000000 * 3);
+  vertices.set([
+    0, 2, 0, 0, 1, 0, 1, 1, 0, 0.5, 1, 0, 0.5, 1.15, 0, 0.5, 1.3, 0,
+  ]);
+  const faces = new Uint32Array([
+    5, 1, 4, 4, 1, 3, 5, 4, 2, 5, 0, 1, 4, 3, 2, 5, 2, 0,
+  ]);
+  const result = materializeFiniteSeams(
+    vertices,
+    faces,
+    new Uint32Array([3, 4, 4, 5]),
+    { retainIsolatedInterior: true, maxTypedBytes: 5000000 },
+  );
+  expect(result.triangles.length).toBe(faces.length);
+  const edges = new Map<string, number>();
+  for (let i = 0; i < result.triangles.length; i += 3)
+    for (let j = 0; j < 3; j++) {
+      const a = result.triangles[i + j],
+        b = result.triangles[i + ((j + 1) % 3)],
+        k = [a, b].sort((x, y) => x - y).join(":");
+      edges.set(k, (edges.get(k) ?? 0) + 1);
+    }
+  expect(
+    Array.from(edges.values()).filter((count) => count === 1),
+  ).toHaveLength(4);
+}, 30000);
 
 it("handles an unrelated large closed loop with a short path under the existing stage budget", () => {
   const n = 5000,
@@ -341,3 +334,158 @@ it("handles an unrelated large closed loop with a short path under the existing 
   });
   expect(result.triangles.length).toBe(baseline.triangles.length);
 }, 30000);
+
+it("does not copy unrelated isolated cuts into the path lookup", () => {
+  const n = 300,
+    vertices: number[] = [],
+    faces: number[] = [],
+    cuts: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const b = 3 * i,
+      x = i * 3;
+    vertices.push(x, 0, 0, x + 1, 0, 0, x, 1, 0);
+    faces.push(b, b + 1, b + 2);
+    cuts.push(b, b + 1);
+  }
+  const b = n * 3;
+  vertices.push(
+    -3,
+    2,
+    0,
+    -3,
+    1,
+    0,
+    -2,
+    1,
+    0,
+    -2.5,
+    1,
+    0,
+    -2.5,
+    1.15,
+    0,
+    -2.5,
+    1.3,
+    0,
+  );
+  faces.push(
+    b + 5,
+    b + 1,
+    b + 4,
+    b + 4,
+    b + 1,
+    b + 3,
+    b + 5,
+    b + 4,
+    b + 2,
+    b + 5,
+    b,
+    b + 1,
+    b + 4,
+    b + 3,
+    b + 2,
+    b + 5,
+    b + 2,
+    b,
+  );
+  cuts.push(b + 3, b + 4, b + 4, b + 5);
+  const result = materializeFiniteSeams(
+    new Float32Array(vertices),
+    new Uint32Array(faces),
+    new Uint32Array(cuts),
+    { retainIsolatedInterior: true, maxTypedBytes: 1300000 },
+  );
+  expect(result.triangles.length).toBe(faces.length + 3 * n);
+});
+
+it("keeps a large separating strip cut within the existing stage budget", () => {
+  const n = 5000,
+    vertices = new Float32Array(9 * (n + 1)),
+    triangles = new Uint32Array(12 * n),
+    cuts = new Uint32Array(2 * n),
+    id = (x: number, y: number) => y * (n + 1) + x;
+  for (let y = 0; y < 3; y++)
+    for (let x = 0; x <= n; x++) {
+      const i = 3 * id(x, y);
+      vertices[i] = x;
+      vertices[i + 1] = y;
+    }
+  for (let x = 0; x < n; x++) {
+    const a = id(x, 0),
+      b = id(x + 1, 0),
+      m = id(x, 1),
+      k = id(x + 1, 1),
+      u = id(x, 2),
+      v = id(x + 1, 2);
+    triangles.set([a, b, k, a, k, m, m, k, v, m, v, u], 12 * x);
+    cuts.set([m, k], 2 * x);
+  }
+  const common = { maxTypedBytes: 3000000 };
+  const baseline = materializeFiniteSeams(vertices, triangles, cuts, common);
+  const actual = materializeFiniteSeams(vertices, triangles, cuts, {
+    ...common,
+    retainIsolatedInterior: true,
+  });
+  expect(actual.triangles).toEqual(baseline.triangles);
+  expect(actual.vertices).toEqual(baseline.vertices);
+}, 30000);
+
+it("keeps many separating components within the existing stage budget", () => {
+  const n = 100,
+    vertices: number[] = [],
+    triangles: number[] = [],
+    cuts: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const b = 5 * i,
+      x = 3 * i;
+    vertices.push(x, 0, 0, x + 1, 0, 0, x, 1, 0, x - 1, 0, 0, x, -1, 0);
+    triangles.push(
+      b,
+      b + 1,
+      b + 2,
+      b,
+      b + 2,
+      b + 3,
+      b,
+      b + 3,
+      b + 4,
+      b,
+      b + 4,
+      b + 1,
+    );
+    cuts.push(b + 1, b, b, b + 3);
+  }
+  const v = new Float32Array(vertices),
+    f = new Uint32Array(triangles),
+    c = new Uint32Array(cuts),
+    common = { maxTypedBytes: 100000 };
+  const baseline = materializeFiniteSeams(v, f, c, common);
+  const actual = materializeFiniteSeams(v, f, c, {
+    ...common,
+    retainIsolatedInterior: true,
+  });
+  expect(actual.vertices).toEqual(baseline.vertices);
+  expect(actual.triangles).toEqual(baseline.triangles);
+});
+
+it("keeps many boundary-edge paths within the existing stage budget", () => {
+  const n = 500,
+    vertices = new Float32Array(n * 9),
+    triangles = new Uint32Array(n * 3),
+    cuts = new Uint32Array(n * 4);
+  for (let i = 0; i < n; i++) {
+    const v = 3 * i,
+      x = 3 * i;
+    vertices.set([x, 0, 0, x + 1, 0, 0, x, 1, 0], 9 * i);
+    triangles.set([v, v + 1, v + 2], 3 * i);
+    cuts.set([v, v + 1, v + 1, v + 2], 4 * i);
+  }
+  const common = { maxTypedBytes: 61000 };
+  const baseline = materializeFiniteSeams(vertices, triangles, cuts, common);
+  const actual = materializeFiniteSeams(vertices, triangles, cuts, {
+    ...common,
+    retainIsolatedInterior: true,
+  });
+  expect(actual.vertices).toEqual(baseline.vertices);
+  expect(actual.triangles).toEqual(baseline.triangles);
+});

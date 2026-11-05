@@ -68,47 +68,47 @@ it("pins native folded cutter indexed topology and exported facets", () => {
     expect(edges.get([a, c].sort((x, y) => x - y).join(":"))).toBe(2);
 });
 
-it.fails(
-  "matches native folded boundary length through the shared split operation",
-  () => {
-    const load = (name: string, hash: string) => {
-      const b = read(name, hash);
-      return parseMesh(
-        b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength),
-        "stl",
+it("matches native folded boundary length through the shared split operation", () => {
+  const load = (name: string, hash: string) => {
+    const b = read(name, hash);
+    return parseMesh(
+      b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength),
+      "stl",
+    );
+  };
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: load(
+      "source.stl",
+      "9b2cf1071e07942d8e7acc2d20d41364fd1a74fa1291ec4704b65ce34a70c785",
+    ),
+    target: load(
+      "cutter.stl",
+      "047e23f79335cbcf94e4bbc5e2d2c0659b5741799d65da39ca9888748707357e",
+    ),
+  });
+  const native = load(
+    "native-result.stl",
+    "3887de1097ed584c36a29b6bf2c4d9ec1cf2cbd33eb6cdc24727f1e15274ba12",
+  );
+  expect(facets(result.positions!)).toEqual(facets(native));
+  const m = result.indexedMesh!;
+  const edges = new Map<string, number>();
+  for (let i = 0; i < m.triangles.length; i += 3)
+    for (let j = 0; j < 3; j++) {
+      const a = m.triangles[i + j],
+        c = m.triangles[i + ((j + 1) % 3)],
+        k = [a, c].sort((x, y) => x - y).join(":");
+      edges.set(k, (edges.get(k) ?? 0) + 1);
+    }
+  let boundary = 0;
+  for (const [k, count] of edges)
+    if (count === 1) {
+      const [a, c] = k.split(":").map(Number);
+      boundary += Math.hypot(
+        ...[0, 1, 2].map((i) => m.vertices[3 * a + i] - m.vertices[3 * c + i]),
       );
-    };
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "split",
-      positions: load(
-        "source.stl",
-        "9b2cf1071e07942d8e7acc2d20d41364fd1a74fa1291ec4704b65ce34a70c785",
-      ),
-      target: load(
-        "cutter.stl",
-        "047e23f79335cbcf94e4bbc5e2d2c0659b5741799d65da39ca9888748707357e",
-      ),
-    });
-    const m = result.indexedMesh!;
-    const edges = new Map<string, number>();
-    for (let i = 0; i < m.triangles.length; i += 3)
-      for (let j = 0; j < 3; j++) {
-        const a = m.triangles[i + j],
-          c = m.triangles[i + ((j + 1) % 3)],
-          k = [a, c].sort((x, y) => x - y).join(":");
-        edges.set(k, (edges.get(k) ?? 0) + 1);
-      }
-    let boundary = 0;
-    for (const [k, count] of edges)
-      if (count === 1) {
-        const [a, c] = k.split(":").map(Number);
-        boundary += Math.hypot(
-          ...[0, 1, 2].map(
-            (i) => m.vertices[3 * a + i] - m.vertices[3 * c + i],
-          ),
-        );
-      }
-    expect(boundary).toBeCloseTo(8, 10);
-  },
-);
+    }
+  expect(boundary).toBeCloseTo(8, 10);
+});

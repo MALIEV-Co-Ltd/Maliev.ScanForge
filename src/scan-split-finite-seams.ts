@@ -60,7 +60,7 @@ export function materializeFiniteSeams(
   const splitEdges = new Set<string>();
   const cutVertices = new Set<number>();
   const cutKeys = new Set<string>();
-  const degrees = new Map<number, number>();
+  const degrees = new Map<number, number | bigint>();
   for (let i = 0; i < cuts.length; i += 2) {
     tick();
     const a = cuts[i],
@@ -70,8 +70,8 @@ export function materializeFiniteSeams(
       throw new Error("Finite seam edge is invalid.");
     if (cutKeys.has(k)) continue;
     cutKeys.add(k);
-    degrees.set(a, (degrees.get(a) ?? 0) + 1);
-    degrees.set(b, (degrees.get(b) ?? 0) + 1);
+    degrees.set(a, Number(degrees.get(a) ?? 0) + 1);
+    degrees.set(b, Number(degrees.get(b) ?? 0) + 1);
   }
   // Existing junctions separate vertex fans. Only an isolated edge needs a
   // new midpoint to open a seam while keeping its two tips connected.
@@ -110,6 +110,105 @@ export function materializeFiniteSeams(
           }
       }
     }
+  // Follow only components reachable from an endpoint. Closed loops need no
+  // fan lookup; paths that meet a branch are rejected before building one.
+  let hasCandidatePaths = false;
+  const startBit = 1n << 69n;
+  const none = 0xffffffff;
+  const mask = 0xffffffffn;
+  const links = (vertex: number) => {
+    const value = degrees.get(vertex) as bigint;
+    return [
+      Number((value >> 2n) & mask) - 1,
+      Number((value >> 34n) & mask) - 1,
+    ];
+  };
+  let packedDegrees = false;
+  const degreeOf = (v: number) => {
+    const value = degrees.get(v);
+    return value === undefined
+      ? 0
+      : packedDegrees
+        ? Number(BigInt(value) & 3n)
+        : Number(value);
+  };
+  if (
+    options.retainIsolatedInterior &&
+    !closed &&
+    isolatedTips.size < degrees.size
+  ) {
+    let hasEndpoint = false;
+    for (const k of cutKeys) {
+      tick();
+      const [a, b] = k.split(":").map(Number);
+      if (
+        (degrees.get(a) === 1 && degrees.get(b) === 2) ||
+        (degrees.get(b) === 1 && degrees.get(a) === 2)
+      ) {
+        hasEndpoint = true;
+        break;
+      }
+    }
+    if (hasEndpoint) {
+      if (vertexCount >= 0xffffffff)
+        throw new Error("Finite seam index capacity exceeded.");
+      // Reuse each existing degree-map entry for two 32-bit links and a
+      // visited bit. Bound the added boxed-value estimate separately from the
+      // typed-array stage budget; no unrelated per-component graph is allocated.
+      const packedValueBytes = degrees.size * 32;
+      if (
+        !Number.isSafeInteger(packedValueBytes) ||
+        packedValueBytes > Math.min(allowance, 256 * 1024 * 1024)
+      )
+        throw new Error("Finite seam boundary work memory budget exceeded.");
+      const visitedBit = 1n << 66n;
+      for (const [vertex, degree] of degrees) {
+        tick();
+        degrees.set(vertex, BigInt(Math.min(Number(degree), 3)));
+      }
+      packedDegrees = true;
+      const wasVisited = (vertex: number) =>
+        ((degrees.get(vertex) as bigint) & visitedBit) !== 0n;
+      for (const k of cutKeys) {
+        tick();
+        const [a, b] = k.split(":").map(Number);
+        for (const [v, n] of [
+          [a, b],
+          [b, a],
+        ]) {
+          if (degreeOf(v) > 2) continue;
+          const value = degrees.get(v) as bigint;
+          const shift = ((value >> 2n) & mask) === 0n ? 2n : 34n;
+          degrees.set(v, value | (BigInt(n + 1) << shift));
+        }
+      }
+      for (const [start] of degrees) {
+        tick();
+        if (degreeOf(start) !== 1 || wasVisited(start)) continue;
+        const [first] = links(start);
+        if (first < 0 || degreeOf(first) === 1) continue;
+        let previous = none,
+          current = start,
+          valid = false;
+        while (current !== none && !wasVisited(current)) {
+          tick();
+          if (degreeOf(current) > 2) break;
+          const [a, b] = links(current);
+          degrees.set(current, (degrees.get(current) as bigint) | visitedBit);
+          if (current !== start && degreeOf(current) === 1) {
+            valid = true;
+            break;
+          }
+          const next = a === previous ? b : a;
+          previous = current;
+          current = next < 0 ? none : next;
+        }
+        if (!valid) continue;
+        degrees.set(start, (degrees.get(start) as bigint) | startBit);
+        hasCandidatePaths = true;
+      }
+    }
+  }
   const edgeCounts = new Map<string, { a: number; b: number; count: number }>();
   const fans = new Map<number, Map<number, number>>();
   const fanRoot = (parents: Map<number, number>, id: number): number => {
@@ -210,12 +309,21 @@ export function materializeFiniteSeams(
     const a = cuts[i],
       b = cuts[i + 1],
       k = key(a, b);
+    if (
+      options.retainIsolatedInterior &&
+      degreeOf(a) === 1 &&
+      degreeOf(b) === 1 &&
+      edgeCounts.get(k)?.count === 2 &&
+      ((connectedBoundary(a) && connectedInterior(b)) ||
+        (connectedBoundary(b) && connectedInterior(a)))
+    )
+      continue;
     // A nonseparating interior edge stays shared in the tested native Split
     // cases. Disconnected or boundary fans keep the existing seam behavior.
     if (
       options.retainIsolatedInterior &&
-      degrees.get(a) === 1 &&
-      degrees.get(b) === 1 &&
+      degreeOf(a) === 1 &&
+      degreeOf(b) === 1 &&
       edgeCounts.get(k)?.count === 2 &&
       connectedInterior(a) &&
       connectedInterior(b)
@@ -225,8 +333,8 @@ export function materializeFiniteSeams(
       ((connectedBoundary(a) || connectedBoundary(b)) &&
         edgeCounts.get(k)?.count === 2) ||
       closed ||
-      (degrees.get(a) ?? 0) > 1 ||
-      (degrees.get(b) ?? 0) > 1
+      degreeOf(a) > 1 ||
+      degreeOf(b) > 1
     ) {
       cutVertices.add(a);
       cutVertices.add(b);
@@ -427,6 +535,99 @@ export function materializeFiniteSeams(
     }
     [order, scratch] = [scratch, order];
   }
+  const firstCorner = new Uint32Array(expandedVertexCount);
+  if (hasCandidatePaths) {
+    // The normal edge sort already contains the full refined topology. Join
+    // all incident faces once to classify original fans before applying cuts.
+    // This reuses the existing corner and union buffers instead of allocating
+    // one lookup per face around every candidate vertex.
+    const boundaryBit = 1n << 67n;
+    const disconnectedBit = 1n << 68n;
+    const addFlag = (vertex: number, bit: bigint) => {
+      const value = degrees.get(vertex);
+      if (value !== undefined) degrees.set(vertex, (value as bigint) | bit);
+    };
+    for (let i = 0; i < order.length;) {
+      tick();
+      const lo = min(order[i]),
+        hi = max(order[i]);
+      let end = i + 1;
+      while (
+        end < order.length &&
+        min(order[end]) === lo &&
+        max(order[end]) === hi
+      ) {
+        tick();
+        end++;
+      }
+      if (end - i > 2) throw new Error("Finite seam edge is non-manifold.");
+      if (end - i === 1) {
+        addFlag(lo, boundaryBit);
+        addFlag(hi, boundaryBit);
+      } else {
+        const first = order[i],
+          second = order[i + 1];
+        for (const a of [first, next(first)]) {
+          const b = faces[a] === faces[second] ? second : next(second);
+          if (faces[a] !== faces[b])
+            throw new Error("Finite seam edge indices are inconsistent.");
+          const x = root(a),
+            y = root(b);
+          if (x !== y) parent[Math.max(x, y)] = Math.min(x, y);
+        }
+      }
+      i = end;
+    }
+    for (let slot = 0; slot < faces.length; slot++) {
+      tick();
+      const v = faces[slot];
+      if (!degrees.has(v)) continue;
+      const first = firstCorner[v];
+      if (first === 0) firstCorner[v] = slot + 1;
+      else if (root(first - 1) !== root(slot)) addFlag(v, disconnectedBit);
+    }
+    const walk = (
+      start: number,
+      visit: (v: number, previous: number, end: boolean) => void,
+    ) => {
+      let previous = none,
+        current = start;
+      while (current !== none) {
+        tick();
+        const end = current !== start && degreeOf(current) === 1;
+        visit(current, previous, end);
+        if (end) return;
+        const [a, b] = links(current);
+        const n = a === previous ? b : a;
+        previous = current;
+        current = n < 0 ? none : n;
+      }
+      throw new Error("Finite seam path is incomplete.");
+    };
+    for (const [start, entry] of degrees) {
+      tick();
+      if (((entry as bigint) & startBit) === 0n) continue;
+      let boundaryEndpoints = 0,
+        valid = true;
+      walk(start, (v, _previous, end) => {
+        const flags = degrees.get(v) as bigint;
+        if ((flags & disconnectedBit) !== 0n) valid = false;
+        if ((flags & boundaryBit) !== 0n) {
+          if (v === start || end) boundaryEndpoints++;
+          else valid = false;
+        }
+      });
+      if (valid && boundaryEndpoints === 1)
+        walk(start, (v, previous) => {
+          if (previous !== none) splitEdges.delete(key(previous, v));
+        });
+    }
+    for (let i = 0; i < parent.length; i++) {
+      if ((i & 4095) === 0) tick();
+      parent[i] = i;
+    }
+    firstCorner.fill(0);
+  }
   for (let i = 0; i < order.length;) {
     tick();
     const lo = min(order[i]),
@@ -457,7 +658,6 @@ export function materializeFiniteSeams(
   }
   // A vertex that is unrelated to any cut keeps its authored identity even
   // when its incident triangles meet only at that vertex.
-  const firstCorner = new Uint32Array(expandedVertexCount);
   for (let slot = 0; slot < faces.length; slot++) {
     tick();
     const vertex = faces[slot];

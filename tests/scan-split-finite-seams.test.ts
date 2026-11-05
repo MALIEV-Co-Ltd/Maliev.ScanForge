@@ -110,7 +110,7 @@ it("opens a boundary-to-interior slit without creating an extra midpoint", () =>
   expect(topology.nonManifoldEdges).toBe(0);
 });
 
-it("still opens a boundary cut when interior retention is enabled", () => {
+it("retains the native boundary-to-interior cut with retention enabled", () => {
   const vertices = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.3, 0]);
   const triangles = new Uint32Array([0, 1, 3, 1, 2, 3, 2, 0, 3]);
   const result = materializeFiniteSeams(
@@ -125,7 +125,7 @@ it("still opens a boundary cut when interior retention is enabled", () => {
   expect(
     analyzeIndexedMesh(Float64Array.from(result.vertices), result.triangles)
       .boundaryEdges,
-  ).toBe(5);
+  ).toBe(3);
 });
 
 it("still rejects non-manifold edges with interior retention enabled", () => {

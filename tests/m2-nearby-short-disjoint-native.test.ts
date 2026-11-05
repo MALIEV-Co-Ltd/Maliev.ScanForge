@@ -87,7 +87,7 @@ it("pins the native boundary-to-interior shared indexed edge", () => {
   ).toHaveLength(2);
 });
 
-it.fails("matches the native boundary-to-interior indexed edge", () => {
+it("matches the native boundary-to-interior indexed edge", () => {
   const { source, cutter } = inputs();
   const mesh = split(source, cutter).indexedMesh!;
   const ids = Array.from({ length: mesh.vertices.length / 3 }, (_, i) => i);

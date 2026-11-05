@@ -69,7 +69,7 @@ it("keeps sampled CAD cutters on the existing solid-cutter route", () => {
   expect(result.positions).toBeUndefined();
 });
 
-it("publishes the folded open cutter as one connected mesh with an open seam", () => {
+it("publishes the folded open cutter as one connected mesh with shared cut edges", () => {
   const source = new Float32Array([
     -0.5, -0.5, 0, 1.5, -0.5, 0, 1.5, 1.5, 0, -0.5, -0.5, 0, 1.5, 1.5, 0, -0.5,
     1.5, 0,
@@ -135,8 +135,8 @@ it("publishes the folded open cutter as one connected mesh with an open seam", (
       expect(perimeter || seam).toBe(true);
       if (seam) seamLength += length;
     }
-  expect(boundaryLength).toBeCloseTo(13, 10);
-  expect(seamLength).toBeCloseTo(5, 10);
+  expect(boundaryLength).toBeCloseTo(8, 10);
+  expect(seamLength).toBeCloseTo(0, 10);
   const positions = result.positions!;
   let area = 0;
   for (let i = 0; i < positions.length; i += 9)
@@ -776,4 +776,63 @@ it("splits a thin shared-edge face without rejecting roundoff in coverage", () =
     }
   expect(incidence.size).toBeGreaterThan(0);
   expect([...incidence.values()].every((count) => count === 2)).toBe(true);
+});
+
+it("keeps a selected subdivided boundary path shared and preserves its unselected neighbor", () => {
+  const vertices = new Float32Array([0, 1, 0, 1, 1, 0, 0, 2, 0, 0, 0, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 1, 0, 3]);
+  const positions = Float32Array.from(
+    [...triangles].flatMap((id) => [...vertices.slice(id * 3, id * 3 + 3)]),
+  );
+  const cutter = new Float32Array([
+    0.5, 1, 0, 0.5, 1.15, 0, 0.5, 1.15, 1, 0.5, 1.15, 0, 0.5, 1.3, 0, 0.5, 1.15,
+    1,
+  ]);
+  const result = runFiniteSplitCandidate(
+    positions,
+    cutter,
+    { vertices, triangles },
+    { selection: new Uint8Array([1, 0]), preciseCoordinates: true },
+  );
+  expect(result.segments).toHaveLength(2);
+  expect([...result.segments[1]]).toEqual([...positions.slice(9)]);
+  const mesh = result.segmentIndexedMeshes[0];
+  const ids = [1, 1.15, 1.3].map((y) =>
+    Array.from({ length: mesh.vertices.length / 3 }, (_, i) => i).find(
+      (i) =>
+        Math.abs(mesh.vertices[3 * i] - 0.5) < 1e-7 &&
+        Math.abs(mesh.vertices[3 * i + 1] - y) < 1e-6 &&
+        mesh.vertices[3 * i + 2] === 0,
+    ),
+  );
+  expect(ids.every((id) => id !== undefined)).toBe(true);
+  for (const [a, b] of [
+    [ids[0]!, ids[1]!],
+    [ids[1]!, ids[2]!],
+  ]) {
+    let count = 0;
+    for (let i = 0; i < mesh.triangles.length; i += 3) {
+      const face = Array.from(mesh.triangles.slice(i, i + 3));
+      if (face.includes(a) && face.includes(b)) count++;
+    }
+    expect(count).toBe(2);
+  }
+  const area = (p: ArrayLike<number>) => {
+    let sum = 0;
+    for (let i = 0; i < p.length; i += 9)
+      sum +=
+        Math.abs(
+          (p[i + 3] - p[i]) * (p[i + 7] - p[i + 1]) -
+            (p[i + 4] - p[i + 1]) * (p[i + 6] - p[i]),
+        ) / 2;
+    return sum;
+  };
+  expect(result.segments.reduce((sum, p) => sum + area(p), 0)).toBeCloseTo(
+    1,
+    10,
+  );
+  for (let i = 0; i < result.segments.length; i++)
+    expect(
+      indexedMeshMatches(result.segmentIndexedMeshes[i], result.segments[i]),
+    ).toBe(true);
 });

@@ -116,7 +116,7 @@ it("preserves area in the folded open-cutter control", () => {
   expect(result.segments).toHaveLength(1);
 });
 
-it("keeps the folded cut as an open nonseparating seam", () => {
+it("retains the folded nonseparating cut edges", () => {
   const result = foldedControl();
   const mesh = result.segmentIndexedMeshes[0];
   const edges = new Map<string, { a: number; b: number; count: number }>();
@@ -167,8 +167,8 @@ it("keeps the folded cut as an open nonseparating seam", () => {
   );
   expect(topology.components).toHaveLength(1);
   expect(topology.nonManifoldEdges).toBe(0);
-  expect(boundaryLength).toBeCloseTo(13, 6);
-  expect(seamLength).toBeCloseTo(5, 6);
+  expect(boundaryLength).toBeCloseTo(8, 6);
+  expect(seamLength).toBeCloseTo(0, 6);
 });
 
 it("preserves a tilted identical coplanar control", () => {
