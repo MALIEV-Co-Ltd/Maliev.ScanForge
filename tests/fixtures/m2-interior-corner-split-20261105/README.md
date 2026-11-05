@@ -29,7 +29,9 @@ The result files are binary STL and do not establish indexed connectivity. The
 observations support this pair of fixtures, not a general snapping rule.
 
 The far native source's object tooltip reported five points and five triangles;
-Edit Scan reported one individual mesh. The STL has five distinct coordinate
+Edit Scan reported one individual mesh. Reopening `session-far.qsf` showed the
+source with five triangles and the cutter with one triangle; the source was
+visible in the viewport. The STL has five distinct coordinate
 triples, so the visible point count supplies useful evidence, but does not
 independently prove every native edge incidence. ScanForge currently emits
 seven facets for each input, including a synthetic midpoint; its near result
