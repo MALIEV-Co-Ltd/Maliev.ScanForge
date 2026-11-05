@@ -1,0 +1,27 @@
+{
+  "scope": "Integrated-build original three-scan Re-polygonize GUI/MCP and retained native digest refresh; not M2 closure",
+  "build": "scanforge-41eb20a51df15c82",
+  "testedCommit": "0fbd0896349b22b9490c3cd11b186999a9121a99",
+  "buildProvenance": "The build predates this commit; intervening changes affect tests, fixtures and evidence only, not application or build source.",
+  "method": "Isolated loopback build, Chrome/Playwright fallback because the Browser plugin and browser skill were absent, public MCP bridge, and original posed three-scan inputs. GUI and MCP results were compared to the retained native ordered Float32 coordinate digest; original input buffers and history visibility were checked.",
+  "result": {
+    "inputTriangles": 6147452,
+    "outputTriangles": 50895,
+    "orderedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+    "guiMcpRetainedNativeCoordinatesEqual": true,
+    "sourceBuffersUnchanged": true,
+    "historyVisibilityRollback": true,
+    "syntheticChecks": "The same run also passed GUI/MCP native-coordinate comparison, undo/redo, retry protection, cancellation and failure rollback, indexed project reopen and page-error checks.",
+    "memory": "4 GiB job limit; peak 2388672512 bytes; cleanup confirmed."
+  },
+  "artifacts": {
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-three-refresh-20261105/driver.mjs",
+    "driverSha256": "3964351535e2f8079e0b44069fa35ea45aad4f59ebbf9c8a8ec3cfd9e6348fc2",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-three-refresh-20261105/guard.json",
+    "guardSha256": "9a1c8b78db64808ebfa15c6854a6c9502ee4b11d989ccf886bfc57e9036739e3",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-three-refresh-20261105/output/scan-repolygonize-browser-ledger.json",
+    "ledgerSha256": "274b79434e8c0275347f192515b0838c4b9027874ad07b41bdf832d7add29386",
+    "screenshot": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-three-refresh-20261105/output/repolygonize-three-scans.png"
+  },
+  "limitations": "Native digest is retained evidence, not a new QuickSurface operation. This one reconstruction and the synthetic controls do not establish general modeling, native Split, convergence, resource, or milestone acceptance."
+}
