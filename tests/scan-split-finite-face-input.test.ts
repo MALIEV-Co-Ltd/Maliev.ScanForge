@@ -1,11 +1,72 @@
 import { expect, it } from "vitest";
-import { inspectFiniteTriangleContact } from "../src/scan-edit-general-split";
+import {
+  collectFiniteCutterHits,
+  inspectFiniteTriangleContact,
+} from "../src/scan-edit-general-split";
 import { buildSparseFiniteEdgeContactsIndexed } from "../src/scan-split-finite-edges";
 import { buildFiniteFaceInput } from "../src/scan-split-finite-face-input";
 import { triangulateFiniteFace } from "../src/scan-split-finite-face";
 import { assembleFiniteFaceMesh } from "../src/scan-split-finite-assembly";
 import { groupFiniteTrianglesCompact } from "../src/scan-split-finite-group";
 import type { Vec3 } from "../src/types";
+
+it("keeps a distinct one-step seam contact from adjacent cutter faces", () => {
+  const y = 1 + 2 ** -23;
+  const vertices = new Float64Array([0, 1, 0, 1, 1, 0, 0, 2, 0]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const cutter = new Float64Array([
+    0.5,
+    y,
+    -1,
+    0.5,
+    y,
+    1,
+    0.5,
+    0,
+    -1,
+    0.5,
+    y,
+    1,
+    0.5,
+    y,
+    -1,
+    0.5,
+    2,
+    -1,
+  ]);
+  const hits = collectFiniteCutterHits(vertices, triangles, cutter, {
+    preciseCoordinates: true,
+  });
+  const registered = buildSparseFiniteEdgeContactsIndexed(
+    vertices,
+    triangles,
+    hits.contacts,
+    { preciseCoordinates: true },
+  );
+  const faces = hits.faces.get(0)!;
+  const input = buildFiniteFaceInput(
+    [0, 1, 2],
+    faces,
+    registered.get(0) ?? [],
+    {
+      preciseCoordinates: true,
+    },
+  );
+  const first = [0, 3, 6].map((i) =>
+    Array.from(cutter.slice(i, i + 3)).join(","),
+  );
+  const second = [9, 12, 15].map((i) =>
+    Array.from(cutter.slice(i, i + 3)).join(","),
+  );
+  expect(first.filter((point) => second.includes(point))).toHaveLength(2);
+  expect(faces).toHaveLength(2);
+  expect(
+    faces.every((face) => face.points.some((point) => point[1] === y)),
+  ).toBe(true);
+  expect(
+    input.segments.some((segment) => segment.some((point) => point[1] === y)),
+  ).toBe(true);
+});
 
 it("keeps a distinct interior endpoint one Float32 step from a boundary contact", () => {
   const boundary: Vec3 = [0.5, 1, 0];

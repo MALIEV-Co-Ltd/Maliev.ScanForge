@@ -23,7 +23,10 @@
     "focusedGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-safety-guard-20261105.json",
     "counterexampleGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-distinct-red-20261105.json",
     "baselineGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-distinct-baseline-20261105.json",
-    "limitations": "The counterexample tests face-input identity directly and does not claim a corresponding native run. The candidate was not tested through GUI or MCP and does not establish general native tolerance or behavior."
+    "adjacentSeamControl": "A second manufactured control uses two cutter triangles with an exactly shared edge. Both collected intersections contain the same interior seam endpoint one Float32 step from a separate source-edge contact. The isolated candidate removes that endpoint; the current shared collector and face-input path retain it. The control shows that adjacency and proximity alone do not prove the contacts are identical. It does not establish what native does on that input.",
+    "adjacentSeamCandidateGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-seam-control-red-20261105.json",
+    "adjacentSeamBaselineGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-seam-regression-20261105.json",
+    "limitations": "The counterexamples test application contact identity and do not claim corresponding native runs. The candidate was not tested through GUI or MCP and does not establish general native tolerance or behavior."
   },
   "contactInvestigation": {
     "scope": "Read-only examination of the existing rotated fixture using the current shared finite-triangle contact routine; no new native run or application behavior change.",
