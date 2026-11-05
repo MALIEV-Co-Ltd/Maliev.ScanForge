@@ -59,6 +59,60 @@ it("matches the short disjoint-cut retained native Split facets", () => {
   expect(facets(split(source, cutter).positions!)).toEqual(facets(native));
 });
 
+it("pins the native boundary-to-interior shared indexed edge", () => {
+  const b = readFileSync(
+    new URL(
+      "./fixtures/m2-nearby-short-disjoint-20261105/native.qsf",
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(b).digest("hex")).toBe(
+    "8fe0292aee3e6c4e11087daa821baa681157a2a9a5ee8c36a2189a71bab01767",
+  );
+  expect(b.readUInt32LE(456)).toBe(5);
+  expect(b.readUInt32LE(520)).toBe(4);
+  const v = Array.from({ length: 5 }, (_, i) =>
+    Array.from({ length: 3 }, (_, a) => b.readFloatLE(460 + 12 * i + 4 * a)),
+  );
+  const faces = Array.from({ length: 4 }, (_, i) =>
+    Array.from({ length: 3 }, (_, a) => b.readUInt32LE(524 + 12 * i + 4 * a)),
+  );
+  expect(facets(faces.flatMap((face) => face.flatMap((id) => v[id])))).toEqual(
+    facets(inputs().native),
+  );
+  expect(v[3]).toEqual([0.5, 1, 0]);
+  expect(v[4]).toEqual([0.5, Math.fround(1.3), 0]);
+  expect(
+    faces.filter((face) => face.includes(3) && face.includes(4)),
+  ).toHaveLength(2);
+});
+
+it.fails("matches the native boundary-to-interior indexed edge", () => {
+  const { source, cutter } = inputs();
+  const mesh = split(source, cutter).indexedMesh!;
+  const ids = Array.from({ length: mesh.vertices.length / 3 }, (_, i) => i);
+  const a = ids.find(
+    (i) =>
+      mesh.vertices[3 * i] === 0.5 &&
+      mesh.vertices[3 * i + 1] === 1 &&
+      mesh.vertices[3 * i + 2] === 0,
+  );
+  const b = ids.find(
+    (i) =>
+      mesh.vertices[3 * i] === 0.5 &&
+      Math.abs(mesh.vertices[3 * i + 1] - 1.3) < 1e-6 &&
+      mesh.vertices[3 * i + 2] === 0,
+  );
+  expect(a).toBeDefined();
+  expect(b).toBeDefined();
+  const faces = Array.from({ length: mesh.triangles.length / 3 }, (_, i) =>
+    Array.from(mesh.triangles.slice(i * 3, i * 3 + 3)),
+  );
+  expect(
+    faces.filter((face) => face.includes(a!) && face.includes(b!)),
+  ).toHaveLength(2);
+});
+
 it("rejects actually degenerate and nonmanifold cutters at fine tolerance", () => {
   const { source } = inputs();
   const degenerate = new Float32Array([0, 0, 0, 1, 0, 0, 2, 0, 0]);

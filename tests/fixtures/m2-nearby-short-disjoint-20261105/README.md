@@ -32,3 +32,5 @@ produced the native unordered facets through both GUI and public MCP; explicit
 and rendered redo. This is evidence for this fixture, not general native parity. STL facet comparison does not establish native
 indexed connectivity or winding; this is one on-plane cutter control, not a
 general rule for short unrelated cuts.
+
+The pinned native QSF source block also shows that the boundary-to-interior edge has the same vertex IDs on both incident faces. Its expanded facets match the exported STL. The indexed-edge comparison remains an expected failure in ScanForge despite the passing facet comparison.
