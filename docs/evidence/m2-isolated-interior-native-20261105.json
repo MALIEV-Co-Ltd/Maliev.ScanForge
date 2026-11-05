@@ -13,6 +13,7 @@
   "integratedValidation": {
     "splitTests": "375 passed, five expected failures, five skipped; bounded Job peak 440209408 bytes and cleanup confirmed.",
     "fullTests": "Full Vitest command exited zero under the 4 GiB Job; peak 1356673024 bytes and cleanup confirmed. A subsequent disconnected-fan test was added and passed in the 18-test focused seam run.",
+    "originalPly3": "At 99f7a8cde2628dc67c82201f5859cb1bad470691, the precise low-level candidate test passed on the SHA-256 bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2 original scan. It checks retained input, indexed consistency, parts and area. The bounded Job peaked at 2116788224 bytes and confirmed cleanup. This is not a GUI/MCP lifecycle replay.",
     "build": "All 14 typecheck batches and production build passed; bounded Job peak 1825472512 bytes and cleanup confirmed.",
     "guiMcpCrossing": "An isolated rendered browser and public MCP replay matched all five native STL facets and shared indexed edge. GUI and MCP geometry digests matched; undo/redo, binary reopen, cancellation, and rendered redo checks passed. Job peak 926744576 bytes and cleanup confirmed."
   },
