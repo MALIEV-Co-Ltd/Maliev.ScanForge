@@ -1,6 +1,6 @@
 # Adjacent cutter seam native control
 
-These binary STL files are manufactured inputs, not native outputs. Import both
+The source and cutter binary STL files are manufactured inputs. Import both
 in millimetres with origin placement disabled, verify their positions and
 orientation, then split `source.stl` with `cutter.stl` as a mesh using the same
 native settings as the other Split controls. Record the native version, import
@@ -16,4 +16,26 @@ seam points. Record whether native import itself preserves the two coordinates.
 The source-edge contact is `[0.5, 1, 0]`; the adjacent cutter faces share an
 edge producing the distinct contact `[0.5, 1.0000001192092896, 0]`. Their Y
 coordinates differ by one Float32 step. The shared application operation
-retains both; this does not predict native behavior.
+retains both; the native observation is recorded below.
+
+## Native observation, 2026-11-05
+
+QUICKSURFACE Pro 8.0.123 imported both meshes in millimetres. The source was
+selected for Edit, then Split Mesh used `cutter`, with "Split with another body
+or a mesh" selected and Envelope unchecked. Preview and OK completed without a
+visible warning. The resulting source was shown as three triangles and two
+individual meshes. With the cutter hidden, Export Visible produced
+`native-result.stl`, SHA-256
+`dc295b159937de3fbffc20cf3ff2369c61758ca64df953af2e085d86af15abfe`.
+Its three facets have total area 0.5 and contain the source-edge contact but
+not the adjacent contact. The application operation retains both contacts and
+produces five triangles with the same total area and two parts; this is a
+native triangulation difference, not proof of a coverage difference.
+
+The untouched imported cutter was exported separately with the source hidden.
+Its two triangles retained the one-Float32-step coordinate; that round-trip
+export has SHA-256
+`e1646adc3b78c37dd93e9d863a316516ea405deb5b637f18a6e2439002da9963`.
+This verifies that the cutter coordinates survived native import and export.
+The observation is limited to this manufactured fixture and does not resolve
+other known native Split discrepancies or establish general parity.
