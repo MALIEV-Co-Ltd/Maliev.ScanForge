@@ -23,7 +23,7 @@
   "limitations": [
     "The 0.0001 association is an inferred hypothesis, not a proven general native rule. Unique nearby contacts can be unrelated and the candidate changes authored geometry.",
     "The prototype has not had full tests, type checking, code review, GUI or MCP replay, native winding or topology comparison, or a worst-case JS-map memory bound. It is not integrated.",
-    "The four radius native discrepancies with source-area loss, broader M2 acceptance and final CI remain open."
+    "Four radius native discrepancies remain open. Three small-radius native outputs lose nonzero source area; the wide-below case does not show meaningful area loss. Broader M2 acceptance and final CI also remain open."
   ],
   "nativeDisjointFollowup": {
     "fixture": "tests/fixtures/m2-nearby-disjoint-cuts-20261105/README.md",
