@@ -5,6 +5,47 @@ import { runFiniteSplitCandidate } from "../src/scan-split-finite-candidate";
 import { runScanEdit } from "../src/scan-edit";
 import { scanSplitCutter } from "../src/scan-split-cutter";
 
+it("retains a distinct one-step seam through the shared Split operation", () => {
+  const y = 1 + 2 ** -23;
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: [0, 1, 0, 1, 1, 0, 0, 2, 0],
+    target: [
+      0.5,
+      y,
+      -1,
+      0.5,
+      y,
+      1,
+      0.5,
+      0,
+      -1,
+      0.5,
+      y,
+      1,
+      0.5,
+      y,
+      -1,
+      0.5,
+      2,
+      -1,
+    ],
+  });
+  const points = Array.from(result.positions!);
+  const hasPoint = (x: number, py: number) =>
+    points.some(
+      (_, i) =>
+        i % 3 === 0 &&
+        points[i] === x &&
+        points[i + 1] === py &&
+        points[i + 2] === 0,
+    );
+  expect(result.diagnostics.parts).toBe(2);
+  expect(hasPoint(0.5, 1)).toBe(true);
+  expect(hasPoint(0.5, y)).toBe(true);
+});
+
 it("keeps sampled CAD cutters on the existing solid-cutter route", () => {
   const source = new Float32Array([0, 0, 0, 2, 0, 0, 0, 2, 0]);
   const target = new Float32Array([1, -2, -1, 1, 4, -1, 1, -2, 3]);
