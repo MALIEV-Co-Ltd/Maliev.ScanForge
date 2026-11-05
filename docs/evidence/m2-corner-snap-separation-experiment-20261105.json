@@ -1,0 +1,15 @@
+{
+  "scope": "Exploratory first-corner association in the finite-mesh Split pipeline, subsequently withdrawn; no application behavior change",
+  "baseCommit": "a051fdd8",
+  "experiment": "For precise noncoplanar hits, replace each intersection endpoint within 0.001 of the first source-face corner with that corner and discard its source-edge provenance before edge contact propagation. The low-level collector retained its default unsnapped behavior.",
+  "fixtureSubset": "The experiment passed 406 Split tests, with three expected failures and five skips, including the previously failing interior, subdivided, shared-edge and ambiguous near-corner fixtures and the wide-radius-below fixture. This did not establish general safety.",
+  "ply3": {
+    "inputSha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f",
+    "test": "tests/scan-split-finite-candidate-original-local.test.ts with SCANFORGE_M2_PRECISE_CANDIDATE=1",
+    "experiment": "Failed the component-side assertion: at least one component crossed the cutter plane. Peak Job bytes 1904295936; cleanup confirmed.",
+    "restored": "The same test and input passed after removing the experiment. Peak Job bytes 1903104000; cleanup confirmed.",
+    "limitation": "Low-level candidate evidence only; no browser or public-MCP lifecycle was run."
+  },
+  "reducedControl": "tests/m2-split-near-vertex-plane-safety.test.ts passed on the restored implementation and failed under the experiment because both nearby intersections collapsed and cutEdges became zero.",
+  "conclusion": "Unconditional corner association can remove a real cut or make a partition cross the original cutter plane. A correction must reconcile native corner behavior with separation, retained exact intersection evidence and shared-edge topology; matching the small native fixtures alone is insufficient."
+}
