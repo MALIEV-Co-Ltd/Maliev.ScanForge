@@ -254,6 +254,36 @@ it("handles a sparse gap between crowded contacts within the default work budget
   expect(result.endpointBindings).toEqual([]);
 });
 
+it("handles crowded contacts on separate edges within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = 0.00014 + i * 1e-11;
+    return {
+      points: [[x, 0.00014, 0] as Vec3, [x, 0.000140001, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = ([0, 1] as const).map((edge) => ({
+    edge: (edge === 0 ? [0, 1] : [1, 2]) as [number, number],
+    contacts: Array.from({ length: count / 2 }, (_, i) => {
+      const coordinate =
+        edge === 0 && i === 0 ? 0.0000001 : 0.0000989 + i * 1e-10;
+      const t = edge === 0 ? 1 - coordinate : coordinate;
+      return {
+        t,
+        point: (edge === 0 ? [coordinate, 0, 0] : [0, coordinate, 0]) as Vec3,
+        canonical: { t, reversed: false },
+      };
+    }),
+  }));
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
 it("binds actual finite intersections through the indexed contact registry for adjacent faces", () => {
   const vertices: Vec3[] = [
     [0, 0, 0],
