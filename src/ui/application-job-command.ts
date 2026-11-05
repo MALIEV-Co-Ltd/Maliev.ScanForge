@@ -2,6 +2,9 @@ import type { ApplicationApi } from "../automation/api";
 
 export interface ApplicationJobOptions {
   signal?: AbortSignal;
+  readOnly?: boolean;
+  expectedRevision?: number;
+  onDiscardedResult?: (result: Record<string, unknown>) => Promise<void>;
   onProgress?: (fraction: number, stage: string) => void;
 }
 
@@ -18,18 +21,24 @@ export async function runApplicationJobCommand(
   options.signal?.throwIfAborted();
   const receipt = await api.invoke(command, {
     ...args,
-    expectedRevision: api.currentRevision(),
-    requestId: crypto.randomUUID(),
+    ...(!options.readOnly
+      ? {
+          expectedRevision: options.expectedRevision ?? api.currentRevision(),
+          requestId: crypto.randomUUID(),
+        }
+      : {}),
   });
   if (!receipt.ok) throw Error(receipt.error.message);
   const { jobId } = receipt.result as { jobId: string };
   let cancelled = false;
   let completed = false;
+  let delivered = false;
+  let cancellation: Promise<unknown> | undefined;
   const cancel = () => {
     if (cancelled || completed) return;
     cancelled = true;
     // Cancellation is best effort; retain the original abort/lease error.
-    void Promise.resolve()
+    cancellation = Promise.resolve()
       .then(() => api.invoke("job_cancel", { jobId }))
       .catch(() => {});
   };
@@ -66,7 +75,10 @@ export async function runApplicationJobCommand(
       };
       completed = job.status !== "running";
       options.onProgress?.(job.progress, job.stage);
-      if (job.status === "succeeded") return job.result ?? {};
+      if (job.status === "succeeded") {
+        delivered = true;
+        return job.result ?? {};
+      }
       if (job.status !== "running")
         throw Error(job.error?.message ?? options.cancelledMessage);
       options.signal?.throwIfAborted();
@@ -82,5 +94,21 @@ export async function runApplicationJobCommand(
     clearTimeout(pollTimer);
     if (!completed) cancel();
     options.signal?.removeEventListener("abort", abort);
+    if (!delivered && options.onDiscardedResult) {
+      await cancellation;
+      try {
+        const terminal = await api.invoke("job_get", { jobId });
+        if (terminal.ok) {
+          const job = terminal.result as {
+            status: string;
+            result?: Record<string, unknown>;
+          };
+          if (job.status === "succeeded")
+            await options.onDiscardedResult(job.result ?? {});
+        }
+      } catch {
+        // Preserve the original failure; owner disposal already retires artifacts.
+      }
+    }
   }
 }

@@ -25,6 +25,67 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+it("retires an export artifact if cancellation wins before a successful result is delivered", async () => {
+  const controller = new AbortController();
+  let polls = 0;
+  const invoke = vi.fn(
+    async (command: string, _args: Record<string, unknown>) => {
+      if (command === "project_export") return ok({ jobId: "owned-export" });
+      if (command === "job_get") {
+        if (++polls === 1) return new Promise<never>(() => {});
+        return done({ artifactId: "finished-artifact" });
+      }
+      return ok({});
+    },
+  );
+  const onDiscardedResult = vi.fn(async (result: Record<string, unknown>) => {
+    await invoke("artifact_delete", { artifactId: result.artifactId });
+  });
+  const pending = runApplicationJobCommand(
+    apiWith(invoke),
+    "project_export",
+    { format: "step" },
+    {
+      readOnly: true,
+      signal: controller.signal,
+      onDiscardedResult,
+      cancelledMessage: "cancelled",
+      leaseMessage: "expired",
+    },
+  );
+  await vi.waitFor(() => expect(polls).toBe(1));
+  const rejected = expect(pending).rejects.toThrow();
+  controller.abort();
+  await rejected;
+  expect(onDiscardedResult).toHaveBeenCalledWith({
+    artifactId: "finished-artifact",
+  });
+  expect(invoke).toHaveBeenCalledWith("job_cancel", { jobId: "owned-export" });
+  expect(invoke).toHaveBeenCalledWith("artifact_delete", {
+    artifactId: "finished-artifact",
+  });
+});
+
+it("retains an inspected CAD reference revision instead of silently refreshing it", async () => {
+  const invoke = vi.fn(
+    async (command: string, _args: Record<string, unknown>) =>
+      command === "job_get" ? done() : ok({ jobId: "cad-job" }),
+  );
+  const api = apiWith(invoke);
+  await runApplicationJobCommand(
+    api,
+    "cad_create",
+    { name: "Fillet", recipe: {} },
+    {
+      expectedRevision: 3,
+      cancelledMessage: "cancelled",
+      leaseMessage: "expired",
+    },
+  );
+  expect(invoke.mock.calls[0][1].expectedRevision).toBe(3);
+  expect(api.currentRevision).not.toHaveBeenCalled();
+});
+
 it("routes the GUI reconstruction branch through the shared application job", () => {
   const app = readFileSync(
     new URL("../src/ui/App.tsx", import.meta.url),

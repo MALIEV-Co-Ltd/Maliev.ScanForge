@@ -11,6 +11,12 @@ The worker also prepares compact indexed display normals using the same welded
 normal calculation as the expanded viewport fallback. The client caches those
 disposable buffers for the shared GUI/MCP result without changing authored normals.
 
+The shared CAD worker owns construction inputs for Boolean/split, edge treatment,
+shell and thickening makers. Datum partners retain prepared source triangulations
+and patterns deep-copy their first instance before compound meshing. Existing GUI
+and MCP CAD/alignment operations share these fixes; revision, cancellation, output
+ownership, history and public edge/face indexing retain their current contracts.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates
@@ -89,6 +95,14 @@ remains retryable for failed preview cleanup. Owner leases are internal lifecycl
 controls and do not add transport commands or bypass revision and request guards.
 
 ## Intent and scope
+
+Project/backup restore rehydrates exact BREP into a separate CadClient before
+publication. It caches only kernel IDs by saved BREP and retains the decoded
+entity's display buffers, BREP and metadata across current/history/future states,
+matching GUI restore. Fresh import tessellations are temporary, rather than
+substitutes for saved geometry. Failure/cancellation still disposes the unpublished
+client and preserves the open workspace. Text chunks use an ordinary byte view
+for browser TextDecoder; numeric chunks retain immutable shared backing.
 
 The shared restore worker accepts optional immutable shared chunk candidates
 from a shared bounded weak registry. Successful restore and encoding workers
@@ -1504,3 +1518,15 @@ GUI boundary smoothing and MCP `mesh_process` / `scanEdit/boundarySmooth` share 
 Changed output publishes independent indexed buffers only after coordinate correspondence validation. Both the GUI adapter and MCP executor adopt those buffers, preserving imported identity for subsequent edits; authored source buffers and canonical cache arrays are never transferred. No-op output retains the source cache and creates no history. Existing lock/revision/retry/cancellation rules still govern the one model commit. Strength defaults to one; zero still runs ten native vertex passes and a 0.05 mm fit. Iterations count full command repetitions. See the agent guide and native evidence for finite comparison scope and remaining gates.
 
 Spatial boundary sketch creation uses `scanEdit/boundarySpatialSketch` through the same processing worker and owned `newModelSketches` commit path. The saved-sketch discriminant retains either a planar sketch or ordered spatial cubic curves, never a planar approximation of those curves. `sketch_get` exposes spatial poles, knots, periodic flags and fitting diagnostics; `sketch_manage` rejects planar activation of spatial sketches. JSON project version 5 and binary version 7 signal the new representation, including retained history records; older version labels cannot carry it. GUI publication rechecks the selected source and lock after worker completion; MCP retains its revision, retry, cancellation and lock checks. Both paths reject unsupported triangle-mask selection. The display is derived from validated curves with bounded segment and basis/knot work admission before sampling.
+
+## Shared STEP export delivery
+
+GUI STEP export submits the same read-only `project_export` job as MCP, using
+the explicit STEP-only `cadOnly` filter. Both paths share visibility, exact-body
+validation, cancellation, revision/owner fences and artifact quota. The GUI reads
+the leased immutable artifact locally, downloads it and deletes it; MCP callers
+use `artifact_read` and `artifact_delete`. A portal keeps the GUI's owned cancel
+control reachable while the workspace is busy. Late cancelled results publish no
+artifact and do not edit history.
+If cancellation interrupts GUI delivery after the owned job succeeds, the GUI
+also retires that completed artifact through the shared job observer's cleanup.
