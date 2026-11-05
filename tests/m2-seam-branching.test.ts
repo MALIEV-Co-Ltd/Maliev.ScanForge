@@ -97,5 +97,9 @@ it("handles repeated isolated cuts on a large open fan within the default work b
     new Uint32Array(cuts),
     { preciseCoordinates: true },
   );
-  expect(result.triangles.length).toBe(triangles.length + 6);
+  expect(result.triangles.length).toBe(triangles.length);
+  expect(
+    analyzeIndexedMesh(Float64Array.from(result.vertices), result.triangles)
+      .components,
+  ).toHaveLength(2);
 });

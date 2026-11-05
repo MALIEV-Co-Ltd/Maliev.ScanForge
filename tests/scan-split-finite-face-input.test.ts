@@ -10,7 +10,7 @@ import { assembleFiniteFaceMesh } from "../src/scan-split-finite-assembly";
 import { groupFiniteTrianglesCompact } from "../src/scan-split-finite-group";
 import type { Vec3 } from "../src/types";
 
-it("keeps a distinct one-step seam contact from adjacent cutter faces", () => {
+it("associates nearby contacts from adjacent cutter faces", () => {
   const y = 1 + 2 ** -23;
   const vertices = new Float64Array([0, 1, 0, 1, 1, 0, 0, 2, 0]);
   const triangles = new Uint32Array([0, 1, 2]);
@@ -65,10 +65,10 @@ it("keeps a distinct one-step seam contact from adjacent cutter faces", () => {
   ).toBe(true);
   expect(
     input.segments.some((segment) => segment.some((point) => point[1] === y)),
-  ).toBe(true);
+  ).toBe(false);
 });
 
-it("keeps a distinct interior endpoint one Float32 step from a boundary contact", () => {
+it("associates an interior endpoint near a unique boundary contact", () => {
   const boundary: Vec3 = [0.5, 1, 0];
   const interior: Vec3 = [0.5, 1 + 2 ** -23, 0];
   const hit = {
@@ -87,8 +87,107 @@ it("keeps a distinct interior endpoint one Float32 step from a boundary contact"
   const result = buildFiniteFaceInput([0, 1, 2], [hit], registered, {
     preciseCoordinates: true,
   });
+  expect(result.segments[0][0]).toEqual(boundary);
+  expect(result.endpointBindings).toEqual([
+    { segment: 0, endpoint: 0, contact: 0 },
+  ]);
+  const distant = { ...hit, points: [[0.5, 1.0002, 0] as Vec3, hit.points[1]] };
+  const beyond = buildFiniteFaceInput([0, 1, 2], [distant], registered, {
+    preciseCoordinates: true,
+  });
+  expect(beyond.segments[0][0]).toEqual(distant.points[0]);
+  expect(beyond.endpointBindings).toEqual([]);
+});
+
+it("does not associate an endpoint when two boundary contacts are nearby", () => {
+  const interior: Vec3 = [0.5, 1.00002, 0];
+  const hit = {
+    points: [interior, [0.5, 1.25, 0] as Vec3],
+    coplanar: false,
+    sourceEdges: [[], []],
+  };
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: [0.5, 0.50002].map((t) => ({
+        t,
+        point: [t, 1, 0] as Vec3,
+        canonical: { t, reversed: false },
+      })),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], [hit], registered, {
+    preciseCoordinates: true,
+  });
   expect(result.segments[0][0]).toEqual(interior);
   expect(result.endpointBindings).toEqual([]);
+});
+
+it("bounds contact lookup allocation before publishing face inputs", () => {
+  const hit = {
+    points: [[0.5, 0.00001, 0] as Vec3, [0.5, 0.25, 0] as Vec3],
+    coplanar: false,
+    sourceEdges: [[], []],
+  };
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: [
+        {
+          t: 0.5,
+          point: [0.5, 0, 0] as Vec3,
+          canonical: { t: 0.5, reversed: false },
+        },
+      ],
+    },
+  ];
+  expect(() =>
+    buildFiniteFaceInput([0, 1, 2], [hit], registered, {
+      preciseCoordinates: true,
+      maxLookupEntries: 1,
+    }),
+  ).toThrow(/contact lookup memory budget exceeded/i);
+});
+
+it("does not allocate a contact lookup when no boundary contacts exist", () => {
+  const hit = {
+    points: [[0.25, 0.25, 0] as Vec3, [0.5, 0.25, 0] as Vec3],
+    coplanar: false,
+    sourceEdges: [[], []],
+  };
+  const result = buildFiniteFaceInput([0, 1, 2], [hit], [], {
+    preciseCoordinates: true,
+    maxLookupEntries: 0,
+  });
+  expect(result.segments).toHaveLength(1);
+  expect(result.endpointBindings).toEqual([]);
+});
+
+it("continues lookup when the optional result cache reaches its allowance", () => {
+  const hit = {
+    points: [[0.5, 0.00001, 0] as Vec3, [0.5, 0.25, 0] as Vec3],
+    coplanar: false,
+    sourceEdges: [[], []],
+  };
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: [
+        {
+          t: 0.5,
+          point: [0.5, 0, 0] as Vec3,
+          canonical: { t: 0.5, reversed: false },
+        },
+      ],
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], [hit], registered, {
+    preciseCoordinates: true,
+    maxLookupEntries: 2,
+  });
+  expect(result.endpointBindings).toEqual([
+    { segment: 0, endpoint: 0, contact: 0 },
+  ]);
 });
 
 it("binds distinct precise contacts by their exact edge parameters", () => {
@@ -128,160 +227,6 @@ it("binds distinct precise contacts by their exact edge parameters", () => {
       preciseCoordinates: true,
     }),
   ).toThrow(/ambiguous/);
-});
-
-it("handles many unrelated interior endpoints and boundary contacts within the default work budget", () => {
-  const count = 1100;
-  const hits = Array.from({ length: count }, (_, i) => {
-    const x = (i + 1) / (count + 1);
-    return {
-      points: [[x, 0.1, 0] as Vec3, [x, 0.2, 0] as Vec3],
-      coplanar: false,
-      sourceEdges: [[], []],
-    };
-  });
-  const registered = [
-    {
-      edge: [0, 1] as [number, number],
-      contacts: Array.from({ length: count }, (_, i) => {
-        const t = (i + 1) / (count + 1);
-        return {
-          t,
-          point: [t, 0, 0] as Vec3,
-          canonical: { t, reversed: false },
-        };
-      }),
-    },
-  ];
-  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
-    preciseCoordinates: true,
-  });
-  expect(result.segments).toHaveLength(count);
-  expect(result.boundaryContacts).toHaveLength(count);
-  expect(result.endpointBindings).toEqual([]);
-});
-
-it("handles crowded contacts outside the association radius within the default work budget", () => {
-  const count = 1100;
-  const hit = {
-    points: [[0, 0.000099, 0] as Vec3, [0, 0.0000991, 0] as Vec3],
-    coplanar: false,
-    sourceEdges: [[], []],
-  };
-  const registered = [
-    {
-      edge: [0, 1] as [number, number],
-      contacts: Array.from({ length: count }, (_, i) => {
-        const t = 0.000098 + i * 1e-10;
-        return {
-          t,
-          point: [t, 0, 0] as Vec3,
-          canonical: { t, reversed: false },
-        };
-      }),
-    },
-  ];
-  const result = buildFiniteFaceInput(
-    [0, 1, 2],
-    Array.from({ length: count }, () => hit),
-    registered,
-    {
-      preciseCoordinates: true,
-    },
-  );
-  expect(result.segments).toHaveLength(count);
-  expect(result.endpointBindings).toEqual([]);
-});
-
-it("handles crowded diagonal contacts outside the association radius within the default work budget", () => {
-  const count = 1100;
-  const hits = Array.from({ length: count }, (_, i) => {
-    const x = -0.00007 + i * 1e-11;
-    return {
-      points: [[x, 0.00017, 0] as Vec3, [x, 0.000170001, 0] as Vec3],
-      coplanar: false,
-      sourceEdges: [[], []],
-    };
-  });
-  const registered = [
-    {
-      edge: [0, 1] as [number, number],
-      contacts: Array.from({ length: count }, (_, i) => {
-        const t = 0.0000001 + i * 0.00000009;
-        return {
-          t,
-          point: [t, t, 0] as Vec3,
-          canonical: { t, reversed: false },
-        };
-      }),
-    },
-  ];
-  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
-    preciseCoordinates: true,
-  });
-  expect(result.segments).toHaveLength(count);
-  expect(result.endpointBindings).toEqual([]);
-});
-
-it("handles a sparse gap between crowded contacts within the default work budget", () => {
-  const count = 1100;
-  const hits = Array.from({ length: count }, (_, i) => {
-    const x = 0.00005 + i * 1e-11;
-    return {
-      points: [[x, 0.0000998, 0] as Vec3, [x, 0.000099801, 0] as Vec3],
-      coplanar: false,
-      sourceEdges: [[], []],
-    };
-  });
-  const registered = [
-    {
-      edge: [0, 1] as [number, number],
-      contacts: Array.from({ length: count }, (_, i) => {
-        const t =
-          i < 550 ? 0.0000001 + i * 1e-10 : 0.0000989 + (i - 550) * 1e-10;
-        return {
-          t,
-          point: [t, 0, 0] as Vec3,
-          canonical: { t, reversed: false },
-        };
-      }),
-    },
-  ];
-  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
-    preciseCoordinates: true,
-  });
-  expect(result.segments).toHaveLength(count);
-  expect(result.endpointBindings).toEqual([]);
-});
-
-it("handles crowded contacts on separate edges within the default work budget", () => {
-  const count = 1100;
-  const hits = Array.from({ length: count }, (_, i) => {
-    const x = 0.00014 + i * 1e-11;
-    return {
-      points: [[x, 0.00014, 0] as Vec3, [x, 0.000140001, 0] as Vec3],
-      coplanar: false,
-      sourceEdges: [[], []],
-    };
-  });
-  const registered = ([0, 1] as const).map((edge) => ({
-    edge: (edge === 0 ? [0, 1] : [1, 2]) as [number, number],
-    contacts: Array.from({ length: count / 2 }, (_, i) => {
-      const coordinate =
-        edge === 0 && i === 0 ? 0.0000001 : 0.0000989 + i * 1e-10;
-      const t = edge === 0 ? 1 - coordinate : coordinate;
-      return {
-        t,
-        point: (edge === 0 ? [coordinate, 0, 0] : [0, coordinate, 0]) as Vec3,
-        canonical: { t, reversed: false },
-      };
-    }),
-  }));
-  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
-    preciseCoordinates: true,
-  });
-  expect(result.segments).toHaveLength(count);
-  expect(result.endpointBindings).toEqual([]);
 });
 
 it("binds actual finite intersections through the indexed contact registry for adjacent faces", () => {
@@ -519,4 +464,158 @@ it("carries a near-end offset through local binding and indexed assembly", () =>
     { ids, boundaries: input.boundaryContacts, mesh },
   ]);
   expect([...assembled.addedVertices]).toContain(target);
+});
+
+it("handles many unrelated interior endpoints and boundary contacts within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = (i + 1) / (count + 1);
+    return {
+      points: [[x, 0.1, 0] as Vec3, [x, 0.2, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t = (i + 1) / (count + 1);
+        return {
+          t,
+          point: [t, 0, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.boundaryContacts).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
+it("handles crowded contacts outside the association radius within the default work budget", () => {
+  const count = 1100;
+  const hit = {
+    points: [[0, 0.000099, 0] as Vec3, [0, 0.0000991, 0] as Vec3],
+    coplanar: false,
+    sourceEdges: [[], []],
+  };
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t = 0.000098 + i * 1e-10;
+        return {
+          t,
+          point: [t, 0, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput(
+    [0, 1, 2],
+    Array.from({ length: count }, () => hit),
+    registered,
+    {
+      preciseCoordinates: true,
+    },
+  );
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
+it("handles crowded diagonal contacts outside the association radius within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = -0.00007 + i * 1e-11;
+    return {
+      points: [[x, 0.00017, 0] as Vec3, [x, 0.000170001, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t = 0.0000001 + i * 0.00000009;
+        return {
+          t,
+          point: [t, t, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
+it("handles a sparse gap between crowded contacts within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = 0.00005 + i * 1e-11;
+    return {
+      points: [[x, 0.0000998, 0] as Vec3, [x, 0.000099801, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t =
+          i < 550 ? 0.0000001 + i * 1e-10 : 0.0000989 + (i - 550) * 1e-10;
+        return {
+          t,
+          point: [t, 0, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
+it("handles crowded contacts on separate edges within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = 0.00014 + i * 1e-11;
+    return {
+      points: [[x, 0.00014, 0] as Vec3, [x, 0.000140001, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = ([0, 1] as const).map((edge) => ({
+    edge: (edge === 0 ? [0, 1] : [1, 2]) as [number, number],
+    contacts: Array.from({ length: count / 2 }, (_, i) => {
+      const coordinate =
+        edge === 0 && i === 0 ? 0.0000001 : 0.0000989 + i * 1e-10;
+      const t = edge === 0 ? 1 - coordinate : coordinate;
+      return {
+        t,
+        point: (edge === 0 ? [coordinate, 0, 0] : [0, coordinate, 0]) as Vec3,
+        canonical: { t, reversed: false },
+      };
+    }),
+  }));
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
 });

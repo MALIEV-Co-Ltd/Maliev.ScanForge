@@ -54,7 +54,26 @@ it("pins the short disjoint-cut cutter round trip and native Split observation",
   expect(result.positions!.length).toBeGreaterThan(0);
 });
 
-it.fails("matches the short disjoint-cut retained native Split facets", () => {
+it("matches the short disjoint-cut retained native Split facets", () => {
   const { source, cutter, native } = inputs();
   expect(facets(split(source, cutter).positions!)).toEqual(facets(native));
+});
+
+it("rejects actually degenerate and nonmanifold cutters at fine tolerance", () => {
+  const { source } = inputs();
+  const degenerate = new Float32Array([0, 0, 0, 1, 0, 0, 2, 0, 0]);
+  const nonmanifold = new Float32Array([
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1,
+  ]);
+  for (const target of [degenerate, nonmanifold])
+    expect(() =>
+      runScanEdit({
+        kind: "scanEdit",
+        action: "split",
+        positions: source,
+        target,
+        tolerance: 0.000001,
+      }),
+    ).toThrow(/nondegenerate manifold triangles/i);
 });

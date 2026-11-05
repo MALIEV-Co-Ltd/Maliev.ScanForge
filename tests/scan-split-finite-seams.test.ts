@@ -80,11 +80,33 @@ it("opens an edge-to-edge cut into two connected parts", () => {
     refined.triangles,
     refined.constraints,
   );
+  expect(output.triangles).toHaveLength(refined.triangles.length);
   const topology = analyzeIndexedMesh(
     Float64Array.from(output.vertices),
     output.triangles,
   );
   expect(topology.components).toHaveLength(2);
+  expect(topology.nonManifoldEdges).toBe(0);
+});
+
+it("opens a boundary-to-interior slit without creating an extra midpoint", () => {
+  const vertices = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.3, 0]);
+  const triangles = new Uint32Array([0, 1, 3, 1, 2, 3, 2, 0, 3]);
+  const output = materializeFiniteSeams(
+    vertices,
+    triangles,
+    new Uint32Array([0, 3]),
+    {
+      preciseCoordinates: true,
+    },
+  );
+  const topology = analyzeIndexedMesh(
+    Float64Array.from(output.vertices),
+    output.triangles,
+  );
+  expect(output.triangles).toHaveLength(triangles.length);
+  expect(topology.components).toHaveLength(1);
+  expect(topology.boundaryEdges).toBe(5);
   expect(topology.nonManifoldEdges).toBe(0);
 });
 
@@ -101,6 +123,19 @@ it("rejects missing cut edges and honors cancellation", () => {
       signal: controller.signal,
     }),
   ).toThrow(/abort/i);
+});
+
+it("bounds isolated-tip boundary lookup before expanding the mesh", () => {
+  const vertices = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 1, 0, 3]);
+  const before = [vertices.slice(), triangles.slice()];
+  expect(() =>
+    materializeFiniteSeams(vertices, triangles, new Uint32Array([0, 1]), {
+      preciseCoordinates: true,
+      maxTypedBytes: 256,
+    }),
+  ).toThrow(/boundary work memory budget/i);
+  expect([vertices, triangles]).toEqual(before);
 });
 
 it("rejects a rounded seam midpoint that collapses a generated face", () => {

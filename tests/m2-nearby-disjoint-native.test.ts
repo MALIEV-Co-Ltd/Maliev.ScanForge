@@ -54,7 +54,7 @@ it("pins the disjoint-cut cutter round trip and native Split observation", () =>
   expect(result.positions!.length).toBeGreaterThan(0);
 });
 
-it.fails("matches the disjoint-cut retained native Split facets", () => {
+it("matches the disjoint-cut retained native Split facets", () => {
   const { source, cutter, native } = inputs();
   expect(facets(split(source, cutter).positions!)).toEqual(facets(native));
 });

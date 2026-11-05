@@ -5,7 +5,7 @@ import { runFiniteSplitCandidate } from "../src/scan-split-finite-candidate";
 import { runScanEdit } from "../src/scan-edit";
 import { scanSplitCutter } from "../src/scan-split-cutter";
 
-it("retains a distinct one-step seam through the shared Split operation", () => {
+it("associates the observed one-step native seam through the shared Split operation", () => {
   const y = 1 + 2 ** -23;
   const result = runScanEdit({
     kind: "scanEdit",
@@ -43,7 +43,7 @@ it("retains a distinct one-step seam through the shared Split operation", () => 
     );
   expect(result.diagnostics.parts).toBe(2);
   expect(hasPoint(0.5, 1)).toBe(true);
-  expect(hasPoint(0.5, y)).toBe(true);
+  expect(hasPoint(0.5, y)).toBe(false);
 });
 
 it("keeps sampled CAD cutters on the existing solid-cutter route", () => {

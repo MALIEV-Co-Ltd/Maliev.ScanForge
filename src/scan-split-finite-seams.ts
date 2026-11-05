@@ -82,12 +82,128 @@ export function materializeFiniteSeams(
       break;
     }
   }
+  const allowance = options.maxTypedBytes ?? Number.MAX_SAFE_INTEGER;
+  if (!Number.isSafeInteger(allowance) || allowance < 0)
+    throw new Error("Finite seam typed memory budget exceeded.");
+  // The added lookup has a separate, conservative JS-entry allowance. The
+  // existing typed-array limit below is not a total-process memory guarantee.
+  const extraEntryLimit = Math.floor(
+    Math.min(allowance, 256 * 1024 * 1024) / 256,
+  );
+  let extraEntries = 0;
+  const reserveEntry = () => {
+    if (++extraEntries > extraEntryLimit)
+      throw new Error("Finite seam boundary work memory budget exceeded.");
+  };
+  const isolatedTips = new Set<number>();
+  if (!closed)
+    for (let i = 0; i < cuts.length; i += 2) {
+      tick();
+      const a = cuts[i],
+        b = cuts[i + 1];
+      if (degrees.get(a) === 1 && degrees.get(b) === 1) {
+        for (const v of [a, b])
+          if (!isolatedTips.has(v)) {
+            reserveEntry();
+            isolatedTips.add(v);
+          }
+      }
+    }
+  const edgeCounts = new Map<string, { a: number; b: number; count: number }>();
+  const fans = new Map<number, Map<number, number>>();
+  const fanRoot = (parents: Map<number, number>, id: number): number => {
+    let current = id;
+    while (parents.get(current) !== current) {
+      tick();
+      current = parents.get(current)!;
+    }
+    let path = id;
+    while (path !== current) {
+      tick();
+      const next = parents.get(path)!;
+      parents.set(path, current);
+      path = next;
+    }
+    return current;
+  };
+  if (isolatedTips.size)
+    for (let i = 0; i < triangles.length; i += 3) {
+      tick();
+      for (let j = 0; j < 3; j++) {
+        const a = triangles[i + j],
+          b = triangles[i + ((j + 1) % 3)];
+        if (isolatedTips.has(a)) {
+          const c = triangles[i + ((j + 2) % 3)];
+          let parents = fans.get(a);
+          if (!parents) {
+            reserveEntry();
+            parents = new Map();
+            fans.set(a, parents);
+          }
+          for (const v of [b, c])
+            if (!parents.has(v)) {
+              reserveEntry();
+              parents.set(v, v);
+            }
+          const rb = fanRoot(parents, b),
+            rc = fanRoot(parents, c);
+          if (rb !== rc) parents.set(rb, rc);
+        }
+        if (!isolatedTips.has(a) && !isolatedTips.has(b)) continue;
+        const k = key(a, b),
+          e = edgeCounts.get(k);
+        if (e) e.count++;
+        else {
+          reserveEntry();
+          edgeCounts.set(k, { a, b, count: 1 });
+        }
+      }
+    }
+  const boundary = new Set<number>();
+  for (const e of edgeCounts.values()) {
+    tick();
+    if (e.count === 1) {
+      for (const v of [e.a, e.b])
+        if (!boundary.has(v)) {
+          reserveEntry();
+          boundary.add(v);
+        }
+    }
+  }
+  const connectedBoundaryCache = new Map<number, boolean>();
+  const connectedBoundary = (v: number) => {
+    const cached = connectedBoundaryCache.get(v);
+    if (cached !== undefined) return cached;
+    if (!boundary.has(v)) return false;
+    const parents = fans.get(v);
+    if (!parents || !parents.size) return false;
+    let root: number | undefined;
+    for (const id of parents.keys()) {
+      tick();
+      const r = fanRoot(parents, id);
+      if (root !== undefined && r !== root) {
+        reserveEntry();
+        connectedBoundaryCache.set(v, false);
+        return false;
+      }
+      root = r;
+    }
+    reserveEntry();
+    connectedBoundaryCache.set(v, true);
+    return true;
+  };
   for (let i = 0; i < cuts.length; i += 2) {
     tick();
     const a = cuts[i],
       b = cuts[i + 1],
       k = key(a, b);
-    if (closed || (degrees.get(a) ?? 0) > 1 || (degrees.get(b) ?? 0) > 1) {
+    if (
+      ((connectedBoundary(a) || connectedBoundary(b)) &&
+        edgeCounts.get(k)?.count === 2) ||
+      closed ||
+      (degrees.get(a) ?? 0) > 1 ||
+      (degrees.get(b) ?? 0) > 1
+    ) {
       cutVertices.add(a);
       cutVertices.add(b);
       splitEdges.add(k);
@@ -151,12 +267,7 @@ export function materializeFiniteSeams(
     faceSlots * (options.preciseCoordinates ? 48 : 36) +
     expandedVertexCount * 4 +
     (options.retainFaceParents ? (faceSlots / 3) * 4 : 0);
-  const allowance = options.maxTypedBytes ?? Number.MAX_SAFE_INTEGER;
-  if (
-    !Number.isSafeInteger(allowance) ||
-    allowance < 0 ||
-    typedBytes > allowance
-  )
+  if (typedBytes > allowance)
     throw new Error("Finite seam typed memory budget exceeded.");
   const faces = new Uint32Array(faceSlots);
   const faceParents = options.retainFaceParents
