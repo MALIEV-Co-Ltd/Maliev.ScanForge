@@ -27,6 +27,13 @@
     }
   ],
   "observation": "Each output has the same two-triangle arrangement, with the diagonal intersection at (x, 0.5, 0).",
+  "assemblyCoverageControl20261105": {
+    "method": "Read the retained STL triangles, map their vertices onto the pinned source face and submit the native facets directly to the current finite-face assembler with precise coordinates. This is a direct shared-code control, not a native rerun or GUI/MCP operation.",
+    "result": "All three native facet sets are rejected by the assembler's face coverage guard. Their measured areas are approximately 0.499955, 0.499950 and 0.499945 square mm, respectively, versus the 0.5 square mm source. A native-matching change must explicitly address this existing source-coverage safety invariant; proximity alone does not resolve it.",
+    "test": "tests/m2-native-radius-facets.test.ts",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-radius-coverage-guard-20261105.json",
+    "typecheckGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-radius-coverage-typecheck-20261105.json"
+  },
   "limitations": [
     "Native viewport was white; geometry is from exported binary STL",
     "Native intermediate intersection and threshold logic remain unobserved",

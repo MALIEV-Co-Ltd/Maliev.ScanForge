@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import { parseMesh } from "../src/io";
 import { runScanEdit } from "../src/scan-edit";
+import { assembleFiniteFaceMesh } from "../src/scan-split-finite-assembly";
+import type { Vec3 } from "../src/types";
 
 const sourceHash =
   "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6";
@@ -114,3 +116,56 @@ it.fails.each(cases.slice(0, 4))(
   (...row) => compare(row),
 );
 it("matches retained native Split facets: wide-above", () => compare(cases[4]));
+
+it.each(cases.slice(0, 3))(
+  "rejects native source-area loss at the finite assembly boundary: %s",
+  (_name, folder, _cutterName, _cutterHash, nativeName, nativeHash) => {
+    const native = load(folder, nativeName, nativeHash);
+    const vertices: Vec3[] = [
+      [0, 0, 0],
+      [1, 0, 0],
+      [0, 1, 0],
+    ];
+    const indices = new Map(
+      vertices.map((point, index) => [point.join(","), index]),
+    );
+    const triangles: [number, number, number][] = [];
+    for (let offset = 0; offset < native.length; offset += 9) {
+      const face: number[] = [];
+      for (let corner = 0; corner < 9; corner += 3) {
+        const point: Vec3 = [
+          native[offset + corner],
+          native[offset + corner + 1],
+          native[offset + corner + 2],
+        ];
+        const key = point.join(",");
+        let index = indices.get(key);
+        if (index === undefined) {
+          index = vertices.length;
+          indices.set(key, index);
+          vertices.push(point);
+        }
+        face.push(index);
+      }
+      triangles.push(face as [number, number, number]);
+    }
+    expect(() =>
+      assembleFiniteFaceMesh(
+        new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+        [
+          {
+            ids: [0, 1, 2],
+            boundaries: [],
+            mesh: {
+              vertices,
+              triangles,
+              constraints: [],
+              boundaryVertices: [],
+            },
+          },
+        ],
+        { preciseCoordinates: true },
+      ),
+    ).toThrow(/coverage/i);
+  },
+);
