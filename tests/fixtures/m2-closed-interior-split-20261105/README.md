@@ -1,0 +1,3 @@
+Synthetic millimeter-scale tetrahedron and interior cutter. QuickSurface Pro 8.0.123 Split Mesh, Envelope disabled, produced eight source faces; its Edit Scan panel reported one individual mesh and zero holes. The saved session and source-only STL are included. The fixed offsets used by the test describe this hashed session only; they are not a general QSF specification. Its two cut endpoints share indices across adjacent faces, and all source edges have two incident faces. The cutter is the same input as the separately round-tripped far cutter in the adjacent interior-corner fixture.
+
+The expected-failure comparison records an outstanding ScanForge/native facet difference; it is not a passing parity assertion.
