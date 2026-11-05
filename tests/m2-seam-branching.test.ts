@@ -290,3 +290,54 @@ it.fails(
   },
   30000,
 );
+
+it("handles an unrelated large closed loop with a short path under the existing stage budget", () => {
+  const n = 5000,
+    vertices = new Float32Array((n + 7) * 3),
+    triangles = new Uint32Array((n + 6) * 3),
+    cuts = new Uint32Array((n + 2) * 2);
+  for (let i = 0; i < n; i++) {
+    const angle = (2 * Math.PI * i) / n;
+    vertices[3 * (i + 1)] = Math.cos(angle);
+    vertices[3 * (i + 1) + 1] = Math.sin(angle);
+    const j = ((i + 1) % n) + 1;
+    triangles.set([0, i + 1, j], 3 * i);
+    cuts.set([i + 1, j], 2 * i);
+  }
+  const b = n + 1;
+  vertices.set(
+    [3, 2, 0, 3, 1, 0, 4, 1, 0, 3.5, 1, 0, 3.5, 1.15, 0, 3.5, 1.3, 0],
+    3 * b,
+  );
+  triangles.set(
+    [
+      b + 5,
+      b + 1,
+      b + 4,
+      b + 4,
+      b + 1,
+      b + 3,
+      b + 5,
+      b + 4,
+      b + 2,
+      b + 5,
+      b,
+      b + 1,
+      b + 4,
+      b + 3,
+      b + 2,
+      b + 5,
+      b + 2,
+      b,
+    ],
+    n * 3,
+  );
+  cuts.set([b + 3, b + 4, b + 4, b + 5], 2 * n);
+  const common = { maxTypedBytes: 563000 };
+  const baseline = materializeFiniteSeams(vertices, triangles, cuts, common);
+  const result = materializeFiniteSeams(vertices, triangles, cuts, {
+    ...common,
+    retainIsolatedInterior: true,
+  });
+  expect(result.triangles.length).toBe(baseline.triangles.length);
+}, 30000);
