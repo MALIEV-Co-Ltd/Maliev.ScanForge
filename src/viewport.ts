@@ -1635,6 +1635,15 @@ export class Viewport {
       for (const item of this.objects?.values() ?? [])
         item.selectionIndex?.cancel();
       this.onSelectionStatus?.("complete");
+      const item = this.objects?.get(this.selectedId ?? "");
+      if (this.selectionTool !== "wand" && item?.mesh.visible) {
+        item.selectionIndex ??= new AsyncScreenSelectionIndex(
+          item.positions,
+          item.hidden,
+          !!item.pointCloud,
+        );
+        item.selectionIndex.prepare();
+      }
     }
     if (this.brushing && this.selectionTool !== "wand")
       this.onSelectionGesture?.("begin");
@@ -3935,19 +3944,6 @@ export class Viewport {
     }
     if (!enabled) this.paintOverlay.style.display = "none";
     this.brushing = enabled;
-    if (enabled) {
-      const item = this.selectedId
-        ? this.objects.get(this.selectedId)
-        : undefined;
-      if (item?.mesh.visible) {
-        item.selectionIndex ??= new AsyncScreenSelectionIndex(
-          item.positions,
-          item.hidden,
-          !!item.pointCloud,
-        );
-        item.selectionIndex.prepare();
-      }
-    }
     Object.assign(
       this.controls.mouseButtons,
       cameraMouseButtons(enabled, { ctrlKey: false, shiftKey: false }),
