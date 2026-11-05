@@ -39,5 +39,11 @@
     "memory": "The prototype collects unaccounted string-keyed edge maps for isolated tips before checking its typed-memory allowance. A high-valence tip or many isolated tips can retain O(triangles) extra objects. An explicitly bounded approach is required before integration.",
     "scope": "The disjoint on-plane cutter native control supports association on that fixture but does not establish native handling of an unrelated short interior segment whose two ends are both near the same boundary contact."
   },
-  "status": "Prototype rejected pending topology, bounded-work and bounded-memory fixes; no production source change integrated."
+  "status": "Prototype rejected pending topology, bounded-work and bounded-memory fixes; no production source change integrated.",
+  "secondReview20261105": {
+    "findings": "The disconnected-fan fix passed its reproduction. A crowded spatial bucket of 1100 contacts and 1100 nonmatching segments still exceeded the work budget; duplicate cuts on a 2000-triangle open fan repeatedly traversed the same vertex fan and also exceeded its budget. The contact grid had no independent allocation cap. Two baseline regressions now pin the crowded and duplicate cases.",
+    "nativeShortControl": "tests/fixtures/m2-nearby-short-disjoint-20261105/README.md",
+    "nativeShortObservation": "Native dropped the nearby short unrelated segment and exported four facets. The initially reviewed prototype also dropped it but inserted a midpoint in the remaining boundary-to-interior slit, producing six facets. A later isolated experiment omits that midpoint and matches the native facets; one local topology test passed. This revised experiment is not reviewed or integrated.",
+    "status": "The revised isolated candidate needs full validation, memory review and GUI/MCP replay; no production source change is integrated."
+  }
 }

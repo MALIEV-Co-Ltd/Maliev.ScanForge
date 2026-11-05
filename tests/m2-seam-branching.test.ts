@@ -79,3 +79,23 @@ it("opens a closed-fan cut even when endpoints have unrelated boundary fans", ()
   }
   expect(cutEdges).toHaveLength(0);
 });
+
+it("handles repeated isolated cuts on a large open fan within the default work budget", () => {
+  const count = 2000;
+  const vertices = [0, 0, 0];
+  for (let i = 0; i <= count; i++) {
+    const angle = (Math.PI * i) / count;
+    vertices.push(Math.cos(angle), Math.sin(angle), 0);
+  }
+  const triangles: number[] = [];
+  for (let i = 0; i < count; i++) triangles.push(0, i + 1, i + 2);
+  const cuts: number[] = [];
+  for (let i = 0; i < count; i++) cuts.push(0, 2);
+  const result = materializeFiniteSeams(
+    new Float64Array(vertices),
+    new Uint32Array(triangles),
+    new Uint32Array(cuts),
+    { preciseCoordinates: true },
+  );
+  expect(result.triangles.length).toBe(triangles.length + 6);
+});
