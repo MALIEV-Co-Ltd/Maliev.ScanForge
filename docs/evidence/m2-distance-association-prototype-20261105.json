@@ -58,6 +58,14 @@
     "browserLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/rejection-output/split-lifecycle-browser-ledger.json",
     "remaining": "Re-run final candidate on original large fixture and GUI/MCP acceptance controls; resolve native radius and short-cutter discrepancies, final verification, integration, CI and milestone closure.",
     "explicitMcpTolerance": "On the same isolated build and imported fixture, public MCP with tolerance 0.000001 succeeded and matched the native unordered Float32 facets; output reported one retained-indexed part and one cut edge. The GUI default remained rejected. The 4 GiB bounded job peaked at 926621696 bytes, had no page errors, and cleanup was confirmed.",
-    "explicitToleranceGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/tolerance-guard.json"
+    "explicitToleranceGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/tolerance-guard.json",
+    "browserControls": "On build scanforge-2065e3787d12d083, the near, separate-cutter and scaled above-radius controls each passed GUI/public MCP geometry comparison, undo/redo, binary reopen, cancellation and identical GUI redo canvas, with no page errors. All three bounded jobs confirmed cleanup, with peaks 926072832, 1005334528 and 925212672 bytes respectively. Native facet evidence remains scoped to the corresponding pinned controls.",
+    "browserControlGuards": [
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-near-20261105/final-guard.json",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-disjoint-20261105/final-guard.json",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-above-20261105/final-guard.json"
+    ],
+    "finalOriginalPly3": "The final candidate passed the original 3691133-face precise Split test, including input preservation, indexed consistency, area and component checks. The 4 GiB bounded job peaked at 2116431872 bytes with cleanup confirmed. This was a low-level test, not final-build GUI/MCP lifecycle evidence.",
+    "finalOriginalPly3Guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105/original-ply3-final-guard.json"
   }
 }
