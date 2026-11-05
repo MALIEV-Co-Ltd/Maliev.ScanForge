@@ -25,10 +25,10 @@ Native output omits both short-edge endpoints and has triangle area sum 0.5.
 Current shared Split differs from native's unordered Float32 facets; parity is
 an expected failure. The initial isolated prototype omitted those endpoints but emitted six facets.
 A revised low-level candidate matches the four unordered facets at its default
-0.000001 mm tolerance. The application GUI and public MCP both reject this
-cutter at their default 0.001 mm topology tolerance, leaving geometry and
-history unchanged. Public MCP with an explicit 0.000001 mm tolerance on the
-revised candidate succeeded and matched the native unordered facets. Native
-compatibility at application defaults remains open. STL facet comparison does not establish native
+0.000001 mm tolerance. The earlier application default of 0.001 mm rejected the cutter without
+changing geometry or history. A revised candidate using 0.000001 mm by default
+produced the native unordered facets through both GUI and public MCP; explicit
+0.001 mm still rejected it. The replay checked history, reopening, cancellation,
+and rendered redo. This is evidence for this fixture, not general native parity. STL facet comparison does not establish native
 indexed connectivity or winding; this is one on-plane cutter control, not a
 general rule for short unrelated cuts.

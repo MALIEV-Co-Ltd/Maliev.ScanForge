@@ -210,6 +210,73 @@ it("restores transferable precise Split coordinates before exposing the result",
   expect(result.indexedMesh?.vertices).toEqual(result.scanEdit?.positions);
   expect(scanRenderData(result.scanEdit!.positions!)).toBe(renderData);
 });
+it("defaults mesh Split to a fine cutter topology tolerance", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target: positions,
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  expect(worker.sent).toMatchObject({ tolerance: 0.000001 });
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+    },
+  });
+  await pending;
+});
+
+it.each([
+  [
+    {
+      kind: "scanEdit",
+      action: "split",
+      positions,
+      target: positions,
+      tolerance: 0.001,
+    },
+    0.001,
+  ],
+  [
+    {
+      kind: "scanEdit",
+      action: "split",
+      positions,
+      plane: { origin: [0, 0, 0], normal: [1, 0, 0] },
+    },
+    0.001,
+  ],
+  [
+    {
+      kind: "scanEdit",
+      action: "split",
+      positions,
+      target: positions,
+      targetIsNonMesh: true,
+    },
+    0.001,
+  ],
+  [{ kind: "scanEdit", action: "inventory", positions }, 0.001],
+] as const)(
+  "preserves explicit and other edit tolerance defaults",
+  async (input, tolerance) => {
+    const pending = processMesh(input as ProcessingRequest);
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent).toMatchObject({ tolerance });
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+  },
+);
+
 it("retires a packed Split worker before restoring its large coordinates", async () => {
   const pending = processMesh(
     { kind: "scanEdit", action: "split", positions, target: positions },

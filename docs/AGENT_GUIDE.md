@@ -259,7 +259,8 @@ Edit Scan observes this preparation without starting duplicate work.
 `object_get.meshPreparation` exposes `scheduled`, `pending` (with progress),
 `ready` (with counts), `error`, or `inactive` for raw meshes. Use GUI tolerance
 `0.001` for MCP selected-facet edits to reuse the prepared index; this is also
-the default when the request omits tolerance. Defeature retains the exact
+the default when the request omits tolerance, except for finite mesh-to-mesh
+Split as described below. Defeature retains the exact
 Float32 corner coordinates of unselected, unpruned source facets even when
 tolerant adjacency groups nearby source vertices for diagnostics and patching.
 
@@ -1125,6 +1126,12 @@ npm run format:check
 The browser test uses installed Chrome, a disposable profile, an isolated static server and the actual MCP stdio executable. It closes its MCP child, browser and HTTP server in `finally` and verifies port closure. It does not use or alter an existing user browser session. See `docs/MCP_ARCHITECTURE.md` for extension rules.
 
 ### Dedicated Split mesh command
+
+Finite mesh-to-mesh Split defaults to a 0.000001 mm topology weld tolerance
+in the GUI and MCP, so small valid cutter facets are not collapsed by the
+coarser default used for other edits. MCP can override it with `tolerance`;
+plane and sampled non-mesh Split retain the 0.001 mm default. A different
+weld tolerance does not reuse a cached topology prepared at 0.001 mm.
 
 Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. It rejects a refined face when its projected source-area change exceeds a relative 1e-9 allowance and an exact binary-coordinate coverage check still differs. It also rejects seam-midpoint area-vector changes beyond a relative 1e-9 allowance in the precise path; the internal Float32 helper allows 1e-3 for rounding. Rejection occurs before publication, leaving source geometry and history unchanged. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision.
 

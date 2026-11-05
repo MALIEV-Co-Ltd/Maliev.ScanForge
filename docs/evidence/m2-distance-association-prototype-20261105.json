@@ -39,7 +39,7 @@
     "memory": "The prototype collects unaccounted string-keyed edge maps for isolated tips before checking its typed-memory allowance. A high-valence tip or many isolated tips can retain O(triangles) extra objects. An explicitly bounded approach is required before integration.",
     "scope": "The disjoint on-plane cutter native control supports association on that fixture but does not establish native handling of an unrelated short interior segment whose two ends are both near the same boundary contact."
   },
-  "status": "Revised candidate remains isolated and unintegrated; GUI and MCP reject a short cutter that native accepts.",
+  "status": "Distance association integrated; the revised tolerance change is recorded separately. Four native radius discrepancies and M2 acceptance remain open.",
   "secondReview20261105": {
     "findings": "The disconnected-fan fix passed its reproduction. A crowded spatial bucket of 1100 contacts and 1100 nonmatching segments still exceeded the work budget; duplicate cuts on a 2000-triangle open fan repeatedly traversed the same vertex fan and also exceeded its budget. The contact grid had no independent allocation cap. Two baseline regressions now pin the crowded and duplicate cases.",
     "nativeShortControl": "tests/fixtures/m2-nearby-short-disjoint-20261105/README.md",
@@ -67,5 +67,12 @@
     ],
     "finalOriginalPly3": "The final candidate passed the original 3691133-face precise Split test, including input preservation, indexed consistency, area and component checks. The 4 GiB bounded job peaked at 2116431872 bytes with cleanup confirmed. This was a low-level test, not final-build GUI/MCP lifecycle evidence.",
     "finalOriginalPly3Guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105/original-ply3-final-guard.json"
+  },
+  "integration20261105": {
+    "distanceCommit": "c1425ab",
+    "toleranceChange": "The GUI and MCP default for finite mesh cutters was revised from 0.001 mm to 0.000001 mm in the processing client; explicit values and other scan-edit defaults are preserved. The earlier default rejection remains documented as historical evidence.",
+    "validation": "On the isolated revised build, the short-cutter native unordered facets matched via GUI and MCP with undo/redo, reopen, cancellation and rendered redo. A prior 0.001 mm mesh report and explicit coarse MCP failure did not alter the successful default result; the coarse failure preserved geometry, revision and history. Focused tests covered truly degenerate and nonmanifold cutters, non-mesh and plane defaults, explicit tolerances, and other edit defaults. All 14 typecheck batches passed. Full suite: 50619 passed, 76 skipped, no unexpected failures, with known native mismatches tracked as expected failures.",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/default-cache-coarse-guard.json",
+    "remaining": "Four native radius facet discrepancies, broader M2 acceptance and merge/closure gates remain open."
   }
 }

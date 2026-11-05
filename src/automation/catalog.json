@@ -1324,8 +1324,7 @@
                 "tolerance": {
                   "type": "number",
                   "exclusiveMinimum": 0,
-                  "default": 0.001,
-                  "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
+                  "description": "Topology weld tolerance in mm. Finite mesh-to-mesh Split defaults to 0.000001; other scan edits default to 0.001. An explicit value overrides either default."
                 },
                 "fitTolerance": {
                   "type": "number",
