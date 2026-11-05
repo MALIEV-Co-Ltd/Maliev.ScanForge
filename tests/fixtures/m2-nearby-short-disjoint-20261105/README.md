@@ -23,8 +23,12 @@ the untouched cutter exported separately retained the input coordinates.
 
 Native output omits both short-edge endpoints and has triangle area sum 0.5.
 Current shared Split differs from native's unordered Float32 facets; parity is
-an expected failure. The isolated distance-association prototype also omits
-those endpoints but adds a midpoint to the remaining isolated slit and emits
-six facets rather than four. STL facet comparison does not establish native
+an expected failure. The initial isolated prototype omitted those endpoints but emitted six facets.
+A revised low-level candidate matches the four unordered facets at its default
+0.000001 mm tolerance. The application GUI and public MCP both reject this
+cutter at their default 0.001 mm topology tolerance, leaving geometry and
+history unchanged. Public MCP with an explicit 0.000001 mm tolerance on the
+revised candidate succeeded and matched the native unordered facets. Native
+compatibility at application defaults remains open. STL facet comparison does not establish native
 indexed connectivity or winding; this is one on-plane cutter control, not a
 general rule for short unrelated cuts.

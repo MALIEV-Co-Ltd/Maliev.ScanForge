@@ -39,7 +39,7 @@
     "memory": "The prototype collects unaccounted string-keyed edge maps for isolated tips before checking its typed-memory allowance. A high-valence tip or many isolated tips can retain O(triangles) extra objects. An explicitly bounded approach is required before integration.",
     "scope": "The disjoint on-plane cutter native control supports association on that fixture but does not establish native handling of an unrelated short interior segment whose two ends are both near the same boundary contact."
   },
-  "status": "Prototype rejected pending topology, bounded-work and bounded-memory fixes; no production source change integrated.",
+  "status": "Revised candidate remains isolated and unintegrated; GUI and MCP reject a short cutter that native accepts.",
   "secondReview20261105": {
     "findings": "The disconnected-fan fix passed its reproduction. A crowded spatial bucket of 1100 contacts and 1100 nonmatching segments still exceeded the work budget; duplicate cuts on a 2000-triangle open fan repeatedly traversed the same vertex fan and also exceeded its budget. The contact grid had no independent allocation cap. Two baseline regressions now pin the crowded and duplicate cases.",
     "nativeShortControl": "tests/fixtures/m2-nearby-short-disjoint-20261105/README.md",
@@ -49,5 +49,15 @@
   "thirdReview20261105": {
     "finding": "A crowded bucket with two distant clusters can have a chord intersecting each query radius while all contacts lie outside it. The prototype repeatedly scanned the full bucket and exceeded the work budget on 1100 contacts and 1100 segments. A new baseline test pins this case.",
     "experiment": "A later isolated version adds a projection-sorted bucket range, connected-fan caching and explicit lookup-entry caps. The reviewer reproductions and focused native controls pass, but the new numerical bounds, work and memory behavior need further review and full validation. No production source change is integrated."
+  },
+  "finalCandidate20261105": {
+    "scope": "Revised isolated candidate, not integrated. Earlier artifact hashes above identify earlier versions.",
+    "validation": "Typecheck passed all 14 batches. Full suite: 50614 passed, 76 skipped, four known native mismatches expected to fail, zero unexpected failures; bounded job peak 1308139520 bytes and cleanup confirmed. Review found no further concrete blocker in sampled cases; large-input rejection remains possible under explicit lookup caps.",
+    "shortCutter": "QuickSurface returned four facets. The revised low-level candidate matches those unordered facets at its default 0.000001 mm tolerance. In a browser using build scanforge-2065e3787d12d083, GUI and public MCP both rejected the same imported cutter at the application default 0.001 mm topology tolerance with Split cutter must contain nondegenerate manifold triangles. Geometry and history remained unchanged, with no page errors. This is an unresolved native compatibility gap, not an application parity success for native output.",
+    "browserGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/rejection-guard.json",
+    "browserLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/rejection-output/split-lifecycle-browser-ledger.json",
+    "remaining": "Re-run final candidate on original large fixture and GUI/MCP acceptance controls; resolve native radius and short-cutter discrepancies, final verification, integration, CI and milestone closure.",
+    "explicitMcpTolerance": "On the same isolated build and imported fixture, public MCP with tolerance 0.000001 succeeded and matched the native unordered Float32 facets; output reported one retained-indexed part and one cut edge. The GUI default remained rejected. The 4 GiB bounded job peaked at 926621696 bytes, had no page errors, and cleanup was confirmed.",
+    "explicitToleranceGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/tolerance-guard.json"
   }
 }
