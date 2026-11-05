@@ -25,15 +25,17 @@ repository as `session-near.qsf` and `session-far.qsf` in the work directory.
 | cutter-far-roundtrip.stl  | 36082a23e861ee2c1007c744ea036fcb1135c3c6ac6ce4bd82a6185a57ca7d5d |
 | native-far.stl            | 73aa28526cdbb2754a064222b9f1eed58666f084614beae4be3ce713148a43f1 |
 
-The result files are binary STL and do not establish indexed connectivity. The
-observations support this pair of fixtures, not a general snapping rule.
+The STL files do not themselves establish indexed connectivity. The observations
+support this pair of fixtures, not a general snapping rule.
 
 The far native source's object tooltip reported five points and five triangles;
 Edit Scan reported one individual mesh. Reopening `session-far.qsf` showed the
 source with five triangles and the cutter with one triangle; the source was
-visible in the viewport. The STL has five distinct coordinate
-triples, so the visible point count supplies useful evidence, but does not
-independently prove every native edge incidence. ScanForge currently emits
+visible in the viewport. The pinned far QSF contains a source block at byte offsets 456�583: five
+Float32 vertices and five uint32 index triples. Expanding those indices exactly
+matches the unordered STL facets. Its edge joining the two cut endpoints has
+two incident faces, with the same vertex indices on both sides. The fixed-offset
+interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge currently emits
 seven facets for each input, including a synthetic midpoint; its near result
 also retains the near endpoint. Both native facet comparisons are pinned as
 expected failures and are not GUI/MCP parity claims.

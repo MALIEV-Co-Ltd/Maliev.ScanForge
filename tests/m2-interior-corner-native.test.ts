@@ -65,3 +65,36 @@ it.fails("matches native outside-radius retained facets", () => {
     facets(load("native-far.stl")),
   );
 });
+
+it("pins the far native session indexed source block against its STL export", () => {
+  const bytes = readFileSync(
+    new URL(
+      "./fixtures/m2-interior-corner-split-20261105/native-far.qsf",
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(bytes).digest("hex")).toBe(
+    "8ac7ebbbdd246416aedcfbee21c2c43da8c4e363534bbe5496f3293c8aedc33b",
+  );
+  expect(bytes.readUInt32LE(456)).toBe(5);
+  expect(bytes.readUInt32LE(520)).toBe(5);
+  const vertices = Array.from({ length: 5 }, (_, i) =>
+    Array.from({ length: 3 }, (_, a) =>
+      bytes.readFloatLE(460 + i * 12 + a * 4),
+    ),
+  );
+  const triangles = Array.from({ length: 5 }, (_, f) =>
+    Array.from({ length: 3 }, (_, a) =>
+      bytes.readUInt32LE(524 + f * 12 + a * 4),
+    ),
+  );
+  const expanded = triangles.flatMap((face) =>
+    face.flatMap((id) => vertices[id]),
+  );
+  expect(facets(expanded)).toEqual(facets(load("native-far.stl")));
+  expect(vertices[3]).toEqual([Math.fround(0.001), Math.fround(0.001), 0]);
+  expect(vertices[4]).toEqual([Math.fround(0.4), Math.fround(0.4), 0]);
+  expect(
+    triangles.filter((face) => face.includes(3) && face.includes(4)),
+  ).toHaveLength(2);
+});
