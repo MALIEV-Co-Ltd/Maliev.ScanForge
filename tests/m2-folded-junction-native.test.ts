@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
 import { parseMesh } from "../src/io";
 import { runScanEdit } from "../src/scan-edit";
+import { refineFiniteCutterMesh } from "../src/scan-split-finite-pipeline";
 
 const hashes = {
   "source.stl":
@@ -71,4 +72,17 @@ it.fails("matches native facets for a shared folded-cutter junction", () => {
     target: mesh("cutter.stl"),
   });
   expect(facets(result.positions!)).toEqual(facets(mesh("native-result.stl")));
+});
+
+it("keeps the two folded-cutter constraints joined at one endpoint", () => {
+  const result = refineFiniteCutterMesh(
+    new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+    new Uint32Array([0, 1, 2]),
+    mesh("cutter.stl"),
+    { preciseCoordinates: true },
+  );
+  const [a, b, c, d] = result.constraints;
+  expect(result.constraints).toHaveLength(4);
+  expect(new Set([a, b, c, d]).size).toBe(3);
+  expect(a === c || a === d || b === c || b === d).toBe(true);
 });
