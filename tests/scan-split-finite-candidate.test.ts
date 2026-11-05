@@ -514,7 +514,7 @@ it("retains a short finite interior slit through the precise candidate", () => {
   expect(doubledArea).toBe(64);
 });
 
-it("returns a single indexed part with an interior slit and unchanged inputs", () => {
+it("returns a single indexed part with a shared interior edge and unchanged inputs", () => {
   const positions = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
   const indexed = {
@@ -536,54 +536,39 @@ it("returns a single indexed part with an interior slit and unchanged inputs", (
   expect(
     analyzeIndexedMesh(Float64Array.from(mesh.vertices), mesh.triangles)
       .boundaryEdges,
-  ).toBe(7);
+  ).toBe(3);
   expect([positions, cutter, indexed.vertices, indexed.triangles]).toEqual(
     before,
   );
 });
 
-it("limits the interior slit boundary to the finite cutter interval", () => {
+it("retains the finite interior cut as a shared indexed edge", () => {
   const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
   const result = runFiniteSplitCandidate(source, cutter, undefined, {
     preciseCoordinates: true,
   });
-  expect(result.segmentIndexedMeshes).toHaveLength(1);
   const mesh = result.segmentIndexedMeshes[0];
-  const edges = new Map<string, { a: number; b: number; count: number }>();
-  for (let i = 0; i < mesh.triangles.length; i += 3)
-    for (let k = 0; k < 3; k++) {
-      const a = mesh.triangles[i + k],
-        b = mesh.triangles[i + ((k + 1) % 3)];
-      const key = a < b ? `${a}:${b}` : `${b}:${a}`;
-      const prior = edges.get(key);
-      if (prior) prior.count++;
-      else edges.set(key, { a, b, count: 1 });
-    }
-  let seamLength = 0,
-    perimeterLength = 0;
-  for (const { a, b, count } of edges.values())
-    if (count === 1) {
-      const x1 = mesh.vertices[3 * a],
-        y1 = mesh.vertices[3 * a + 1],
-        x2 = mesh.vertices[3 * b],
-        y2 = mesh.vertices[3 * b + 1];
-      const length = Math.hypot(x2 - x1, y2 - y1);
-      const onPerimeter =
-        (x1 === 0 && x2 === 0) ||
-        (y1 === 0 && y2 === 0) ||
-        (Math.abs(x1 + y1 - 1) < 1e-12 && Math.abs(x2 + y2 - 1) < 1e-12);
-      const onSeam =
-        Math.abs(x1 - 0.5) < 1e-12 &&
-        Math.abs(x2 - 0.5) < 1e-12 &&
-        Math.min(y1, y2) >= 0.1 - 1e-7 &&
-        Math.max(y1, y2) <= 0.2 + 1e-7;
-      expect(onPerimeter || onSeam).toBe(true);
-      if (onSeam) seamLength += length;
-      else perimeterLength += length;
-    }
-  expect(perimeterLength).toBeCloseTo(2 + Math.SQRT2, 12);
-  expect(seamLength).toBeCloseTo(0.2, 6);
+  const find = (y: number) =>
+    Array.from({ length: mesh.vertices.length / 3 }, (_, i) => i).find(
+      (i) =>
+        Math.abs(mesh.vertices[3 * i] - 0.5) < 1e-12 &&
+        Math.abs(mesh.vertices[3 * i + 1] - y) < 1e-7,
+    );
+  const a = find(0.1),
+    b = find(0.2);
+  expect(a).toBeDefined();
+  expect(b).toBeDefined();
+  const faces = Array.from({ length: mesh.triangles.length / 3 }, (_, i) =>
+    Array.from(mesh.triangles.slice(i * 3, i * 3 + 3)),
+  );
+  expect(
+    faces.filter((face) => face.includes(a!) && face.includes(b!)),
+  ).toHaveLength(2);
+  expect(
+    analyzeIndexedMesh(Float64Array.from(mesh.vertices), mesh.triangles)
+      .boundaryEdges,
+  ).toBe(3);
 });
 
 it("carries precise coordinates through the complete experimental candidate", () => {

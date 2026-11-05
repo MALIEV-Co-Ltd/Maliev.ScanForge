@@ -518,7 +518,7 @@ it.each([false, true])(
   },
 );
 
-it("a finite interior cut retains only its bounded seam in the shared operation", () => {
+it("a finite interior cut retains a shared edge in the shared operation", () => {
   const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const cutter = new Float32Array([0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1]);
   const original = source.slice(),
@@ -566,8 +566,18 @@ it("a finite interior cut retains only its bounded seam in the shared operation"
       expect(onSeam || onPerimeter).toBe(true);
       if (onSeam) seam += length;
     }
-  expect(seam).toBeCloseTo(0.2, 6);
-  expect(boundary).toBeCloseTo(2 + Math.SQRT2 + 0.2, 6);
+  expect(seam).toBe(0);
+  expect(boundary).toBeCloseTo(2 + Math.SQRT2, 6);
+  expect(
+    [...edges.values()].some(
+      ({ a, b, count }) =>
+        count === 2 &&
+        [a, b].every((i) => Math.abs(mesh.vertices[i * 3] - 0.5) < 1e-8) &&
+        Math.abs(
+          Math.abs(mesh.vertices[a * 3 + 1] - mesh.vertices[b * 3 + 1]) - 0.1,
+        ) < 1e-7,
+    ),
+  ).toBe(true);
   expect(source).toEqual(original);
   expect(cutter).toEqual(originalCutter);
 });

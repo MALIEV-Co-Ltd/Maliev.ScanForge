@@ -4,6 +4,8 @@ Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), s
 
 The [restore and selection memory record](evidence/m2-restore-selection-memory-20261105.json) documents a passing original PLY-3 GUI reopen and history replay under the 4 GiB guard, an earlier instrumented over-limit run, GUI/MCP selection checks, and an unresolved low-level numeric-array reuse race. These results do not close M2.
 
+The [isolated interior Split record](evidence/m2-isolated-interior-native-20261105.json) pins native crossing, coplanar-edge and closed-source controls, including their saved indexed topology. The crossing control also passes the rendered GUI/public-MCP lifecycle replay. Near-corner and other native differences remain open; this record is not general Split or milestone acceptance.
+
 ## Scope boundary
 
 M2 covers the scan-repair and processing commands listed in issue #2, including Average, Mirror and cylindrical Unroll. Boundary-to-sketch creation and its own publication, history and persistence are M2 processing outcomes; general spatial-sketch editing belongs to [M4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4) and is not an M2 closure requirement. Re-polygonize is listed in M2; M3's already reviewed alignment and combination acceptance is a separate milestone, not a new M2 gate. Shared CAD restore, MCP, project history and resource protections are verified only as needed by M2 operations; completing all M5, M7 or M8 functionality is not required to close M2. M1 is the sole milestone dependency listed in issue #2 and has been closed.

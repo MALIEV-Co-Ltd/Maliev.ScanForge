@@ -110,6 +110,65 @@ it("opens a boundary-to-interior slit without creating an extra midpoint", () =>
   expect(topology.nonManifoldEdges).toBe(0);
 });
 
+it("still opens a boundary cut when interior retention is enabled", () => {
+  const vertices = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.3, 0]);
+  const triangles = new Uint32Array([0, 1, 3, 1, 2, 3, 2, 0, 3]);
+  const result = materializeFiniteSeams(
+    vertices,
+    triangles,
+    new Uint32Array([0, 3]),
+    {
+      preciseCoordinates: true,
+      retainIsolatedInterior: true,
+    },
+  );
+  expect(
+    analyzeIndexedMesh(Float64Array.from(result.vertices), result.triangles)
+      .boundaryEdges,
+  ).toBe(5);
+});
+
+it("still rejects non-manifold edges with interior retention enabled", () => {
+  const vertices = new Float32Array([
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 1,
+  ]);
+  expect(() =>
+    materializeFiniteSeams(
+      vertices,
+      new Uint32Array([0, 1, 2, 1, 0, 3, 0, 1, 4]),
+      new Uint32Array([0, 1]),
+      { retainIsolatedInterior: true },
+    ),
+  ).toThrow(/non-manifold/i);
+});
+
+it("does not retain an isolated edge when an endpoint has disconnected closed fans", () => {
+  const vertices = new Float32Array([
+    0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+  ]);
+  const triangles = new Uint32Array([
+    0, 2, 1, 0, 1, 3, 1, 2, 3, 2, 0, 3, 0, 5, 4, 0, 4, 6, 4, 5, 6, 5, 0, 6,
+  ]);
+  const output = materializeFiniteSeams(
+    vertices,
+    triangles,
+    new Uint32Array([0, 1]),
+    {
+      retainIsolatedInterior: true,
+    },
+  );
+  expect(output.triangles.length).toBe(triangles.length + 6);
+  expect(
+    Array.from(output.vertices).some(
+      (v, i) =>
+        i % 3 === 0 &&
+        v === 0.5 &&
+        output.vertices[i + 1] === 0 &&
+        output.vertices[i + 2] === 0,
+    ),
+  ).toBe(true);
+});
+
 it("rejects missing cut edges and honors cancellation", () => {
   const v = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 2, 0]);
   const t = new Uint32Array([0, 1, 2]);

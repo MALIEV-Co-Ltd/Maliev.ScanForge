@@ -60,7 +60,7 @@ it.fails("matches native near-corner retained facets", () => {
     facets(load("native-near.stl")),
   );
 });
-it.fails("matches native outside-radius retained facets", () => {
+it("matches native outside-radius retained facets", () => {
   expect(facets(split(load("cutter-far.stl")))).toEqual(
     facets(load("native-far.stl")),
   );

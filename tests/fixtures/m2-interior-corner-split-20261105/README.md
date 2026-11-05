@@ -35,7 +35,4 @@ visible in the viewport. The pinned far QSF contains a source block at byte offs
 Float32 vertices and five uint32 index triples. Expanding those indices exactly
 matches the unordered STL facets. Its edge joining the two cut endpoints has
 two incident faces, with the same vertex indices on both sides. The fixed-offset
-interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge currently emits
-seven facets for each input, including a synthetic midpoint; its near result
-also retains the near endpoint. Both native facet comparisons are pinned as
-expected failures and are not GUI/MCP parity claims.
+interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge matches the far native facets. The near result still retains the near endpoint and remains an expected failure; neither fixture alone establishes general GUI/MCP parity.

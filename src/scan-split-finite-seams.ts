@@ -5,6 +5,7 @@ type SeamOptions = {
   check?: () => void;
   retainFaceParents?: boolean;
   preciseCoordinates?: boolean;
+  retainIsolatedInterior?: boolean;
 };
 type SeamResult<V> = {
   vertices: V;
@@ -192,11 +193,34 @@ export function materializeFiniteSeams(
     connectedBoundaryCache.set(v, true);
     return true;
   };
+  const connectedInterior = (v: number) => {
+    const parents = fans.get(v);
+    if (boundary.has(v) || !parents?.size) return false;
+    let first: number | undefined;
+    for (const id of parents.keys()) {
+      tick();
+      const r = fanRoot(parents, id);
+      if (first !== undefined && first !== r) return false;
+      first = r;
+    }
+    return true;
+  };
   for (let i = 0; i < cuts.length; i += 2) {
     tick();
     const a = cuts[i],
       b = cuts[i + 1],
       k = key(a, b);
+    // A nonseparating interior edge stays shared in the tested native Split
+    // cases. Disconnected or boundary fans keep the existing seam behavior.
+    if (
+      options.retainIsolatedInterior &&
+      degrees.get(a) === 1 &&
+      degrees.get(b) === 1 &&
+      edgeCounts.get(k)?.count === 2 &&
+      connectedInterior(a) &&
+      connectedInterior(b)
+    )
+      continue;
     if (
       ((connectedBoundary(a) || connectedBoundary(b)) &&
         edgeCounts.get(k)?.count === 2) ||
