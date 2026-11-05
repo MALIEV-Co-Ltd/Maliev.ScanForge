@@ -244,9 +244,141 @@
   "limitations": [
     "Experimental code remains outside the application worktree and is not a completed change.",
     "Shared-edge and ambiguous-corner native comparisons remain expected failures.",
-    "One small public-MCP and GUI Split replay matched the native exported facets; the PLY-3 replay used GUI Split and public-MCP project and history tools, not a public-MCP Split.",
+    "One small public-MCP and GUI Split replay matched the native exported facets; the PLY-3 persistence replay used GUI Split and public-MCP project and history tools; a separate public-MCP Split replay matched GUI geometry digests.",
     "The screenshot shows the model without an internal wireframe; native facet comparison used downloaded geometry.",
     "One PLY-3 run is not a repeatability or general resource guarantee.",
     "No general native equivalence, selection-boundary proof, final full suite or milestone completion is established."
-  ]
+  ],
+  "originalPly3PublicMcp": {
+    "result": {
+      "inputSha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f",
+      "inputFaces": 3326910,
+      "outputFaces": 3329946,
+      "diagnostics": {
+        "affectedFaces": 1518,
+        "sourceFaces": 3326910,
+        "parts": 2,
+        "cutEdges": 1518,
+        "sourceIdentity": "retained-indexed",
+        "changed": true
+      },
+      "guiMcpDigestEqual": true,
+      "sourceUndo": true,
+      "cutterPreserved": true,
+      "redo": true,
+      "redoInitializedComputedNormals": [
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5059947,
+          "sha256": "3e5ff9584c73491dd41c771de927acab680203915deb0379efc5e837ea27e8a8"
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 9989838,
+          "sha256": "e3526ea87f088416b0370ce70c3b89091c84686a4eca60960eb21b92f60c274f"
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 62526,
+        "closed": true
+      },
+      {
+        "pid": 8360,
+        "exited": true
+      },
+      {
+        "port": 62527,
+        "closed": true
+      },
+      {
+        "pid": 34476,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": ["node", "tests/m2-original-split-browser-local.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 2809630720,
+      "totalProcesses": 24,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 15265030144,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 26404,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 151.10178710000764,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:16:01.577070+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "fullTestSuite": {
+    "passedTests": 50670,
+    "expectedFailures": 6,
+    "skipped": 76,
+    "guard": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 600,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 1424842752,
+      "totalProcesses": 963,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 16232951808,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 3652,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 358.69299680000404,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:09:21.705440+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  }
 }
