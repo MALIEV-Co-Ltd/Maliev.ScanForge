@@ -1,0 +1,28 @@
+{
+  "scope": "Isolated finite Split distance and boundary-edge prototype; not a production change or native parity claim",
+  "base": "64c353f6",
+  "nativeControls": "At source scale 1000, the one-step contact at 0.00006103515625 mm produced three native facets while the two-step contact at 0.0001220703125 mm produced five. On the original-size source, a 419-step contact at 0.0000499486923218 mm produced three native facets. Cutter round trips preserved coordinates. See the three pinned fixture README files.",
+  "candidate": "In an isolated worktree, associate an unbound hit endpoint to a unique source-boundary contact within Float32-derived 0.0001 distance, then discard collapsed segments. For isolated cut edges with two incident faces and two boundary vertices, omit the usual synthetic midpoint. The first version omitted the incident-face test and regressed boundary-only cuts; the current version adds it and collects only edges incident to isolated cut tips.",
+  "observations": {
+    "nativeFacetControls": "The rotated mismatch and both new below-radius controls now match unordered native Float32 facets in the prototype. The existing above-radius scaled control still matches. These are not GUI/MCP tests.",
+    "focused": "81 passed, 6 failed. Two failures assert old five-facet results, three assert preservation of close endpoints in shared and face-input paths, and one asserts the previous rotated mismatch. These changed expectations require review; an unconnected nearby-endpoint control has no corresponding native evidence.",
+    "broader": "245 passed across 20 finite Split, coverage, orientation, publication and identity test files.",
+    "originalPly3": "A shared candidate run on the original 3,691,133-face scan passed source preservation, indexed consistency, two-part and area checks under the 4 GiB job cap. Input area 7083.997795891035; output area 7083.997795890635; peak job memory 2123636736 bytes; cleanup confirmed. This is not GUI/MCP lifecycle validation."
+  },
+  "artifacts": {
+    "worktree": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105",
+    "faceInputSha256": "484c71d5cccb73dd03e1d0a552ff01efcdb435bc9f6d9f918f817569165f9445",
+    "seamsSha256": "5c36c2d139450ced03d436bc867bb6f58d130085ab941b62488485f0fb2dc455",
+    "focusedResultsSha256": "da735de35df538ad04233912e4ce1272cbeee1a06b6b8741d15dc23ca0b6801d",
+    "focusedGuardSha256": "4bb014e16bd6ca0dd8ec9dec3574e0b1e5a0a145f9990e95920c108a9f36dd4d",
+    "broaderResultsSha256": "5339712874f353615301390994febf017676cced061980d4947db8dc5fd9bfe6",
+    "broaderGuardSha256": "1c6264b6857c8d78b9737002508e2890c1c83c6c473db27286f16db5b571a866",
+    "ply3ResultSha256": "7f42c524c33fff36cf9af9da4b5547b151f839af9c6dbc7e3125f0a7cd98fe52",
+    "ply3GuardSha256": "b0c0d64c5a00de001640430d61448d0657dc49a5b23dd32c7228ea82333efde6"
+  },
+  "limitations": [
+    "The 0.0001 association is an inferred hypothesis, not a proven general native rule. Unique nearby contacts can be unrelated and the candidate changes authored geometry.",
+    "The prototype has not had full tests, type checking, code review, GUI or MCP replay, native winding or topology comparison, or a worst-case JS-map memory bound. It is not integrated.",
+    "The four radius native discrepancies with source-area loss, broader M2 acceptance and final CI remain open."
+  ]
+}
