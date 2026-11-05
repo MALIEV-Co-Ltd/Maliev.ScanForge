@@ -98,3 +98,63 @@ it("pins the far native session indexed source block against its STL export", ()
     triangles.filter((face) => face.includes(3) && face.includes(4)),
   ).toHaveLength(2);
 });
+
+it("pins the near native session's shared corner-to-interior edge", () => {
+  const bytes = readFileSync(
+    new URL(
+      "./fixtures/m2-interior-corner-split-20261105/native-near.qsf",
+      import.meta.url,
+    ),
+  );
+  expect(createHash("sha256").update(bytes).digest("hex")).toBe(
+    "8f9edf96c45d503b7a6ea46947cfd164330fc9e73745f1addb7526274863384c",
+  );
+  expect(bytes.readUInt32LE(456)).toBe(4);
+  expect(bytes.readUInt32LE(508)).toBe(3);
+  const vertices = Array.from({ length: 4 }, (_, i) =>
+    Array.from({ length: 3 }, (_, axis) =>
+      bytes.readFloatLE(460 + i * 12 + axis * 4),
+    ),
+  );
+  const faces = Array.from({ length: 3 }, (_, i) =>
+    Array.from({ length: 3 }, (_, axis) =>
+      bytes.readUInt32LE(512 + i * 12 + axis * 4),
+    ),
+  );
+  expect(
+    facets(faces.flatMap((face) => face.flatMap((id) => vertices[id]))),
+  ).toEqual(facets(load("native-near.stl")));
+  expect(vertices[1]).toEqual([0, 0, 0]);
+  expect(vertices[3]).toEqual([Math.fround(0.4), Math.fround(0.4), 0]);
+  expect(
+    faces.filter((face) => face.includes(1) && face.includes(3)),
+  ).toHaveLength(2);
+});
+
+it.fails("matches the near native session's indexed shared edge", () => {
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: load("source.stl"),
+    target: load("cutter-near.stl"),
+  });
+  const mesh = result.indexedMesh!;
+  const ids = Array.from({ length: mesh.vertices.length / 3 }, (_, i) => i);
+  const corner = ids.find((i) =>
+    [0, 1, 2].every((axis) => mesh.vertices[i * 3 + axis] === 0),
+  );
+  const tip = ids.find(
+    (i) =>
+      mesh.vertices[i * 3] === Math.fround(0.4) &&
+      mesh.vertices[i * 3 + 1] === Math.fround(0.4) &&
+      mesh.vertices[i * 3 + 2] === 0,
+  );
+  expect(corner).toBeDefined();
+  expect(tip).toBeDefined();
+  const faces = Array.from({ length: mesh.triangles.length / 3 }, (_, i) =>
+    Array.from(mesh.triangles.slice(i * 3, i * 3 + 3)),
+  );
+  expect(
+    faces.filter((face) => face.includes(corner!) && face.includes(tip!)),
+  ).toHaveLength(2);
+});

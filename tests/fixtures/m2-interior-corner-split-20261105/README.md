@@ -36,3 +36,5 @@ Float32 vertices and five uint32 index triples. Expanding those indices exactly
 matches the unordered STL facets. Its edge joining the two cut endpoints has
 two incident faces, with the same vertex indices on both sides. The fixed-offset
 interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge matches the far native facets. The near result still retains the near endpoint and remains an expected failure; neither fixture alone establishes general GUI/MCP parity.
+
+The pinned near session has four indexed source points and three faces. Its edge from the source corner to the interior endpoint is shared by two faces. An experimental corner snap matched its STL facets but opened that edge, so facet matching alone does not establish native indexed topology.
