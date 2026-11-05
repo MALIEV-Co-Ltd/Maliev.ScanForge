@@ -12,6 +12,9 @@ The [main refresh record](evidence/m2-main-refresh-20261105.json) documents the
 integration of main through `b25da68d`, including separate prepared-CAD and
 Curvature tessellation paths and focused GUI/public-MCP checks. Native Split
 differences and the other M2 closure gates remain open.
+The integrated build also passed an original PLY-3 full-download and GUI
+reopen/history replay under the 4 GiB limit, with narrow headroom; see the
+[large-project record](evidence/m2-main-refresh-ply3-20261105.json).
 
 The 2026-10-27 partial Tangent curved-annulus control matches the installed native export through the shared operation, rendered GUI and public MCP. Source corners, history and binary reopening pass; the complementary arc has a separate result. [Evidence](evidence/m2-partial-tangent-20261027.json) is limited to this one control; other partial and bridge algorithms and the remaining M2 gates stay open.
 
