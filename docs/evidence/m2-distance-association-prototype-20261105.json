@@ -45,5 +45,9 @@
     "nativeShortControl": "tests/fixtures/m2-nearby-short-disjoint-20261105/README.md",
     "nativeShortObservation": "Native dropped the nearby short unrelated segment and exported four facets. The initially reviewed prototype also dropped it but inserted a midpoint in the remaining boundary-to-interior slit, producing six facets. A later isolated experiment omits that midpoint and matches the native facets; one local topology test passed. This revised experiment is not reviewed or integrated.",
     "status": "The revised isolated candidate needs full validation, memory review and GUI/MCP replay; no production source change is integrated."
+  },
+  "thirdReview20261105": {
+    "finding": "A crowded bucket with two distant clusters can have a chord intersecting each query radius while all contacts lie outside it. The prototype repeatedly scanned the full bucket and exceeded the work budget on 1100 contacts and 1100 segments. A new baseline test pins this case.",
+    "experiment": "A later isolated version adds a projection-sorted bucket range, connected-fan caching and explicit lookup-entry caps. The reviewer reproductions and focused native controls pass, but the new numerical bounds, work and memory behavior need further review and full validation. No production source change is integrated."
   }
 }
