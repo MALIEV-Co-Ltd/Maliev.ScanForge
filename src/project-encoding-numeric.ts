@@ -3,12 +3,16 @@ import {
   type ProjectTransport,
 } from "./project-transport";
 import type { ProjectEncodingSnapshot } from "./project-encoding-snapshot";
+import { isPrivateDecodingView } from "./project-private-decoding-views";
 
-// These buffers exist only inside the disposable encoder worker. Public project
-// validation continues to reject arbitrary Float64Array geometry.
+// These views exist only inside disposable encoding or decoding workers. Public
+// project validation continues to reject arbitrary Float64Array geometry.
 const owned = new WeakSet<Float64Array>();
 export function isEncodingNumeric(value: unknown): value is Float64Array {
-  return value instanceof Float64Array && owned.has(value);
+  return (
+    value instanceof Float64Array &&
+    (owned.has(value) || isPrivateDecodingView(value))
+  );
 }
 
 /** Retain only numeric refs used exclusively as mesh coordinates. Other array

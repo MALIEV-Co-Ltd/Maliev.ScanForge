@@ -40,6 +40,7 @@ import {
   type ProjectValue,
 } from "./project-value-stream";
 import { encodedProjectSharedChunk } from "./project-shared-chunks";
+import { markPrivateDecodingView } from "./project-private-decoding-views";
 
 export interface ProjectSession {
   projectId?: string;
@@ -384,6 +385,8 @@ export async function decodeProjectContents(
     onSharedChunk?: (chunk: ProjectSharedChunk) => void;
     onDecodedFloat64?: (values: number[], bytes: Float64Array) => void;
     privateFloat64Chunks?: boolean;
+    /** Internal decoder-worker representation; converted before publication. */
+    workerFloat64Views?: boolean;
   } = {},
 ): Promise<ProjectSession> {
   const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
@@ -433,6 +436,21 @@ export async function decodeProjectContents(
   // Float64-only chunks become ordinary numeric arrays, so their raw bytes
   // need not remain shared with any published geometry.
   const chunkTypes = new Map<number, Set<unknown>>();
+  const forbiddenWorkerChunks = new Set<number>();
+  const workerGeometryRefs = new Set<object>();
+  if (options.workerFloat64Views) {
+    for (const record of m.records) {
+      if (record && record.kind === "mesh") {
+        if (record.positions && typeof record.positions === "object")
+          workerGeometryRefs.add(record.positions);
+        if (
+          record.indexedMesh?.vertices &&
+          typeof record.indexedMesh.vertices === "object"
+        )
+          workerGeometryRefs.add(record.indexedMesh.vertices);
+      }
+    }
+  }
   if (options.privateFloat64Chunks) {
     const pending: unknown[] = [...m.records];
     while (pending.length) {
@@ -441,6 +459,8 @@ export async function decodeProjectContents(
       const record = value as Record<string, unknown>;
       if (Number.isInteger(record.chunk)) {
         const index = record.chunk as number;
+        if (options.workerFloat64Views && !workerGeometryRefs.has(record))
+          forbiddenWorkerChunks.add(index);
         let types = chunkTypes.get(index);
         if (!types) chunkTypes.set(index, (types = new Set()));
         types.add(record.type);
@@ -548,6 +568,23 @@ export async function decodeProjectContents(
     if (cached !== undefined) return cached;
     const bytes = data[ref.chunk];
     let result: ProjectValue;
+    if (
+      options.workerFloat64Views &&
+      options.privateFloat64Chunks &&
+      ref.type === "f64" &&
+      !forbiddenWorkerChunks.has(ref.chunk) &&
+      chunkTypes.get(ref.chunk)?.size === 1 &&
+      privateChunk[ref.chunk] &&
+      bytes.byteLength % 8 === 0 &&
+      bytes.byteOffset % 8 === 0 &&
+      new Uint8Array(new Uint16Array([1]).buffer)[0] === 1
+    ) {
+      const values = markPrivateDecodingView(
+        new Float64Array(bytes.buffer, bytes.byteOffset, bytes.byteLength / 8),
+      );
+      decoded.set(key, values as unknown as ProjectValue);
+      return values as unknown as ProjectValue;
+    }
     if (ref.type === "text") {
       // Browser TextDecoder rejects shared views; numeric chunks keep their backing.
       const textBytes =

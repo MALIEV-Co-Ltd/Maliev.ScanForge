@@ -24,6 +24,7 @@ scope.onmessage = async ({ data }) => {
     let session = await decodeProjectContents(data.file, {
       sharedReadonlyBuffers: true,
       privateFloat64Chunks: true,
+      workerFloat64Views: true,
       reusableChunks: data.reusableChunks,
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
       onDecodedFloat64: (values, bytes) => decodedFloat64.set(values, bytes),

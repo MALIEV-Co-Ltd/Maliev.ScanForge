@@ -1,4 +1,5 @@
 import { yieldScanTask } from "./scan-task";
+import { isPrivateDecodingView } from "./project-private-decoding-views";
 const CHUNK = 65536;
 export interface ProjectTransport {
   kind: "scanforge-numeric-transport-v1";
@@ -44,6 +45,13 @@ export async function packProjectTransport(
     check();
     if (!v || typeof v !== "object") return v;
     if (memo.has(v)) return memo.get(v);
+    if (options.ownedTypedArrays && isPrivateDecodingView(v)) {
+      const ref = {};
+      memo.set(v, ref);
+      numbers.push({ ref, values: v });
+      if (v.buffer instanceof ArrayBuffer) buffers.add(v.buffer);
+      return ref;
+    }
     if (ArrayBuffer.isView(v)) {
       if (options.ownedTypedArrays && v.buffer instanceof ArrayBuffer)
         buffers.add(v.buffer);
