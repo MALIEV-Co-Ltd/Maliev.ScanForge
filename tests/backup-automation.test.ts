@@ -138,6 +138,75 @@ function setup() {
   const api = new ApplicationApi(host, createOperations(host));
   return { host, state, api };
 }
+it("rejects a project restore when open geometry changes during CAD rehydration", async () => {
+  const { api, host, state } = setup();
+  const original: Entity = {
+    id: "open-mesh",
+    name: "Open mesh",
+    kind: "mesh",
+    positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    color: "#ffffff",
+    visible: true,
+    opacity: 1,
+  };
+  state.entities = [original];
+  const file = await encodeProjectFile({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      units: "mm",
+      name: "Saved",
+      entities: [
+        {
+          ...original,
+          id: "saved",
+          kind: "cad",
+          brep: "SAVED BREP",
+          kernelId: "retired",
+        },
+      ],
+    },
+    history: [],
+    future: [],
+  });
+  let finish!: (value: { kernelId: string }) => void;
+  importBrep.mockReset().mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  try {
+    const upload = await api.invoke("artifact_put", {
+      name: "saved.scanforge",
+      offset: 0,
+      base64: Buffer.from(await file.arrayBuffer()).toString("base64"),
+    });
+    if (!upload.ok) throw Error("Project fixture upload failed");
+    const started = await api.invoke("project_import", {
+      artifactId: (upload.result as { artifactId: string }).artifactId,
+      replace: true,
+      expectedRevision: api.currentRevision(),
+      requestId: "restore-while-geometry-changes",
+    });
+    if (!started.ok) throw Error("Project restore did not start");
+    await vi.waitFor(() => expect(importBrep).toHaveBeenCalledTimes(1));
+    const changed = { ...original, positions: [0, 0, 0, 2, 0, 0, 0, 1, 0] };
+    state.entities = [changed];
+    finish({ kernelId: "fresh" });
+    const jobId = (started.result as { jobId: string }).jobId;
+    await vi.waitFor(async () =>
+      expect(await api.invoke("job_get", { jobId })).toMatchObject({
+        ok: true,
+        result: { status: "failed", error: { code: "REVISION_CONFLICT" } },
+      }),
+    );
+    expect(host.replace).not.toHaveBeenCalled();
+    expect(state.entities).toEqual([changed]);
+  } finally {
+    api.dispose();
+  }
+});
 it("exposes backup metadata, interval policy and downloadable thumbnail artifacts", async () => {
   const { api } = setup();
   vi.mocked(listBackups).mockResolvedValue([
