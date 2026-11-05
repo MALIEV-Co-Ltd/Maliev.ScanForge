@@ -1,0 +1,3 @@
+# Subdivided near-corner native Split control
+
+QuickSurface Pro 8.0.123 imported the one-triangle source and two-triangle cutter in millimetres, then applied Split with Envelope off using Preview and OK. The cutter round-trip preserves its facet multiset. The source result has five faces and one individual mesh. The saved indexed source associates the near endpoint (0.0004, 0.0004, 0) with the source corner (0, 0, 0), retains the midpoint and far endpoint, and shares both indexed path edges between two faces. The exported STL matches the QSF source facets. This is a single synthetic native control; it does not establish general corner association or justify accepting source coverage loss.
