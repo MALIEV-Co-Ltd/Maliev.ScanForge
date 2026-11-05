@@ -193,6 +193,36 @@ it("handles crowded contacts outside the association radius within the default w
   expect(result.endpointBindings).toEqual([]);
 });
 
+it("handles crowded diagonal contacts outside the association radius within the default work budget", () => {
+  const count = 1100;
+  const hits = Array.from({ length: count }, (_, i) => {
+    const x = -0.00007 + i * 1e-11;
+    return {
+      points: [[x, 0.00017, 0] as Vec3, [x, 0.000170001, 0] as Vec3],
+      coplanar: false,
+      sourceEdges: [[], []],
+    };
+  });
+  const registered = [
+    {
+      edge: [0, 1] as [number, number],
+      contacts: Array.from({ length: count }, (_, i) => {
+        const t = 0.0000001 + i * 0.00000009;
+        return {
+          t,
+          point: [t, t, 0] as Vec3,
+          canonical: { t, reversed: false },
+        };
+      }),
+    },
+  ];
+  const result = buildFiniteFaceInput([0, 1, 2], hits, registered, {
+    preciseCoordinates: true,
+  });
+  expect(result.segments).toHaveLength(count);
+  expect(result.endpointBindings).toEqual([]);
+});
+
 it("binds actual finite intersections through the indexed contact registry for adjacent faces", () => {
   const vertices: Vec3[] = [
     [0, 0, 0],
