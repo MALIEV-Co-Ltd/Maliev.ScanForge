@@ -59,7 +59,7 @@ it("pins the native folded boundary split and its disjoint faces", () => {
   );
   expect(new Set(faces.flat()).size).toBe(9);
 });
-it.fails("matches the native three-piece folded boundary split", () => {
+it("matches the native three-piece folded boundary split", () => {
   const result = runScanEdit({
     kind: "scanEdit",
     action: "split",

@@ -55,7 +55,7 @@ it.each(["near", "far"] as const)("pins native %s cutter roundtrip", (name) => {
   const native = load(`native-${name}.stl`);
   expect(native.length / 9).toBe(name === "near" ? 3 : 5);
 });
-it.fails("matches native near-corner retained facets", () => {
+it("matches native near-corner retained facets", () => {
   expect(facets(split(load("cutter-near.stl")))).toEqual(
     facets(load("native-near.stl")),
   );
@@ -131,7 +131,7 @@ it("pins the near native session's shared corner-to-interior edge", () => {
   ).toHaveLength(2);
 });
 
-it.fails("matches the near native session's indexed shared edge", () => {
+it("matches the near native session's indexed shared edge", () => {
   const result = runScanEdit({
     kind: "scanEdit",
     action: "split",

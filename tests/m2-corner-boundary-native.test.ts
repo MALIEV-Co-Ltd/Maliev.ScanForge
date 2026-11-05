@@ -59,7 +59,7 @@ it("pins the native source, cutter and separated indexed result", () => {
   );
   expect(faces[0].every((id) => !faces[1].includes(id))).toBe(true);
 });
-it.fails(
+it(
   "matches native corner-to-boundary facets and disconnected indices",
   () => {
     const result = runScanEdit({

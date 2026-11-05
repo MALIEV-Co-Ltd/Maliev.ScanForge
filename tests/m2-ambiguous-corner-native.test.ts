@@ -71,7 +71,7 @@ it("pins the native ambiguous-corner result and cutter round trip", () => {
     faces.filter((face) => face.includes(1) && face.includes(4)),
   ).toHaveLength(2);
 });
-it.fails("matches native facets for an edge contact near two corners", () => {
+it("matches native facets for an edge contact near two corners", () => {
   const result = runScanEdit({
     kind: "scanEdit",
     action: "split",
@@ -79,4 +79,44 @@ it.fails("matches native facets for an edge contact near two corners", () => {
     target: mesh("cutter.stl"),
   });
   expect(facets(result.positions!)).toEqual(facets(mesh("native-result.stl")));
+  const indexed = result.indexedMesh!;
+  expect(indexed).toBeDefined();
+  const vertex = (p: number[]) => {
+    const matches = Array.from(
+      { length: indexed.vertices.length / 3 },
+      (_, i) => i,
+    ).filter((i) =>
+      p.every(
+        (v, a) => Math.fround(indexed.vertices[3 * i + a]) === Math.fround(v),
+      ),
+    );
+    expect(matches).toHaveLength(1);
+    return matches[0];
+  };
+  const interior = vertex([0.3, 0.0002, 0]);
+  for (const p of [
+    [0, 0, 0],
+    [0, 0.0008, 0],
+  ]) {
+    const corner = vertex(p);
+    const incidence = Array.from(
+      { length: indexed.triangles.length / 3 },
+      (_, i) => Array.from(indexed.triangles.slice(3 * i, 3 * i + 3)),
+    ).filter((face) => face.includes(corner) && face.includes(interior));
+    expect(incidence).toHaveLength(2);
+  }
+  const verticesBytes = Buffer.alloc(indexed.vertices.length * 8);
+  indexed.vertices.forEach((value, i) =>
+    verticesBytes.writeDoubleLE(value, 8 * i),
+  );
+  const trianglesBytes = Buffer.alloc(indexed.triangles.length * 4);
+  indexed.triangles.forEach((value, i) =>
+    trianglesBytes.writeUInt32LE(value, 4 * i),
+  );
+  expect(createHash("sha256").update(verticesBytes).digest("hex")).toBe(
+    "3823e436d004f7197c6e411709839460576cc00ba4bb6472be9d93f17fa216ab",
+  );
+  expect(createHash("sha256").update(trianglesBytes).digest("hex")).toBe(
+    "54d63bf0980d636afdd42c5aa0992a79b53e5693554d401ff46dd11d504e4491",
+  );
 });

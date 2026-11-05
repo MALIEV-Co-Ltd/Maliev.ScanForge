@@ -57,17 +57,15 @@ it("pins the unchanged native source and retained cutter coordinates", () => {
   );
   expect(saved).toEqual([...cutter]);
 });
-it.fails(
-  "matches the native unchanged source for the short near-corner cut",
-  () => {
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "split",
-      positions: mesh("source.stl"),
-      target: mesh("cutter.stl"),
-    });
-    expect(facets(result.positions!)).toEqual(
-      facets(mesh("native-result.stl")),
-    );
-  },
-);
+it("matches the native unchanged source for the short near-corner cut", () => {
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: mesh("source.stl"),
+    target: mesh("cutter.stl"),
+  });
+  expect(result.diagnostics.changed).toBe(false);
+  expect(facets(result.positions ?? mesh("source.stl"))).toEqual(
+    facets(mesh("native-result.stl")),
+  );
+});
