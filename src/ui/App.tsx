@@ -3528,18 +3528,17 @@ export function App() {
     });
     const extension = file.name.split(".").pop()!.toLowerCase();
     if (extension === "scanforge" || extension === "json") {
-      const session = await decodeProjectFile(file, signal);
-      signal?.throwIfAborted();
-      const project = session.project;
       if (
         dirty &&
         !window.confirm(
           "Replace the current project? Unsaved changes will be lost.",
         )
       ) {
-        setMessage("Project replacement cancelled");
-        return;
+        throw new DOMException("Project replacement cancelled", "AbortError");
       }
+      const session = await decodeProjectFile(file, signal);
+      signal?.throwIfAborted();
+      const project = session.project;
       // Restore to a separate worker so a failed load preserves the existing project.
       const restoredCad = new CadClient();
       try {

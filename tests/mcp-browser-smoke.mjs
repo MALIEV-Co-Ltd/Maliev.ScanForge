@@ -178,7 +178,21 @@ try {
     viewport: { width: 1440, height: 1000 },
   });
   const errors = [];
-  page.on("dialog", (dialog) => dialog.accept());
+  let rejectNextProjectReplacement = false;
+  let projectDecodeWorkers = 0;
+  page.on("worker", (worker) => {
+    if (worker.url().includes("project-decoding-worker"))
+      projectDecodeWorkers++;
+  });
+  page.on("dialog", (dialog) => {
+    if (
+      rejectNextProjectReplacement &&
+      dialog.message().startsWith("Replace the current project?")
+    ) {
+      rejectNextProjectReplacement = false;
+      void dialog.dismiss();
+    } else void dialog.accept();
+  });
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
@@ -973,6 +987,38 @@ try {
   typedHeader.writeUInt32LE(typedManifest.length, 8);
   typedHeader.writeUInt32LE(72, 12);
   const typedFile = Buffer.concat([typedHeader, typedManifest, ...payloads]);
+  const beforeDecline = (await call("project_get")).result;
+  await mutate("object_update", {
+    entityId: beforeDecline.objects[0].id,
+    patch: { name: "Unsaved before open" },
+  });
+  const dirtyBeforeDecline = (await call("project_get")).result;
+  const workersBeforeDecline = projectDecodeWorkers;
+  rejectNextProjectReplacement = true;
+  const declinedDialog = page.waitForEvent("dialog", {
+    predicate: (dialog) =>
+      dialog.message().startsWith("Replace the current project?"),
+  });
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "typed-normals.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: typedFile,
+    });
+  await declinedDialog;
+  await page
+    .getByText("Import cancelled · 0/1 files", { exact: true })
+    .waitFor();
+  assert.equal(
+    projectDecodeWorkers,
+    workersBeforeDecline,
+    "Declined project replacement started a decoder",
+  );
+  const dirtyAfterDecline = (await call("project_get")).result;
+  assert.equal(dirtyAfterDecline.revision, dirtyBeforeDecline.revision);
+  assert.deepEqual(dirtyAfterDecline.objects, dirtyBeforeDecline.objects);
   await page
     .locator('input[type=file][accept*=".scanforge"]')
     .first()
@@ -1015,6 +1061,28 @@ try {
     offset: 0,
     base64: typedFile.toString("base64"),
   });
+  const workersBeforeMcpRefusal = projectDecodeWorkers;
+  const beforeMcpRefusal = (await call("project_get")).result;
+  const refusedImport = await mutate("project_import", {
+    artifactId: typedUpload.result.artifactId,
+    replace: false,
+  });
+  let refusedJob;
+  for (let i = 0; i < 120; i++) {
+    refusedJob = (await call("job_get", { jobId: refusedImport.result.jobId }))
+      .result;
+    if (refusedJob.status !== "running") break;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  assert.equal(refusedJob?.status, "failed");
+  assert.match(
+    JSON.stringify(refusedJob),
+    /Project import requires replace:true/,
+  );
+  assert.equal(projectDecodeWorkers, workersBeforeMcpRefusal);
+  const afterMcpRefusal = (await call("project_get")).result;
+  assert.equal(afterMcpRefusal.revision, beforeMcpRefusal.revision);
+  assert.deepEqual(afterMcpRefusal.objects, beforeMcpRefusal.objects);
   await job(
     await mutate("project_import", {
       artifactId: typedUpload.result.artifactId,

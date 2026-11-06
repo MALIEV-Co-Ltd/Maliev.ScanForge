@@ -1,0 +1,21 @@
+{
+  "scope": "Ask before decoding a project that would replace unsaved GUI work, and report a declined replacement as cancelled. Existing MCP project import already requires replace:true before decoding.",
+  "baseCommit": "da5f34339884608e93da4d8a0a2fdc77019ef370",
+  "sourceSha256": "170bf0087893e41f727dc254833b90ae391c56f77647c513c1e7e390c7fa068a",
+  "browserTestSha256": "7d9bff3ca30c6812c493faedc9dc435ead9199fe48b206b26e5af5f19a9a5274",
+  "buildFingerprint": "scanforge-d24c6c4aadc7ed7e",
+  "before": "The browser test declined the replacement prompt after observing a new project-decoding worker; it failed with worker count 4 versus 3. The guarded run closed all owned processes.",
+  "after": {
+    "browserAndPublicMcp": "Passed. GUI decline reports Import cancelled with zero completed files, does not start a decoder, and preserves project revision and objects. Public MCP project_import with replace:false fails before starting a decoder and preserves revision and objects. A subsequent GUI and MCP import of the same valid binary fixture succeeds, including exact normal-byte checks.",
+    "browserPeakJobBytes": 1768562688,
+    "focusedUnitTestsPassed": 21,
+    "focusedUnitFiles": 3,
+    "build": "All 15 TypeScript batches, production bundle and offline manifest passed.",
+    "buildPeakJobBytes": 1614036992,
+    "ownedProcessCleanupConfirmed": true
+  },
+  "limitations": [
+    "This avoids decoding when replacement is declined; it does not reduce peak memory for a confirmed restore or resolve numeric-array ownership.",
+    "The native comparison and remaining M2 resource, integration and closure gates remain open."
+  ]
+}

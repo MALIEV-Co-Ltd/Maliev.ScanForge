@@ -629,6 +629,11 @@ the worker. Different geometry, history, metadata or authoring state remains
 serialized separately. The last completed file has only a weak cache reference;
 existing consumers own its lifetime, and a collected result is encoded afresh.
 
+When the GUI has unsaved changes, it asks for replacement confirmation before
+starting project decoding. Declining leaves the current project unchanged. MCP
+`project_import` and `backup_restore` require the caller's explicit `replace:true`
+before decoding.
+
 GUI opening, MCP `project_import` and `backup_restore` can reuse matching immutable
 shared chunk backing from an earlier restore or a completed GUI/MCP export or
 backup encoding. First reimport can therefore reuse still-live original imports;

@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+The [project replacement preflight](evidence/m2-project-replacement-preflight-20261107.json) asks before decoding when GUI work is unsaved. Declining now reports cancellation without starting a decoder, and public MCP refusal without `replace:true` likewise avoids decoding. GUI and MCP successful binary imports, focused tests and the production build passed. This does not reduce peak memory for confirmed restores or resolve the remaining M2 gates.
+
 The [independent-restore release trace](evidence/m2-independent-restore-buffer-release-20261107.json) observed all four large numeric staging buffers detach after reconstruction. The GUI reported import, but the first post-reopen MCP geometry digest timed out and the run exceeded the 4 GiB guard. Detachment does not show when physical memory was reclaimed; the resource and ownership gates remain open.
 
 The [sampled independent-restore replay](evidence/m2-independent-restore-allocation-sample-20261107.json) completed GUI reopen, geometry and history checks, but failed the 4 GiB guard by 208,896 bytes. Browser heap sampling attributed about 439 MiB of live sampled allocations to numeric transport reconstruction. Sampling changes the workload and does not establish the cause of the peak or a passing resource result.
