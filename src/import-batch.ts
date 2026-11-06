@@ -1,5 +1,8 @@
+import { readAscPointCloud } from "./asc-import";
+
 export type ImportBatchProgress = {
   kind: "importBatch";
+  admission?: ImportAdmission;
   files: {
     index: number;
     name: string;
@@ -14,6 +17,122 @@ export type ImportBatchProgress = {
     stage: string;
   }[];
 };
+
+export type ImportAdmission = {
+  concurrency: 1 | 2;
+  reason: "parallel" | "single-file" | "format" | "cpu" | "memory";
+  message: string;
+  estimatedPeakBytes: number;
+  memoryBudgetBytes: number;
+  estimates: {
+    index: number;
+    bytes: number;
+    basis: "sampled-asc" | "source-size";
+  }[];
+};
+
+const MiB = 1024 ** 2;
+
+/** Streaming ASC retains typed point buffers; bounded samples avoid treating file text as live heap. */
+async function estimateImportMemory(file: File, signal?: AbortSignal) {
+  if (/\.asc$/i.test(file.name)) {
+    try {
+      const sampleSize = 64 * 1024;
+      let density = 0;
+      for (const offset of new Set([
+        0,
+        Math.max(0, Math.floor(file.size / 2) - sampleSize / 2),
+        Math.max(0, file.size - sampleSize),
+      ])) {
+        signal?.throwIfAborted();
+        const end = Math.min(file.size, offset + sampleSize);
+        const bytes = new Uint8Array(
+          await file.slice(offset, end).arrayBuffer(),
+        );
+        signal?.throwIfAborted();
+        const first = offset ? bytes.indexOf(10) + 1 : 0;
+        const last = end < file.size ? bytes.lastIndexOf(10) + 1 : bytes.length;
+        if ((offset && !first) || last <= first) continue;
+        const sample = new Blob([bytes.slice(first, last)]);
+        const cloud = await readAscPointCloud(sample, { signal });
+        density = Math.max(density, cloud.positions.length / 3 / sample.size);
+      }
+      if (density) {
+        // 64 bytes/point covers CPU/GPU buffers and selection; double sampled density for variation.
+        return {
+          bytes: Math.ceil(file.size * density) * 128 + 32 * MiB,
+          basis: "sampled-asc" as const,
+        };
+      }
+    } catch {
+      signal?.throwIfAborted();
+      // Samples are advisory; only the full parser decides whether a file is valid.
+    }
+  }
+  return { bytes: file.size * 16 + 32 * MiB, basis: "source-size" as const };
+}
+
+/** Admission is a memory estimate, not a browser RAM guarantee or a file acceptance limit. */
+export async function planImportBatch(
+  files: readonly File[],
+  signal?: AbortSignal,
+  capacity = {
+    cores: globalThis.navigator?.hardwareConcurrency ?? 4,
+    memoryGiB:
+      (globalThis.navigator as Navigator & { deviceMemory?: number })
+        ?.deviceMemory ?? 4,
+    usedHeapBytes:
+      (
+        globalThis.performance as Performance & {
+          memory?: { usedJSHeapSize: number };
+        }
+      )?.memory?.usedJSHeapSize ?? 0,
+  },
+): Promise<ImportAdmission> {
+  const estimates: ImportAdmission["estimates"] = [];
+  for (const [index, file] of files.entries()) {
+    signal?.throwIfAborted();
+    estimates.push({ index, ...(await estimateImportMemory(file, signal)) });
+  }
+  signal?.throwIfAborted();
+  const largest = estimates.map((file) => file.bytes).sort((a, b) => b - a);
+  const estimatedPeakBytes = (largest[0] ?? 0) + (largest[1] ?? 0);
+  // Leave three quarters of the reported device memory for the OS, existing scene and other apps.
+  const memoryBudgetBytes = Math.max(
+    0,
+    Math.min((capacity.memoryGiB * 1024 ** 3) / 4, 1024 ** 3) -
+      capacity.usedHeapBytes,
+  );
+  const reason =
+    files.length < 2
+      ? "single-file"
+      : files.filter((file) => /\.(asc|stl|obj|ply)$/i.test(file.name)).length <
+          2
+        ? "format"
+        : capacity.cores <= 2
+          ? "cpu"
+          : estimatedPeakBytes > memoryBudgetBytes
+            ? "memory"
+            : "parallel";
+  const message =
+    reason === "parallel"
+      ? "Parallel import (2 parsers)"
+      : reason === "single-file"
+        ? "One file (1 parser)"
+        : reason === "format"
+          ? "Sequential import: CAD imports are serialized"
+          : reason === "cpu"
+            ? "Sequential import: browser reports two or fewer CPU threads"
+            : `Sequential import: estimated active pair ${Math.ceil(estimatedPeakBytes / MiB)} MiB exceeds memory budget ${Math.floor(memoryBudgetBytes / MiB)} MiB`;
+  return {
+    concurrency: reason === "parallel" ? 2 : 1,
+    reason,
+    message,
+    estimatedPeakBytes,
+    memoryBudgetBytes,
+    estimates,
+  };
+}
 
 /** Conservative admission; file bytes underestimate decoded geometry and render buffers. */
 export function importConcurrency(
@@ -60,11 +179,13 @@ export async function importBatch<T, R, C = R>(
   signal?: AbortSignal,
   options: {
     concurrency?: number;
+    admission?: ImportAdmission;
     names?: readonly string[];
     commit?: (value: R, file: T, index: number) => Promise<C>;
     onProgress?: (progress: ImportBatchProgress) => void;
   } = {},
 ): Promise<{
+  admission?: ImportAdmission;
   completed: C[];
   failed: { index: number; error: string }[];
   cancelled: boolean;
@@ -85,6 +206,7 @@ export async function importBatch<T, R, C = R>(
   const publish = () =>
     options.onProgress?.({
       kind: "importBatch",
+      ...(options.admission ? { admission: options.admission } : {}),
       files: states.map((state) => ({ ...state })),
     });
   let next = 0;
@@ -143,7 +265,8 @@ export async function importBatch<T, R, C = R>(
   };
   try {
     publish();
-    const concurrency = options.concurrency === 2 ? 2 : 1;
+    const concurrency =
+      (options.admission?.concurrency ?? options.concurrency) === 2 ? 2 : 1;
     await Promise.all(
       Array.from({ length: Math.min(concurrency, files.length) }, work),
     );
@@ -155,6 +278,7 @@ export async function importBatch<T, R, C = R>(
         }
     publish();
     return {
+      ...(options.admission ? { admission: options.admission } : {}),
       completed: [...completed]
         .sort(([a], [b]) => a - b)
         .map(([, value]) => value),

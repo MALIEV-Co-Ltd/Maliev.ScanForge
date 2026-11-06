@@ -49,7 +49,7 @@ import { DEFAULT_ASC_ATTRIBUTES } from "../asc-import";
 import { beginWorkingJob } from "../working-job-status";
 import {
   importBatch,
-  importConcurrency,
+  planImportBatch,
   validateImportBatch,
 } from "../import-batch";
 import type { Revision } from "../history";
@@ -1960,6 +1960,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const status = beginWorkingJob("Importing files");
       let result;
       try {
+        const admission = await planImportBatch(files, c.signal);
+        c.check();
         result = await importBatch(
           files,
           async (file, _index, context) => {
@@ -1977,7 +1979,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           },
           c.signal,
           {
-            concurrency: importConcurrency(files),
+            admission,
             names,
             onProgress: (details) => {
               const fraction =

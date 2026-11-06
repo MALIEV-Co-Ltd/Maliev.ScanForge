@@ -47,7 +47,7 @@ import {
 import { beginWorkingJob } from "../working-job-status";
 import {
   importBatch,
-  importConcurrency,
+  planImportBatch,
   validateImportBatch,
 } from "../import-batch";
 import { entityDisplayStats } from "../entity-display-stats";
@@ -3501,6 +3501,7 @@ export function App() {
           const status = beginWorkingJob("Importing files");
           let result;
           try {
+            const admission = await planImportBatch(files, controller.signal);
             result = await importBatch(
               files,
               async (file, _index, context) =>
@@ -3517,7 +3518,7 @@ export function App() {
                   : undefined,
               controller.signal,
               {
-                concurrency: importConcurrency(files),
+                admission,
                 names: files.map((file) => file.name),
                 onProgress: (details) => {
                   const fraction =

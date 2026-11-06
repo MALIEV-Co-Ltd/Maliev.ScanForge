@@ -321,6 +321,7 @@ try {
   const label = page.locator(".pointer-job-status");
   await label.waitFor({ state: "visible" });
   assert.equal(await label.getByRole("progressbar").count(), 2);
+  assert.match(await label.innerText(), /Parallel import \(2 parsers\)/);
   assert.match(await label.innerText(), new RegExp(`first\\.${extension}`));
   assert.match(await label.innerText(), new RegExp(`second\\.${extension}`));
   assert.match(await label.innerText(), /1 queued/);
@@ -357,6 +358,8 @@ try {
   await page.waitForFunction(() => window.__pendingImports.length === 2);
   const state = (await call("job_get", { jobId: receipt.result.jobId })).result;
   assert.equal(state.progressDetails.kind, "importBatch");
+  assert.equal(state.progressDetails.admission.concurrency, 2);
+  assert.equal(state.progressDetails.admission.reason, "parallel");
   assert.equal(
     state.progressDetails.files.filter((file) => file.status === "importing")
       .length,
