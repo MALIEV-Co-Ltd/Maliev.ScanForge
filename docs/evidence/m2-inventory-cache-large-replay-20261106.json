@@ -1,0 +1,37 @@
+{
+  "scope": "Original PLY-3 GUI Split followed by public MCP scoped and full inventory, component Flip and history; no native comparison",
+  "candidateCommit": "0077abf",
+  "bundle": "scanforge-b4a30452acf5c910",
+  "input": {
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "faces": 3691133,
+    "splitFaces": 3695945
+  },
+  "result": {
+    "scopedComponents": 456,
+    "fullComponents": 456,
+    "fullBoundaries": 21,
+    "fullHoles": 21,
+    "componentFlipIndexed": true,
+    "cutterPreserved": true,
+    "undoRedo": true,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "peakJobBytes": 3567632384,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "evidence": {
+    "driverSha256": "3b937c96ab2993f8fd4cc04f2ac86c62a4a709583c9b285a823ed1be243795df",
+    "receiptSha256": "d68aac941c6958ac4fe0a47873424553b6fc9d731837baf8e407bc33a7589d80",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-disk-profile-bounded/large-scoped-full-inventory-20261106.json",
+    "publicMcpBrowserSmoke": "passed on the same application build; peak 1741320192 bytes with clean process cleanup",
+    "publicMcpBrowserSmokeReceiptSha256": "851c9e927cf8ab7ee9124eaf88ba768902e669df15bb6be5b6ef7ea7651acbb5"
+  },
+  "limitations": [
+    "The two inventories were compared by component count, not by every component's membership or area.",
+    "The counts do not establish native panel or cleanup equivalence on this input.",
+    "This is not the separate full-download and GUI-reopen resource gate."
+  ]
+}
