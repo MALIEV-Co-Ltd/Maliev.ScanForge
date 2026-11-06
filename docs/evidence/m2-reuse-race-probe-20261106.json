@@ -24,6 +24,17 @@
     "typecheck": "Focused test and imported source passed; an earlier external temporary config could not resolve vite/client and was replaced with a config under the checkout.",
     "limitation": "This manufactured interleaving does not establish immutability for every operation or demonstrate that normal GUI or MCP actions can trigger the low-level mutation race."
   },
+  "browserWorkerRaceDiagnostic": {
+    "scope": "Real browser decoding worker with an injected mutation in the reuse callback; not a normal GUI or MCP trigger",
+    "method": "Two 73728-value mesh arrays are encoded, registered as reusable candidates and decoded by the browser worker. The diagnostic mutates the first source during the second reuse lookup and verifies the first decoded value.",
+    "baseline": "Failed: the restored first candidate contained the injected mutation.",
+    "prototype": "Passed the same interleaving, checked decoded aliases and display cache, and confirmed normal and cancelled decoder worker termination. Peak Job memory was 890982400 bytes.",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-worker-race-diagnostic-20261106.mjs",
+    "driverSha256": "7cb80d667f272d93d64c8b069170e9681d9c2bcb3735020cb0462ba287fefd68",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-worker-race-baseline-20261106.json",
+    "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-worker-race-probe-20261106.json",
+    "limitation": "The prototype still does not address mutation after unpack returns, and the large-resource gate remains untested."
+  },
   "limitations": [
     "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
     "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
