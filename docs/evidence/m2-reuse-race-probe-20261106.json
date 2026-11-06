@@ -16,6 +16,14 @@
     "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-typecheck-r2-20261106.json",
     "mcpBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-mcp-smoke-r2-20261106.json"
   },
+  "representativeTransformControl": {
+    "scope": "Shared-operation diagnostic on the integration branch, not GUI or public MCP concurrency",
+    "result": "During a cooperative numeric reuse lookup, Scale, Flip Normals and Mirror each returned independent output and left the 65538-value source unchanged. The unpacked graph reused the original matching source.",
+    "test": "tests/m2-restore-transform-ownership.test.ts",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-transforms-baseline-r2-20261106.json",
+    "typecheck": "Focused test and imported source passed; an earlier external temporary config could not resolve vite/client and was replaced with a config under the checkout.",
+    "limitation": "This manufactured interleaving does not establish immutability for every operation or demonstrate that normal GUI or MCP actions can trigger the low-level mutation race."
+  },
   "limitations": [
     "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
     "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
