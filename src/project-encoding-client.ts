@@ -5,7 +5,7 @@ import {
 } from "./project-transport";
 import type { ProjectSession } from "./project-file";
 import { projectEncodingSnapshot } from "./project-encoding-snapshot";
-import { diskBackedBlob } from "./transient-blob-storage";
+import { deleteTransientBlob, diskBackedBlob } from "./transient-blob-storage";
 import { rememberProjectSharedChunks } from "./project-shared-chunks";
 import {
   projectEncodingChunkSources,
@@ -161,6 +161,7 @@ function encodeQueued(
         let worker: Worker | undefined;
         let chunkSources: SharedArrayBuffer[] = [];
         let numericSources: number[][] = [];
+        const temporaryBlobKey = crypto.randomUUID();
         const storage = new AbortController();
         let lease: ReturnType<typeof setTimeout> | undefined;
         let finished = false;
@@ -171,8 +172,15 @@ function encodeQueued(
           clearTimeout(lease);
           globalThis.removeEventListener?.("pagehide", abort);
           signal?.removeEventListener("abort", cancel);
-          worker?.terminate();
-          if (error) reject(error);
+          const terminatedWorker = worker;
+          terminatedWorker?.terminate();
+          worker = undefined;
+          if (error && terminatedWorker) {
+            // A terminated worker cannot clear a checkpoint it already committed.
+            void deleteTransientBlob(temporaryBlobKey)
+              .catch(() => {})
+              .finally(() => reject(error));
+          } else if (error) reject(error);
           else resolve(file!);
         };
         const abort = () =>
@@ -246,11 +254,13 @@ function encodeQueued(
           chunkSources = projectEncodingChunkSources(snapshot);
           numericSources = projectEncodingNumericSources(snapshot);
           if (!containsLargeNumericArrays(snapshot))
-            worker.postMessage(
-              chunkSources.length
-                ? { ...snapshot, sharedChunkSources: chunkSources }
-                : snapshot,
-            );
+            worker.postMessage({
+              ...snapshot,
+              temporaryBlobKey,
+              ...(chunkSources.length
+                ? { sharedChunkSources: chunkSources }
+                : {}),
+            });
           else
             void packProjectTransport(snapshot, {
               check: () => {
@@ -268,9 +278,13 @@ function encodeQueued(
               .then(({ packet, transfers }) => {
                 if (!finished)
                   worker!.postMessage(
-                    chunkSources.length
-                      ? { ...packet, sharedChunkSources: chunkSources }
-                      : packet,
+                    {
+                      ...packet,
+                      temporaryBlobKey,
+                      ...(chunkSources.length
+                        ? { sharedChunkSources: chunkSources }
+                        : {}),
+                    },
                     transfers,
                   );
               })

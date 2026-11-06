@@ -116,7 +116,10 @@ async function digest(bytes: Uint8Array): Promise<string> {
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
 export async function encodeProjectFileLocally(
   session: ProjectSession,
-  options: { onSharedChunk?: (chunk: ProjectSharedChunk) => void } = {},
+  options: {
+    onSharedChunk?: (chunk: ProjectSharedChunk) => void;
+    temporaryBlobKey?: string;
+  } = {},
 ): Promise<Blob> {
   const chunks: Chunk[] = [],
     payloads: Blob[] = [],
@@ -187,7 +190,13 @@ export async function encodeProjectFileLocally(
       pendingBytes += data.size;
       // Release completed payloads before encoding the rest of a large history.
       if (pendingBytes >= DISK_BLOB_BLOCK_BYTES) {
-        payloads.push(await diskBackedBlob(new Blob(pendingPayloads)));
+        payloads.push(
+          await diskBackedBlob(
+            new Blob(pendingPayloads),
+            undefined,
+            options.temporaryBlobKey,
+          ),
+        );
         pendingPayloads = [];
         pendingBytes = 0;
       }

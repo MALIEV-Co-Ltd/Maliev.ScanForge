@@ -594,6 +594,8 @@ retry from its reported size. Failed or cancelled staging attempts to delete its
 own temporary record independently of cancellation. If storage prevents cleanup,
 the record expires after 15 minutes and is swept on subsequent staging. Each
 open/transaction, including cleanup, has a 30-second timeout.
+An interrupted encoder worker has a separate temporary key; the parent attempts
+to remove that key after terminating the worker, before starting the next encoder.
 Environments without IndexedDB retain ordinary Blob storage. Logical artifact
 quotas, read/upload chunk limits and the process validation cap are unchanged.
 Use a normal persistent browser profile for disk-backed large transfers. Chromium

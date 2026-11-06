@@ -15,6 +15,7 @@ self.onmessage = async ({
 }: MessageEvent<
   (ProjectEncodingSnapshot | ProjectTransport) & {
     sharedChunkSources?: unknown;
+    temporaryBlobKey?: string;
   }
 >) => {
   try {
@@ -26,6 +27,7 @@ self.onmessage = async ({
     const file = await encodeProjectFileLocally(
       restoreEncodingSnapshot(snapshot),
       {
+        temporaryBlobKey: data.temporaryBlobKey,
         onSharedChunk: (chunk) => {
           const sourceToken = sources.indexOf(chunk.buffer);
           if (sourceToken >= 0 && !seen.has(sourceToken)) {

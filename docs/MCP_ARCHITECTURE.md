@@ -179,6 +179,9 @@ share this codec. The final batch can exceed 64 MiB by one payload; individual
 compression output and private-context storage remain memory costs. Failed
 checkpoints reject publication and leave existing backups intact. Container
 bytes, public schemas, revision/retry guards and cancellation remain unchanged.
+Each encoding worker uses its own staging key. After an interrupted or failed
+worker is terminated, its parent attempts to delete that key before the queued
+encoder advances; storage failures retain the existing expiry-sweep fallback.
 
 Provide semantic control of supported ScanForge modeling features through a standardized MCP interface while preserving the browser-local geometry runtime, existing editing semantics and unrelated work. The UI and agents share native CAD creation/rebuild use cases, geometry workers, validation and the project/history commit boundary. Existing GUI interaction code is retained; this integration does not relocate the entire React state tree or introduce a headless/cloud engine.
 

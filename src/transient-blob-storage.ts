@@ -1,15 +1,9 @@
 export const DISK_BLOB_BLOCK_BYTES = 64 * 1024 * 1024;
 
-/** IndexedDB returns immutable, browser-owned file backing. Deleting the record
- * releases persistent ownership while the returned Blob keeps its bytes alive. */
-export async function diskBackedBlob(
-  blob: Blob,
+async function openTransientDatabase(
   signal?: AbortSignal,
-): Promise<Blob> {
-  signal?.throwIfAborted();
-  if (blob.size < DISK_BLOB_BLOCK_BYTES || typeof indexedDB === "undefined")
-    return blob;
-  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+): Promise<IDBDatabase> {
+  return new Promise<IDBDatabase>((resolve, reject) => {
     let finished = false;
     const finish = (error?: unknown, value?: IDBDatabase) => {
       if (finished) {
@@ -43,7 +37,59 @@ export async function diskBackedBlob(
       finish(error);
     }
   });
-  const key = crypto.randomUUID();
+}
+
+/** Remove one terminated worker's staging record without touching other saves. */
+export async function deleteTransientBlob(key: string): Promise<void> {
+  if (typeof indexedDB === "undefined") return;
+  const db = await openTransientDatabase();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction("blobs", "readwrite");
+      const timer = setTimeout(() => {
+        try {
+          tx.abort();
+        } catch {
+          /* Already settled. */
+        }
+        reject(new Error("Temporary blob cleanup timed out."));
+      }, 30_000);
+      tx.oncomplete = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      tx.onerror = tx.onabort = () => {
+        clearTimeout(timer);
+        reject(tx.error ?? new Error("Temporary blob cleanup failed."));
+      };
+      try {
+        tx.objectStore("blobs").delete(key);
+      } catch (error) {
+        clearTimeout(timer);
+        try {
+          tx.abort();
+        } catch {
+          /* Already settled. */
+        }
+        reject(error);
+      }
+    });
+  } finally {
+    db.close();
+  }
+}
+
+/** Deleting the database record leaves the returned browser-owned Blob alive. */
+export async function diskBackedBlob(
+  blob: Blob,
+  signal?: AbortSignal,
+  temporaryKey?: string,
+): Promise<Blob> {
+  signal?.throwIfAborted();
+  if (blob.size < DISK_BLOB_BLOCK_BYTES || typeof indexedDB === "undefined")
+    return blob;
+  const db = await openTransientDatabase(signal);
+  const key = temporaryKey ?? crypto.randomUUID();
   const transaction = <T>(
     run: (store: IDBObjectStore) => () => T,
     operationSignal: AbortSignal | null = signal ?? null,
