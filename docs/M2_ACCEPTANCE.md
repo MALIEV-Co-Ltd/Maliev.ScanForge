@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+An [origin-private-file staging control](evidence/m2-opfs-array-staging-probe-20261107.json) preserved every synthetic Float64 value but had a higher guarded peak than direct reconstruction, including when each read buffer was immediately detached. Process samples showed extra browser-process memory while the staged file was retained; they do not identify its allocation or establish full-project behavior. No prototype was integrated.
+
 Two [independent-array staging controls](evidence/m2-independent-array-staging-probes-20261107.json) preserved all values, including negative zero, but simple incremental source shrinking and IndexedDB Blob staging each had a higher guarded peak than their direct-copy control. These synthetic single runs are not integrated and do not establish full-project behavior or rule out every alternative.
 
 An [isolated Chrome detachment control](evidence/m2-chrome-detach-memory-20261107.json) showed a touched 256 MiB ArrayBuffer's backing-storage accounting and aggregate renderer memory fall by approximately that size in the first sample after transfer to zero, before diagnostic garbage collection. This is not a full project restore and does not establish its reclamation timing or resource acceptance.
