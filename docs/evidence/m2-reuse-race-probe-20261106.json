@@ -10,7 +10,7 @@
     "viteBuild": "Direct Vite build passed after preparing the CAD kernel; a complete production build was not run.",
     "typecheck": "All 15 batches passed on a 360-second guarded retry before two additional backing-buffer tests were added. The first 180-second lease expired at batch 11 with cleanup confirmed and no reported TypeScript error.",
     "mcpBrowserSmoke": "Passed the small GUI/public-MCP project import and reopen smoke at a 1664995328-byte Job peak. The initial attempt failed because the direct Vite build lacked the CAD kernel; preparing the kernel and rebuilding resolved that setup failure. This does not reproduce the race.",
-    "realPly3": "Not run: observed free disk was approximately 3.80 GB, below the established 4.00 GB initial admission guard. The guard was not lowered.",
+    "realPly3": "Failed on the matching PLY-3 input and bounds: GUI reopen timed out and reported Job peak exceeded 4 GiB by 102400 bytes. Full download completed with matching independent stream and file hashes. Cleanup was confirmed.",
     "raceReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-red-20261106.json",
     "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-backing-20261106.json",
     "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-typecheck-r2-20261106.json",
@@ -50,6 +50,20 @@
     "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-baseline-20261106.json",
     "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-prototype-20261106.json"
   },
+  "ply3Replay": {
+    "bundle": "scanforge-3e097613751de8b3",
+    "prototypeSourceSha256": "b3d36c0ae7d2c81899d8ebce2f3a04c6bb7350fb851aa6af19cc45c3eb5182fb",
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputAndBounds": "C:/repo/alignment-example-files/ply-3.ply and C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-ply3-bounds-20261028.json",
+    "downloadBytes": 475563378,
+    "streamAndFileSha256": "43436804f73d0ef0fb5c16556baf621e9310119c5c3defcc024ceef8f061fcb2",
+    "result": "GUI Split, Extract, export and full artifact download completed. GUI reopen did not reach ready within 120 seconds; a subsequent page probe timed out. Reported peak was 4295069696 bytes against the 4294967296-byte Job limit. Cleanup confirmed zero active processes. The temporary downloaded file was removed after verifying its hash.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-r2-20261106.json",
+    "receiptSha256": "127ab2275e359a1baf2f3477dd32b2858e2dc1f1faf28a6a5a96dbfd83cc7e42",
+    "logSha256": "0d95eae5e43860b258f7d2f2834f0de29134bfa8b17ab5b81777dbfd6d6ca0da",
+    "earlierDiagnostic": "An initial run used another scan's bounds for the cutter and omitted the offline manifest. It reached reopen and history verification but failed the browser-error check with a service-worker 404; its 3611701248-byte peak is not comparable acceptance evidence.",
+    "earlierReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-20261106.json"
+  },
   "fingerprintExperiment": {
     "scope": "Separate low-level Node experiment; not wired to the application",
     "method": "Hash validated staging bytes, release them as before, then synchronously fingerprint each reused array and reject if it changed. This fails closed but does not retry the restore.",
@@ -61,9 +75,20 @@
     "sizedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-memory-r2-20261106.json",
     "limitations": "The synchronous hash is a potential long main-thread task; timings are Node synthetic measurements, not browser responsiveness. There is no retry, no protection after unpack returns, and no GUI/MCP or real PLY-3 validation. It is not an integrated solution."
   },
+  "ownedArtifactCleanup": {
+    "reason": "User requested cleanup of task-generated work to restore disk headroom.",
+    "removedDuplicateProjectCopies": [
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T070318600903Z-browser/mcp-full-history-roundtrip.scanforge",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T064532395194Z-browser/mcp-full-history-roundtrip.scanforge"
+    ],
+    "eachBytes": 736091936,
+    "eachSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "retainedIdenticalCopy": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T075000065189Z-browser/mcp-full-history-roundtrip.scanforge",
+    "otherCleanup": "Removed one regenerated probe public-kernel WASM copy after verifying the built copy matched; the built kernel remains. Removed the failed rerun's verified temporary download after preserving hashes and receipts. Evidence logs and other user work were retained."
+  },
   "limitations": [
     "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
-    "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
+    "The matching PLY-3 replay failed under the 4 GiB resource budget; a single failure does not identify the responsible allocation.",
     "GUI open and MCP import can perform asynchronous CAD restoration after decoding, before publication. A separate low-level diagnostic mutated the reused source after unpack returned and observed the changed value in the decoded result; it does not establish that normal GUI or MCP actions mutate the array. The diagnostic is retained at C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-post-decode-diagnostic-20261106.test.ts with receipt C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-post-decode-probe-20261106.json. Ownership safety during that interval and after publication remains open.",
     "The small smoke is not large-project resource or full lifecycle acceptance."
   ]
