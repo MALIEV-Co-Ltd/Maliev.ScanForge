@@ -12,7 +12,22 @@
     "focusedUnitFiles": 3,
     "build": "All 15 TypeScript batches, production bundle and offline manifest passed.",
     "buildPeakJobBytes": 1614036992,
-    "ownedProcessCleanupConfirmed": true
+    "ownedProcessCleanupConfirmed": true,
+    "originalPly3ConfirmedReplacement": {
+      "testedCommit": "bcb7d1eb33f9b569cee625a6da548162626b7839",
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "faces": 3691133,
+      "exportBytes": 475563378,
+      "streamAndDownloadedFileSha256": "719c36d18bfc7f26964051d794556f3090ae79f6ddb641eac56e13ad18365436",
+      "result": "Passed GUI Split/Extract, project export, complete public MCP download, early replacement confirmation, GUI reopen, geometry comparison and post-reopen GUI Undo/Redo.",
+      "peakJobBytes": 4095434752,
+      "ownedProcessCleanupConfirmed": true,
+      "temporaryDownloadRemoved": true,
+      "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-ply3-20261107.mjs",
+      "driverSha256": "4b75bac02b84aca98401522869d8687fc79cdd47af56ef37304be80b31922d46",
+      "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-ply3-guard-20261107.json",
+      "guardReceiptSha256": "5225c4a20b8c2ce7b9113f11f5d39493f543d39a7f7466a6c465b9d7c0de9bbc"
+    }
   },
   "limitations": [
     "This avoids decoding when replacement is declined; it does not reduce peak memory for a confirmed restore or resolve numeric-array ownership.",
