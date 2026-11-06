@@ -35,6 +35,32 @@
     "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-worker-race-probe-20261106.json",
     "limitation": "The prototype still does not address mutation after unpack returns, and the large-resource gate remains untested."
   },
+  "stagingLifetimeDiagnostic": {
+    "scope": "Synthetic Node transport run using the four Float64 staging sizes observed in PLY-3; not a real browser or end-to-end resource result",
+    "stagingBytes": [266108040, 44896128, 127929168, 21541272],
+    "baselineArrayBufferBytesAtLookups": [
+      460493900, 194385860, 149489732, 21560564
+    ],
+    "prototypeArrayBufferBytesAtLookups": [
+      460493907, 460493907, 460493907, 460493907
+    ],
+    "interpretation": "The prototype retains about 439 MB more ArrayBuffer storage at the fourth lookup. Both runs start with all staging buffers allocated, so the comparison does not by itself determine the real Job peak or prove failure.",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-memory-diagnostic-20261106.test.ts",
+    "driverSha256": "f1d3ed3765736edddb7e103386ffd6d24340769c4197d9c38fa433134c822684",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-baseline-20261106.json",
+    "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-prototype-20261106.json"
+  },
+  "fingerprintExperiment": {
+    "scope": "Separate low-level Node experiment; not wired to the application",
+    "method": "Hash validated staging bytes, release them as before, then synchronously fingerprint each reused array and reject if it changed. This fails closed but does not retry the restore.",
+    "smallTests": "Two passed: changed first candidate rejected and unchanged signed-zero alias retained.",
+    "sizedDiagnostic": "At PLY-3 staging sizes, ArrayBuffer measurements at the four lookups were 460495699, 194387723, 149491595 and 21562427 bytes. The test run took about 5.47 seconds versus about 0.85 seconds for the current transport control. The first run exceeded the default 5-second test timeout; an explicit 30-second retry completed.",
+    "prototypeSha256": "818e938026b57d900946600e67ccac3d7dd530987a90b26ae2ce2d9e7ca953a1",
+    "prototypePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-race-probe-20261106/src/project-transport-hash-probe.ts",
+    "smallReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-small-20261106.json",
+    "sizedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-memory-r2-20261106.json",
+    "limitations": "The synchronous hash is a potential long main-thread task; timings are Node synthetic measurements, not browser responsiveness. There is no retry, no protection after unpack returns, and no GUI/MCP or real PLY-3 validation. It is not an integrated solution."
+  },
   "limitations": [
     "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
     "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
