@@ -382,6 +382,21 @@ try {
       coplanarSharedEdge: true,
     },
     {
+      name: "coplanar-shared-edge-stl",
+      source: [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+      target: [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1].map(Math.fround),
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      coplanarSharedEdge: true,
+      fileHashes: {
+        "source.stl":
+          "1f062fa356f8cf9145d9d9fdfc236031c23acb0f2c416444db20555d063d5ac5",
+        "cutter.stl":
+          "d1520467d19d1aed82ff52d74218fd773f557ad36c4ada1eb1b99ecc5bb098b0",
+      },
+    },
+    {
       name: "tolerance-shared-edge",
       source: [
         -0.00000075, 0, 0, 0.00000075, 0, 0, 1, 1, 0, 0.00000075, 0, 0,
@@ -515,6 +530,7 @@ try {
       ),
     ),
     "finite-interior-cut": ["source.stl", "cutter.stl"],
+    "coplanar-shared-edge-stl": ["source.stl", "cutter.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
     "closed-convex": ["square-source.stl", "convex-cutter.stl"],
     "closed-concave": ["square-source.stl", "concave-cutter.stl"],
@@ -578,10 +594,12 @@ try {
           ],
         ).find((item) => item.file === filename);
         assert(entry, `Missing manifest entry for ${filename}`);
-        assert.equal(entry.sha256, expectedFileHashes[filename]);
+        const expectedHash =
+          c.fileHashes?.[filename] ?? expectedFileHashes[filename];
+        assert.equal(entry.sha256, expectedHash);
         assert.equal(
           createHash("sha256").update(bytes).digest("hex"),
-          expectedFileHashes[filename],
+          expectedHash,
         );
         const artifact = (
           await call("artifact_put", {
@@ -1210,11 +1228,19 @@ try {
           `Shared edge has a T-junction: ${JSON.stringify([...edges])}`,
         );
         if (c.coplanarSharedEdge) {
-          assert.deepEqual(
-            [...edges.keys()].sort(),
-            ["0,0.3", "0.3,0.7", "0.7,1"].sort(),
-            "Finite Split changed the application shared-edge intervals",
-          );
+          const intervals = [...edges.keys()]
+            .map((key) => key.split(",").map(Number))
+            .sort((a, b) => a[0] - b[0]);
+          for (const [i, expected] of [
+            [0, [0, 0.3]],
+            [1, [0.3, 0.7]],
+            [2, [0.7, 1]],
+          ])
+            for (let axis = 0; axis < 2; axis++)
+              assert(
+                Math.abs(intervals[i][axis] - expected[axis]) < 1e-6,
+                "Finite Split changed the application shared-edge intervals",
+              );
           const endpoints = [...edges.keys()].flatMap((key) =>
             key.split(",").map(Number),
           );
@@ -1587,8 +1613,12 @@ try {
         name: c.name,
         ...(inputDirectory
           ? {
-              sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
-              cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+              sourceFileSha256:
+                c.fileHashes?.[fileInputs[c.name][0]] ??
+                expectedFileHashes[fileInputs[c.name][0]],
+              cutterFileSha256:
+                c.fileHashes?.[fileInputs[c.name][1]] ??
+                expectedFileHashes[fileInputs[c.name][1]],
             }
           : {}),
         outputDigest: guiDigest,
@@ -1766,8 +1796,12 @@ try {
       sourceMode: inputDirectory ? "pinned STL import" : "project fixture",
       ...(inputDirectory
         ? {
-            sourceFileSha256: expectedFileHashes[fileInputs[c.name][0]],
-            cutterFileSha256: expectedFileHashes[fileInputs[c.name][1]],
+            sourceFileSha256:
+              c.fileHashes?.[fileInputs[c.name][0]] ??
+              expectedFileHashes[fileInputs[c.name][0]],
+            cutterFileSha256:
+              c.fileHashes?.[fileInputs[c.name][1]] ??
+              expectedFileHashes[fileInputs[c.name][1]],
           }
         : {}),
       inputCoordinateSha256: digest(c.source),

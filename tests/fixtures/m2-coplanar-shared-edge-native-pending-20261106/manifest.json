@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "file": "source.stl",
+      "sha256": "1f062fa356f8cf9145d9d9fdfc236031c23acb0f2c416444db20555d063d5ac5"
+    },
+    {
+      "file": "cutter.stl",
+      "sha256": "d1520467d19d1aed82ff52d74218fd773f557ad36c4ada1eb1b99ecc5bb098b0"
+    }
+  ]
+}
