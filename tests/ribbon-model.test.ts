@@ -121,7 +121,12 @@ describe("ribbon command inventory", () => {
     ).toEqual(["cleanup", "flipNormals"]);
     expect(
       getRibbonToolMetadata("align")?.options?.map((tool) => tool.id),
-    ).toEqual(["alignInteractive", "alignNPoints", "fineAlign"]);
+    ).toEqual([
+      "alignInteractive",
+      "alignNPoints",
+      "fineAlign",
+      "surfaceRefinement",
+    ]);
     expect(
       getRibbonToolMetadata("exportStep")?.options?.map((tool) => tool.id),
     ).toEqual(["exportStl"]);

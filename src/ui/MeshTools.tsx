@@ -23,6 +23,7 @@ function fineAlignmentStatus(reason: string): string {
 
 export type MeshTool =
   | "fineAlign"
+  | "surfaceRefinement"
   | "repairMesh"
   | "segmentMesh"
   | "smoothMesh"
@@ -227,6 +228,7 @@ export function MeshTools({
       title={
         {
           fineAlign: "Fine alignment",
+          surfaceRefinement: "Surface refinement",
           repairMesh: "Repair topology",
           segmentMesh: "Segment surfaces",
           smoothMesh: "Smooth mesh",
@@ -443,7 +445,9 @@ export function MeshTools({
             </p>
           </>
         )}
-        {["fineAlign", "globalAlignment"].includes(tool) && (
+        {["fineAlign", "globalAlignment", "surfaceRefinement"].includes(
+          tool,
+        ) && (
           <>
             <label className="select-field">
               Registration target
@@ -503,6 +507,17 @@ export function MeshTools({
                 }
               />
             </label>
+            <Field
+              label="ICP maximum iterations"
+              value={icpIterations}
+              onChange={setIcpIterations}
+              min={1}
+              step={1}
+            />
+          </>
+        )}
+        {tool === "surfaceRefinement" && (
+          <>
             <fieldset>
               <legend>Additional fixed surfaces</legend>
               {targets
@@ -570,13 +585,6 @@ export function MeshTools({
                 step={1}
               />
             )}
-            <Field
-              label="ICP maximum iterations"
-              value={icpIterations}
-              onChange={setIcpIterations}
-              min={1}
-              step={1}
-            />
             <button
               className="wide"
               disabled={

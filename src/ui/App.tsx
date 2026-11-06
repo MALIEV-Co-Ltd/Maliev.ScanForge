@@ -2137,6 +2137,7 @@ export function App() {
     mirrorMesh: () => openScanTool("mirrorMesh"),
     unroll: () => openScanTool("unroll"),
     fineAlign: () => showTools("fineAlign"),
+    surfaceRefinement: () => showTools("surfaceRefinement"),
     globalFineAlign: () => {
       if (globalAlignmentError || datumPreview.current || scanPreview) {
         setError(

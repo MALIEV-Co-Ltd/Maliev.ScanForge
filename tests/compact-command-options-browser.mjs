@@ -236,6 +236,21 @@ try {
       (await call("application_inspect")).result.workspace,
       workspace,
     );
+    if (workspace === "fineAlign" || workspace === "surfaceRefinement") {
+      const fine = page.getByRole("button", {
+        name: "Fine align with dense ICP",
+        exact: true,
+      });
+      const surface = page.getByRole("button", {
+        name: "Refine indexed mesh surfaces",
+        exact: true,
+      });
+      assert.equal(await fine.count(), workspace === "fineAlign" ? 1 : 0);
+      assert.equal(
+        await surface.count(),
+        workspace === "surfaceRefinement" ? 1 : 0,
+      );
+    }
   }
   for (const command of [
     "editScan",
@@ -333,12 +348,18 @@ try {
     "reducePolygons",
     "editScan",
     "fineAlign",
+    "surfaceRefinement",
   ]) {
     await mutate("command_run", { name: "ribbon:" + command });
     await check("cloud-" + command);
   }
   await page.setViewportSize({ width: 700, height: 900 });
-  for (const workspace of ["fineAlign", "pointNoise", "pointReduce"]) {
+  for (const workspace of [
+    "fineAlign",
+    "surfaceRefinement",
+    "pointNoise",
+    "pointReduce",
+  ]) {
     await mutate("ui_set", { workspace, toolPanelOpen: true });
     await check("narrow-" + workspace);
     const bounds = await page

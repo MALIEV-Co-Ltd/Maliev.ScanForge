@@ -5183,6 +5183,7 @@
             "processing",
             "scanTools",
             "fineAlign",
+            "surfaceRefinement",
             "repairMesh",
             "segmentMesh",
             "smoothMesh",
