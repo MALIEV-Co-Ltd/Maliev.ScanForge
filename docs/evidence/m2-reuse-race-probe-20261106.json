@@ -24,6 +24,16 @@
     "typecheck": "Focused test and imported source passed; an earlier external temporary config could not resolve vite/client and was replaced with a config under the checkout.",
     "limitation": "This manufactured interleaving does not establish immutability for every operation or demonstrate that normal GUI or MCP actions can trigger the low-level mutation race."
   },
+  "representativeRepairControl20261107": {
+    "scope": "In-process shared-operation ownership controls, not browser concurrency or native validation",
+    "method": "A manually constructed numeric transport uses two open cubes and a short reuse-comparison chunk to invoke each repair on the exact candidate during lookup, then invokes it again after unpack returned. Inventory, component Extract/Keep/Remove/Flip, Flat Fill, Boundary Smooth, selected smoothing, plane Split and a rejected hole selection preserve the candidate values and restored alias in these cases.",
+    "validation": "The ownership, transport and decoder tests passed 33 tests; a focused TypeScript check passed. Both guarded jobs confirmed cleanup.",
+    "testReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-repair-ownership-failure-20261107.json",
+    "testReceiptSha256": "0c593aa5c8b86c53c6ac6e7cbbc9f0f52bfa2f0ae94c129becb28ebe99bf1af2",
+    "typeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-repair-ownership-types-final-20261107.json",
+    "typeReceiptSha256": "3cee9ebad6f67385f9ff8ed283b75367c2d146a31c440b4ec9a846d51f185869",
+    "limitations": "The transport packet and interleaving are constructed for the test, and its short buffer does not exercise the production packing threshold. These controls do not cover every operation, concurrent GUI or public MCP scheduling, malicious mutation, or the reproduced low-level race."
+  },
   "browserWorkerRaceDiagnostic": {
     "scope": "Real browser decoding worker with an injected mutation in the reuse callback; not a normal GUI or MCP trigger",
     "method": "Two 73728-value mesh arrays are encoded, registered as reusable candidates and decoded by the browser worker. The diagnostic mutates the first source during the second reuse lookup and verifies the first decoded value.",
