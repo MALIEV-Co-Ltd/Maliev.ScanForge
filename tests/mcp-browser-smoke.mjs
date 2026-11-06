@@ -545,7 +545,7 @@ try {
   const saved = await job(await call("project_export", { format: "project" }));
   assert(saved.bytes > 0);
   assert(await page.evaluate(() => crossOriginIsolated));
-  const artifactBytes = async (artifactId) => {
+  const readArtifactBytes = async (artifactId) => {
     const parts = [];
     let offset = 0;
     for (;;) {
@@ -557,7 +557,7 @@ try {
       assert(part.length > 0);
     }
   };
-  const exactSavedBytes = await artifactBytes(saved.artifactId);
+  const exactSavedBytes = await readArtifactBytes(saved.artifactId);
   const savedGeometry = (bytes) => {
     const manifest = JSON.parse(bytes.subarray(16, 16 + bytes.readUInt32LE(8)));
     // Compare every saved state and byte digest, independently of compression.
@@ -589,7 +589,7 @@ try {
       await call("project_export", { format: "project" }),
     );
     assert.deepEqual(
-      savedGeometry(await artifactBytes(artifact.artifactId)),
+      savedGeometry(await readArtifactBytes(artifact.artifactId)),
       exactSavedGeometry,
     );
     await call("artifact_delete", { artifactId: artifact.artifactId });
