@@ -12,6 +12,7 @@
     "artifactSha256": "6165c982731f5bded4e8ca54e0b43244b37c4782719d8bcee558a40662cd9262",
     "peakJobBytes": 4370526208,
     "jobLimitBytes": 4294967296,
+    "processSample": "At 237.456 seconds, near the 237.967-second recorded peak, the renderer reported 2129514496 private bytes, the owned Node driver 688779264, and an unclassified Chrome process 686743552. The driver reported 530009728 JS heap-used bytes at download completion versus 61756360 at export. These sampled values do not identify retained objects or prove causation.",
     "cleanupConfirmed": true,
     "receiptSha256": "22e69e173d674052e96c6fb30a39c6d1a1e9b5b0e1361a39f4d9d7062973a751",
     "logSha256": "9820a96c97120140a9bfb93ff0053651ee69d2641c4533428ad626ebc202e965"
