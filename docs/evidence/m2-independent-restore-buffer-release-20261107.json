@@ -1,0 +1,20 @@
+{
+  "scope": "Injected independent-array PLY-3 restore trace of decoder staging-buffer release; no production code change.",
+  "baseCommit": "f93ccee0dc2b74c42690552a0e3af6b547982e30",
+  "method": "An isolated server disabled numeric-array reuse and applied the fractional-seed allocation diagnostic. It instrumented the existing per-buffer release condition in the served bundle and forwarded only buffer sizes, eligibility, reference count and post-transfer length to the test log. The full original scan was split, exported, downloaded and selected for GUI reopen under the 4 GiB/25% CPU guard.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "streamAndDownloadedFileSha256": "6afef8634dbad8fe9152b14c3b8d107b74598adf2aa6cb56f09ddcac339757ee",
+  "exportBytes": 475563378,
+  "stagingBuffers": [266108040, 44896128, 127929168, 21541272],
+  "observation": "Each of the four buffers was eligible for release, had one numeric entry, was not protected by a graph alias, and reported zero byteLength after ArrayBuffer.transfer(0). The GUI reported the project imported, but the first post-reopen MCP geometry digest timed out; geometry and history were not verified.",
+  "guardPassed": false,
+  "peakJobBytes": 4295876608,
+  "limitBytes": 4294967296,
+  "ownedProcessCleanupConfirmed": true,
+  "temporaryDownloadRemoved": true,
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-independent-release-trace-20261107.mjs",
+  "driverSha256": "867344d336ffcf33a840a38056c08c54185cc61a65ee6902a6725c5f32824af4",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-independent-release-trace-guard-20261107.json",
+  "guardReceiptSha256": "dda3adbcc8d6d332f8176b5a1811916b49e004e91bca28857dca154617b0e320",
+  "limitations": ["Detachment proves the JavaScript views were detached, not when the operating system reclaimed physical memory.", "The injected and instrumented workload does not prove production timing, general resource behavior, or a successful independent restore.", "The restore ownership, native comparison and M2 closure gates remain open."]
+}
