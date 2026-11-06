@@ -1,5 +1,5 @@
 {
-  "scope": "Read-only sample of overlap between the M2 branch and existing uncommitted files in the main checkout; not a merge or conflict-resolution test.",
+  "scope": "Read-only samples of overlap between the M2 branch and existing uncommitted files in the main checkout, including isolated textual merge checks; no application merge or conflict resolution.",
   "mainCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
   "candidateCommit": "2386bd42fc25d77f6cc0d31985a66a2d194d2c79",
   "mergeBase": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
@@ -15,6 +15,26 @@
     "overlapWithStagedStatus": 0,
     "unsupportedOrMissing": 0
   },
+  "threeWaySample": {
+    "candidateCommit": "e1f4bf839224f7863ccb5e7bb6855eb33b17dd90",
+    "differingPaths": 202,
+    "differingAdditionsOnBothSides": 120,
+    "trackedFilesWithTextConflicts": 49,
+    "trackedFilesWithCleanTextMerge": 33,
+    "skipped": 0,
+    "changedDuringIndividualReads": 0,
+    "statusOutputUnchanged": true,
+    "scratchRemoved": true,
+    "method": "For tracked files, Git merge-file compared normalized copies of the working file, base blob and candidate blob in a verified temporary directory; merge output was discarded. Differing files absent from the base were classified separately as additions on both sides. The first run was repeated with UTF-8 byte-order-mark preservation; the counts agreed.",
+    "peakJobBytes": 79048704,
+    "ownedProcessCleanupConfirmed": true,
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-20261107.cjs",
+    "scriptSha256": "c694eb4de93edfe0a9e9f4b1ae3dbb1c6195950effecaa5f9e175879b7466daf",
+    "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-r2-guard-20261107.json",
+    "guardReceiptSha256": "f6b622315f7d29a8c56833116ab10c2f05e035c6e449d01041ecf682a8345b78",
+    "report": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-r2-20261107.log",
+    "reportSha256": "110e5448337948b7fe98e1de2722766c2155f2f164129831e9753182b9d77dd4"
+  },
   "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-20261107.cjs",
   "scriptSha256": "5927e54af9c5f6757416e668156412ad09a511cf1c06e6f76903d89c76bc7422",
   "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-r2-guard-20261107.json",
@@ -23,7 +43,7 @@
   "reportSha256": "6eeb0634b7cf6aa7ac132a028be53435d77a1560f9a269e6224d927ece0ff8d8",
   "limitations": [
     "The sample is non-atomic; unchanged status output does not prove file contents or refs remained unchanged during the entire audit.",
-    "Differing hashes are not proof of merge conflicts or semantic incompatibility. Matching untracked files can still prevent a checkout or merge.",
+    "Textual merge results do not establish file-mode, staged-state, dependency or semantic compatibility. Matching untracked files can still prevent a checkout or merge.",
     "Staged content outside the overlap, directory collisions and other worktrees were not audited. No files, branches or user changes were merged or replaced.",
     "All native, restore ownership, resource and milestone acceptance gates remain open."
   ]

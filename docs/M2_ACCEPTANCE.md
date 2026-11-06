@@ -2,7 +2,7 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-A [read-only main-checkout overlap sample](evidence/m2-main-overlap-audit-20261107.json) found 493 dirty or untracked paths also changed by the M2 branch. Of these, 291 working files matched the candidate and 202 differed from both candidate and base. This non-atomic sample is not a merge-conflict test; matching untracked files can also obstruct integration. The existing main-checkout work was not changed.
+A [read-only main-checkout overlap sample](evidence/m2-main-overlap-audit-20261107.json) found 493 dirty or untracked paths also changed by the M2 branch. Of these, 291 working files matched the candidate and 202 differed from both candidate and base. An isolated textual check classified the 202 as 120 differing additions on both sides, 49 tracked files with text conflicts and 33 with clean text merges. The non-atomic result does not establish semantic compatibility; matching untracked files can also obstruct integration. The existing main-checkout work was not changed.
 
 An [origin-private-file staging control](evidence/m2-opfs-array-staging-probe-20261107.json) preserved every synthetic Float64 value but had a higher guarded peak than direct reconstruction, including when each read buffer was immediately detached. Process samples showed extra browser-process memory while the staged file was retained; they do not identify its allocation or establish full-project behavior. No prototype was integrated.
 
