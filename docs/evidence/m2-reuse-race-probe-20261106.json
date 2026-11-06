@@ -1,0 +1,20 @@
+{
+  "scope": "Isolated numeric-transport restore race prototype, not an integrated fix",
+  "baseCommit": "1a5779ac3089bb1e59d163c3069b9b514e811be7",
+  "probeWorktree": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-race-probe-20261106",
+  "diagnostic": "A previously selected numeric candidate is mutated while the next asynchronous lookup runs. Before the prototype, the restored first array contains the changed value rather than the saved value.",
+  "prototype": "Keep staging bytes for reused candidates until all asynchronous reconstruction completes, then revalidate without yielding and replace changed candidates before assembling the graph.",
+  "validation": {
+    "before": "Race regression failed: expected 1, received 999; 16 other transport tests passed.",
+    "after": "52 transport, numeric reuse, encoding-client and decoding-client tests passed, including graph alias preservation and unchanged second candidate reuse.",
+    "viteBuild": "Direct Vite build passed; complete production build and typecheck were not run.",
+    "realPly3": "Not run: observed free disk was approximately 3.80 GB, below the established 4.00 GB initial admission guard. The guard was not lowered.",
+    "raceReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-red-20261106.json",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-alias-20261106.json"
+  },
+  "limitations": [
+    "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
+    "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
+    "This does not prove safety against mutation after the restored graph is published, nor does it establish GUI or MCP lifecycle acceptance."
+  ]
+}

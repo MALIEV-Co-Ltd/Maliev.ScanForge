@@ -4,6 +4,10 @@ Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), s
 
 The [restore and selection memory record](evidence/m2-restore-selection-memory-20261105.json) documents a passing original PLY-3 GUI reopen and history replay under the 4 GiB guard, an earlier instrumented over-limit run, GUI/MCP selection checks, and an unresolved low-level numeric-array reuse race. These results do not close M2.
 
+An [isolated reuse-race prototype](evidence/m2-reuse-race-probe-20261106.json) passes the low-level reproducer and 51 related tests by retaining staging bytes through final revalidation. It is not integrated: the longer buffer lifetime needs real PLY-3 resource and GUI/public-MCP lifecycle validation, and mutation after publication remains a separate question. Observed available disk was below the existing admission threshold for that large replay, so it was not launched.
+
+At the 2026-11-06 local integration audit, main `e367262f` was an ancestor of candidate `1a5779ac`. The checked-out main workspace had 492 local files overlapping the candidate's changed paths; 294 matched the candidate content and 198 differed. This is a point-in-time worktree comparison, not a merge or review of those local changes. Preserve and reconcile the local workspace before updating it.
+
 The [isolated interior Split record](evidence/m2-isolated-interior-native-20261105.json) pins native crossing, coplanar-edge and closed-source controls, including their saved indexed topology. The crossing control also passes the rendered GUI/public-MCP lifecycle replay. Near-corner and other native differences remain open; this record is not general Split or milestone acceptance.
 
 ## Scope boundary
