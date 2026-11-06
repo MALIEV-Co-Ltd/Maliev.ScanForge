@@ -17,6 +17,7 @@
     "build": "All 14 typecheck batches and production build passed; bounded Job peak 1825472512 bytes and cleanup confirmed.",
     "guiMcpCrossing": "An isolated rendered browser and public MCP replay matched all five native STL facets and shared indexed edge. GUI and MCP geometry digests matched; undo/redo, binary reopen, cancellation, and rendered redo checks passed. Job peak 926744576 bytes and cleanup confirmed."
   },
+  "laterNearCornerValidation": "The near-corner expected failure recorded below was resolved on a subsequent candidate; see tests/fixtures/m2-interior-corner-split-20261105/README.md for the focused GUI/public-MCP replay and current scope.",
   "limitations": [
     "The near-corner interior fixture remains an expected failure and does not match the native result.",
     "Other native radius discrepancies, original-scale lifecycle validation, complete milestone acceptance, current-head hosted CI and integration remain open.",

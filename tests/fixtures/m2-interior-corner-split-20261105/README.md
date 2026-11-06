@@ -31,10 +31,14 @@ support this pair of fixtures, not a general snapping rule.
 The far native source's object tooltip reported five points and five triangles;
 Edit Scan reported one individual mesh. Reopening `session-far.qsf` showed the
 source with five triangles and the cutter with one triangle; the source was
-visible in the viewport. The pinned far QSF contains a source block at byte offsets 456�583: five
+visible in the viewport. The pinned far QSF contains a source block at byte offsets 456–583: five
 Float32 vertices and five uint32 index triples. Expanding those indices exactly
 matches the unordered STL facets. Its edge joining the two cut endpoints has
 two incident faces, with the same vertex indices on both sides. The fixed-offset
-interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge matches the far native facets. The near result still retains the near endpoint and remains an expected failure; neither fixture alone establishes general GUI/MCP parity.
+interpretation is scoped to this hashed session and is not a general QSF parser. ScanForge matches the far native facets. The current shared operation also matches the near native facets and indexed shared edge; an earlier implementation retained the near endpoint.
 
 The pinned near session has four indexed source points and three faces. Its edge from the source corner to the interior endpoint is shared by two faces. An experimental corner snap matched its STL facets but opened that edge, so facet matching alone does not establish native indexed topology.
+
+On 2026-11-06, an isolated production-browser replay imported the exact source and near cutter STL bytes through public MCP. The GUI result matched all three native STL facets and retained the corner-to-interior edge with two incident indexed faces. GUI and MCP geometry matched through undo/redo, binary project reopening, and cancellation, with no page errors. The bounded Job peaked at 924,762,112 bytes and confirmed cleanup. The [receipt](C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/interior-near-corner-indexed-20261106.json) SHA-256 is `3e3f1caac636817cd29281e0164fa3592452fc8070ef5e392177d1d3e7ff0d41`; the browser plugin was unavailable, so the repository's isolated Playwright workflow was used. This result is specific to this fixture, not general native Split acceptance.
+
+The full default Split browser suite also passed with the new near-corner and Float32 coplanar controls included: 18 result entries, no page errors, and a 1,016,598,528-byte guarded peak with cleanup confirmed. Its [receipt](C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-full-near-corner-20261106.json) SHA-256 is `54b64336428feeb4bd027f036da702f52fbc07f627abc1167f451f1372a1fc67`. The default suite loads manufactured coordinates; the targeted replay above is the exact-file import comparison.

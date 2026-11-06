@@ -397,6 +397,25 @@ try {
       },
     },
     {
+      name: "interior-near-corner-stl",
+      source: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      target: [0.0004, 0.0004, 0, 0.4, 0.4, 0, 0.2, 0.2, 1].map(Math.fround),
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      requiredPoint: [0.4, 0.4, 0],
+      requiredSharedEdge: [
+        [0, 0, 0],
+        [0.4, 0.4, 0],
+      ],
+      fileHashes: {
+        "source.stl":
+          "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+        "cutter-near.stl":
+          "7873e556fb2a1187dee21284b7c6eed5364c7864122f68b184b1604d739370a9",
+      },
+    },
+    {
       name: "tolerance-shared-edge",
       source: [
         -0.00000075, 0, 0, 0.00000075, 0, 0, 1, 1, 0, 0.00000075, 0, 0,
@@ -531,6 +550,7 @@ try {
     ),
     "finite-interior-cut": ["source.stl", "cutter.stl"],
     "coplanar-shared-edge-stl": ["source.stl", "cutter.stl"],
+    "interior-near-corner-stl": ["source.stl", "cutter-near.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
     "closed-convex": ["square-source.stl", "convex-cutter.stl"],
     "closed-concave": ["square-source.stl", "concave-cutter.stl"],
@@ -1283,6 +1303,35 @@ try {
           ).result.geometry,
         );
         const mesh = data.indexedMesh;
+        if (c.requiredSharedEdge) {
+          const ids = c.requiredSharedEdge.map((point) => {
+            const matches = [];
+            for (let id = 0; id < mesh.vertices.length / 3; id++)
+              if (
+                point.every(
+                  (value, axis) =>
+                    Math.abs(mesh.vertices[3 * id + axis] - value) < 1e-6,
+                )
+              )
+                matches.push(id);
+            assert.equal(
+              matches.length,
+              1,
+              "Native shared-edge endpoint must have one indexed vertex",
+            );
+            return matches[0];
+          });
+          let incident = 0;
+          for (let i = 0; i < mesh.triangles.length; i += 3) {
+            const face = mesh.triangles.slice(i, i + 3);
+            if (ids.every((id) => face.includes(id))) incident++;
+          }
+          assert.equal(
+            incident,
+            2,
+            "Native cut edge must be shared by two indexed faces",
+          );
+        }
         if (c.coplanarSharedEdge) {
           const edges = new Map();
           for (let i = 0; i < mesh.triangles.length; i += 3)
