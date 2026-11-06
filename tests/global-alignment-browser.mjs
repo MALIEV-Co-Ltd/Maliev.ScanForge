@@ -684,6 +684,9 @@ try {
     exact: true,
   });
   await panel.waitFor();
+  await panel
+    .getByRole("checkbox", { name: "Automatic initial placement", exact: true })
+    .uncheck();
   await panel.getByRole("button", { name: "Preview", exact: true }).click();
   const guiPreview = await ready();
   await panel
@@ -733,6 +736,7 @@ try {
   await job(
     await mutate("global_alignment_preview", {
       entityIds: ids,
+      initialization: "current",
       parallel: true,
       searchTolerance: 0.5,
     }),

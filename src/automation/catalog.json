@@ -7148,7 +7148,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2 to 32 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview alignment of 2-32 visible unlocked raw scan meshes through the shared GUI/MCP operation. Automatic mode (default) estimates coarse poses, runs the native multicore refinement, then fits bounded samples against complete triangle surfaces. Its fixed reference is selected by estimated triangle surface area, not vertex density; surface fitting visits the strongest overlapping next scan first. initialization:current retains the native refinement-only route for already placed scans. Defaults to all eligible visible scans; point clouds, exact CAD, locks and partial hiding are rejected or reported. Search tolerance is absolute Float32 mm, default 0.5; zero is allowed but insufficient automatic overlap fails explicitly. Native preparation/query admission remains; automatic surface workspace estimate is capped at 512 MiB and its worker lease is 180 seconds. Real trial poses are displayed and exposed while solving, without authored changes. Job returns a cached 60-second preview. Native convergence is separate from subsequent surface-fit stability. Inspect surfaceRefinement metrics/ambiguity and staged geometry; coordinateStages contains every actual Float32 coordinate application, including coarse and surface stages. Use job_get/job_cancel, global_alignment_state and cached global_alignment_apply.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -7181,6 +7181,12 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "initialization": {
+          "type": "string",
+          "enum": ["automatic", "current"],
+          "default": "automatic",
+          "description": "Automatic (default) uses bounded coarse multi-pose placement before native refinement. Current preserves already aligned poses and the legacy refinement-only workflow."
         }
       },
       "required": ["expectedRevision", "requestId"],
@@ -7189,7 +7195,7 @@
   },
   {
     "name": "global_alignment_apply",
-    "description": "Apply an unexpired Global Fine Align preview exactly once as one history step, without recomputing. Requires unchanged source geometry, history, settings and authoring state. Non-converged results may be explicitly applied after inspecting diagnostics. Returns the same staged outer transform receipt, including exact matrix bits and controller-issued application sequence.",
+    "description": "Apply one unexpired unchanged alignment preview as one history transaction without another solve. Source geometry, history, authored settings and project checks, locks and retry guards remain. Returns the same native outer diagnostics, automatic initialization/surfaceRefinement summary and authoritative coordinateStages as the preview. Native outer applications alone omit automatic coarse/surface stages; use coordinateStages to reproduce final coordinates with a Float32 store after each stage. Non-converged native passes remain explicit and may be applied after reviewing the later surface results and geometry.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -7244,7 +7250,7 @@
   },
   {
     "name": "global_alignment_state",
-    "description": "Read Global Fine Align state, preview lease, settings, source IDs, memory/input summary and per-scan convergence diagnostics, plus copied outer poses and controller-issued application stages (row-major 3x4 matrices, Float64 little-endian hex bits, translation in mm).",
+    "description": "Read the shared alignment state, lease, source IDs, settings, input admission summary, native outer diagnostics and automatic surfaceRefinement results. Native outer applications/converged describe the native pass, not the subsequent automatic surface stage. coordinateStages is authoritative for final geometry: per-ID ordered row-major 3x4 matrices and exact Float64 little-endian matrixBits; translation is mm and each stage stores Float32 coordinates. surfaceRefinement exposes fixed anchorId, overlap-driven order with one group revisit and per-scan beforeRms/rms over the same capped-distance samples (rmsBasis:cappedSurfaceSamples), fittingRms for the selected 40% or 80% closest fit, trimFraction, samplePoints, initialOverlapPoints/overlapPoints, iterations, stopped-improving convergence and ambiguity. These sample metrics do not certify physical scan accuracy. Preparing progress exposes sequence, phase, stage, pass and exact provisional per-scan matrices. Cancel/failure restores originals and clears owned poses.",
     "readOnly": true,
     "job": false,
     "inputSchema": {

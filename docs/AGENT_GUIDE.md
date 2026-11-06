@@ -1769,9 +1769,12 @@ Whole ShrinkWrap now runs an exhaustive triangle-pair self-intersection check be
 
 The Global fine align panel and MCP share `global_alignment_preview`,
 `global_alignment_state`, `global_alignment_apply` and
-`global_alignment_cancel`. This command refines an already approximately placed
-scan set; it does not automatically find a coarse placement or establish complete
-original-application or browser parity.
+`global_alignment_cancel`. By default, `initialization: "automatic"` estimates
+coarse placement, runs native refinement and then fits bounded samples against
+triangle surfaces. Use `initialization: "current"` for the original refinement-only
+route on already approximately placed scans. The surface stage uses an estimated
+area-based fixed anchor, bounded overlap samples and a 512 MiB workspace estimate;
+it does not establish native convergence or physical accuracy.
 
 Preview requires 2–32 visible, unlocked raw triangle meshes. Omit `entityIds` to
 use all visible raw meshes, or supply unique object IDs for an explicit subset.
@@ -1816,8 +1819,10 @@ Preview returns a job receipt; poll `job_get` until it settles. Read
 and expiry. Per-scan outer diagnostics expose mean distance, coverage percentage,
 stability and convergence; nonfinite metric values are returned as `null`.
 Nonconvergence is a structured result, not proof of successful alignment. The
-panel labels acceptance **Apply anyway** in that case; inspect the staged result
-and diagnostics before accepting it.
+native pass and the subsequent surface fit have separate diagnostics; inspect
+both and the staged geometry before accepting it. `coordinateStages` records
+the ordered Float32 coordinate applications, including automatic stages; each
+stage includes row-major 3-by-4 matrices and exact Float64 matrix bits.
 
 Preview preserves authored geometry and history and retains the exact staged
 result for 60 seconds after preparation completes. GUI and MCP see the same

@@ -4703,6 +4703,12 @@ export function App() {
       }
       viewport.current.setReferenceConstructionPreview(owner, candidate);
     },
+    showGlobalAlignmentProgress: (poses) => {
+      if (poses) workspaceApi.requireReferencePreviewIdle();
+      viewport.current?.setInteractivePreview(
+        poses ? { targets: poses } : null,
+      );
+    },
     showDatumPreview: (next) => {
       if (next) workspaceApi.requireReferencePreviewIdle();
       datumPreview.current = next ? { base: entities, entities: next } : null;

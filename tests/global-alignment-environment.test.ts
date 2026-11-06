@@ -126,7 +126,11 @@ function setup(environment?: Environment) {
   });
   const preview = async (args: Record<string, unknown> = {}) => {
     const { jobId } = value<{ jobId: string }>(
-      await api.invoke("global_alignment_preview", { ...mutation(), ...args }),
+      await api.invoke("global_alignment_preview", {
+        ...mutation(),
+        initialization: "current",
+        ...args,
+      }),
     );
     await vi.waitFor(async () => {
       const job = value<{ status: string }>(

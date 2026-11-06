@@ -118,6 +118,9 @@ export interface WorkspaceHost {
     session?: { history: Revision[]; future: Revision[]; projectId?: string },
   ): void;
   select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
+  showGlobalAlignmentProgress?(
+    poses: readonly { entityId: string; matrix: readonly number[] }[] | null,
+  ): void;
   present?(signal?: AbortSignal): Promise<void>;
   showDatumPreview?(entities: Entity[] | null): void;
   showReferenceConstructionPreview?(
