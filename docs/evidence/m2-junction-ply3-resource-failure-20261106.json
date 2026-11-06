@@ -1431,5 +1431,142 @@
     "Peak values can exceed the configured job threshold and must be compared explicitly.",
     "The diagnostic driver failed before GUI reopen and retained its own downloaded file; cleanup confirms owned processes exited, not deletion of that diagnostic artifact.",
     "Other M2 acceptance, native comparisons, review and integration remain open."
-  ]
+  ],
+  "manifestObservation": {
+    "fileBytes": 475563378,
+    "manifestBytes": 9167,
+    "chunks": 18,
+    "records": 5,
+    "historyEntries": 4,
+    "totalDeclaredRawChunkBytes": 1046558376,
+    "chunksByType": [
+      {
+        "index": 0,
+        "rawBytes": 266108040,
+        "referencedTypes": {
+          "f64": 2
+        }
+      },
+      {
+        "index": 1,
+        "rawBytes": 44896128,
+        "referencedTypes": {
+          "f64": 2
+        }
+      },
+      {
+        "index": 2,
+        "rawBytes": 44351340,
+        "referencedTypes": {
+          "u32": 2
+        }
+      },
+      {
+        "index": 3,
+        "rawBytes": 44351340,
+        "referencedTypes": {
+          "f32": 2
+        }
+      },
+      {
+        "index": 4,
+        "rawBytes": 22448064,
+        "referencedTypes": {
+          "f32": 2
+        }
+      },
+      {
+        "index": 5,
+        "rawBytes": 36,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 6,
+        "rawBytes": 127929168,
+        "referencedTypes": {
+          "f64": 1
+        }
+      },
+      {
+        "index": 7,
+        "rawBytes": 21541272,
+        "referencedTypes": {
+          "f64": 1
+        }
+      },
+      {
+        "index": 8,
+        "rawBytes": 21321528,
+        "referencedTypes": {
+          "u32": 1
+        }
+      },
+      {
+        "index": 9,
+        "rawBytes": 21321528,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 10,
+        "rawBytes": 10770636,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 11,
+        "rawBytes": 132880788,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 12,
+        "rawBytes": 132880788,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 13,
+        "rawBytes": 22390176,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 14,
+        "rawBytes": 44293596,
+        "referencedTypes": {
+          "u32": 1
+        }
+      },
+      {
+        "index": 15,
+        "rawBytes": 22390176,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 16,
+        "rawBytes": 44293596,
+        "referencedTypes": {
+          "f32": 1
+        }
+      },
+      {
+        "index": 17,
+        "rawBytes": 22390176,
+        "referencedTypes": {
+          "f32": 1
+        }
+      }
+    ],
+    "scope": "Manifest metadata only; not a heap allocation trace."
+  }
 }
