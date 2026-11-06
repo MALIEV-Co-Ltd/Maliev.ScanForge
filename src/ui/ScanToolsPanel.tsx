@@ -258,14 +258,6 @@ export function ScanToolsPanel({
       !e.parametric &&
       e.positions.length >= (e.kind === "pointcloud" ? 3 : 9),
   );
-  useEffect(() => {
-    if (tool === "repolygonize")
-      setTargetIds(
-        reconstructionMode === "native"
-          ? targets.filter((e) => e.visible).map((e) => e.id)
-          : [],
-      );
-  }, [tool, selected?.id, reconstructionMode]);
   const [referenceId, setReferenceId] = useState(planes[0]?.id ?? "");
   const [cylinderId, setCylinderId] = useState(cylinders[0]?.id ?? "");
   const [offsetDegrees, setOffsetDegrees] = useState(0);
@@ -733,11 +725,16 @@ export function ScanToolsPanel({
                 <AppSelect
                   aria-label="Reconstruction method"
                   value={reconstructionMode}
-                  onChange={(event) =>
-                    setReconstructionMode(
-                      event.target.value as ReconstructionMethod,
-                    )
-                  }
+                  onChange={(event) => {
+                    const method = event.target.value as ReconstructionMethod;
+                    setReconstructionMode(method);
+                    if (method === "native" && selected)
+                      setTargetIds(
+                        nativeReconstructionReferences(selected, entities).map(
+                          (entity) => entity.id,
+                        ),
+                      );
+                  }}
                 >
                   <option value="native" disabled={pointCloud}>
                     Native surface reconstruction
