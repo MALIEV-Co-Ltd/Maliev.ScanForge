@@ -437,6 +437,16 @@ try {
       kind: "mesh",
       parts: 2,
       method: "open surface signed nearest grouping",
+      nativeReference: new URL(
+        "tests/fixtures/m2-folded-open-native-20261105/native-result.stl",
+        root,
+      ),
+      nativeSha:
+        "3887de1097ed584c36a29b6bf2c4d9ec1cf2cbd33eb6cdc24727f1e15274ba12",
+      vertexSha:
+        "14b6e26e179acd61bec7264d6b1375ce6f9dc7a4ae804b1b1e7f3010fb1b1c8d",
+      triangleSha:
+        "6c5d2de2a9602fa0f6a668c3d0a96caf8eebb5901f57b6cc302ebdea6f5e7c1f",
     },
     {
       name: "closed-convex",
@@ -1301,10 +1311,10 @@ try {
               edges.set(key, edge);
             }
           let boundaryLength = 0,
-            seamLength = 0;
+            seamLength = 0,
+            sharedSeamLength = 0;
           for (const { a, b, count } of edges.values()) {
             assert(count <= 2, "Folded Split created a non-manifold edge");
-            if (count !== 1) continue;
             const x1 = mesh.vertices[3 * a],
               y1 = mesh.vertices[3 * a + 1];
             const x2 = mesh.vertices[3 * b],
@@ -1327,15 +1337,19 @@ try {
                 y2 === 1 &&
                 Math.min(x1, x2) >= 0 &&
                 Math.max(x1, x2) <= 1);
-            assert(
-              perimeter || seam,
-              "Folded Split boundary leaves the cutter or source perimeter",
-            );
-            boundaryLength += length;
-            if (seam) seamLength += length;
+            if (count === 1) {
+              assert(
+                perimeter || seam,
+                "Folded Split boundary leaves the cutter or source perimeter",
+              );
+              boundaryLength += length;
+              if (seam) seamLength += length;
+            }
+            if (count === 2 && seam) sharedSeamLength += length;
           }
-          assert(Math.abs(boundaryLength - 13) < 1e-7);
-          assert(Math.abs(seamLength - 5) < 1e-7);
+          assert(Math.abs(boundaryLength - 8) < 1e-7);
+          assert(seamLength < 1e-7);
+          assert(Math.abs(sharedSeamLength - 2.5) < 1e-7);
         }
         const result = {};
         for (const [key, count] of [

@@ -25,6 +25,14 @@
       "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sloped-final-20261106.json"
     }
   ],
+  "remainingCasesDiagnostic": {
+    "result": "passed with one explicit exclusion",
+    "excluded": "coplanar-shared-edge",
+    "foldedControl": "GUI and MCP lifecycle match the 11-facet retained native export, boundary length 8 and shared seam length 2.5",
+    "peakJobBytes": 972021760,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-exclude-coplanar-retry-20261106.json",
+    "limitation": "A temporary copy excluded the failing case; this is not a passing full suite or a new native session."
+  },
   "fullBrowserSuite": {
     "result": "failed",
     "case": "coplanar-shared-edge",
