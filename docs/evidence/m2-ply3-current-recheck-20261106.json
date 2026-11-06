@@ -16,6 +16,7 @@
   "cleanupConfirmed": true,
   "activeProcessesAfter": 0,
   "minimumFreeDiskBytes": 3862265856,
+  "processSampling": "The guard's peak rose at 168.925 seconds, shortly after the driver's GUI-imported stage at approximately 168.364 seconds. At the nearby 168.4-second sample, renderer private commitment was about 2051 MiB, an unclassified Chrome process about 1119 MiB, and GPU process about 443 MiB. These are sampled process values, not attribution of the aggregate peak or proof of a specific allocation.",
   "temporaryDownload": "Removed by the driver after download and independent hash verification.",
   "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/ply3-current-recheck-20261106.json",
   "receiptSha256": "ff713ffaa47c65b1c3e2ed41ebf3749b357293c438f347010eaffadf10154f70",

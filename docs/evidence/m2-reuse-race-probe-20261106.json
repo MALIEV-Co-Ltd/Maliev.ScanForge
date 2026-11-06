@@ -107,6 +107,18 @@
     "eachBytes": 736091936,
     "eachSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
     "retainedIdenticalCopy": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T075000065189Z-browser/mcp-full-history-roundtrip.scanforge",
+    "additionalDuplicateCleanup": {
+      "files": [
+        "global-after-coarse-three-stl-evidence-20261024T045353763851Z-browser/global-after-coarse-three-stl.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T061436595784Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T062423052194Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T063314116586Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T065015903040Z-browser/mcp-full-history-roundtrip.scanforge"
+      ],
+      "base": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/",
+      "method": "Each file and the retained copy matched eachSha256 immediately before the five task-generated duplicates were deleted; evidence logs and the retained copy were preserved.",
+      "bytesFreed": 3680459680
+    },
     "otherCleanup": "Removed one regenerated probe public-kernel WASM copy after verifying the built copy matched; the built kernel remains. Removed the failed rerun's verified temporary download after preserving hashes and receipts. Evidence logs and other user work were retained."
   },
   "limitations": [
