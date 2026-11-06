@@ -69,4 +69,17 @@ it("matches the native three-piece folded boundary split", () => {
   expect(facets(result.positions!)).toEqual(facets(mesh("native-result.stl")));
   expect(result.indexedMesh!.triangles).toHaveLength(9);
   expect(new Set(result.indexedMesh!.triangles).size).toBe(9);
+  const inventory = runScanEdit({
+    kind: "scanEdit",
+    action: "inventory",
+    inventoryScope: "components",
+    positions: result.positions!,
+    sourceIndexed: result.indexedMesh!,
+  });
+  expect(inventory.inventory!.components).toHaveLength(3);
+  expect(
+    inventory.inventory!.components.map(
+      (component) => component.triangles.length,
+    ),
+  ).toEqual([1, 1, 1]);
 });
