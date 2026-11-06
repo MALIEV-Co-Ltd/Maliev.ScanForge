@@ -2,7 +2,7 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-The integration candidate also retains main's internal stored-reference binding helper and its tests. Twenty-one focused resolver tests and a scoped TypeScript check passed. This helper alone does not add a public reference-construction workflow or establish native behavior.
+The integration candidate also retains main's internal stored-reference binding helper and its tests. Numeric reference publication now clears inactive dependencies and finalizes its cached state without migrating source identities; future derived-reference identity safeguards remain. Sixty focused resolver/publication tests and a scoped TypeScript check passed. These internal helpers do not add a public reference-construction workflow or establish native behavior.
 
 On integration commit `82fcaad`, the default [Split browser regression](evidence/m2-split-current-browser-20261107.json) passed GUI/public-MCP geometry and lifecycle checks, including retained folded, shared-edge and ambiguous-corner native facet controls. The guard reported a 983,552,000-byte peak and confirmed process cleanup; temporary screenshots were removed. This does not establish general native Split parity or close the remaining M2 gates.
 
