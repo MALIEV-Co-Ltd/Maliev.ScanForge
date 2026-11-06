@@ -1,0 +1,160 @@
+{
+  "build": "scanforge-f4520425738a1533",
+  "jobLimitBytes": 4294967296,
+  "caseDescriptions": "Each is a single guarded run; comparisons are diagnostic, not proof of causality or reliable resource compliance.",
+  "cases": {
+    "blank": {
+      "description": "Blank HTML served at app root; same compiled Poisson worker and geometry.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 477151232,
+      "cleanupConfirmed": true,
+      "requests": 3,
+      "compiledWorker": "processing-worker-BA-68_qj.js",
+      "triangles": 7976,
+      "radialRms": 0.005188289591073477
+    },
+    "app-only": {
+      "description": "Unmodified application, no Poisson invocation; wait one second after navigation.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 3620925440,
+      "cleanupConfirmed": true,
+      "requests": 343,
+      "compiledWorker": "processing-worker-BA-68_qj.js"
+    },
+    "server-stub": {
+      "description": "Application-only control with HTTP server serving an empty service worker script.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 3431702528,
+      "cleanupConfirmed": true,
+      "requests": 65,
+      "compiledWorker": "processing-worker-BA-68_qj.js"
+    },
+    "no-precache": {
+      "description": "Invalid control: Playwright route did not intercept service worker script.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 3733635072,
+      "cleanupConfirmed": true,
+      "requests": 343,
+      "compiledWorker": "processing-worker-BA-68_qj.js"
+    },
+    "no-webgl": {
+      "description": "Application-only control returns null for WebGL canvas contexts; rendered application unavailable.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 739446784,
+      "cleanupConfirmed": true,
+      "requests": 340,
+      "compiledWorker": "processing-worker-BA-68_qj.js"
+    },
+    "process": {
+      "description": "Application-only control with process sample after one second; sample is not peak.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 3576737792,
+      "cleanupConfirmed": true,
+      "requests": 343,
+      "compiledWorker": "processing-worker-BA-68_qj.js",
+      "processSample": [
+        {
+          "Id": 3132,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 46325760,
+          "WorkingSet64": 92626944,
+          "ChromeType": "renderer"
+        },
+        {
+          "Id": 13092,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 8523776,
+          "WorkingSet64": 24518656,
+          "ChromeType": "utility"
+        },
+        {
+          "Id": 14792,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 1172934656,
+          "WorkingSet64": 95281152,
+          "ChromeType": "gpu-process"
+        },
+        {
+          "Id": 17076,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 15773696,
+          "WorkingSet64": 37777408,
+          "ChromeType": "renderer"
+        },
+        {
+          "Id": 18308,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 2715648,
+          "WorkingSet64": 14979072,
+          "ChromeType": "crashpad-handler"
+        },
+        {
+          "Id": 21464,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 105848832,
+          "WorkingSet64": 171528192,
+          "ChromeType": "renderer"
+        },
+        {
+          "Id": 24760,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 140869632,
+          "WorkingSet64": 241188864,
+          "ChromeType": "browser-or-other"
+        },
+        {
+          "Id": 33860,
+          "ProcessName": "chrome",
+          "PrivateMemorySize64": 29323264,
+          "WorkingSet64": 59564032,
+          "ChromeType": "utility"
+        },
+        {
+          "Id": 5252,
+          "ProcessName": "conhost",
+          "PrivateMemorySize64": 1265664,
+          "WorkingSet64": 8224768,
+          "ChromeType": "browser-or-other"
+        },
+        {
+          "Id": 20256,
+          "ProcessName": "conhost",
+          "PrivateMemorySize64": 1290240,
+          "WorkingSet64": 8245248,
+          "ChromeType": "browser-or-other"
+        },
+        {
+          "Id": 36188,
+          "ProcessName": "node",
+          "PrivateMemorySize64": 202358784,
+          "WorkingSet64": 199634944,
+          "ChromeType": "browser-or-other"
+        },
+        {
+          "Id": 33188,
+          "ProcessName": "powershell",
+          "PrivateMemorySize64": 81498112,
+          "WorkingSet64": 99700736,
+          "ChromeType": "browser-or-other"
+        }
+      ]
+    },
+    "repeat": {
+      "description": "Unmodified production worker test with only output path changed.",
+      "passed": true,
+      "guardPassed": true,
+      "peakJobBytes": 3706859520,
+      "cleanupConfirmed": true,
+      "requests": 346,
+      "compiledWorker": "processing-worker-BA-68_qj.js",
+      "triangles": 7976,
+      "radialRms": 0.005188289591073477
+    }
+  }
+}
