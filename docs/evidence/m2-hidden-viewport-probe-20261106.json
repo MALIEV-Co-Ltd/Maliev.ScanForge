@@ -1,0 +1,28 @@
+{
+  "scope": "Isolated instrumented viewport trace and hidden-mesh deferral prototype on original PLY-3; not an integrated fix",
+  "baseCommit": "8e225e9a",
+  "trace": {
+    "bundle": "scanforge-c7ce40264c3004ec",
+    "method": "Log viewport rebuild predicates for entities with at least one million numeric coordinates during GUI Split, Extract, project download and reopen. Geometry is not logged.",
+    "observation": "During redo and after GUI reopening, the 33263505-value source was hidden, its positions had the same identity, and the topology comparison indicated a change; the existing code therefore entered its display rebuild path. The visible extracted object also indicated changed topology on reopen. This records a rebuild trigger, not allocation size or causality.",
+    "result": "Geometry and history checks completed but the guard reported a 4296040448-byte peak, 1073152 bytes over 4 GiB. The driver exited zero; the guard failed and confirmed cleanup.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/viewport-trace-ply3-20261106.json",
+    "receiptSha256": "b5d1eb5b7cf3ec65e8ae792cc7bb785cc1480d5435648bdaa59e0d58875f92a9",
+    "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-trace-ply3-20261106.log",
+    "logSha256": "1125010b3b0409cf32b217205f8e87f80a9206e5c03035bc2ed18779638af717"
+  },
+  "prototype": {
+    "method": "In an isolated worktree, defer a changed hidden mesh display rebuild until visible while retaining the previous display. No shared geometry or MCP operation was changed.",
+    "focusedTests": "30 tests passed across viewport indexed display, CAD edges, point cloud and viewport agent tests, including a new hidden-change-then-show control. These are not complete GUI or MCP regression coverage.",
+    "bundle": "scanforge-7e82a2942ffdb968",
+    "result": "The full artifact download had matching streamed and disk SHA-256 97602040ea116a8d4b3108358d6a80317f456ae0476024bcfb8adf83d43a9cb5. The decoder reported Array buffer allocation failed before it returned a project; GUI reopen and post-reopen checks did not complete. Peak Job memory was 4334968832 bytes, 40001536 over 4 GiB. Cleanup confirmed zero active processes; the hash-verified temporary download was removed.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/viewport-defer-ply3-20261106.json",
+    "receiptSha256": "5383a24baea000d2dc0fd196734ec45930049327de21c26edf00738b5f6a1c22",
+    "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-defer-ply3-20261106.log",
+    "logSha256": "41593029d98c5533f4afc85ab22f4181c23d92ef35441f54ff6fcf2334498ccd",
+    "patch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-defer-prototype-20261106.patch",
+    "patchSha256": "201591bb6ec774afbd8441945b82edc1297d1ab2757a8e1f38fa577deddbc5fe",
+    "cleanup": "The diagnostic worktree and its generated build were removed after the patch was retained. Its node_modules junction was unlinked without removing its target."
+  },
+  "limitations": "Separate runs do not establish that deferral caused the allocation failure or determine its effect on aggregate peak. The prototype retains old hidden display memory, has incomplete selection and lifecycle coverage, and is not integrated. Resource acceptance and M2 closure remain open."
+}

@@ -42,6 +42,8 @@ After the inventory cache correction, one [same-session PLY-3 replay](evidence/m
 
 A [current-candidate repeat](evidence/m2-ply3-current-recheck-20261106.json) completed the same geometry and post-reopen history checks, but failed the guard at 4,311,937,024 bytes, 16,969,728 bytes over 4 GiB. The streamed and downloaded project hashes matched, and owned processes and the temporary download were cleaned up. This result does not identify the responsible allocation; the resource gate remains open.
 
+An isolated [viewport trace and deferral prototype](evidence/m2-hidden-viewport-probe-20261106.json) confirmed a hidden large mesh triggers a display rebuild after redo and reopen. The prototype passed focused viewport tests, but its full-size replay failed earlier in decoding with an array allocation error and a peak over 4 GiB. It is not integrated and the two runs do not establish causality.
+
 An isolated [string-body bridge probe](evidence/m2-bridge-string-probe-20261106.json) lowered peak memory in a synthetic request comparison but failed the real same-session replay: the project opened, a later geometry query timed out, and reported peak memory exceeded 4 GiB. The candidate was not integrated; this result does not establish a resource fix.
 
 An isolated [byte-array bridge probe](evidence/m2-bridge-byte-body-probe-20261106.json) also lowered a synthetic peak but failed the real same-session replay: the bridge disconnected before post-reopen geometry verification, and the reported peak exceeded 4 GiB. This candidate was not integrated either.
