@@ -54,6 +54,10 @@ export function createAuthoringOperations(
       return { created: true };
     },
     object_select: (a, c) => {
+      if (a.all && (a.entityId !== undefined || a.toggle || a.range))
+        throw new Error(
+          "all:true cannot be combined with entityId, toggle or range.",
+        );
       const e = a.entityId ? find(a.entityId) : null;
       if (e && (e.locked || e.selectable === false))
         throw new Error("Object cannot be selected");
@@ -63,6 +67,7 @@ export function createAuthoringOperations(
       host.select(e?.id ?? null, {
         toggle: a.toggle ?? false,
         range: a.range ?? false,
+        ...(a.all ? { all: true } : {}),
       });
       const state = host.snapshot();
       return {

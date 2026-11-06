@@ -367,7 +367,6 @@ export function App() {
     modifiers: ObjectSelectionModifiers = {},
   ) {
     if (interactiveStore.getSnapshot()) return;
-    if (!id) return setSelectedId(null);
     setObjectSelection((state) =>
       selectObject(
         state,
@@ -2243,6 +2242,9 @@ export function App() {
       setDirty(true);
     },
     "toggle-visibility": () => {},
+    "select-all-objects": () => {
+      void uiCommand("object_select", { all: true });
+    },
     "rename-objects": selectedIds.length
       ? () =>
           setRenameObject({
@@ -2303,6 +2305,7 @@ export function App() {
         : undefined,
   };
   const excludedShortcutCommands = new Set([
+    "select-all-objects",
     "delete-objects",
     "new",
     "open",

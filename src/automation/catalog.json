@@ -4336,12 +4336,16 @@
   },
   {
     "name": "object_select",
-    "description": "Select objects in tree order: ordinary selection replaces, toggle adds/removes, range selects from the last ordinary/toggle anchor. Combine toggle and range to add a range. Omit entityId to clear. Returns active and all selected IDs.",
+    "description": "Select objects in tree order: ordinary selection replaces, toggle adds/removes, range selects from the last ordinary/toggle anchor. Combine toggle and range to add a range. Use all:true to select every unlocked/selectable object in Objects-panel order, including hidden objects; do not combine with entityId, toggle or range. Omit entityId and all to clear. Matches Ctrl+A (Command+A on macOS) in the main workspace. Returns active and all selected IDs.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "all": {
+          "type": "boolean",
+          "description": "Select all unlocked/selectable objects, including hidden objects; do not combine with entityId, toggle or range"
+        },
         "entityId": {
           "type": "string",
           "minLength": 1,

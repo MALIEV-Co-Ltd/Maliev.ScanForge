@@ -1,6 +1,9 @@
 import { it, expect, vi } from "vitest";
 import { createAuthoringOperations } from "../src/automation/authoring-operations";
 import { createGridPatch, evaluatePatch } from "../src/surfaces";
+import { objectPickable } from "../src/object-operations";
+import { validateInput } from "../src/automation/api";
+import catalog from "../src/automation/catalog.json";
 import type {
   WorkspaceSnapshot,
   WorkspaceHost,
@@ -24,14 +27,12 @@ it("exposes toggle and range object selection through the same shared MCP operat
     anchorId: null,
   };
   host.select = (id, modifiers) => {
-    selection = id
-      ? selectObject(
-          selection,
-          state.entities.map((e) => e.id),
-          id,
-          modifiers,
-        )
-      : { ids: [], activeId: null, anchorId: null };
+    selection = selectObject(
+      selection,
+      state.entities.filter(objectPickable).map((e) => e.id),
+      id,
+      modifiers,
+    );
     state.selectedId = selection.activeId;
     state.selectedIds = selection.ids;
   };
@@ -45,6 +46,25 @@ it("exposes toggle and range object selection through the same shared MCP operat
     selectedIds: [],
     entityId: null,
   });
+  state.entities[0].visible = false;
+  state.entities[1].locked = true;
+  expect(ops.object_select({ all: true }, context)).toMatchObject({
+    selectedIds: ["a", "c"],
+    entityId: "c",
+  });
+  for (const extra of [{ entityId: "a" }, { toggle: true }, { range: true }]) {
+    expect(() => ops.object_select({ all: true, ...extra }, context)).toThrow(
+      /cannot be combined/,
+    );
+    expect(state.selectedIds).toEqual(["a", "c"]);
+  }
+});
+
+it("discovers select-all through the object_select MCP contract", () => {
+  const schema = catalog.find((t) => t.name === "object_select")!.inputSchema;
+  const args = { expectedRevision: 0, requestId: "all-objects", all: true };
+  expect(() => validateInput(schema, args)).not.toThrow();
+  expect(() => validateInput(schema, { ...args, all: "true" })).toThrow();
 });
 function setup() {
   const patch = createGridPatch();

@@ -26,6 +26,38 @@ import {
   type ShortcutContext,
 } from "../src/keyboard-shortcuts";
 
+it("selects all objects from the workspace without intercepting typing or editing modes", () => {
+  const ctx: ShortcutContext = {
+    mode: "main",
+    platform: "windows",
+    allowExtensions: true,
+    availableActions: new Set(["select-all-objects"]),
+  };
+  expect(resolveKeyboardShortcut({ key: "a", ctrlKey: true }, ctx)).toEqual({
+    id: "select-all-objects",
+  });
+  expect(
+    resolveKeyboardShortcut(
+      { key: "a", metaKey: true },
+      { ...ctx, platform: "mac" },
+    ),
+  ).toEqual({ id: "select-all-objects" });
+  for (const blocked of [
+    { textEditing: true },
+    { modalOpen: true },
+    { busy: true },
+    { mode: "selection" as const },
+    { mode: "sketch" as const },
+    { availableActions: new Set<ShortcutActionId>() },
+  ])
+    expect(
+      resolveKeyboardShortcut(
+        { key: "a", ctrlKey: true },
+        { ...ctx, ...blocked },
+      ),
+    ).toBeNull();
+});
+
 it("R enters interactive alignment while Shift+R keeps Right view and sketch R keeps arcs", () => {
   const context: ShortcutContext = {
     mode: "main",

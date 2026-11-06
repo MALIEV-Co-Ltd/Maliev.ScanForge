@@ -6,6 +6,7 @@ export interface ObjectSelectionState {
 }
 
 export interface ObjectSelectionModifiers {
+  all?: boolean;
   toggle?: boolean;
   range?: boolean;
 }
@@ -38,11 +39,16 @@ export function reconcileObjectSelection(
 export function selectObject(
   state: ObjectSelectionState,
   orderedPickableIds: readonly string[],
-  clickedId: string,
+  clickedId: string | null,
   modifiers: ObjectSelectionModifiers = {},
 ): ObjectSelectionState {
   const order = [...new Set(orderedPickableIds)];
   const current = reconcileObjectSelection(state, order);
+  if (modifiers.all) {
+    const activeId = current.activeId ?? order.at(-1) ?? null;
+    return { ids: order, activeId, anchorId: current.anchorId ?? activeId };
+  }
+  if (clickedId === null) return { ids: [], activeId: null, anchorId: null };
   const clickedIndex = order.indexOf(clickedId);
   if (clickedIndex === -1) return current;
 
