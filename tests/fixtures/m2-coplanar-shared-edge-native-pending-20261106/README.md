@@ -1,6 +1,6 @@
 # Coplanar shared-edge native control
 
-On 2026-11-06, QUICKSURFACE Pro 8.0.123 imported the source and cutter in millimetres. With the source in Edit, Split Mesh selected the cutter, Envelope was unchecked, and Preview and OK were applied. The source changed from two to four triangles; Edit reported two individual meshes. The project was saved and the visible source and cutter were exported separately. Reopening the saved project has not yet been verified.
+On 2026-11-06, QUICKSURFACE Pro 8.0.123 imported the source and cutter in millimetres. With the source in Edit, Split Mesh selected the cutter, Envelope was unchecked, and Preview and OK were applied. The source changed from two to four triangles; Edit reported two individual meshes. The project was saved and the visible source and cutter were exported separately. Reopening the saved project showed the source with four triangles, the cutter with one, and two individual source meshes in Edit. This reopening observation does not independently re-export or compare geometry bytes.
 
 | File                              | SHA-256                                                            |
 | --------------------------------- | ------------------------------------------------------------------ |

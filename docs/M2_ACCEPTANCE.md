@@ -18,7 +18,7 @@ The [integration unit suite](evidence/m2-integration-suite-20261106.json) passed
 
 The [isolated interior Split record](evidence/m2-isolated-interior-native-20261105.json) pins native crossing, coplanar-edge and closed-source controls, including their saved indexed topology. The crossing control also passes the rendered GUI/public-MCP lifecycle replay. Near-corner and other native differences remain open; this record is not general Split or milestone acceptance.
 
-The [coplanar shared-edge control](../tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/README.md) now has a saved QuickSurface project and separate exports. QuickSurface produces four faces with a disconnected, nonconforming shared edge; the shared ScanForge operation produces eight faces with a conforming subdivision. This is a recorded native difference, not parity, and reopening the native project remains to be checked.
+The [coplanar shared-edge control](../tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/README.md) has a saved QuickSurface project and separate exports. QuickSurface produces four faces with a disconnected, nonconforming shared edge; the shared ScanForge operation produces eight faces with a conforming subdivision. Reopening the native project showed the same triangle and component counts. This is a recorded native difference, not parity.
 
 ## Scope boundary
 
