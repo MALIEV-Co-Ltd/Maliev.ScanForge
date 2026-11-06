@@ -24,6 +24,8 @@ A [subsequent worker-trace diagnostic](evidence/m2-ply3-preexisting-worker-trace
 
 One later [same-session process trace](evidence/m2-ply3-same-session-process-trace-20261106.json) passed full artifact download with an independent file hash, GUI reopen and post-reopen Undo/Redo at a 4,252,835,840-byte Job peak, leaving about 40 MiB of headroom. Nearby process samples show growth in the renderer and another Chrome process without a type argument; they do not identify the responsible allocation. The earlier over-limit runs remain failures, and repeatability and the resource gate remain open.
 
+An isolated [string-body bridge probe](evidence/m2-bridge-string-probe-20261106.json) lowered peak memory in a synthetic request comparison but failed the real same-session replay: the project opened, a later geometry query timed out, and reported peak memory exceeded 4 GiB. The candidate was not integrated; this result does not establish a resource fix.
+
 The 2026-10-27 partial Tangent curved-annulus control matches the installed native export through the shared operation, rendered GUI and public MCP. Source corners, history and binary reopening pass; the complementary arc has a separate result. [Evidence](evidence/m2-partial-tangent-20261027.json) is limited to this one control; other partial and bridge algorithms and the remaining M2 gates stay open.
 
 Latest confirmed green full hosted application checkpoint `69a1380` passes [run 40379322369](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40379322369): 49,926 tests, 64 conditional skips, build, both CAD smoke checks and formatting. Subsequent test/evidence-only commits require their own exact-head CI.
