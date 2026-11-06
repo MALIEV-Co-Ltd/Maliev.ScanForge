@@ -1,0 +1,36 @@
+{
+  "scope": "Retained QuickSurface folded-boundary Split control, direct component inventory and public MCP inventory after GUI Split",
+  "candidateCommit": "a398b1f",
+  "applicationBundle": "scanforge-64e154f9c3cab8dc",
+  "native": {
+    "fixture": "tests/fixtures/m2-folded-boundary-native-20261105/README.md",
+    "observedIndividualMeshes": 3,
+    "savedSourceFaces": 3,
+    "savedSourceDisjointVertexIndices": 9,
+    "resultStlSha256": "3d790ae82c039b14e1a0f05ac134b8e04848ffdf6c6375b6d95106c854c986d9"
+  },
+  "sharedOperation": {
+    "componentTriangleCounts": [1, 1, 1],
+    "focusedTestsPassed": 2,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/folded-boundary-inventory-r2-20261106.json"
+  },
+  "renderedAndPublicMcp": {
+    "publicMcpComponentTriangleCountsAfterGuiSplit": [1, 1, 1],
+    "guiMcpGeometryEqual": true,
+    "nativeFacetCountMatched": 3,
+    "undoRedoAndBinaryReopen": true,
+    "mcpHeldResultAndGuiCloseCancellation": true,
+    "pageErrors": [],
+    "peakJobBytes": 922386432,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0,
+    "driverSha256": "3ab36f9d193bae95c17ea2d0f5ac2544ec7808b88f4dfdcfff9341d2f1666f10",
+    "receiptSha256": "1a8fa596f6d60ad061f0704f6a3ae522ff55904a1b809d14f8e12e24bd558601",
+    "ledgerSha256": "a0d6ffcada36421c6aa1bb4af2f7aa2aa43e97f3c4749bab1b8d3690b2dadd14"
+  },
+  "limitations": [
+    "The native viewport was black during the later QSF reopen, and the GUI component panel was not inspected in this replay.",
+    "This one three-face fixture does not establish general component cleanup or native inventory parity.",
+    "The driver and detailed bounded receipts are retained outside the repository; no application source changed in this check."
+  ]
+}
