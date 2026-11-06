@@ -295,6 +295,9 @@ try {
     return out;
   };
   const radiusDirectory = process.env.SCANFORGE_SPLIT_RADIUS_INPUT_DIR;
+  const wideRadius = process.env.SCANFORGE_SPLIT_WIDE_RADIUS === "1";
+  if (wideRadius && !radiusDirectory)
+    throw Error("Wide radius Split requires the radius fixture directory.");
   const readStlPositions = async (file) => {
     const bytes = await readFile(`${radiusDirectory}/${file}`);
     const count = bytes.readUInt32LE(80),
@@ -307,7 +310,10 @@ try {
   };
   const radiusCases = radiusDirectory
     ? await Promise.all(
-        ["below", "at", "above"].map(async (label) => ({
+        (wideRadius
+          ? ["near-0p001-below", "near-0p001-above"]
+          : ["below", "at", "above"]
+        ).map(async (label) => ({
           name: `point-radius-${label}`,
           source: await readStlPositions("source-triangle.stl"),
           target: await readStlPositions(`cutter-${label}.stl`),
@@ -488,10 +494,12 @@ try {
     radiusDirectory ?? process.env.SCANFORGE_SPLIT_INPUT_DIR;
   const fileInputs = {
     ...Object.fromEntries(
-      ["below", "at", "above"].map((label) => [
-        `point-radius-${label}`,
-        ["source-triangle.stl", `cutter-${label}.stl`],
-      ]),
+      ["below", "at", "above", "near-0p001-below", "near-0p001-above"].map(
+        (label) => [
+          `point-radius-${label}`,
+          ["source-triangle.stl", `cutter-${label}.stl`],
+        ],
+      ),
     ),
     "finite-interior-cut": ["source.stl", "cutter.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
@@ -510,6 +518,10 @@ try {
       "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
     "cutter-above.stl":
       "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+    "cutter-near-0p001-below.stl":
+      "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+    "cutter-near-0p001-above.stl":
+      "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
     "source.stl":
       "126431c2e8a871619b5bb055df2833fdb762f7a7dabd3f54fe8346446473a75d",
     "cutter.stl":
@@ -1034,6 +1046,17 @@ try {
         );
       }
       const guiPositions = await geometry(sourceId);
+      if (radiusDirectory) {
+        const cutterX = c.target[0];
+        for (let i = 0; i < guiPositions.length; i += 9) {
+          const x = [guiPositions[i], guiPositions[i + 3], guiPositions[i + 6]];
+          assert(
+            x.every((v) => v <= cutterX + 1e-8) ||
+              x.every((v) => v >= cutterX - 1e-8),
+            `${c.name}: output face crosses cutter plane`,
+          );
+        }
+      }
       const nativeReference =
         c.nativeReference ?? process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE;
       if (nativeReference) {

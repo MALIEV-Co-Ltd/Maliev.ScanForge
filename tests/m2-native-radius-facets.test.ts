@@ -71,7 +71,7 @@ function facets(values: ArrayLike<number>) {
       .join("|"),
   ).sort();
 }
-function compare([
+function runCase([
   ,
   folder,
   cutterName,
@@ -82,13 +82,13 @@ function compare([
   const source = load(folder, "source-triangle.stl", sourceHash);
   const cutter = load(folder, cutterName, cutterHash);
   const native = load(folder, nativeName, nativeHash);
-  const output = runScanEdit({
+  const result = runScanEdit({
     kind: "scanEdit",
     action: "split",
     positions: source,
     target: cutter,
-  }).positions!;
-  expect(facets(output)).toEqual(facets(native));
+  });
+  return { result, native, cutter };
 }
 
 it.each(cases)(
@@ -110,12 +110,34 @@ it.each(cases)(
   },
 );
 
-// These known discrepancies remain M2 blockers, not passing parity claims.
-it.fails.each(cases.slice(0, 4))(
-  "matches retained native Split facets: %s",
-  (...row) => compare(row),
+// The owner chose source coverage and cutter separation for these native
+// outputs; keep the native difference visible rather than claiming parity.
+it.each(cases.slice(0, 4))(
+  "preserves source area and cutter separation despite native facet difference: %s",
+  (...row) => {
+    const { result, native, cutter } = runCase(row);
+    const output = result.positions!;
+    expect(facets(output)).not.toEqual(facets(native));
+    let area = 0;
+    for (let i = 0; i < output.length; i += 9) {
+      const ax = output[i + 3] - output[i],
+        ay = output[i + 4] - output[i + 1];
+      const bx = output[i + 6] - output[i],
+        by = output[i + 7] - output[i + 1];
+      area += Math.abs(ax * by - ay * bx) / 2;
+      const x = cutter[0];
+      const xs = [output[i], output[i + 3], output[i + 6]];
+      expect(
+        xs.every((v) => v <= x + 1e-8) || xs.every((v) => v >= x - 1e-8),
+      ).toBe(true);
+    }
+    expect(area).toBeCloseTo(0.5, 7);
+  },
 );
-it("matches retained native Split facets: wide-above", () => compare(cases[4]));
+it("matches retained native Split facets: wide-above", () => {
+  const { result, native } = runCase(cases[4]);
+  expect(facets(result.positions!)).toEqual(facets(native));
+});
 
 it.each(cases.slice(0, 3))(
   "rejects native source-area loss at the finite assembly boundary: %s",

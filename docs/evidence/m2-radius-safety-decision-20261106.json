@@ -1,0 +1,1773 @@
+{
+  "scope": "Owner-chosen preservation of source coverage and cutter-plane separation for four retained radius controls; not general native parity or M2 closure",
+  "ownerDecision": "Preserve the safety checks",
+  "applicationSourceCommit": "e125d529",
+  "bundle": "scanforge-64e154f9c3cab8dc",
+  "driverSha256": "4601ec7383944eab2cf9be627b723d3af6e97c549a3502dbcdf34006c22aca13",
+  "focusedTests": {
+    "passed": 13,
+    "expectedFailures": 0
+  },
+  "smallBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 27024,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:36:15.355Z",
+    "expiresAt": "2026-11-06T08:42:15.355Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 51594,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 32028,
+        "startedAt": "2026-11-06T08:36:15.3656941Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:42:15.355Z",
+        "persistentData": false,
+        "port": 51595,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 1372,
+        "startedAt": "2026-11-06T08:36:16.1603947Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:42:15.355Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "b88d44976c06e05de9824b2f08449050694ddfcd6d379c6f1f70a55e73e4264a"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "8bf992dc4062cb561706cbe04b7bb528255f5a5130b97cb417d21c427c738b8e"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-at",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "6acd2dc5f64509bbb40f1fc33d107e1c6cb78e063267df8fb1f717ff3d0285e3"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "f43617fe601122f8013d9088abec6657a6e84bab49b41243960feccc54067086"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "dfacf3e8a536d186f1ffabd1b9e66de6a144c82d2cf4a9e2dd08519039523344"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "721744aec679177652b89e875398ea53ef9194e71c8777d05523a15e4b45d842"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 51594,
+        "closed": true
+      },
+      {
+        "pid": 32028,
+        "exited": true
+      },
+      {
+        "port": 51595,
+        "closed": true
+      },
+      {
+        "pid": 1372,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:36:24.987Z",
+    "passed": true
+  },
+  "wideBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 2976,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:36:35.794Z",
+    "expiresAt": "2026-11-06T08:42:35.794Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 60858,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 27540,
+        "startedAt": "2026-11-06T08:36:35.8047388Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:42:35.794Z",
+        "persistentData": false,
+        "port": 60859,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 33140,
+        "startedAt": "2026-11-06T08:36:36.3623492Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:42:35.794Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-near-0p001-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "048f65e87c6eb5a6904ea0589356aadff781c00e04e318b1d114e9a2c44d01e5"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "2218dcf0734e5ae7f2bc27b88035fe532bcaf600a676c3d092412c45ce3018eb"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            }
+          }
+        },
+        {
+          "name": "point-radius-near-0p001-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "65ac8b3311c5a37f7441521ba9aaa1178596c0f95f9f000c1f43d93256e3f3bc"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "daef9a055922c09cbe3dfee033fa4d21c3ac21d04cdf73776a9c3ae25391ad03"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 60858,
+        "closed": true
+      },
+      {
+        "pid": 27540,
+        "exited": true
+      },
+      {
+        "port": 60859,
+        "closed": true
+      },
+      {
+        "pid": 33140,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:36:42.027Z",
+    "passed": true
+  },
+  "initialHarnessFailure": "The unmodified external driver could not resolve the MCP SDK relative to its file; it exited before starting a browser. The retry resolves installed modules from the integration checkout and sets that checkout as root.",
+  "guards": {
+    "junction-radius-safety-choice-r2-20261106": {
+      "command": [
+        "node",
+        "node_modules\\vitest\\vitest.mjs",
+        "run",
+        "tests/m2-native-radius-facets.test.ts",
+        "--maxWorkers",
+        "1"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 180,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 345636864,
+      "totalProcesses": 8,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18038824960,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 34132,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 1.7860314999998081,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:36:56.824546+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-small-radius-safety-browser-20261106": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-radius-parity-driver-20261105.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": false,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 22093824,
+      "totalProcesses": 2,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18056962048,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 34692,
+      "exitCode": 1,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 0.06244429999969725,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:35:47.593251+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-small-radius-safety-browser-r2-20261106": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-radius-safety-integration-driver-20261106.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 935985152,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18055016448,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 27024,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 10.467318900000464,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:36:14.538455+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-wide-radius-safety-browser-20261106": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-radius-safety-integration-driver-20261106.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 919244800,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 17945124864,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 2976,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 6.697444800000085,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:36:35.351794+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-small-radius-plane-browser-20261106": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-radius-safety-plane-driver-20261106.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 936419328,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 17628790784,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 15016,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 9.23248120000062,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:42:06.234077+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-wide-radius-plane-browser-20261106": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-radius-safety-plane-driver-20261106.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 989954048,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 17567481856,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 31952,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 6.654164600000513,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:42:23.348946+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-safety-build-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 600,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 1803063296,
+      "totalProcesses": 35,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 17976299520,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 2608,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 266.5355075000007,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:37:29.714202+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-small-radius-repo-browser-20261106": {
+      "command": ["node", "tests/scan-split-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 922566656,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18187198464,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 31028,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 9.342043399999966,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:49:43.670828+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-wide-radius-repo-browser-20261106": {
+      "command": ["node", "tests/scan-split-browser.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 925212672,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18112733184,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 5876,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 6.669083500000852,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:50:00.015371+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-safety-fulltest-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 900,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 1437761536,
+      "totalProcesses": 964,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18114760704,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 3476,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 363.0243286999994,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:43:01.189236+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-cad-smoke-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:cad"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 802930688,
+      "totalProcesses": 4,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18165157888,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 10332,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 10.49912889999905,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:50:33.206162+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-cad-curvature-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:cad:curvature"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 709750784,
+      "totalProcesses": 5,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18110189568,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 11320,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 1.7330977999990864,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:50:52.490959+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-format-check-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "format:check"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": false,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 747999232,
+      "totalProcesses": 4,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18113523712,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 30888,
+      "exitCode": 1,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 49.60985029999938,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:51:00.727527+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    },
+    "junction-radius-format-check-r2-20261106": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "format:check"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 858357760,
+      "totalProcesses": 4,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 18143088640,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 22652,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 50.90633780000098,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-06T08:52:02.040532+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "limitations": [
+    "Native facet output intentionally differs in four cases; the wide-above control matches retained native facets.",
+    "This evidence establishes GUI/public MCP parity for five specified inputs, not broad native or M2 acceptance."
+  ],
+  "planeDriverSha256": "0c6cce4ad4f1f73e2ca1fcd0ea267e688a7cc9ff85975689a07e194a992a5737",
+  "planeChecks": "Each GUI output triangle lies on one side of the cutter plane within 1e-8 mm; GUI and public MCP geometry digests match.",
+  "smallPlaneBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 15016,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:42:06.673Z",
+    "expiresAt": "2026-11-06T08:48:06.674Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 64899,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 12224,
+        "startedAt": "2026-11-06T08:42:06.6846360Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:48:06.674Z",
+        "persistentData": false,
+        "port": 64900,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 30396,
+        "startedAt": "2026-11-06T08:42:07.2519396Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:48:06.674Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "b88d44976c06e05de9824b2f08449050694ddfcd6d379c6f1f70a55e73e4264a"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "8bf992dc4062cb561706cbe04b7bb528255f5a5130b97cb417d21c427c738b8e"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-at",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "6acd2dc5f64509bbb40f1fc33d107e1c6cb78e063267df8fb1f717ff3d0285e3"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "f43617fe601122f8013d9088abec6657a6e84bab49b41243960feccc54067086"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "dfacf3e8a536d186f1ffabd1b9e66de6a144c82d2cf4a9e2dd08519039523344"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "721744aec679177652b89e875398ea53ef9194e71c8777d05523a15e4b45d842"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 64899,
+        "closed": true
+      },
+      {
+        "pid": 12224,
+        "exited": true
+      },
+      {
+        "port": 64900,
+        "closed": true
+      },
+      {
+        "pid": 30396,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:42:15.446Z",
+    "passed": true
+  },
+  "widePlaneBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 31952,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:42:23.790Z",
+    "expiresAt": "2026-11-06T08:48:23.790Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 61373,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 17536,
+        "startedAt": "2026-11-06T08:42:23.8009069Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:48:23.790Z",
+        "persistentData": false,
+        "port": 61374,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 30280,
+        "startedAt": "2026-11-06T08:42:24.3562001Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:48:23.790Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-near-0p001-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "048f65e87c6eb5a6904ea0589356aadff781c00e04e318b1d114e9a2c44d01e5"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "2218dcf0734e5ae7f2bc27b88035fe532bcaf600a676c3d092412c45ce3018eb"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            }
+          }
+        },
+        {
+          "name": "point-radius-near-0p001-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "65ac8b3311c5a37f7441521ba9aaa1178596c0f95f9f000c1f43d93256e3f3bc"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "daef9a055922c09cbe3dfee033fa4d21c3ac21d04cdf73776a9c3ae25391ad03"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 61373,
+        "closed": true
+      },
+      {
+        "pid": 17536,
+        "exited": true
+      },
+      {
+        "port": 61374,
+        "closed": true
+      },
+      {
+        "pid": 30280,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:42:29.984Z",
+    "passed": true
+  },
+  "repositoryDriver": "tests/scan-split-browser.mjs",
+  "repositoryDriverSha256": "b633a8a25a6603e5396fdd90e87a03c69989900b8c5a5756ebe784b9a07c9d1f",
+  "smallRepositoryBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 31028,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:49:44.183Z",
+    "expiresAt": "2026-11-06T08:55:44.183Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 57730,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 31544,
+        "startedAt": "2026-11-06T08:49:44.1943294Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:55:44.183Z",
+        "persistentData": false,
+        "port": 57731,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 32356,
+        "startedAt": "2026-11-06T08:49:44.7888196Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:55:44.183Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "f1934caa75204704f3b1a37ad37d251689be2341b7899227c9510a9873f49ccf",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "b88d44976c06e05de9824b2f08449050694ddfcd6d379c6f1f70a55e73e4264a"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "8bf992dc4062cb561706cbe04b7bb528255f5a5130b97cb417d21c427c738b8e"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-at",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "90694b7b19cde7b02bc71ea500c0213da4004142162855e66502350682be0323",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "6acd2dc5f64509bbb40f1fc33d107e1c6cb78e063267df8fb1f717ff3d0285e3"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "f43617fe601122f8013d9088abec6657a6e84bab49b41243960feccc54067086"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        },
+        {
+          "name": "point-radius-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "df8c162f55c96600c9f223c131d98b7ce7e3a43eb85136b8790c08a9487ea29f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "dfacf3e8a536d186f1ffabd1b9e66de6a144c82d2cf4a9e2dd08519039523344"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "721744aec679177652b89e875398ea53ef9194e71c8777d05523a15e4b45d842"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 57730,
+        "closed": true
+      },
+      {
+        "pid": 31544,
+        "exited": true
+      },
+      {
+        "port": 57731,
+        "closed": true
+      },
+      {
+        "pid": 32356,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:49:52.996Z",
+    "passed": true
+  },
+  "wideRepositoryBrowser": {
+    "owner": "split-lifecycle-browser",
+    "pid": 5876,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "startedAt": "2026-11-06T08:50:00.493Z",
+    "expiresAt": "2026-11-06T08:56:00.493Z",
+    "persistentData": false,
+    "resources": [
+      {
+        "kind": "http-server",
+        "port": 62251,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "mcp-server",
+        "pid": 9944,
+        "startedAt": "2026-11-06T08:50:00.5039804Z",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "expiresAt": "2026-11-06T08:56:00.493Z",
+        "persistentData": false,
+        "port": 62252,
+        "bind": "127.0.0.1"
+      },
+      {
+        "kind": "browser",
+        "pid": 10388,
+        "startedAt": "2026-11-06T08:50:01.0565802Z",
+        "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "expiresAt": "2026-11-06T08:56:00.493Z",
+        "persistentData": false
+      }
+    ],
+    "result": {
+      "cases": [
+        {
+          "name": "point-radius-near-0p001-below",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "c7eb2ecef247eb1679157622cf315a6873f8d949e3bb2eecb8572df58ab98f1f",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "048f65e87c6eb5a6904ea0589356aadff781c00e04e318b1d114e9a2c44d01e5"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "2218dcf0734e5ae7f2bc27b88035fe532bcaf600a676c3d092412c45ce3018eb"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "d4281c848f0bda95a2af7a3e234bb2c175d250a0a844b52649f524593e9bcd66"
+            }
+          }
+        },
+        {
+          "name": "point-radius-near-0p001-above",
+          "sourceFileSha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6",
+          "cutterFileSha256": "4b58488fd59bb876bc4acd6891bfbe9fa30d25128baeadeedb95db69c65ac1b5",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "65ac8b3311c5a37f7441521ba9aaa1178596c0f95f9f000c1f43d93256e3f3bc"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "daef9a055922c09cbe3dfee033fa4d21c3ac21d04cdf73776a9c3ae25391ad03"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "d438731fa9d6cab98b9ee25ac51626f1e90315726e11ac2427a8d1c11ea9c1e0"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 2,
+            "cutEdges": 2,
+            "sourceIdentity": "retained-indexed",
+            "changed": true
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "907a1ecef0802f4268e58311c707d378f01020951b258aab4b5e33983637da0e"
+            }
+          }
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 62251,
+        "closed": true
+      },
+      {
+        "pid": 9944,
+        "exited": true
+      },
+      {
+        "port": 62252,
+        "closed": true
+      },
+      {
+        "pid": 10388,
+        "exited": true
+      }
+    ],
+    "cleanedAt": "2026-11-06T08:50:06.665Z",
+    "passed": true
+  },
+  "fullSuite": {
+    "passed": 50684,
+    "skipped": 76,
+    "expectedFailures": 0,
+    "scope": "Same application and unit-test source; repository browser harness was extended after the full suite and verified separately."
+  },
+  "formattingNote": "Initial full check identified four files, which were formatted; the retry passed. The evidence record was then extended with these receipts and rechecked."
+}
