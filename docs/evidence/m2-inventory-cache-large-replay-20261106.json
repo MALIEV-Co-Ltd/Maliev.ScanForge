@@ -29,8 +29,20 @@
     "publicMcpBrowserSmoke": "passed on the same application build; peak 1741320192 bytes with clean process cleanup",
     "publicMcpBrowserSmokeReceiptSha256": "851c9e927cf8ab7ee9124eaf88ba768902e669df15bb6be5b6ef7ea7651acbb5"
   },
+  "membershipReplay": {
+    "components": 456,
+    "faces": 3695945,
+    "comparison": "For each component, sorted Uint32 face indices had equal SHA-256 hashes; areas agreed within 1e-10 times max(1, absolute area).",
+    "componentFlipAndUndoRedo": "passed",
+    "peakJobBytes": 3628515328,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0,
+    "driverSha256": "b6586f8590e9524f6c8acf79956204113722a20b3faefabe85bede6955b7d1a8",
+    "receiptSha256": "e8c9e70dc245b04a69af710c9b585e7611ceb7c1b54c769459314cae13fa9db2",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-disk-profile-bounded/large-inventory-membership-20261106.json"
+  },
   "limitations": [
-    "The two inventories were compared by component count, not by every component's membership or area.",
+    "The earlier replay compared counts only; the subsequent membership replay compared the complete public MCP component lists and areas.",
     "The counts do not establish native panel or cleanup equivalence on this input.",
     "This is not the separate full-download and GUI-reopen resource gate."
   ]
