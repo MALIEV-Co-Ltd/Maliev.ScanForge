@@ -1,0 +1,12 @@
+{
+  "testedCommit": "964f7cbd1d796391987b174696f83d8c38637e04",
+  "scope": "Direct shared Split with a single planar triangular cutter over each original scan, plus a simulated processing-worker dispatcher for the largest scan.",
+  "sharedSplit": [
+    { "input": "ply-1.ply", "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05", "passed": true, "peakJobBytes": 425009152, "cleanupConfirmed": true },
+    { "input": "ply-2.ply", "sha256": "3acf90227bea8e98e97d0eddebd57324d6c29767d622c86d65337d927bca5e75f", "passed": true, "peakJobBytes": 971395072, "cleanupConfirmed": true },
+    { "input": "ply-3.ply", "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2", "passed": true, "peakJobBytes": 1151037440, "cleanupConfirmed": true }
+  ],
+  "sharedSplitAssertions": ["source and cutter digests unchanged", "two nonempty segments", "matching seam edge sets", "relative source area error below 1e-5"],
+  "simulatedWorkerDispatcher": { "input": "ply-3.ply", "passed": true, "test": "tests/scan-split-indexed-worker-original-local.test.ts", "peakJobBytes": 2539622400, "cleanupConfirmed": true },
+  "limits": ["The dispatcher test supplies a simulated worker scope and does not itself exercise a browser worker or public MCP socket.", "These planar controls do not establish native parity or arbitrary cutter behavior.", "These results do not close the M2 native, restore-ownership, resource-repeatability, integration or milestone gates."]
+}
