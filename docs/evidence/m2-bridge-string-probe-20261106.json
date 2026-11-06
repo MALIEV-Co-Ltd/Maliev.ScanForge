@@ -25,8 +25,16 @@
   },
   "nearDownloadSamples": {
     "unit": "private committed bytes in one nearby two-second process sample per run",
-    "existingBlobBridge": { "renderer": 1698607104, "chromeUnclassified": 981471232, "gpu": 453922816 },
-    "candidateStringBridge": { "renderer": 2322882560, "chromeUnclassified": 691863552, "gpu": 460627968 },
+    "existingBlobBridge": {
+      "renderer": 1698607104,
+      "chromeUnclassified": 981471232,
+      "gpu": 453922816
+    },
+    "candidateStringBridge": {
+      "renderer": 2322882560,
+      "chromeUnclassified": 691863552,
+      "gpu": 460627968
+    },
     "limitation": "Separate runs and point samples; values do not establish a causal allocation or total job peak."
   },
   "retainedEvidenceSha256": {

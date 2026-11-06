@@ -12,6 +12,18 @@
     "build": "scanforge-b4a30452acf5c910",
     "affectedTestsPassed": 187,
     "fullSuite": "50685 passed and 76 skipped; a subsequent source-preservation assertion passed in the targeted regression.",
+    "additionalChecks": {
+      "publicMcpVisualSmoke": "passed",
+      "cadSmoke": "passed",
+      "cadCurvatureSmoke": "passed",
+      "repositoryFormat": "passed after formatting two evidence JSON files; the first format run failed on those files",
+      "receiptSha256": {
+        "publicMcpVisualSmoke": "1067b9917e0f6a12e7666ea00f4cba5f8f930dad836fc4e1e09c1e2d0cd3a138",
+        "cadSmoke": "662683296a5c54506dd79900a2ab14933347698d2a0b780544073b38ee294e76",
+        "cadCurvatureSmoke": "8f6ac8ba30ae5d9b669764aa6d57ae41be12a146a296f626ee350e219a83dad7",
+        "repositoryFormat": "10ed2a6f77a61afb7bf07477c72c142043aedbb678b61c4918d33ede16598216"
+      }
+    },
     "guiPanelComponentTriangleCounts": [1, 1, 1],
     "mcpComponentOnlyTriangleCounts": [1, 1, 1],
     "mcpFullInventoryTriangleCounts": [1, 1, 1],

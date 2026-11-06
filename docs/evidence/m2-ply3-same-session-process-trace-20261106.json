@@ -26,9 +26,21 @@
   },
   "processSamples": {
     "units": "private committed bytes; sampled every two seconds outside the job",
-    "afterExtractUndo": { "renderer": 1720291328, "chromeUnclassified": 133902336, "gpu": 821018624 },
-    "afterDownload": { "renderer": 1698607104, "chromeUnclassified": 981471232, "gpu": 453922816 },
-    "afterProjectImport": { "renderer": 2190364672, "chromeUnclassified": 908972032, "gpu": 524292096 },
+    "afterExtractUndo": {
+      "renderer": 1720291328,
+      "chromeUnclassified": 133902336,
+      "gpu": 821018624
+    },
+    "afterDownload": {
+      "renderer": 1698607104,
+      "chromeUnclassified": 981471232,
+      "gpu": 453922816
+    },
+    "afterProjectImport": {
+      "renderer": 2190364672,
+      "chromeUnclassified": 908972032,
+      "gpu": 524292096
+    },
     "note": "These are nearby point samples, not the job peak or proof of allocation ownership. Chrome without a --type argument is labeled unclassified."
   },
   "retainedEvidence": {
