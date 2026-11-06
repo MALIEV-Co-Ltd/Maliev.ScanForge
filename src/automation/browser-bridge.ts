@@ -29,8 +29,73 @@ export async function connectBrowserBridge(
   let timer: ReturnType<typeof setTimeout> | undefined;
   let sessionId = "";
   let closed = false;
+  let resultSocket: WebSocket | undefined;
+  async function socketExchange(
+    payload: string,
+    expectedId?: string,
+  ): Promise<void> {
+    const socket = resultSocket;
+    if (!socket || socket.readyState !== WebSocket.OPEN)
+      throw new Error("Local bridge result channel unavailable");
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error("Local bridge result channel timed out"));
+      }, 10000);
+      const cleanup = () => {
+        clearTimeout(timer);
+        socket.removeEventListener("message", onMessage);
+        socket.removeEventListener("close", onClose);
+        socket.removeEventListener("error", onClose);
+      };
+      const onMessage = (event: MessageEvent) => {
+        cleanup();
+        try {
+          if (typeof event.data !== "string")
+            throw new Error("Invalid local bridge acknowledgment");
+          const value = JSON.parse(event.data);
+          if (
+            expectedId === undefined
+              ? value?.ready !== true
+              : value?.ok !== true || value?.id !== expectedId
+          )
+            throw new Error("Invalid local bridge acknowledgment");
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      };
+      const onClose = () => {
+        cleanup();
+        reject(new Error("Local bridge result channel closed"));
+      };
+      socket.addEventListener("message", onMessage, { once: true });
+      socket.addEventListener("close", onClose, { once: true });
+      socket.addEventListener("error", onClose, { once: true });
+      try {
+        socket.send(payload);
+      } catch (error) {
+        cleanup();
+        reject(error);
+      }
+    });
+  }
   async function request(path: string, body?: unknown) {
     const payload = body === undefined ? undefined : JSON.stringify(body);
+    if (resultSocket && resultSocket.readyState !== WebSocket.OPEN)
+      resultSocket = undefined;
+    if (
+      path === "/result" &&
+      payload &&
+      payload.length >= 65536 &&
+      resultSocket
+    ) {
+      const id = (body as { id?: unknown })?.id;
+      if (typeof id !== "string")
+        throw new Error("Invalid local bridge result identifier");
+      await socketExchange(payload, id);
+      return { ok: true };
+    }
     const response = await fetcher(new URL(path, url), {
       method: body === undefined ? "GET" : "POST",
       headers: {
@@ -74,6 +139,7 @@ export async function connectBrowserBridge(
       /* Server also revokes ownership after its finite lease. */
     } finally {
       controller.abort();
+      resultSocket?.close();
       onStatus({ connected: false, message: "Disconnected" });
     }
   };
@@ -82,6 +148,43 @@ export async function connectBrowserBridge(
     if (typeof connected.sessionId !== "string" || !connected.sessionId)
       throw new Error("Bridge returned an invalid workspace session.");
     sessionId = connected.sessionId;
+    if (
+      connected.capabilities?.resultWebSocket &&
+      typeof WebSocket !== "undefined"
+    ) {
+      let socket: WebSocket | undefined;
+      try {
+        socket = new WebSocket(`ws://${url.host}/result-ws`);
+        const opening = socket;
+        await new Promise<void>((resolve, reject) => {
+          const timer = setTimeout(
+            () => reject(new Error("Local bridge result channel timed out")),
+            10000,
+          );
+          opening.addEventListener(
+            "open",
+            () => {
+              clearTimeout(timer);
+              resolve();
+            },
+            { once: true },
+          );
+          opening.addEventListener(
+            "error",
+            () => {
+              clearTimeout(timer);
+              reject(new Error("Local bridge result channel failed to open"));
+            },
+            { once: true },
+          );
+        });
+        resultSocket = socket;
+        await socketExchange(JSON.stringify({ token, sessionId }));
+      } catch {
+        socket?.close();
+        resultSocket = undefined;
+      }
+    }
     const advertisedWait = connected.capabilities?.pollWaitMs;
     const pollWaitMs =
       Number.isInteger(advertisedWait) &&

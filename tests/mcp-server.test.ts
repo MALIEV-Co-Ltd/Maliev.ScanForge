@@ -73,7 +73,10 @@ describe("opt-in bounded long polling", () => {
   it("advertises the bound while legacy clients still receive an immediate empty batch", async () => {
     const bridge = await setup();
     const paired = await (await request(bridge, "/connect", {})).json();
-    expect(paired.capabilities).toEqual({ pollWaitMs: 8000 });
+    expect(paired.capabilities).toEqual({
+      pollWaitMs: 8000,
+      resultWebSocket: true,
+    });
     expect(
       await (
         await request(bridge, `/poll?sessionId=${paired.sessionId}`)

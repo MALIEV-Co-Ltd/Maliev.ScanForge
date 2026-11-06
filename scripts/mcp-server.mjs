@@ -2,6 +2,7 @@ import http from "node:http";
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import { createRequire } from "node:module";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -11,6 +12,7 @@ import {
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 
+const { WebSocketServer } = createRequire(import.meta.url)("ws");
 const root = new URL("../", import.meta.url);
 const failure = (message) => new Error(message);
 
@@ -30,6 +32,7 @@ export async function createBridge({
   const allowed = new Set(origins);
   const secret = Buffer.from(`Bearer ${token}`);
   let session;
+  let resultChannel;
   let queue = [];
   const pending = new Map();
   let closed = false;
@@ -54,6 +57,8 @@ export async function createBridge({
   }
   function expire(now = Date.now()) {
     if (session && session.expires <= now) {
+      resultChannel?.close();
+      resultChannel = undefined;
       session = undefined;
       rejectAll("Browser session expired");
     }
@@ -132,7 +137,7 @@ export async function createBridge({
         session.expires = Date.now() + leaseMs;
         return respond(200, {
           sessionId: session.id,
-          capabilities: { pollWaitMs: 8000 },
+          capabilities: { pollWaitMs: 8000, resultWebSocket: true },
         });
       }
       const data =
@@ -214,6 +219,8 @@ export async function createBridge({
         return respond(200, { ok: true });
       }
       if (req.method === "POST" && url.pathname === "/disconnect") {
+        resultChannel?.close();
+        resultChannel = undefined;
         session = undefined;
         rejectAll("Browser disconnected");
         return respond(200, { ok: true });
@@ -223,6 +230,96 @@ export async function createBridge({
       if (!res.headersSent)
         respond(error.status ?? 400, { error: error.message });
     }
+  });
+  // The optional result channel shares the HTTP session and resource limits.
+  const wss = new WebSocketServer({
+    noServer: true,
+    maxPayload: 2 * 1024 * 1024,
+    perMessageDeflate: false,
+  });
+  server.on("upgrade", (req, socket, head) => {
+    const actualPort = server.address()?.port;
+    expire();
+    if (
+      closed ||
+      !session ||
+      wss.clients.size >= 4 ||
+      req.url !== "/result-ws" ||
+      req.headers.host !== `127.0.0.1:${actualPort}` ||
+      !allowed.has(req.headers.origin)
+    ) {
+      socket.destroy();
+      return;
+    }
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit("connection", ws));
+  });
+  wss.on("connection", (ws) => {
+    let authorized = false;
+    let owner;
+    const authLease = setTimeout(() => ws.terminate(), 5000);
+    authLease.unref();
+    ws.on("error", () => {});
+    ws.on("close", () => {
+      clearTimeout(authLease);
+      if (resultChannel === ws) resultChannel = undefined;
+    });
+    ws.on("message", (raw, isBinary) => {
+      try {
+        if (isBinary) {
+          ws.close(1003);
+          return;
+        }
+        const data = JSON.parse(raw.toString("utf8"));
+        expire();
+        if (!authorized) {
+          const supplied = Buffer.from(`Bearer ${data.token ?? ""}`);
+          if (
+            supplied.length !== secret.length ||
+            !timingSafeEqual(supplied, secret) ||
+            !session ||
+            data.sessionId !== session.id ||
+            resultChannel
+          ) {
+            ws.close();
+            return;
+          }
+          authorized = true;
+          owner = session;
+          resultChannel = ws;
+          clearTimeout(authLease);
+          ws.send(JSON.stringify({ ready: true }));
+          return;
+        }
+        if (
+          !session ||
+          session !== owner ||
+          resultChannel !== ws ||
+          data.sessionId !== session.id
+        ) {
+          ws.close();
+          return;
+        }
+        session.expires = Date.now() + leaseMs;
+        const entry = pending.get(data.id);
+        if (
+          !entry ||
+          !entry.delivered ||
+          !data.result ||
+          typeof data.result !== "object" ||
+          Array.isArray(data.result) ||
+          typeof data.result.ok !== "boolean"
+        ) {
+          ws.close();
+          return;
+        }
+        clearTimeout(entry.timer);
+        pending.delete(data.id);
+        entry.resolve(data.result);
+        ws.send(JSON.stringify({ id: data.id, ok: true }));
+      } catch {
+        ws.close();
+      }
+    });
   });
   server.requestTimeout = 10_000;
   server.headersTimeout = 10_000;
@@ -267,6 +364,8 @@ export async function createBridge({
     clearTimeout(lifetime);
     session = undefined;
     rejectAll("Bridge closed");
+    for (const ws of wss.clients) ws.terminate();
+    wss.close();
     closing = new Promise((resolve) => {
       server.close(resolve);
       server.closeAllConnections();

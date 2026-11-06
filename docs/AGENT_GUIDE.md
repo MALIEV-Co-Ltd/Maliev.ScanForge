@@ -548,6 +548,8 @@ In ScanForge, open **Settings → AI agent access**, enter `http://127.0.0.1:518
 
 The bridge binds only to `127.0.0.1`. Browser requests require the exact allowed origin, loopback Host and Bearer token. CORS preflight grants no workspace access. One paired browser owns a bridge at a time; a second browser receives HTTP 409. Polling renews a 60-second ownership lease. The server exits its HTTP service on client shutdown and after its eight-hour maximum lifetime; restart and pair again when needed. Different simultaneous workspaces require distinct ports/tokens/client configurations.
 
+Large replies may use an authenticated loopback result channel when both browser and bridge support it; commands and responses retain the same MCP schema. If the channel cannot be established, the bridge uses HTTP. A channel failure after a result has been sent disconnects the browser rather than replaying an ambiguous result; reconnect and inspect the workspace before retrying a mutation.
+
 An idle long poll checks its actual wait and ownership deadlines after every timer
 wake. Each replaced timer is explicitly cleared. An early timer is rearmed;
 expired ownership ends the pending response with

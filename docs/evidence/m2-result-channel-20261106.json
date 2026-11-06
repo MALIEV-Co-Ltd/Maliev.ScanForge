@@ -1,0 +1,22 @@
+{
+  "scope": "Optional authenticated local result transport for existing GUI-owned MCP operations; not complete M2 acceptance",
+  "behavior": "Pairing and command polling remain HTTP. When both sides advertise support, large replies use one session-bound loopback WebSocket; absent or pre-send unavailable channels fall back to HTTP. A failure after sending disconnects instead of replaying an ambiguous result. Public MCP tools, schemas, structured results, artifact limits, request receipts and shared application operations remain unchanged.",
+  "securityAndLifecycle": "Host, Origin, token and browser session are checked; the socket is bound to the original session, only a delivered request can be resolved once, and browser acknowledgments must match its request ID. Four sockets and a five-second unauthenticated lease bound handshakes; messages are limited to 2 MiB and binary frames are rejected. Session disconnect, expiry and bridge shutdown close owned sockets. The package lock pins ws 8.22.1. These focused checks are not a claim of an exhaustive security audit.",
+  "sourceSha256": {
+    "scripts/mcp-server.mjs": "832b1502469c89201e08b81862dd7b9d509949f3ec6afd776b7bb1d5d795edd9",
+    "src/automation/browser-bridge.ts": "e3983a04da075c7d37a9440fb4dd329919c83eb68a1c3d3b2b2102fa7c23f093",
+    "tests/mcp-result-channel.test.mjs": "5204bb939d41fd4272060af9710e2f64a6db9217b7b9e4d889a44dbd1c80a9d9",
+    "tests/browser-result-channel.test.ts": "10005d1b3c5b741de800858b634802ab6c12961c9f0590cb54d947714f249e7c",
+    "package-lock.json": "15902d25e244494c08af6105683fb005b7ddbde5085f4b7db8be00d92215516e"
+  },
+  "validation": {
+    "focusedIntegration": "48 tests passed on the integration checkout with a locally installed matching dependency, including origin/token, ownership, lease, size, duplicate, fallback and acknowledgment checks. Guard cleanup confirmed.",
+    "typecheck": "All 15 TypeScript batches passed in the isolated candidate; source files match the integration copy. Receipt SHA-256 45a8866512cb358a7e96060a51bfec44b1b685d6d01c8daf9c852cda0a998e75.",
+    "fullSuite": "50701 tests passed and 76 skipped in the isolated candidate; peak Job memory 1366839296 bytes, cleanup confirmed. The server test's dependency resolution was subsequently changed to resolve from the same script location and passed the 48-test integration check; production source was unchanged. Receipt SHA-256 bfc9d74db02a1cf839e385318de15dda005b7d8b1ffaeb10ecc9ffaa46bb2c30.",
+    "browserMcp": "The built candidate passed the existing official-SDK/browser smoke including exact artifact readback and project reopening. Receipt SHA-256 281790793c4f96402c7c028b9daa2c28e07cd071051b6fee743d500df53f511f.",
+    "fullPly3": "One guarded direct-browser run on bundle scanforge-6d9d3fe7d94297a7 completed GUI Split/Extract, the 475563378-byte public-MCP download, GUI reopen, geometry verification and GUI undo/redo. File and streamed SHA-256 matched 45732ff26bfbbdb0c793a6766a6737e506477a204aeec3a2999a0ead9b8d0e23; at least 1792 large frames used the new channel. Peak Job memory 4130308096 bytes was 164659200 below 4 GiB; cleanup confirmed. Receipt SHA-256 9d357a7750dec7fb3f9174def5c5c2e0d24faea05031580aafba5423d6426edb.",
+    "guardFiles": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/",
+    "priorControls": "See m2-ws-direct-observer-20261106.json for one earlier prototype pass, the unchanged bridge's failed direct-browser control, and observer-overhead limitations."
+  },
+  "limitations": "One final-candidate large-project pass with about 157 MiB headroom is not a universal bound or repeatability proof. The numeric-array ownership race, remaining native comparisons, complete integrated-head checks, main integration and M2 closure remain open."
+}
