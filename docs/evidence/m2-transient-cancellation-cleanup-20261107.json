@@ -1,0 +1,23 @@
+{
+  "scope": "Temporary storage cleanup on cancellation and failure; not milestone or large-project acceptance",
+  "baseCommit": "68d35187",
+  "problem": "If cancellation arrived after the temporary IndexedDB write committed but before its completion handler ran, the cancelled staging operation could leave its record until a later expiry sweep.",
+  "change": "When staging does not complete, attempt deletion of that operation's unique record in a separate transaction unaffected by the cancelled signal. Preserve the original error and retain the existing expiry sweep if storage prevents cleanup. GUI saves, MCP project exports and artifact staging share this helper; no tool schema or project format changed.",
+  "regression": "A focused cancellation test failed before the change with one leaked record and passed afterward while preserving an unrelated record. A disposable real Chrome/IndexedDB control produced AbortError with one remaining record on the base code and zero on the changed code. The checked-in browser regression passed with zero records, verified successful staging retains bytes, and cleaned its isolated database and browser.",
+  "validation": {
+    "focused": "57 tests passed across six project encoding, artifact staging, capacity and cancellation files.",
+    "fullSuite": "50702 passed, 76 skipped, 810 files passed and 29 skipped. Release-test fixtures emitted Git line-ending warnings.",
+    "productionBuild": "All 15 TypeScript batches, Vite and offline manifest passed; bundle scanforge-2600b65512dee3fa.",
+    "publicMcpBrowser": "Official SDK and built-application smoke passed, including project export and GUI/public-MCP binary reopen. It does not reproduce this particular cancellation interleaving through public MCP.",
+    "limits": "All listed validation used the 4 GiB guard and confirmed owned-process cleanup. The final checked-in browser regression peaked at 736153600 bytes; MCP smoke peaked at 1737469952 bytes."
+  },
+  "receipts": {
+    "directory": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/",
+    "m2-transient-affected-20261107.json": "7140626d85e0371470602658e7c65f7b037ee59d5e3245a79164452f852aba75",
+    "m2-transient-full-suite-20261107.json": "fb96e6778f61446e67cbb94849194b4fb25ac8c924b6d208023a00aea2612ae4",
+    "m2-transient-build-20261107.json": "ed1cc8a80561e252ee7e68e525990e8b85d8b711e5e9cdd1823e3bcd17848d55",
+    "m2-transient-mcp-smoke-20261107.json": "5f1ea36fb765bebe8ad7fd239813f9e374c46f03ae84ee56a26ea34cb4ad74bd",
+    "m2-transient-browser-final-20261107.json": "07fd5fd81b4ca84fd47984069c40c1f0f14d853ef96ad47662369ddc8b2576b4"
+  },
+  "limitations": "Deletion is best effort when storage is unavailable; expired records are swept during later staging. This does not fix the independent numeric-array ownership race, prove large-project resource compliance for a future restore change, or complete the remaining native and milestone gates."
+}

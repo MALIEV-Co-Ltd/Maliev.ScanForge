@@ -590,8 +590,10 @@ publication. MCP uploads checkpoint their accumulated bytes to the same disk
 backing at each 64 MiB boundary. Successful staging deletes the temporary database
 record; live immutable Blobs retain the bytes through browser-managed ownership.
 Storage failures preserve the previous upload and report an operation failure;
-retry from its reported size. Interrupted staging records expire after 15 minutes
-and are swept on subsequent staging. Each open/transaction has a 30-second timeout.
+retry from its reported size. Failed or cancelled staging attempts to delete its
+own temporary record independently of cancellation. If storage prevents cleanup,
+the record expires after 15 minutes and is swept on subsequent staging. Each
+open/transaction, including cleanup, has a 30-second timeout.
 Environments without IndexedDB retain ordinary Blob storage. Logical artifact
 quotas, read/upload chunk limits and the process validation cap are unchanged.
 Use a normal persistent browser profile for disk-backed large transfers. Chromium

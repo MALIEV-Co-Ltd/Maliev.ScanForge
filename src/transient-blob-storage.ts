@@ -44,7 +44,10 @@ export async function diskBackedBlob(
     }
   });
   const key = crypto.randomUUID();
-  const transaction = <T>(run: (store: IDBObjectStore) => () => T) =>
+  const transaction = <T>(
+    run: (store: IDBObjectStore) => () => T,
+    operationSignal: AbortSignal | null = signal ?? null,
+  ) =>
     new Promise<T>((resolve, reject) => {
       const tx = db.transaction("blobs", "readwrite");
       let finished = false;
@@ -52,7 +55,7 @@ export async function diskBackedBlob(
         if (finished) return;
         finished = true;
         clearTimeout(timer);
-        signal?.removeEventListener("abort", cancel);
+        operationSignal?.removeEventListener("abort", cancel);
         if (error) {
           try {
             tx.abort();
@@ -70,24 +73,26 @@ export async function diskBackedBlob(
       };
       const cancel = () =>
         finish(
-          signal?.reason ?? new DOMException("Storage cancelled", "AbortError"),
+          operationSignal?.reason ??
+            new DOMException("Storage cancelled", "AbortError"),
         );
       const timer = setTimeout(
         () => finish(new Error("Temporary blob transaction timed out.")),
         30_000,
       );
-      signal?.addEventListener("abort", cancel, { once: true });
+      operationSignal?.addEventListener("abort", cancel, { once: true });
       let result: () => T;
       tx.oncomplete = () => finish();
       tx.onerror = tx.onabort = () =>
         finish(tx.error ?? new Error("Temporary blob transaction failed."));
       try {
-        signal?.throwIfAborted();
+        operationSignal?.throwIfAborted();
         result = run(tx.objectStore("blobs"));
       } catch (error) {
         finish(error);
       }
     });
+  let completed = false;
   try {
     await transaction((store) => {
       const cursor = store.openCursor();
@@ -100,7 +105,7 @@ export async function diskBackedBlob(
       store.put({ file: blob, expires: Date.now() + 900_000 }, key);
       return () => undefined;
     });
-    return await transaction((store) => {
+    const file = await transaction((store) => {
       const request = store.get(key);
       store.delete(key);
       return () => {
@@ -110,7 +115,19 @@ export async function diskBackedBlob(
         return file;
       };
     });
+    completed = true;
+    return file;
   } finally {
+    if (!completed) {
+      try {
+        await transaction((store) => {
+          store.delete(key);
+          return () => undefined;
+        }, null);
+      } catch {
+        // The expiry sweep remains a fallback if storage is unavailable.
+      }
+    }
     db.close();
   }
 }
