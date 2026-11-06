@@ -10,7 +10,7 @@ At the four PLY-3 staging sizes, a synthetic transport diagnostic retained about
 
 At the 2026-11-06 local integration audit, main `e367262f` was an ancestor of candidate `1a5779ac`. The checked-out main workspace had 492 local files overlapping the candidate's changed paths; 294 matched the candidate content and 198 differed. This is a point-in-time worktree comparison, not a merge or review of those local changes. Preserve and reconcile the local workspace before updating it.
 
-The [integration unit suite](evidence/m2-integration-suite-20261106.json) passed at `9d8280a8`: 50,686 tests passed and 76 were skipped under the Job limit. This does not include the isolated restore prototypes or replace the open native, GUI/public-MCP and large-project resource gates.
+The [integration unit suite](evidence/m2-integration-suite-20261106.json) passed at `9d8280a8`: 50,686 tests passed and 76 were skipped under the Job limit. A subsequent production build at `41679f56` passed all 15 TypeScript batches and generated bundle `scanforge-b4a30452acf5c910`. These checks do not include the isolated restore prototypes or replace the open native, GUI/public-MCP and large-project resource gates.
 
 The [isolated interior Split record](evidence/m2-isolated-interior-native-20261105.json) pins native crossing, coplanar-edge and closed-source controls, including their saved indexed topology. The crossing control also passes the rendered GUI/public-MCP lifecycle replay. Near-corner and other native differences remain open; this record is not general Split or milestone acceptance.
 
