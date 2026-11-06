@@ -1,0 +1,18 @@
+{
+  "scope": "Isolated WebSocket result-channel prototype and test-driver assertion-allocation control on original PLY-3; not production behavior or M2 acceptance",
+  "base": "e0e98c99",
+  "build": "scanforge-882785c64c410e11",
+  "method": "Reapply the previously recorded disposable alternate transport, instrument its server to record channel authentication and every 128th large reply without retaining payloads, and use the external driver whose failed-response assertion formats its message only on failure. No forced garbage collection or resource-limit change.",
+  "channelEvidence": "The socket authenticated, and its counter reached at least 1792 large replies. The complete 475563378-byte artifact stream and file hashes matched, so this run establishes use of the experimental path for a substantial part of the download, not necessarily every reply.",
+  "result": "GUI Split, Extract, undo, complete download and GUI reopen completed. The first post-reopen public-MCP geometry digest timed out; subsequent geometry and undo/redo checks were not reached. Job peak was 4353630208 bytes, exceeding the 4294967296-byte limit by 58662912 bytes. Guard cleanup was confirmed.",
+  "driverObservation": "The driver reported 57721368 heap-used bytes at export and 520514344 at download despite avoiding eager assertion-message formatting. This single sample does not identify retained objects or prove the cause of the peak.",
+  "artifactSha256": "72ae9c9ff2eea8a4022719eac5121c92bb76b6c92dc839a663abf43863f82b08",
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/ws-lazy-ply3-20261106.json",
+  "receiptSha256": "7710ad0ab4b89783a7ffcaed084e0f1ddc8fa503aabefd68ba1c5d04c6973bae",
+  "logSha256": "b45f0bd001483ed1db1df252cf65c3f347a412df2400c62a89f83dc66f8bab7b",
+  "channelTraceSha256": "d5549db392d21f46e5a1a1bff565bca3d06ee8255c5ef90d2089feda4f928698",
+  "prototypePatch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/ws-lazy-prototype-20261106.patch",
+  "prototypePatchSha256": "b05b3c9a97ee13f8af5cc0b5a81afc57788b4ff07326295dd1e827a8c21f3f85",
+  "cleanup": "The temporary project was independently hash-verified and deleted; the worktree, verified dependency junction and individually verified temporary package files were removed. Only small evidence artifacts were retained.",
+  "limitations": "The prototype lacks production security, compatibility, cancellation and lifecycle validation and is not integrated. The run does not solve the large-project resource, numeric ownership, native, hosted-CI or M2 completion gates."
+}
