@@ -1458,3 +1458,61 @@ it.each(
     api.dispose();
   }
 });
+it("exposes automatic CAD setup through shared preview/apply with strict schema and unchanged preview sources", async () => {
+  const { api, state, host } = setup();
+  const pts: number[] = [];
+  for (const z of [7, 10])
+    for (let i = 0; i <= 20; i++)
+      for (let j = 0; j <= 10; j++) pts.push(i + 30, j - 17, z);
+  state.entities[0] = {
+    ...state.entities[0],
+    kind: "pointcloud",
+    positions: new Float32Array(pts),
+  };
+  const source = state.entities[0],
+    original = source.positions.slice();
+  try {
+    const args = {
+      entityIds: ["scan"],
+      automatic: {
+        referenceEntityId: "scan",
+        origin: "corner",
+        primaryAxis: "Y",
+      },
+      expectedRevision: api.currentRevision(),
+      requestId: crypto.randomUUID(),
+    };
+    const invalid = await api.invoke("alignment_preview", {
+      ...args,
+      constraints: point,
+    });
+    expect(invalid.ok).toBe(false);
+    const preview = await settle(
+      api,
+      await api.invoke("alignment_preview", args),
+    );
+    expect(preview.status).toBe("succeeded");
+    expect(preview.result.automatic.planeSupportPercent).toBeGreaterThan(45);
+    expect(state.entities[0]).toBe(source);
+    expect(source.positions).toEqual(original);
+    expect(host.commit).not.toHaveBeenCalled();
+    const applied = await settle(
+      api,
+      await api.invoke("alignment_apply", {
+        ...args,
+        requestId: crypto.randomUUID(),
+        expectedRevision: api.currentRevision(),
+      }),
+    );
+    expect(applied.status).toBe("succeeded");
+    expect(applied.result.matrix).toEqual(preview.result.matrix);
+    expect(state.history).toHaveLength(1);
+    expect(
+      applied.result.targets[0].bounds.min.every(
+        (v: number) => Math.abs(v) < 1e-4,
+      ),
+    ).toBe(true);
+  } finally {
+    api.dispose();
+  }
+});

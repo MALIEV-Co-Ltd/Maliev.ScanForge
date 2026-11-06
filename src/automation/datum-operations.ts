@@ -1,3 +1,7 @@
+import {
+  automaticCadSetup,
+  type AutomaticCadSetup,
+} from "../automatic-cad-setup";
 import type { Handler, WorkspaceHost } from "./api";
 import { buildDatumAlignment, type DatumInstruction } from "../datum-alignment";
 import type { Entity } from "../types";
@@ -35,7 +39,8 @@ export interface DatumReferenceConstraint {
 
 export interface DatumRequest {
   entityIds: string[];
-  constraints: (
+  automatic?: AutomaticCadSetup;
+  constraints?: (
     | DatumInstruction
     | DatumReferenceConstraint
     | {
@@ -85,6 +90,24 @@ export function createDatumOperations(
         );
       return entity;
     });
+    let automatic: Awaited<ReturnType<typeof automaticCadSetup>> | undefined;
+    if (args.automatic) {
+      if (args.constraints || args.translation || args.translationPoint)
+        throw Error(
+          "Automatic CAD setup cannot be combined with manual references or translation.",
+        );
+      context.progress(0, "Detecting CAD base and axes");
+      automatic = await automaticCadSetup(targets, args.automatic, () =>
+        context.check(),
+      );
+      args = {
+        ...args,
+        constraints: automatic.constraints,
+        translationPoint: automatic.translationPoint,
+      };
+    }
+    if (!args.constraints?.length)
+      throw Error("Choose automatic CAD setup or manual frame references.");
     const references = new Map<string, AlignmentReferencePage>();
     const bakedTargets = new Set(
       targets
@@ -296,6 +319,7 @@ export function createDatumOperations(
     );
     const summary = {
       units: "mm",
+      ...(automatic ? { automatic: automatic.diagnostics } : {}),
       translation: frame.translation,
       ...(args.translationPoint
         ? { translationPoint: [...args.translationPoint] }

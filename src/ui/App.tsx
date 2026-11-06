@@ -5996,7 +5996,7 @@ export function App() {
         )}
         <ToolWorkspace.Provider value={workspace}>
           <aside
-            className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
+            className={`inspector ${datumAlignmentOpen ? "datum-command-host" : ""} ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
             style={
               interactiveOpen ||
               globalAlignmentOpen ||
