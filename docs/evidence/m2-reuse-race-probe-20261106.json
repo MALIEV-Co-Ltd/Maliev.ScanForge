@@ -85,6 +85,19 @@
     "sizedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-memory-r2-20261106.json",
     "limitations": "The synchronous hash is a potential long main-thread task; timings are Node synthetic measurements, not browser responsiveness. There is no retry, no protection after unpack returns, and no GUI/MCP or real PLY-3 validation. It is not an integrated solution."
   },
+  "noOrdinaryNumericReuseExperiment": {
+    "scope": "Isolated browser-decoder variant with ordinary numeric-array reuse disabled; shared-chunk validation remains enabled. Not integrated.",
+    "method": "Removed the numeric reuse callback from the decoder client in the probe worktree. The existing transport prototype remained present but received no numeric reuse callback.",
+    "sourceSha256": "7d770246eae19b85c896d2936c1b7d5bcd7950680727bc8d5f468dffc072576e",
+    "sourceCopy": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-decoding-client-20261106.ts",
+    "bundle": "scanforge-1895c02cedffb4db",
+    "focused": "38 decoding, transport and reuse tests passed. A real decoder-worker diagnostic confirmed no reuse lookup, independent restored numeric backing, history alias preservation and worker cleanup.",
+    "ply3": "Matching input and bounds, full 475563378-byte artifact download and GUI reopen completed via local CDP file selection; stream and independently read file hashes both were 302c7a32304602cf22665ac05027bfaec4d6721ac60fa5c80f0bc1cff4b3d03d. The first post-reopen public-MCP geometry digest timed out with BRIDGE_UNAVAILABLE; Undo/Redo was not reached. Reported peak was 4295892992 bytes, 925696 above 4 GiB. Job cleanup confirmed zero active processes. The temporary download was removed after hash verification.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/no-reuse-ply3-cdp-20261106.json",
+    "receiptSha256": "d2456628d5b6f93119270e3b54d21cde2d8040d43a570ddaaf101e5ff9092536",
+    "logSha256": "3f66bf1413f8cb5d4333167067d39a74daf2507e310154be1d28e9e2886e979a",
+    "limitation": "A failed run does not identify the allocation responsible or prove universal infeasibility. The resource and GUI/public-MCP lifecycle gates remain open; no-reuse behavior was not adopted."
+  },
   "ownedArtifactCleanup": {
     "reason": "User requested cleanup of task-generated work to restore disk headroom.",
     "removedDuplicateProjectCopies": [

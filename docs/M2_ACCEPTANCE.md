@@ -8,6 +8,8 @@ An [isolated reuse-race prototype](evidence/m2-reuse-race-probe-20261106.json) p
 
 A second prototype replay selected the same downloaded PLY-3 project through local CDP. GUI reopen, geometry and post-reopen Undo/Redo completed, but the guard still failed: reported peak exceeded 4 GiB by 249,856 bytes. This is a different file-selection path, not native chooser acceptance, and it does not resolve the prototype's ownership limitation.
 
+An isolated decoder with ordinary numeric reuse disabled produced independent restored arrays in a browser-worker control, but its matching PLY-3 replay failed: the first post-reopen MCP geometry query timed out and reported peak exceeded 4 GiB by 925,696 bytes. It is not integrated; see the same [restore probe record](evidence/m2-reuse-race-probe-20261106.json).
+
 At the four PLY-3 staging sizes, a synthetic transport diagnostic retained about 439 MB more ArrayBuffer storage at the last lookup with that prototype than with the current code; this is not a real Job-peak measurement. A second fingerprint-and-reject experiment released staging promptly but took roughly 5.47 seconds in the sized Node test, versus 0.85 seconds for the baseline, and has no retry or protection after unpack returns. Neither experiment is integrated or establishes a safe resource and responsiveness tradeoff.
 
 At the 2026-11-06 local integration audit, main `e367262f` was an ancestor of candidate `1a5779ac`. The checked-out main workspace had 492 local files overlapping the candidate's changed paths; 294 matched the candidate content and 198 differed. This is a point-in-time worktree comparison, not a merge or review of those local changes. Preserve and reconcile the local workspace before updating it.
