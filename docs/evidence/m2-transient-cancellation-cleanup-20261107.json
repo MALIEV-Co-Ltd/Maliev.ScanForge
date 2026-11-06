@@ -8,7 +8,7 @@
     "focused": "57 tests passed across six project encoding, artifact staging, capacity and cancellation files.",
     "fullSuite": "50702 passed, 76 skipped, 810 files passed and 29 skipped. Release-test fixtures emitted Git line-ending warnings.",
     "productionBuild": "All 15 TypeScript batches, Vite and offline manifest passed; bundle scanforge-2600b65512dee3fa.",
-    "publicMcpBrowser": "Official SDK and built-application smoke passed, including project export and GUI/public-MCP binary reopen. It does not reproduce this particular cancellation interleaving through public MCP.",
+    "publicMcpBrowser": "Official SDK and built-application smoke passed, including project export and GUI/public-MCP binary reopen. A later original PLY-3 browser run used public MCP job_cancel after holding the first main-thread staging transaction's committed completion. The job reported cancelled, its temporary record cleared, and revision, artifacts and checked source, cutter and extracted geometry were unchanged. The hold was injected for the test; it is not evidence that the scheduler naturally reaches this interleaving.",
     "limits": "All listed validation used the 4 GiB guard and confirmed owned-process cleanup. The final checked-in browser regression peaked at 736153600 bytes; MCP smoke peaked at 1737469952 bytes."
   },
   "receipts": {
@@ -17,7 +17,20 @@
     "m2-transient-full-suite-20261107.json": "fb96e6778f61446e67cbb94849194b4fb25ac8c924b6d208023a00aea2612ae4",
     "m2-transient-build-20261107.json": "ed1cc8a80561e252ee7e68e525990e8b85d8b711e5e9cdd1823e3bcd17848d55",
     "m2-transient-mcp-smoke-20261107.json": "5f1ea36fb765bebe8ad7fd239813f9e374c46f03ae84ee56a26ea34cb4ad74bd",
-    "m2-transient-browser-final-20261107.json": "07fd5fd81b4ca84fd47984069c40c1f0f14d853ef96ad47662369ddc8b2576b4"
+    "m2-transient-browser-final-20261107.json": "07fd5fd81b4ca84fd47984069c40c1f0f14d853ef96ad47662369ddc8b2576b4",
+    "m2-public-mcp-staging-cancel-guard-20261107.json": "9404d331155473a903e0093e398c5cad9f1ffafe939760ef59f2e5422355a713",
+    "m2-public-mcp-staging-cancel-20261107/split-lifecycle-browser-ledger.json": "f903c070feeca513c1dc2521beb22d7144db7e9b585896c4392fc2080a3a154f",
+    "m2-public-mcp-staging-cancel-20261107.mjs": "a881dc4b79239fd12835da27d204eb884b567e74987d02bd12f85d54266596ee"
+  },
+  "publicMcpCancellation": {
+    "commit": "0107b3eb",
+    "build": "scanforge-2600b65512dee3fa",
+    "inputFaces": 3691133,
+    "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "peakJobBytes": 3456532480,
+    "limitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "scope": "Actual GUI Split/Extract and public MCP cancellation; the test injected a hold after IndexedDB commit and before the completion handler. This covers one cancellation interleaving, not an ordinary uninstrumented timing guarantee or a GUI Save cancellation control."
   },
   "limitations": "Deletion is best effort when storage is unavailable; expired records are swept during later staging. This does not fix the independent numeric-array ownership race, prove large-project resource compliance for a future restore change, or complete the remaining native and milestone gates."
 }

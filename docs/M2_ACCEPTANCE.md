@@ -2,7 +2,7 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
-The [temporary storage cleanup change](evidence/m2-transient-cancellation-cleanup-20261107.json) handles cancellation after a staging write commits. Focused tests, a real browser cancellation control, the full suite, production build and public MCP browser smoke passed. The browser smoke did not reproduce the cancellation interleaving through public MCP; native acceptance and the restore ownership and resource gates remain open.
+The [temporary storage cleanup change](evidence/m2-transient-cancellation-cleanup-20261107.json) handles cancellation after a staging write commits. Focused tests, a real browser cancellation control, the full suite, production build and public MCP browser smoke passed. An original PLY-3 GUI Split/Extract replay also passed public MCP cancellation at an injected storage-commit hold, with unchanged revision, artifacts and checked geometry under 4 GiB. It does not establish natural occurrence of that timing or GUI Save cancellation. Native acceptance and the restore ownership and resource gates remain open.
 
 The [integrated result channel record](evidence/m2-result-channel-integrated-20261107.json) pins the committed optional MCP result channel and one original PLY-3 download, GUI reopen and history replay under 4 GiB. A subsequent [independent-array restore experiment](evidence/m2-no-reuse-result-channel-20261107.json) exceeded that limit and is not integrated; [renderer samples](evidence/m2-restore-renderer-profile-20261107.json) narrow investigation without identifying the allocation.
 
