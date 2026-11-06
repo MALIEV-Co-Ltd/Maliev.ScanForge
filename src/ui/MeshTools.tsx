@@ -1,4 +1,5 @@
 import { AppSelect } from "./AppSelect";
+import { HelpPopover } from "./HelpPopover";
 import { useEffect, useRef, useState } from "react";
 import type { ProcessingRequest, ProcessingResult } from "../processing-client";
 import type { Entity } from "../types";
@@ -490,30 +491,38 @@ export function MeshTools({
               max={100}
               step={1}
             />
-            <label className="field">
-              <span>
-                Fitting sample count:{" "}
-                <output>{fittingSampleCount.toLocaleString()}</output>
-              </span>
-              <input
-                aria-label="Fitting sample count"
-                type="range"
-                min={3}
-                max={100000}
+            <details>
+              <summary>Advanced ICP settings</summary>
+              <p>
+                Fitting samples control computation cost. Maximum iterations
+                limits the search; numerical stopping uses a tolerance of
+                0.00001. Target overlap RMS is the separate accuracy goal.
+              </p>
+              <label className="field">
+                <span>
+                  Fitting sample count:{" "}
+                  <output>{fittingSampleCount.toLocaleString()}</output>
+                </span>
+                <input
+                  aria-label="Fitting sample count"
+                  type="range"
+                  min={3}
+                  max={100000}
+                  step={1}
+                  value={fittingSampleCount}
+                  onChange={(event) =>
+                    setFittingSampleCount(event.target.valueAsNumber)
+                  }
+                />
+              </label>
+              <Field
+                label="ICP maximum iterations"
+                value={icpIterations}
+                onChange={setIcpIterations}
+                min={1}
                 step={1}
-                value={fittingSampleCount}
-                onChange={(event) =>
-                  setFittingSampleCount(event.target.valueAsNumber)
-                }
               />
-            </label>
-            <Field
-              label="ICP maximum iterations"
-              value={icpIterations}
-              onChange={setIcpIterations}
-              min={1}
-              step={1}
-            />
+            </details>
           </>
         )}
         {tool === "surfaceRefinement" && (
@@ -631,55 +640,64 @@ export function MeshTools({
         )}
         {tool === "fineAlign" && (
           <>
-            <button
-              className="wide"
-              disabled={!targets.some((entity) => entity.id === targetId)}
-              onClick={() => {
-                const target = targets.find((entity) => entity.id === targetId);
-                if (selected && target)
-                  void run(
-                    () => ({
-                      kind: "icp",
-                      positions: selected.positions,
-                      sourceTriangleMask:
-                        selected.kind === "pointcloud"
-                          ? undefined
-                          : alignmentTriangleMask(
-                              selected.positions.length / 9,
-                              triangleSelection,
-                              selected.meshSelection?.hidden,
-                            ),
-                      target: registrationTargetPoints(target),
-                      ...fineAlignmentInput(selected, target),
-                      maxDistance: distance,
-                      maxIterations: icpIterations,
-                      sampleSize: fittingSampleCount,
-                      targetSampleSize: 20000,
-                      targetRms,
-                      overlapPercent,
-                      tolerance: 0.00001,
-                    }),
-                    "Fine align scans with dense ICP",
+            <div className="alignment-actions">
+              <button
+                className="wide"
+                disabled={!targets.some((entity) => entity.id === targetId)}
+                onClick={() => {
+                  const target = targets.find(
+                    (entity) => entity.id === targetId,
                   );
-              }}
-            >
-              Fine align with dense ICP
-            </button>
-            <p className="muted">
-              {selected?.kind === "pointcloud"
-                ? "The whole cloud moves. "
-                : triangleSelection?.some((value) => value !== 0)
-                  ? "Selected visible triangles drive fine alignment; the whole scan moves. "
-                  : "Visible triangles drive fine alignment; the whole scan moves. "}
-              ICP fits up to {fittingSampleCount.toLocaleString()} source points
-              against the full target cloud. Target accuracy uses overlap RMS
-              for the closest {overlapPercent}% of eligible source points within
-              the search distance. Whole-cloud RMS includes every eligible
-              source point, including unmatched regions. Both final metrics are
-              verified independently of fitting samples. Start from approximate
-              alignment; symmetric geometry can settle into an incorrect local
-              match.
-            </p>
+                  if (selected && target)
+                    void run(
+                      () => ({
+                        kind: "icp",
+                        positions: selected.positions,
+                        sourceTriangleMask:
+                          selected.kind === "pointcloud"
+                            ? undefined
+                            : alignmentTriangleMask(
+                                selected.positions.length / 9,
+                                triangleSelection,
+                                selected.meshSelection?.hidden,
+                              ),
+                        target: registrationTargetPoints(target),
+                        ...fineAlignmentInput(selected, target),
+                        maxDistance: distance,
+                        maxIterations: icpIterations,
+                        sampleSize: fittingSampleCount,
+                        targetSampleSize: 20000,
+                        targetRms,
+                        overlapPercent,
+                        tolerance: 0.00001,
+                      }),
+                      "Fine align scans with dense ICP",
+                    );
+                }}
+              >
+                Fine align with dense ICP
+              </button>
+              <HelpPopover label="Fine alignment help">
+                <p>
+                  {selected?.kind === "pointcloud"
+                    ? "The whole cloud moves. "
+                    : triangleSelection?.some((value) => value !== 0)
+                      ? "Selected visible triangles drive fine alignment; the whole scan moves. "
+                      : "Visible triangles drive fine alignment; the whole scan moves. "}
+                  ICP fits up to {fittingSampleCount.toLocaleString()} source
+                  points against the full target, which stays fixed. Available
+                  normals reject matches over 60° apart. Target accuracy uses
+                  overlap RMS for the closest {overlapPercent}% of eligible
+                  source points within the search distance. Whole-cloud RMS
+                  includes every eligible source point, including unmatched
+                  regions. Both final metrics are verified independently of
+                  fitting samples. Start from approximate alignment; symmetric
+                  geometry can settle into an incorrect local match. If overlap
+                  is insufficient, geometry stays unchanged; lower expected
+                  overlap or improve the starting alignment.
+                </p>
+              </HelpPopover>
+            </div>
           </>
         )}
         {tool === "globalAlignment" && (

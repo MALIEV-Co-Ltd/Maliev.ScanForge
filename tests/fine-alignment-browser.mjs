@@ -169,6 +169,11 @@ try {
     await page
       .getByLabel("Expected overlap (%)", { exact: true })
       .fill(String(overlap));
+    const advanced = page.locator("details").filter({
+      has: page.getByText("Advanced ICP settings", { exact: true }),
+    });
+    if (!(await advanced.evaluate((element) => element.open)))
+      await advanced.locator("summary").click();
     const slider = page.getByRole("slider", {
       name: "Fitting sample count",
       exact: true,
@@ -182,6 +187,18 @@ try {
   };
   await load(false, false, true);
   await openFine();
+  await page.getByRole("button", { name: "Fine alignment help" }).click();
+  await page
+    .getByRole("tooltip")
+    .filter({ hasText: "Fine alignment help" })
+    .waitFor();
+  assert(
+    await page
+      .getByText("The whole cloud moves.", { exact: false })
+      .isVisible(),
+  );
+  await page.screenshot({ path: join(out, "fine-alignment-help.png") });
+  await page.keyboard.press("Escape");
   await page
     .getByRole("button", { name: "Fine align with dense ICP", exact: true })
     .click();
@@ -387,7 +404,7 @@ try {
     "Complete referenced target points, no unused ghost vertex or repeated corners",
   );
   assert.equal(meshRun.registration.evaluatedPoints, triangles.length);
-  assert(meshRun.registration.distanceTests > 0);
+  assert.equal(meshRun.registration.matching, "fullTargetSurface");
   assert.deepEqual(await geometry(), guiMesh);
   await mutate("history_undo");
   await mutate("history_redo");
