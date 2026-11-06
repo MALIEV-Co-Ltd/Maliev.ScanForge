@@ -1,4 +1,5 @@
-import type { Positions, Vec3 } from "./types";
+import type { IndexedMesh, Positions, Vec3 } from "./types";
+import { prepareNativeAlignmentSurface } from "./scan-native-alignment-surface";
 import {
   compose,
   identityTransform,
@@ -12,6 +13,10 @@ import { sampleAlignmentRegion } from "./registration-selection";
 import { composeCloudPose } from "./point-cloud-placement";
 
 export interface FineAlignmentOptions extends IcpOptions {
+  /** Host-bound geometry and normals; callers cannot substitute scene buffers. */
+  targetSurface?: IndexedMesh;
+  sourceNormals?: Positions;
+  targetNormals?: Positions;
   targetRms?: number;
   overlapPercent?: number;
   /** Internal native cloud output model; never supplied by an agent. */
@@ -23,31 +28,42 @@ export interface FineAlignmentResult extends RegistrationResult {
   overlapPercent: number;
   sampleSize: number;
   fittingSamples: number;
-  overlapRms: number;
+  overlapRms: number | null;
   wholeCloudRms: number;
   overlapPoints: number;
   requiredOverlapPoints: number;
   overlapSatisfied: boolean;
   targetRms: number;
   targetReached: boolean;
-  terminationReason: "targetReached" | "stoppedImproving" | "iterationLimit";
-  matching: "fullTargetPointToPoint";
+  terminationReason:
+    | "targetReached"
+    | "stoppedImproving"
+    | "iterationLimit"
+    | "insufficientOverlap";
+  matching: "fullTargetPointToPoint" | "fullTargetSurface";
+  normalCompatibility: boolean;
+  rejectedNormalPoints: number;
+  applied: boolean;
   evaluatedPoints: number;
   targetPoints: number;
-  rejectedPoints: number;
   distanceTests: number;
+  rejectedPoints: number;
   overlapFraction: number;
-  inlierRms: number;
+  inlierRms: number | null;
   inlierPairs: number;
 }
 
 export function isFineAlignmentResult(
   result: RegistrationResult,
 ): result is FineAlignmentResult {
-  return "matching" in result && result.matching === "fullTargetPointToPoint";
+  return (
+    "matching" in result &&
+    (result.matching === "fullTargetPointToPoint" ||
+      result.matching === "fullTargetSurface")
+  );
 }
 
-/** Full-target nearest points; bounded fitting samples, independent all-source verification. */
+/** Full target surfaces/points; bounded fitting samples, independent all-source verification. */
 export function registerFineAlignment(
   source: Positions,
   target: Positions,
@@ -120,14 +136,33 @@ export function registerFineAlignment(
     throw new Error("Invalid fine alignment output placement.");
   const sourceCount = source.length / 3,
     targetCount = target.length / 3;
+  const normalCompatibility =
+    !!options.sourceNormals &&
+    !!(options.targetSurface || options.targetNormals);
   // Conservatively include sort scratch and fitting objects; input buffers are host-admitted.
   if (
-    targetCount * 64 + sourceCount * 8 + sampleSize * 1024 >
+    targetCount * (options.targetSurface ? 32 : 64) +
+      sourceCount * 8 +
+      sampleSize * 1024 +
+      (options.targetSurface?.triangles.length ?? 0) * 128 >
     256 * 1024 * 1024
   )
     throw new Error(
       "Fine alignment workspace exceeds the 256 MiB limit; simplify the scans.",
     );
+  for (const [normals, positions] of [
+    [options.sourceNormals, source],
+    [options.targetNormals, target],
+  ] as const) {
+    if (!normals) continue;
+    if (normals.length !== positions.length)
+      throw new Error("Fine alignment normals must match their coordinates.");
+    for (let i = 0; i < normals.length; i++) {
+      if (i % 12288 === 0) check();
+      if (!Number.isFinite(normals[i]))
+        throw new Error("Fine alignment normals must be finite.");
+    }
+  }
   for (const positions of [source, target]) {
     for (let i = 0; i < positions.length; i++) {
       if (i % 12288 === 0) check();
@@ -145,15 +180,32 @@ export function registerFineAlignment(
       for (let axis = 0; axis < 3; axis++)
         samples[i * 3 + axis] = source[id * 3 + axis];
     }
+  const sampleNormals = options.sourceNormals
+    ? mask
+      ? sampleAlignmentRegion(options.sourceNormals, mask, sampleSize, check)
+      : Float64Array.from(
+          { length: samples.length },
+          (_, i) =>
+            options.sourceNormals![
+              Math.floor(
+                (Math.floor(i / 3) * sourceCount) / (samples.length / 3),
+              ) *
+                3 +
+                (i % 3)
+            ],
+        )
+    : undefined;
   const point = (positions: ArrayLike<number>, id: number): Vec3 => [
     positions[id * 3],
     positions[id * 3 + 1],
     positions[id * 3 + 2],
   ];
-  // Retain every target point; subtree bounds avoid scanning distant unmatched regions.
+  // Implicit balanced KD tree uses five bytes per target point and retains every target point.
   const ids = Uint32Array.from({ length: targetCount }, (_, i) => i);
   const axes = new Uint8Array(targetCount);
-  const bounds = new Float64Array(targetCount * 6);
+  const bounds = options.targetSurface
+    ? undefined
+    : new Float64Array(targetCount * 6);
   const build = (lo: number, hi: number) => {
     if (lo >= hi) return;
     if (hi - lo >= 4096) check();
@@ -174,15 +226,33 @@ export function registerFineAlignment(
     const mid = (lo + hi) >>> 1;
     axes[mid] = axis;
     for (let a = 0; a < 3; a++) {
-      bounds[mid * 6 + a] = min[a];
-      bounds[mid * 6 + 3 + a] = max[a];
+      bounds![mid * 6 + a] = min[a];
+      bounds![mid * 6 + 3 + a] = max[a];
     }
     build(lo, mid);
     build(mid + 1, hi);
   };
-  build(0, targetCount);
+  if (!options.targetSurface) build(0, targetCount);
+  const surface = options.targetSurface
+    ? prepareNativeAlignmentSurface(
+        options.targetSurface.vertices,
+        options.targetSurface.triangles,
+        { signal: options.signal },
+      )
+    : undefined;
+  if (options.targetSurface && !surface)
+    throw new Error("Fine alignment target has no usable surface.");
   let distanceTests = 0;
   const nearest = (p: Vec3) => {
+    if (surface) {
+      const hit = surface.query(p, Infinity);
+      if (!hit) throw new Error("Fine alignment target surface query failed.");
+      return {
+        distance2: hit.distance ** 2,
+        closest: hit.closest as Vec3,
+        normal: hit.normal,
+      };
+    }
     let distance2 = Infinity,
       index = -1;
     const visit = (lo: number, hi: number) => {
@@ -193,9 +263,9 @@ export function registerFineAlignment(
       let lowerBound = 0;
       for (let a = 0; a < 3; a++) {
         const delta = Math.max(
-          bounds[mid * 6 + a] - p[a],
+          bounds![mid * 6 + a] - p[a],
           0,
-          p[a] - bounds[mid * 6 + 3 + a],
+          p[a] - bounds![mid * 6 + 3 + a],
         );
         lowerBound += delta * delta;
       }
@@ -218,20 +288,47 @@ export function registerFineAlignment(
       }
     };
     visit(0, targetCount);
-    return { distance2, index };
+    return {
+      distance2,
+      closest: point(target, index),
+      normal: options.targetNormals
+        ? point(options.targetNormals, index)
+        : undefined,
+    };
   };
   let transform = options.initial ?? identityTransform();
   validateTransform(transform);
+  const compatible = (
+    normals: ArrayLike<number> | undefined,
+    id: number,
+    targetNormal?: readonly number[],
+  ) => {
+    if (!normalCompatibility) return true;
+    const n = point(normals!, id),
+      r = transform.rotation;
+    const rotated = [0, 1, 2].map(
+      (a) => r[a * 3] * n[0] + r[a * 3 + 1] * n[1] + r[a * 3 + 2] * n[2],
+    );
+    const length = Math.hypot(...rotated) * Math.hypot(...targetNormal!);
+    // Reject the nearest opposite face; retrying a farther face can cross a thin wall.
+    return (
+      length > 0 &&
+      rotated.reduce((s, v, a) => s + v * targetNormal![a], 0) >= 0.5 * length
+    );
+  };
   const correspondences = () => {
     const pairs: { source: Vec3; target: Vec3; distance2: number }[] = [];
     for (let i = 0; i < samples.length / 3; i++) {
       if (i % 4096 === 0) check();
       const p = transformPoint(point(samples, i), transform),
         hit = nearest(p);
-      if (hit.distance2 <= maxDistance ** 2)
+      if (
+        hit.distance2 <= maxDistance ** 2 &&
+        compatible(sampleNormals, i, hit.normal)
+      )
         pairs.push({
           source: p,
-          target: point(target, hit.index),
+          target: hit.closest,
           distance2: hit.distance2,
         });
     }
@@ -269,7 +366,8 @@ export function registerFineAlignment(
     let sum = 0,
       maxError = 0,
       evaluatedPoints = 0,
-      accepted = 0;
+      accepted = 0,
+      rejectedNormalPoints = 0;
     for (let i = 0; i < sourceCount; i++) {
       if (i % 4096 === 0) check();
       if (mask && !mask[Math.floor(i / 3)]) continue;
@@ -300,7 +398,8 @@ export function registerFineAlignment(
         throw new Error(
           "Aligned scan coordinates exceed Float32 output precision.",
         );
-      const d2 = nearest(p).distance2;
+      const hit = nearest(p),
+        d2 = hit.distance2;
       if (!Number.isFinite(d2))
         throw new Error(
           "Alignment distances exceed the supported numeric range.",
@@ -308,22 +407,26 @@ export function registerFineAlignment(
       sum += d2;
       maxError = Math.max(maxError, Math.sqrt(d2));
       evaluatedPoints++;
-      if (d2 <= maxDistance ** 2) distances[accepted++] = d2;
+      const normalAccepted = compatible(options.sourceNormals, i, hit.normal);
+      if (!normalAccepted) rejectedNormalPoints++;
+      if (d2 <= maxDistance ** 2 && normalAccepted) distances[accepted++] = d2;
     }
-    if (accepted < 3)
+    if (accepted < 3 && !normalCompatibility)
       throw new Error("Fewer than three final ICP correspondences.");
     const sorted = distances.subarray(0, accepted).sort();
     const requiredOverlapPoints = requestedPoints(evaluatedPoints);
     const inlierPairs = Math.min(accepted, requiredOverlapPoints);
     let inlierSum = 0;
     for (let i = 0; i < inlierPairs; i++) inlierSum += sorted[i];
+    const overlapRms = inlierPairs ? Math.sqrt(inlierSum / inlierPairs) : null;
     return {
       rms: Math.sqrt(sum / evaluatedPoints),
       wholeCloudRms: Math.sqrt(sum / evaluatedPoints),
-      overlapRms: Math.sqrt(inlierSum / inlierPairs),
+      overlapRms,
       overlapPoints: inlierPairs,
       requiredOverlapPoints,
       overlapSatisfied: accepted >= requiredOverlapPoints,
+      rejectedNormalPoints,
       maxError,
       pairs: evaluatedPoints,
       evaluatedPoints,
@@ -331,7 +434,7 @@ export function registerFineAlignment(
       rejectedPoints: evaluatedPoints - accepted,
       overlapFraction: accepted / evaluatedPoints,
       inlierPairs,
-      inlierRms: Math.sqrt(inlierSum / inlierPairs),
+      inlierRms: overlapRms,
     };
   };
   const betterOutput = (
@@ -342,12 +445,32 @@ export function registerFineAlignment(
     if (!a.overlapSatisfied && a.overlapPoints !== b.overlapPoints)
       return a.overlapPoints > b.overlapPoints;
     return (
-      a.overlapRms < b.overlapRms ||
+      (a.overlapRms ?? Infinity) < (b.overlapRms ?? Infinity) ||
       (a.overlapRms === b.overlapRms && a.wholeCloudRms < b.wholeCloudRms)
     );
   };
   let bestTransform = transform;
   let bestOutput = evaluate();
+  if (normalCompatibility && !bestOutput.overlapSatisfied) {
+    check(1, bestOutput.overlapRms ?? bestOutput.wholeCloudRms);
+    return {
+      transform,
+      ...bestOutput,
+      iterations: 0,
+      converged: false,
+      targetRms,
+      targetReached: false,
+      terminationReason: "insufficientOverlap",
+      matching: surface ? "fullTargetSurface" : "fullTargetPointToPoint",
+      normalCompatibility,
+      distanceTests,
+      applied: false,
+      targetRmsBasis: "overlap",
+      overlapPercent,
+      sampleSize,
+      fittingSamples: samples.length / 3,
+    };
+  }
   let previousRms = Infinity,
     completed = 0;
   let terminationReason: FineAlignmentResult["terminationReason"] =
@@ -379,7 +502,11 @@ export function registerFineAlignment(
       bestOutput = final;
       bestTransform = transform;
     }
-    if (bestOutput.overlapSatisfied && bestOutput.overlapRms <= targetRms) {
+    if (
+      bestOutput.overlapSatisfied &&
+      bestOutput.overlapRms !== null &&
+      bestOutput.overlapRms <= targetRms
+    ) {
       terminationReason = "targetReached";
       break;
     }
@@ -396,22 +523,28 @@ export function registerFineAlignment(
     final = bestOutput;
     transform = bestTransform;
   }
-  const targetReached = final.overlapSatisfied && final.overlapRms <= targetRms;
+  const targetReached =
+    final.overlapSatisfied &&
+    final.overlapRms !== null &&
+    final.overlapRms <= targetRms;
   if (targetReached) terminationReason = "targetReached";
-  check(1, final.overlapRms);
+  if (!final.overlapSatisfied) terminationReason = "insufficientOverlap";
+  check(1, final.overlapRms ?? final.wholeCloudRms);
   return {
     transform,
     ...final,
     iterations: completed,
-    converged: terminationReason !== "iterationLimit",
+    converged: final.overlapSatisfied && terminationReason !== "iterationLimit",
     targetRms,
     targetReached,
     terminationReason,
-    matching: "fullTargetPointToPoint",
+    matching: surface ? "fullTargetSurface" : "fullTargetPointToPoint",
+    normalCompatibility,
+    distanceTests,
+    applied: final.overlapSatisfied,
     targetRmsBasis: "overlap",
     overlapPercent,
     sampleSize,
     fittingSamples: samples.length / 3,
-    distanceTests,
   };
 }

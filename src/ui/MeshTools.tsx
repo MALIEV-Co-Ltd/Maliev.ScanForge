@@ -6,16 +6,19 @@ import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { fineAlignmentInput } from "../fine-alignment-input";
 import { parseLandmarkSeedVertices } from "../native-landmark-region";
 import { processScanRegistration } from "../scan-registration";
 import { registrationTargetPoints } from "../registration-target";
 
 function fineAlignmentStatus(reason: string): string {
-  return reason === "targetReached"
-    ? "Target accuracy reached"
-    : reason === "stoppedImproving"
-      ? "Stopped improving; target accuracy not reached"
-      : "Iteration limit reached; target accuracy not reached";
+  return reason === "insufficientOverlap"
+    ? "Insufficient compatible overlap; geometry unchanged"
+    : reason === "targetReached"
+      ? "Target accuracy reached"
+      : reason === "stoppedImproving"
+        ? "Stopped improving; target accuracy not reached"
+        : "Iteration limit reached; target accuracy not reached";
 }
 
 export type MeshTool =
@@ -178,9 +181,15 @@ export function MeshTools({
         return;
       }
       const registration = outcome.registration;
+      if (registration && "applied" in registration && !registration.applied) {
+        onStatus(
+          "Insufficient compatible overlap; geometry unchanged. Reduce expected overlap or improve the starting alignment.",
+        );
+        return;
+      }
       const summary = registration
         ? "overlapRms" in registration
-          ? ` · Overlap RMS ${registration.overlapRms.toPrecision(4)} mm · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
+          ? ` · Overlap RMS ${registration.overlapRms === null ? "unavailable" : `${registration.overlapRms.toPrecision(4)} mm`} · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
           : ` · RMS ${registration.rms.toPrecision(4)} mm · ${registration.converged ? "converged" : "iteration limit reached"}`
         : "";
       onStatus(`${label} complete${summary}`);
@@ -633,6 +642,7 @@ export function MeshTools({
                               selected.meshSelection?.hidden,
                             ),
                       target: registrationTargetPoints(target),
+                      ...fineAlignmentInput(selected, target),
                       maxDistance: distance,
                       maxIterations: icpIterations,
                       sampleSize: fittingSampleCount,
@@ -735,8 +745,11 @@ export function MeshTools({
             "terminationReason" in result.registration && (
               <p>
                 {fineAlignmentStatus(result.registration.terminationReason)} ·
-                Overlap RMS {result.registration.overlapRms.toPrecision(4)} mm ·
-                Target {result.registration.targetRms} mm
+                Overlap RMS{" "}
+                {result.registration.overlapRms === null
+                  ? "unavailable"
+                  : `${result.registration.overlapRms.toPrecision(4)} mm`}{" "}
+                · Target {result.registration.targetRms} mm
               </p>
             )}
           {result.registration && "overlapRms" in result.registration && (

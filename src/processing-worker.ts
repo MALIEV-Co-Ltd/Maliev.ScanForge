@@ -687,7 +687,10 @@ scope.onmessage = async ({ data: incoming }) => {
               onProgress: (fraction, rms) =>
                 progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
             });
+      const applyRegistration =
+        !isFineAlignmentResult(registration) || registration.applied;
       if (
+        applyRegistration &&
         !request.deferCloudTransform &&
         !(request.kind === "paired" && request.refinementTargets)
       )
@@ -701,6 +704,7 @@ scope.onmessage = async ({ data: incoming }) => {
         );
       result.registration = registration;
       if (
+        applyRegistration &&
         request.sourceIndexed &&
         !(request.kind === "paired" && request.refinementTargets)
       ) {
@@ -751,6 +755,9 @@ scope.onmessage = async ({ data: incoming }) => {
         ...(isFineAlignmentResult(registration)
           ? {
               algorithm: registration.matching,
+              applied: registration.applied,
+              normalCompatibility: registration.normalCompatibility,
+              rejectedNormalPoints: registration.rejectedNormalPoints,
               targetRms: registration.targetRms,
               targetReached: registration.targetReached,
               terminationReason: registration.terminationReason,

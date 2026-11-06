@@ -98,6 +98,7 @@ import {
   indexedRenderNormals,
 } from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { fineAlignmentInput } from "../fine-alignment-input";
 import { prepareLandmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
@@ -1100,6 +1101,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "refinementTargets" in op ||
         "deferCloudTransform" in op ||
         "outputPlacement" in op ||
+        "targetSurface" in op ||
+        "sourceNormals" in op ||
+        "targetNormals" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -1208,11 +1212,13 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         });
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
+        const target = sampledObject(s, a.targetId);
         Object.assign(request, {
           target:
             kind === "icp"
-              ? registrationTargetPoints(sampledObject(s, a.targetId))
-              : sampledObject(s, a.targetId).positions,
+              ? registrationTargetPoints(target)
+              : target.positions,
+          ...(kind === "icp" ? fineAlignmentInput(e, target) : {}),
           sourceTriangleMask:
             kind === "icp" && e.kind !== "pointcloud"
               ? alignmentTriangleMask(

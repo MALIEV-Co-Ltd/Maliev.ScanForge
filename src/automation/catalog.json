@@ -554,7 +554,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Finite mesh Split updates the source as one indexed mesh and reports connected components; unchanged cuts return changed:false. Isolated interior edges and simple open cut paths with one boundary endpoint remain shared when their fans are connected and each cut edge has two incident faces; other cut topologies retain their applicable seam behavior. Its cutter ordering, hit and point counts have separate 1 GiB-derived temporary estimates; exceeding one rejects before publication, and reducing cutter complexity can make a retry feasible. Uncertain floating-point face coverage is checked against exact binary-coordinate area vectors before rejection; winding, edge and constraint checks still apply. Sampled CAD and other non-mesh cutters retain the existing segment-producing path. Reference-plane Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Finite mesh Split updates the source as one indexed mesh and reports connected components; unchanged cuts return changed:false. Isolated interior edges and simple open cut paths with one boundary endpoint remain shared when their fans are connected and each cut edge has two incident faces; other cut topologies retain their applicable seam behavior. Its cutter ordering, hit and point counts have separate 1 GiB-derived temporary estimates; exceeding one rejects before publication, and reducing cutter complexity can make a retry feasible. Uncertain floating-point face coverage is checked against exact binary-coordinate area vectors before rejection; winding, edge and constraint checks still apply. Sampled CAD and other non-mesh cutters retain the existing segment-producing path. Reference-plane Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome. Fine alignment uses fullTargetSurface for visible target mesh surfaces and fullTargetPointToPoint for clouds, with normal compatibility when available. It reports terminationReason, inlierRms, targetRmsBasis:overlap and rejectedNormalPoints. insufficientOverlap returns applied:false and retains the original geometry.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -1017,37 +1017,45 @@
                   "exclusiveMinimum": 0,
                   "maximum": 100,
                   "default": 85,
-                  "description": "Expected portion of eligible source points to match (percent). Must have this many points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
+                  "description": "Expected portion of eligible source points to match (percent). Must have this many normal-compatible points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
                 },
                 "targetRms": {
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 0.5,
-                  "description": "Desired overlap RMS in mm against the full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
+                  "description": "Desired overlap RMS in mm against the visible target mesh surface or full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
                 },
                 "maxDistance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum correspondence distance in millimetres. Defaults to 10 mm through the shared GUI/MCP application operation.",
+                  "default": 10
                 },
                 "maxIterations": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 1000
+                  "maximum": 1000,
+                  "default": 200,
+                  "description": "Maximum fitting iterations. Distinct from desired overlap accuracy."
                 },
                 "sampleSize": {
                   "type": "integer",
                   "minimum": 3,
                   "maximum": 100000,
-                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point."
+                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point.",
+                  "default": 20000
                 },
                 "targetSampleSize": {
                   "type": "integer",
                   "minimum": 3,
-                  "maximum": 100000
+                  "maximum": 100000,
+                  "description": "Optional compatibility setting for older clients; ignored by fine alignment because the complete target is matched."
                 },
                 "tolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "default": 0.00001,
+                  "description": "Numerical stagnation tolerance; distinct from the targetRms accuracy goal."
                 },
                 "trimFraction": {
                   "type": "number",
@@ -1055,14 +1063,7 @@
                   "maximum": 1
                 }
               },
-              "required": [
-                "kind",
-                "maxDistance",
-                "maxIterations",
-                "sampleSize",
-                "targetSampleSize",
-                "tolerance"
-              ],
+              "required": ["kind"],
               "additionalProperties": false
             },
             {

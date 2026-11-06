@@ -11,28 +11,36 @@ existing CAD and alignment operations, with unchanged parameters and history.
 ## Fine alignment accuracy
 
 `mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.
-`sampleSize` controls source fitting samples (3–100000); the full target is used
-for matching. Legacy `targetSampleSize` is accepted without decimating the target.
-Indexed mesh targets use every referenced canonical vertex, omitting repeated
-triangle corners and unused vertices; clouds retain all point slots.
+`sampleSize` controls source fitting samples (3–100000, default 20000); the full
+visible mesh surface or target point cloud is used for matching. Legacy
+`targetSampleSize` is accepted without decimating the target. The shared GUI/MCP
+operation binds target geometry and normals from workspace objects; agents cannot
+supply these buffers directly. The default correspondence distance is 10 mm,
+the default iteration limit is 200, and the default numerical tolerance is 0.00001.
 Set `overlapPercent` (greater than zero through 100, default 85) or legacy
 `trimFraction`, never both. `targetRms` is a positive overlap RMS in millimetres
 (default 0.5), separate from the numerical stopping `tolerance`.
 
 Read `overlapSatisfied` and `targetReached` before accepting an accuracy claim.
 `converged` can also mean a plateau above the requested accuracy; inspect
-`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`).
+`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`, or
+`insufficientOverlap`). When compatible overlap is insufficient, `applied:false`
+preserves the original geometry and history. Available normals reject opposite-face
+matches; `normalCompatibility` and `rejectedNormalPoints` report this check.
 `overlapRms`/`overlapPoints` evaluate the closest requested proportion of eligible
-source points within `maxDistance`; `requiredOverlapPoints` prevents a tiny gated
+normal-compatible source points within `maxDistance`; `requiredOverlapPoints` prevents a tiny gated
 subset from satisfying the target. `wholeCloudRms` (also legacy `rms`), `maxError`
 and `pairs` evaluate every eligible source point without trimming or rejection.
 `inlierRms`/`inlierPairs` alias overlap metrics. `sampleSize`, `fittingSamples`,
 `overlapPercent`, `overlapFraction`, `rejectedPoints` and `targetRmsBasis:"overlap"`
 make the metric basis explicit.
-`distanceTests` counts direct point-distance evaluations across fitting and
-verification. Exact subtree bounds prune impossible matches without sampling.
-Extra solver workspace is conservatively admitted as 64 bytes per target point,
-8 per source point and 1024 per requested fitting sample, with a 256 MiB limit.
+`overlapRms` and `inlierRms` are null when no compatible overlap is available.
+`distanceTests` counts direct target-point evaluations across fitting and
+verification; surface queries use a separate path. Exact subtree bounds prune
+impossible point matches without sampling. Solver admission estimates 64 bytes per
+target point for point matching or 32 for surface matching, 8 per source point,
+1024 per requested fitting sample, and 128 per target triangle-index entry when
+using a surface, with a 256 MiB limit.
 Input transport and model buffers have separate admission. Exceeding the limit
 fails explicitly rather than silently decimating the target.
 

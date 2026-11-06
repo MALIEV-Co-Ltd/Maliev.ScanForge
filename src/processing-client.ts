@@ -112,6 +112,9 @@ export type ProcessingRequest =
       sourceTriangleMask?: Uint8Array;
       positions: Positions;
       target: Positions;
+      targetSurface?: import("./types").IndexedMesh;
+      sourceNormals?: Positions;
+      targetNormals?: Positions;
       maxDistance: number;
       maxIterations: number;
       sampleSize: number;
@@ -167,7 +170,7 @@ export interface ProcessingResult {
   topology?: TopologySummary;
   registration?:
     RegistrationResult | import("./fine-registration").FineAlignmentResult;
-  diagnostics: Record<string, number | string | boolean>;
+  diagnostics: Record<string, number | string | boolean | null>;
 }
 export type ProcessingResponse =
   | { progress: number; stage: string; details?: HoleFillProgress }
@@ -867,6 +870,18 @@ function runProcessingRequest(
               ? source
               : clone(copied.outputPlacement.sourcePositions),
         };
+      }
+      if (copied.kind === "icp") {
+        if (copied.sourceNormals)
+          copied.sourceNormals = clone(copied.sourceNormals);
+        if (copied.targetNormals)
+          copied.targetNormals = clone(copied.targetNormals);
+        if (copied.targetSurface) {
+          const mesh = copied.targetSurface;
+          const triangles = Uint32Array.from(mesh.triangles);
+          transfers.push(triangles.buffer);
+          copied.targetSurface = { vertices: clone(mesh.vertices), triangles };
+        }
       }
       if (copied.kind === "nativeRefine") {
         copied.additionalTargets = copied.additionalTargets?.map((target) => {

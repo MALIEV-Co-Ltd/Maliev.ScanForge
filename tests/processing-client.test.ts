@@ -53,6 +53,52 @@ const request: ProcessingRequest = {
   tolerance: 0.001,
 };
 
+it("transfers private fine-alignment surface and normal buffers without detaching authored geometry", async () => {
+  const source = new Float32Array(positions),
+    target = new Float32Array(positions),
+    sourceNormals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]),
+    targetNormals = new Float32Array(sourceNormals),
+    triangles = new Uint32Array([0, 1, 2]);
+  const pending = processMesh(
+    {
+      kind: "icp",
+      positions: source,
+      target,
+      targetSurface: { vertices: target, triangles },
+      sourceNormals,
+      targetNormals,
+      maxDistance: 10,
+      maxIterations: 1,
+      sampleSize: 3,
+      targetSampleSize: 3,
+      tolerance: 0.00001,
+    },
+    {},
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  assertFine(worker.sent);
+  expect(worker.sent.targetSurface!.vertices).not.toBe(target);
+  expect(worker.sent.sourceNormals).not.toBe(sourceNormals);
+  expect(worker.sent.targetNormals).not.toBe(targetNormals);
+  expect(worker.transfers).not.toContain(source.buffer);
+  expect(worker.transfers).not.toContain(target.buffer);
+  expect(worker.transfers).not.toContain(triangles.buffer);
+  structuredClone(worker.sent, { transfer: worker.transfers });
+  expect(source.byteLength).toBe(36);
+  expect(target.byteLength).toBe(36);
+  expect(triangles.byteLength).toBe(12);
+  expect(sourceNormals.byteLength).toBe(36);
+  expect(targetNormals.byteLength).toBe(36);
+  worker.reply({ result: { kind: "icp", diagnostics: {} } });
+  await pending;
+});
+function assertFine(
+  value: ProcessingRequest | undefined,
+): asserts value is Extract<ProcessingRequest, { kind: "icp" | "global" }> {
+  if (!value || value.kind !== "icp")
+    throw Error("Expected fine alignment request");
+}
+
 it("keeps explicit large diagnostics available after optional warmup admission declines", async () => {
   const triangles = SCAN_DEFAULT_BUDGET_BYTES / 512 + 1;
   const source = new Float32Array(triangles * 9);
