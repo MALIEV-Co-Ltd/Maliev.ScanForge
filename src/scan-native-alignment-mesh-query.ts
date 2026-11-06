@@ -52,6 +52,8 @@ export function createNativeAlignmentSurfaceQuery(
     region = [0];
   const normal = [0, 0, 0];
   const scratch = createNoiseTriangleScratch();
+  const visited = new Uint16Array(count);
+  let queryId = 0;
   const root = surface.root;
   const query =
     "format" in root
@@ -83,9 +85,16 @@ export function createNativeAlignmentSurfaceQuery(
     point: readonly number[],
     radius: number,
   ): AlignmentQueryHit | undefined => {
+    if (++queryId === 0x10000) {
+      visited.fill(0);
+      queryId = 1;
+    }
     let bestRegion = 0;
     const bestClosest = [0, 0, 0];
     const hit = query(point, radius, (triangle, searchRadius) => {
+      // A face can occur in multiple leaves; the search radius only shrinks.
+      if (visited[triangle] === queryId) return Infinity;
+      visited[triangle] = queryId;
       if (surface.filterHidden && (surface.triangleFlags?.[triangle] ?? 0) & 1)
         return Infinity;
       for (let axis = 0; axis < 3; axis++) {

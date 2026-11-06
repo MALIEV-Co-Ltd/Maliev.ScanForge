@@ -67,6 +67,8 @@ function alignmentPoolBytes(
 ) {
   let bytes = lanes.reduce((sum, lane) => sum + lane.length * 512, 0);
   for (const surface of surfaces) {
+    // The parent query and two workers each keep a per-face visit stamp.
+    bytes += (3 * surface.points.length * Uint16Array.BYTES_PER_ELEMENT) / 9;
     bytes +=
       (sharedTargetsAvailable() ? 1 : 3) *
       (surface.points.byteLength +
