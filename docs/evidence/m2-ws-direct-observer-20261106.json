@@ -1,0 +1,25 @@
+{
+  "scope": "Diagnostic comparison of alternate bridge transport and test-observer overhead; no application change or milestone acceptance",
+  "synthetic": {
+    "method": "A localhost server receives 1400 independently framed JSON messages containing the same deterministic 262144-byte pseudorandom input encoded as Base64. Both browser controls verify the combined 489385690-byte stream against independently generated SHA-256 acb3f61cd286b83d844b98c66d1ca4b1200d6eb0b9c6476fb5f0e3fc6892527f. One uses direct Playwright browser launch; the other uses launchServer/connect. They use a disposable, unauthenticated WebSocket server and do not exercise MCP.",
+    "direct": { "sampledDriverMaxHeapBytes": 69984688, "peakJobBytes": 580825088, "receiptSha256": "2e6f2c0117a780c3d6dd3197aedc72d0be198a693f62839d43d67d65f3f310c8" },
+    "remote": { "sampledDriverMaxHeapBytes": 495408784, "peakJobBytes": 987537408, "receiptSha256": "cf349df7a7bbad884b76288b95c21272236a6d368e914dfdffee1bdfc72c8f18" },
+    "source": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/m2-ws-observer-entropy-20261106.mjs",
+    "sourceSha256": "ec8b78f3b1777a9fd2b6c9327bea0d7805d09e93cc08954c5eda3938348bd7ec",
+    "sdkOnly": "A separate official SDK stdio echo of 1835 synthetic artifact reads, 481034240 decoded bytes, passed exact byte hashing; sampled client heaps ranged from 18221264 to 27408112 bytes and peak Job memory was 231731200 bytes. Receipt SHA-256 284c619858592a50317deda1a3cd5a1f36301d97091b07e5ed5ec7c0d000401e. This does not recreate actual browser traffic."
+  },
+  "fullPly3": {
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-direct-browser-ply3-20261106.mjs",
+    "driverSha256": "13b3a3e226ae62af4bdf2595a4ae7279e80586f862871a58e706f248675c581f",
+    "driverChange": "Uses chromium.launch instead of launchServer/connect, plus the previously documented lazy assertion message. Browser cleanup is confirmed by the Windows Job guard rather than a browser-server PID in the driver ledger.",
+    "alternate": "One experimental-transport run completed GUI Split, Extract, undo, a complete 475563378-byte public-MCP download with matching stream/file SHA-256 42b1ee32fcf658a8fadee7841eb864dfe924b9ccbdd4f6bd0598e1247358f278, GUI reopen, geometry verification and GUI undo/redo. The server recorded authentication and at least 1792 large replies on the experimental channel. Guard passed with peak 4130414592 bytes, 164552704 bytes below 4 GiB; zero owned processes remained.",
+    "alternateReceiptSha256": "e367321e99aa662e4153e4af7b1dd23e2804218887af048d245edfd473f294b1",
+    "alternateLogSha256": "a2e858ce47128eb24f48f36545ab63838cc0a51076468aef3e745beb4b199f4d",
+    "alternateTraceSha256": "d5549db392d21f46e5a1a1bff565bca3d06ee8255c5ef90d2089feda4f928698",
+    "unchangedBridge": "One direct-browser run with the existing integration application completed Split, Extract, undo and full hash-matched download, but lost the browser bridge during reopen before geometry/history verification. Guard peak 4191191040 bytes was below 4 GiB, but the run failed functionally; zero owned processes remained. The screenshot shows the GUI reporting an opened project; this does not verify geometry or explain the disconnect.",
+    "unchangedReceiptSha256": "b534ce10f5e531199e6a247e009c612f8c8ec0a897cb19d316573aa15614dfd9",
+    "unchangedLogSha256": "df497ae73bf77b7d9b8f4aef1364c64aca205594cd1417c63f96dd8cb234ab19"
+  },
+  "limitations": "The observer overhead is supported by a synthetic comparison, not a complete allocation attribution. Both full controls are single samples with different runs and time-varying memory. The alternate channel remains an insecure, incomplete prototype; no existing application contract was changed. Reproducibility, hardened security/lifecycle behavior, ownership, native, CI and milestone gates remain open.",
+  "cleanup": "Guard cleanup confirmed; both downloaded project files were removed after independent hash checks or driver cleanup. Small diagnostic sources, receipts and screenshots are retained."
+}
