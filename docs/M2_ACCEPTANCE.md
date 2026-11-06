@@ -26,6 +26,8 @@ One later [same-session process trace](evidence/m2-ply3-same-session-process-tra
 
 An isolated [string-body bridge probe](evidence/m2-bridge-string-probe-20261106.json) lowered peak memory in a synthetic request comparison but failed the real same-session replay: the project opened, a later geometry query timed out, and reported peak memory exceeded 4 GiB. The candidate was not integrated; this result does not establish a resource fix.
 
+An isolated [byte-array bridge probe](evidence/m2-bridge-byte-body-probe-20261106.json) also lowered a synthetic peak but failed the real same-session replay: the bridge disconnected before post-reopen geometry verification, and the reported peak exceeded 4 GiB. This candidate was not integrated either.
+
 The 2026-10-27 partial Tangent curved-annulus control matches the installed native export through the shared operation, rendered GUI and public MCP. Source corners, history and binary reopening pass; the complementary arc has a separate result. [Evidence](evidence/m2-partial-tangent-20261027.json) is limited to this one control; other partial and bridge algorithms and the remaining M2 gates stay open.
 
 Latest confirmed green full hosted application checkpoint `69a1380` passes [run 40379322369](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40379322369): 49,926 tests, 64 conditional skips, build, both CAD smoke checks and formatting. Subsequent test/evidence-only commits require their own exact-head CI.
