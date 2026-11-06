@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+An [array allocation probe](evidence/m2-restore-double-allocation-probe-20261107.json) reduced peak memory in a synthetic Node conversion, but an isolated browser replay combining that allocation with independent numeric arrays still exceeded 4 GiB and lost the MCP bridge before post-reopen checks. No production change was made; the observations do not establish causality or close the restore resource gate.
+
 A [current-build independent-array diagnostic](evidence/m2-current-no-reuse-ply3-20261107.json) disabled ordinary numeric reuse in the served decoder and repeated the original PLY-3 export/download/GUI-reopen sequence. It exceeded the 4 GiB guard and lost the MCP bridge before reopened geometry or history could be verified. The temporary downloaded project was hash-verified and removed. The diagnostic is not integrated and does not establish the responsible allocation.
 
 The [current original-scan controls](evidence/m2-current-original-split-controls-20261107.json) pass a direct single-plane shared Split on each of the three original PLY inputs, checking area, seam agreement and input preservation. The largest scan also passes a simulated processing-worker dispatcher check. These are scoped controls, not native or public-MCP acceptance.
