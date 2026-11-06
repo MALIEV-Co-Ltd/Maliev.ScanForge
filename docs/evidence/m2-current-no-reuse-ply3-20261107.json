@@ -1,0 +1,23 @@
+{
+  "scope": "Isolated diagnostic of original PLY-3 project reopen with ordinary numeric-array reuse disabled; no production code change.",
+  "baseCommit": "1a616ab054e252c029ba107d1dcb931e4369c0c9",
+  "buildFingerprint": "scanforge-729373536e64f6dd",
+  "method": "The test server replaced exactly one minified decoder callback in the current agent-api bundle before serving it to an isolated browser. Two served responses reported the expected single replacement. The decoder continued to validate shared chunks and reconstruct fresh ordinary numeric arrays. This is an injected diagnostic, not a production build or independent proof of array ownership.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "observed": {
+    "passed": false,
+    "completed": "GUI Split, Extract and Undo geometry validation, project export and complete MCP artifact download.",
+    "exportBytes": 475563378,
+    "streamAndDownloadedFileSha256": "42e42ddb6c3c227a2694324adae9504960284da85575b4d8db47ed235126800c",
+    "failure": "The GUI selected the downloaded file and confirmed replacement, but public MCP then returned BRIDGE_UNAVAILABLE. Reopened geometry and history were not verified.",
+    "peakJobBytes": 4336492544,
+    "limitBytes": 4294967296,
+    "ownedProcessCleanupConfirmed": true,
+    "temporaryDownloadCleanup": "The generated download was independently hashed, removed, and its absence verified."
+  },
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-no-reuse-ply3-20261107.mjs",
+  "driverSha256": "90495d0db37fa5a42147e722a897a325cede909e22f957aeb564b36a3ac3fbe2",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-no-reuse-ply3-guard-20261107.json",
+  "guardReceiptSha256": "a951b77ec96f3cf70d8e0cecf84ccf3850b7453ea02633d2bb0e491d3b517499",
+  "interpretation": "Like the earlier independent-array experiment, this repeat does not meet the 4 GiB guard. It does not identify the responsible allocation or prove all possible independent-array implementations infeasible. The restore ownership issue and the complete M2 acceptance gates remain open."
+}
