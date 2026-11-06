@@ -10,6 +10,18 @@
     "browserPeakJobBytes": 1768562688,
     "focusedUnitTestsPassed": 21,
     "focusedUnitFiles": 3,
+    "fullSuite": {
+      "testedCommit": "6dc3beed3d01f15133c34507f06601ea814fe0aa",
+      "passed": 50716,
+      "expectedFailures": 2,
+      "skipped": 76,
+      "filesPassed": 810,
+      "filesSkipped": 29,
+      "peakJobBytes": 1405243392,
+      "cleanupConfirmed": true,
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-current-full-suite-20261107.json",
+      "receiptSha256": "59ef2c65ce5e54698c3adfc6185f93e79fe850859d935fa64898a1bb4c53ef51"
+    },
     "build": "All 15 TypeScript batches, production bundle and offline manifest passed.",
     "buildPeakJobBytes": 1614036992,
     "ownedProcessCleanupConfirmed": true,
