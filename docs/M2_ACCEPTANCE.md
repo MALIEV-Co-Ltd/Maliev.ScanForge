@@ -18,6 +18,8 @@ The [integration unit suite](evidence/m2-integration-suite-20261106.json) passed
 
 The [isolated interior Split record](evidence/m2-isolated-interior-native-20261105.json) pins native crossing, coplanar-edge and closed-source controls, including their saved indexed topology. The crossing control also passes the rendered GUI/public-MCP lifecycle replay. Near-corner and other native differences remain open; this record is not general Split or milestone acceptance.
 
+The [coplanar shared-edge control](../tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/README.md) now has a saved QuickSurface project and separate exports. QuickSurface produces four faces with a disconnected, nonconforming shared edge; the shared ScanForge operation produces eight faces with a conforming subdivision. This is a recorded native difference, not parity, and reopening the native project remains to be checked.
+
 ## Scope boundary
 
 M2 covers the scan-repair and processing commands listed in issue #2, including Average, Mirror and cylindrical Unroll. Boundary-to-sketch creation and its own publication, history and persistence are M2 processing outcomes; general spatial-sketch editing belongs to [M4](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/4) and is not an M2 closure requirement. Re-polygonize is listed in M2; M3's already reviewed alignment and combination acceptance is a separate milestone, not a new M2 gate. Shared CAD restore, MCP, project history and resource protections are verified only as needed by M2 operations; completing all M5, M7 or M8 functionality is not required to close M2. M1 is the sole milestone dependency listed in issue #2 and has been closed.
