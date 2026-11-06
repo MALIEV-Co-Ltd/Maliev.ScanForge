@@ -1,0 +1,13 @@
+{
+  "scope": "Small isolated headless Chrome loopback HTTP/1.1 request-body capability probe; not an application, MCP or memory benchmark",
+  "method": "A temporary local HTTP server served a page and counted request bytes. The page posted four bytes as a normal string, then attempted the same request as a ReadableStream with duplex half.",
+  "result": "The ordinary POST returned byte count 4; the stream POST rejected with TypeError: Failed to fetch. No application code was changed. This observation does not determine the precise browser failure cause or the behavior of other protocols and browsers.",
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/bridge-stream-http1-probe-20261106.mjs",
+  "driverSha256": "bd3a410b092ccfe591e52d31355ea7c7674c57bd3d86cda9af4e884c106aee37",
+  "driverNote": "The probe was run from the integration checkout's tests directory so its Playwright import resolved; its source was then copied to the evidence directory and the temporary checkout file was removed.",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/bridge-stream-http1-control-20261106.json",
+  "guardSha256": "2f4f05036c311b63c373cdbaed650b448d424373ebab35a6b7db95eacbe3bc46",
+  "guardPeakBytes": 292663296,
+  "cleanupConfirmed": true,
+  "interpretation": "The present loopback HTTP/1.1 setup cannot use this specific streaming fetch as a drop-in response-body replacement in this test. The large-project resource issue remains unresolved."
+}
