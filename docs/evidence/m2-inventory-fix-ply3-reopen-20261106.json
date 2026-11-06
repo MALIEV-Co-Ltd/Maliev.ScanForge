@@ -1,0 +1,34 @@
+{
+  "scope": "One original PLY-3 GUI Split/Extract, full public-MCP artifact download and same-session GUI reopen with post-reopen history",
+  "applicationCommit": "0077abf",
+  "bundle": "scanforge-b4a30452acf5c910",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "inputFaces": 3691133,
+  "splitFaces": 3695945,
+  "extractedFaces": 1776794,
+  "artifactBytes": 475563378,
+  "streamSha256": "53d089ab538496d06ca1f9098d8e34aba12defeeaf2ae2d2581339a87300211a",
+  "fileSha256": "53d089ab538496d06ca1f9098d8e34aba12defeeaf2ae2d2581339a87300211a",
+  "result": {
+    "guiReopenGeometryAndUndoRedo": "passed",
+    "sourceAndCutterPreserved": true,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "peakJobBytes": 4248031232,
+    "jobLimitBytes": 4294967296,
+    "headroomBytes": 46936064,
+    "minimumFreeDiskBytes": 3536601088,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "evidence": {
+    "receiptSha256": "e9a791882bb9330b5d0d79ce9edd2b2fca1ef5306f70af79528e0465ff98ebeb",
+    "logSha256": "1f65fda36f588989194adc320bf3933d0687f76a6161bbefc73e9dff4a84f211",
+    "ledgerSha256": "22853ce67b327f586161c99270736ee7e39f5ce3a8c1f27a96fadadaf708ae66",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/inventory-fix-ply3-reopen-20261106.json"
+  },
+  "limitations": [
+    "This is one passing run with approximately 45 MiB of headroom; earlier runs on the preceding candidate exceeded the limit.",
+    "The run does not establish a general resource guarantee, native equivalence or M2 completion."
+  ]
+}
