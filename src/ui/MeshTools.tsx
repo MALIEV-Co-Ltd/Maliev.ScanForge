@@ -1,5 +1,6 @@
 import { AppSelect } from "./AppSelect";
 import { HelpPopover } from "./HelpPopover";
+import { MeshOperationResult } from "./MeshOperationResult";
 import { useEffect, useRef, useState } from "react";
 import type { ProcessingRequest, ProcessingResult } from "../processing-client";
 import type { Entity } from "../types";
@@ -764,96 +765,7 @@ export function MeshTools({
           </>
         )}
       </fieldset>
-      {result && (
-        <div role="status" aria-label="Mesh operation result">
-          <h4>Result</h4>
-          {result.registration &&
-            "terminationReason" in result.registration && (
-              <p>
-                {fineAlignmentStatus(result.registration.terminationReason)} ·
-                Overlap RMS{" "}
-                {result.registration.overlapRms === null
-                  ? "unavailable"
-                  : `${result.registration.overlapRms.toPrecision(4)} mm`}{" "}
-                · Target {result.registration.targetRms} mm
-              </p>
-            )}
-          {result.registration && "overlapRms" in result.registration && (
-            <>
-              <p>
-                Whole-cloud RMS{" "}
-                {result.registration.wholeCloudRms.toPrecision(4)} mm
-              </p>
-              <p>
-                Expected overlap {result.registration.overlapPercent}% · Overlap
-                points {result.registration.overlapPoints} /{" "}
-                {result.registration.requiredOverlapPoints} required · Within
-                search distance{" "}
-                {(result.registration.overlapFraction * 100).toFixed(1)}%
-              </p>
-              <p>
-                Fitting samples {result.registration.fittingSamples} /{" "}
-                {result.registration.sampleSize} requested
-              </p>
-              {!result.registration.overlapSatisfied && (
-                <p role="alert">
-                  Insufficient overlap within the search distance; target
-                  accuracy not reached.
-                </p>
-              )}
-            </>
-          )}
-          {result.topology && (
-            <dl>
-              {Object.entries(result.topology).map(([key, value]) => (
-                <div key={key}>
-                  <dt>{key.replace(/([A-Z])/g, " $1")}</dt>
-                  <dd>{value.toLocaleString()}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          {Object.entries(result.diagnostics)
-            .filter(
-              ([key]) =>
-                !["pointCloudPose", "localBuffersRetained"].includes(key),
-            )
-            .filter(
-              ([key]) =>
-                !(result.registration && "overlapRms" in result.registration) ||
-                ["iterations", "maxError", "rejectedPoints"].includes(key),
-            )
-            .map(([key, value]) => (
-              <p key={key}>
-                {key.replace(/([A-Z])/g, " $1")}: {String(value)}
-              </p>
-            ))}
-          {result.segmentClassifications?.map((classification, index) => (
-            <p key={index}>
-              Region {index + 1}:{" "}
-              {classification.kind === "freeform"
-                ? "unclassified / freeform"
-                : classification.kind}{" "}
-              · {classification.samples} samples
-              {classification.rms !== undefined
-                ? ` · RMS ${classification.rms.toPrecision(4)} mm · max ${classification.maxError?.toPrecision(4)} mm`
-                : ""}{" "}
-              · tolerance {classification.tolerance.toPrecision(4)} mm ·{" "}
-              {classification.reason}
-            </p>
-          ))}
-          {result.repairSheets?.map((sheet, index) => (
-            <p key={`sheet-${index}`}>
-              Sheet {index + 1}: {sheet.triangles.toLocaleString()} triangles ·{" "}
-              {sheet.watertight
-                ? "watertight topology"
-                : `${sheet.boundaryEdges} boundary edges`}{" "}
-              · {sheet.nonManifoldEdges} nonmanifold edges ·{" "}
-              {sheet.nonManifoldVertices} nonmanifold vertices
-            </p>
-          ))}
-        </div>
-      )}
+      {result && <MeshOperationResult result={result} />}
       <p className="muted">Cancel releases the operation worker immediately.</p>
     </Panel>
   );

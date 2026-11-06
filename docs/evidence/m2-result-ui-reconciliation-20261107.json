@@ -1,0 +1,26 @@
+{
+  "scope": "Preserve main result panel presentation with candidate shared processing results",
+  "browser": "Browser plugin not available; isolated Playwright Chrome",
+  "checks": [
+    "Rendered target-reached, stopped-improving and insufficient-overlap results",
+    "GUI and public MCP point-cloud and surface alignment geometry agree",
+    "Undo and redo",
+    "No page errors",
+    "Seven focused tests cover results, topology, classifications and repair sheets",
+    "Production build and 15 typecheck batches"
+  ],
+  "matching": {
+    "points": "fullTargetPointToPoint",
+    "surface": "fullTargetSurface"
+  },
+  "guardPeaks": {
+    "browser": 930344960,
+    "tests": 345964544,
+    "build": 1959698432
+  },
+  "processCleanup": true,
+  "bundle": "scanforge-73ab1ff9d6db41a9",
+  "limits": [
+    "Manufactured controls only; no native alignment or general resource guarantee."
+  ]
+}

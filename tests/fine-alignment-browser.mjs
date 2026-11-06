@@ -208,10 +208,10 @@ try {
   });
   await result.getByText(/Target accuracy reached/).waitFor();
   const guiResult = await result.innerText();
-  assert.match(guiResult, /Target\s+0\.02 mm/);
+  assert.match(guiResult, /Target RMS\s+0\.02000\s+mm/);
   const guiGeometry = await geometry();
   await result
-    .getByRole("heading", { name: "Result", exact: true })
+    .getByRole("heading", { name: "Target reached", exact: true })
     .scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(out, "target-reached.png") });
   await mutate("history_undo");
@@ -251,11 +251,9 @@ try {
   await page
     .getByRole("button", { name: "Fine align with dense ICP", exact: true })
     .click();
+  await result.getByText(/Stopped improving/).waitFor();
   await result
-    .getByText(/Stopped improving; target accuracy not reached/)
-    .waitFor();
-  await result
-    .getByRole("heading", { name: "Result", exact: true })
+    .getByRole("heading", { name: "Target not reached", exact: true })
     .scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(out, "stopped-improving.png") });
   await mutate("history_undo");
@@ -279,7 +277,7 @@ try {
     .getByText(/Insufficient overlap within the search distance/)
     .waitFor();
   await result
-    .getByRole("heading", { name: "Result", exact: true })
+    .getByRole("heading", { name: "Alignment not applied", exact: true })
     .scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(out, "insufficient-overlap.png") });
   await mutate("history_undo");
