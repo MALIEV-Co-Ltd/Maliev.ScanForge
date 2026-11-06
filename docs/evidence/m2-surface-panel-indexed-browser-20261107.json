@@ -1,0 +1,52 @@
+{
+  "owner": "indexed-mesh-browser",
+  "pid": 24488,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-11-06T22:03:40.804Z",
+  "expiresAt": "2026-11-06T22:10:40.804Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 61345,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 11788,
+      "port": 61346,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 36580
+    }
+  ],
+  "result": {
+    "passed": true,
+    "guiImport": true,
+    "mcpImport": true,
+    "guiMcpNativeStlImport": true,
+    "unitConversion": true,
+    "originPlacement": true,
+    "binaryPersistence": true,
+    "indexedScannerNormals": true,
+    "transformTopologyRetention": true,
+    "undoRestoration": true,
+    "nativeRefinement": true,
+    "guiNativeRefinement": true,
+    "guiMcpTargetGroupRefinement": true,
+    "guiMcpPairedTopologyRetention": true,
+    "guiMcpLandmarkEditing": true,
+    "guiMcpLandmarkRefinement": true,
+    "guiMcpMulticoreSeededRefinement": true,
+    "guiMcpCadLandmarkRefinement": true,
+    "guiMcpVisibleSceneLandmarkRefinement": true,
+    "guiMcpEmptyTargetLandmarkRefinement": true,
+    "guiMcpAuthoringRootLandmarkRefinement": true,
+    "cadLandmarkBrepPreserved": true,
+    "errors": []
+  },
+  "cleanedAt": "2026-11-06T22:03:54.249Z",
+  "passed": true
+}

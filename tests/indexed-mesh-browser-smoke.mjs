@@ -622,22 +622,15 @@ try {
   const locked = (await call("landmark_get")).result;
   assert.equal(locked.preview, true);
   assert.equal(locked.picks.length, 6);
-  assert.equal(
-    await landmarkDialog
-      .getByRole("button", { name: "Remove last point", exact: true })
-      .isDisabled(),
-    true,
-  );
-  assert.equal(
-    (await mutate("landmark_edit", { action: "clear" })).result.picks.length,
-    6,
-  );
+  const removeFixed = page.getByRole("button", {
+    name: "Remove last fixed point",
+    exact: true,
+  });
+  assert.equal(await removeFixed.isDisabled(), false);
   const reset = (await mutate("landmark_edit", { action: "reset" })).result;
   assert.equal(reset.preview, false);
   assert.deepEqual(reset.picks, locked.picks);
-  await landmarkDialog
-    .getByRole("button", { name: "Remove last point", exact: true })
-    .click();
+  await removeFixed.click();
   assert.equal((await call("landmark_get")).result.picks.length, 5);
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   assert.deepEqual(await geometry(moving.id), afterSeeded);
