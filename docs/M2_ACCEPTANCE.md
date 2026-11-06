@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+Two [independent-array staging controls](evidence/m2-independent-array-staging-probes-20261107.json) preserved all values, including negative zero, but simple incremental source shrinking and IndexedDB Blob staging each had a higher guarded peak than their direct-copy control. These synthetic single runs are not integrated and do not establish full-project behavior or rule out every alternative.
+
 An [isolated Chrome detachment control](evidence/m2-chrome-detach-memory-20261107.json) showed a touched 256 MiB ArrayBuffer's backing-storage accounting and aggregate renderer memory fall by approximately that size in the first sample after transfer to zero, before diagnostic garbage collection. This is not a full project restore and does not establish its reclamation timing or resource acceptance.
 
 The [project replacement preflight](evidence/m2-project-replacement-preflight-20261107.json) asks before decoding when GUI work is unsaved. Declining now reports cancellation without starting a decoder, and public MCP refusal without `replace:true` likewise avoids decoding. GUI and MCP successful binary imports, focused tests and the production build passed. A full original PLY-3 export, MCP download, confirmed GUI reopen and post-reopen history run also passed under the guard. The current candidate's full suite passed 50,716 tests with two expected failures and 76 skips. This does not reduce peak memory for confirmed restores or resolve the remaining M2 gates.

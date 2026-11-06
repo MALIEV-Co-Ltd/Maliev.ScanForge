@@ -1,0 +1,33 @@
+{
+  "scope": "Two isolated headless Chrome controls for reconstructing independent ordinary arrays; no application or decoder changes.",
+  "baseCommit": "75431a6689b1dbe538c598e5ec4815cc6d5d3fab",
+  "common": "Each case copied 16777216 Float64 values in 262144-value chunks and checked every output value, including a negative-zero sentinel. Separate guarded browser processes used the 4 GiB and 25% CPU limits and confirmed owned-process cleanup.",
+  "resizable": {
+    "method": "Compared pre-sized ordinary-array reconstruction with growing an array while copying a transferred resizable buffer backwards, shrinking the source after each chunk, and reversing the completed array. A length-tracking typed view was used after structured-clone transfer.",
+    "baselinePeakJobBytes": 737398784,
+    "incrementalPeakJobBytes": 828153856,
+    "baselineElapsedMs": 1061,
+    "incrementalElapsedMs": 1283,
+    "observation": "Both outputs matched all values. Source backing storage fell with each shrink, but the incremental case had a higher total guarded peak. Array growth and process differences were not individually attributed.",
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-resizable-copy-probe-20261107.cjs",
+    "scriptSha256": "a787515decaa8cc6b1d04ccd7891f88729670e87e1fd5362a21c6537d065d1e9",
+    "incrementalReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-resizable-copy-incremental-guard-20261107.json",
+    "incrementalReceiptSha256": "b4fff607acad12c2e67b61aed8a4a901bc33f545d952ea3176ae5805cfe1d49d"
+  },
+  "diskBacked": {
+    "method": "Compared direct pre-sized reconstruction with copying the Float64 source into an IndexedDB-backed Blob, deleting its database record, detaching the source, and reading Blob slices into a pre-sized array. The disposable database was deleted after the copy.",
+    "baselinePeakJobBytes": 735477760,
+    "diskPeakJobBytes": 1139179520,
+    "baselineCopyElapsedMs": 1146,
+    "diskCopyElapsedMs": 1271,
+    "observation": "Both outputs matched all values. The disk-staged case had a higher total guarded peak. Copy timings exclude Blob staging and allocation.",
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-disk-copy-probe-20261107.cjs",
+    "scriptSha256": "9635a9635af2b539d62a8f1c88d2ca201e0c277ddc03544d38f92b260af8b9fd",
+    "diskReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-disk-copy-disk-guard-20261107.json",
+    "diskReceiptSha256": "3a4cbd1abbed36254183584b5a6fb7f3369d6de6296dbce0a2f4149834de0577"
+  },
+  "limitations": [
+    "These are single synthetic browser controls with separate-process variability; they do not profile full ScanForge restores or establish that every incremental or disk-backed design is infeasible.",
+    "Neither prototype is integrated. Production restore ownership, resource, native-comparison and milestone gates remain open."
+  ]
+}
