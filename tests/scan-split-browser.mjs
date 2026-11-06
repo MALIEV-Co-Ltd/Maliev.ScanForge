@@ -158,7 +158,10 @@ try {
         super(url, options);
         if (String(url).includes("processing-worker"))
           this.addEventListener("message", (e) => {
-            if (window.__holdSplitResult && e.data.result) {
+            if (
+              window.__holdSplitResult &&
+              e.data.result?.kind === "scanEdit"
+            ) {
               e.stopImmediatePropagation();
               window.__pendingSplitResult = true;
             }
@@ -876,6 +879,8 @@ try {
     nativeSha,
     vertexSha,
     triangleSha,
+    parts = 1,
+    inventoryRegression = false,
   ] of [
     [
       "shared-edge-native",
@@ -892,6 +897,16 @@ try {
       "568e37bc6b3e8d933aaf75a64cbc6ef072999604588002b6e4a691500b788dfa",
       "3823e436d004f7197c6e411709839460576cc00ba4bb6472be9d93f17fa216ab",
       "54d63bf0980d636afdd42c5aa0992a79b53e5693554d401ff46dd11d504e4491",
+    ],
+    [
+      "folded-boundary-native",
+      "m2-folded-boundary-native-20261105",
+      [0.5, 0.5, 0],
+      "3d790ae82c039b14e1a0f05ac134b8e04848ffdf6c6375b6d95106c854c986d9",
+      "a05bff1a8b0bc13bb0997aa9381db275025cab57880cfd80c8672eb23e34117b",
+      "921c803abfa6ac88f44f7ab19198e5c137d1c7183e8e6912757a6263e8dee0a5",
+      3,
+      true,
     ],
   ]) {
     const fixture = new URL(`tests/fixtures/${directory}/`, root);
@@ -910,13 +925,14 @@ try {
       source: await readFixture("source.stl"),
       target: await readFixture("cutter.stl"),
       kind: "mesh",
-      parts: 1,
+      parts,
       method: "open surface signed nearest grouping",
       requiredPoint,
       nativeReference: new URL("native-result.stl", fixture),
       nativeSha,
       vertexSha,
       triangleSha,
+      inventoryRegression,
     });
   }
   for (const c of cases) {
@@ -927,6 +943,7 @@ try {
     )
       continue;
     if (inputDirectory && !fileInputs[c.name]) continue;
+    console.log(JSON.stringify({ caseStarted: c.name }));
     const baseline = await load(c);
     if (radiusDirectory)
       await mutate("viewport_control", {
@@ -1046,6 +1063,60 @@ try {
         );
       }
       const guiPositions = await geometry(sourceId);
+      if (c.inventoryRegression) {
+        const inventory = async (inventoryScope) =>
+          artifactJson(
+            (
+              await job(
+                await mutate("mesh_process", {
+                  entityId: sourceId,
+                  operation: {
+                    kind: "scanEdit",
+                    action: "inventory",
+                    ...(inventoryScope ? { inventoryScope } : {}),
+                  },
+                }),
+              )
+            ).result.artifact,
+          );
+        const scoped = await inventory("components");
+        const full = await inventory();
+        for (const report of [scoped, full])
+          assert.deepEqual(
+            report.inventory.components.map((item) => item.triangles.length),
+            [1, 1, 1],
+          );
+        const historyBefore = (await call("project_get")).result.undo;
+        await mutate("object_select", { entityId: sourceId });
+        await mutate("command_run", { name: "ribbon:editScan" });
+        const controls = page.getByRole("region", {
+          name: "Individual meshes",
+          exact: true,
+        });
+        if (!(await controls.isVisible()))
+          await page
+            .getByRole("button", {
+              name: "Edit individual meshes",
+              exact: true,
+            })
+            .click();
+        await controls
+          .getByRole("button", { name: /· 1 triangles ·/ })
+          .first()
+          .waitFor();
+        assert.match(await controls.innerText(), /3 meshes/);
+        const items = controls
+          .getByRole("group", { name: "Individual meshes items", exact: true })
+          .getByRole("button");
+        assert.equal(await items.count(), 3);
+        for (let i = 0; i < 3; i++)
+          assert.match(await items.nth(i).innerText(), /· 1 triangles ·/);
+        assert.equal((await call("project_get")).result.undo, historyBefore);
+        await controls
+          .getByRole("button", { name: "Back", exact: true })
+          .click();
+        await idle();
+      }
       if (radiusDirectory) {
         const cutterX = c.target[0];
         for (let i = 0; i < guiPositions.length; i += 9) {
@@ -1188,8 +1259,8 @@ try {
               edges.set(key, edge);
             }
           finiteSeamLength = 0;
+          let sharedSeamLength = 0;
           for (const { a, b, count } of edges.values()) {
-            if (count !== 1) continue;
             const ax = mesh.vertices[3 * a],
               ay = mesh.vertices[3 * a + 1];
             const bx = mesh.vertices[3 * b],
@@ -1203,15 +1274,19 @@ try {
               (ax === 0 && bx === 0) ||
               (ay === 0 && by === 0) ||
               (Math.abs(ax + ay - 1) < 1e-8 && Math.abs(bx + by - 1) < 1e-8);
-            assert(
-              seam || perimeter,
-              "Split created a boundary outside the finite cutter or source perimeter",
-            );
-            if (seam) finiteSeamLength += Math.hypot(ax - bx, ay - by);
+            if (count === 1) {
+              assert(
+                seam || perimeter,
+                "Split created a boundary outside the finite cutter or source perimeter",
+              );
+              if (seam) finiteSeamLength += Math.hypot(ax - bx, ay - by);
+            }
+            if (count === 2 && seam)
+              sharedSeamLength += Math.hypot(ax - bx, ay - by);
           }
           assert(
-            Math.abs(finiteSeamLength - 0.2) < 1e-6,
-            "Finite seam boundary length changed",
+            finiteSeamLength < 1e-6 && Math.abs(sharedSeamLength - 0.1) < 1e-6,
+            "Finite interior cut edge is not shared as observed in the retained native control",
           );
         }
         if (c.name === "open-folded-surface") {

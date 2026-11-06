@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-06",
+  "build": "scanforge-b4a30452acf5c910",
+  "scope": "Isolated production-browser GUI and public MCP regression checks under a 4 GiB Job limit, not general native acceptance",
+  "targetedRuns": [
+    {
+      "case": "folded-boundary-native",
+      "result": "passed",
+      "checks": "Retained native facets, scoped and full MCP component inventories, GUI panel with three one-triangle components, geometry, history, binary reopen and cancellation",
+      "peakJobBytes": 924221440,
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/folded-final-20261106.json"
+    },
+    {
+      "case": "finite-interior-cut",
+      "result": "passed",
+      "checks": "GUI and MCP lifecycle with shared finite interior edge consistent with the retained isolated native control",
+      "peakJobBytes": 926474240,
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/interior-final-20261106.json"
+    },
+    {
+      "case": "sloped-edge-crossing",
+      "result": "passed",
+      "checks": "GUI and MCP lifecycle including held Split result cancellation",
+      "peakJobBytes": 919429120,
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sloped-final-20261106.json"
+    }
+  ],
+  "fullBrowserSuite": {
+    "result": "failed",
+    "case": "coplanar-shared-edge",
+    "expectedSharedIntervals": ["0,0.3", "0.3,0.5", "0.5,0.7", "0.7,1"],
+    "observedSharedIntervals": ["0,0.3", "0.3,0.7", "0.7,1"],
+    "unchangedPriorTestReproducedFailure": true,
+    "unchangedTestReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-coplanar-unchanged-test-20261106.json",
+    "interpretation": "This manufactured input is not a native comparison. The midpoint expectation and native behavior remain open; the assertion is retained."
+  }
+}
