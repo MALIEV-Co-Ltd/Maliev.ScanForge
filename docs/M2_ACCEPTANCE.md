@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+On integration commit `a2c8c68`, the full suite passed 50,837 tests, with two expected restore-ownership failures and 77 skips. The guard peak was 1,447,825,408 bytes and process cleanup was confirmed. The expected failures and native, resource and integration gates remain open.
+
 The candidate now retains main's batch-import admission diagnostics in GUI progress and public MCP, with M2's facet-normal reserve and an active-pair estimate budget capped at 1 GiB before subtracting reported main-thread heap. ASC samples inform scheduling; larger estimated pairs fall back to one parser. The first focused run exposed main's more permissive large-ASC expectations, which were adjusted to test the conservative budget; 49 focused tests passed. Production build `scanforge-bd9355521010985e` passed, as did [STL](evidence/m2-import-admission-stl-20261107.json) and [shared-buffer PLY](evidence/m2-import-admission-ply-20261107.json) browser controls for GUI/MCP progress and cancellation; the PLY control also checked geometry, history and project roundtrip. Guarded peaks were 949,514,240 and 969,314,304 bytes and process cleanup was confirmed. These small fixtures do not guarantee large-batch process memory.
 
 On integration commit `b5b7482`, the full suite passed 50,827 tests with two expected restore-ownership failures and 77 skips. Its guard peak was 1,397,895,168 bytes and process cleanup was confirmed. The expected failures and remaining native, resource and integration gates are still open.
