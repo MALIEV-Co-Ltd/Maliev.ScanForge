@@ -19,6 +19,20 @@
   margin: 0;
   background: var(--surface);
 }
+.inspector > h2,
+.command-dialog > h2,
+.inspector .tool-panel > header,
+.inspector .tool-panel > h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.inspector .tool-panel > header h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 .tool-panel-content {
   min-height: 0;
   overflow-y: auto;
@@ -36,9 +50,9 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding-top: 10px;
-  margin-top: 10px;
-  border-top: 1px solid var(--border);
+  padding-top: 6px;
+  margin-top: 6px;
+  border-top: 0;
   background: var(--surface);
 }
 .tool-panel-actions > .tool-preview-button {
@@ -52,10 +66,10 @@
 }
 .inspector.tool-panel > .tool-panel-actions {
   margin: 0;
-  padding: 10px 14px;
+  padding: 6px 10px;
 }
 .inspector.tool-panel > .tool-panel-content:not(.tool-section) {
-  padding: 12px 14px;
+  padding: 8px 10px;
 }
 
 .inspector > h2 {
@@ -72,25 +86,46 @@
 
 /* Compact title strips apply at every supported viewport width. */
 .workspace > .inspector > h2,
+.command-dialog > h2,
 .tool-panel > header,
 .tool-panel > h3 {
-  padding: 0 12px;
+  padding: 0 0 0 10px;
   min-height: 28px;
   flex-shrink: 0;
 }
-.workspace > .inspector.command-host > h2 {
+.workspace > .inspector > h2 {
   padding-right: 0;
 }
 .inspector > h2 > button,
+.command-dialog > h2 > button,
 .tool-panel > header > button {
   border: 0;
   padding: 4px 6px;
   min-height: 26px;
   background: transparent;
+  flex: 0 0 28px;
+  width: 28px;
+  margin: 0 0 0 auto;
+  align-self: stretch;
+  border-radius: 0;
+}
+.inspector .tool-panel > h3 > button {
+  flex: 0 0 28px;
+  width: 28px;
+  align-self: stretch;
+  border: 0;
+  padding: 4px 6px;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.inspector .tool-panel > h3 > span {
+  margin-left: auto;
 }
 .command-host > .tool-panel {
   border: 0;
   border-radius: 0;
+  padding: 0;
 }
 .command-host > .scan-tools-panel,
 .command-host > .scan-topology-panel {
@@ -98,11 +133,11 @@
 }
 .command-host > .scan-tools-panel > .tool-panel-content,
 .command-host > .scan-topology-panel > .tool-panel-content {
-  padding: 10px 12px;
+  padding: 8px 10px;
 }
 .command-host > .scan-tools-panel > footer,
 .command-host > .scan-topology-panel > footer {
-  padding: 8px 12px;
+  padding: 6px 10px;
   margin: 0;
 }
 .tool-panel-content {
@@ -126,7 +161,171 @@
 .object-list > li.selected .object-name :is(svg, img.generated-icon) {
   color: inherit;
 }
-help-popover {
+
+/* Command menus grow with their options rather than filling the viewport. */
+.workspace > .inspector {
+  width: 276px;
+  max-height: min(560px, calc(100% - 24px));
+}
+.inspector .selected-title:has(strong) {
+  display: none;
+}
+.inspector .processing-panels,
+.inspector .advanced-cad-panels,
+.inspector .solid-panels,
+.inspector .surface-panels,
+.inspector .sketch-panels {
+  padding: 8px 10px;
+  border-top: 0;
+}
+.inspector .processing-panels > .panel,
+.inspector .advanced-cad-panels > .panel,
+.inspector .solid-panels > .panel {
+  padding: 0;
+}
+.inspector .mesh-processing-panel > h3 {
+  display: none;
+}
+.inspector .panel {
+  padding: 8px 10px;
+  border-bottom: 0;
+}
+.inspector .panel:last-child {
+  padding-bottom: 0;
+}
+.inspector .panel > h3,
+.inspector .tool-section > h3 {
+  margin: 6px 0;
+  padding: 0 0 6px;
+  font-size: 11px;
+}
+.inspector .tool-panel-content > :last-child,
+.inspector .panel > :last-child,
+.inspector .panel > fieldset > :last-child {
+  margin-bottom: 0;
+}
+.inspector .tool-panel-content {
+  padding: 8px 10px;
+}
+.inspector .tool-panel-content > fieldset {
+  min-width: 0;
+}
+.inspector .surface-tools > fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.inspector .scan-tools-panel fieldset,
+.inspector .scan-topology-panel fieldset,
+.inspector .point-cloud-tools {
+  gap: 6px;
+}
+.inspector .scan-tools-panel label,
+.inspector .scan-topology-panel label {
+  font-size: 11px;
+}
+.inspector .scan-tools-summary {
+  margin-bottom: 6px;
+}
+.inspector .scan-topology-actions {
+  grid-template-columns: 1fr;
+}
+.inspector .scan-diagnostics .scan-feature-icon {
+  width: 20px;
+  height: 20px;
+}
+.inspector .tool-panel-actions,
+.inspector .scan-dialog-footer,
+.inspector .interactive-dialog-actions {
+  gap: 6px;
+  border-top: 0;
+  padding: 6px 10px;
+  margin: 0;
+}
+.inspector .tool-panel-actions button,
+.inspector .scan-dialog-footer button,
+.inspector .global-alignment-actions button {
+  min-height: 26px;
+  padding: 3px 7px;
+  font-size: 11px;
+}
+.inspector .tool-panel-actions .tool-preview-button {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+}
+.inspector .global-alignment-actions {
+  gap: 6px;
+  margin-top: 6px;
+}
+.inspector.global-alignment-panel fieldset,
+.inspector.interactive-alignment-panel fieldset {
+  margin-bottom: 6px;
+  padding: 6px;
+}
+.inspector .point-cloud-tools {
+  border: 0;
+  padding: 8px 10px;
+  margin: 0;
+}
+.inspector textarea {
+  min-width: 0;
+  max-width: 100%;
+  font-size: 11px;
+}
+.inspector .field,
+.inspector .select-field,
+.inspector label:has(> input[type="number"]),
+.inspector label:has(> .app-select) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+.inspector .field:has(input[type="range"]) {
+  grid-template-columns: 1fr;
+}
+.inspector .select-field,
+.inspector label:has(> .app-select) {
+  grid-template-columns: 90px minmax(0, 1fr);
+}
+.inspector input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.inspector select,
+.inspector .app-select > button {
+  min-width: 0;
+  min-height: 26px;
+  padding: 3px 5px;
+  width: 100%;
+}
+.inspector button {
+  min-height: 26px;
+}
+.inspector p {
+  margin: 6px 0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.inspector details {
+  margin: 7px 0;
+}
+.inspector summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--muted);
+}
+.inspector .mesh-processing-panel > .muted:last-child {
+  display: none;
+}
+.alignment-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.alignment-actions > .wide {
+  flex: 1;
+}
+.help-popover {
   display: inline-flex;
   flex: 0 0 auto;
 }
@@ -176,11 +375,71 @@ help-popover {
 .help-popup li + li {
   margin-top: 8px;
 }
+.modal.command-dialog {
+  width: 276px;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+}
+.command-dialog > h2 {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.command-dialog .tool-panel-content {
+  padding: 8px 10px;
+}
+.command-dialog .field,
+.command-dialog .select-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  gap: 6px;
+  align-items: center;
+  margin: 6px 0;
+  font-size: 11px;
+}
+.command-dialog input,
+.command-dialog .app-select > button,
+.command-dialog .import-unit-actions button {
+  min-width: 0;
+  min-height: 26px;
+  padding: 3px 5px;
+  font-size: 11px;
+}
+.command-dialog .import-unit-actions {
+  margin: 6px 0 0;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+@media (max-width: 760px) {
+  .workspace > .inspector {
+    position: fixed;
+    z-index: 40;
+    top: 148px;
+    left: auto;
+    right: 8px;
+    width: min(276px, calc(100vw - 16px));
+    max-height: min(560px, calc(100dvh - 194px));
+  }
+}
+
+.inspector.global-alignment-panel .check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
 
 .inspector.datum-command-host .selected-title,
 .inspector.datum-command-host .datum-setup-panel > h3 {
   display: none;
 }
+.inspector.datum-command-host .check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5px 0;
+}
+
 [data-panel-open="true"] .inspector.datum-command-host {
   display: flex;
   flex-direction: column;
@@ -197,4 +456,22 @@ help-popover {
   min-height: 0;
   padding: 0;
   margin: 0;
+}
+.inspector.datum-command-host .datum-setup-panel > .tool-panel-content {
+  padding: 8px 10px;
+}
+.inspector.datum-command-host .datum-setup-panel > .tool-panel-actions {
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.surface-fit-metric {
+  display: contents;
+}
+
+.surface-fit-metric dd small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }

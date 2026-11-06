@@ -494,6 +494,13 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
             ? inventory.boundaries.length
             : items.length}
         </span>
+        <button
+          type="button"
+          aria-label={`Close ${title}`}
+          onClick={props.onBack}
+        >
+          ×
+        </button>
       </h3>
       <div className="tool-panel-content">
         <p className="scan-topology-summary">

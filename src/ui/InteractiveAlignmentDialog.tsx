@@ -1,3 +1,4 @@
+import { ToolTitle } from "./controls";
 import {
   useCallback,
   useEffect,
@@ -104,7 +105,11 @@ export function InteractiveAlignmentDialog({
       className="inspector tool-panel interactive-alignment-panel"
       aria-label="Interactive alignment"
     >
-      <h2>Interactive alignment</h2>
+      <ToolTitle
+        title="Interactive alignment"
+        onClose={() => void cancel()}
+        disabled={cancelling}
+      />
       <div className="tool-panel-content">
         <p className="interactive-tool-note">
           {state.entityIds.length}{" "}
