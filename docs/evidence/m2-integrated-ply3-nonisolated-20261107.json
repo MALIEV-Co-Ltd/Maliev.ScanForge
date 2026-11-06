@@ -1,0 +1,234 @@
+{
+  "owner": "split-lifecycle-browser",
+  "pid": 31712,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-11-06T20:57:46.241Z",
+  "expiresAt": "2026-11-06T21:12:46.241Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 61451,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 34508,
+      "startedAt": "2026-11-06T20:57:46.2531402Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "expiresAt": "2026-11-06T21:12:46.241Z",
+      "persistentData": false,
+      "port": 61452,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser-direct",
+      "note": "Owned and reaped under the guard Job"
+    }
+  ],
+  "stages": [
+    {
+      "name": "source-imported",
+      "at": "2026-11-06T20:57:49.480Z",
+      "harness": {
+        "rss": 214544384,
+        "heapTotal": 93454336,
+        "heapUsed": 61705312,
+        "external": 70429858,
+        "arrayBuffers": 66515423
+      },
+      "browserHeap": {
+        "used": 443868795,
+        "total": 457933723,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "source-digest",
+      "at": "2026-11-06T20:57:57.256Z",
+      "harness": {
+        "rss": 216584192,
+        "heapTotal": 93454336,
+        "heapUsed": 60730152,
+        "external": 71414866,
+        "arrayBuffers": 67500391
+      },
+      "browserHeap": {
+        "used": 493668847,
+        "total": 508358115,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "cutter-imported",
+      "at": "2026-11-06T20:57:57.640Z",
+      "harness": {
+        "rss": 216875008,
+        "heapTotal": 93454336,
+        "heapUsed": 62350176,
+        "external": 71745794,
+        "arrayBuffers": 67829271
+      },
+      "browserHeap": {
+        "used": 494104090,
+        "total": 508364674,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-split-started",
+      "at": "2026-11-06T20:57:58.119Z",
+      "harness": {
+        "rss": 217108480,
+        "heapTotal": 93454336,
+        "heapUsed": 67073912,
+        "external": 72436147,
+        "arrayBuffers": 68519624
+      },
+      "browserHeap": {
+        "used": 493576559,
+        "total": 512308903,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-split-committed",
+      "at": "2026-11-06T20:58:42.843Z",
+      "harness": {
+        "rss": 133648384,
+        "heapTotal": 78663680,
+        "heapUsed": 63809640,
+        "external": 6690290,
+        "arrayBuffers": 2773767
+      },
+      "browserHeap": {
+        "used": 920605275,
+        "total": 927960031,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-output-digest",
+      "at": "2026-11-06T20:58:49.574Z",
+      "harness": {
+        "rss": 132792320,
+        "heapTotal": 78663680,
+        "heapUsed": 61849528,
+        "external": 5809829,
+        "arrayBuffers": 1893306
+      },
+      "browserHeap": {
+        "used": 973006170,
+        "total": 982128034,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "component-inventory-opened",
+      "at": "2026-11-06T20:58:49.821Z",
+      "harness": {
+        "rss": 133963776,
+        "heapTotal": 79138816,
+        "heapUsed": 65350032,
+        "external": 6820112,
+        "arrayBuffers": 2873533
+      },
+      "browserHeap": {
+        "used": 976695108,
+        "total": 984778624,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "component-inventory-ready",
+      "at": "2026-11-06T20:58:56.280Z",
+      "harness": {
+        "rss": 132546560,
+        "heapTotal": 78663680,
+        "heapUsed": 60984656,
+        "external": 5245482,
+        "arrayBuffers": 1298903
+      },
+      "browserHeap": {
+        "used": 1018857060,
+        "total": 1087319664,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-extract-committed",
+      "at": "2026-11-06T20:59:02.249Z",
+      "harness": {
+        "rss": 134242304,
+        "heapTotal": 78663680,
+        "heapUsed": 64415120,
+        "external": 6785615,
+        "arrayBuffers": 2839036
+      },
+      "browserHeap": {
+        "used": 1133182208,
+        "total": 1202244408,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-extract-undone",
+      "at": "2026-11-06T20:59:09.495Z",
+      "harness": {
+        "rss": 133427200,
+        "heapTotal": 71323648,
+        "heapUsed": 62597416,
+        "external": 5891882,
+        "arrayBuffers": 1945303
+      },
+      "browserHeap": {
+        "used": 1197802445,
+        "total": 1243336085,
+        "limit": 3321888768
+      }
+    },
+    {
+      "name": "gui-extract-undo-digest-verified",
+      "at": "2026-11-06T20:59:17.472Z",
+      "harness": {
+        "rss": 134053888,
+        "heapTotal": 68440064,
+        "heapUsed": 63371328,
+        "external": 6254084,
+        "arrayBuffers": 2307505
+      },
+      "browserHeap": {
+        "used": 1224936396,
+        "total": 1289959164,
+        "limit": 3321888768
+      }
+    }
+  ],
+  "crossOriginIsolated": false,
+  "transportSamples": [
+    {
+      "before": 868218229,
+      "positions": 33263505,
+      "vertices": 5612016,
+      "after": 868218229
+    }
+  ],
+  "failedBridgeCommand": "job_get",
+  "cleanup": [
+    {
+      "port": 61451,
+      "closed": true
+    },
+    {
+      "pid": 34508,
+      "exited": true
+    },
+    {
+      "port": 61452,
+      "closed": true
+    }
+  ],
+  "cleanedAt": "2026-11-06T21:00:25.960Z",
+  "passed": false,
+  "error": "{\"ok\":false,\"error\":{\"code\":\"BRIDGE_UNAVAILABLE\",\"message\":\"Browser command timed out\"}}"
+}
