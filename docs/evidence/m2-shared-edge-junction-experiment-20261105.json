@@ -192,10 +192,7 @@
       }
     },
     "junction-shared-linked-browser-20261105": {
-      "command": [
-        "node",
-        "tests/scan-split-browser.mjs"
-      ],
+      "command": ["node", "tests/scan-split-browser.mjs"],
       "jobLimitBytes": 4294967296,
       "leaseSeconds": 420,
       "cleanupReserveSeconds": 3.0,
@@ -230,10 +227,7 @@
       }
     },
     "junction-ambiguous-linked-browser-20261105": {
-      "command": [
-        "node",
-        "tests/scan-split-browser.mjs"
-      ],
+      "command": ["node", "tests/scan-split-browser.mjs"],
       "jobLimitBytes": 4294967296,
       "leaseSeconds": 420,
       "cleanupReserveSeconds": 3.0,
@@ -344,10 +338,7 @@
       }
     },
     "junction-targeted-budget-ply3-public-mcp-20261105": {
-      "command": [
-        "node",
-        "tests/m2-original-split-browser-local.mjs"
-      ],
+      "command": ["node", "tests/m2-original-split-browser-local.mjs"],
       "jobLimitBytes": 4294967296,
       "leaseSeconds": 420,
       "cleanupReserveSeconds": 3.0,

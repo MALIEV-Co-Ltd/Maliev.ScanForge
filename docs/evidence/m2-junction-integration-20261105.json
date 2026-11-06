@@ -188,10 +188,7 @@
       }
     },
     "junction-integration-shared-browser-20261105": {
-      "command": [
-        "node",
-        "tests/scan-split-browser.mjs"
-      ],
+      "command": ["node", "tests/scan-split-browser.mjs"],
       "jobLimitBytes": 4294967296,
       "leaseSeconds": 420,
       "cleanupReserveSeconds": 3.0,
@@ -226,10 +223,7 @@
       }
     },
     "junction-integration-ambiguous-browser-20261105": {
-      "command": [
-        "node",
-        "tests/scan-split-browser.mjs"
-      ],
+      "command": ["node", "tests/scan-split-browser.mjs"],
       "jobLimitBytes": 4294967296,
       "leaseSeconds": 420,
       "cleanupReserveSeconds": 3.0,

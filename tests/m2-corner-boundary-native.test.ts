@@ -59,24 +59,19 @@ it("pins the native source, cutter and separated indexed result", () => {
   );
   expect(faces[0].every((id) => !faces[1].includes(id))).toBe(true);
 });
-it(
-  "matches native corner-to-boundary facets and disconnected indices",
-  () => {
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "split",
-      positions: mesh("source.stl"),
-      target: mesh("cutter.stl"),
-    });
-    expect(facets(result.positions!)).toEqual(
-      facets(mesh("native-result.stl")),
-    );
-    const indices = result.indexedMesh!.triangles;
-    expect(indices.length).toBe(6);
-    expect(
-      Array.from(indices.slice(0, 3)).every(
-        (id) => !Array.from(indices.slice(3, 6)).includes(id),
-      ),
-    ).toBe(true);
-  },
-);
+it("matches native corner-to-boundary facets and disconnected indices", () => {
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "split",
+    positions: mesh("source.stl"),
+    target: mesh("cutter.stl"),
+  });
+  expect(facets(result.positions!)).toEqual(facets(mesh("native-result.stl")));
+  const indices = result.indexedMesh!.triangles;
+  expect(indices.length).toBe(6);
+  expect(
+    Array.from(indices.slice(0, 3)).every(
+      (id) => !Array.from(indices.slice(3, 6)).includes(id),
+    ),
+  ).toBe(true);
+});
