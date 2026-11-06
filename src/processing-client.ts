@@ -476,7 +476,20 @@ function runProcessingRequest(
         session.release(
           usable,
           successor,
-          completed && request.kind === "scanEdit"
+          completed &&
+            request.kind === "scanEdit" &&
+            !request.previewOnly &&
+            !(
+              request.action === "inventory" &&
+              request.inventoryScope === "components"
+            ) &&
+            !(
+              request.action.startsWith("component") &&
+              request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
+            ) &&
+            (request.action !== "split" ||
+              request.plane ||
+              request.targetIsNonMesh)
             ? request.sourceIndexed
             : undefined,
           completed && request.kind === "scanEdit"

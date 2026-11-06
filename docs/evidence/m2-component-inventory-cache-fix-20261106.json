@@ -1,0 +1,32 @@
+{
+  "scope": "Indexed component identity after component-only inventory, using the retained folded-boundary Split fixture",
+  "baselineCommit": "e6ff60a",
+  "fixture": "tests/fixtures/m2-folded-boundary-native-20261105/README.md",
+  "before": {
+    "observed": "After GUI Split, public MCP component-only inventory reported three one-triangle components, but full MCP inventory and the GUI Individual meshes panel reported one three-triangle component and one boundary.",
+    "realWorkerRegression": "A component-only inventory followed by full inventory on two disjoint indexed triangles with coincident coordinates reported one full-inventory component instead of two.",
+    "diagnosticDriverSha256": "37fb0e6c13177480a1570c30b43267f6f566b9ec2b025515cbbaf35a76bf88c6"
+  },
+  "causeAndChange": "The client recorded indexed topology as reusable after paths that did not build the full adjacency cache. A subsequent full request omitted the source indices and welded the geometry. The cache marker is now retained only for scan-edit paths that build indexed adjacency; component-only inventory, large compact component actions, finite mesh Split and previews do not establish it.",
+  "after": {
+    "build": "scanforge-b4a30452acf5c910",
+    "affectedTestsPassed": 187,
+    "fullSuite": "50685 passed and 76 skipped; a subsequent source-preservation assertion passed in the targeted regression.",
+    "guiPanelComponentTriangleCounts": [1, 1, 1],
+    "mcpComponentOnlyTriangleCounts": [1, 1, 1],
+    "mcpFullInventoryTriangleCounts": [1, 1, 1],
+    "mcpFullBoundaryCount": 3,
+    "guiMcpGeometryHistoryReopenAndCancellation": "passed on this fixture",
+    "pageErrors": [],
+    "peakJobBytes": 923693056,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0,
+    "driverSha256": "5e1ff608533e659512d526c4a1e34a7f61e867ab11e0cb3feb6418fe0da7238c",
+    "receiptSha256": "4b42895c91d2a300b4ebf77f33194100da6b03a63d5b7bd00afb421c06762c54"
+  },
+  "limitations": [
+    "The first post-fix browser attempt showed all three inventory counts correctly but later hit BUSY while the new GUI panel remained open. The retry closed the panel and completed the lifecycle.",
+    "This comparison covers one finite native fixture; broader component, resource and M2 acceptance gates remain open.",
+    "Native viewport capture remained black during the later reopen. The native mesh count comes from the earlier retained observation and saved indexed topology."
+  ]
+}

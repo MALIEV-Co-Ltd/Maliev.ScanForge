@@ -1377,6 +1377,77 @@ describe("processing worker resource ownership", () => {
     });
     expect(replies.some((r) => r.stage === "Welding vertices")).toBe(true);
   });
+  it("preserves indexed connectivity when a component-only inventory precedes full inventory", async () => {
+    const source = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
+    ]);
+    const sourceIndexed = {
+      vertices: source.slice(),
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const original = source.slice();
+    let owner: any;
+    const scope = {
+      onmessage: null as ((event: { data: any }) => Promise<void>) | null,
+      postMessage(message: any, transfer: Transferable[] = []) {
+        owner.onmessage?.({ data: structuredClone(message, { transfer }) });
+      },
+    };
+    vi.stubGlobal("self", scope);
+    vi.resetModules();
+    await import("../src/processing-worker");
+    vi.stubGlobal(
+      "Worker",
+      class {
+        onmessage: any;
+        onerror: any;
+        onmessageerror: any;
+        constructor() {
+          owner = this;
+        }
+        postMessage(message: any, transfer: Transferable[]) {
+          void scope.onmessage?.({
+            data: structuredClone(message, { transfer }),
+          });
+        }
+        terminate() {}
+      },
+    );
+    const input = {
+      kind: "scanEdit",
+      action: "inventory",
+      positions: source,
+      sourceIndexed,
+    } as const;
+    const scoped = await processMesh(
+      { ...input, inventoryScope: "components" },
+      { reuseTopology: true },
+    );
+    const full = await processMesh(input, { reuseTopology: true });
+    expect(scoped.scanEdit?.inventory?.components).toHaveLength(2);
+    expect(full.scanEdit?.inventory?.components).toHaveLength(2);
+    const scopedAgain = await processMesh(
+      { ...input, inventoryScope: "components" },
+      { reuseTopology: true },
+    );
+    const fullAgain = await processMesh(input, { reuseTopology: true });
+    expect(scopedAgain.scanEdit?.inventory?.components).toHaveLength(2);
+    expect(fullAgain.scanEdit?.inventory?.components).toHaveLength(2);
+    await processMesh(
+      { ...input, inventoryScope: "components" },
+      { reuseTopology: true },
+    );
+    const kept = await processMesh(
+      { ...input, action: "componentKeep", indices: [0] },
+      { reuseTopology: true },
+    );
+    expect(kept.scanEdit?.positions).toHaveLength(9);
+    expect(source).toEqual(original);
+    expect(sourceIndexed.vertices).toEqual(original);
+    expect(sourceIndexed.triangles).toEqual(
+      new Uint32Array([0, 1, 2, 3, 4, 5]),
+    );
+  });
   it("preserves authored connectivity across intervening diagnostic tolerances in the real worker", async () => {
     const source = new Float32Array([
       0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0,
