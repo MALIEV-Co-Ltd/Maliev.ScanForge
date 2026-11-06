@@ -33,13 +33,28 @@
     "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-exclude-coplanar-retry-20261106.json",
     "limitation": "A temporary copy excluded the failing case; this is not a passing full suite or a new native session."
   },
-  "fullBrowserSuite": {
+  "previousFullBrowserSuite": {
     "result": "failed",
     "case": "coplanar-shared-edge",
     "expectedSharedIntervals": ["0,0.3", "0.3,0.5", "0.5,0.7", "0.7,1"],
     "observedSharedIntervals": ["0,0.3", "0.3,0.7", "0.7,1"],
     "unchangedPriorTestReproducedFailure": true,
     "unchangedTestReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-coplanar-unchanged-test-20261106.json",
-    "interpretation": "This manufactured input is not a native comparison. The midpoint expectation and native behavior remain open; the assertion is retained."
+    "interpretation": "This manufactured input is not a native comparison. The old assertion was retained while its change was investigated."
+  },
+  "indexedHistoryDiagnostic": {
+    "parentCommit": "6066a6ae",
+    "changeCommit": "c3620bf3",
+    "old": "Ten faces. The intervals 0.3-0.5 and 0.5-0.7 each appeared twice as distinct indexed edges with incidence one, opening a seam.",
+    "current": "Eight faces. Each of the three intervals 0-0.3, 0.3-0.7 and 0.7-1 has indexed incidence two.",
+    "interpretation": "The old midpoint materialized an open isolated seam; the intervening shared-edge correction changes that topology. This does not establish QuickSurface behavior for this coplanar input.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/coplanar-incidence-20261106.json"
+  },
+  "currentFullBrowserSuite": {
+    "result": "passed",
+    "scope": "Default browser cases with no coplanar exclusion, including GUI and public MCP lifecycle checks and current indexed coplanar incidence",
+    "peakJobBytes": 971370496,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/split-full-indexed-20261106.json",
+    "limitation": "Native behavior for the exact coplanar case and other M2 gates remain open."
   }
 }

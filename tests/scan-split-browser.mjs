@@ -1212,8 +1212,8 @@ try {
         if (c.coplanarSharedEdge) {
           assert.deepEqual(
             [...edges.keys()].sort(),
-            ["0,0.3", "0.3,0.5", "0.5,0.7", "0.7,1"].sort(),
-            "Finite Split changed the observed shared-edge intervals",
+            ["0,0.3", "0.3,0.7", "0.7,1"].sort(),
+            "Finite Split changed the application shared-edge intervals",
           );
           const endpoints = [...edges.keys()].flatMap((key) =>
             key.split(",").map(Number),
@@ -1257,6 +1257,29 @@ try {
           ).result.geometry,
         );
         const mesh = data.indexedMesh;
+        if (c.coplanarSharedEdge) {
+          const edges = new Map();
+          for (let i = 0; i < mesh.triangles.length; i += 3)
+            for (let j = 0; j < 3; j++) {
+              const a = mesh.triangles[i + j],
+                b = mesh.triangles[i + ((j + 1) % 3)];
+              if (
+                ![a, b].every(
+                  (id) =>
+                    mesh.vertices[3 * id] === 0 &&
+                    mesh.vertices[3 * id + 2] === 0,
+                )
+              )
+                continue;
+              const key = [a, b].sort((x, y) => x - y).join(":");
+              edges.set(key, (edges.get(key) ?? 0) + 1);
+            }
+          assert.equal(edges.size, 3);
+          assert(
+            [...edges.values()].every((count) => count === 2),
+            "Coplanar edge is not shared in indexed topology",
+          );
+        }
         if (c.finiteInterior && !process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT) {
           const edges = new Map();
           for (let i = 0; i < mesh.triangles.length; i += 3)
