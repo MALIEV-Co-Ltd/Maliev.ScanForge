@@ -36,7 +36,19 @@
     "workerReceiptSha256": "d8a296aeb5f53dce02a15d137b6d340b3dd13aae5e694035c2a16b570b053856",
     "workerLog": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-r3-20261106.log",
     "workerLogSha256": "1870f25c5602b622867e54fa92dc94b2cdfb845be58714c24a1db700d3e840ab",
-    "limitation": "These controls do not establish that shared-wrapper identity is the actual cause of the PLY-3 topology changes, or that skipping the rebuild is safe. Shared memory must not be transferred or matched by an unverified content assumption."
+    "ply3Trace": {
+      "scope": "Instrumented original PLY-3 browser replay; production geometry unchanged",
+      "bundle": "scanforge-096f767b0268869b",
+      "observations": "On reopening, both the hidden source and visible extracted mesh reused their ordinary numeric position and vertex arrays, while their triangle, geometry-normal and facet-normal views compared unequal and were SharedArrayBuffer-backed on both sides. The decoder reported borrowing shared chunks with the corresponding element types and sizes, including source u32 and f32 facet chunks of 44351340 bytes, source f32 normal chunk of 22448064 bytes, extracted u32 and f32 facet chunks of 21321528 bytes, and extracted f32 normal chunk of 10770636 bytes. Both viewport topology comparisons returned false and entered rebuilding. The trace does not map each view to an individual chunk or establish exclusive causality.",
+      "result": "The driver completed geometry, project reopen and GUI undo/redo; downloaded and streamed file SHA-256 both were 139fa644fa7e935c72f0b501d6c7651c956fa19f6813a1ae8fb7e0f691e782a4. The Job peak was 4269326336 bytes, leaving 25640960 bytes beneath 4 GiB. Cleanup confirmed zero active processes and the driver removed its temporary download. Earlier over-limit runs remain failures.",
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/shared-identity-ply3-20261106.json",
+      "receiptSha256": "c975379ac69d985149ad788cc4bf0bf1aa1150e81cc8dcb1b2bdb8338e17975c",
+      "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-identity-ply3-20261106.log",
+      "logSha256": "be55b1333e761441ed22f7b89d2f771559336d1d24fcea1176a219ce1e3c2ab7",
+      "tracePatch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-identity-trace-20261106.patch",
+      "tracePatchSha256": "e2563aa49c323ec1b85c5a13ae316fbd36de6f0552d3611b10e8e223847c3d75"
+    },
+    "limitation": "The small control demonstrates a shared-wrapper identity mismatch, and the full-size trace is consistent with it, but the full trace does not prove view-to-chunk association. A safe solution must preserve exact shared backing identity and aliases without transferring shared memory or trusting unverified content."
   },
   "limitations": "Separate runs do not establish that deferral caused the allocation failure or determine its effect on aggregate peak. The prototype retains old hidden display memory, has incomplete selection and lifecycle coverage, and is not integrated. Resource acceptance and M2 closure remain open."
 }
