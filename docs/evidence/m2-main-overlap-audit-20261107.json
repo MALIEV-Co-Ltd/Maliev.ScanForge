@@ -35,6 +35,36 @@
     "report": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-r2-20261107.log",
     "reportSha256": "110e5448337948b7fe98e1de2722766c2155f2f164129831e9753182b9d77dd4"
   },
+  "catalogCompatibilitySample": {
+    "candidateCommit": "bf0af1a508574555fb785573fea5df76021a9778",
+    "localCatalogSha256": "bfdd5347400cd9ef6aa1b1db59a2ee230c1f0a12b1ea153c18cd71b2d8830d85",
+    "candidateCatalogSha256": "1cac06b9dac33e09c566a08498e8c15b428f9f626a7eceba8280654f6d2a0d37",
+    "method": "Compared tool names and validated concrete request examples against both JSON schemas with the locally installed Ajv. Inspected the local implementations and test sources for the advertised features; no runtime behavior was executed.",
+    "toolNames": {
+      "local": 93,
+      "candidate": 97,
+      "localOnly": 0,
+      "candidateOnly": [
+        "inspection_display",
+        "inspection_get",
+        "inspection_manage",
+        "inspection_run"
+      ]
+    },
+    "localSchemaAcceptsCandidateRejects": [
+      "object_select with all:true",
+      "global_alignment_preview with initialization:automatic",
+      "alignment_preview with automatic CAD setup",
+      "alignment_apply with automatic CAD setup"
+    ],
+    "falsePositiveExcluded": "An initial top-level property comparison flagged analysis_deviation, but the candidate schema uses alternatives; the sampled entityId/fit request is accepted by both schemas.",
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-catalog-examples-20261107.cjs",
+    "scriptSha256": "a3beda9e373efd6490d2242d25f30923e57cc559dd7a3b0aa44ce84bd4c04f7a",
+    "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-catalog-examples-r2-guard-20261107.json",
+    "guardReceiptSha256": "f3d0580421c371eb7f4d2a0c33e1c4c54664442d5503a31de2092942677c2d38",
+    "ownedProcessCleanupConfirmed": true,
+    "limitations": "The local catalog is uncommitted and may change. These are schema examples and source observations, not proof that either checkout's runtime currently implements every advertised behavior. Nested schema compatibility beyond the examples was not established."
+  },
   "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-20261107.cjs",
   "scriptSha256": "5927e54af9c5f6757416e668156412ad09a511cf1c06e6f76903d89c76bc7422",
   "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-r2-guard-20261107.json",
