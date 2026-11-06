@@ -18,6 +18,8 @@ The integrated build also passed an original PLY-3 full-download and GUI
 reopen/history replay under the 4 GiB limit, with narrow headroom; see the
 [large-project record](evidence/m2-main-refresh-ply3-20261105.json).
 
+On the later junction candidate, three [PLY-3 refresh attempts](evidence/m2-junction-ply3-resource-failure-20261106.json) did not meet the 4 GiB reported-peak requirement. Two completed the geometry, GUI reopen and history checks but reported peaks above the limit; the diagnostic run independently matched the downloaded file hash to the artifact stream, then timed out during GUI reopen at the limit. Its peak timeline locates the growth after file selection, before replacement confirmation; it does not identify the responsible allocation. The resource and current-candidate GUI reopen gate therefore remains open despite the earlier main-refresh success.
+
 The 2026-10-27 partial Tangent curved-annulus control matches the installed native export through the shared operation, rendered GUI and public MCP. Source corners, history and binary reopening pass; the complementary arc has a separate result. [Evidence](evidence/m2-partial-tangent-20261027.json) is limited to this one control; other partial and bridge algorithms and the remaining M2 gates stay open.
 
 Latest confirmed green full hosted application checkpoint `69a1380` passes [run 40379322369](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40379322369): 49,926 tests, 64 conditional skips, build, both CAD smoke checks and formatting. Subsequent test/evidence-only commits require their own exact-head CI.

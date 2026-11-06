@@ -1,0 +1,1435 @@
+{
+  "scope": "Candidate PLY-3 GUI Split/Extract, public MCP project artifact download and GUI reopen; resource failure, not milestone acceptance",
+  "candidateCommit": "9f68b8fb",
+  "bundle": "scanforge-64e154f9c3cab8dc",
+  "source": {
+    "path": "C:/repo/alignment-example-files/ply-3.ply",
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "faces": 3691133
+  },
+  "hardLimitBytes": 4294967296,
+  "runs": [
+    {
+      "name": "node-disk-monitor",
+      "geometryAndHistory": "passed",
+      "resource": "failed: reported peak above cap even though legacy receipt passed",
+      "ledger": {
+        "owner": "split-lifecycle-browser",
+        "pid": 11692,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "startedAt": "2026-11-06T09:14:07.880Z",
+        "expiresAt": "2026-11-06T09:29:07.880Z",
+        "persistentData": false,
+        "resources": [
+          {
+            "kind": "http-server",
+            "port": 52449,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "mcp-server",
+            "pid": 29516,
+            "startedAt": "2026-11-06T09:14:07.8919204Z",
+            "executable": "C:\\Program Files\\nodejs\\node.exe",
+            "expiresAt": "2026-11-06T09:29:07.880Z",
+            "persistentData": false,
+            "port": 52450,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "browser",
+            "pid": 27880,
+            "startedAt": "2026-11-06T09:14:08.4715792Z",
+            "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "expiresAt": "2026-11-06T09:29:07.880Z",
+            "persistentData": false
+          }
+        ],
+        "stages": [
+          {
+            "name": "source-imported",
+            "at": "2026-11-06T09:14:14.999Z",
+            "harness": {
+              "rss": 228020224,
+              "heapTotal": 94502912,
+              "heapUsed": 59405712,
+              "external": 70254519,
+              "arrayBuffers": 66340084
+            },
+            "browserHeap": {
+              "used": 22328128,
+              "total": 36892424,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "source-digest",
+            "at": "2026-11-06T09:14:21.207Z",
+            "harness": {
+              "rss": 228216832,
+              "heapTotal": 94765056,
+              "heapUsed": 68587040,
+              "external": 72749605,
+              "arrayBuffers": 68835130
+            },
+            "browserHeap": {
+              "used": 72020282,
+              "total": 86266546,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "cutter-imported",
+            "at": "2026-11-06T09:14:21.402Z",
+            "harness": {
+              "rss": 228290560,
+              "heapTotal": 94765056,
+              "heapUsed": 70306776,
+              "external": 73153702,
+              "arrayBuffers": 69237179
+            },
+            "browserHeap": {
+              "used": 72053062,
+              "total": 86272678,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-started",
+            "at": "2026-11-06T09:14:21.812Z",
+            "harness": {
+              "rss": 218804224,
+              "heapTotal": 94765056,
+              "heapUsed": 62965952,
+              "external": 70870069,
+              "arrayBuffers": 66953546
+            },
+            "browserHeap": {
+              "used": 68334318,
+              "total": 86522590,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-committed",
+            "at": "2026-11-06T09:14:43.898Z",
+            "harness": {
+              "rss": 124170240,
+              "heapTotal": 68550656,
+              "heapUsed": 61236520,
+              "external": 5961348,
+              "arrayBuffers": 2044825
+            },
+            "browserHeap": {
+              "used": 455094568,
+              "total": 461780692,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-output-digest",
+            "at": "2026-11-06T09:14:49.026Z",
+            "harness": {
+              "rss": 127889408,
+              "heapTotal": 69599232,
+              "heapUsed": 61237376,
+              "external": 5951489,
+              "arrayBuffers": 2034966
+            },
+            "browserHeap": {
+              "used": 507033691,
+              "total": 515947063,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-opened",
+            "at": "2026-11-06T09:14:49.313Z",
+            "harness": {
+              "rss": 128860160,
+              "heapTotal": 69861376,
+              "heapUsed": 59106840,
+              "external": 5066758,
+              "arrayBuffers": 1120179
+            },
+            "browserHeap": {
+              "used": 511833782,
+              "total": 518597498,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-ready",
+            "at": "2026-11-06T09:14:53.080Z",
+            "harness": {
+              "rss": 128966656,
+              "heapTotal": 69861376,
+              "heapUsed": 57841504,
+              "external": 4876154,
+              "arrayBuffers": 929575
+            },
+            "browserHeap": {
+              "used": 535704751,
+              "total": 605067691,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-committed",
+            "at": "2026-11-06T09:14:56.656Z",
+            "harness": {
+              "rss": 129282048,
+              "heapTotal": 69861376,
+              "heapUsed": 59441240,
+              "external": 5408676,
+              "arrayBuffers": 1462097
+            },
+            "browserHeap": {
+              "used": 745714438,
+              "total": 796411230,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undone",
+            "at": "2026-11-06T09:15:01.243Z",
+            "harness": {
+              "rss": 129544192,
+              "heapTotal": 78249984,
+              "heapUsed": 61006072,
+              "external": 5928099,
+              "arrayBuffers": 1981520
+            },
+            "browserHeap": {
+              "used": 705666865,
+              "total": 765399237,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undo-digest-verified",
+            "at": "2026-11-06T09:15:07.357Z",
+            "harness": {
+              "rss": 132968448,
+              "heapTotal": 78249984,
+              "heapUsed": 63885952,
+              "external": 6842741,
+              "arrayBuffers": 2896162
+            },
+            "browserHeap": {
+              "used": 765368181,
+              "total": 816421289,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-exported",
+            "at": "2026-11-06T09:15:46.200Z",
+            "harness": {
+              "rss": 136343552,
+              "heapTotal": 93454336,
+              "heapUsed": 60456512,
+              "external": 6978875,
+              "arrayBuffers": 3037818
+            },
+            "browserHeap": {
+              "used": 699430092,
+              "total": 700729080,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-downloaded",
+            "at": "2026-11-06T09:15:59.129Z",
+            "harness": {
+              "rss": 180920320,
+              "heapTotal": 101875712,
+              "heapUsed": 63905984,
+              "external": 35073931,
+              "arrayBuffers": 31136033
+            },
+            "browserHeap": {
+              "used": 753066010,
+              "total": 755796014,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-gui-project-imported",
+            "at": "2026-11-06T09:16:14.491Z",
+            "harness": {
+              "rss": 135258112,
+              "heapTotal": 92033024,
+              "heapUsed": 59422752,
+              "external": 4787639,
+              "arrayBuffers": 849741
+            },
+            "browserHeap": {
+              "used": 704703331,
+              "total": 735308479,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-gui-reopen-verified",
+            "at": "2026-11-06T09:16:23.691Z",
+            "harness": {
+              "rss": 140492800,
+              "heapTotal": 59527168,
+              "heapUsed": 55330000,
+              "external": 5305058,
+              "arrayBuffers": 1367160
+            },
+            "browserHeap": {
+              "used": 783964765,
+              "total": 811396589,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-reopen-gui-undo-verified",
+            "at": "2026-11-06T09:16:30.066Z",
+            "harness": {
+              "rss": 140517376,
+              "heapTotal": 63459328,
+              "heapUsed": 57016120,
+              "external": 5840043,
+              "arrayBuffers": 1902145
+            },
+            "browserHeap": {
+              "used": 630755946,
+              "total": 665977814,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-reopen-gui-redo-verified",
+            "at": "2026-11-06T09:16:33.258Z",
+            "harness": {
+              "rss": 142311424,
+              "heapTotal": 63983616,
+              "heapUsed": 58372840,
+              "external": 6259826,
+              "arrayBuffers": 2321928
+            },
+            "browserHeap": {
+              "used": 666070337,
+              "total": 701291589,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-redo-verified",
+            "at": "2026-11-06T09:16:33.289Z",
+            "harness": {
+              "rss": 142315520,
+              "heapTotal": 63983616,
+              "heapUsed": 58557080,
+              "external": 6269242,
+              "arrayBuffers": 2331344
+            },
+            "browserHeap": {
+              "used": 666070337,
+              "total": 701291589,
+              "limit": 3321888768
+            }
+          }
+        ],
+        "crossOriginIsolated": true,
+        "transportSamples": [
+          {
+            "before": 401835228,
+            "positions": 33263505,
+            "vertices": 5612016,
+            "after": 401835228
+          }
+        ],
+        "result": {
+          "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+          "inputFaces": 3691133,
+          "splitFaces": 3695945,
+          "extractedFaces": 1776794,
+          "guiOutputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 15991146,
+              "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 2692659,
+              "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 5330382,
+              "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+            }
+          ],
+          "indexedResult": true,
+          "sourcePreserved": true,
+          "cutterPreserved": true,
+          "guiUndoRedo": true,
+          "binaryReopen": true,
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        "cleanup": [
+          {
+            "port": 52449,
+            "closed": true
+          },
+          {
+            "pid": 29516,
+            "exited": true
+          },
+          {
+            "port": 52450,
+            "closed": true
+          },
+          {
+            "pid": 27880,
+            "exited": true
+          }
+        ],
+        "cleanedAt": "2026-11-06T09:16:33.511Z",
+        "passed": true
+      },
+      "guard": {
+        "command": [
+          "node",
+          "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply3-disk-guard-20261106.mjs"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 420,
+        "cleanupReserveSeconds": 3.0,
+        "leaseIncludesAdmission": true,
+        "passed": true,
+        "cleanupConfirmed": true,
+        "cleanupErrors": [],
+        "activeAfter": 0,
+        "jobActiveAfter": 0,
+        "peakJobBytes": 4296916992,
+        "totalProcesses": 25,
+        "noChildStarted": false,
+        "memoryAdmission": {
+          "method": "GlobalMemoryStatusEx",
+          "availablePhysicalBytes": 17317609472,
+          "requiredBytes": 4294967296,
+          "childProcessCreated": false
+        },
+        "ownedPid": 13776,
+        "exitCode": 0,
+        "ownedRootExited": true,
+        "threadHandleClosed": true,
+        "processHandleClosed": true,
+        "JobHandleClosed": true,
+        "elapsedSeconds": 146.15571400000044,
+        "outerLeaseExceeded": false,
+        "validationLane": {
+          "name": "Local\\ScanForge.BoundedValidation",
+          "acquiredUtc": "2026-11-06T09:14:07.370840+00:00",
+          "releasedAfterCleanup": true,
+          "zeroWait": true
+        }
+      }
+    },
+    {
+      "name": "supervisor-disk-monitor",
+      "geometryAndHistory": "passed",
+      "resource": "failed: reported peak above cap",
+      "ledger": {
+        "owner": "split-lifecycle-browser",
+        "pid": 35024,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "startedAt": "2026-11-06T09:17:43.397Z",
+        "expiresAt": "2026-11-06T09:32:43.397Z",
+        "persistentData": false,
+        "resources": [
+          {
+            "kind": "http-server",
+            "port": 61196,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "mcp-server",
+            "pid": 10688,
+            "startedAt": "2026-11-06T09:17:43.4089471Z",
+            "executable": "C:\\Program Files\\nodejs\\node.exe",
+            "expiresAt": "2026-11-06T09:32:43.397Z",
+            "persistentData": false,
+            "port": 61197,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "browser",
+            "pid": 3700,
+            "startedAt": "2026-11-06T09:17:43.9765505Z",
+            "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "expiresAt": "2026-11-06T09:32:43.397Z",
+            "persistentData": false
+          }
+        ],
+        "stages": [
+          {
+            "name": "source-imported",
+            "at": "2026-11-06T09:17:49.915Z",
+            "harness": {
+              "rss": 227741696,
+              "heapTotal": 95027200,
+              "heapUsed": 58623256,
+              "external": 70215528,
+              "arrayBuffers": 66301093
+            },
+            "browserHeap": {
+              "used": 22328988,
+              "total": 37154568,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "source-digest",
+            "at": "2026-11-06T09:17:56.160Z",
+            "harness": {
+              "rss": 228036608,
+              "heapTotal": 95027200,
+              "heapUsed": 67766728,
+              "external": 72743786,
+              "arrayBuffers": 68829311
+            },
+            "browserHeap": {
+              "used": 71864570,
+              "total": 86528282,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "cutter-imported",
+            "at": "2026-11-06T09:17:56.363Z",
+            "harness": {
+              "rss": 228048896,
+              "heapTotal": 95027200,
+              "heapUsed": 69470568,
+              "external": 73155898,
+              "arrayBuffers": 69239375
+            },
+            "browserHeap": {
+              "used": 72304436,
+              "total": 86796628,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-started",
+            "at": "2026-11-06T09:17:56.753Z",
+            "harness": {
+              "rss": 227020800,
+              "heapTotal": 95289344,
+              "heapUsed": 62205560,
+              "external": 70594050,
+              "arrayBuffers": 66677527
+            },
+            "browserHeap": {
+              "used": 68341734,
+              "total": 86522746,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-committed",
+            "at": "2026-11-06T09:18:19.603Z",
+            "harness": {
+              "rss": 124760064,
+              "heapTotal": 69337088,
+              "heapUsed": 58794008,
+              "external": 5289822,
+              "arrayBuffers": 1373299
+            },
+            "browserHeap": {
+              "used": 454669010,
+              "total": 461256474,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-output-digest",
+            "at": "2026-11-06T09:18:24.802Z",
+            "harness": {
+              "rss": 127901696,
+              "heapTotal": 69599232,
+              "heapUsed": 61277960,
+              "external": 6038486,
+              "arrayBuffers": 2121963
+            },
+            "browserHeap": {
+              "used": 506845557,
+              "total": 516209413,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-opened",
+            "at": "2026-11-06T09:18:25.076Z",
+            "harness": {
+              "rss": 129077248,
+              "heapTotal": 69861376,
+              "heapUsed": 59220496,
+              "external": 5091673,
+              "arrayBuffers": 1145094
+            },
+            "browserHeap": {
+              "used": 511485672,
+              "total": 518859848,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-ready",
+            "at": "2026-11-06T09:18:28.928Z",
+            "harness": {
+              "rss": 129097728,
+              "heapTotal": 69861376,
+              "heapUsed": 57859072,
+              "external": 4900942,
+              "arrayBuffers": 954363
+            },
+            "browserHeap": {
+              "used": 532017234,
+              "total": 601633890,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-committed",
+            "at": "2026-11-06T09:18:32.538Z",
+            "harness": {
+              "rss": 129339392,
+              "heapTotal": 69861376,
+              "heapUsed": 59333344,
+              "external": 5380754,
+              "arrayBuffers": 1434175
+            },
+            "browserHeap": {
+              "used": 742034575,
+              "total": 793239643,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undone",
+            "at": "2026-11-06T09:18:37.125Z",
+            "harness": {
+              "rss": 129613824,
+              "heapTotal": 78249984,
+              "heapUsed": 60932448,
+              "external": 5901390,
+              "arrayBuffers": 1954811
+            },
+            "browserHeap": {
+              "used": 707353836,
+              "total": 765661384,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undo-digest-verified",
+            "at": "2026-11-06T09:18:43.201Z",
+            "harness": {
+              "rss": 134733824,
+              "heapTotal": 78774272,
+              "heapUsed": 63746144,
+              "external": 6819264,
+              "arrayBuffers": 2872685
+            },
+            "browserHeap": {
+              "used": 767063105,
+              "total": 816683361,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-exported",
+            "at": "2026-11-06T09:19:21.965Z",
+            "harness": {
+              "rss": 137027584,
+              "heapTotal": 94502912,
+              "heapUsed": 60882248,
+              "external": 7073402,
+              "arrayBuffers": 3132345
+            },
+            "browserHeap": {
+              "used": 699239416,
+              "total": 700466452,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-downloaded",
+            "at": "2026-11-06T09:19:34.697Z",
+            "harness": {
+              "rss": 134582272,
+              "heapTotal": 93343744,
+              "heapUsed": 53164472,
+              "external": 4629936,
+              "arrayBuffers": 692038
+            },
+            "browserHeap": {
+              "used": 741281120,
+              "total": 743230824,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-gui-project-imported",
+            "at": "2026-11-06T09:19:51.260Z",
+            "harness": {
+              "rss": 136327168,
+              "heapTotal": 93343744,
+              "heapUsed": 60187176,
+              "external": 4827164,
+              "arrayBuffers": 889266
+            },
+            "browserHeap": {
+              "used": 700193050,
+              "total": 735046350,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-gui-reopen-verified",
+            "at": "2026-11-06T09:20:00.405Z",
+            "harness": {
+              "rss": 142393344,
+              "heapTotal": 60837888,
+              "heapUsed": 55146824,
+              "external": 5325251,
+              "arrayBuffers": 1387353
+            },
+            "browserHeap": {
+              "used": 784089978,
+              "total": 811920686,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-reopen-gui-undo-verified",
+            "at": "2026-11-06T09:20:06.790Z",
+            "harness": {
+              "rss": 142413824,
+              "heapTotal": 63983616,
+              "heapUsed": 57504728,
+              "external": 6110182,
+              "arrayBuffers": 2172284
+            },
+            "browserHeap": {
+              "used": 631978198,
+              "total": 666240294,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-reopen-gui-redo-verified",
+            "at": "2026-11-06T09:20:09.969Z",
+            "harness": {
+              "rss": 144097280,
+              "heapTotal": 63983616,
+              "heapUsed": 57416544,
+              "external": 6126990,
+              "arrayBuffers": 2189092
+            },
+            "browserHeap": {
+              "used": 664915685,
+              "total": 699456789,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-redo-verified",
+            "at": "2026-11-06T09:20:10.001Z",
+            "harness": {
+              "rss": 144101376,
+              "heapTotal": 63983616,
+              "heapUsed": 57621696,
+              "external": 6134057,
+              "arrayBuffers": 2196159
+            },
+            "browserHeap": {
+              "used": 664915685,
+              "total": 699456789,
+              "limit": 3321888768
+            }
+          }
+        ],
+        "crossOriginIsolated": true,
+        "transportSamples": [
+          {
+            "before": 401864380,
+            "positions": 33263505,
+            "vertices": 5612016,
+            "after": 401864380
+          }
+        ],
+        "result": {
+          "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+          "inputFaces": 3691133,
+          "splitFaces": 3695945,
+          "extractedFaces": 1776794,
+          "guiOutputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 15991146,
+              "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 2692659,
+              "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 5330382,
+              "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+            }
+          ],
+          "indexedResult": true,
+          "sourcePreserved": true,
+          "cutterPreserved": true,
+          "guiUndoRedo": true,
+          "binaryReopen": true,
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        "cleanup": [
+          {
+            "port": 61196,
+            "closed": true
+          },
+          {
+            "pid": 10688,
+            "exited": true
+          },
+          {
+            "port": 61197,
+            "closed": true
+          },
+          {
+            "pid": 3700,
+            "exited": true
+          }
+        ],
+        "cleanedAt": "2026-11-06T09:20:10.203Z",
+        "passed": true
+      },
+      "guard": {
+        "command": [
+          "node",
+          "--max-old-space-size=3072",
+          "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-junction-integrated-ply3-gui-reopen-20261106.mjs"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 420,
+        "cleanupReserveSeconds": 3.0,
+        "leaseIncludesAdmission": true,
+        "passed": false,
+        "cleanupConfirmed": true,
+        "cleanupErrors": [],
+        "activeAfter": 0,
+        "jobActiveAfter": 0,
+        "peakJobBytes": 4295704576,
+        "totalProcesses": 24,
+        "noChildStarted": false,
+        "memoryAdmission": {
+          "method": "GlobalMemoryStatusEx",
+          "availablePhysicalBytes": 17845465088,
+          "requiredBytes": 4294967296,
+          "childProcessCreated": false
+        },
+        "diskGuard": {
+          "initialFreeBytes": 4288950272,
+          "minimumFreeBytes": 3813105664,
+          "stopBelowBytes": 1500000000
+        },
+        "ownedPid": 35024,
+        "exitCode": 0,
+        "ownedRootExited": true,
+        "threadHandleClosed": true,
+        "processHandleClosed": true,
+        "JobHandleClosed": true,
+        "elapsedSeconds": 147.2914462000008,
+        "outerLeaseExceeded": false,
+        "error": "Reported peak exceeded the 4 GiB job limit",
+        "validationLane": {
+          "name": "Local\\ScanForge.BoundedValidation",
+          "acquiredUtc": "2026-11-06T09:17:42.922604+00:00",
+          "releasedAfterCleanup": true,
+          "zeroWait": true
+        }
+      }
+    },
+    {
+      "name": "independent-file-hash-and-peak-timeline",
+      "artifactStreamSha256": "d96929e100cbfa5a17cc1f231c8442c07c98414f5c92655990d56b427a5f8790",
+      "downloadedFileSha256": "d96929e100cbfa5a17cc1f231c8442c07c98414f5c92655990d56b427a5f8790",
+      "guiReopen": "timed out before confirmation and completion",
+      "resource": "failed: reported peak above cap",
+      "ledger": {
+        "owner": "split-lifecycle-browser",
+        "pid": 23440,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "startedAt": "2026-11-06T09:20:59.474Z",
+        "expiresAt": "2026-11-06T09:35:59.474Z",
+        "persistentData": false,
+        "resources": [
+          {
+            "kind": "http-server",
+            "port": 49210,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "mcp-server",
+            "pid": 33108,
+            "startedAt": "2026-11-06T09:20:59.4853200Z",
+            "executable": "C:\\Program Files\\nodejs\\node.exe",
+            "expiresAt": "2026-11-06T09:35:59.474Z",
+            "persistentData": false,
+            "port": 49211,
+            "bind": "127.0.0.1"
+          },
+          {
+            "kind": "browser",
+            "pid": 33296,
+            "startedAt": "2026-11-06T09:21:00.0498852Z",
+            "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "expiresAt": "2026-11-06T09:35:59.474Z",
+            "persistentData": false
+          }
+        ],
+        "stages": [
+          {
+            "name": "source-imported",
+            "at": "2026-11-06T09:21:06.545Z",
+            "harness": {
+              "rss": 229740544,
+              "heapTotal": 94240768,
+              "heapUsed": 57954536,
+              "external": 83018310,
+              "arrayBuffers": 75216473
+            },
+            "browserHeap": {
+              "used": 22194146,
+              "total": 37416630,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "source-digest",
+            "at": "2026-11-06T09:21:12.677Z",
+            "harness": {
+              "rss": 219385856,
+              "heapTotal": 94502912,
+              "heapUsed": 66886872,
+              "external": 72912393,
+              "arrayBuffers": 68997918
+            },
+            "browserHeap": {
+              "used": 71694920,
+              "total": 87052640,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "cutter-imported",
+            "at": "2026-11-06T09:21:12.878Z",
+            "harness": {
+              "rss": 220360704,
+              "heapTotal": 94502912,
+              "heapUsed": 68553768,
+              "external": 73302385,
+              "arrayBuffers": 69385862
+            },
+            "browserHeap": {
+              "used": 68760107,
+              "total": 87059179,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-started",
+            "at": "2026-11-06T09:21:13.268Z",
+            "harness": {
+              "rss": 220712960,
+              "heapTotal": 95027200,
+              "heapUsed": 61326680,
+              "external": 70860942,
+              "arrayBuffers": 66944419
+            },
+            "browserHeap": {
+              "used": 68332617,
+              "total": 86784773,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-split-committed",
+            "at": "2026-11-06T09:21:35.516Z",
+            "harness": {
+              "rss": 126808064,
+              "heapTotal": 69337088,
+              "heapUsed": 59338272,
+              "external": 5284858,
+              "arrayBuffers": 1368335
+            },
+            "browserHeap": {
+              "used": 454515015,
+              "total": 461780691,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-output-digest",
+            "at": "2026-11-06T09:21:40.668Z",
+            "harness": {
+              "rss": 128188416,
+              "heapTotal": 70385664,
+              "heapUsed": 61971040,
+              "external": 6040425,
+              "arrayBuffers": 2123902
+            },
+            "browserHeap": {
+              "used": 506616810,
+              "total": 515947198,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-opened",
+            "at": "2026-11-06T09:21:40.947Z",
+            "harness": {
+              "rss": 130158592,
+              "heapTotal": 70385664,
+              "heapUsed": 59177288,
+              "external": 5091526,
+              "arrayBuffers": 1144947
+            },
+            "browserHeap": {
+              "used": 511373765,
+              "total": 518597633,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "component-inventory-ready",
+            "at": "2026-11-06T09:21:44.713Z",
+            "harness": {
+              "rss": 130437120,
+              "heapTotal": 78774272,
+              "heapUsed": 57842968,
+              "external": 4892441,
+              "arrayBuffers": 945862
+            },
+            "browserHeap": {
+              "used": 532003349,
+              "total": 601371745,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-committed",
+            "at": "2026-11-06T09:21:48.256Z",
+            "harness": {
+              "rss": 133931008,
+              "heapTotal": 78774272,
+              "heapUsed": 59151056,
+              "external": 5280351,
+              "arrayBuffers": 1333772
+            },
+            "browserHeap": {
+              "used": 742189796,
+              "total": 793239372,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undone",
+            "at": "2026-11-06T09:21:52.956Z",
+            "harness": {
+              "rss": 136286208,
+              "heapTotal": 78774272,
+              "heapUsed": 63314400,
+              "external": 6459040,
+              "arrayBuffers": 2512461
+            },
+            "browserHeap": {
+              "used": 706942022,
+              "total": 763826370,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-undo-digest-verified",
+            "at": "2026-11-06T09:21:59.116Z",
+            "harness": {
+              "rss": 135954432,
+              "heapTotal": 78774272,
+              "heapUsed": 61121656,
+              "external": 5693286,
+              "arrayBuffers": 1746707
+            },
+            "browserHeap": {
+              "used": 766578942,
+              "total": 814848422,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-exported",
+            "at": "2026-11-06T09:22:38.057Z",
+            "harness": {
+              "rss": 147132416,
+              "heapTotal": 93192192,
+              "heapUsed": 64277352,
+              "external": 8067235,
+              "arrayBuffers": 4126178
+            },
+            "browserHeap": {
+              "used": 699284379,
+              "total": 700204579,
+              "limit": 3321888768
+            }
+          },
+          {
+            "name": "gui-extract-project-downloaded",
+            "at": "2026-11-06T09:22:51.288Z",
+            "harness": {
+              "rss": 148586496,
+              "heapTotal": 92819456,
+              "heapUsed": 53380888,
+              "external": 9237071,
+              "arrayBuffers": 5299173
+            },
+            "browserHeap": {
+              "used": 754607407,
+              "total": 756590867,
+              "limit": 3321888768
+            }
+          }
+        ],
+        "crossOriginIsolated": true,
+        "transportSamples": [
+          {
+            "before": 401821989,
+            "positions": 33263505,
+            "vertices": 5612016,
+            "after": 401821989
+          }
+        ],
+        "cleanup": [
+          {
+            "port": 49210,
+            "closed": true
+          },
+          {
+            "pid": 33108,
+            "exited": true
+          },
+          {
+            "port": 49211,
+            "closed": true
+          },
+          {
+            "pid": 33296,
+            "exited": true
+          }
+        ],
+        "cleanedAt": "2026-11-06T09:25:08.597Z",
+        "passed": false,
+        "error": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.status-message[title^=\"Opened \u00b7 1/1 files\"]') to be visible\u001b[22m\n"
+      },
+      "guard": {
+        "command": [
+          "node",
+          "--max-old-space-size=3072",
+          "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-junction-integrated-ply3-hash-reopen-20261106.mjs"
+        ],
+        "jobLimitBytes": 4294967296,
+        "leaseSeconds": 420,
+        "cleanupReserveSeconds": 3.0,
+        "leaseIncludesAdmission": true,
+        "passed": false,
+        "cleanupConfirmed": true,
+        "cleanupErrors": [],
+        "activeAfter": 0,
+        "jobActiveAfter": 0,
+        "peakJobBytes": 4294991872,
+        "totalProcesses": 25,
+        "noChildStarted": false,
+        "memoryAdmission": {
+          "method": "GlobalMemoryStatusEx",
+          "availablePhysicalBytes": 18078412800,
+          "requiredBytes": 4294967296,
+          "childProcessCreated": false
+        },
+        "diskGuard": {
+          "initialFreeBytes": 4288122880,
+          "minimumFreeBytes": 3811065856,
+          "stopBelowBytes": 1500000000
+        },
+        "ownedPid": 23440,
+        "peakTimeline": [
+          {
+            "elapsedSeconds": 0.02,
+            "peakJobBytes": 3756032
+          },
+          {
+            "elapsedSeconds": 0.53,
+            "peakJobBytes": 151695360
+          },
+          {
+            "elapsedSeconds": 1.041,
+            "peakJobBytes": 291856384
+          },
+          {
+            "elapsedSeconds": 1.553,
+            "peakJobBytes": 399044608
+          },
+          {
+            "elapsedSeconds": 2.065,
+            "peakJobBytes": 868450304
+          },
+          {
+            "elapsedSeconds": 2.576,
+            "peakJobBytes": 922206208
+          },
+          {
+            "elapsedSeconds": 6.159,
+            "peakJobBytes": 1237180416
+          },
+          {
+            "elapsedSeconds": 6.671,
+            "peakJobBytes": 1257918464
+          },
+          {
+            "elapsedSeconds": 7.183,
+            "peakJobBytes": 1683116032
+          },
+          {
+            "elapsedSeconds": 7.695,
+            "peakJobBytes": 1834536960
+          },
+          {
+            "elapsedSeconds": 8.207,
+            "peakJobBytes": 1943756800
+          },
+          {
+            "elapsedSeconds": 16.904,
+            "peakJobBytes": 2034630656
+          },
+          {
+            "elapsedSeconds": 19.974,
+            "peakJobBytes": 2083487744
+          },
+          {
+            "elapsedSeconds": 20.998,
+            "peakJobBytes": 2087452672
+          },
+          {
+            "elapsedSeconds": 21.509,
+            "peakJobBytes": 2092937216
+          },
+          {
+            "elapsedSeconds": 23.044,
+            "peakJobBytes": 2119647232
+          },
+          {
+            "elapsedSeconds": 23.556,
+            "peakJobBytes": 2127564800
+          },
+          {
+            "elapsedSeconds": 24.58,
+            "peakJobBytes": 2163474432
+          },
+          {
+            "elapsedSeconds": 26.627,
+            "peakJobBytes": 2169544704
+          },
+          {
+            "elapsedSeconds": 27.139,
+            "peakJobBytes": 2170798080
+          },
+          {
+            "elapsedSeconds": 27.65,
+            "peakJobBytes": 2171146240
+          },
+          {
+            "elapsedSeconds": 28.162,
+            "peakJobBytes": 2180771840
+          },
+          {
+            "elapsedSeconds": 28.674,
+            "peakJobBytes": 2206261248
+          },
+          {
+            "elapsedSeconds": 30.21,
+            "peakJobBytes": 2283958272
+          },
+          {
+            "elapsedSeconds": 30.721,
+            "peakJobBytes": 2284412928
+          },
+          {
+            "elapsedSeconds": 31.233,
+            "peakJobBytes": 2302398464
+          },
+          {
+            "elapsedSeconds": 34.816,
+            "peakJobBytes": 2645614592
+          },
+          {
+            "elapsedSeconds": 36.351,
+            "peakJobBytes": 2709889024
+          },
+          {
+            "elapsedSeconds": 37.375,
+            "peakJobBytes": 2729480192
+          },
+          {
+            "elapsedSeconds": 37.886,
+            "peakJobBytes": 2796621824
+          },
+          {
+            "elapsedSeconds": 49.653,
+            "peakJobBytes": 2916728832
+          },
+          {
+            "elapsedSeconds": 50.164,
+            "peakJobBytes": 2948415488
+          },
+          {
+            "elapsedSeconds": 53.234,
+            "peakJobBytes": 2998493184
+          },
+          {
+            "elapsedSeconds": 53.746,
+            "peakJobBytes": 3014995968
+          },
+          {
+            "elapsedSeconds": 54.257,
+            "peakJobBytes": 3215978496
+          },
+          {
+            "elapsedSeconds": 55.281,
+            "peakJobBytes": 3238023168
+          },
+          {
+            "elapsedSeconds": 72.167,
+            "peakJobBytes": 3282395136
+          },
+          {
+            "elapsedSeconds": 72.679,
+            "peakJobBytes": 3335761920
+          },
+          {
+            "elapsedSeconds": 73.191,
+            "peakJobBytes": 3385556992
+          },
+          {
+            "elapsedSeconds": 73.702,
+            "peakJobBytes": 3431854080
+          },
+          {
+            "elapsedSeconds": 75.237,
+            "peakJobBytes": 3444051968
+          },
+          {
+            "elapsedSeconds": 103.386,
+            "peakJobBytes": 3455942656
+          },
+          {
+            "elapsedSeconds": 103.898,
+            "peakJobBytes": 3490267136
+          },
+          {
+            "elapsedSeconds": 105.434,
+            "peakJobBytes": 3514441728
+          },
+          {
+            "elapsedSeconds": 105.946,
+            "peakJobBytes": 3516538880
+          },
+          {
+            "elapsedSeconds": 107.482,
+            "peakJobBytes": 3519045632
+          },
+          {
+            "elapsedSeconds": 108.505,
+            "peakJobBytes": 3572281344
+          },
+          {
+            "elapsedSeconds": 109.017,
+            "peakJobBytes": 3623792640
+          },
+          {
+            "elapsedSeconds": 110.552,
+            "peakJobBytes": 3715776512
+          },
+          {
+            "elapsedSeconds": 112.087,
+            "peakJobBytes": 3731480576
+          },
+          {
+            "elapsedSeconds": 113.62,
+            "peakJobBytes": 3972915200
+          },
+          {
+            "elapsedSeconds": 114.131,
+            "peakJobBytes": 4171206656
+          },
+          {
+            "elapsedSeconds": 117.205,
+            "peakJobBytes": 4172730368
+          },
+          {
+            "elapsedSeconds": 118.74,
+            "peakJobBytes": 4288348160
+          },
+          {
+            "elapsedSeconds": 119.252,
+            "peakJobBytes": 4289159168
+          },
+          {
+            "elapsedSeconds": 121.299,
+            "peakJobBytes": 4294991872
+          }
+        ],
+        "exitCode": 1,
+        "ownedRootExited": true,
+        "threadHandleClosed": true,
+        "processHandleClosed": true,
+        "JobHandleClosed": true,
+        "elapsedSeconds": 249.6150202000008,
+        "outerLeaseExceeded": false,
+        "error": "Reported peak exceeded the 4 GiB job limit",
+        "validationLane": {
+          "name": "Local\\ScanForge.BoundedValidation",
+          "acquiredUtc": "2026-11-06T09:20:58.994587+00:00",
+          "releasedAfterCleanup": true,
+          "zeroWait": true
+        }
+      }
+    }
+  ],
+  "diagnosis": "Peak timeline rose from 3,731,480,576 bytes at the downloaded-file stage to 4,294,991,872 bytes after GUI file selection. The application decodes the replacement project before asking to replace the dirty project. This identifies a phase, not a proven allocation or root cause.",
+  "driverSha256": "0d2f3e76d69198016de006441d8519d1b4506bfd2fa45ee2c8037c72a89eb2e7",
+  "limitations": [
+    "The 4 GiB limit is not met in any of these three runs; do not treat their geometry successes as a resource pass.",
+    "Peak values can exceed the configured job threshold and must be compared explicitly.",
+    "The diagnostic driver failed before GUI reopen and retained its own downloaded file; cleanup confirms owned processes exited, not deletion of that diagnostic artifact.",
+    "Other M2 acceptance, native comparisons, review and integration remain open."
+  ]
+}
