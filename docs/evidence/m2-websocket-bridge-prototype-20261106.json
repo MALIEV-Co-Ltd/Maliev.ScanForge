@@ -18,6 +18,6 @@
   },
   "patch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/ws-bridge-prototype-20261106.patch",
   "patchSha256": "c971e65ec4d01432bead6aea64515abae26f5e31b51ec39b03339a45641b7dca",
-  "cleanup": "The generated project was independently hash-verified and removed; the isolated worktree and its verified node_modules junction were removed. The separate small, isolated ws package directory remains because automatic policy review blocked its recursive removal. No production files were modified.",
+  "cleanup": "The generated project was independently hash-verified and removed; the isolated worktree and its verified node_modules junction were removed. Automatic review rejected recursive deletion of the temporary ws dependency directory, so its known files were individually verified and removed, followed by its empty directories. No production files were modified.",
   "limitations": "The synthetic comparison is not a real-project resource guarantee. This incomplete prototype does not solve the reproducibility gate, the numeric-array ownership issue, or the remaining native and milestone acceptance requirements."
 }
