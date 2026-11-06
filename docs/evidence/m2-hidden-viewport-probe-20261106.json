@@ -24,5 +24,19 @@
     "patchSha256": "201591bb6ec774afbd8441945b82edc1297d1ab2757a8e1f38fa577deddbc5fe",
     "cleanup": "The diagnostic worktree and its generated build were removed after the patch was retained. Its node_modules junction was unlinked without removing its target."
   },
+  "sharedWrapperDiagnostic": {
+    "scope": "Synthetic small viewport test, not a worker or full-size replay",
+    "observation": "A structured clone of SharedArrayBuffer-backed topology had different JavaScript buffer wrappers while sharing the same backing bytes. With identical positions and cloned topology wrappers, the current viewport rebuilt its geometry. A temporary Vitest diagnostic passed, confirming the observed rebuild.",
+    "source": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-wrapper-viewport-diagnostic-20261106.test.ts",
+    "sourceSha256": "6c8d5ee234739e76d83f30a686d4a66d0230a3940fe4eefe6b2ffc6f5b2eae17",
+    "realWorkerControl": "A small cross-origin-isolated Chrome control used the real encoding and decoding workers on a synthetic 8192-face mesh. The registry supplied four reusable shared chunks and the decoded numeric positions reused their original array. For vertices, triangles, geometry normals and facet normals, both the typed-array object and its buffer wrapper differed after decoding, while a reversible write to each isolated synthetic buffer demonstrated shared backing. A repeat captured below had a 905338880-byte Job peak and cleanup was confirmed. This is not a full PLY-3 replay.",
+    "workerDriver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-20261106.mjs",
+    "workerDriverSha256": "8cbb39cab4bc07a90437fb213aee10868692582c04d61f3eaa77fa7dd9504192",
+    "workerReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-r3-20261106.json",
+    "workerReceiptSha256": "d8a296aeb5f53dce02a15d137b6d340b3dd13aae5e694035c2a16b570b053856",
+    "workerLog": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-r3-20261106.log",
+    "workerLogSha256": "1870f25c5602b622867e54fa92dc94b2cdfb845be58714c24a1db700d3e840ab",
+    "limitation": "These controls do not establish that shared-wrapper identity is the actual cause of the PLY-3 topology changes, or that skipping the rebuild is safe. Shared memory must not be transferred or matched by an unverified content assumption."
+  },
   "limitations": "Separate runs do not establish that deferral caused the allocation failure or determine its effect on aggregate peak. The prototype retains old hidden display memory, has incomplete selection and lifecycle coverage, and is not integrated. Resource acceptance and M2 closure remain open."
 }
