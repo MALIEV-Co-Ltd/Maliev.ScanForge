@@ -1,4 +1,7 @@
 * text=auto eol=lf
+# Poisson artifacts are verified byte-for-byte against their provenance hashes.
+public/poisson/poisson.mjs -text
+public/poisson/LICENSE.txt -text
 # Preserve historical analysis source hashes across checkout platforms.
 tools/continuation/reference/** -text -whitespace
 
