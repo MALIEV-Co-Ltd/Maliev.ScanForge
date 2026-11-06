@@ -259,6 +259,63 @@ it("rejects a numeric candidate changed before restore adopts it", async () => {
   expect(restored.source).not.toBe(source);
 });
 
+// These injected mutations violate the current immutable-geometry contract.
+// They pin the unresolved ownership gap until restored data is independent.
+it.fails(
+  "preserves decoded bytes when an earlier reused source changes during a later lookup",
+  async () => {
+    const { ProjectNumericReuse } =
+      await import("../src/project-numeric-reuse");
+    const first = Array.from({ length: 65538 }, (_, i) => i + 1);
+    const second = Array.from({ length: 65538 }, (_, i) => i + 100_000);
+    const { packet } = await packProjectTransport({ first, second });
+    const cache = new ProjectNumericReuse(4, 65536);
+    cache.remember([first, second]);
+    let injected = false;
+    const restored = await unpackProjectTransport<{
+      first: number[];
+      second: number[];
+    }>(packet, {
+      releaseOwnedNumericBuffers: true,
+      reuseNumericArray: (bytes, used) =>
+        cache.match(
+          bytes,
+          () => {},
+          async () => {
+            if (!injected && bytes[0] === 100_000) {
+              injected = true;
+              first[0] = 999;
+            }
+          },
+          used,
+        ),
+    });
+    expect(injected).toBe(true);
+    expect(restored.first[0]).toBe(1);
+  },
+);
+
+it.fails(
+  "keeps restored bytes independent of a source mutated after unpack",
+  async () => {
+    const { ProjectNumericReuse } =
+      await import("../src/project-numeric-reuse");
+    const source = Array.from({ length: 65538 }, (_, i) => i + 1);
+    const { packet } = await packProjectTransport({ source });
+    const cache = new ProjectNumericReuse(4);
+    cache.remember([source]);
+    const restored = await unpackProjectTransport<{ source: number[] }>(
+      packet,
+      {
+        reuseNumericArray: (bytes, used) =>
+          cache.match(bytes, () => {}, undefined, used),
+      },
+    );
+    source[0] = 999;
+    expect(restored.source[0]).toBe(1);
+  },
+);
+
 it("keeps distinct equal geometry arrays independent on restore", async () => {
   const { ProjectNumericReuse } = await import("../src/project-numeric-reuse");
   const cache = new ProjectNumericReuse(4);

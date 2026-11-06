@@ -121,9 +121,13 @@ weak references to large ordinary geometry arrays. Main-thread restoration can
 reuse a candidate only after bounded, cancellable element comparison including
 signed zero, followed by synchronous rechecks after cooperative yields and at
 the transport handoff. One candidate cannot replace two distinct transport arrays;
-existing aliases remain shared. Missing, stale or over-budget candidates use
-independent reconstruction; page exit clears
-the cache. This follows the existing immutable geometry ownership contract and
+existing aliases remain shared. Missing, stale at comparison, or over-budget
+candidates use independent reconstruction; page exit clears the cache. A selected
+ordinary candidate is not rechecked after each later asynchronous reconstruction
+or CAD-restoration step, and remains aliased after publication. Direct mutation
+can therefore change restored data; current reuse relies on the published-geometry
+immutability contract, and independent ownership remains an open issue. This
+follows the existing immutable geometry ownership contract and
 does not rely on shared-buffer availability. It reads and validates the entire
 incoming file even on a cache hit: matching streamed bytes borrow the earlier
 backing, mismatches allocate an independent chunk, and the final SHA-256 remains

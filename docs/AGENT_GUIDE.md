@@ -645,8 +645,10 @@ not retain a closed project, and page exit clears it. Separately, a successful
 export can retain up to 128 weak references to large ordinary numeric geometry
 arrays. Restore compares every decoded value, including signed zero, and checks
 again after cooperative yields and at the transport handoff before reusing a live
-immutable array; stale or
-unavailable candidates use independent decoding. Comparisons have a bounded work
+array; candidates already stale when compared or unavailable use independent
+decoding. Reuse relies on the existing rule that published geometry stays immutable:
+a direct mutation after a candidate has been selected can change the restored
+data, and is not rechecked after every later asynchronous step. Comparisons have a bounded work
 budget and remain cancellable. Page exit clears this cache. This optimization
 also works without cross-origin isolation; shared-buffer reuse still requires it.
 Public schemas, geometry, history, revision checks and failure recovery are unchanged.

@@ -34,6 +34,21 @@
     "typeReceiptSha256": "3cee9ebad6f67385f9ff8ed283b75367c2d146a31c440b4ec9a846d51f185869",
     "limitations": "The transport packet and interleaving are constructed for the test, and its short buffer does not exercise the production packing threshold. These controls do not cover every operation, concurrent GUI or public MCP scheduling, malicious mutation, or the reproduced low-level race."
   },
+  "checkedInOwnershipRegressions20261107": {
+    "scope": "Explicit expected-failure controls for injected mutation outside the existing immutable-geometry contract",
+    "result": "Two transport tests independently failed with restored value 999 instead of saved value 1: one mutation occurs during a later candidate lookup and one after unpack returns. Both are retained as expected failures; a passing suite does not mean the ownership gap is fixed.",
+    "discovery": "The shared catalog, agent guide and architecture now qualify fallback as applying when stale data is detected at comparison, and state the immutable-geometry assumption during and after restore. The official MCP SDK catalog test checks that both project_import and backup_restore expose that qualification.",
+    "validation": "48 tests passed with two expected failures across transport, MCP SDK and repair-ownership files. Focused TypeScript passed on retry; the first temporary config omitted Node types and failed before being corrected. A direct Vite build produced scanforge-0606cf551b50712e; the built application and official SDK browser smoke passed. This was not a new full typecheck or full suite.",
+    "receipts": {
+      "directory": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/",
+      "m2-restore-race-checkedin-red-20261107.json": "985480c85f7fc952f5214e0a4f317ed09e64e723dc28a7516b76dc2fe9ee92ac",
+      "m2-restore-post-unpack-red-20261107.json": "61d1dc1f3f0cb0f14bc76207b2a6fcc35555870cd533b7d5ca1397de4d14c1bc",
+      "m2-reuse-contract-20261107.json": "d87fb4006fd57f416cd4ab83ac046b0145de9d1d83a225848831785c71d28449",
+      "m2-reuse-contract-browser-20261107.json": "389a9b8711bfd5b1b7109fea6203543ab8e790e5eb0404a78494c884b8c55f4d",
+      "m2-reuse-contract-types-r2-20261107.json": "116b2108e222e9b6cdb7ea43477be87cacff3663faa6752554f47a92edb62c75"
+    },
+    "limitations": "No normal GUI or MCP operation is shown to mutate a published candidate. No safe independent restore under the large-project resource cap has been established, and no source-buffer ownership or milestone closure claim follows."
+  },
   "browserWorkerRaceDiagnostic": {
     "scope": "Real browser decoding worker with an injected mutation in the reuse callback; not a normal GUI or MCP trigger",
     "method": "Two 73728-value mesh arrays are encoded, registered as reusable candidates and decoded by the browser worker. The diagnostic mutates the first source during the second reuse lookup and verifies the first decoded value.",

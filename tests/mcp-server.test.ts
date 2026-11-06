@@ -38,6 +38,13 @@ it("advertises every application tool through the official MCP SDK", async () =>
     applicationCatalog.find((tool) => tool.name === "selection_set")
       ?.inputSchema,
   );
+  for (const name of ["project_import", "backup_restore"]) {
+    const description = tools.find((tool) => tool.name === name)?.description;
+    expect(description).toBe(
+      applicationCatalog.find((tool) => tool.name === name)?.description,
+    );
+    expect(description).toContain("immutable-geometry contract");
+  }
 });
 afterEach(async () => {
   for (const resource of resources.splice(0).reverse()) await resource.close();
