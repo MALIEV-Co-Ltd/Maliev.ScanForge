@@ -7,14 +7,19 @@
   "validation": {
     "before": "Race regression failed: expected 1, received 999; 16 other transport tests passed.",
     "after": "52 transport, numeric reuse, encoding-client and decoding-client tests passed, including graph alias preservation and unchanged second candidate reuse.",
-    "viteBuild": "Direct Vite build passed; complete production build and typecheck were not run.",
+    "viteBuild": "Direct Vite build passed after preparing the CAD kernel; a complete production build was not run.",
+    "typecheck": "All 15 batches passed on a 360-second guarded retry. The first 180-second lease expired at batch 11 with cleanup confirmed and no reported TypeScript error.",
+    "mcpBrowserSmoke": "Passed the small GUI/public-MCP project import and reopen smoke at a 1664995328-byte Job peak. The initial attempt failed because the direct Vite build lacked the CAD kernel; preparing the kernel and rebuilding resolved that setup failure. This does not reproduce the race.",
     "realPly3": "Not run: observed free disk was approximately 3.80 GB, below the established 4.00 GB initial admission guard. The guard was not lowered.",
     "raceReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-red-20261106.json",
-    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-alias-20261106.json"
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-alias-20261106.json",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-typecheck-r2-20261106.json",
+    "mcpBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-mcp-smoke-r2-20261106.json"
   },
   "limitations": [
     "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
     "The prototype keeps staging buffers alive longer, so it may exceed the 4 GiB resource budget on the real workload.",
-    "This does not prove safety against mutation after the restored graph is published, nor does it establish GUI or MCP lifecycle acceptance."
+    "GUI open and MCP import can perform asynchronous CAD restoration after decoding, before publication. This prototype does not establish ownership safety against mutation during that interval or after publication.",
+    "The small smoke is not large-project resource or full lifecycle acceptance."
   ]
 }
