@@ -2549,3 +2549,88 @@ Large indexed component edits use compact edge-connected grouping and retain sep
 Reference-plane Split, component extraction and segmentation publish independent visible mesh parts through one GUI/MCP helper. They retain raw source/cutter coordinates, hide the source, select the first created result and return its IDs in result order. New parts use normal opaque part appearance, names `Source name segment N`, and only their own classification fits. Source-file provenance is retained, while exact/parametric/construction identity is not inherited. Empty leading results do not shift classification lookup or original segment indices. No nonempty output means rejection without model/history mutation. Source visibility belongs to the modeling transaction: model Undo/Redo/Seek and binary reopening restore it while keeping unrelated display changes independent. The retained source can also be shown explicitly using `object_update`. Finite mesh Split instead returns the source ID and updates its geometry, preserving the cutter. Existing lock, revision/retry, cancellation, resource and history guards apply.
 
 Boundary smoothing rejects degenerate triangles, nonmanifold edges and nonmanifold vertices before fitting or publication. Use mesh diagnostics and repair the source first. This failure preserves geometry, canonical topology and history through both the GUI and MCP.
+
+## Projected point-cloud meshing
+
+Use `mesh_process` with
+`operation:{kind:"pointCloudMesh",plane:"xy",maxEdgeLength:2}`. `plane` is
+required (`xy`, `xz` or `yz`); `maxEdgeLength` is a finite nonnegative length in
+mm, defaulting to zero. The source must be an unlocked raw point cloud with
+3 to 500,000 points and no hidden points. Omit `selectionOnly`, `targetId` and
+`targetIds`; `createNew:false` is unsupported. The GUI's **Edit scan → Mesh a
+projected surface** submits this same operation.
+
+The original cloud is preserved and a new mesh is selected with one history
+entry. Read `entityIds` and `diagnostics` from the completed job, then inspect
+the mesh using `object_get` and geometry artifacts. Diagnostics report the
+projection plane, point/duplicate counts, triangle/pruned counts and resolved
+edge limit. Normals are not required. Existing revision checks, retries, locks,
+job leases, `job_cancel`, Undo and Redo apply.
+
+This reconstructs one surface height per projected location. A zero edge limit
+fills the convex hull, including holes; a positive limit removes every triangle
+with any full 3D edge longer than that limit. It is not a closed-object or
+Poisson reconstruction. Collinear projections, conflicting heights at one
+projected location, invalid Float32 coordinates, excessive inputs or pruning
+all triangles fail without publishing a mesh or history step. Exact duplicate
+XYZ samples are deduplicated for triangulation. Choose another plane or extract
+a single surface for conflicting heights; reduce larger clouds first.
+
+## General 3D Poisson point-cloud reconstruction
+
+Use `mesh_process` with `operation:{kind:"pointCloudPoisson",normalMode:"provided",depth:8,densityThreshold:0}`.
+The GUI's **Edit scan → Reconstruct a 3D surface** submits this same revisioned
+application job. It runs actual screened Poisson reconstruction in a disposable
+browser worker. It processes a whole visible unlocked raw point cloud with 3 to
+500,000 points, creates and selects a separate mesh, and preserves the source
+cloud, normals and placement with one history step. Omit `selectionOnly`,
+`targetId` and `targetIds`; `createNew:false` is refused. Operation arguments
+cannot supply positions or normals; these bind internally from the source.
+
+Choose the normal orientation explicitly:
+
+- `provided` (default) validates and normalizes every existing vector. All must
+  be finite and nonzero; the caller asserts their orientation is consistent.
+- `estimate-provided` estimates local PCA normals for every point, propagates
+  consistent signs through a neighbor spanning forest, and orients each component
+  using valid existing source normals. Invalid anchors are counted without
+  dropping points; components without a decisive orientation fail.
+- `estimate-outward` uses PCA and a consistent neighbor forest, then chooses the
+  sign by aggregate outward flux. It assumes closed surface components; avoid it
+  on open scan patches.
+- `estimate-viewpoint` instead chooses each component's sign toward a single
+  scanner. Supply `viewpoint:[x,y,z]` in current world millimeters.
+
+`normalNeighbors` defaults to 24 and accepts integers 8–48. The exact neighbor
+search has a 16,384-node work cap per point; pathological dense/duplicate input
+fails rather than silently approximating. Reduce the cloud or neighbors before
+retrying. Estimation uses less than 128 MiB of owned typed buffers at its maximum
+input/neighbor settings; source, application and solver memory are additional.
+
+Solver parameters are `depth` 6–10 (integer, default 8), `pointWeight` 0–100
+(default 2), `samplesPerNode` 0.1–100 (default 1.5), and `densityThreshold` 0–32
+(default 0). Degree 2, Neumann boundary, scale 1.1 and one solver thread are fixed.
+Depth controls detail and memory; input coordinate units remain millimeters.
+Density is estimated sampling depth, not a distance in mm. Zero threshold keeps
+the complete surface and can close holes or extend beyond open scans. A positive
+threshold removes triangles whose minimum vertex density falls below it, which
+can open boundaries or split the mesh. This is explicit trimming, not a guarantee
+that holes or unsupported regions will be detected automatically.
+
+The WASM heap starts at 64 MiB and cannot exceed 1 GiB. Native output is bounded
+to two million vertices and four million triangles before expansion; the scene,
+normal preparation and JavaScript output consume additional memory. Exact equal
+Float32 vertices are welded, exact collapsed/duplicate faces removed, and unused
+vertices compacted; no tolerance-based geometric repair is performed.
+
+Read `entityIds` and flat `diagnostics` from the terminal job. These expose the
+engine pin, resolved solver settings, source/output counts, normal mode,
+`normalOrientationAnchors`, `normalInvalidOrientationAnchors`, component count
+and orientation assumption, untrimmed density minimum/median/P95/maximum,
+merged/removed/trimmed counts and observed WASM heap size. Inspect the new mesh
+through `object_get` geometry artifacts. Existing revision checks, retry receipts,
+lock checks, `job_cancel`, Undo and Redo apply. Cancellation terminates the actual
+worker even during the synchronous native solve. Invalid normals/parameters,
+input/output limits, memory failure, empty trimming and cancellation publish no
+mesh or history step. Improve normals, reduce depth/point count, or lower an
+excessive density threshold before retrying.

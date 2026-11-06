@@ -4,6 +4,10 @@ import { indexedMeshMatches } from "../indexed-mesh";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
 import {
+  runPointCloudMeshCommand,
+  type CloudMeshingOperation,
+} from "./point-cloud-mesh-command";
+import {
   inspectDeviation,
   inspectSection,
   measureGeometry,
@@ -2783,6 +2787,50 @@ export function App() {
       }
       setScanToolProgress("");
       setScanToolFraction(undefined);
+    }
+  }
+  async function runCloudMeshing(operation: CloudMeshingOperation) {
+    if (
+      !selected ||
+      busy ||
+      scanToolAbort.current ||
+      !referencePreviewAllowsTools()
+    )
+      return;
+    const controller = new AbortController();
+    scanToolAbort.current = controller;
+    scanToolAccepting.current = true;
+    setProcessingBusy(true);
+    setError("");
+    try {
+      const result = await runPointCloudMeshCommand(
+        workspaceApi,
+        selected.id,
+        operation,
+        {
+          signal: controller.signal,
+          onProgress: (fraction, stage) =>
+            setMessage(`${stage} · ${Math.round(fraction * 100)}%`),
+        },
+      );
+      setMessage(
+        String(
+          (result.diagnostics as Record<string, unknown> | undefined)
+            ?.summary ?? "Mesh created.",
+        ),
+      );
+    } catch (error) {
+      if (controller.signal.aborted)
+        setMessage(
+          `${operation.kind === "pointCloudPoisson" ? "Poisson reconstruction" : "Projected meshing"} cancelled.`,
+        );
+      else setError(errorText(error));
+    } finally {
+      if (scanToolAbort.current === controller) {
+        scanToolAbort.current = null;
+        scanToolAccepting.current = false;
+      }
+      setProcessingBusy(false);
     }
   }
   async function applyScanTool(parameters: ScanToolParameters) {
@@ -6247,6 +6295,16 @@ export function App() {
                       selection={triangleMask}
                       busy={busy}
                       onApply={runPointEdit}
+                      onMesh={runCloudMeshing}
+                      hasNormals={
+                        selected.normals?.length === selected.positions.length
+                      }
+                      onPoisson={(operation) =>
+                        runCloudMeshing({
+                          kind: "pointCloudPoisson",
+                          ...operation,
+                        })
+                      }
                     />
                   ) : undefined
                 }

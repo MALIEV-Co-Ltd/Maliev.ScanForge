@@ -1,0 +1,43 @@
+{
+  "upstream": {
+    "url": "https://github.com/mkazhdan/PoissonRecon",
+    "commit": "262b0f539d404057d1f36e1adc07fc9388678899",
+    "version": "18.76",
+    "licenses": "MIT root license and retained BSD-style source notices"
+  },
+  "toolchain": {
+    "emscripten": "6.0.13",
+    "version": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.13 (e13ee988ce3d87a738dd8f3661d02223308c412a)",
+    "runtimeNoticeSources": {
+      "LICENSE": "620a78084fc7ca97c0b5dea9abf891f3ffcadfdbf305276f099c9c4e12fc1d86",
+      "system/lib/libc/musl/COPYRIGHT": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b",
+      "system/lib/libcxx/LICENSE.TXT": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
+      "system/lib/libcxxabi/LICENSE.TXT": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
+      "system/lib/compiler-rt/LICENSE.TXT": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d",
+      "system/lib/llvm-libc/LICENSE.TXT": "ebcd9bbf783a73d05c53ba4d586b8d5813dcdf3bbec50265860ccc885e606f47",
+      "system/lib/libunwind/LICENSE.TXT": "b5efebcaca80879234098e52d1725e6d9eb8fb96a19fce625d39184b705f7b6d"
+    }
+  },
+  "patches": [
+    "NestedVector default LogSize20->15 so Depth1 maximum uses30 bits instead of invalid40-bit wasm32 shift.",
+    "ThreadPool::ParallelSections honors NONE by running all sections serially; no pthread creation."
+  ],
+  "configuration": {
+    "femDegree": 2,
+    "boundary": "Neumann",
+    "floatType": "float32",
+    "maxHeapBytes": 1073741824,
+    "maxInputPoints": 500000,
+    "maxOutputVertices": 2000000,
+    "maxOutputTriangles": 4000000,
+    "initialHeapBytes": 67108864,
+    "stackBytes": 8388608
+  },
+  "files": {
+    "public/poisson/poisson.mjs": "3bc6f3dda94a446a12b84531b7537f2423e0f6988ce3e8a43995dc4f365bf3d9",
+    "public/poisson/poisson.wasm": "fcd4eda43fe4df9b30022687ff3d57bc99bea65898d891da0c549a6f919b3425",
+    "public/poisson/LICENSE.txt": "deeb52f9b301ce8637d1a0119b754736b4c6f7bd36b5cfea0f5097e911000fa3",
+    "native/poisson/scanforge-poisson.cpp": "cb5cd4ef9a01e2fd6558745aec73b93a3ce078b5d9aa4b9d60fe2aefe3d661bd",
+    "scripts/build-poisson.mjs": "b15d770b4a6117a2d02728b59fdcc042cff913b75eaabfa679a5999738be6773"
+  }
+}

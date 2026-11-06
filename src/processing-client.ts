@@ -1,4 +1,12 @@
 import type { Positions } from "./types";
+import {
+  validatePointCloudPoissonInput,
+  type PointCloudPoissonRequest,
+} from "./point-cloud-poisson-input";
+import {
+  POINT_CLOUD_MESH_MAX_POINTS,
+  type PointCloudMeshRequest,
+} from "./point-cloud-meshing";
 import { admitAverageInputs } from "./scan-average-request";
 import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
@@ -36,6 +44,8 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | PointCloudPoissonRequest
+  | PointCloudMeshRequest
   | NativeSurfaceRefinementRequest
   | PointCloudEditRequest
   | ScanPreviewRequest
@@ -201,6 +211,25 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "pointCloudPoisson") {
+    try {
+      request = validatePointCloudPoissonInput(request);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    options = { ...options, reuseTopology: false };
+  }
+  if (
+    request.kind === "pointCloudMesh" &&
+    (request.positions.length % 3 ||
+      request.positions.length < 9 ||
+      request.positions.length > POINT_CLOUD_MESH_MAX_POINTS * 3)
+  )
+    return Promise.reject(
+      Error(
+        "Projected meshing requires 3 to 500,000 points; reduce the cloud first.",
+      ),
+    );
   if (request.kind === "scanEdit" && request.tolerance === undefined)
     request = {
       ...request,
@@ -883,6 +912,8 @@ function runProcessingRequest(
           copied.targetSurface = { vertices: clone(mesh.vertices), triangles };
         }
       }
+      if (copied.kind === "pointCloudPoisson" && copied.normals)
+        copied.normals = clone(copied.normals);
       if (copied.kind === "nativeRefine") {
         copied.additionalTargets = copied.additionalTargets?.map((target) => {
           const triangles = Uint32Array.from(target.indexedMesh.triangles);

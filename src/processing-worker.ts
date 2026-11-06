@@ -1,4 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
+import { meshPointCloud } from "./point-cloud-meshing";
+import { meshPointCloudPoisson } from "./point-cloud-poisson";
 import {
   createHoleFillReporter,
   type HoleFillProgress,
@@ -311,6 +313,10 @@ scope.onmessage = async ({ data: incoming }) => {
             }
           : {}),
       };
+    } else if (request.kind === "pointCloudMesh") {
+      Object.assign(result, meshPointCloud(request, progress));
+    } else if (request.kind === "pointCloudPoisson") {
+      Object.assign(result, await meshPointCloudPoisson(request, progress));
     } else if (request.kind === "pointCloudEdit") {
       result.pointCloudEdit = editPointCloud(request, progress);
       result.diagnostics = result.pointCloudEdit.diagnostics;
