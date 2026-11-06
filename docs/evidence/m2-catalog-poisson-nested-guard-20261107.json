@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "tests/poisson-production-browser.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 240,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": false,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 4392443904,
+  "totalProcesses": 11,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 18164076544,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 16148,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 1.8461107999974047,
+  "outerLeaseExceeded": false,
+  "peakWithinLimit": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-06T23:11:46.458222+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

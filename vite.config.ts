@@ -46,10 +46,11 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
     chunkSizeWarningLimit: 1200,
     rollupOptions: {
       output: {
-        manualChunks: (id) =>
-          id.replaceAll("\\", "/").includes("/automation/")
-            ? "agent-api"
-            : undefined,
+        manualChunks: (id) => {
+          const path = id.replaceAll("\\", "/");
+          if (path.endsWith("/automation/catalog.json")) return "agent-catalog";
+          return path.includes("/automation/") ? "agent-api" : undefined;
+        },
       },
     },
   },
