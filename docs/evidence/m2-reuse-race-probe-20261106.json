@@ -57,12 +57,22 @@
     "inputAndBounds": "C:/repo/alignment-example-files/ply-3.ply and C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-ply3-bounds-20261028.json",
     "downloadBytes": 475563378,
     "streamAndFileSha256": "43436804f73d0ef0fb5c16556baf621e9310119c5c3defcc024ceef8f061fcb2",
-    "result": "GUI Split, Extract, export and full artifact download completed. GUI reopen did not reach ready within 120 seconds; a subsequent page probe timed out. Reported peak was 4295069696 bytes against the 4294967296-byte Job limit. Cleanup confirmed zero active processes. The temporary downloaded file was removed after verifying its hash.",
+    "result": "GUI Split, Extract, export and full artifact download completed. GUI reopen did not reach ready within 120 seconds; a subsequent page probe timed out. Reported peak was 4295069696 bytes against the 4294967296-byte Job limit. In nearby two-second samples the large renderer rose from about 1942 MiB at 137.1 seconds to 2361 MiB at 139.2 seconds and was absent from the 143.3-second sample. These samples do not identify the allocation or cause of exit. Cleanup confirmed zero active processes. The temporary downloaded file was removed after verifying its hash.",
     "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-r2-20261106.json",
     "receiptSha256": "127ab2275e359a1baf2f3477dd32b2858e2dc1f1faf28a6a5a96dbfd83cc7e42",
     "logSha256": "0d95eae5e43860b258f7d2f2834f0de29134bfa8b17ab5b81777dbfd6d6ca0da",
     "earlierDiagnostic": "An initial run used another scan's bounds for the cutter and omitted the offline manifest. It reached reopen and history verification but failed the browser-error check with a service-worker 404; its 3611701248-byte peak is not comparable acceptance evidence.",
     "earlierReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-20261106.json"
+  },
+  "ply3LocalFileSelectionDiagnostic": {
+    "scope": "Same PLY-3 and prototype using the driver's local CDP file-selection path; not a native file chooser",
+    "downloadBytes": 475563378,
+    "streamAndFileSha256": "c12f26735ac2107676e607a7ac3e59333bc8f5e9a8abaf040d2d66f084ff8fe7",
+    "result": "The driver completed GUI reopen, geometry checks and post-reopen Undo/Redo without reported browser errors. The guard failed despite child exit zero because reported peak was 4295217152 bytes, 249856 bytes above 4 GiB. Cleanup confirmed zero active processes; the temporary download was removed by the driver.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-cdp-20261106.json",
+    "receiptSha256": "170115ce7de31218e04287538fc65ee4368b7fcf4a685dd2a1461def8a36b0b7e",
+    "logSha256": "821f04a96590f8fc301863df1bb62bdf881857616fadd4349dd8d20bab4dfd56",
+    "limitation": "This completion does not pass the resource gate or establish the exact allocation responsible. The earlier ordinary file-selection run timed out, and the prototype still has the separate post-decode ownership limitation."
   },
   "fingerprintExperiment": {
     "scope": "Separate low-level Node experiment; not wired to the application",
