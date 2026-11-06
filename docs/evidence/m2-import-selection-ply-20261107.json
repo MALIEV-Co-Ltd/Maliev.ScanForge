@@ -1,0 +1,113 @@
+{
+  "owner": "parallel-import-browser",
+  "pid": 35448,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-11-06T23:03:16.537Z",
+  "expiresAt": "2026-11-06T23:09:16.537Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 57913,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 35048,
+      "Id": 35048,
+      "Path": "C:\\Program Files\\nodejs\\node.exe",
+      "actualStartedAt": "2026-11-06T23:03:16.8836736Z",
+      "port": 57914,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 34696,
+      "Id": 34696,
+      "Path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "actualStartedAt": "2026-11-06T23:03:17.4637159Z"
+    }
+  ],
+  "Id": 35448,
+  "Path": "C:\\Program Files\\nodejs\\node.exe",
+  "actualStartedAt": "2026-11-06T23:03:16.0445325Z",
+  "result": {
+    "guiParallelWorkers": 2,
+    "guiObjects": 3,
+    "undoSteps": 3,
+    "pointerBars": 2,
+    "mcpPerFileProgress": true,
+    "sequentialCloudPublication": true,
+    "cancellationPreservesObjects": true,
+    "activeImportWorkersAfterCleanup": 0,
+    "pageErrors": [],
+    "fixture": "ply",
+    "plyParity": {
+      "completedMcpImport": true,
+      "geometryMatchesGui": true,
+      "importUndoSteps": 1,
+      "undoRedo": true,
+      "sharedReadonlyBuffers": true,
+      "importStorage": [
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        },
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        },
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        },
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        },
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        },
+        {
+          "positionsShared": true,
+          "meshNormalsShared": true,
+          "positionBytes": 36,
+          "normalBytes": 36
+        }
+      ],
+      "projectExportPreservesGeometry": true,
+      "projectRoundTripObjects": 4
+    }
+  },
+  "cleanup": [
+    {
+      "port": 57913,
+      "closed": true
+    },
+    {
+      "pid": 35048,
+      "exited": true
+    },
+    {
+      "port": 57914,
+      "closed": true
+    },
+    {
+      "pid": 34696,
+      "exited": true
+    }
+  ],
+  "cleanedAt": "2026-11-06T23:03:19.534Z",
+  "passed": true
+}

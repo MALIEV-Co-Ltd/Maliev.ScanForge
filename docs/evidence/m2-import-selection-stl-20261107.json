@@ -1,0 +1,65 @@
+{
+  "owner": "parallel-import-browser",
+  "pid": 13744,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "startedAt": "2026-11-06T23:03:06.135Z",
+  "expiresAt": "2026-11-06T23:09:06.135Z",
+  "persistentData": false,
+  "resources": [
+    {
+      "kind": "http-server",
+      "port": 50447,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "mcp-server",
+      "pid": 32916,
+      "Id": 32916,
+      "Path": "C:\\Program Files\\nodejs\\node.exe",
+      "actualStartedAt": "2026-11-06T23:03:06.4763131Z",
+      "port": 50448,
+      "bind": "127.0.0.1"
+    },
+    {
+      "kind": "browser",
+      "pid": 19896,
+      "Id": 19896,
+      "Path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "actualStartedAt": "2026-11-06T23:03:07.0616864Z"
+    }
+  ],
+  "Id": 13744,
+  "Path": "C:\\Program Files\\nodejs\\node.exe",
+  "actualStartedAt": "2026-11-06T23:03:05.6456535Z",
+  "result": {
+    "guiParallelWorkers": 2,
+    "guiObjects": 3,
+    "undoSteps": 3,
+    "pointerBars": 2,
+    "mcpPerFileProgress": true,
+    "sequentialCloudPublication": true,
+    "cancellationPreservesObjects": true,
+    "activeImportWorkersAfterCleanup": 0,
+    "pageErrors": []
+  },
+  "cleanup": [
+    {
+      "port": 50447,
+      "closed": true
+    },
+    {
+      "pid": 32916,
+      "exited": true
+    },
+    {
+      "port": 50448,
+      "closed": true
+    },
+    {
+      "pid": 19896,
+      "exited": true
+    }
+  ],
+  "cleanedAt": "2026-11-06T23:03:08.706Z",
+  "passed": true
+}

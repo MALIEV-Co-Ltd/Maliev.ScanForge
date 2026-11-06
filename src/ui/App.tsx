@@ -136,7 +136,14 @@ import { transformPlaneFrame } from "../plane-frame";
 import { stagedScanToolRequest } from "./scan-tool-request";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import type { ScanBoundaryPath } from "../scan-boundary-edges";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { SavedSketch } from "../types";
 import type { SketchDrawingTool } from "../sketch-drawing";
 import {
@@ -1226,7 +1233,7 @@ export function App() {
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
   // Lazy world-view buffers can change without changing selected point identities.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!selected || !sampledSelected) {
       setTriangleMask(null);
       return;

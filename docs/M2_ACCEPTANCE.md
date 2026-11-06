@@ -2,6 +2,8 @@
 
 Tracks [issue #2](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/issues/2), starting 2026-10-25. M1 is owned by another task. M2 remains open; a passing regression suite does not establish complete native equivalence.
 
+The selection session now initializes synchronously on selection changes, preserving main's publication-race fix while retaining point-cloud source identity across lazy display buffers. Production build `scanforge-8d53254f68ba731b` passed. [STL](evidence/m2-import-selection-stl-20261107.json) and [shared PLY](evidence/m2-import-selection-ply-20261107.json) browser controls passed, including a public-MCP batch of two concurrently prepared ASC clouds published separately with two history steps. The guarded peaks were 952,303,616 and 956,325,888 bytes; temporary screenshots and processes were cleaned up. This does not establish general large-import resource behavior.
+
 On integration commit `7d71565`, the isolated [original PLY-3 replay](evidence/m2-current-ply3-20261107.json) passed GUI Split/Extract, full public-MCP project download with independently matching stream and file hashes, GUI reopen, geometry and post-reopen undo/redo. The 4 GiB guard reported a 4,101,144,576-byte peak and confirmed process cleanup; the temporary download and screenshot were removed. This repeat passed within the cap but leaves limited headroom and does not resolve restore ownership, native acceptance or general resource guarantees.
 
 On integration commit `a2c8c68`, the full suite passed 50,837 tests, with two expected restore-ownership failures and 77 skips. The guard peak was 1,447,825,408 bytes and process cleanup was confirmed. The expected failures and native, resource and integration gates remain open.
