@@ -1,0 +1,9 @@
+{
+  "scope": "Synthetic numeric-array slice allocation and ownership probe; no production change",
+  "candidate": "7f40c5c1",
+  "length": 16777216,
+  "method": "Create a dense ordinary array of finite nonintegral numbers including negative zero, force garbage collection, slice it, force collection, compare every value, then mutate both arrays and verify independence. This tests a possible shortcut for independently restored ordinary arrays, not the project workflow.",
+  "node": {"heapIncreaseBytes": 134215072, "rssIncreaseBytes": 134270976, "sliceMs": 17.7465, "equal": true, "independent": true, "guardPeakJobBytes": 303767552, "cleanupConfirmed": true},
+  "chrome": {"version": "156.0.8078.80", "heapIncreaseBytes": 134222592, "sliceMs": 17.7, "equal": true, "independent": true, "guardPeakJobBytes": 643690496, "cleanupConfirmed": true},
+  "interpretation": "In these single synthetic runs slice allocated approximately eight bytes per value, so it does not provide a zero-copy or copy-on-write escape from the independent-restore memory cost. Duration is a single synchronous measurement, not a responsiveness guarantee. Results do not establish behavior of other engines or large-project resource compliance."
+}
