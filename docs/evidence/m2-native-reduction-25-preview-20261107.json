@@ -164,5 +164,55 @@
       "The first 3740 faces match bit-for-bit; the sampled area is zero-filled at the next face. Remaining memory is not established as the continuation, so its divergent full digest is not evidence of a native geometry mismatch.",
       "No native output file was exported; this does not prove all 68283 native faces, normals, publication, or general equivalence."
     ]
+  },
+  "nativeReadOnlySegmentProbe": {
+    "scope": "Three ordered coordinate sequences sampled from writable QuickSurface process memory while the 25 percent preview displayed 68283 faces.",
+    "selection": "Each candidate was searched using known GUI output coordinates at its proposed starting index. Candidates were not independently linked by native object pointers or a writer trace.",
+    "segments": [
+      {
+        "firstFace": 0,
+        "faceCount": 39260,
+        "sha256": "9e4223a0412bfd792089f318c041a3fa00d9d5310b40c4542dad288ee05d5127"
+      },
+      {
+        "firstFace": 39260,
+        "faceCount": 29020,
+        "sha256": "2a0d3ab2f52b6e9958c7eb082c53afd710a1360f538eebb9b61fcad608618201"
+      },
+      {
+        "firstFace": 68280,
+        "faceCount": 3,
+        "sha256": "d8394d6b036ac2f224a633ca015fbb74897df58f55d746838b988568c66de2a6"
+      }
+    ],
+    "assembledCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "guiAndMcpCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "allCoordinateBytesMatchGui": true,
+    "afterCancel": "The first coordinate at each of the first two sampled addresses changed; the third still matched. This does not prove whether any allocation belonged to the active preview.",
+    "evidenceIds": [
+      "ev_d25845a77eb22aaeeed8688d21e168722b08047f21d311228f973af5b1872644",
+      "ev_ceff6d14cb059c20dceba14d1a41f2fc14d928a36b369f00bb1f3b6eea70cc20",
+      "ev_315f4c27d2ce60a1ac611d3078d04a84660247ade7425bedce58bab498e83222",
+      "ev_5c1117f67d35559c49565db82a2495f2626b90ab57d51f75ce80b15a6db8aa71",
+      "ev_30f4042edde78ee5a4d2714c22b58303f9a43b1fffbb1228943a5da5e975294e",
+      "ev_8d1184b380a4455291407ae2963305722c65e0736a0306ad2f9253d5fa5583e5",
+      "ev_b74614e12919b554b75c050142ca79e2105f2b4f9096d08887b4faa7cbe0a0e7"
+    ],
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1415532544,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.305653799994616
+    },
+    "limitations": [
+      "Segments were selected by matching GUI data and assembled in GUI order; they are not an independently reconstructed native mesh or native export.",
+      "The process contained multiple copies of the last three faces, and the third sampled address still matched after cancellation. Memory ownership, segment linkage, normals and publication are unverified.",
+      "Only this input and setting were investigated; this does not establish general native or resource parity."
+    ]
   }
 }
