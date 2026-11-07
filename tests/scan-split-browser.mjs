@@ -984,7 +984,7 @@ try {
     });
   }
   if (
-    ["native-pivot-crossing", "native-crossing-pair"].includes(
+    ["native-pivot-crossing", "native-crossing-pair", "native-crossing-reversed"].includes(
       process.env.SCANFORGE_SPLIT_CASE,
     )
   ) {
@@ -1006,14 +1006,16 @@ try {
       source: await parseAsciiStl("source.stl"),
       target: await parseAsciiStl("cutter.stl"),
       kind: "mesh",
-      parts: caseName === "native-crossing-pair" ? 1 : 2,
+      parts: caseName.startsWith("native-crossing-") ? 1 : 2,
       requiredPoint: [0, 0, 0],
       method: "open surface signed nearest grouping",
       fileHashes: {
         "source.stl":
           "c067e2f6a518d7ddb475b5726e9217ff852f194ef552b864d9a8dc8f9e5491f4",
         "cutter.stl":
-          caseName === "native-crossing-pair"
+          caseName === "native-crossing-reversed"
+            ? "ea3e69437c395b7958cb432445a0dfe2c69a2e0a37246ecc49adb01c022776aa"
+            : caseName === "native-crossing-pair"
             ? "95fe07473c1daf7fb26bd8b74930f141d5b16686aaa24cf670dd24bf7dc9b424"
             : "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
       },
@@ -1147,10 +1149,10 @@ try {
         );
       }
       const guiPositions = await geometry(sourceId);
-      if (c.name === "native-crossing-pair") {
-        // Each finite segment must remain represented by mesh edges. The first
-        // intersection extends outside the source, so compare to its clipped
-        // extent established by the shared-kernel fixture.
+      if (["native-crossing-pair", "native-crossing-reversed"].includes(c.name)) {
+        // Each finite segment must remain represented by mesh edges. One
+        // intersection extends outside the source; its expected coverage is
+        // clipped to the source and follows the cutter's triangle order.
         const edges = [];
         for (let i = 0; i < guiPositions.length; i += 9)
           for (let j = 0; j < 3; j++) {
@@ -1205,12 +1207,13 @@ try {
           assert.equal(intersections.length, 2);
           result.push(coverage(...intersections));
         }
+        const expectedCoverage = c.name === "native-crossing-reversed" ? [1, 0.981078] : [0.981078, 1];
         assert(
-          Math.abs(result[0] - 0.981078) < 1e-5,
+          Math.abs(result[0] - expectedCoverage[0]) < 1e-5,
           `First cutter coverage: ${result[0]}`,
         );
         assert(
-          Math.abs(result[1] - 1) < 1e-5,
+          Math.abs(result[1] - expectedCoverage[1]) < 1e-5,
           `Second cutter coverage: ${result[1]}`,
         );
       }

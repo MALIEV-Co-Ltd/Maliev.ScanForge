@@ -51,3 +51,23 @@ function dossier. Earlier separately retained, selective no-auto-analysis
 decompilation is documented in `m2-split-native-chain-pivot-20261029.json`.
 More runtime binding and reconstruction are required before changing the shared
 operation; safety checks remain in force.
+
+The two-triangle crossing cutter was also imported with the triangles in the
+opposite order. A bounded REA capture, `m2-split-native-reversed-recovery-20261107.json`,
+recorded the same two recovery pairs and the same face lists before and after
+each call. The QuickSurface preview was accepted, saved as `reversed.qsf`,
+reopened with the eight-triangle source, and exported. Its unordered triangle
+faces match the earlier native export exactly at Float32 precision. The saved
+project also contains two earlier hidden cutter meshes; the Split dialog named
+the reversed cutter explicitly. This is one input-order observation, not proof
+of a general ordering rule.
+
+On the compiled ScanForge browser build `scanforge-12844615819f2f7e`, the
+reversed fixture produced the same geometry digests as the original fixture,
+with 10 triangles and area 0.5. Both cutter segments remained represented by
+edges; GUI and public MCP geometry matched, undo/redo, binary reopen and both
+cancellation checks passed, and no page errors were reported. Peak guarded
+job usage was 1,007,370,240 bytes, with no owned processes remaining. An initial
+replay failed because the test expected coverage in the original triangle order;
+the assertion was corrected and the replay passed. This evidence changes no
+production behavior and does not establish full native parity.
