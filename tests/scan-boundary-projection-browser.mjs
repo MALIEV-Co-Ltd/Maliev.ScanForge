@@ -283,14 +283,17 @@ try {
       ).flat();
     };
     const translated = process.env.SCANFORGE_M2_TRANSLATED_BOUNDARY === "1";
+    const rotated = process.env.SCANFORGE_M2_ROTATED_BOUNDARY === "1";
+    assert(!(translated && rotated), "Choose one transformed fixture");
+    const transform = rotated ? "rotated" : translated ? "translated" : null;
     const input = await fixture(
-      translated
-        ? "projection-translated-before.stl"
+      transform
+        ? `projection-${transform}-before.stl`
         : "projection-interior-control.stl",
     );
     const expected = await fixture(
-      translated
-        ? "projection-translated-after.stl"
+      transform
+        ? `projection-${transform}-after.stl`
         : "projection-interior-native.stl",
     );
     const temporaryProject = {
