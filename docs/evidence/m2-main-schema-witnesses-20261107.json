@@ -1,0 +1,15 @@
+{
+  "scope": "Bounded synthetic JSON Schema witness comparison of dirty local main and M2 catalogs",
+  "candidate": "3e03d14234a4f0ad2a29af216cdb6ed940f355a2",
+  "mainCatalogSha256": "bfdd5347400cd9ef6aa1b1db59a2ee230c1f0a12b1ea153c18cd71b2d8830d85",
+  "candidateCatalogSha256": "d80ce5fa407b5da4e2d942c25770664b747581a786605258ae610a07054f165f",
+  "validator": "Ajv 8.20.0; strict and format validation disabled",
+  "method": "Generated bounded synthetic objects using required properties, optional properties one at a time, oneOf/anyOf variants, enum/const values, basic scalar boundaries and limited recursive array examples. Both schemas were independently compiled and only main-valid witnesses were compared.",
+  "generated": 990,
+  "mainValid": 982,
+  "mainToolsWithValidWitness": 93,
+  "candidateRejections": 0,
+  "schemaCompileErrors": 0,
+  "guard": {"peakJobBytes": 87420928, "limitBytes": 4294967296, "cleanupConfirmed": true},
+  "limitations": ["Generated examples are finite and do not exhaust combinations, formats, all constraints or alternate branches; validation formats were disabled.", "This only compares declared input schema behavior for synthetic requests; it does not verify runtime validation, defaults, output, actual GUI/MCP parity, or native behavior.", "Dirty main can change; rerun before integration."]
+}
