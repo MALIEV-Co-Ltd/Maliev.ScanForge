@@ -12,6 +12,8 @@ Five additional retained QuickSurface exports contain 195 normal components that
 
 The closed and folded Split controls also match all 57 exported normal components when computed from their pinned QuickSurface project vertex identities and triangle indices. [Evidence](evidence/m2-native-export-normals-controls-20261107.json). Native in-memory vertex-normal values and general seam cases remain unverified.
 
+A read-only REA sample found 64 position/vector records in the running QuickSurface process that uniquely match the original scan vertices; all 192 vector components match ScanForge computed geometry normals exactly. [Evidence](evidence/m2-native-live-normal-sample-20261107.json). Their ownership by the visible object or a native export was not verified, and this is not a whole-mesh or seam proof.
+
 Read-only REA inspection now connects the native STL branch to candidate visible- and single-object writers containing Float32 add/add/divide-by-three record assembly. [Evidence](evidence/m2-native-stl-writer-static-20261107.json). The path has not been traced during an export, and source normal ownership and other branches remain unverified; the ScanForge export difference remains open.
 
 The same original scan also passed GUI, public MCP and preview comparison for four noise iterations with boundary smoothing off, including cancellation, history and binary reopening under the system-memory guard. A subsequent QuickSurface preview and export produced the identical ordered coordinate digest; REA observed its preview handler and correction routine. [Evidence](evidence/m2-noise-four-boundaryoff-parity-20261107.json). Native STL normals and object-publication equivalence were not compared.

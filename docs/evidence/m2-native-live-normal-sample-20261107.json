@@ -1,0 +1,23 @@
+{
+  "scope": "Read-only sample of position and adjacent normal records in running QuickSurface process",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "reaEvidenceId": "ev_9087b54ccf62ce73682746251fb8f351f3488587a90e91650c35f8781b586e59",
+  "capture": "After finding the first input vertex coordinate in writable process memory, 64 adjacent 48-byte records were sampled at XYZ offsets 0,4,8 and vector offsets 16,20,24. The code path previously inspected reads its three vectors at offset 0x10 from facet vertex pointers.",
+  "fixture": "tests/fixtures/m2-native-live-normal-sample-20261107.json",
+  "fixtureSha256": "8b5ff50babd6860d5e5e2c3387a67c5aed49899b5a9b295dee57b7ed4229ee1e",
+  "result": "All 64 positions uniquely match the original imported input topology, and all 192 sampled vector components match independently computed ScanForge geometry normals bit-for-bit.",
+  "test": "tests/m2-native-live-normal-sample.test.ts",
+  "validation": {
+    "testsPassed": 8,
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 453210112,
+    "activeProcessesAfter": 0
+  },
+  "limitations": [
+    "The scan discovered a memory block by coordinate match; ownership by the visible scene object or by an STL export invocation was not established. Multiple memory copies of the first vertex existed.",
+    "The contiguous 64 records are a sample, not all scan vertices or seam configurations.",
+    "No user interface action, native export, or mutation of target memory was performed. Native process memory changed by the application independently during inspection remains outside this observation.",
+    "The capture is of the earlier running process and may not be valid as an address after restart."
+  ]
+}
