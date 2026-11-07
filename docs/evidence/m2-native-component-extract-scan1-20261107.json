@@ -17,6 +17,19 @@
     "createdObjectHoles": 1,
     "undoAttempt": "Ctrl+Z did not restore the source in this interactive session."
   },
+  "sharedOperationControl": {
+    "method": "Read the SHA-256-verified original STL through Three.js STLLoader and call the shared runScanEdit components inventory directly. No browser or MCP bridge was exercised in this control.",
+    "inputTriangles": 273139,
+    "components": [
+      { "triangles": 272857, "areaMm2": 8221.57130665994 },
+      { "triangles": 282, "areaMm2": 7.024150063864754 }
+    ],
+    "nativeDialogValues": [8221.57, 7.02415],
+    "comparison": "Counts match the native remainder and new object; reported values agree at the native display precision. This is consistent with the native field being component area, but does not prove matching facet membership or coordinates.",
+    "guardPeakBytes": 466780160,
+    "guardLimitBytes": 34110816256,
+    "processCleanupConfirmed": true
+  },
   "sceneRecovery": "The source file was not overwritten. It was imported again as an intact 273139-triangle object; the modified original and the extracted object were hidden. The native scene remains unsaved.",
   "limitations": [
     "Triangle counts do not establish coordinate or topology equality.",
