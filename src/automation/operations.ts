@@ -1,6 +1,9 @@
 import { flipSourceTopology } from "../scan-flip-request";
 import { scanSplitCutter } from "../scan-split-cutter";
-import { scanSegmentPublication } from "../scan-segment-publication";
+import {
+  componentExtractionPublication,
+  scanSegmentPublication,
+} from "../scan-segment-publication";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
 import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
 import { geometryArtifact } from "./geometry-artifact";
@@ -999,6 +1002,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const s = host.snapshot(),
         e = object(s, a.entityId);
       assertSampledGeometry(e);
+      if (e.emptyComponentSource)
+        throw new Error("An empty mesh has no triangles to analyze.");
       if (e.kind === "pointcloud")
         throw new Error("Point clouds do not have triangle topology.");
       const result = await processMesh(
@@ -1430,6 +1435,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const result = await processScanRegistration(e, request, {
         signal: c.signal,
         reuseTopology: kind === "scanEdit",
+        includeComponentRemainder:
+          kind === "scanEdit" && op.action === "componentExtract",
+        componentCornerNormals:
+          kind === "scanEdit" && op.action === "componentExtract"
+            ? e.normals
+            : undefined,
         onProgress: c.progress,
         check: () => c.check(),
       });
@@ -1542,17 +1553,33 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           }
         } else next = next.map((x) => (x.id === e.id ? updated : x));
       }
+      if (
+        kind === "scanEdit" &&
+        op.action === "componentExtract" &&
+        (!edit?.componentRemainder || !segments)
+      )
+        throw Error("Component extraction returned incomplete geometry.");
       const segmentPublication =
         segments === undefined
           ? undefined
-          : scanSegmentPublication(
-              next,
-              e.id,
-              segments,
-              result.segmentClassifications,
-              id,
-              edit?.segmentIndexedMeshes,
-            );
+          : kind === "scanEdit" && op.action === "componentExtract"
+            ? componentExtractionPublication(
+                next,
+                e.id,
+                edit!.componentRemainder!,
+                segments,
+                id,
+                edit?.segmentIndexedMeshes,
+                edit?.segmentNormals,
+              )
+            : scanSegmentPublication(
+                next,
+                e.id,
+                segments,
+                result.segmentClassifications,
+                id,
+                edit?.segmentIndexedMeshes,
+              );
       if (segmentPublication) {
         next = segmentPublication.entities;
         created.push(...segmentPublication.created);

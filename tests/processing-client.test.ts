@@ -54,6 +54,116 @@ const request: ProcessingRequest = {
   tolerance: 0.001,
 };
 
+it("restores a precise extraction remainder while retaining the input", async () => {
+  const input = new Float32Array(positions);
+  const pending = processMesh(
+    {
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions: input,
+      indices: [0],
+    },
+    { includeComponentRemainder: true },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  expect(worker.sent).toMatchObject({ includeComponentRemainder: true });
+  const geometry = new Float64Array([0, -0, 0, 1.123456789, 0, 0, 0, 1, 0]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segments: [positions],
+        componentRemainder: {
+          positions: [],
+          indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        },
+      },
+    },
+    packedComponentRemainder: { positions: geometry, vertices: geometry },
+  });
+  const remainder = (await pending).scanEdit!.componentRemainder!;
+  expect(remainder.positions).toEqual(Array.from(geometry));
+  expect(Object.is(remainder.positions[1], -0)).toBe(true);
+  expect(remainder.indexedMesh!.vertices).toBe(remainder.positions);
+  expect(input).toEqual(positions);
+});
+
+it("rejects an invalid packed extraction remainder", async () => {
+  const pending = processMesh(
+    { kind: "scanEdit", action: "componentExtract", positions, indices: [0] },
+    { includeComponentRemainder: true },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segments: [positions],
+        componentRemainder: {
+          positions: [],
+          indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+        },
+      },
+    },
+    packedComponentRemainder: {
+      positions: new Float64Array([1]),
+      vertices: new Float64Array(9),
+    },
+  });
+  await expect(pending).rejects.toThrow(/packed.*remainder/i);
+  expect(worker.terminated).toBe(true);
+});
+
+it("requires a valid remainder when extraction requests one", async () => {
+  const pending = processMesh(
+    { kind: "scanEdit", action: "componentExtract", positions, indices: [0] },
+    { includeComponentRemainder: true },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {}, segments: [positions] },
+    },
+  });
+  await expect(pending).rejects.toThrow(/component remainder/i);
+});
+
+it("sends an owned copy of source corner normals for extraction", async () => {
+  const normals = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+  const pending = processMesh(
+    { kind: "scanEdit", action: "componentExtract", positions, indices: [0] },
+    { includeComponentRemainder: true, componentCornerNormals: normals },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  const sent = worker.sent as ProcessingRequest & {
+    componentCornerNormals: Float32Array;
+  };
+  expect(sent.componentCornerNormals).toEqual(normals);
+  expect(sent.componentCornerNormals).not.toBe(normals);
+  expect(worker.transfers).not.toContain(normals.buffer);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: {
+        diagnostics: {},
+        segments: [positions],
+        segmentNormals: [normals.slice()],
+        componentRemainder: { positions: [] },
+      },
+    },
+  });
+  const result = await pending;
+  expect(result.scanEdit!.segmentNormals![0]).toEqual(normals);
+  expect(normals.byteLength).toBe(36);
+});
+
 it("transfers private fine-alignment surface and normal buffers without detaching authored geometry", async () => {
   const source = new Float32Array(positions),
     target = new Float32Array(positions),
@@ -1272,21 +1382,44 @@ describe("processing worker resource ownership", () => {
       const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0];
       const triangles = new Uint32Array(65536 * 3);
       const source = new Array<number>(65536 * 9);
+      const scannerNormals = new Float32Array(9).fill(1);
+      const computedNormals = new Float32Array(9).fill(2);
+      const facetNormals = new Float32Array(triangles.length).fill(3);
       for (let face = 0; face < 65536; face++) {
         triangles.set([0, 1, 2], face * 3);
         for (let i = 0; i < 9; i++) source[face * 9 + i] = vertices[i];
       }
-      const pending = processMesh({
-        kind: "scanEdit",
-        action: "componentExtract",
-        positions: source,
-        sourceIndexed: { vertices, triangles },
-        indices: [0],
-      });
+      const pending = processMesh(
+        {
+          kind: "scanEdit",
+          action: "componentExtract",
+          positions: source,
+          sourceIndexed: {
+            vertices,
+            triangles,
+            normals: scannerNormals,
+            geometryNormals: computedNormals,
+            facetNormals,
+          },
+          indices: [0],
+        },
+        { includeComponentRemainder: true },
+      );
       await vi.advanceTimersByTimeAsync(100);
       const worker = ProcessingWorkerDouble.latest;
+      const sentMesh = (
+        worker.sent as Extract<ProcessingRequest, { kind: "scanEdit" }>
+      ).sourceIndexed!;
+      expect(sentMesh.normals?.length).toBe(scannerNormals.length);
+      expect(sentMesh.geometryNormals?.length).toBe(computedNormals.length);
+      expect(sentMesh.facetNormals?.length).toBe(facetNormals.length);
       const packed = new Float64Array(vertices);
       const mesh = { vertices: [], triangles: new Uint32Array([0, 1, 2]) };
+      const packedRemainder = new Float64Array(vertices);
+      const remainderMesh = {
+        vertices: [],
+        triangles: new Uint32Array([0, 1, 2]),
+      };
       const normals = retainedAlias
         ? new Float32Array(packed.buffer, 0, 9)
         : new Float32Array(9);
@@ -1304,7 +1437,11 @@ describe("processing worker resource ownership", () => {
           result: {
             kind: "scanEdit",
             diagnostics: {},
-            scanEdit: { diagnostics: {}, segmentIndexedMeshes: [mesh] },
+            scanEdit: {
+              diagnostics: {},
+              segmentIndexedMeshes: [mesh],
+              componentRemainder: { positions: [], indexedMesh: remainderMesh },
+            },
             segmentRenderData: [
               {
                 indexedMesh: mesh,
@@ -1315,6 +1452,10 @@ describe("processing worker resource ownership", () => {
             ],
           },
           packedScanSegments: [{ positions: packed, vertices: packed }],
+          packedComponentRemainder: {
+            positions: packedRemainder,
+            vertices: packedRemainder,
+          },
         });
         const result = await pending;
         expect(result.scanEdit!.segments![0]).toEqual(vertices);
@@ -1325,6 +1466,10 @@ describe("processing worker resource ownership", () => {
           retainedAlias || unavailable ? 72 : 0,
         );
         expect(normals.byteLength).toBe(36);
+        expect(result.scanEdit!.componentRemainder!.positions).toEqual(
+          vertices,
+        );
+        expect(packedRemainder.buffer.byteLength).toBe(unavailable ? 72 : 0);
         expect(source.length).toBe(65536 * 9);
       } finally {
         if (unavailable && descriptor)

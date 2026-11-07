@@ -1,5 +1,8 @@
 import { scanSplitCutter, isScanSplitCutter } from "../scan-split-cutter";
-import { scanSegmentPublication } from "../scan-segment-publication";
+import {
+  componentExtractionPublication,
+  scanSegmentPublication,
+} from "../scan-segment-publication";
 import { indexedMeshMatches } from "../indexed-mesh";
 import type { SavedInspection } from "../inspection-definition";
 import type { InspectionDisplay } from "../automation/inspection-operations";
@@ -850,8 +853,16 @@ export function App() {
     [sampledSelected, triangleMask],
   );
   const stats = useMemo(
-    () => (selected ? entityDisplayStats(selected) : null),
-    [selected?.kind, selected?.positions, selected?.reference],
+    () =>
+      selected && !selected.emptyComponentSource
+        ? entityDisplayStats(selected)
+        : null,
+    [
+      selected?.kind,
+      selected?.positions,
+      selected?.reference,
+      selected?.emptyComponentSource,
+    ],
   );
   const section = useMemo(
     () =>
@@ -859,6 +870,7 @@ export function App() {
       selected &&
       sampledSelected &&
       selected.kind !== "pointcloud" &&
+      selected.positions.length >= 9 &&
       selected.positions.length <= 2_250_000
         ? inspectSection(selected, axis, offset, sectionScope)
         : { segments: [], length: 0 },
@@ -4407,6 +4419,37 @@ export function App() {
     setSelectedId(publication.created[0].id);
     setMessage(`Created ${publication.created.length} segmented meshes`);
   }
+  function createExtractedComponents(
+    parts: Entity["positions"][],
+    label: string,
+    indexedParts: (Entity["indexedMesh"] | undefined)[] | undefined,
+    remainder: {
+      positions: Entity["positions"];
+      indexedMesh?: Entity["indexedMesh"];
+      normals?: Entity["normals"];
+    },
+    segmentNormals?: Entity["positions"][],
+  ) {
+    if (!selected)
+      throw Error("Choose the source mesh before extracting components.");
+    const publication = componentExtractionPublication(
+      entities,
+      selected.id,
+      remainder,
+      parts,
+      undefined,
+      indexedParts,
+      segmentNormals,
+    );
+    operationLabel.current = `${label} (${publication.created.length} meshes)`;
+    try {
+      commit(publication.entities, undefined, publication.policy);
+    } finally {
+      operationLabel.current = null;
+    }
+    setSelectedId(publication.created[0].id);
+    setMessage(`Created ${publication.created.length} component meshes`);
+  }
   function cadOperation(
     label: string,
     run: () => Promise<KernelMesh>,
@@ -6289,9 +6332,23 @@ export function App() {
                 onReplace={(positions, label, indexedMesh) =>
                   replaceScanPositions(positions, label, false, indexedMesh)
                 }
-                onCreate={(parts, label, indexedParts) =>
-                  createSegments(parts, label, undefined, indexedParts)
-                }
+                onCreate={(
+                  parts,
+                  label,
+                  indexedParts,
+                  remainder,
+                  segmentNormals,
+                ) => {
+                  if (remainder)
+                    createExtractedComponents(
+                      parts,
+                      label,
+                      indexedParts,
+                      remainder,
+                      segmentNormals,
+                    );
+                  else createSegments(parts, label, undefined, indexedParts);
+                }}
                 onSelection={changeSelection}
                 onBoundaryHighlight={setScanBoundaryPaths}
                 onBridgeSession={setScanBridgeSession}
@@ -7224,6 +7281,11 @@ export function App() {
                           : "editable profile"}
                       </small>
                     </div>
+                  </div>
+                ) : selected?.emptyComponentSource ? (
+                  <div className="empty-inspector">
+                    <strong>{selected.name}</strong>
+                    <p>Empty mesh · 0 triangles</p>
                   </div>
                 ) : (
                   <div className="empty-inspector">

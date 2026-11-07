@@ -3,6 +3,7 @@ import {
   parseProject,
   validateProject,
   validatePointCloudAttributes,
+  validateEmptyComponentSource,
 } from "./io";
 import type { Entity, Project } from "./types";
 import {
@@ -134,6 +135,7 @@ export async function encodeProjectFileLocally(
   let deferredClouds = false;
   let cloudAttributes = false;
   let constructionMetadata = false;
+  let emptyComponentMetadata = false;
   const spatialMetadata =
     !!session.project.authoring?.sketches?.some(
       (row) => row.kind === "spatial",
@@ -211,6 +213,8 @@ export async function encodeProjectFileLocally(
   }
   async function state(entities: Entity[]): Promise<number[]> {
     for (const entity of entities) {
+      validateEmptyComponentSource(entity);
+      if (entity.emptyComponentSource) emptyComponentMetadata = true;
       validateReferenceEntity(entity);
       if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
       if (validateRollMappingEntity(entity)) ownedModelMetadata = true;
@@ -351,17 +355,19 @@ export async function encodeProjectFileLocally(
     JSON.stringify(
       {
         format: "scanforge-binary",
-        version: spatialMetadata
-          ? 7
-          : ownedModelMetadata
-            ? 6
-            : constructionMetadata
-              ? 5
-              : cloudAttributes
-                ? 4
-                : deferredClouds
-                  ? 3
-                  : 2,
+        version: emptyComponentMetadata
+          ? 8
+          : spatialMetadata
+            ? 7
+            : ownedModelMetadata
+              ? 6
+              : constructionMetadata
+                ? 5
+                : cloudAttributes
+                  ? 4
+                  : deferredClouds
+                    ? 3
+                    : 2,
         name: session.project.name,
         projectId: session.projectId,
         units: "mm",
@@ -418,7 +424,7 @@ export async function decodeProjectContents(
   const m = JSON.parse(await file.slice(16, 16 + length).text());
   if (
     m.format !== "scanforge-binary" ||
-    ![2, 3, 4, 5, 6, 7].includes(m.version) ||
+    ![2, 3, 4, 5, 6, 7, 8].includes(m.version) ||
     m.units !== "mm" ||
     !Array.isArray(m.chunks) ||
     !Array.isArray(m.records) ||
@@ -573,7 +579,7 @@ export async function decodeProjectContents(
         "f64",
         "u32",
         "text",
-        ...([4, 5, 6, 7].includes(m.version) ? ["u8"] : []),
+        ...([4, 5, 6, 7, 8].includes(m.version) ? ["u8"] : []),
       ].includes(ref.type)
     )
       return invalid();
@@ -677,6 +683,8 @@ export async function decodeProjectContents(
   }
   const entities = (m.records as RecordData[]).map((record) => {
     if (!record || typeof record !== "object") return invalid();
+    if (record.emptyComponentSource !== undefined && m.version !== 8)
+      return invalid();
     if (
       record.cloudNormalsTyped !== undefined &&
       (typeof record.cloudNormalsTyped !== "boolean" ||
@@ -687,7 +695,7 @@ export async function decodeProjectContents(
     if (
       (record.pointColors !== undefined ||
         record.ascAttributes !== undefined) &&
-      ![4, 5, 6, 7].includes(m.version)
+      ![4, 5, 6, 7, 8].includes(m.version)
     )
       return invalid();
     if (record.pointColors !== undefined && record.pointColors.type !== "u8")
@@ -696,10 +704,10 @@ export async function decodeProjectContents(
       (record.reference !== undefined ||
         record.coordinateFrame !== undefined ||
         record.constructionOrderKey !== undefined) &&
-      ![5, 6, 7].includes(m.version)
+      ![5, 6, 7, 8].includes(m.version)
     )
       return invalid();
-    if (record.rollMapping !== undefined && ![6, 7].includes(m.version))
+    if (record.rollMapping !== undefined && ![6, 7, 8].includes(m.version))
       return invalid();
     const { cloudNormalsTyped: _normalCarrier, ...metadata } = record;
     const entity = {
@@ -746,7 +754,10 @@ export async function decodeProjectContents(
         : undefined,
     } as Entity;
     if (record.cloudPoseBits !== undefined) {
-      if (![3, 4, 5, 6, 7].includes(m.version) || entity.kind !== "pointcloud")
+      if (
+        ![3, 4, 5, 6, 7, 8].includes(m.version) ||
+        entity.kind !== "pointcloud"
+      )
         return invalid();
       return placedCloud(
         entity,
@@ -786,10 +797,10 @@ export async function decodeProjectContents(
     return items.map((item) => {
       if (!item || typeof item.label !== "string") return invalid();
       if (item.sketchChanges !== undefined) {
-        if (![6, 7].includes(m.version)) return invalid();
+        if (![6, 7, 8].includes(m.version)) return invalid();
         validateModelSketchChanges(item.sketchChanges);
         if (
-          m.version !== 7 &&
+          ![7, 8].includes(m.version) &&
           item.sketchChanges.some((change) => change.value?.kind === "spatial")
         )
           return invalid();
@@ -824,12 +835,12 @@ export async function decodeProjectContents(
     entities: state(m.current),
   });
   if (
-    ![6, 7].includes(m.version) &&
+    ![6, 7, 8].includes(m.version) &&
     project.authoring?.sketches?.some((row) => row.visible !== undefined)
   )
     return invalid();
   if (
-    m.version !== 7 &&
+    ![7, 8].includes(m.version) &&
     project.authoring?.sketches?.some((row) => row.kind === "spatial")
   )
     return invalid();

@@ -1,0 +1,34 @@
+{
+  "scope": "Current compiled GUI and public MCP selected smoothing and defeature on an original scan",
+  "build": "scanforge-3ac0509beaf027d7",
+  "driver": "tests/defeature-curvature-browser.mjs",
+  "source": "C:/repo/alignment-example-files/scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "selection": "64 deterministic faces from docs/evidence/m2-defeature-replacement-20261026.json",
+  "selectionSha256": "140c387ea891a7c538116f1dcf98fc5de315c098eb15cafee5a0eadb3482c577",
+  "jobLimitBytes": 34110816256,
+  "smoothing": {
+    "guiMcpCoordinateSha256": "b726d07a4ae691973ff5eda1a4103cad91adbce2898fe734eba7e0d5e0a8ace8",
+    "unchangedDistantCorners": 819004,
+    "peakJobBytes": 2636025856
+  },
+  "defeature": {
+    "guiMcpCoordinateSha256": "a51444c0efd31e327c230d782c59f39cbf13a9d801c32b3bb20e7899869bb569",
+    "removedTriangles": 64,
+    "outputTriangles": 273133,
+    "failureRollback": true,
+    "peakJobBytes": 3070263296
+  },
+  "both": {
+    "guiMcpEqual": true,
+    "cancellationRollbackUndoRedoAndBinaryReopen": true,
+    "activeProcessesAfter": 0,
+    "pageErrors": []
+  },
+  "limitations": [
+    "The selected faces are the owner-approved replacement selection, not the unavailable original reported selection.",
+    "No new QuickSurface comparison was performed for either operation on this scan.",
+    "An initial smoothing replay failed before processing because the reconstructed fixture omitted the recorded camera vectors; the corrected fixture was used for both passing runs."
+  ]
+}

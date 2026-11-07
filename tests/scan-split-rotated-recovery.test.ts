@@ -24,6 +24,19 @@ const facets = (values: ArrayLike<number>) =>
       .sort()
       .join("|"),
   );
+const orientedFacets = (values: ArrayLike<number>) =>
+  Array.from({ length: values.length / 9 }, (_, i) => {
+    const vertices = [0, 3, 6].map((corner) =>
+      [0, 1, 2]
+        .map((axis) => Math.fround(values[i * 9 + corner + axis]))
+        .join(","),
+    );
+    return [0, 1, 2]
+      .map((offset) =>
+        [...vertices.slice(offset), ...vertices.slice(0, offset)].join("|"),
+      )
+      .sort()[0];
+  }).sort();
 
 it("retains the native rotated boundary fan when inserting collinear contacts", () => {
   const source = load(
@@ -58,6 +71,7 @@ it("retains the native rotated boundary fan when inserting collinear contacts", 
   expect(extra).toBe(0);
   expect(actual).toHaveLength(36);
   expect(new Set(actual).size).toBe(actual.length);
+  expect(orientedFacets(output)).toEqual(orientedFacets(native));
   const area = (values: ArrayLike<number>) => {
     let sum = 0;
     for (let i = 0; i < values.length; i += 9) {

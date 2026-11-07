@@ -1,0 +1,33 @@
+{
+  "scope": "GUI and public MCP cancellation during finite Split on original PLY-3",
+  "build": "scanforge-3ac0509beaf027d7",
+  "source": "C:/repo/alignment-example-files/ply-3.ply",
+  "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "sourceTriangles": 3691133,
+  "jobLimitBytes": 34110816256,
+  "mcp": {
+    "driver": "tests/m2-original-split-cancel-browser-local.mjs",
+    "observedStage": "Collecting finite cutter intersections",
+    "observedProgress": 0.015002959795813372,
+    "terminal": "cancelled",
+    "peakJobBytes": 2094362624
+  },
+  "gui": {
+    "driver": "tests/m2-original-split-gui-cancel-browser-local.mjs",
+    "observedStage": "Collecting finite cutter intersections",
+    "observedProgress": 0.014714441338201578,
+    "terminal": "gui-panel-closed",
+    "peakJobBytes": 2408087552
+  },
+  "both": {
+    "sourceCutterRevisionAndHistoryPreserved": true,
+    "workerTerminationObserved": true,
+    "activeProcessesAfter": 0,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "limitations": [
+    "Both checks cancel during intersection collection, not every possible processing stage.",
+    "This validates application and MCP rollback for one large input and cutter; it is not native Split equivalence."
+  ]
+}

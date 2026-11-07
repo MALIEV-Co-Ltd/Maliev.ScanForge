@@ -205,133 +205,46 @@ it("does not release buffers when graph accessors hide possible aliases", async 
   expect(bytes.byteLength).toBeGreaterThan(0);
 });
 
-it("can reuse a verified numeric array without copying or losing graph aliases", async () => {
+it("restores independent numeric arrays while preserving graph aliases and signed zero", async () => {
   const source = Array.from({ length: 65538 }, (_, i) =>
     i === 0 ? -0 : i / 7,
   );
-  const { packet } = await packProjectTransport({ source, alias: source });
+  const other = source.slice();
+  const { packet } = await packProjectTransport({
+    source,
+    alias: source,
+    other,
+  });
   const restored = await unpackProjectTransport<{
     source: number[];
     alias: number[];
-  }>(packet, {
-    reuseNumericArray: async (values) => {
-      expect([...values]).toEqual(source);
-      return source;
-    },
-  });
-  expect(restored.source).toBe(source);
-  expect(restored.alias).toBe(source);
-});
-
-it("falls back to decoded data when a saved numeric candidate changes", async () => {
-  const { ProjectNumericReuse } = await import("../src/project-numeric-reuse");
-  const cache = new ProjectNumericReuse(4);
-  const source = Array.from({ length: 65538 }, (_, i) =>
-    i === 0 ? -0 : i / 7,
-  );
-  const { packet } = await packProjectTransport({ source, alias: source });
-  cache.remember([source]);
-  source[1] = 42;
-  const result = await unpackProjectTransport<{
-    source: number[];
-    alias: number[];
-  }>(packet, {
-    reuseNumericArray: (bytes) => cache.match(bytes, () => {}),
-  });
-  expect(result.source).not.toBe(source);
-  expect(result.source).toBe(result.alias);
-  expect(result.source[1]).toBe(1 / 7);
-  expect(Object.is(result.source[0], -0)).toBe(true);
-});
-
-it("rejects a numeric candidate changed before restore adopts it", async () => {
-  const source = Array.from({ length: 65538 }, (_, i) => i);
-  const { packet } = await packProjectTransport({ source });
-  const restored = await unpackProjectTransport<{ source: number[] }>(packet, {
-    reuseNumericArray: async () => {
-      queueMicrotask(() => {
-        source[1] = 42;
-      });
-      return source;
-    },
-  });
-  expect(restored.source[1]).toBe(1);
+    other: number[];
+  }>(packet);
+  expect(restored.source).toBe(restored.alias);
   expect(restored.source).not.toBe(source);
+  expect(restored.source).not.toBe(restored.other);
+  expect(Object.is(restored.source[0], -0)).toBe(true);
+  source[1] = 42;
+  restored.source[2] = 99;
+  expect(restored.source[1]).toBe(1 / 7);
+  expect(restored.other[2]).toBe(2 / 7);
 });
 
-// These injected mutations violate the current immutable-geometry contract.
-// They pin the unresolved ownership gap until restored data is independent.
-it.fails(
-  "preserves decoded bytes when an earlier reused source changes during a later lookup",
-  async () => {
-    const { ProjectNumericReuse } =
-      await import("../src/project-numeric-reuse");
-    const first = Array.from({ length: 65538 }, (_, i) => i + 1);
-    const second = Array.from({ length: 65538 }, (_, i) => i + 100_000);
-    const { packet } = await packProjectTransport({ first, second });
-    const cache = new ProjectNumericReuse(4, 65536);
-    cache.remember([first, second]);
-    let injected = false;
-    const restored = await unpackProjectTransport<{
-      first: number[];
-      second: number[];
-    }>(packet, {
-      releaseOwnedNumericBuffers: true,
-      reuseNumericArray: (bytes, used) =>
-        cache.match(
-          bytes,
-          () => {},
-          async () => {
-            if (!injected && bytes[0] === 100_000) {
-              injected = true;
-              first[0] = 999;
-            }
-          },
-          used,
-        ),
-    });
-    expect(injected).toBe(true);
-    expect(restored.first[0]).toBe(1);
-  },
-);
-
-it.fails(
-  "keeps restored bytes independent of a source mutated after unpack",
-  async () => {
-    const { ProjectNumericReuse } =
-      await import("../src/project-numeric-reuse");
-    const source = Array.from({ length: 65538 }, (_, i) => i + 1);
-    const { packet } = await packProjectTransport({ source });
-    const cache = new ProjectNumericReuse(4);
-    cache.remember([source]);
-    const restored = await unpackProjectTransport<{ source: number[] }>(
-      packet,
-      {
-        reuseNumericArray: (bytes, used) =>
-          cache.match(bytes, () => {}, undefined, used),
-      },
-    );
-    source[0] = 999;
-    expect(restored.source[0]).toBe(1);
-  },
-);
-
-it("keeps distinct equal geometry arrays independent on restore", async () => {
-  const { ProjectNumericReuse } = await import("../src/project-numeric-reuse");
-  const cache = new ProjectNumericReuse(4);
-  const first = Array.from({ length: 65538 }, (_, i) => i);
-  const second = first.slice();
+it("retains decoded bytes if the earlier owner changes during another buffer copy", async () => {
+  const first = Array.from({ length: 65538 }, (_, i) => i + 1);
+  const second = Array.from({ length: 65538 }, (_, i) => i + 100000);
   const { packet } = await packProjectTransport({ first, second });
-  cache.remember([first, second]);
+  let checks = 0;
   const restored = await unpackProjectTransport<{
     first: number[];
     second: number[];
   }>(packet, {
-    reuseNumericArray: (bytes, used) =>
-      cache.match(bytes, () => {}, undefined, used),
+    releaseOwnedNumericBuffers: true,
+    check: () => {
+      if (++checks === 5) first[0] = 999;
+    },
   });
-  expect(restored.first).toEqual(restored.second);
-  expect(restored.first).not.toBe(restored.second);
-  expect(restored.first).toBe(first);
-  expect(restored.second).toBe(second);
+  expect(checks).toBeGreaterThanOrEqual(5);
+  expect(restored.first[0]).toBe(1);
+  expect(restored.second[0]).toBe(100000);
 });

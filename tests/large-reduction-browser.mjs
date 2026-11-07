@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import { freemem, cpus, totalmem } from "node:os";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
@@ -12,6 +13,22 @@ import { chromium } from "playwright";
 const residentFixture = process.argv.includes("--resident");
 const globalControl = process.argv.includes("--global-control");
 const sourceFile = process.env.SCANFORGE_REDUCTION_SOURCE;
+const reductionPercentage = Number(
+  process.env.SCANFORGE_REDUCTION_PERCENTAGE ?? 50,
+);
+if (
+  !Number.isFinite(reductionPercentage) ||
+  reductionPercentage <= 0 ||
+  reductionPercentage >= 100
+)
+  throw Error(
+    "Reduction percentage must be greater than zero and less than 100.",
+  );
+if (
+  reductionPercentage !== 50 &&
+  process.env.SCANFORGE_REDUCTION_NATIVE_COMPARE
+)
+  throw Error("The frozen deviation comparison requires 50 percent remaining.");
 const globalFixture = JSON.parse(
   await readFile(
     new URL("fixtures/reduction-global-routing.json", import.meta.url),
@@ -138,10 +155,7 @@ try {
   browserServer = await chromium.launchServer({
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=1792",
-    ],
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
   });
   ledger.resources.push({
     kind: "browser",
@@ -396,9 +410,11 @@ try {
     .click();
   await panel
     .getByRole("spinbutton", { name: "Triangles remaining (%)", exact: true })
-    .fill("50");
+    .fill(String(reductionPercentage));
   const started = performance.now();
-  console.log("Starting 50% GUI reduction preview and comparison");
+  console.log(
+    `Starting ${reductionPercentage}% GUI reduction preview and comparison`,
+  );
   await panel
     .locator("footer")
     .getByRole("button", { name: "Preview", exact: true })
@@ -505,7 +521,7 @@ try {
     .click();
   await panel
     .getByRole("spinbutton", { name: "Triangles remaining (%)", exact: true })
-    .fill("50");
+    .fill(String(reductionPercentage));
   await panel
     .locator("footer")
     .getByRole("button", { name: "Preview", exact: true })
@@ -526,8 +542,8 @@ try {
       outputTriangles > (residentFixture ? 1000 : 100000),
   );
   assert(
-    outputTriangles <= Math.ceil(inputTriangles / 2),
-    "Healthy panel missed its requested 50% target",
+    outputTriangles <= Math.ceil((inputTriangles * reductionPercentage) / 100),
+    "Healthy panel missed its requested percentage target",
   );
   console.log(
     `GUI accepted ${outputTriangles} triangles; preview + comparison ${Math.round(previewMs)} ms`,
@@ -555,7 +571,11 @@ try {
     await mutate("scan_preview", {
       action: "create",
       entityId: object.id,
-      operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+      operation: {
+        kind: "reducePolygons",
+        mode: "percentage",
+        percentage: reductionPercentage,
+      },
     }),
   );
   if (process.env.SCANFORGE_REDUCTION_NATIVE_COMPARE) {
@@ -609,7 +629,11 @@ try {
     entityId: object.id,
     operation: {
       kind: "scanTools",
-      operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+      operation: {
+        kind: "reducePolygons",
+        mode: "percentage",
+        percentage: reductionPercentage,
+      },
     },
   });
   await page.waitForFunction(() => window.__pendingReductionResult, null, {
@@ -635,7 +659,9 @@ try {
         operation: {
           kind: "reducePolygons",
           mode: "triangles",
-          targetTriangles: Math.floor(inputTriangles / 2),
+          targetTriangles: Math.floor(
+            (inputTriangles * reductionPercentage) / 100,
+          ),
           measureDeviation: true,
           deviation: 0.05,
           paletteThreshold: 0.05,
@@ -647,7 +673,7 @@ try {
   assert.equal(
     mcpGeometrySha256,
     guiGeometrySha256,
-    "GUI and MCP differ on the same source and 50% target",
+    "GUI and MCP differ on the same source and target",
   );
   await mutate("history_undo", {});
   assert.equal(await geometryHash(), sourceGeometrySha256);

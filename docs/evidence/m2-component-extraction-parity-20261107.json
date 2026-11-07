@@ -1,0 +1,467 @@
+{
+  "build": "scanforge-e9f2daf1dbd29f6f",
+  "scope": "Isolated browser with public MCP; fixture and synthetic component checks",
+  "nativeScope": "Native behavior observed separately; this browser replay does not execute QuickSurface",
+  "standard": {
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9.00000000000002],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "pageErrors": []
+  },
+  "preciseAndIndexed": {
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "6c4dd8128b30fb0be32c545139f570a3538d28039e42439bd0db49b6ae465519",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "5dc803f77309721fd7cf1bef776b397a507bca4f141325fd44f6f64f32a0b210",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "pageErrors": [],
+    "largeIndexedInventory": {
+      "triangles": 66048,
+      "area": 33024,
+      "jsonArray": true,
+      "publicMcpExtractUndoRedo": true
+    }
+  },
+  "standardCleanup": [
+    {
+      "port": 55864,
+      "closed": true
+    },
+    {
+      "pid": 14932,
+      "exited": true
+    },
+    {
+      "port": 55865,
+      "closed": true
+    },
+    {
+      "pid": 6340,
+      "exited": true
+    }
+  ],
+  "preciseCleanup": [
+    {
+      "port": 59333,
+      "closed": true
+    },
+    {
+      "pid": 21264,
+      "exited": true
+    },
+    {
+      "port": 59334,
+      "closed": true
+    },
+    {
+      "pid": 10024,
+      "exited": true
+    }
+  ],
+  "largeRemainder": {
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "6c4dd8128b30fb0be32c545139f570a3538d28039e42439bd0db49b6ae465519",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "5dc803f77309721fd7cf1bef776b397a507bca4f141325fd44f6f64f32a0b210",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "pageErrors": [],
+    "largeIndexedInventory": {
+      "triangles": 66048,
+      "area": 33024,
+      "jsonArray": true,
+      "publicMcpExtractUndoRedo": true,
+      "smallComponentLargeRemainder": true
+    }
+  },
+  "largeRemainderCleanup": [
+    {
+      "port": 58652,
+      "closed": true
+    },
+    {
+      "pid": 30024,
+      "exited": true
+    },
+    {
+      "port": 58653,
+      "closed": true
+    },
+    {
+      "pid": 38596,
+      "exited": true
+    }
+  ],
+  "latestBuild": "scanforge-25a2807498b72206",
+  "finalPreciseAndIndexed": {
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "6c4dd8128b30fb0be32c545139f570a3538d28039e42439bd0db49b6ae465519",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "5dc803f77309721fd7cf1bef776b397a507bca4f141325fd44f6f64f32a0b210",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "816440d55e7a40f740bfedaf33420caaa93cefc62e11a16cd9eb6ef623ac641a",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "independentCornerNormalsGuiMcp": true,
+    "pageErrors": [],
+    "largeIndexedInventory": {
+      "triangles": 66048,
+      "area": 33024,
+      "jsonArray": true,
+      "publicMcpExtractUndoRedo": true,
+      "smallComponentLargeRemainder": true
+    }
+  },
+  "finalHelperCleanup": [
+    {
+      "port": 60070,
+      "closed": true
+    },
+    {
+      "pid": 24844,
+      "exited": true
+    },
+    {
+      "port": 60071,
+      "closed": true
+    },
+    {
+      "pid": 37504,
+      "exited": true
+    }
+  ],
+  "finalStandard": {
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9.00000000000002],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "independentCornerNormalsGuiMcp": true,
+    "pageErrors": []
+  },
+  "finalStandardHelperCleanup": [
+    {
+      "port": 63895,
+      "closed": true
+    },
+    {
+      "pid": 34592,
+      "exited": true
+    },
+    {
+      "port": 63896,
+      "closed": true
+    },
+    {
+      "pid": 29404,
+      "exited": true
+    }
+  ],
+  "finalSuite": {
+    "command": "npm test",
+    "passedFiles": 839,
+    "skippedFiles": 32,
+    "passedTests": 50924,
+    "expectedFailures": 3,
+    "skippedTests": 79,
+    "durationSeconds": 368.9
+  }
+}

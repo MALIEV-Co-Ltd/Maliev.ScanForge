@@ -1,3 +1,4 @@
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import assert from "node:assert/strict";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -128,10 +129,7 @@ try {
   browserServer = await chromium.launchServer({
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=768",
-    ],
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
   });
   ledger.resources.push({
     kind: "browser",
@@ -167,6 +165,9 @@ try {
     };
   });
   await page.goto(origin);
+  ledger.browserHeapLimitBytes = await page.evaluate(
+    () => performance.memory?.jsHeapSizeLimit ?? null,
+  );
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
@@ -281,6 +282,7 @@ try {
     .locator('.status-message[title^="Opened · 1/1 files"]')
     .waitFor({ timeout: 60000 });
   const nativeSource = (await call("project_get")).result.objects[0].id;
+  const nativeSourceGeometry = await geometry(nativeSource);
   await mutate("object_select", { entityId: nativeSource });
   await mutate("command_run", { name: "ribbon:editScan" });
   await page.waitForFunction(
@@ -354,10 +356,22 @@ try {
   assert.equal(
     nativeGuiProject.objects.find((object) => object.id === nativeSource)
       .visible,
-    false,
+    true,
   );
+  assert.equal(
+    nativeGuiProject.objects.find((object) => object.id === nativeSource)
+      .emptyComponentSource,
+    true,
+  );
+  assert.equal((await geometry(nativeSource)).length, 0);
   const nativeGuiGeometry = await geometry(nativeGuiPart.id);
   assert.equal(nativeGuiGeometry.length, 18);
+  rawEqual(
+    nativeGuiGeometry,
+    nativeSourceGeometry,
+    "Extracting the complete native fixture changed source coordinates",
+  );
+  await checkedIndex(nativeGuiPart.id, nativeSourceGeometry);
   await mutate("history_undo", {});
   await job(
     await mutate("mesh_process", {
@@ -367,6 +381,12 @@ try {
   );
   const nativeMcpProject = (await call("project_get")).result;
   assert.equal(nativeMcpProject.objects.length, 2);
+  assert.equal(
+    nativeMcpProject.objects.find((object) => object.id === nativeSource)
+      .emptyComponentSource,
+    true,
+  );
+  assert.equal((await geometry(nativeSource)).length, 0);
   const nativeMcpPart = nativeMcpProject.objects.find(
     (object) => object.id !== nativeSource,
   );
@@ -375,11 +395,472 @@ try {
     nativeGuiGeometry,
     "GUI/MCP native-fixture extraction mismatch",
   );
+  const nativeSaved = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: nativeSaved.result.artifactId,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", { artifactId: nativeSaved.result.artifactId });
+  const nativeReopened = (await call("project_get")).result;
+  assert.equal(
+    nativeReopened.objects.find((object) => object.id === nativeSource)
+      .emptyComponentSource,
+    true,
+  );
+  assert.equal((await geometry(nativeSource)).length, 0);
+  rawEqual(
+    await geometry(nativeMcpPart.id),
+    nativeGuiGeometry,
+    "Reopen lost native-fixture component",
+  );
+  await mutate("object_select", { entityId: nativeSource });
+  assert.equal(
+    (await call("application_inspect")).result.selectedId,
+    nativeSource,
+  );
+  assert.deepEqual(
+    errors,
+    [],
+    "Selecting the empty source caused a page error",
+  );
   await mutate("history_undo", {});
   if (await nativeControls.isVisible())
     await nativeControls
       .getByRole("button", { name: "Back", exact: true })
       .click();
+  // Compare the real native export with both publication paths using the same
+  // three-triangle STL that QuickSurface imported, not a manufactured proxy.
+  const nativeExport = await readFile(
+    new URL(
+      "tests/fixtures/m2-native-extract-lifecycle-20261107/native-two-triangle.stl",
+      root,
+    ),
+  );
+  assert.equal(
+    createHash("sha256").update(nativeExport).digest("hex"),
+    "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+  );
+  assert.equal(nativeExport.readUInt32LE(80), 2);
+  const nativeExpected = [];
+  const nativeFacetNormals = [];
+  for (let face = 0; face < 2; face++)
+    for (let coordinate = 0; coordinate < 9; coordinate++) {
+      if (coordinate < 3)
+        nativeFacetNormals.push(
+          nativeExport.readFloatLE(84 + face * 50 + coordinate * 4),
+        );
+      nativeExpected.push(
+        nativeExport.readFloatLE(84 + face * 50 + 12 + coordinate * 4),
+      );
+    }
+  const nativeRemainderExport = await readFile(
+    new URL(
+      "tests/fixtures/m2-native-extract-lifecycle-20261107/native-one-triangle.stl",
+      root,
+    ),
+  );
+  assert.equal(
+    createHash("sha256").update(nativeRemainderExport).digest("hex"),
+    "cd01401710e3cfccb0ed1423ae22155c0d7bae192c527dd05ed664dbfb5ac62b",
+  );
+  assert.equal(nativeRemainderExport.readUInt32LE(80), 1);
+  const nativeRemainder = Array.from({ length: 9 }, (_, i) =>
+    nativeRemainderExport.readFloatLE(96 + i * 4),
+  );
+  const nativeRemainderNormal = Array.from({ length: 3 }, (_, i) =>
+    nativeRemainderExport.readFloatLE(84 + i * 4),
+  );
+  const checkFacetNormals = async (entityId, expected, message) => {
+    const data = await artifactJson(
+      (await call("object_get", { entityId, includeGeometry: true })).result
+        .geometry,
+    );
+    assert.deepEqual(data.indexedMesh?.facetNormals, expected, message);
+  };
+  const beforeNativeImport = new Set(
+    (await call("project_get")).result.objects.map((o) => o.id),
+  );
+  await page
+    .locator('input[type=file][accept*=".stl"]')
+    .setInputFiles(
+      fileURLToPath(
+        new URL(
+          "tests/fixtures/m2-native-extract-lifecycle-20261107/source.stl",
+          root,
+        ),
+      ),
+    );
+  await page.getByRole("button", { name: "Import", exact: true }).click();
+  let lifecycleSource;
+  for (let attempt = 0; attempt < 600 && !lifecycleSource; attempt++) {
+    lifecycleSource = (await call("project_get")).result.objects.find(
+      (o) => !beforeNativeImport.has(o.id),
+    )?.id;
+    if (!lifecycleSource)
+      await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert(lifecycleSource, "Native lifecycle fixture was not imported");
+  const lifecycleInput = await geometry(lifecycleSource);
+  await mutate("object_select", { entityId: lifecycleSource });
+  await mutate("command_run", { name: "ribbon:editScan" });
+  await page
+    .getByRole("button", { name: "Edit individual meshes", exact: true })
+    .click();
+  const lifecycleControls = page.getByRole("region", {
+    name: "Individual meshes",
+    exact: true,
+  });
+  await lifecycleControls
+    .getByRole("button", { name: /· 2 triangles ·/ })
+    .click();
+  const lifecycleBaseline = (await call("project_get")).result.undo;
+  await lifecycleControls
+    .getByRole("button", { name: "Create new object", exact: true })
+    .click();
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if ((await call("project_get")).result.undo === lifecycleBaseline + 1)
+      break;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  await idle();
+  const lifecycleGuiProject = (await call("project_get")).result;
+  const lifecycleGuiPart = lifecycleGuiProject.objects.find(
+    (o) => o.id !== lifecycleSource && !beforeNativeImport.has(o.id),
+  );
+  assert(lifecycleGuiPart, "GUI did not publish the native fixture component");
+  rawEqual(
+    await geometry(lifecycleGuiPart.id),
+    nativeExpected,
+    "GUI differs from native export",
+  );
+  rawEqual(
+    await geometry(lifecycleSource),
+    nativeRemainder,
+    "GUI changed the source remainder",
+  );
+  await checkFacetNormals(
+    lifecycleGuiPart.id,
+    nativeFacetNormals,
+    "GUI component facet normals differ from native STL",
+  );
+  await checkFacetNormals(
+    lifecycleSource,
+    nativeRemainderNormal,
+    "GUI remainder facet normal differs from native STL",
+  );
+  await mutate("history_undo", {});
+  rawEqual(
+    await geometry(lifecycleSource),
+    lifecycleInput,
+    "Undo did not restore source",
+  );
+  await mutate("history_redo", {});
+  rawEqual(
+    await geometry(lifecycleGuiPart.id),
+    nativeExpected,
+    "GUI redo changed native fixture output",
+  );
+  await checkFacetNormals(
+    lifecycleGuiPart.id,
+    nativeFacetNormals,
+    "GUI redo changed native facet normals",
+  );
+  await mutate("history_undo", {});
+  const lifecycleInventory = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: lifecycleSource,
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            inventoryScope: "components",
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  const lifecycleIndex = lifecycleInventory.inventory.components.findIndex(
+    (c) => c.triangles.length === 2,
+  );
+  assert(lifecycleIndex >= 0);
+  await job(
+    await mutate("mesh_process", {
+      entityId: lifecycleSource,
+      operation: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [lifecycleIndex],
+      },
+    }),
+  );
+  const lifecycleMcpPart = (await call("project_get")).result.objects.find(
+    (o) => o.id !== lifecycleSource && !beforeNativeImport.has(o.id),
+  );
+  assert(lifecycleMcpPart, "MCP did not publish the native fixture component");
+  rawEqual(
+    await geometry(lifecycleMcpPart.id),
+    nativeExpected,
+    "MCP differs from native export",
+  );
+  rawEqual(
+    await geometry(lifecycleSource),
+    nativeRemainder,
+    "MCP changed the source remainder",
+  );
+  await checkFacetNormals(
+    lifecycleMcpPart.id,
+    nativeFacetNormals,
+    "MCP component facet normals differ from native STL",
+  );
+  await checkFacetNormals(
+    lifecycleSource,
+    nativeRemainderNormal,
+    "MCP remainder facet normal differs from native STL",
+  );
+  await mutate("history_undo", {});
+  rawEqual(
+    await geometry(lifecycleSource),
+    lifecycleInput,
+    "MCP undo did not restore source",
+  );
+  await mutate("history_redo", {});
+  rawEqual(
+    await geometry(lifecycleMcpPart.id),
+    nativeExpected,
+    "MCP redo changed native fixture output",
+  );
+  await checkFacetNormals(
+    lifecycleMcpPart.id,
+    nativeFacetNormals,
+    "MCP redo changed native facet normals",
+  );
+  const lifecycleSaved = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: lifecycleSaved.result.artifactId,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", {
+    artifactId: lifecycleSaved.result.artifactId,
+  });
+  rawEqual(
+    await geometry(lifecycleMcpPart.id),
+    nativeExpected,
+    "Reopen changed native fixture output",
+  );
+  rawEqual(
+    await geometry(lifecycleSource),
+    nativeRemainder,
+    "Reopen changed native fixture remainder",
+  );
+  await checkFacetNormals(
+    lifecycleMcpPart.id,
+    nativeFacetNormals,
+    "Reopen changed native component facet normals",
+  );
+  await checkFacetNormals(
+    lifecycleSource,
+    nativeRemainderNormal,
+    "Reopen changed native remainder facet normal",
+  );
+  const nearFile = new URL(
+    "tests/fixtures/m2-near-edge-native-20261107/source.stl",
+    root,
+  );
+  const nearBytes = await readFile(nearFile);
+  assert.equal(
+    createHash("sha256").update(nearBytes).digest("hex"),
+    "e3a21262309a84818cb473cefaf93c6d4ee4d57924f452ccb1be8dc0cf2ab0f5",
+  );
+  const nearBefore = new Set(
+    (await call("project_get")).result.objects.map((o) => o.id),
+  );
+  await page
+    .locator('input[type=file][accept*=".stl"]')
+    .setInputFiles(fileURLToPath(nearFile));
+  await page.getByRole("button", { name: "Import", exact: true }).click();
+  let nearId;
+  for (let attempt = 0; attempt < 600 && !nearId; attempt++) {
+    nearId = (await call("project_get")).result.objects.find(
+      (o) => !nearBefore.has(o.id),
+    )?.id;
+    if (!nearId) await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert(nearId, "Near-edge fixture was not imported");
+  const nearPositions = await geometry(nearId);
+  await mutate("object_select", { entityId: nearId });
+  await mutate("command_run", { name: "ribbon:editScan" });
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('output[aria-label="Individual meshes count"]')
+        ?.textContent?.trim() === "2",
+    null,
+    { timeout: 60000 },
+  );
+  const nearIndexed = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: nearId,
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            inventoryScope: "components",
+            tolerance: 0.001,
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  assert.deepEqual(
+    nearIndexed.inventory.components.map((c) => c.triangles.length),
+    [1, 1],
+  );
+  for (const control of [
+    {
+      name: "low",
+      sha256:
+        "453163693730696daee6ba369e5120885cc80ce04aeb467e64a48ea24cab2dc8",
+      vertices: 4,
+      components: [2],
+    },
+    {
+      name: "high",
+      sha256:
+        "5806b2e9b2d8133755bc4a4d61c038c1fca4d4129dd7549b237686e7710005f6",
+      vertices: 6,
+      components: [1, 1],
+    },
+  ]) {
+    const file = new URL(
+      `tests/fixtures/m2-near-edge-native-20261107/key-boundary-${control.name}.stl`,
+      root,
+    );
+    assert.equal(
+      createHash("sha256")
+        .update(await readFile(file))
+        .digest("hex"),
+      control.sha256,
+    );
+    const before = new Set(
+      (await call("project_get")).result.objects.map((o) => o.id),
+    );
+    await page
+      .locator('input[type=file][accept*=".stl"]')
+      .setInputFiles(fileURLToPath(file));
+    await page.getByRole("button", { name: "Import", exact: true }).click();
+    let id;
+    for (let attempt = 0; attempt < 600 && !id; attempt++) {
+      id = (await call("project_get")).result.objects.find(
+        (o) => !before.has(o.id),
+      )?.id;
+      if (!id) await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    assert(id, `Key-boundary ${control.name} fixture was not imported`);
+    const data = await artifactJson(
+      (await call("object_get", { entityId: id, includeGeometry: true })).result
+        .geometry,
+    );
+    assert.equal(data.indexedMesh.vertices.length / 3, control.vertices);
+    await mutate("object_select", { entityId: id });
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await page.waitForFunction(
+      (count) =>
+        document
+          .querySelector('output[aria-label="Individual meshes count"]')
+          ?.textContent?.trim() === String(count),
+      control.components.length,
+      { timeout: 60000 },
+    );
+    const report = await artifactJson(
+      (
+        await job(
+          await mutate("mesh_process", {
+            entityId: id,
+            operation: {
+              kind: "scanEdit",
+              action: "inventory",
+              inventoryScope: "components",
+              tolerance: 0.001,
+            },
+          }),
+        )
+      ).result.artifact,
+    );
+    assert.deepEqual(
+      report.inventory.components.map((c) => c.triangles.length),
+      control.components,
+    );
+  }
+  const nearProject = {
+    format: "maliev-scanforge",
+    version: 1,
+    name: "Near-edge unindexed control",
+    units: "mm",
+    entities: [
+      {
+        id: "near-unindexed",
+        name: "Near-edge unindexed",
+        kind: "mesh",
+        positions: nearPositions,
+        color: "#b4bec4",
+        visible: true,
+        opacity: 1,
+      },
+    ],
+  };
+  const nearUpload = (
+    await call("artifact_put", {
+      name: "near-edge-unindexed.json",
+      offset: 0,
+      base64: Buffer.from(JSON.stringify(nearProject)).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: nearUpload.artifactId,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", { artifactId: nearUpload.artifactId });
+  await mutate("object_select", { entityId: "near-unindexed" });
+  await mutate("command_run", { name: "ribbon:editScan" });
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('output[aria-label="Individual meshes count"]')
+        ?.textContent?.trim() === "1",
+    null,
+    { timeout: 60000 },
+  );
+  const nearUnindexed = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: "near-unindexed",
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            inventoryScope: "components",
+            tolerance: 0.001,
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  assert.deepEqual(
+    nearUnindexed.inventory.components.map((c) => c.triangles.length),
+    [2],
+  );
   const positions = [],
     groups = [];
   for (let n = 1; n <= 3; n++) {
@@ -653,7 +1134,7 @@ try {
       const created = guiProject.objects.find((o) => o.id !== "scan");
       assert.equal(
         guiProject.objects.find((o) => o.id === "scan").visible,
-        false,
+        true,
       );
       assert.equal(created.visible, true);
       assert.equal(created.source, "manufactured-components-control.stl");
@@ -662,7 +1143,11 @@ try {
         created.id,
         "GUI did not select extracted owner",
       );
-      rawEqual(await geometry(), positions, "GUI extraction altered source");
+      rawEqual(
+        await geometry(),
+        [...groups[0], ...groups[2]],
+        "GUI extraction remainder mismatch",
+      );
       guiGeometry = await geometry(
         guiProject.objects.find((o) => o.id !== "scan").id,
       );
@@ -692,7 +1177,7 @@ try {
       const created = mcpProject.objects.find((o) => o.id !== "scan");
       assert.equal(
         mcpProject.objects.find((o) => o.id === "scan").visible,
-        false,
+        true,
       );
       assert.equal(created.visible, true);
       assert.equal(created.source, "manufactured-components-control.stl");
@@ -706,7 +1191,11 @@ try {
         guiProject.objects.find((o) => o.id !== "scan").name,
         "GUI/MCP extracted names differ",
       );
-      rawEqual(await geometry(), positions, "MCP extraction altered source");
+      rawEqual(
+        await geometry(),
+        [...groups[0], ...groups[2]],
+        "MCP extraction remainder mismatch",
+      );
       mcpGeometry = await geometry(
         mcpProject.objects.find((o) => o.id !== "scan").id,
       );
@@ -757,7 +1246,11 @@ try {
     const reopened = (await call("project_get")).result;
     if (c.extract) {
       assert.equal(reopened.objects.length, 2);
-      rawEqual(await geometry(), positions, "Reopen altered extraction source");
+      rawEqual(
+        await geometry(),
+        [...groups[0], ...groups[2]],
+        "Reopen altered extraction remainder",
+      );
       rawEqual(
         await geometry(reopened.objects.find((o) => o.id !== "scan").id),
         c.expected,
@@ -846,6 +1339,89 @@ try {
   });
   rawEqual(await geometry(), positions, "Cancelled GUI result changed source");
   assert.equal((await call("project_get")).result.undo, baseline);
+  const cornerNormals = positions.map((_, index) =>
+    index % 3 === 0 ? (Math.floor(index / 9) % 2 ? -1 : 1) : 0,
+  );
+  const normalProject = {
+    ...project,
+    entities: [
+      {
+        ...project.entities[0],
+        indexedMesh: undefined,
+        normals: cornerNormals,
+      },
+    ],
+  };
+  const normalArtifact = (
+    await call("artifact_put", {
+      name: "component-corner-normals.json",
+      offset: 0,
+      base64: Buffer.from(JSON.stringify(normalProject)).toString("base64"),
+    })
+  ).result.artifactId;
+  await job(
+    await mutate("project_import", {
+      artifactId: normalArtifact,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", { artifactId: normalArtifact });
+  await mutate("object_select", { entityId: "scan" });
+  await open();
+  await controls.getByRole("button", { name: /· 8 triangles ·/ }).click();
+  const normalBaseline = (await call("project_get")).result.undo;
+  await controls
+    .getByRole("button", { name: "Create new object", exact: true })
+    .click();
+  await waitHistory(normalBaseline + 1);
+  const normalGui = (await call("project_get")).result;
+  const normalGuiPart = normalGui.objects.find(
+    (object) => object.id !== "scan",
+  );
+  const readGeometry = async (entityId) =>
+    artifactJson(
+      (await call("object_get", { entityId, includeGeometry: true })).result
+        .geometry,
+    );
+  const expectedNormalPart = cornerNormals.slice(
+    groups[0].length,
+    groups[0].length + groups[1].length,
+  );
+  const expectedNormalRest = [
+    ...cornerNormals.slice(0, groups[0].length),
+    ...cornerNormals.slice(groups[0].length + groups[1].length),
+  ];
+  assert.deepEqual((await readGeometry("scan")).normals, expectedNormalRest);
+  assert.deepEqual(
+    (await readGeometry(normalGuiPart.id)).normals,
+    expectedNormalPart,
+  );
+  await mutate("history_undo", {});
+  await runEdit({ action: "componentExtract", indices: [middle] });
+  const normalMcp = (await call("project_get")).result;
+  const normalMcpPart = normalMcp.objects.find(
+    (object) => object.id !== "scan",
+  );
+  assert.deepEqual((await readGeometry("scan")).normals, expectedNormalRest);
+  assert.deepEqual(
+    (await readGeometry(normalMcpPart.id)).normals,
+    expectedNormalPart,
+  );
+  const normalSaved = await job(
+    await call("project_export", { format: "project" }),
+  );
+  await job(
+    await mutate("project_import", {
+      artifactId: normalSaved.result.artifactId,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", { artifactId: normalSaved.result.artifactId });
+  assert.deepEqual((await readGeometry("scan")).normals, expectedNormalRest);
+  assert.deepEqual(
+    (await readGeometry(normalMcpPart.id)).normals,
+    expectedNormalPart,
+  );
   let largeIndexedInventory;
   if (process.env.SCANFORGE_COMPONENT_LARGE_INDEXED === "1") {
     const vertices = [],
@@ -915,20 +1491,94 @@ try {
     );
     assert(extracted, "MCP did not publish the indexed component");
     assert.deepEqual(await geometry(extracted.id), expanded);
-    assert.deepEqual(await geometry(), expanded);
+    assert.deepEqual(await geometry(), []);
     await mutate("history_undo", {});
     assert.deepEqual(await geometry(), expanded);
     await mutate("history_redo", {});
     assert.deepEqual(await geometry(extracted.id), expanded);
+    const smallPart = [1000, 0, 0, 1001, 0, 0, 1000, 1, 0];
+    const firstVertex = vertices.length / 3;
+    const mixedProject = {
+      ...largeProject,
+      entities: [
+        {
+          ...largeProject.entities[0],
+          positions: [...expanded, ...smallPart],
+          indexedMesh: {
+            vertices: [...vertices, ...smallPart],
+            triangles: [
+              ...triangles,
+              firstVertex,
+              firstVertex + 1,
+              firstVertex + 2,
+            ],
+          },
+        },
+      ],
+    };
+    const mixedBytes = Buffer.from(JSON.stringify(mixedProject));
+    let mixedArtifact;
+    for (let offset = 0; offset < mixedBytes.length; offset += 262144) {
+      const part = (
+        await call("artifact_put", {
+          name: "large-indexed-remainder.json",
+          ...(mixedArtifact ? { artifactId: mixedArtifact } : {}),
+          offset,
+          base64: mixedBytes
+            .subarray(offset, offset + 262144)
+            .toString("base64"),
+        })
+      ).result;
+      mixedArtifact = part.artifactId;
+    }
+    await job(
+      await mutate("project_import", {
+        artifactId: mixedArtifact,
+        replace: true,
+      }),
+    );
+    await call("artifact_delete", { artifactId: mixedArtifact });
+    await runEdit({ action: "componentExtract", indices: [1] });
+    const mixedResult = (await call("project_get")).result;
+    const small = mixedResult.objects.find((object) => object.id !== "scan");
+    assert(small, "MCP did not publish the small component");
+    assert.deepEqual(await geometry(small.id), smallPart);
+    assert.deepEqual(await geometry(), expanded);
+    await mutate("history_undo", {});
+    assert.deepEqual(await geometry(), [...expanded, ...smallPart]);
+    await mutate("history_redo", {});
+    assert.deepEqual(await geometry(), expanded);
     largeIndexedInventory = {
       triangles: component.triangles.length,
       area: component.area,
       jsonArray: true,
       publicMcpExtractUndoRedo: true,
+      smallComponentLargeRemainder: true,
     };
   }
   assert.deepEqual(errors, []);
   ledger.result = {
+    nativeStlKeyBoundary: {
+      low: { vertices: 4, components: 1 },
+      high: { vertices: 6, components: 2 },
+      guiMcp: true,
+    },
+    nearEdgeNativeControl: {
+      nativeComponents: 2,
+      indexedGuiMcp: 2,
+      unindexedGuiMcp: 1,
+      toleranceMm: 0.001,
+    },
+    browserHeapLimitBytes: ledger.browserHeapLimitBytes,
+    nativeLifecycleExport: {
+      nativeOutputSha256:
+        "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+      guiMcpOrderedCoordinatesMatch: true,
+      guiMcpFacetNormalsMatch: true,
+      sourceRemainder: true,
+      guiMcpUndoRedo: true,
+      binaryReopen: true,
+    },
     nativeFixture: {
       triangles: 2,
       guiComponents: 1,
@@ -943,6 +1593,7 @@ try {
     cases: results,
     mcpHeldResultCancellation: true,
     guiCancelAndBack: true,
+    independentCornerNormalsGuiMcp: true,
     pageErrors: errors,
     largeIndexedInventory,
   };

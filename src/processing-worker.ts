@@ -122,6 +122,18 @@ scope.onmessage = async ({ data: incoming }) => {
   }
   let indexedExtract = false;
   let indexedInventory = false;
+  const includeComponentRemainder =
+    incoming.kind === "scanEdit" &&
+    incoming.action === "componentExtract" &&
+    (incoming as ProcessingRequest & { includeComponentRemainder?: boolean })
+      .includeComponentRemainder === true;
+  const componentCornerNormals = includeComponentRemainder
+    ? (
+        incoming as ProcessingRequest & {
+          componentCornerNormals?: import("./types").Positions;
+        }
+      ).componentCornerNormals
+    : undefined;
   let packedSource = (
     incoming as ProcessingRequest & {
       packedScanEditSource?: {
@@ -466,6 +478,8 @@ scope.onmessage = async ({ data: incoming }) => {
       }
       const editOptions = {
         onProgress: progress,
+        includeComponentRemainder,
+        componentCornerNormals,
         topologyCache: request.previewOnly
           ? { ...topologyCache }
           : topologyCache,
@@ -969,6 +983,8 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.scanEdit.selection.buffer);
     for (const segment of result.scanEdit?.segments ?? [])
       if (segment instanceof Float32Array) transfers.push(segment.buffer);
+    for (const normals of result.scanEdit?.segmentNormals ?? [])
+      if (normals instanceof Float32Array) transfers.push(normals.buffer);
     for (const mesh of result.scanEdit?.segmentIndexedMeshes ?? []) {
       if (!mesh) continue;
       for (const values of [
@@ -977,6 +993,22 @@ scope.onmessage = async ({ data: incoming }) => {
         mesh.normals,
         mesh.geometryNormals,
         mesh.facetNormals,
+      ])
+        if (values instanceof Float32Array || values instanceof Uint32Array)
+          transfers.push(values.buffer);
+    }
+    const remainder = result.scanEdit?.componentRemainder;
+    if (remainder?.positions instanceof Float32Array)
+      transfers.push(remainder.positions.buffer);
+    if (remainder?.normals instanceof Float32Array)
+      transfers.push(remainder.normals.buffer);
+    if (remainder?.indexedMesh) {
+      for (const values of [
+        remainder.indexedMesh.vertices,
+        remainder.indexedMesh.triangles,
+        remainder.indexedMesh.normals,
+        remainder.indexedMesh.geometryNormals,
+        remainder.indexedMesh.facetNormals,
       ])
         if (values instanceof Float32Array || values instanceof Uint32Array)
           transfers.push(values.buffer);
@@ -1010,9 +1042,12 @@ scope.onmessage = async ({ data: incoming }) => {
       if (segments.length !== meshes.length || meshes.some((mesh) => !mesh))
         throw new Error("Invalid component display topology.");
       progress(0.99, "Preparing component display");
-      result.segmentRenderData = segments.map((segment, i) =>
-        prepareSplitRenderData(segment, meshes[i]!, true),
-      );
+      result.segmentRenderData = segments.map((segment, i) => {
+        const mesh = meshes[i]!;
+        const data = prepareSplitRenderData(segment, mesh, true);
+        if (mesh.geometryNormals) data.normals = meshGeometryNormals(mesh);
+        return data;
+      });
       for (const data of result.segmentRenderData)
         if (data.normals) transfers.push(data.normals.buffer as ArrayBuffer);
     }
@@ -1038,6 +1073,23 @@ scope.onmessage = async ({ data: incoming }) => {
       { positions: Float64Array; vertices: Float64Array } | undefined;
     let packedScanSegments:
       { positions: Float64Array; vertices: Float64Array }[] | undefined;
+    let packedComponentRemainder:
+      { positions: Float64Array; vertices?: Float64Array } | undefined;
+    if (remainder && (remainder.positions as unknown) instanceof Float64Array) {
+      const positions = remainder.positions as unknown as Float64Array;
+      const mesh = remainder.indexedMesh;
+      const vertices = mesh?.vertices as unknown as Float64Array | undefined;
+      if (mesh && !(vertices instanceof Float64Array))
+        throw new Error("Invalid precise component remainder topology.");
+      packedComponentRemainder = {
+        positions,
+        ...(vertices ? { vertices } : {}),
+      };
+      remainder.positions = [];
+      if (mesh) mesh.vertices = [];
+      transfers.push(positions.buffer);
+      if (vertices) transfers.push(vertices.buffer);
+    }
     if (packPreciseSplit) {
       progress(1, "Packing precise scan edit");
       const edit = result.scanEdit!,
@@ -1093,6 +1145,7 @@ scope.onmessage = async ({ data: incoming }) => {
         result,
         ...(packedScanEdit ? { packedScanEdit } : {}),
         ...(packedScanSegments ? { packedScanSegments } : {}),
+        ...(packedComponentRemainder ? { packedComponentRemainder } : {}),
       },
       [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
     );

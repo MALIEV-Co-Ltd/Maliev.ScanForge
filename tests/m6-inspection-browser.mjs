@@ -952,7 +952,7 @@ try {
     noResultArtifacts: true,
   };
   // Reopening the same saved geometry must discard transient selection for
-  // both GUI and MCP project replacement, even when numeric arrays are reused.
+  // both GUI and MCP project replacement.
   const positions = Array.from({ length: 7282 }, () => [
     0, 0, 0, 1, 0, 0, 0, 1, 0,
   ]).flat();

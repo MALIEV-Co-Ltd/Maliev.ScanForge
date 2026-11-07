@@ -31,6 +31,10 @@ import {
 export interface ScanEditOptions extends MeshProcessingOptions {
   /** Internal worker hook; never part of a serialized edit request. */
   selectedSmoothing?: typeof smoothSelectedVertices;
+  /** Request the source remainder for atomic component publication. */
+  includeComponentRemainder?: boolean;
+  /** Authored per-corner normals belonging to the immutable source. */
+  componentCornerNormals?: Positions;
 }
 
 export interface ScanEditRequest {
@@ -96,6 +100,13 @@ export interface ScanEditResult {
   /** Internal indexed successor topology matching positions, when available. */
   indexedMesh?: import("./types").IndexedMesh;
   segments?: Positions[];
+  /** The unextracted source geometry, published atomically with components. */
+  componentRemainder?: {
+    positions: Positions;
+    indexedMesh?: import("./types").IndexedMesh;
+    normals?: Positions;
+  };
+  segmentNormals?: Positions[];
   /** Internal indexed topology corresponding to each segment, when available. */
   segmentIndexedMeshes?: (import("./types").IndexedMesh | undefined)[];
   selection?: Uint8Array;
@@ -141,12 +152,19 @@ export function finiteOutput(values: ArrayLike<number>): Float32Array {
 
 /** Preserve source vertex identity when publishing a selected face subset. */
 function componentIndex(
-  source: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
+  source: {
+    vertices: ArrayLike<number>;
+    triangles: ArrayLike<number>;
+    normals?: Positions;
+    geometryNormals?: Positions;
+    facetNormals?: Positions;
+  },
   faces: ArrayLike<number>,
   flipped: Uint8Array | undefined,
   options: MeshProcessingOptions,
   float32: boolean,
   privatePrecise = false,
+  preserveNormals = false,
 ): import("./types").IndexedMesh | undefined {
   if (!faces.length) return undefined;
   checkProgress(options, 1, "Compacting component indices");
@@ -186,7 +204,51 @@ function componentIndex(
     vertices[destination + 1] = source.vertices[sourceId * 3 + 1];
     vertices[destination + 2] = source.vertices[sourceId * 3 + 2];
   }
-  return { vertices, triangles };
+  const remapVertices = (
+    values: Positions | undefined,
+  ): Positions | undefined => {
+    if (!values || !preserveNormals) return undefined;
+    const remapped: Positions =
+      values instanceof Float32Array
+        ? new Float32Array(
+            allocateImportedReadonlyBuffer(vertexCount * 3 * 4, true),
+          )
+        : new Array<number>(vertexCount * 3);
+    for (let sourceId = 0; sourceId < ids.length; sourceId++) {
+      if ((sourceId & 4095) === 0 && options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      if (!ids[sourceId]) continue;
+      const destination = (ids[sourceId] - 1) * 3;
+      for (let axis = 0; axis < 3; axis++)
+        remapped[destination + axis] = values[sourceId * 3 + axis];
+    }
+    return remapped;
+  };
+  const normals = remapVertices(source.normals);
+  const geometryNormals = remapVertices(source.geometryNormals);
+  let facetNormals: Positions | undefined;
+  if (preserveNormals && source.facetNormals) {
+    const values = source.facetNormals;
+    facetNormals =
+      values instanceof Float32Array
+        ? new Float32Array(
+            allocateImportedReadonlyBuffer(faces.length * 3 * 4, true),
+          )
+        : new Array<number>(faces.length * 3);
+    for (let row = 0; row < faces.length; row++) {
+      if ((row & 4095) === 0 && options.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      for (let axis = 0; axis < 3; axis++)
+        facetNormals[row * 3 + axis] = values[faces[row] * 3 + axis];
+    }
+  }
+  return {
+    vertices,
+    triangles,
+    ...(normals ? { normals } : {}),
+    ...(geometryNormals ? { geometryNormals } : {}),
+    ...(facetNormals ? { facetNormals } : {}),
+  };
 }
 export function inventoryOf(
   t: MeshTopology,
@@ -333,11 +395,18 @@ export function publishSmoothedVertices(
 
 function componentEdit(
   r: ScanEditRequest,
-  o: MeshProcessingOptions,
+  o: ScanEditOptions,
   componentCount: number,
   componentAt: (index: number) => ArrayLike<number>,
   indexed:
-    { vertices: ArrayLike<number>; triangles: ArrayLike<number> } | undefined,
+    | {
+        vertices: ArrayLike<number>;
+        triangles: ArrayLike<number>;
+        normals?: Positions;
+        geometryNormals?: Positions;
+        facetNormals?: Positions;
+      }
+    | undefined,
   indexedSourceOnly = false,
 ): ScanEditResult {
   const count = indexedSourceOnly
@@ -377,6 +446,27 @@ function componentEdit(
     return positions;
   };
   if (r.action === "componentExtract") {
+    const cornerNormals = o.componentCornerNormals;
+    if (
+      cornerNormals &&
+      (cornerNormals.length !== count * 9 ||
+        cornerNormals.some((value) => !Number.isFinite(value)))
+    )
+      throw Error("Component normals must match the source triangles.");
+    const normalOutput = (faces: ArrayLike<number>): Positions => {
+      const values = cornerNormals!;
+      const result: Positions =
+        values instanceof Float32Array
+          ? new Float32Array(faces.length * 9)
+          : new Array<number>(faces.length * 9);
+      for (let row = 0; row < faces.length; row++) {
+        if ((row & 4095) === 0 && o.signal?.aborted)
+          throw new DOMException("Mesh operation cancelled.", "AbortError");
+        for (let offset = 0; offset < 9; offset++)
+          result[row * 9 + offset] = values[faces[row] * 9 + offset];
+      }
+      return result;
+    };
     const groups = selectedComponents.map((i) => {
       const faces = componentAt(i);
       // Compact indexed groups are filled in source-face order already.
@@ -385,8 +475,48 @@ function componentEdit(
         : Uint32Array.from(faces).sort();
     });
     const segments = groups.map((faces) => output(faces));
+    let componentRemainder: ScanEditResult["componentRemainder"];
+    if (o.includeComponentRemainder) {
+      const selectedFaces = new Uint8Array(count);
+      let selectedCount = 0;
+      for (const group of groups)
+        for (const face of group) {
+          if ((selectedCount & 4095) === 0 && o.signal?.aborted)
+            throw new DOMException("Mesh operation cancelled.", "AbortError");
+          if (!selectedFaces[face]) selectedCount++;
+          selectedFaces[face] = 1;
+        }
+      const remainingFaces = new Uint32Array(count - selectedCount);
+      for (let face = 0, next = 0; face < count; face++) {
+        if ((face & 4095) === 0 && o.signal?.aborted)
+          throw new DOMException("Mesh operation cancelled.", "AbortError");
+        if (!selectedFaces[face]) remainingFaces[next++] = face;
+      }
+      const remainingPositions = output(remainingFaces);
+      const remainingIndex =
+        indexed && remainingFaces.length
+          ? componentIndex(
+              indexed,
+              remainingFaces,
+              undefined,
+              o,
+              remainingPositions instanceof Float32Array,
+              privatePrecise,
+              true,
+            )
+          : undefined;
+      componentRemainder = {
+        positions: remainingPositions,
+        ...(cornerNormals && remainingFaces.length
+          ? { normals: normalOutput(remainingFaces) }
+          : {}),
+        ...(remainingIndex ? { indexedMesh: remainingIndex } : {}),
+      };
+    }
     return {
       segments,
+      ...(cornerNormals ? { segmentNormals: groups.map(normalOutput) } : {}),
+      ...(componentRemainder ? { componentRemainder } : {}),
       ...(indexed
         ? {
             segmentIndexedMeshes: groups.map((faces, index) =>
@@ -397,6 +527,7 @@ function componentEdit(
                 o,
                 segments[index] instanceof Float32Array,
                 privatePrecise,
+                true,
               ),
             ),
           }

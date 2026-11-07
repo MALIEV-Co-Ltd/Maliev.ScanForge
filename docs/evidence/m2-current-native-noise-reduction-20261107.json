@@ -1,0 +1,35 @@
+{
+  "scope": "Current compiled GUI and public MCP replays against retained QuickSurface original-scan noise and reduction coordinate digests",
+  "build": "scanforge-3ac0509beaf027d7",
+  "source": "C:/repo/alignment-example-files/scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "jobLimitBytes": 34110816256,
+  "noise": {
+    "nativeEvidence": "docs/evidence/m2-native-noise-original-scan1-20261107.json",
+    "driver": "tests/scan-noise-browser.mjs",
+    "iterations": 3,
+    "boundarySmoothing": true,
+    "deviationMm": 0.05,
+    "nativeGuiMcpPreviewCoordinateSha256": "ad4725b5fd5ee28de045f1646f052b63086ade3c138e038f7759befe49266ff3",
+    "displayedWithinTolerancePercent": 96.86,
+    "guiMcpPreviewCancelUndoRedoAndBinaryReopen": true,
+    "peakJobBytes": 1706745856,
+    "activeAfter": 0
+  },
+  "reduction": {
+    "nativeEvidence": "docs/evidence/m2-native-reduction-scan1-20261107.json",
+    "driver": "tests/large-reduction-browser.mjs",
+    "percentageRemaining": 50,
+    "outputTriangles": 136569,
+    "nativeGuiMcpCoordinateSha256": "80b4efc52823c4d1b7e5518effec5884ed0ccfb3708017479d7b2280fa160ff1",
+    "guiMcpPreviewCancelUndoRedoAndBinaryReopen": true,
+    "peakJobBytes": 1471193088,
+    "activeAfter": 0
+  },
+  "limitations": [
+    "The native results are retained hashes from earlier QuickSurface exports; QuickSurface was not rerun for these replays.",
+    "The comparison covers ordered Float32 coordinates, not STL normal fields or native publication behavior.",
+    "These are two settings on one original scan, not general native algorithm or milestone acceptance."
+  ]
+}

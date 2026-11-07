@@ -1,3 +1,4 @@
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import assert from "node:assert/strict";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -127,10 +128,7 @@ try {
   browserServer = await chromium.launchServer({
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=768",
-    ],
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
   });
   ledger.resources.push({
     kind: "browser",
@@ -257,43 +255,72 @@ try {
     cutterId = "cutter";
   const folded = process.env.SCANFORGE_FOLDED_CONTROL === "1";
   const precision = process.env.SCANFORGE_PRECISION_CONTROL === "1";
+  const rotated = process.env.SCANFORGE_ROTATED_CONTROL === "1";
+  assert(!(rotated && (folded || precision)));
+  const fixturePositions = async (name) => {
+    const bytes = await readFile(
+      new URL(`fixtures/m2-rotated-recovery-20261029/${name}`, import.meta.url),
+    );
+    const hashes = {
+      "vertical-source.stl":
+        "b33ffb30fdc5704165f1017584c93f8ff68628c733ae05309e8cf7e07fa2f1a6",
+      "grid-128.stl":
+        "eec41aa1580de2960509d206379fe9c5ae0a79b5b6a248ccf2f218a2efecdf01",
+      "native-rotated-result-20261029.stl":
+        "05ea52970253179382885d3ea716b8cc5b88f9e1b68e0c5f796abed39e69b9d3",
+    };
+    assert.equal(
+      createHash("sha256").update(bytes).digest("hex"),
+      hashes[name],
+    );
+    const count = bytes.readUInt32LE(80);
+    assert.equal(bytes.length, 84 + count * 50);
+    return Array.from({ length: count * 9 }, (_, i) =>
+      bytes.readFloatLE(96 + Math.floor(i / 9) * 50 + (i % 9) * 4),
+    );
+  };
   const splitSmoothingControl =
     precision && process.env.SCANFORGE_M2_SPLIT_SMOOTH === "1";
   assert(!(folded && precision));
-  const source = precision
-    ? [
-        100000000,
-        0,
-        0,
-        100000008,
-        8,
-        0,
-        99999992,
-        16,
-        0,
-        ...(splitSmoothingControl
-          ? [
-              99999960, 0, 0, 99999976, 0, 0, 99999968, 8, 2, 99999976, 0, 0,
-              99999976, 16, 0, 99999968, 8, 2, 99999976, 16, 0, 99999960, 16, 0,
-              99999968, 8, 2, 99999960, 16, 0, 99999960, 0, 0, 99999968, 8, 2,
-            ]
-          : []),
-      ]
-    : folded
+  const source = rotated
+    ? await fixturePositions("vertical-source.stl")
+    : precision
       ? [
-          -0.5, -0.5, 0, 1.5, -0.5, 0, 1.5, 1.5, 0, -0.5, -0.5, 0, 1.5, 1.5, 0,
-          -0.5, 1.5, 0,
+          100000000,
+          0,
+          0,
+          100000008,
+          8,
+          0,
+          99999992,
+          16,
+          0,
+          ...(splitSmoothingControl
+            ? [
+                99999960, 0, 0, 99999976, 0, 0, 99999968, 8, 2, 99999976, 0, 0,
+                99999976, 16, 0, 99999968, 8, 2, 99999976, 16, 0, 99999960, 16,
+                0, 99999968, 8, 2, 99999960, 16, 0, 99999960, 0, 0, 99999968, 8,
+                2,
+              ]
+            : []),
         ]
-      : [0, 0, 0, 2, 0, 0, 0, 2, 0];
-  const target = precision
-    ? [100000004, -100, -10, 100000004, 100, -10, 100000004, 0, 100]
-    : folded
-      ? [
-          0, -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1, -1,
-          1, 1, -1, 1, 1, 1, 0, 1, -1, 1, 1, 1, 0, 1, 1,
-        ]
-      : [1, -2, -1, 1, 4, -1, 1, -2, 3];
-  const expectedParts = folded ? 1 : splitSmoothingControl ? 3 : 2;
+      : folded
+        ? [
+            -0.5, -0.5, 0, 1.5, -0.5, 0, 1.5, 1.5, 0, -0.5, -0.5, 0, 1.5, 1.5,
+            0, -0.5, 1.5, 0,
+          ]
+        : [0, 0, 0, 2, 0, 0, 0, 2, 0];
+  const target = rotated
+    ? await fixturePositions("grid-128.stl")
+    : precision
+      ? [100000004, -100, -10, 100000004, 100, -10, 100000004, 0, 100]
+      : folded
+        ? [
+            0, -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1,
+            -1, 1, 1, -1, 1, 1, 1, 0, 1, -1, 1, 1, 1, 0, 1, 1,
+          ]
+        : [1, -2, -1, 1, 4, -1, 1, -2, 3];
+  const expectedParts = folded || rotated ? 1 : splitSmoothingControl ? 3 : 2;
   const load = async () => {
     const project = {
       format: "maliev-scanforge",
@@ -371,6 +398,77 @@ try {
   const baseline = await load();
   assert((await page.title()).length > 0);
   assert.equal(await page.locator("vite-error-overlay").count(), 0);
+  if (rotated) {
+    const before = await call("project_get");
+    await page.evaluate(() => {
+      window.__holdSplitResult = true;
+      window.__pendingSplitResult = false;
+    });
+    await mutate("command_run", { name: "ribbon:splitMesh" });
+    const cancellingPanel = page.getByRole("region", {
+      name: "Split mesh",
+      exact: true,
+    });
+    await cancellingPanel.waitFor();
+    await cancellingPanel.locator(".app-select > button").click();
+    await page
+      .getByRole("option", { name: "Cutter mesh", exact: true })
+      .click();
+    await cancellingPanel
+      .getByRole("button", { name: "Split mesh", exact: true })
+      .click();
+    await page.waitForFunction(() => window.__pendingSplitResult === true);
+    await cancellingPanel
+      .getByRole("button", { name: "Close Split mesh", exact: true })
+      .click();
+    await idle();
+    await page.evaluate(() => {
+      window.__holdSplitResult = false;
+    });
+    const afterGuiCancel = await call("project_get");
+    assert.equal(afterGuiCancel.revision, before.revision);
+    assert.equal(afterGuiCancel.result.undo, before.result.undo);
+    rawEqual(
+      await geometry(sourceId),
+      source,
+      "GUI cancellation changed source",
+    );
+    rawEqual(
+      await geometry(cutterId),
+      target,
+      "GUI cancellation changed cutter",
+    );
+
+    await page.evaluate(() => {
+      window.__holdSplitResult = true;
+      window.__pendingSplitResult = false;
+    });
+    const started = await mutate("mesh_process", {
+      entityId: sourceId,
+      targetId: cutterId,
+      operation: { kind: "scanEdit", action: "split" },
+    });
+    await page.waitForFunction(() => window.__pendingSplitResult === true);
+    await call("job_cancel", { jobId: started.result.jobId });
+    await job(started, "cancelled");
+    await idle();
+    await page.evaluate(() => {
+      window.__holdSplitResult = false;
+    });
+    const afterMcpCancel = await call("project_get");
+    assert.equal(afterMcpCancel.revision, before.revision);
+    assert.equal(afterMcpCancel.result.undo, before.result.undo);
+    rawEqual(
+      await geometry(sourceId),
+      source,
+      "MCP cancellation changed source",
+    );
+    rawEqual(
+      await geometry(cutterId),
+      target,
+      "MCP cancellation changed cutter",
+    );
+  }
   await mutate("command_run", { name: "ribbon:splitMesh" });
   const panel = page.getByRole("region", { name: "Split mesh", exact: true });
   await panel.waitFor();
@@ -387,6 +485,42 @@ try {
   assert.equal(guiState.undo, baseline + 1, "GUI Split did not commit");
   await checkState();
   const gui = await geometry(sourceId);
+  if (rotated) {
+    const facets = (values) =>
+      Array.from({ length: values.length / 9 }, (_, i) =>
+        [0, 3, 6]
+          .map((corner) =>
+            [0, 1, 2]
+              .map((axis) => Math.fround(values[i * 9 + corner + axis]))
+              .join(","),
+          )
+          .sort()
+          .join("|"),
+      ).sort();
+    assert.deepEqual(
+      facets(gui),
+      facets(await fixturePositions("native-rotated-result-20261029.stl")),
+      "GUI differs from the retained native unordered facets",
+    );
+    const oriented = (values) =>
+      Array.from({ length: values.length / 9 }, (_, i) => {
+        const vertices = [0, 3, 6].map((corner) =>
+          [0, 1, 2]
+            .map((axis) => Math.fround(values[i * 9 + corner + axis]))
+            .join(","),
+        );
+        return [0, 1, 2]
+          .map((offset) =>
+            [...vertices.slice(offset), ...vertices.slice(0, offset)].join("|"),
+          )
+          .sort()[0];
+      }).sort();
+    assert.deepEqual(
+      oriented(gui),
+      oriented(await fixturePositions("native-rotated-result-20261029.stl")),
+      "GUI winding differs from the retained native result",
+    );
+  }
   let precisionHit;
   assert(gui.length > source.length, "GUI did not refine source");
   if (precision) {
@@ -580,6 +714,7 @@ try {
     outputFaces: gui.length / 9,
     parts: done.result.diagnostics.parts,
     guiMcpGeometryEqual: true,
+    ...(rotated ? { guiMcpCancellationRollback: true } : {}),
     undoRedo: true,
     saveReopen: true,
     ...(precision ? { precisionHit, canvasSelectedSource: true } : {}),

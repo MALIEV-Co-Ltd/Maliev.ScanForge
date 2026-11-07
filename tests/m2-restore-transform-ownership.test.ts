@@ -3,49 +3,41 @@ import {
   packProjectTransport,
   unpackProjectTransport,
 } from "../src/project-transport";
-import { ProjectNumericReuse } from "../src/project-numeric-reuse";
 import { runScanTool, type ScanToolOperation } from "../src/scan-tools";
 import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
-it("preserves a saved numeric source through representative M2 transforms during reuse", async () => {
+it("preserves restored numeric geometry through representative M2 transforms", async () => {
   const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
   const positions = Array.from({ length: 65538 }, (_, i) => triangle[i % 9]);
   const before = positions.slice();
   const packed = await packProjectTransport({ positions });
-  const cache = new ProjectNumericReuse(4, 65536);
-  cache.remember([positions]);
   let ran = false;
   const out = await unpackProjectTransport<{ positions: number[] }>(
     packed.packet,
     {
-      reuseNumericArray: (bytes, used) =>
-        cache.match(
-          bytes,
-          () => {},
-          async () => {
-            if (ran) return;
-            ran = true;
-            const operations: ScanToolOperation[] = [
-              { kind: "scaleMesh", factor: 2 },
-              { kind: "flipNormals" },
-              { kind: "mirrorMesh", center: [0, 0, 0], normal: [1, 0, 0] },
-            ];
-            for (const operation of operations) {
-              const result = runScanTool({
-                kind: "scanTools",
-                positions,
-                operation,
-              });
-              expect(result.positions).not.toBe(positions);
-            }
-          },
-          used,
-        ),
+      check: () => {
+        if (ran) return;
+        ran = true;
+        const operations: ScanToolOperation[] = [
+          { kind: "scaleMesh", factor: 2 },
+          { kind: "flipNormals" },
+          { kind: "mirrorMesh", center: [0, 0, 0], normal: [1, 0, 0] },
+        ];
+        for (const operation of operations) {
+          const result = runScanTool({
+            kind: "scanTools",
+            positions,
+            operation,
+          });
+          expect(result.positions).not.toBe(positions);
+        }
+      },
       releaseOwnedNumericBuffers: true,
     },
   );
   expect(ran).toBe(true);
   expect(positions).toEqual(before);
-  expect(out.positions).toBe(positions);
+  expect(out.positions).not.toBe(positions);
+  expect(out.positions).toEqual(before);
 });
 
 const cubePoints = [
@@ -108,7 +100,7 @@ const repairCases: Array<{
 ];
 
 it.each(repairCases)(
-  "preserves cached geometry during and after $name",
+  "preserves restored geometry during and after $name",
   async ({ request, error }) => {
     const positions = [
       ...cube,
@@ -116,8 +108,6 @@ it.each(repairCases)(
     ];
     const before = positions.slice();
     const ref = {};
-    const cache = new ProjectNumericReuse(4, 9);
-    cache.remember([positions]);
     let ran = false;
     const edit = () => {
       const execute = () =>
@@ -148,22 +138,16 @@ it.each(repairCases)(
         numbers: [{ ref, values: Float64Array.from(positions) }],
       },
       {
-        reuseNumericArray: (bytes, used) =>
-          cache.match(
-            bytes,
-            () => {},
-            async () => {
-              if (!ran) {
-                ran = true;
-                edit();
-              }
-            },
-            used,
-          ),
+        check: () => {
+          if (!ran) {
+            ran = true;
+            edit();
+          }
+        },
       },
     );
     expect(ran).toBe(true);
-    expect(restored.positions).toBe(positions);
+    expect(restored.positions).not.toBe(positions);
     expect(positions).toEqual(before);
     edit();
     expect(restored.positions).toEqual(before);

@@ -1,5 +1,8 @@
 import { expect, it } from "vitest";
-import { scanSegmentPublication } from "../src/scan-segment-publication";
+import {
+  componentExtractionPublication,
+  scanSegmentPublication,
+} from "../src/scan-segment-publication";
 import { scanSplitCutter, isScanSplitCutter } from "../src/scan-split-cutter";
 import { DEFAULT_PART_COLOR } from "../src/appearance";
 import type { Entity } from "../src/types";
@@ -23,6 +26,130 @@ const source: Entity = {
   brep: "original BREP",
   constructionOrderKey: "00000000000000000000000000000001",
 };
+it("publishes the remaining source and extracted component together", () => {
+  const rest = new Float32Array([3, 0, 0, 4, 0, 0, 3, 1, 0]);
+  const before = {
+    ...source,
+    positions: new Float32Array([...triangle, ...rest]),
+    kernelId: undefined,
+    brep: undefined,
+  };
+  const result = componentExtractionPublication(
+    [before],
+    source.id,
+    { positions: rest },
+    [triangle],
+    () => "part",
+  );
+  expect(result.entities).toHaveLength(2);
+  expect(result.entities[0]).toMatchObject({
+    id: source.id,
+    visible: true,
+    positions: rest,
+  });
+  expect(result.created[0]).toMatchObject({
+    id: "part",
+    visible: true,
+    positions: triangle,
+  });
+  expect(result.policy.modelVisibilityFor).toBeUndefined();
+  expect(before.positions).toHaveLength(18);
+});
+it("retains an empty source after extracting its final component", () => {
+  const before = { ...source, kernelId: undefined, brep: undefined };
+  const result = componentExtractionPublication(
+    [before],
+    source.id,
+    { positions: new Float32Array() },
+    [triangle],
+    () => "part",
+  );
+  expect(result.entities[0]).toMatchObject({
+    id: source.id,
+    visible: true,
+    emptyComponentSource: true,
+  });
+  expect(result.entities[0].positions).toHaveLength(0);
+  expect(result.created).toHaveLength(1);
+});
+it("rejects incomplete and locked component transactions without changing the source", () => {
+  const before = { ...source, kernelId: undefined, brep: undefined };
+  expect(() =>
+    componentExtractionPublication(
+      [before],
+      source.id,
+      { positions: triangle },
+      [triangle],
+    ),
+  ).toThrow(/preserve all source triangles/i);
+  expect(() =>
+    componentExtractionPublication(
+      [{ ...before, locked: true }],
+      source.id,
+      { positions: [] },
+      [triangle],
+    ),
+  ).toThrow(/locked/i);
+  expect(before.positions).toBe(triangle);
+  expect(before.visible).toBe(true);
+});
+it("publishes scanner normals for the remaining source and extracted part", () => {
+  const shifted = new Float32Array([3, 0, 0, 4, 0, 0, 3, 1, 0]);
+  const sourceNormals = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+  const partNormals = new Float32Array([-1, 0, 0, 0, -1, 0, 0, 0, -1]);
+  const restMesh = {
+    vertices: shifted,
+    triangles: new Uint32Array([0, 1, 2]),
+    normals: sourceNormals,
+  };
+  const partMesh = {
+    vertices: triangle,
+    triangles: new Uint32Array([0, 1, 2]),
+    normals: partNormals,
+  };
+  const before = {
+    ...source,
+    positions: new Float32Array([...triangle, ...shifted]),
+    kernelId: undefined,
+    brep: undefined,
+  };
+  const result = componentExtractionPublication(
+    [before],
+    source.id,
+    { positions: shifted, indexedMesh: restMesh },
+    [triangle],
+    () => "part",
+    [partMesh],
+  );
+  expect(result.entities[0].normals).toEqual(sourceNormals);
+  expect(result.created[0].normals).toEqual(partNormals);
+});
+it("retains per-corner normals even without indexed scanner normals", () => {
+  const shifted = new Float32Array([3, 0, 0, 4, 0, 0, 3, 1, 0]);
+  const source = {
+    id: "mesh",
+    name: "Mesh",
+    kind: "mesh" as const,
+    positions: new Float32Array([...triangle, ...shifted]),
+    normals: new Float32Array([
+      1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+    ]),
+    visible: true,
+    color: "#ffffff",
+    opacity: 1,
+  };
+  const result = componentExtractionPublication(
+    [source],
+    source.id,
+    { positions: shifted, normals: source.normals.slice(9) },
+    [triangle],
+    () => "part",
+    undefined,
+    [source.normals.slice(0, 9)],
+  );
+  expect(result.entities[0].normals).toEqual(source.normals.slice(9));
+  expect(result.created[0].normals).toEqual(source.normals.slice(0, 9));
+});
 it("retains original part/classification indices and publishes independent display/history ownership", () => {
   const unrelated = { ...source, id: "other", kernelId: undefined };
   const classification = (kind: "sphere" | "plane"): RegionClassification => ({

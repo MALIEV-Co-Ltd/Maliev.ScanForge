@@ -38,6 +38,8 @@ export interface Entity {
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Empty mesh retained after all of its connected components were extracted. */
+  emptyComponentSource?: true;
   /** Stable raw ordering identity, assigned only in an accepted transaction. */
   constructionOrderKey?: string;
   /** Authoritative reference geometry and recipe; positions is empty for these kinds. */

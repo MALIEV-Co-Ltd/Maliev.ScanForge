@@ -32,6 +32,7 @@ import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
 import { isPrivateDecodingView } from "./project-private-decoding-views";
 import { indexedExactAdmission } from "./indexed-exact-admission";
+import { indexedMeshMatches } from "./indexed-mesh";
 import { markRestoredCoordinates } from "./finite-typed-values";
 import { beginPriorityScanPreparation } from "./scan-background-preparation";
 import type { ScanToolsRequest } from "./scan-tools";
@@ -192,6 +193,10 @@ export type ProcessingResponse =
         positions: Float64Array;
         vertices: Float64Array;
       }[];
+      packedComponentRemainder?: {
+        positions: Float64Array;
+        vertices?: Float64Array;
+      };
     }
   | { error: string };
 export interface ProcessingOptions {
@@ -199,6 +204,10 @@ export interface ProcessingOptions {
   reuseTopology?: boolean;
   /** Internal speculative diagnostics only; authored shared buffers stay immutable. */
   borrowReadonlyReportSource?: boolean;
+  /** Request the source remainder for atomic component publication. */
+  includeComponentRemainder?: boolean;
+  /** Internal immutable per-corner normals for component extraction. */
+  componentCornerNormals?: Positions;
   signal?: AbortSignal;
   onProgress?: (
     fraction: number,
@@ -212,6 +221,17 @@ export function processMesh(
   request: ProcessingRequest,
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
+  if (
+    options.componentCornerNormals &&
+    (request.kind !== "scanEdit" ||
+      request.action !== "componentExtract" ||
+      !options.includeComponentRemainder ||
+      options.componentCornerNormals.length !== request.positions.length ||
+      options.componentCornerNormals.some((value) => !Number.isFinite(value)))
+  )
+    return Promise.reject(
+      new Error("Component normals must match the source triangles."),
+    );
   if (request.kind === "pointCloudPoisson") {
     try {
       request = validatePointCloudPoissonInput(request);
@@ -704,6 +724,98 @@ function runProcessingRequest(
           return;
         }
       }
+      if (event.data.packedComponentRemainder !== undefined) {
+        try {
+          const packed = event.data.packedComponentRemainder;
+          const remainder = event.data.result.scanEdit?.componentRemainder;
+          const mesh = remainder?.indexedMesh;
+          if (
+            request.kind !== "scanEdit" ||
+            request.action !== "componentExtract" ||
+            !options.includeComponentRemainder ||
+            !remainder ||
+            remainder.positions.length !== 0 ||
+            (mesh && mesh.vertices.length !== 0) ||
+            !(packed.positions instanceof Float64Array) ||
+            !packed.positions.length ||
+            packed.positions.length % 9 ||
+            (mesh
+              ? !(packed.vertices instanceof Float64Array) ||
+                !packed.vertices.length ||
+                packed.vertices.length % 3
+              : packed.vertices !== undefined)
+          )
+            throw new Error("Unexpected packed component remainder response.");
+          if (!workerReleased) {
+            if (session) session.release(false);
+            else worker.terminate();
+            workerReleased = true;
+          }
+          if (indexedExtract) {
+            disposableTransportBuffers ??= new Set<ArrayBuffer>();
+            for (const value of [packed.positions, packed.vertices])
+              if (value && value.buffer instanceof ArrayBuffer)
+                disposableTransportBuffers.add(value.buffer);
+            excludeRetainedBuffers(
+              event.data.result,
+              disposableTransportBuffers,
+            );
+            excludeScanInputBuffers(request, disposableTransportBuffers);
+          }
+          const restored = restorePreciseCoordinates(packed.positions);
+          remainder.positions = restored;
+          if (mesh && packed.vertices)
+            mesh.vertices =
+              packed.positions === packed.vertices
+                ? restored
+                : restorePreciseCoordinates(packed.vertices);
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
+      if (
+        options.includeComponentRemainder &&
+        request.kind === "scanEdit" &&
+        request.action === "componentExtract"
+      ) {
+        const remainder = event.data.result.scanEdit?.componentRemainder;
+        const segments = event.data.result.scanEdit?.segments;
+        if (
+          !remainder ||
+          !(
+            Array.isArray(remainder.positions) ||
+            remainder.positions instanceof Float32Array
+          ) ||
+          remainder.positions.length % 9 !== 0 ||
+          remainder.positions.some((value) => !Number.isFinite(value)) ||
+          (remainder.indexedMesh &&
+            !indexedMeshMatches(remainder.indexedMesh, remainder.positions)) ||
+          (options.componentCornerNormals &&
+            ((remainder.positions.length > 0 &&
+              (!remainder.normals ||
+                !(
+                  Array.isArray(remainder.normals) ||
+                  remainder.normals instanceof Float32Array
+                ) ||
+                remainder.normals.length !== remainder.positions.length ||
+                remainder.normals.some((value) => !Number.isFinite(value)))) ||
+              !Array.isArray(event.data.result.scanEdit?.segmentNormals) ||
+              event.data.result.scanEdit.segmentNormals.length !==
+                segments?.length ||
+              event.data.result.scanEdit.segmentNormals.some(
+                (normals, i) =>
+                  !(
+                    Array.isArray(normals) || normals instanceof Float32Array
+                  ) ||
+                  normals.length !== segments?.[i]?.length ||
+                  normals.some((value) => !Number.isFinite(value)),
+              )))
+        ) {
+          fail(new Error("Unexpected component remainder geometry."));
+          return;
+        }
+      }
       if (request.kind === "pointCloudEdit" && request.pointColors) {
         try {
           const edit = event.data.result.pointCloudEdit;
@@ -755,8 +867,13 @@ function runProcessingRequest(
           return;
         }
       }
-      if (disposableTransportBuffers)
+      if (disposableTransportBuffers) {
+        excludeRetainedBuffers(
+          options.componentCornerNormals,
+          disposableTransportBuffers,
+        );
         releaseTransportBuffers(disposableTransportBuffers);
+      }
       settled = true;
       if (
         event.data.result.topology &&
@@ -1029,13 +1146,19 @@ function runProcessingRequest(
           copied.sourceIndexed = {
             vertices,
             triangles,
-            ...(!indexedExtract && !indexedInventory && mesh.normals
+            ...((!indexedExtract || options.includeComponentRemainder) &&
+            !indexedInventory &&
+            mesh.normals
               ? { normals: clone(mesh.normals) }
               : {}),
-            ...(!indexedExtract && !indexedInventory && mesh.geometryNormals
+            ...((!indexedExtract || options.includeComponentRemainder) &&
+            !indexedInventory &&
+            mesh.geometryNormals
               ? { geometryNormals: clone(mesh.geometryNormals) }
               : {}),
-            ...(!indexedExtract && !indexedInventory && mesh.facetNormals
+            ...((!indexedExtract || options.includeComponentRemainder) &&
+            !indexedInventory &&
+            mesh.facetNormals
               ? { facetNormals: clone(mesh.facetNormals) }
               : {}),
           };
@@ -1153,6 +1276,14 @@ function runProcessingRequest(
           ...copied,
           ...(session ? { geometryKey: session.key } : {}),
           ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+          ...(options.includeComponentRemainder &&
+          copied.kind === "scanEdit" &&
+          copied.action === "componentExtract"
+            ? { includeComponentRemainder: true }
+            : {}),
+          ...(options.componentCornerNormals
+            ? { componentCornerNormals: clone(options.componentCornerNormals) }
+            : {}),
           ...(copied.kind === "scanTools" &&
           copied.operation.kind === "flipNormals" &&
           copied.operation.sourceTopology &&

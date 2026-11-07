@@ -109,6 +109,50 @@ function harness(entities: Entity[] = [entity()]) {
 const source = entity({
   positions: new Float32Array([-1, 4, 0, 1, 4, 0, 0, 5, 0]),
 });
+it("exposes an empty component source to agents without analyzing nonexistent faces", async () => {
+  const h = harness([
+    entity({ positions: new Float32Array(), emptyComponentSource: true }),
+  ]);
+  const project = (await h.ops.project_get({}, h.context)) as {
+    objects: { id: string; triangles: number; emptyComponentSource: boolean }[];
+  };
+  expect(project.objects[0]).toMatchObject({
+    id: "mesh",
+    triangles: 0,
+    emptyComponentSource: true,
+  });
+  const details = (await h.ops.object_get({ entityId: "mesh" }, h.context)) as {
+    triangles: number;
+    emptyComponentSource: boolean;
+  };
+  expect(details).toMatchObject({ triangles: 0, emptyComponentSource: true });
+  await expect(
+    h.ops.mesh_analyze({ entityId: "mesh" }, h.context),
+  ).rejects.toThrow(/empty mesh/i);
+  expect(processMesh).not.toHaveBeenCalled();
+});
+it("copies an empty component source into another saveable empty object", async () => {
+  const h = harness([
+    entity({ positions: new Float32Array(), emptyComponentSource: true }),
+  ]);
+  const result = (await h.ops.mesh_copy({ entityId: "mesh" }, h.context)) as {
+    entityId: string;
+  };
+  const copy = h.state.entities.find((item) => item.id === result.entityId)!;
+  expect(copy).toMatchObject({ emptyComponentSource: true, kind: "mesh" });
+  const file = await encodeProjectFileLocally({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      units: "mm",
+      name: "copy",
+      entities: h.state.entities,
+    },
+    history: [],
+    future: [],
+  });
+  expect((await decodeProjectFile(file)).project.entities).toHaveLength(2);
+});
 const cutter = entity({
   id: "cutter",
   name: "Bounded plane display",
@@ -127,12 +171,15 @@ const cutter = entity({
 beforeEach(() => {
   vi.mocked(processMesh)
     .mockReset()
-    .mockImplementation(async (request) => {
+    .mockImplementation(async (request, options) => {
       if (request.kind !== "scanEdit") throw Error("Expected shared scan edit");
       return {
         kind: "scanEdit",
         diagnostics: {},
-        scanEdit: runScanEdit(request),
+        scanEdit: runScanEdit(request, {
+          includeComponentRemainder: options?.includeComponentRemainder,
+          componentCornerNormals: options?.componentCornerNormals,
+        }),
       };
     });
 });
@@ -452,7 +499,7 @@ it("publishes the unsplit tilted coplanar control through the shared MCP operati
     positions,
   );
 });
-it("component extraction retains raw source while hiding it and selecting its visible result like the GUI", async () => {
+it("component extraction moves the selected component into a visible result in one transaction", async () => {
   const positions = new Float32Array([
     ...triangle,
     ...triangle.map((v, i) => (i % 3 === 0 ? v + 3 : v)),
@@ -468,12 +515,76 @@ it("component extraction retains raw source while hiding it and selecting its vi
   expect(result.entityIds).toHaveLength(1);
   const original = h.state.entities.find((e) => e.id === "mesh")!,
     part = h.state.entities.find((e) => e.id === result.entityIds[0])!;
-  expect(original.positions).toBe(positions);
-  expect(original.visible).toBe(false);
+  expect(original.positions).toEqual(positions.slice(0, 9));
+  expect(original.visible).toBe(true);
   expect(part.visible).toBe(true);
   expect(part.opacity).toBe(1);
   expect(part.positions).toEqual(positions.slice(9));
   expect(h.host.select).toHaveBeenCalledWith(part.id);
+  expect(h.host.commit).toHaveBeenCalledTimes(1);
+  expect(h.state.history[0].entities[0].positions).toBe(positions);
+});
+it("preserves an empty source when MCP extracts the last component", async () => {
+  const h = harness([entity({ positions: new Float32Array(triangle) })]);
+  const result = (await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "scanEdit", action: "componentExtract", indices: [0] },
+    },
+    h.context,
+  )) as { entityIds: string[] };
+  const original = h.state.entities.find((item) => item.id === "mesh")!;
+  expect(original).toMatchObject({ visible: true, emptyComponentSource: true });
+  expect(original.positions).toHaveLength(0);
+  expect(
+    h.state.entities.find((item) => item.id === result.entityIds[0])!.positions,
+  ).toEqual(new Float32Array(triangle));
+  expect(h.host.commit).toHaveBeenCalledTimes(1);
+});
+it("preserves independent per-corner normals through MCP component extraction", async () => {
+  const positions = new Float32Array([
+    ...triangle,
+    ...triangle.map((value, index) => (index % 3 === 0 ? value + 3 : value)),
+  ]);
+  const normals = new Float32Array([
+    1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+  ]);
+  const h = harness([entity({ positions, normals })]);
+  const result = (await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "scanEdit", action: "componentExtract", indices: [1] },
+    },
+    h.context,
+  )) as { entityIds: string[] };
+  expect(h.state.entities.find((item) => item.id === "mesh")!.normals).toEqual(
+    normals.slice(0, 9),
+  );
+  expect(
+    h.state.entities.find((item) => item.id === result.entityIds[0])!.normals,
+  ).toEqual(normals.slice(9));
+});
+it("does not commit incomplete MCP component results", async () => {
+  const h = harness([entity()]);
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    diagnostics: {},
+    scanEdit: { diagnostics: {}, segments: [new Float32Array(triangle)] },
+  });
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [0],
+        },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/incomplete geometry/i);
+  expect(h.host.commit).not.toHaveBeenCalled();
 });
 it("publishes no empty segment transaction and preserves source/history on failure", async () => {
   const h = harness([source, cutter]);

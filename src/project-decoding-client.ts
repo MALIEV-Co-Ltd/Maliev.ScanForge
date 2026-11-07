@@ -1,4 +1,3 @@
-import { projectNumericReuse } from "./project-numeric-reuse";
 import type { ProjectSession } from "./project-file";
 import type { ProjectSharedChunk } from "./project-file-codec";
 import {
@@ -96,8 +95,6 @@ export function decodeProjectInBackground(
                 {
                   check,
                   releaseOwnedNumericBuffers: true,
-                  reuseNumericArray: (values, used) =>
-                    projectNumericReuse.match(values, check, undefined, used),
                 },
               );
               check();

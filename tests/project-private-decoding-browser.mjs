@@ -120,6 +120,10 @@ try {
         throw Error("Public positions changed");
       if (decoded.history[0].entities[0].positions !== restored)
         throw Error("History lost geometry alias");
+      positions[3] = 17;
+      if (restored[3] !== 1 + 2 ** -45)
+        throw Error("Restored geometry aliases an earlier project owner");
+      positions[3] = 1 + 2 ** -45;
       const display = scanRenderData(restored);
       if (!display?.normals || display.normals.length !== restored.length)
         throw Error("Prepared display cache missing");

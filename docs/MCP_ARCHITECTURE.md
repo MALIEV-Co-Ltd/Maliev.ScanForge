@@ -1528,6 +1528,8 @@ Changed output publishes independent indexed buffers only after coordinate corre
 
 Spatial boundary sketch creation uses `scanEdit/boundarySpatialSketch` through the same processing worker and owned `newModelSketches` commit path. The saved-sketch discriminant retains either a planar sketch or ordered spatial cubic curves, never a planar approximation of those curves. `sketch_get` exposes spatial poles, knots, periodic flags and fitting diagnostics; `sketch_manage` rejects planar activation of spatial sketches. JSON project version 5 and binary version 7 signal the new representation, including retained history records; older version labels cannot carry it. GUI publication rechecks the selected source and lock after worker completion; MCP retains its revision, retry, cancellation and lock checks. Both paths reject unsupported triangle-mask selection. The display is derived from validated curves with bounded segment and basis/knot work admission before sampling.
 
+An explicitly marked empty component source is preserved in JSON version 6 and binary manifest version 8, including history. Its agent object summary reports zero triangles and `emptyComponentSource:true`; analysis rejects the absent geometry. Unmarked empty mesh geometry remains invalid at project and import boundaries.
+
 ## Shared STEP export delivery
 
 GUI STEP export submits the same read-only `project_export` job as MCP, using

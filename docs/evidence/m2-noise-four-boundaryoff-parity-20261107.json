@@ -1,0 +1,37 @@
+{
+  "scope": "QuickSurface, GUI and public MCP original-scan noise reduction",
+  "build": "scanforge-3ac0509beaf027d7",
+  "driver": "tests/scan-noise-browser.mjs",
+  "source": "C:/repo/alignment-example-files/scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "iterations": 4,
+  "applyBoundaryEdges": false,
+  "coordinateSha256GuiMcpAndPreview": "b224e5bcf2f2066696234258d8237dfb273b5630bcde347d70506adf4c415dd3",
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "selectionOnly": false,
+    "keepOriginalMesh": true,
+    "exportTriangles": 273139,
+    "exportFileSha256": "351d849b1c28d0fea8e25592a375d833613c14858b43f96915679a6914740f45",
+    "exportCoordinateSha256": "b224e5bcf2f2066696234258d8237dfb273b5630bcde347d70506adf4c415dd3",
+    "reaObservation": "ev_5fd7bd5c148595979742beb487d073e7b70f3d927a8dfb25b6754892b61dab40",
+    "observedCalls": [
+      "preview handler 0x14064a5b0",
+      "correction routine 0x140a83270"
+    ]
+  },
+  "deviationThresholdMm": 0.05,
+  "withinTolerance": "139338/139338",
+  "guiMcpDiagnosticsParity": true,
+  "cancellationHistoryAndBinaryReopen": true,
+  "jobLimitBytes": 34110816256,
+  "peakJobBytes": 1688653824,
+  "activeProcessesAfter": 0,
+  "limitations": [
+    "The comparison covers ordered Float32 coordinates, not STL normal fields or native publication behavior.",
+    "QuickSurface retained the original as a separate object; only this one source and setting were compared.",
+    "The temporary export was hash-verified and removed."
+  ]
+}

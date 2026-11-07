@@ -1,8 +1,10 @@
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import assert from "node:assert/strict";
 import { freemem } from "node:os";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
-import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
+import { readFile, writeFile, mkdir, unlink, open } from "node:fs/promises";
+import { createReadStream } from "node:fs";
 import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -60,6 +62,9 @@ function processIdentity(pid) {
 }
 let server, reserve, browserServer, browser, client, transport, failed, page;
 const fixturePath = fileURLToPath(new URL("split-lifecycle-panel.stl", out));
+const downloadedProjectPath = fileURLToPath(
+  new URL("split-extract-download.scanforge", out),
+);
 const deadline = setTimeout(() => {
   failed = Error("Browser validation lease expired");
   void browserServer?.close();
@@ -130,24 +135,28 @@ try {
     port: bridgePort,
     bind: "127.0.0.1",
   });
-  browserServer = await chromium.launchServer({
+  const browserOptions = {
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=2048",
-    ],
-  });
-  ledger.resources.push({
-    kind: "browser",
-    pid: browserServer.process().pid,
-    ...processIdentity(browserServer.process().pid),
-  });
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
+  };
+  if (process.env.SCANFORGE_QA_LOCAL_BROWSER === "1") {
+    browser = await chromium.launch(browserOptions);
+    ledger.browserLaunch = "local";
+  } else {
+    browserServer = await chromium.launchServer(browserOptions);
+    ledger.resources.push({
+      kind: "browser",
+      pid: browserServer.process().pid,
+      ...processIdentity(browserServer.process().pid),
+    });
+    browser = await chromium.connect(browserServer.wsEndpoint());
+    ledger.browserLaunch = "server";
+  }
   await writeFile(
     new URL("split-lifecycle-browser-ledger.json", out),
     JSON.stringify(ledger, null, 2),
   );
-  browser = await chromium.connect(browserServer.wsEndpoint());
   page = await browser.newPage({
     viewport: { width: 1400, height: 900 },
   });
@@ -384,6 +393,131 @@ try {
     cutterDigest,
     "GUI changed cutter",
   );
+  if (process.env.SCANFORGE_M2_GUI_EXTRACT_REOPEN === "1") {
+    const core = (records) =>
+      records.filter((record) =>
+        ["positions", "indexedMesh.vertices", "indexedMesh.triangles"].includes(
+          record.path,
+        ),
+      );
+    await mutate("object_select", { entityId: sourceId });
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await page
+      .getByRole("button", { name: "Edit individual meshes", exact: true })
+      .click();
+    const components = page.getByRole("region", {
+      name: "Individual meshes",
+      exact: true,
+    });
+    const items = components
+      .getByRole("group", { name: "Individual meshes items", exact: true })
+      .getByRole("button");
+    await items.first().waitFor({ timeout: 180000 });
+    const extractBaseline = (await call("project_get")).result.undo;
+    await components
+      .getByRole("button", { name: "Create new object", exact: true })
+      .click();
+    let extractedState;
+    for (let i = 0; i < 2400; i++) {
+      extractedState = (await call("project_get")).result;
+      if (extractedState.undo === extractBaseline + 1) break;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    assert.equal(
+      extractedState?.undo,
+      extractBaseline + 1,
+      "GUI Extract did not commit",
+    );
+    const part = extractedState.objects.find(
+      (o) => o.id !== sourceId && o.id !== cutterId,
+    );
+    assert(part, "GUI Extract did not create an object");
+    const partDigest = await geometryDigest(part.id);
+    const remainderDigest = await geometryDigest(sourceId);
+    await stage("gui-extract-committed");
+    const project = await job(
+      await call("project_export", { format: "project" }),
+    );
+    const output = await open(downloadedProjectPath, "wx");
+    const hash = createHash("sha256");
+    let offset = 0;
+    try {
+      while (offset < project.result.bytes) {
+        const chunk = (
+          await call("artifact_read", {
+            artifactId: project.result.artifactId,
+            offset,
+            length: 262144,
+          })
+        ).result;
+        const bytes = Buffer.from(chunk.base64, "base64");
+        assert(bytes.length > 0);
+        await output.writeFile(bytes);
+        hash.update(bytes);
+        offset += bytes.length;
+      }
+    } finally {
+      await output.close();
+    }
+    assert.equal(offset, project.result.bytes);
+    const downloadSha256 = hash.digest("hex");
+    const fileHash = createHash("sha256");
+    for await (const chunk of createReadStream(downloadedProjectPath))
+      fileHash.update(chunk);
+    assert.equal(
+      fileHash.digest("hex"),
+      downloadSha256,
+      "Downloaded project hash changed on disk",
+    );
+    await call("artifact_delete", { artifactId: project.result.artifactId });
+    await stage("gui-extract-project-downloaded");
+    page.on("dialog", (dialog) => {
+      void dialog.accept();
+    });
+    await page
+      .locator('input[type=file][accept*=".scanforge"]')
+      .first()
+      .setInputFiles(downloadedProjectPath);
+    await page.getByText(/^Opened.*1\/1 files$/).waitFor({ timeout: 180000 });
+    await idle();
+    await stage("gui-extract-gui-project-imported");
+    assert.deepEqual(
+      core(await geometryDigest(part.id)),
+      core(partDigest),
+      "GUI reopen changed extracted geometry",
+    );
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(remainderDigest),
+      "GUI reopen changed source remainder",
+    );
+    assert.deepEqual(
+      await geometryDigest(cutterId),
+      cutterDigest,
+      "GUI reopen changed cutter",
+    );
+    await mutate("history_undo", {});
+    assert.deepEqual(
+      core(await geometryDigest(sourceId)),
+      core(guiDigest),
+      "Undo after GUI reopen changed split geometry",
+    );
+    await mutate("history_redo", {});
+    assert.deepEqual(
+      core(await geometryDigest(part.id)),
+      core(partDigest),
+      "Redo after GUI reopen changed extracted geometry",
+    );
+    ledger.extractReopen = {
+      extractedFaces: part.triangles,
+      downloadedBytes: offset,
+      downloadSha256,
+      guiReopen: true,
+      undoRedo: true,
+    };
+    await stage("gui-extract-gui-reopen-verified");
+    await mutate("history_undo", {});
+  }
   const saved = await job(await call("project_export", { format: "project" }));
   await stage("project-exported");
   assert(saved.result.artifactId, "Export did not return an artifact");
@@ -508,6 +642,9 @@ try {
     }
   }
   await unlink(fixturePath).catch((error) => {
+    if (error.code !== "ENOENT") failed ??= error;
+  });
+  await unlink(downloadedProjectPath).catch((error) => {
     if (error.code !== "ENOENT") failed ??= error;
   });
   ledger.cleanedAt = new Date().toISOString();

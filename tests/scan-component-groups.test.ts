@@ -4,6 +4,91 @@ import { compactComponentGroups } from "../src/scan-component-groups";
 import { runIndexedComponentExtract, runScanEdit } from "../src/scan-edit";
 
 describe("compact indexed components", () => {
+  it("splits per-corner normals with their original faces", () => {
+    const positions = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
+    ]);
+    const normals = new Float32Array([
+      1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+    ]);
+    const result = runScanEdit(
+      { kind: "scanEdit", action: "componentExtract", positions, indices: [1] },
+      { includeComponentRemainder: true, componentCornerNormals: normals },
+    );
+    expect(result.componentRemainder!.normals).toEqual(normals.slice(0, 9));
+    expect(result.segmentNormals![0]).toEqual(normals.slice(9));
+  });
+  it("retains authored vertex and facet normals on both extraction outputs", () => {
+    const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0];
+    const normals = new Float32Array([
+      1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+    ]);
+    const geometryNormals = new Float32Array([
+      0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+    ]);
+    const facetNormals = new Float32Array([0, 0, 1, 0, 1, 0]);
+    const indexed = {
+      vertices,
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+      normals,
+      geometryNormals,
+      facetNormals,
+    };
+    const result = runIndexedComponentExtract(indexed, [1], {
+      includeComponentRemainder: true,
+    });
+    for (const [mesh, offset] of [
+      [result.componentRemainder!.indexedMesh!, 0],
+      [result.segmentIndexedMeshes![0]!, 9],
+    ] as const) {
+      expect(Array.from(mesh.normals!)).toEqual(
+        Array.from(normals.slice(offset, offset + 9)),
+      );
+      expect(Array.from(mesh.geometryNormals!)).toEqual(
+        Array.from(geometryNormals.slice(offset, offset + 9)),
+      );
+      expect(Array.from(mesh.facetNormals!)).toEqual(
+        Array.from(facetNormals.slice(offset / 3, offset / 3 + 3)),
+      );
+    }
+  });
+  it("returns the untouched source faces alongside extracted components", () => {
+    const vertices = [
+      0, -0, 0, 1.123456789, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
+    ];
+    const indexed = {
+      vertices,
+      triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+    };
+    const regular = runScanEdit(
+      {
+        kind: "scanEdit",
+        action: "componentExtract",
+        positions: vertices,
+        sourceIndexed: indexed,
+        indices: [1],
+      },
+      { includeComponentRemainder: true },
+    );
+    const compact = runIndexedComponentExtract(indexed, [1], {
+      includeComponentRemainder: true,
+    });
+    for (const result of [regular, compact]) {
+      expect(Array.from(result.componentRemainder!.positions)).toEqual(
+        vertices.slice(0, 9),
+      );
+      expect(Object.is(result.componentRemainder!.positions[1], -0)).toBe(true);
+      expect(
+        Array.from(result.componentRemainder!.indexedMesh!.triangles),
+      ).toEqual([0, 1, 2]);
+      expect(Array.from(result.segments![0])).toEqual(vertices.slice(9));
+    }
+    const empty = runIndexedComponentExtract(indexed, [0, 1], {
+      includeComponentRemainder: true,
+    });
+    expect(empty.componentRemainder!.positions).toHaveLength(0);
+    expect(empty.componentRemainder!.indexedMesh).toBeUndefined();
+  });
   it("extracts exact indexed coordinates without expanded source storage", () => {
     const vertices = [
       0, -0, 0, 1.123456789, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,

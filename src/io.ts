@@ -145,6 +145,37 @@ export function validatePositions(
     );
   }
 }
+
+export function validateEmptyComponentSource(entity: Entity): boolean {
+  if (entity.emptyComponentSource === undefined) return false;
+  if (
+    entity.emptyComponentSource !== true ||
+    entity.kind !== "mesh" ||
+    !(
+      Array.isArray(entity.positions) ||
+      entity.positions instanceof Float32Array ||
+      isEncodingNumeric(entity.positions)
+    ) ||
+    entity.positions.length !== 0 ||
+    entity.indexedMesh !== undefined ||
+    entity.normals !== undefined ||
+    entity.edgePositions !== undefined ||
+    entity.meshSelection !== undefined ||
+    entity.scanSource !== undefined ||
+    entity.kernelId !== undefined ||
+    entity.brep !== undefined ||
+    entity.fit !== undefined ||
+    entity.parametric !== undefined ||
+    entity.surfacePatch !== undefined ||
+    entity.surfaceScanId !== undefined ||
+    entity.planeFrame !== undefined ||
+    entity.reference !== undefined ||
+    entity.coordinateFrame !== undefined ||
+    entity.rollMapping !== undefined
+  )
+    throw new Error("Invalid empty component source.");
+  return true;
+}
 export function geometryPositions(
   geometry: THREE.BufferGeometry,
 ): Float32Array {
@@ -218,14 +249,19 @@ export function parseProject(text: string): Project {
   const input = JSON.parse(text);
   if (Array.isArray(input?.entities))
     input.entities = input.entities.map((entity: Entity) => {
-      if (entity?.rollMapping !== undefined && ![4, 5].includes(input.version))
+      if (entity?.emptyComponentSource !== undefined && input.version !== 6)
+        throw Error("Empty component sources require project JSON version 6.");
+      if (
+        entity?.rollMapping !== undefined &&
+        ![4, 5, 6].includes(input.version)
+      )
         throw Error("Unroll mapping requires project JSON version 4.");
       if (
         entity?.reference !== undefined ||
         entity?.coordinateFrame !== undefined ||
         entity?.constructionOrderKey !== undefined
       ) {
-        if (![3, 4, 5].includes(input.version))
+        if (![3, 4, 5, 6].includes(input.version))
           throw new Error(
             "Construction metadata requires project JSON version 3.",
           );
@@ -245,14 +281,14 @@ export function parseProject(text: string): Project {
     input.authoring?.sketches?.some(
       (row: SavedSketch) => row.visible !== undefined,
     ) &&
-    ![4, 5].includes(input.version)
+    ![4, 5, 6].includes(input.version)
   )
     throw Error("Saved sketch visibility requires project JSON version 4.");
   if (
     input.authoring?.sketches?.some(
       (row: SavedSketch) => row.kind === "spatial",
     ) &&
-    input.version !== 5
+    ![5, 6].includes(input.version)
   )
     throw Error("Spatial sketches require project JSON version 5.");
   return validateProject(input);
@@ -264,7 +300,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    ![1, 2, 3, 4, 5].includes(input.version as number) ||
+    ![1, 2, 3, 4, 5, 6].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -278,7 +314,11 @@ export function validateProject(value: unknown): Project {
     const reference = validateReferenceEntity(entity);
     const coordinateFrame = validateReferenceFrameEntity(entity);
     const rollMapping = validateRollMappingEntity(entity);
-    if (!isReferenceEntity(entity) && entity.kind !== "referenceFrame")
+    if (
+      !validateEmptyComponentSource(entity) &&
+      !isReferenceEntity(entity) &&
+      entity.kind !== "referenceFrame"
+    )
       validatePositions(entity.positions, entity.kind === "pointcloud");
     const pointColors = validatePointCloudAttributes(entity);
     if (
@@ -399,6 +439,7 @@ export function validateProject(value: unknown): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      ...(entity.emptyComponentSource ? { emptyComponentSource: true } : {}),
       ...(entity.constructionOrderKey !== undefined
         ? { constructionOrderKey: entity.constructionOrderKey }
         : {}),
@@ -602,6 +643,7 @@ export function serializeProject(
 ): string {
   validateConstructionOrderKeys(entities);
   for (const entity of entities) {
+    validateEmptyComponentSource(entity);
     validateReferenceEntity(entity);
     if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
     validateRollMappingEntity(entity);
@@ -619,24 +661,27 @@ export function serializeProject(
       );
   return JSON.stringify({
     format: "maliev-scanforge",
-    version: authoring?.sketches?.some((row) => row.kind === "spatial")
-      ? 5
-      : entities.some((e) => e.rollMapping !== undefined) ||
-          authoring?.sketches?.some((row) => row.visible !== undefined)
-        ? 4
-        : entities.some(
-              (e) =>
-                e.reference !== undefined ||
-                e.coordinateFrame !== undefined ||
-                e.constructionOrderKey !== undefined,
-            )
-          ? 3
+    version: entities.some((e) => e.emptyComponentSource)
+      ? 6
+      : authoring?.sketches?.some((row) => row.kind === "spatial")
+        ? 5
+        : entities.some((e) => e.rollMapping !== undefined) ||
+            authoring?.sketches?.some((row) => row.visible !== undefined)
+          ? 4
           : entities.some(
                 (e) =>
-                  e.pointColors !== undefined || e.ascAttributes !== undefined,
+                  e.reference !== undefined ||
+                  e.coordinateFrame !== undefined ||
+                  e.constructionOrderKey !== undefined,
               )
-            ? 2
-            : 1,
+            ? 3
+            : entities.some(
+                  (e) =>
+                    e.pointColors !== undefined ||
+                    e.ascAttributes !== undefined,
+                )
+              ? 2
+              : 1,
     name,
     units: "mm",
     authoring,
@@ -686,30 +731,33 @@ export async function serializeProjectBlob(
 ): Promise<Blob> {
   validateConstructionOrderKeys(entities);
   for (const entity of entities) {
+    validateEmptyComponentSource(entity);
     validateReferenceEntity(entity);
     if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
     validateRollMappingEntity(entity);
   }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
-  const version = authoring?.sketches?.some((row) => row.kind === "spatial")
-    ? 5
-    : entities.some((e) => e.rollMapping !== undefined) ||
-        authoring?.sketches?.some((row) => row.visible !== undefined)
-      ? 4
-      : entities.some(
-            (e) =>
-              e.reference !== undefined ||
-              e.coordinateFrame !== undefined ||
-              e.constructionOrderKey !== undefined,
-          )
-        ? 3
+  const version = entities.some((e) => e.emptyComponentSource)
+    ? 6
+    : authoring?.sketches?.some((row) => row.kind === "spatial")
+      ? 5
+      : entities.some((e) => e.rollMapping !== undefined) ||
+          authoring?.sketches?.some((row) => row.visible !== undefined)
+        ? 4
         : entities.some(
               (e) =>
-                e.pointColors !== undefined || e.ascAttributes !== undefined,
+                e.reference !== undefined ||
+                e.coordinateFrame !== undefined ||
+                e.constructionOrderKey !== undefined,
             )
-          ? 2
-          : 1;
+          ? 3
+          : entities.some(
+                (e) =>
+                  e.pointColors !== undefined || e.ascAttributes !== undefined,
+              )
+            ? 2
+            : 1;
   const parts: BlobPart[] = [
     `{"format":"maliev-scanforge","version":${version},"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
@@ -724,7 +772,11 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
-    if (!isReferenceEntity(metadata) && metadata.kind !== "referenceFrame")
+    if (
+      !validateEmptyComponentSource(entities[index]) &&
+      !isReferenceEntity(metadata) &&
+      metadata.kind !== "referenceFrame"
+    )
       validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);

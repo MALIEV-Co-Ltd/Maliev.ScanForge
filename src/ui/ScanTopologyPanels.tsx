@@ -39,6 +39,12 @@ export interface ScanTopologyPanelsProps {
     segments: Positions[],
     label: string,
     indexedParts?: (Entity["indexedMesh"] | undefined)[],
+    remainder?: {
+      positions: Positions;
+      indexedMesh?: Entity["indexedMesh"];
+      normals?: Positions;
+    },
+    segmentNormals?: Positions[],
   ) => void;
   onSelection: (mask: Uint8Array) => void;
   onBoundaryHighlight?: (paths: readonly ScanBoundaryPath[]) => void;
@@ -90,10 +96,11 @@ const empty: ScanInventory = { components: [], boundaries: [] };
 
 /** Geometry-scoped worker ownership prevents a late operation from replacing another scan. */
 export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
-  const sourceIndexed = props.entities.find(
+  const sourceEntity = props.entities.find(
     (entity) =>
       entity.id === props.selectedId && entity.positions === props.positions,
-  )?.indexedMesh;
+  );
+  const sourceIndexed = sourceEntity?.indexedMesh;
   const [inventory, setInventory] = useState<ScanInventory>(empty);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
@@ -125,6 +132,11 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       } satisfies ScanEditRequest;
       const result = await processMesh(request, {
         reuseTopology: true,
+        includeComponentRemainder: operation.action === "componentExtract",
+        componentCornerNormals:
+          operation.action === "componentExtract"
+            ? sourceEntity?.normals
+            : undefined,
         signal: controller.signal,
         onProgress: (fraction, stage) => {
           if (owner.current === controller)
@@ -141,7 +153,33 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
           props.onReplace(outcome.positions, label, result.indexedMesh);
         else props.onReplace(outcome.positions, label);
       }
-      if (outcome.segments)
+      if (operation.action === "componentExtract") {
+        const current = callbacks.current;
+        const source = current.entities.find(
+          (entity) => entity.id === current.selectedId,
+        );
+        if (
+          current.selectedId !== props.selectedId ||
+          current.positions !== props.positions ||
+          !source ||
+          source.positions !== current.positions ||
+          source.indexedMesh !== sourceIndexed ||
+          source.normals !== sourceEntity?.normals ||
+          source.locked
+        )
+          throw new Error(
+            "The source mesh changed or is locked; no components were created.",
+          );
+        if (!outcome.segments || !outcome.componentRemainder)
+          throw new Error("Component extraction returned incomplete geometry.");
+        current.onCreate(
+          outcome.segments,
+          label,
+          outcome.segmentIndexedMeshes,
+          outcome.componentRemainder,
+          outcome.segmentNormals,
+        );
+      } else if (outcome.segments)
         props.onCreate(outcome.segments, label, outcome.segmentIndexedMeshes);
       if (outcome.curves && operation.plane)
         props.onProject(outcome.curves, operation.plane, label);

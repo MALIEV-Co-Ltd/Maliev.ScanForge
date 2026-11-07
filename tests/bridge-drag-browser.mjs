@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
@@ -151,10 +152,7 @@ try {
   browserServer = await chromium.launchServer({
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=512",
-    ],
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
   });
   ledger.resources.push({
     kind: "browser",

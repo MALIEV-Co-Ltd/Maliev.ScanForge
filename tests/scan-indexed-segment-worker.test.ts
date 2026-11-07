@@ -8,6 +8,118 @@ import { indexedMeshMatches } from "../src/indexed-mesh";
 import { runScanEdit } from "../src/scan-edit";
 import { smoothDisplayNormals } from "../src/viewport-display";
 
+it("transports the precise unselected component without detaching the source", async () => {
+  vi.resetModules();
+  const replies: ProcessingResponse[] = [];
+  const scope = {
+    onmessage: null as
+      null | ((event: { data: ProcessingRequest }) => Promise<void>),
+    postMessage(message: ProcessingResponse, transfer: Transferable[] = []) {
+      replies.push(structuredClone(message, { transfer }));
+    },
+  };
+  vi.stubGlobal("self", scope);
+  try {
+    await import("../src/processing-worker");
+    const vertices = [
+      0, -0, 0, 1.123456789, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
+    ];
+    const triangles = new Uint32Array([0, 1, 2, 3, 4, 5]);
+    const normals = new Float32Array([
+      1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+    ]);
+    const geometryNormals = new Float32Array([
+      0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+    ]);
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [1],
+        positions: new Float32Array(),
+        sourceIndexed: { vertices, triangles, normals, geometryNormals },
+        packedScanEditSource: { indexedExtract: true },
+        includeComponentRemainder: true,
+      } as ProcessingRequest,
+    });
+    const reply = replies.at(-1);
+    if (!reply || !("result" in reply) || !reply.packedComponentRemainder)
+      throw Error(JSON.stringify(reply));
+    expect(Array.from(reply.packedComponentRemainder.positions)).toEqual(
+      vertices.slice(0, 9),
+    );
+    expect(Object.is(reply.packedComponentRemainder.positions[1], -0)).toBe(
+      true,
+    );
+    expect(
+      Array.from(
+        reply.result.scanEdit!.componentRemainder!.indexedMesh!.triangles,
+      ),
+    ).toEqual([0, 1, 2]);
+    expect(
+      Array.from(
+        reply.result.scanEdit!.componentRemainder!.indexedMesh!.normals!,
+      ),
+    ).toEqual(Array.from(normals.slice(0, 9)));
+    expect(
+      Array.from(reply.result.scanEdit!.segmentIndexedMeshes![0]!.normals!),
+    ).toEqual(Array.from(normals.slice(9)));
+    expect(Array.from(reply.result.segmentRenderData![0].normals!)).toEqual(
+      Array.from(geometryNormals.slice(9)),
+    );
+    expect(triangles).toEqual(new Uint32Array([0, 1, 2, 3, 4, 5]));
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [0, 1],
+        positions: new Float32Array(),
+        sourceIndexed: { vertices, triangles },
+        packedScanEditSource: { indexedExtract: true },
+        includeComponentRemainder: true,
+      } as ProcessingRequest,
+    });
+    const all = replies.at(-1);
+    if (!all || !("result" in all)) throw Error(JSON.stringify(all));
+    expect(all.result.scanEdit!.componentRemainder!.positions).toHaveLength(0);
+    expect(
+      all.result.scanEdit!.componentRemainder!.indexedMesh,
+    ).toBeUndefined();
+    expect(all.packedComponentRemainder).toBeUndefined();
+    const source32 = new Float32Array(vertices);
+    const cornerNormals = new Float32Array([
+      1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0, 0, -1, 0, 0, 0, -1,
+    ]);
+    await scope.onmessage!({
+      data: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [1],
+        positions: source32,
+        sourceIndexed: { vertices: source32, triangles },
+        includeComponentRemainder: true,
+        componentCornerNormals: cornerNormals,
+      } as ProcessingRequest,
+    });
+    const normal = replies.at(-1);
+    if (!normal || !("result" in normal)) throw Error(JSON.stringify(normal));
+    expect(normal.result.scanEdit!.componentRemainder!.positions).toEqual(
+      source32.slice(0, 9),
+    );
+    expect(normal.result.scanEdit!.componentRemainder!.normals).toEqual(
+      cornerNormals.slice(0, 9),
+    );
+    expect(normal.result.scanEdit!.segmentNormals![0]).toEqual(
+      cornerNormals.slice(9),
+    );
+    expect(cornerNormals.byteLength).toBe(72);
+    expect(source32.byteLength).toBe(vertices.length * 4);
+  } finally {
+    vi.unstubAllGlobals();
+    vi.resetModules();
+  }
+});
+
 it("runs exact indexed component inventory in the worker without expanded positions", async () => {
   vi.resetModules();
   const replies: ProcessingResponse[] = [];

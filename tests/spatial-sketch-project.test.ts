@@ -31,6 +31,41 @@ const spatial = {
   ],
 } as unknown as SavedSketch;
 
+it("keeps spatial sketches and owned history with an empty component source", async () => {
+  const source = {
+    id: "empty",
+    name: "Empty",
+    kind: "mesh" as const,
+    positions: [],
+    visible: true,
+    opacity: 1,
+    color: "#ffffff",
+    emptyComponentSource: true as const,
+  };
+  const publication = prepareModelSketchPublication({ sketches: [] }, [
+    spatial,
+  ]);
+  const text = serializeProject("Mixed", [source], publication.authoring);
+  expect(JSON.parse(text).version).toBe(6);
+  const project = parseProject(text);
+  expect(project.authoring?.sketches).toEqual([spatial]);
+  const blob = await encodeProjectFileLocally({
+    project,
+    history: [
+      {
+        label: "sketch",
+        entities: [source],
+        sketchChanges: publication.changes,
+      },
+    ],
+    future: [],
+  });
+  const restored = await decodeProjectContents(blob);
+  expect(restored.project.authoring?.sketches).toEqual([spatial]);
+  expect(restored.history[0].sketchChanges).toEqual(publication.changes);
+  expect(restored.project.entities[0].emptyComponentSource).toBe(true);
+});
+
 it("preserves spatial history and distinct equal geometry in binary version 7", async () => {
   const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0];
   const entity = (id: string, values: number[]) => ({
