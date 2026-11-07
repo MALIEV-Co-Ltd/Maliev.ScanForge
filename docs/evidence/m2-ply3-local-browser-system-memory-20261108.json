@@ -1,0 +1,94 @@
+{
+  "candidate": "3605f0a60b46521193e02f395e15d651903401b4",
+  "build": "scanforge-d2ddb2b68ec96303",
+  "source": "C:/repo/alignment-example-files/ply-3.ply",
+  "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "driver": "tests/m2-original-split-persistence-browser-local.mjs",
+  "mode": {
+    "localBrowser": true,
+    "crossOriginIsolated": true,
+    "guiExtractReopen": true,
+    "guard": "tests/m2-bounded.py"
+  },
+  "guard": {
+    "command": [
+      "node",
+      "tests/m2-original-split-persistence-browser-local.mjs"
+    ],
+    "jobLimitBytes": 34110816256,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 5752020992,
+    "totalProcesses": 23,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 201.39710139999806
+  },
+  "browserHeapLimitBytes": 4395630592,
+  "extractReopen": {
+    "extractedFaces": 1776963,
+    "downloadedBytes": 436611692,
+    "downloadSha256": "152343cd5989a5fd883efd9417aa1f4bb5b771496a625090f26758a46aada667",
+    "guiReopen": true,
+    "undoRedo": true
+  },
+  "result": {
+    "inputFaces": 3691133,
+    "crossOriginIsolated": true,
+    "outputFaces": 3695945,
+    "exportedBytes": 558745713,
+    "reopenedGeometryEqual": true,
+    "cutterPreserved": true,
+    "reopenedUndo": true,
+    "reopenedRedoGeometry": true,
+    "initializedComputedNormals": [
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 5612016,
+        "sha256": "eec667db9a44bda177be4adb84b247ccfcd185548fd8e6f369763da7119510f4"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 11087835,
+        "sha256": "1014207222d90d21bc369cca0c0189654e49274ba3f82b7657905141a8e3384c"
+      }
+    ],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "cleanup": [
+    {
+      "port": 52115,
+      "closed": true
+    },
+    {
+      "pid": 42720,
+      "exited": true
+    },
+    {
+      "port": 52116,
+      "closed": true
+    }
+  ],
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "gui-extract-committed",
+    "gui-extract-project-downloaded",
+    "gui-extract-gui-project-imported",
+    "gui-extract-gui-reopen-verified",
+    "project-exported",
+    "project-reopened"
+  ],
+  "limitations": [
+    "One local-browser run; does not prove general resource reliability or native Split equivalence.",
+    "The browser reported an individual JavaScript heap limit below the system-sized request.",
+    "The guarded job reports all child processes exited; this run used a locally launched browser."
+  ]
+}
