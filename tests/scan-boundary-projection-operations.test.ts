@@ -14,6 +14,8 @@ import { boundarySketches } from "../src/scan-boundary-sketch";
 import { prepareModelSketchPublication } from "../src/model-sketch-history";
 import { seekModelRevision } from "../src/history";
 import catalog from "../src/automation/catalog.json";
+import { readFileSync } from "node:fs";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 const triangle = [0, 0, 1, 1, 0, 1, 0, 1, 1];
 function entity(patch: Partial<Entity> = {}): Entity {
@@ -122,6 +124,54 @@ beforeEach(() => {
         scanEdit: runScanEdit(request),
       };
     });
+});
+it("exposes mesh boundary projection through the shared operation and preserves selection", async () => {
+  const load = (name: string) => {
+    const file = readFileSync(
+      new URL(
+        `./fixtures/m2-coplanar-shared-edge-native-pending-20261106/${name}`,
+        import.meta.url,
+      ),
+    );
+    return new STLLoader()
+      .parse(
+        file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength),
+      )
+      .getAttribute("position").array as Float32Array;
+  };
+  const h = harness([
+    entity({ positions: load("projection-interior-control.stl") }),
+  ]);
+  h.state.selection = new Uint8Array([1, 0, 0, 0]);
+  const args = {
+    entityId: "mesh",
+    operation: { kind: "scanEdit", action: "boundaryProjectMeshOxy" },
+  };
+  expect(() =>
+    validateInput(catalog.find((t) => t.name === "mesh_process")!.inputSchema, {
+      ...args,
+      expectedRevision: 0,
+      requestId: "mesh-boundary",
+    }),
+  ).not.toThrow();
+  const result = await h.ops.mesh_process(args, h.context);
+  expect(h.state.entities[0].positions).toEqual(
+    load("projection-interior-native.stl"),
+  );
+  expect(h.state.selection).toEqual(new Uint8Array([1, 0, 0, 0]));
+  expect((result as { diagnostics: unknown }).diagnostics).toMatchObject({
+    changed: true,
+    projectedVertices: 4,
+  });
+  expect(h.host.commit).toHaveBeenCalledTimes(1);
+  await expect(
+    h.ops.mesh_process({ ...args, selectionOnly: true }, h.context),
+  ).rejects.toThrow(/whole mesh/i);
+  const locked = harness([entity({ locked: true })]);
+  await expect(locked.ops.mesh_process(args, locked.context)).rejects.toThrow(
+    /locked/i,
+  );
+  expect(locked.host.commit).not.toHaveBeenCalled();
 });
 it("discovers explicit boundary sketch publication while retaining read-only default reports", () => {
   const schema = catalog.find((t) => t.name === "mesh_process")!.inputSchema;

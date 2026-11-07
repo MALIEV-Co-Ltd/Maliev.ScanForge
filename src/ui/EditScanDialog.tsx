@@ -47,6 +47,7 @@ export interface EditScanDialogProps {
   onTopology?: (section: "components" | "holes" | "boundaries") => void;
   onMorph?: (operation: "grow" | "shrink" | "boundary") => void;
   onSelectAll?: () => void;
+  onProjectMeshBoundary?: () => void;
   onRevealSelected?: () => void;
   clip?: ScanClipBounds | null;
   clipFull?: ScanClipBounds;
@@ -457,6 +458,14 @@ export function EditScanDialog(props: EditScanDialogProps) {
           {props.pointTools}
           <details className="edit-scan-more edit-scan-additional">
             <summary>Additional tools & display</summary>
+            {!props.pointCloud && (
+              <button
+                disabled={!props.onProjectMeshBoundary || props.busy}
+                onClick={props.onProjectMeshBoundary}
+              >
+                Project mesh boundaries to XY
+              </button>
+            )}
             <section className="edit-scan-section" aria-label="Display">
               <h3>Display</h3>
               <label className="check">

@@ -53,6 +53,7 @@ export interface ScanEditRequest {
     | "fillHoles"
     | "boundarySmooth"
     | "boundaryProject"
+    | "boundaryProjectMeshOxy"
     | "boundarySpatialSketch"
     | "smoothSelected"
     | "defeature"
@@ -727,6 +728,7 @@ function scanEdit(
       "fillHoles",
       "boundarySmooth",
       "boundaryProject",
+      "boundaryProjectMeshOxy",
       "boundarySpatialSketch",
       "smoothSelected",
       "defeature",
@@ -902,6 +904,98 @@ function scanEdit(
   if (r.action === "fillHoles") return fill(r, t, o);
   if (r.action === "split") return splitByPlane(r, o);
   if (r.action === "boundarySmooth") return boundarySmooth(r, t, o);
+  if (r.action === "boundaryProjectMeshOxy") {
+    if (r.indices || r.plane)
+      throw new Error(
+        "Mesh boundary projection uses all boundaries and the origin XY plane.",
+      );
+    if (
+      t.degenerateTriangles ||
+      t.duplicateTriangles ||
+      t.nonManifoldEdges ||
+      t.nonManifoldVertices
+    )
+      throw new Error(
+        "Mesh boundary projection requires nondegenerate manifold topology.",
+      );
+    const vertices = Float64Array.from(t.vertices);
+    const boundaryVertices = new Uint8Array(vertices.length / 3);
+    for (const boundary of [...t.boundaryLoops, ...t.boundaryChains])
+      for (const id of boundary) {
+        boundaryVertices[id] = 1;
+        vertices[id * 3 + 2] = 0;
+      }
+    const rawPositions = r.positions.slice();
+    const movedVertices = new Uint8Array(boundaryVertices.length);
+    let moved = 0;
+    for (let corner = 0; corner < t.triangles.length; corner++) {
+      if ((corner & 4095) === 0 && o.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      const id = t.triangles[corner];
+      if (boundaryVertices[id] && rawPositions[corner * 3 + 2] !== 0) {
+        rawPositions[corner * 3 + 2] = 0;
+        if (!movedVertices[id]) {
+          movedVertices[id] = 1;
+          moved++;
+        }
+      }
+    }
+    checkProgress(o, 0.7, "Projecting mesh boundaries");
+    const areaLimit = (o.tolerance ?? 1e-6) ** 2;
+    for (let offset = 0; offset < rawPositions.length; offset += 9) {
+      if (((offset / 9) & 4095) === 0 && o.signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      const abx = rawPositions[offset + 3] - rawPositions[offset];
+      const aby = rawPositions[offset + 4] - rawPositions[offset + 1];
+      const abz = rawPositions[offset + 5] - rawPositions[offset + 2];
+      const acx = rawPositions[offset + 6] - rawPositions[offset];
+      const acy = rawPositions[offset + 7] - rawPositions[offset + 1];
+      const acz = rawPositions[offset + 8] - rawPositions[offset + 2];
+      if (
+        Math.hypot(
+          aby * acz - abz * acy,
+          abz * acx - abx * acz,
+          abx * acy - aby * acx,
+        ) <= areaLimit
+      )
+        throw new Error(
+          "Boundary projection would create degenerate geometry.",
+        );
+    }
+    const projected = analyzeIndexedMesh(vertices, t.triangles, {
+      ...o,
+      topologyCache: undefined,
+      onProgress: undefined,
+    });
+    if (
+      projected.degenerateTriangles ||
+      projected.duplicateTriangles ||
+      projected.nonManifoldEdges ||
+      projected.nonManifoldVertices
+    )
+      throw new Error(
+        "Boundary projection would create degenerate or nonmanifold geometry.",
+      );
+    let indexedMesh: import("./types").IndexedMesh | undefined;
+    if (moved && r.sourceIndexed) {
+      const indexedVertices = r.sourceIndexed.vertices.slice();
+      for (let id = 0; id < boundaryVertices.length; id++)
+        if (boundaryVertices[id]) indexedVertices[id * 3 + 2] = 0;
+      indexedMesh = {
+        vertices: indexedVertices,
+        triangles: r.sourceIndexed.triangles.slice(),
+      };
+      if (!indexedMeshMatches(indexedMesh, rawPositions))
+        throw new Error(
+          "Projected indexed geometry does not match its mesh corners.",
+        );
+    }
+    return {
+      positions: rawPositions,
+      ...(indexedMesh ? { indexedMesh } : {}),
+      diagnostics: { changed: moved > 0, projectedVertices: moved },
+    };
+  }
   if (r.action === "smoothSelected")
     return {
       positions: smoothing(r, t, o),

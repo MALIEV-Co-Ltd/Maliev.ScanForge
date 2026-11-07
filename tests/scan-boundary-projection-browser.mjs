@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { chromium } from "playwright";
+import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 const root = new URL("../", import.meta.url),
   out = process.env.SCANFORGE_QA_OUT
     ? new URL(
@@ -58,7 +59,15 @@ function processIdentity(pid) {
     persistentData: false,
   };
 }
-let server, reserve, browserServer, browser, client, transport, failed, page;
+let server,
+  reserve,
+  browserServer,
+  browser,
+  client,
+  transport,
+  failed,
+  page,
+  meshProjectionEvidence;
 const fixturePath = fileURLToPath(
   new URL("boundary-projection-panel.stl", out),
 );
@@ -129,10 +138,7 @@ try {
   browserServer = await chromium.launchServer({
     channel: "chrome",
     headless: true,
-    args: [
-      "--enable-unsafe-swiftshader",
-      "--js-flags=--max-old-space-size=768",
-    ],
+    args: ["--enable-unsafe-swiftshader", m2BrowserHeapFlag],
   });
   ledger.resources.push({
     kind: "browser",
@@ -261,6 +267,223 @@ try {
       .digest("hex");
   const rawEqual = (actual, expected, message) =>
     assert.equal(digest(actual), digest(expected), message);
+  if (process.env.SCANFORGE_M2_BOUNDARY_MESH === "1") {
+    const fixture = async (name) => {
+      const bytes = await readFile(
+        new URL(
+          `fixtures/m2-coplanar-shared-edge-native-pending-20261106/${name}`,
+          import.meta.url,
+        ),
+      );
+      assert.equal(bytes.readUInt32LE(80), 4);
+      return Array.from({ length: 4 }, (_, face) =>
+        Array.from({ length: 9 }, (_, value) =>
+          bytes.readFloatLE(96 + face * 50 + value * 4),
+        ),
+      ).flat();
+    };
+    const input = await fixture("projection-interior-control.stl");
+    const expected = await fixture("projection-interior-native.stl");
+    const temporaryProject = {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Boundary mesh control",
+      units: "mm",
+      entities: [
+        {
+          id: "scan",
+          name: "Boundary mesh control",
+          kind: "mesh",
+          positions: input,
+          visible: true,
+          color: "#b4bec4",
+          opacity: 1,
+        },
+      ],
+    };
+    const uploaded = (
+      await call("artifact_put", {
+        name: "boundary-mesh-control.json",
+        offset: 0,
+        base64: Buffer.from(JSON.stringify(temporaryProject)).toString(
+          "base64",
+        ),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: uploaded.artifactId,
+        replace: true,
+      }),
+    );
+    await call("artifact_delete", { artifactId: uploaded.artifactId });
+    await mutate("object_select", { entityId: "scan" });
+    await mutate("ui_set", { workspace: "mesh", toolPanelOpen: true });
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await mutate("selection_set", { entityId: "scan", triangles: [0] });
+    const selection = async () =>
+      artifactJson(
+        (await call("selection_get", { entityId: "scan" })).result.artifact,
+      );
+    const canvasBefore = await page
+      .locator(".viewport canvas")
+      .first()
+      .screenshot();
+    await page.getByText("Additional tools & display", { exact: true }).click();
+    await page
+      .getByRole("button", {
+        name: "Project mesh boundaries to XY",
+        exact: true,
+      })
+      .click();
+    let actual;
+    for (let attempt = 0; attempt < 150; attempt++) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      actual = await geometry();
+      if (digest(actual) === digest(expected)) break;
+    }
+    rawEqual(
+      actual,
+      expected,
+      "GUI mesh boundary projection differs from native fixture",
+    );
+    assert.deepEqual(await selection(), [0], "GUI projection lost selection");
+    const canvasAfter = await page
+      .locator(".viewport canvas")
+      .first()
+      .screenshot();
+    assert.notEqual(
+      createHash("sha256").update(canvasAfter).digest("hex"),
+      createHash("sha256").update(canvasBefore).digest("hex"),
+      "Projection did not change the rendered viewport",
+    );
+    await mutate("history_undo", {});
+    rawEqual(
+      await geometry(),
+      input,
+      "GUI mesh boundary undo differs from source",
+    );
+    await mutate("selection_set", { entityId: "scan", triangles: [0] });
+    await job(
+      await mutate("mesh_process", {
+        entityId: "scan",
+        operation: { kind: "scanEdit", action: "boundaryProjectMeshOxy" },
+      }),
+    );
+    rawEqual(
+      await geometry(),
+      expected,
+      "Public MCP mesh boundary projection differs from GUI/native fixture",
+    );
+    assert.deepEqual(await selection(), [0], "MCP projection lost selection");
+    const unsafeInput = (await fixture("native-source-split.stl")).slice(-9);
+    temporaryProject.entities[0].positions = unsafeInput;
+    const unsafeUpload = (
+      await call("artifact_put", {
+        name: "boundary-collapse-control.json",
+        offset: 0,
+        base64: Buffer.from(JSON.stringify(temporaryProject)).toString(
+          "base64",
+        ),
+      })
+    ).result;
+    await job(
+      await mutate("project_import", {
+        artifactId: unsafeUpload.artifactId,
+        replace: true,
+      }),
+    );
+    await call("artifact_delete", { artifactId: unsafeUpload.artifactId });
+    const unsafeHistory = (await call("project_get")).result.undo;
+    const rejected = await job(
+      await mutate("mesh_process", {
+        entityId: "scan",
+        operation: { kind: "scanEdit", action: "boundaryProjectMeshOxy" },
+      }),
+      "failed",
+    );
+    assert.match(
+      JSON.stringify(rejected),
+      /projection would create degenerate/i,
+      "Projection failed for an unrelated reason",
+    );
+    rawEqual(
+      await geometry(),
+      unsafeInput,
+      "Rejected projection changed the source",
+    );
+    assert.equal(
+      (await call("project_get")).result.undo,
+      unsafeHistory,
+      "Rejected projection added history",
+    );
+    const importControl = async (name, values) => {
+      temporaryProject.entities[0].positions = values;
+      const upload = (
+        await call("artifact_put", {
+          name,
+          offset: 0,
+          base64: Buffer.from(JSON.stringify(temporaryProject)).toString(
+            "base64",
+          ),
+        })
+      ).result;
+      await job(
+        await mutate("project_import", {
+          artifactId: upload.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: upload.artifactId });
+    };
+    const near = [0, 0, 0, 1, 0, 0, 1, 1, 0, 1e-7, 0, 1e-7, 1, 1, 0, 0, 1, 0];
+    await importControl("boundary-near-weld.json", near);
+    await job(
+      await mutate("mesh_process", {
+        entityId: "scan",
+        operation: { kind: "scanEdit", action: "boundaryProjectMeshOxy" },
+      }),
+    );
+    const nearExpected = [...near];
+    nearExpected[11] = 0;
+    rawEqual(
+      await geometry(),
+      nearExpected,
+      "Near-welded raw boundary corner was not projected",
+    );
+    const rawCollapse = [
+      1e-7, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1e-7, 1, 1, 0, 0.5, 0.5, 1,
+    ];
+    await importControl("boundary-raw-collapse.json", rawCollapse);
+    const rawHistory = (await call("project_get")).result.undo;
+    const rawRejection = await job(
+      await mutate("mesh_process", {
+        entityId: "scan",
+        operation: { kind: "scanEdit", action: "boundaryProjectMeshOxy" },
+      }),
+      "failed",
+    );
+    assert.match(
+      JSON.stringify(rawRejection),
+      /projection would create degenerate/i,
+    );
+    rawEqual(
+      await geometry(),
+      rawCollapse,
+      "Raw-corner safety rejection changed source",
+    );
+    assert.equal((await call("project_get")).result.undo, rawHistory);
+    meshProjectionEvidence = {
+      guiMcpNativeCoordinatesMatch: true,
+      selectionRetained: true,
+      guiUndoRestoresSource: true,
+      unsafeMcpResultRejected: true,
+      unsafeSourceAndHistoryRetained: true,
+      nearWeldRawCornersProjected: true,
+      rawCornerCollapseRejected: true,
+      viewportChanged: true,
+    };
+  }
   const positions = [],
     groups = [];
   for (let n = 1; n <= 3; n++) {
@@ -748,6 +971,7 @@ try {
   );
   assert.deepEqual(errors, []);
   ledger.result = {
+    ...(meshProjectionEvidence ? { meshProjectionEvidence } : {}),
     inputCoordinateSha256: digest(positions),
     initialAuthoringId: original,
     cases: results,

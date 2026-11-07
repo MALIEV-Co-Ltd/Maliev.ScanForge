@@ -67,8 +67,18 @@
       "output": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/projection-interior-native.stl",
       "outputSha256": "46079db65546aa2a08c4981a166d24fb948633178b809330335f5e9bbee5231a",
       "observed": "The four input faces form one connected square boundary at Z=1 around an interior vertex at Z=2. After millimetre import, Edit Scan showed one individual mesh and one hole. One projection click without triangle or boundary selection produced an exported four-face mesh preserving XY coordinates and face vertex order, with all boundary vertices at Z=0 and the interior vertex still at Z=2.",
-      "limitations": "This does not establish behavior for object transforms, nonmanifold topology, selected boundaries, or other orientations; GUI and MCP equivalence remain untested."
+      "triangleSelectionControl": "After reopening the same STL in millimetres, Select all connected triangles was unchecked and a single visible face was painted red. One projection click followed by scan export produced the same full-file SHA-256 as the no-selection output. The red triangle selection remained visible after the click. The duplicate export was removed after hash comparison.",
+      "limitations": "The screenshot does not establish an independent numeric selection count. This does not establish behavior for object transforms, nonmanifold topology, selected boundaries, other triangle selections, or other orientations; GUI and MCP equivalence remain untested."
     }
+  },
+  "applicationCandidate": {
+    "sourceSha256": "34fb060f21e7831cd050b37588f35631997e1859d34174dcff15d01dfd862bd0",
+    "automationSha256": "5dc64704ea889adddbf40db891a104b2e0ee30baa14f846a56f339ba79bc1efb",
+    "applicationSha256": "8f98187e2616bd49f6f765bac79581cdb97427b9e08c60e066ebe8959e82cc9e",
+    "browserDriverSha256": "0e58642a88ef63c505fbe55cf00b97f31602db478d0ea508230d861a8aa82e98",
+    "build": "scanforge-d2ddb2b68ec96303",
+    "observed": "The complete suite passed 50961 tests, with one expected failure and 80 skips. All 15 typecheck batches and the production build passed. Four focused test files passed 65 tests, including native fixture coordinates and raw-corner collapse rejection. A compiled isolated browser/public MCP replay with SCANFORGE_M2_BOUNDARY_MESH=1 compared the same native fixture against GUI and MCP results, verified undo and one triangle selection after each path, and found a changed canvas after GUI projection. Public MCP rejected a valid triangle that would collapse after projection without changing source geometry or history, preserved a near-welded raw corner's XY position while projecting it, and rejected the raw-corner collapse found in review. Existing sketch-projection checks in that replay also passed with no page errors. The browser Windows Job limit was 34110816256 bytes, peak was 930189312, 17 processes were observed, and activeAfter was zero; browser and bridge processes exited and ports closed. Temporary validation files were removed.",
+    "limitations": "The browser comparison covers one nondegenerate identity-positioned fixture. It does not establish native parity for transformed geometry, nonmanifold topology or all selection patterns. The current checks reject indexed degenerate, duplicate and nonmanifold topology, but do not establish absence of geometric self-intersections. Full M2 validation and final integration remain open."
   },
   "uiThreadTraceFailure": {
     "method": "REA Frida Stalker followed the QuickSurface UI thread before a projection-button click.",

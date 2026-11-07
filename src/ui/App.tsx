@@ -1887,6 +1887,10 @@ export function App() {
     label: string,
   ) {
     if (!selected || !sampledSelected || busy || scanEditAbort.current) return;
+    if (operation.action === "boundaryProjectMeshOxy" && selected.locked) {
+      setError("Object is locked.");
+      return;
+    }
     if (selected.kind === "pointcloud") {
       if (operation.action === "smoothSelected")
         await runPointEdit({
@@ -1936,7 +1940,8 @@ export function App() {
         replaceScanPositions(
           result.scanEdit.positions,
           label,
-          operation.action === "smoothSelected",
+          operation.action === "smoothSelected" ||
+            operation.action === "boundaryProjectMeshOxy",
           result.indexedMesh,
         );
       if (result.scanEdit?.segments)
@@ -6400,6 +6405,15 @@ export function App() {
             ) : workspace === "mesh" && selected && sampledSelected ? (
               <EditScanDialog
                 key={selected.id}
+                onProjectMeshBoundary={
+                  selected.locked
+                    ? undefined
+                    : () =>
+                        void runScanEdit(
+                          { action: "boundaryProjectMeshOxy" },
+                          "Project mesh boundaries to XY",
+                        )
+                }
                 name={selected.name}
                 positions={selected.positions}
                 sourceIndexed={selected.indexedMesh}

@@ -1060,6 +1060,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const publishBoundarySketches = op.createSketches === true;
       const publishSpatialSketch =
         kind === "scanEdit" && op.action === "boundarySpatialSketch";
+      if (
+        kind === "scanEdit" &&
+        op.action === "boundaryProjectMeshOxy" &&
+        (a.selectionOnly || a.createNew || a.targetId)
+      )
+        throw Error(
+          "Mesh boundary projection edits the whole mesh; omit selectionOnly, createNew and targetId.",
+        );
       if (publishSpatialSketch && a.selectionOnly)
         throw Error(
           "Spatial boundary sketches use boundary indices; omit selectionOnly.",
@@ -1511,6 +1519,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
                 }
               : {
                   ...meshEdited(e, positions),
+                  ...(kind === "scanEdit" &&
+                  op.action === "boundaryProjectMeshOxy"
+                    ? { meshSelection: e.meshSelection }
+                    : {}),
                   ...(result.indexedMesh
                     ? {
                         indexedMesh: result.indexedMesh,
@@ -1701,6 +1713,14 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       )
         host.select(created[0].id);
       if (selected) host.setSelection(e.id, selected);
+      else if (
+        kind === "scanEdit" &&
+        op.action === "boundaryProjectMeshOxy" &&
+        positions &&
+        s.selectedId === e.id &&
+        s.selection?.length === e.positions.length / 9
+      )
+        host.setSelection(e.id, new Uint8Array(s.selection));
       return response;
     },
     mesh_transform: (a, c) => {

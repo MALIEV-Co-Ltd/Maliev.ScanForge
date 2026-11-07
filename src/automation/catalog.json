@@ -1197,6 +1197,7 @@
                 },
                 "action": {
                   "type": "string",
+                  "description": "boundaryProjectMeshOxy edits all mesh boundaries in place on the origin XY plane, preserving interior vertices and triangle selection; it rejects degenerate or nonmanifold indexed input/output and is distinct from boundaryProject curve/sketch creation. Omit selectionOnly, createNew, targetId, indices and plane for this action.",
                   "enum": [
                     "inventory",
                     "componentExtract",
@@ -1206,6 +1207,7 @@
                     "fillHoles",
                     "boundarySmooth",
                     "boundaryProject",
+                    "boundaryProjectMeshOxy",
                     "boundarySpatialSketch",
                     "smoothSelected",
                     "defeature",
