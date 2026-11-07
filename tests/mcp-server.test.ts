@@ -43,7 +43,9 @@ it("advertises every application tool through the official MCP SDK", async () =>
     expect(description).toBe(
       applicationCatalog.find((tool) => tool.name === name)?.description,
     );
-    expect(description).toContain("immutable-geometry contract");
+    expect(description).toContain("ordinary numeric arrays independently");
+    expect(description).toContain("immutable shared-buffer chunks");
+    expect(description).toContain("byte and hash verification");
   }
 });
 afterEach(async () => {
