@@ -13,7 +13,12 @@
     "displayedWithinTolerancePercent": 99.254,
     "previewCancelled": true,
     "sourceTriangleCountAfterCancel": 273139,
-    "sceneMeshCountBeforeAndAfter": 17
+    "sceneMeshCountBeforeAndAfter": 17,
+    "explicitDeviationComparison": {
+      "0.01 mm": 99.254,
+      "0.05 mm": 100.0,
+      "method": "Enabled deviation, explicitly entered each tolerance and applied it to the native preview."
+    }
   },
   "application": {
     "passed": true,
@@ -63,6 +68,41 @@
   "limitations": [
     "The QuickSurface 25 percent preview was not exported; matching triangle counts does not prove matching native geometry, normals, deviation values, or publication behavior.",
     "Native source equivalence to the original scan relies on the earlier source control for scan-1(1).",
-    "This is one input and setting and is not general native or resource acceptance."
-  ]
+    "This is one input and setting and is not general native or resource acceptance.",
+    "The two tolerance comparisons match displayed percentages rounded to two decimals; individual deviations, native preview coordinates and native object publication were not compared."
+  ],
+  "applicationComparison": {
+    "0.01 mm": "99.25%",
+    "0.05 mm": "100.00%",
+    "guiAndPublicMcpPassed": true,
+    "guiGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "mcpGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "guard": {
+      "command": ["node", "tests/large-reduction-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1571020800,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 27.927465899992967
+    }
+  },
+  "driverRegression50Percent": {
+    "guiAndPublicMcpPassed": true,
+    "0.001 mm": "70.25%",
+    "0.01 mm": "100.00%",
+    "guard": {
+      "command": ["node", "tests/large-reduction-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1550266368,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 27.474394299992127
+    }
+  }
 }

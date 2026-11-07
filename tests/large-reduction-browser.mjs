@@ -25,10 +25,15 @@ if (
     "Reduction percentage must be greater than zero and less than 100.",
   );
 if (
-  reductionPercentage !== 50 &&
+  ![25, 50].includes(reductionPercentage) &&
   process.env.SCANFORGE_REDUCTION_NATIVE_COMPARE
 )
-  throw Error("The frozen deviation comparison requires 50 percent remaining.");
+  throw Error(
+    "The frozen deviation comparison requires 25 or 50 percent remaining.",
+  );
+const nativeTolerance = reductionPercentage === 25 ? 0.01 : 0.001;
+const nativePercentage = reductionPercentage === 25 ? "99.25" : "70.25";
+const nativeWiderTolerance = reductionPercentage === 25 ? 0.05 : 0.01;
 const globalFixture = JSON.parse(
   await readFile(
     new URL("fixtures/reduction-global-routing.json", import.meta.url),
@@ -453,7 +458,7 @@ try {
         name: "Comparison tolerance (mm)",
         exact: true,
       })
-      .fill("0.001");
+      .fill(String(nativeTolerance));
     await panel
       .getByRole("button", { name: "Update comparison", exact: true })
       .click();
@@ -461,7 +466,7 @@ try {
       name: "Reduction deviation results",
     });
     await results
-      .getByText("70.25%", { exact: true })
+      .getByText(`${nativePercentage}%`, { exact: true })
       .waitFor({ timeout: 180000 });
     guiNativeComparison = (await results.innerText()).trim();
     assert(
@@ -484,7 +489,7 @@ try {
         name: "Comparison tolerance (mm)",
         exact: true,
       })
-      .fill("0.01");
+      .fill(String(nativeWiderTolerance));
     await panel
       .getByRole("button", { name: "Update comparison", exact: true })
       .click();
@@ -581,10 +586,13 @@ try {
         action: "compare",
         entityId: object.id,
         previewId: staged.result.previewId,
-        deviation: 0.001,
+        deviation: nativeTolerance,
       }),
     );
-    assert.equal(compared.result.statistics.percentage.toFixed(2), "70.25");
+    assert.equal(
+      compared.result.statistics.percentage.toFixed(2),
+      nativePercentage,
+    );
     assert(
       guiNativeComparison.includes(
         `${compared.result.statistics.percentage.toFixed(2)}%`,
@@ -595,7 +603,7 @@ try {
         action: "compare",
         entityId: object.id,
         previewId: staged.result.previewId,
-        deviation: 0.01,
+        deviation: nativeWiderTolerance,
       }),
     );
     assert.equal(wider.result.statistics.percentage.toFixed(2), "100.00");
