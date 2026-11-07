@@ -8,7 +8,7 @@ const fixture = (dir: string, file: string) =>
 const original = "m2-crossing-pair-native-20261107";
 const reversed = "m2-reversed-crossing-native-20261107";
 function mesh(data: Buffer) {
-  return Array.from(parseMesh(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength), "stl"));
+  return Array.from(parseMesh(Uint8Array.from(data).buffer, "stl"));
 }
 function facets(points: number[]) {
   const result = [];

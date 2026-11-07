@@ -1,0 +1,43 @@
+{
+  "application": "QuickSurface Pro 8.0.123",
+  "source": "scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "preview": { "percentageRemaining": 50, "triangles": 136569 },
+  "nativeWithinTolerancePercent": {
+    "0.05 mm": 100.0,
+    "0.001 mm": 70.247,
+    "0.01 mm": 100.0
+  },
+  "trace": {
+    "method": "REA Frida attach, one native preview, enable deviation, and apply two tolerance values",
+    "preview": { "address": "0x140597d10", "calls": 1 },
+    "reductionWrapper": { "address": "0x14038d2a0", "calls": 1 },
+    "comparison": { "address": "0x140598310", "calls": 4 },
+    "comparisonBuilder": { "address": "0x140a7f470", "calls": 1 },
+    "apply": { "address": "0x140598b80", "calls": 2 },
+    "observation": "Applying two changed comparison tolerances did not call the reduction wrapper or comparison builder again."
+  },
+  "scanforgeReplay": {
+    "build": "scanforge-04b9f118ac7ac299",
+    "guiAndPublicMcpWithinTolerancePercent": {
+      "0.001 mm": 70.25,
+      "0.01 mm": 100.0
+    },
+    "guiUnmatchedAt0.001Mm": 53,
+    "geometrySha256": "80b4efc52823c4d1b7e5518effec5884ed0ccfb3708017479d7b2280fa160ff1",
+    "guiComparisonDidNotRepeatReduction": true,
+    "browserJobPeakBytes": 1515991040,
+    "browserJobLimitBytes": 4294967296
+  },
+  "suiteBeforeFinalDisabledControlGuard": {
+    "passed": 50881,
+    "expectedFailures": 6,
+    "skipped": 79,
+    "peakJobBytes": 1658912768
+  },
+  "limitations": [
+    "Native observations cover this scan and this percentage target only.",
+    "Native process was outside the browser validation job; its peak memory was not measured."
+  ]
+}

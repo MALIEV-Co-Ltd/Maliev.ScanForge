@@ -1005,10 +1005,7 @@ export function ScanToolsPanel({
             >
               <h4>Deviation comparison</h4>
               {mode !== "deviation" && (
-                <fieldset
-                  disabled={busy || disabled}
-                  onChange={() => onInvalidatePreview?.()}
-                >
+                <fieldset disabled={busy || disabled}>
                   <Field
                     label="Comparison tolerance (mm)"
                     value={deviation}
@@ -1020,6 +1017,16 @@ export function ScanToolsPanel({
               )}
               {comparison?.statistics && (
                 <ReductionResults statistics={comparison.statistics} />
+              )}
+              {mode !== "deviation" && onCompare && (
+                <button
+                  disabled={
+                    busy || disabled || !previewReady || !positive(deviation)
+                  }
+                  onClick={() => onCompare(deviation, deviation)}
+                >
+                  Update comparison
+                </button>
               )}
               {comparison && onToggleComparison && (
                 <button

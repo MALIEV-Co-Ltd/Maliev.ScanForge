@@ -30,6 +30,8 @@ it.skipIf(!sourcePath)(
     });
     const mesh = result.indexedMesh!;
     const normals = mesh.geometryNormals!;
+    if (!(normals instanceof Float32Array))
+      throw new Error("Expected Float32 geometry normals");
     expect(
       hash(
         new Uint8Array(normals.buffer, normals.byteOffset, normals.byteLength),

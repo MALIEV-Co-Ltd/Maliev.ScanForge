@@ -424,6 +424,58 @@ try {
     "Completed preview still renders preparation progress",
   );
   const previewMs = performance.now() - started;
+  let guiNativeComparison;
+  if (process.env.SCANFORGE_REDUCTION_NATIVE_COMPARE) {
+    const reductionsBeforeComparison = await page.evaluate(
+      () =>
+        window.__reductionStages.filter(
+          (s) => s === "Collapsing native mesh edges",
+        ).length,
+    );
+    await panel
+      .getByRole("spinbutton", {
+        name: "Comparison tolerance (mm)",
+        exact: true,
+      })
+      .fill("0.001");
+    await panel
+      .getByRole("button", { name: "Update comparison", exact: true })
+      .click();
+    const results = panel.getByRole("region", {
+      name: "Reduction deviation results",
+    });
+    await results
+      .getByText("70.25%", { exact: true })
+      .waitFor({ timeout: 180000 });
+    guiNativeComparison = (await results.innerText()).trim();
+    assert(
+      await panel
+        .getByRole("button", { name: "Accept", exact: true })
+        .isVisible(),
+    );
+    assert.equal(
+      await page.evaluate(
+        () =>
+          window.__reductionStages.filter(
+            (s) => s === "Collapsing native mesh edges",
+          ).length,
+      ),
+      reductionsBeforeComparison,
+      "Changing comparison tolerance reran reduction",
+    );
+    await panel
+      .getByRole("spinbutton", {
+        name: "Comparison tolerance (mm)",
+        exact: true,
+      })
+      .fill("0.01");
+    await panel
+      .getByRole("button", { name: "Update comparison", exact: true })
+      .click();
+    await results
+      .getByText("100.00%", { exact: true })
+      .waitFor({ timeout: 180000 });
+  }
   assert.equal(
     (await call("project_get")).result.objects.find((o) => o.id === object.id)
       .triangles,
@@ -506,6 +558,31 @@ try {
       operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
     }),
   );
+  if (process.env.SCANFORGE_REDUCTION_NATIVE_COMPARE) {
+    const compared = await job(
+      await mutate("scan_preview", {
+        action: "compare",
+        entityId: object.id,
+        previewId: staged.result.previewId,
+        deviation: 0.001,
+      }),
+    );
+    assert.equal(compared.result.statistics.percentage.toFixed(2), "70.25");
+    assert(
+      guiNativeComparison.includes(
+        `${compared.result.statistics.percentage.toFixed(2)}%`,
+      ),
+    );
+    const wider = await job(
+      await mutate("scan_preview", {
+        action: "compare",
+        entityId: object.id,
+        previewId: staged.result.previewId,
+        deviation: 0.01,
+      }),
+    );
+    assert.equal(wider.result.statistics.percentage.toFixed(2), "100.00");
+  }
   assert.equal(
     await geometryHash(),
     sourceGeometrySha256,
@@ -631,6 +708,7 @@ try {
     previewMs,
     mcpMs: performance.now() - secondStart,
     guiPreviewAndAccept: true,
+    guiNativeComparison: guiNativeComparison ?? null,
     comparisonRequired: true,
     previewPreservesSource: true,
     mcpDirectComparison: true,

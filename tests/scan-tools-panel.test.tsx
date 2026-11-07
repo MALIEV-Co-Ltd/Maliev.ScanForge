@@ -79,6 +79,25 @@ function render(
     />,
   );
 }
+it("offers comparison updates for an existing polygon reduction preview", () => {
+  const panel = (disabled: boolean) =>
+    renderToStaticMarkup(
+      <ScanToolsPanel
+        tool="reducePolygons"
+        selected={mesh}
+        entities={[mesh]}
+        previewReady
+        disabled={disabled}
+        onApply={() => {}}
+        onAccept={() => {}}
+        onCompare={() => {}}
+        onCancel={() => {}}
+        onClose={() => {}}
+      />,
+    );
+  expect(panel(false)).toContain(">Update comparison</button>");
+  expect(panel(true)).toContain('disabled="">Update comparison</button>');
+});
 it("shows only the current tool and its generated technical illustration", () => {
   const html = render("reducePolygons");
   expect(html).toContain('aria-haspopup="listbox"');
