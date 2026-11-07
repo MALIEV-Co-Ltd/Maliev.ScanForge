@@ -951,6 +951,84 @@ try {
     historyUnchanged: true,
     noResultArtifacts: true,
   };
+  // Reopening the same saved geometry must discard transient selection for
+  // both GUI and MCP project replacement, even when numeric arrays are reused.
+  const positions = Array.from({ length: 7282 }, () => [
+    0, 0, 0, 1, 0, 0, 0, 1, 0,
+  ]).flat();
+  const reopenProject = {
+    format: "maliev-scanforge",
+    version: 1,
+    name: "Selection reopen",
+    units: "mm",
+    entities: [
+      {
+        id: "reopen-mesh",
+        name: "Mesh",
+        kind: "mesh",
+        visible: true,
+        color: "#b4bec4",
+        opacity: 1,
+        positions,
+      },
+    ],
+  };
+  const reopenUpload = (
+    await call("artifact_put", {
+      name: "reopen.json",
+      offset: 0,
+      base64: Buffer.from(JSON.stringify(reopenProject)).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: reopenUpload.artifactId,
+      replace: true,
+    }),
+  );
+  const reopenSaved = await job(
+    await call("project_export", { format: "project" }),
+  );
+  const savedBytes = (
+    await call("artifact_read", {
+      artifactId: reopenSaved.artifactId,
+      offset: 0,
+    })
+  ).result;
+  assert.equal(
+    savedBytes.eof,
+    true,
+    "reopen fixture must fit in one artifact chunk",
+  );
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    1,
+  );
+  await page.locator('input[type="file"][accept*=".scanforge"]').setInputFiles({
+    name: "selection-reopen.scanforge",
+    mimeType: "application/octet-stream",
+    buffer: Buffer.from(savedBytes.base64, "base64"),
+  });
+  await page.locator('.status-message[title^="Opened · 1/1 files"]').waitFor();
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "GUI project reopen retained the previous selection",
+  );
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  await job(
+    await mutate("project_import", {
+      artifactId: reopenSaved.artifactId,
+      replace: true,
+    }),
+  );
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "MCP project replacement retained the previous selection",
+  );
+  ledger.selectionReopen = { gui: "cleared", mcp: "cleared", triangles: 7282 };
   assert.equal(errors.length, 0, errors.join("\n"));
   assert.equal(stderr, "", stderr);
   ledger.steps = [
@@ -962,6 +1040,7 @@ try {
     "saved inspection metadata preserves history and binary project save/reopen reproduces GUI report",
     "retained report tolerance controls legend and heatmap independently of GUI input",
     "indexed source corner mapping, hidden face filtering, stale rejection, alignment transform, edit and Undo/Redo",
+    "GUI and MCP project replacement clear the previous transient selection",
   ];
   console.log("PASS: " + ledger.steps.join("; "));
 } catch (error) {

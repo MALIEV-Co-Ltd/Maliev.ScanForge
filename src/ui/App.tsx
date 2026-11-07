@@ -3647,6 +3647,9 @@ export function App() {
         cad.current = restoredCad;
         knownKernelIds.current = new Set();
         pendingImportFit.current = null;
+        selectionSessions.current.clear();
+        setTriangleMask(null);
+        setSelectionVersion((value) => value + 1);
         setEntities(restored);
         setSelectedId(
           project.authoring?.activeSketchId ? null : (restored[0]?.id ?? null),
