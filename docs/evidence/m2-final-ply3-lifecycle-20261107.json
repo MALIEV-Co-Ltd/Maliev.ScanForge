@@ -28,9 +28,18 @@
     "temporaryProjectRetained": "C:/Users/Shoung/AppData/Local/Temp/m2-final-ply3-reopen-20261107/gui-reopen.scanforge",
     "temporaryProjectCleanup": "Automatic approval review rejected removal as blocked by policy."
   },
+  "preexistingProjectReopenControl": {
+    "passed": false,
+    "method": "Read the retained project without exporting or downloading it in this run, after a fresh GUI Split and Extract.",
+    "projectSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+    "failure": "GUI did not report the project opened within the 120-second wait; a follow-up probe also timed out.",
+    "peakJobBytes": 4295184384,
+    "peakWithinLimit": false,
+    "processCleanupConfirmed": true
+  },
   "limitations": [
     "The comparison and reopen are separate runs, and the failed run does not establish post-reopen geometry or history correctness.",
-    "The timeout and peak are observed together; their causal relationship was not established.",
+    "Both reopen runs timed out and recorded peaks above the limit. The runs do not establish the cause of either timeout or isolate a preceding download as the cause.",
     "Neither run fixes or validates independent mutable restore ownership or native Split parity."
   ]
 }
