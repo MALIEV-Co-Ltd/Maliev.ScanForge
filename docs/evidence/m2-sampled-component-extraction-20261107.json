@@ -40,5 +40,30 @@
   "limitations": [
     "These are editable sampled triangle objects without protected exact CAD geometry, not native QuickSurface comparisons.",
     "Protected exact geometry continues to require a mesh copy through the existing operation admission checks."
-  ]
+  ],
+  "exactCadFollowup": {
+    "scope": "Defense in depth for exact CAD at shared publication and stale panel state; the normal GUI already required a mesh copy.",
+    "focusedTestsPassed": 54,
+    "browser": "Genuine CAD box requires a mesh copy in the GUI; MCP refuses extraction without changing source or history. Sampled plane and CAD-kind GUI/MCP cases also passed.",
+    "jobLimitBytes": 34110816256,
+    "browserPeakJobBytes": 1169780736,
+    "activeProcessesAfter": 0,
+    "limitations": "This is an application guard and one browser control, not native geometry acceptance.",
+    "build": {
+      "passed": true,
+      "id": "scanforge-f7c10a6d03dee25e",
+      "typecheckBatches": 15,
+      "peakJobBytes": 1920942080,
+      "activeProcessesAfter": 0
+    },
+    "fullSuite": {
+      "passedFiles": 840,
+      "skippedFiles": 32,
+      "passedTests": 50928,
+      "expectedFailures": 2,
+      "skippedTests": 79,
+      "peakJobBytes": 1312440320,
+      "activeProcessesAfter": 0
+    }
+  }
 }

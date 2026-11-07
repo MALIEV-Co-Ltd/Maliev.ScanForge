@@ -114,6 +114,27 @@ it("rejects incomplete and locked component transactions without changing the so
   expect(before.positions).toBe(triangle);
   expect(before.visible).toBe(true);
 });
+it("rejects extraction from exact CAD without replacing its source", () => {
+  expect(() =>
+    componentExtractionPublication([source], source.id, { positions: [] }, [
+      triangle,
+    ]),
+  ).toThrow(/mesh copy/i);
+  expect(source.kernelId).toBe("original");
+  const parametric = {
+    ...source,
+    kernelId: undefined,
+    parametric: {} as NonNullable<Entity["parametric"]>,
+  };
+  expect(() =>
+    componentExtractionPublication(
+      [parametric],
+      parametric.id,
+      { positions: [] },
+      [triangle],
+    ),
+  ).toThrow(/mesh copy/i);
+});
 it("publishes scanner normals for the remaining source and extracted part", () => {
   const shifted = new Float32Array([3, 0, 0, 4, 0, 0, 3, 1, 0]);
   const sourceNormals = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);

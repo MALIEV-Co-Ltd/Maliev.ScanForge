@@ -117,6 +117,13 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
   }
   async function run(operation: ScanPanelOperation, label: string) {
     if (owner.current || props.positions.length < 9) return;
+    if (
+      operation.action === "componentExtract" &&
+      (sourceEntity?.kernelId || sourceEntity?.parametric)
+    ) {
+      props.onError("Create a mesh copy before editing exact CAD geometry.");
+      return;
+    }
     const controller = new AbortController();
     owner.current = controller;
     setBusy(true);
@@ -165,6 +172,8 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
           source.positions !== current.positions ||
           source.indexedMesh !== sourceIndexed ||
           source.normals !== sourceEntity?.normals ||
+          source.kernelId !== sourceEntity?.kernelId ||
+          source.parametric !== sourceEntity?.parametric ||
           source.locked
         )
           throw new Error(

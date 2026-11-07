@@ -16,6 +16,54 @@ vi.mock("react", async () => ({
 }));
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
+it.each(["kernel", "parametric"] as const)(
+  "rejects %s CAD extraction before starting a worker",
+  async (kind) => {
+    vi.mocked(processMesh).mockClear();
+    const source: Entity = {
+      id: "cad",
+      name: "CAD",
+      kind: "cad",
+      positions: new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]),
+      visible: true,
+      color: "#ffffff",
+      opacity: 1,
+      ...(kind === "kernel"
+        ? { kernelId: "exact" }
+        : { parametric: {} as NonNullable<Entity["parametric"]> }),
+    };
+    const props: ScanTopologyPanelsProps = {
+      section: "components",
+      positions: source.positions,
+      selectedId: source.id,
+      entities: [source],
+      onReplace: vi.fn(),
+      onCreate: vi.fn(),
+      onSelection: vi.fn(),
+      onProject: vi.fn(),
+      onStatus: vi.fn(),
+      onError: vi.fn(),
+      onBack: vi.fn(),
+      wireframe: false,
+      onWireframe: vi.fn(),
+    };
+    const controls = ScanTopologyPanels(
+      props,
+    ) as ReactElement<ScanTopologyControlsProps>;
+    controls.props.onOperation(
+      { action: "componentExtract", indices: [0] },
+      "Create new object",
+    );
+    await vi.waitFor(() =>
+      expect(props.onError).toHaveBeenCalledWith(
+        expect.stringMatching(/mesh copy/i),
+      ),
+    );
+    expect(processMesh).not.toHaveBeenCalled();
+    expect(props.onCreate).not.toHaveBeenCalled();
+  },
+);
+
 it("publishes the source remainder and component together from the panel", async () => {
   const source: Entity = {
     id: "scan",
@@ -90,7 +138,7 @@ it("publishes the source remainder and component together from the panel", async
   expect(props.onError).not.toHaveBeenCalled();
 });
 
-it.each(["locked", "normals", "topology"])(
+it.each(["locked", "normals", "topology", "kernel", "parametric"])(
   "does not publish after source %s changes during extraction",
   async (change) => {
     const source: Entity = {
@@ -136,14 +184,18 @@ it.each(["locked", "normals", "topology"])(
         ...source,
         ...(change === "locked"
           ? { locked: true }
-          : change === "normals"
-            ? { normals: new Float32Array(9) }
-            : {
-                indexedMesh: {
-                  vertices: source.positions,
-                  triangles: new Uint32Array([0, 1, 2]),
-                },
-              }),
+          : change === "kernel"
+            ? { kernelId: "exact" }
+            : change === "parametric"
+              ? { parametric: {} as NonNullable<Entity["parametric"]> }
+              : change === "normals"
+                ? { normals: new Float32Array(9) }
+                : {
+                    indexedMesh: {
+                      vertices: source.positions,
+                      triangles: new Uint32Array([0, 1, 2]),
+                    },
+                  }),
       },
     ];
     finish({

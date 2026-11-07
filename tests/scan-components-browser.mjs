@@ -267,6 +267,63 @@ try {
     preciseComponents
       ? assert.deepEqual(actual, expected, message)
       : assert.equal(digest(actual), digest(expected), message);
+  if (process.env.SCANFORGE_COMPONENT_EXACT_CAD === "1") {
+    const created = await job(
+      await mutate("cad_create", {
+        name: "Exact component guard",
+        recipe: {
+          kind: "primitive",
+          input: { kind: "box", center: [0, 0, 0], size: [2, 2, 2] },
+        },
+      }),
+    );
+    const cadId = created.result.entityIds[0];
+    await mutate("object_select", { entityId: cadId });
+    const before = await call("project_get");
+    const beforeGeometry = await geometry(cadId);
+    assert(
+      before.result.objects.find((object) => object.id === cadId).exactCad,
+    );
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await page
+      .getByRole("button", { name: "Create mesh copy", exact: true })
+      .waitFor();
+    assert.equal(
+      await page
+        .getByRole("button", { name: "Edit individual meshes", exact: true })
+        .count(),
+      0,
+    );
+    const afterGui = await call("project_get");
+    assert.equal(afterGui.revision, before.revision);
+    assert.equal(afterGui.result.undo, before.result.undo);
+    rawEqual(
+      await geometry(cadId),
+      beforeGeometry,
+      "GUI changed protected CAD geometry",
+    );
+    const rejected = await job(
+      await mutate("mesh_process", {
+        entityId: cadId,
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [0],
+        },
+      }),
+      "failed",
+    );
+    assert.match(JSON.stringify(rejected.error), /mesh copy/i);
+    const afterMcp = await call("project_get");
+    assert.equal(afterMcp.revision, before.revision);
+    assert.equal(afterMcp.result.undo, before.result.undo);
+    rawEqual(
+      await geometry(cadId),
+      beforeGeometry,
+      "MCP changed protected CAD geometry",
+    );
+    await mutate("project_new", { discard: true });
+  }
   if (process.env.SCANFORGE_COMPONENT_SAMPLED_KIND === "1") {
     for (const kind of ["plane", "cad"]) {
       const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0];

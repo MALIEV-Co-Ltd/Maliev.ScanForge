@@ -26,6 +26,8 @@ export function componentExtractionPublication(
     throw Error("Choose the source mesh before extracting components.");
   assertSampledGeometry(source);
   if (source.locked) throw Error("Object is locked.");
+  if (source.kernelId || source.parametric)
+    throw Error("Create a mesh copy before editing exact CAD geometry.");
   if (
     source.normals &&
     (!segmentNormals || (remainder.positions.length && !remainder.normals))

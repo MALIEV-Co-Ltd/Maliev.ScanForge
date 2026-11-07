@@ -541,6 +541,25 @@ it("preserves an empty source when MCP extracts the last component", async () =>
   ).toEqual(new Float32Array(triangle));
   expect(h.host.commit).toHaveBeenCalledTimes(1);
 });
+it("rejects MCP component extraction of exact CAD before processing", async () => {
+  vi.mocked(processMesh).mockClear();
+  const h = harness([entity({ kind: "cad", kernelId: "exact" })]);
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [0],
+        },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/mesh copy/i);
+  expect(processMesh).not.toHaveBeenCalled();
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
 it.each(["plane", "cad"] as const)(
   "exposes extraction of a sampled %s through MCP",
   async (kind) => {
