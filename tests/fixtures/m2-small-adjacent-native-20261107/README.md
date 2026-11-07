@@ -2,7 +2,7 @@
 
 `source.stl` contains original `scan-1.stl` facets 263015 and 263016 in that order; its SHA-256 is `29f3e48716eb2d27f0e14ef49cf9a58a3d3d9819003bbb13439f06cdc36e5530`. They share an exact edge. QuickSurface Pro 8.0.123 imported the file in millimetres, reported four points and two triangles, and its Edit Scan dialog reported one individual mesh and one hole. The imported object was left hidden in the unsaved native scene. No native output export or algorithm trace was captured.
 
-Before the indexed-component fix, ScanForge reported two one-triangle components at 0.001 mm and one two-triangle component at 0.000001 mm. The indexed inventory and component editor now retain the shared edge for this native fixture. Unindexed inputs still weld at the requested tolerance and retain an expected-failure regression for this control. These observations do not establish a general native weld threshold.
+Before the indexed-component fix, ScanForge reported two one-triangle components at 0.001 mm and one two-triangle component at 0.000001 mm. The indexed inventory and component editor now retain the shared edge for this native fixture. Unindexed inputs still weld at the requested tolerance, but component grouping now retains the nonzero shared edge of the collapsed face and reports one component for this control. This matches the native count without recreating native vertex identities. These observations do not establish a general native weld threshold.
 
 REA's PE resource inspection identified the executable as SHA-256 `0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d`. That inspection identifies the binary; it does not recover the component-grouping algorithm.
 

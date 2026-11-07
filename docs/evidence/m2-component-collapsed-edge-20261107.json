@@ -1,0 +1,484 @@
+{
+  "scope": "Component membership for a welded-collapsed face; shared GUI, public MCP and bounded resource controls. Not general native connectivity acceptance.",
+  "baseCommit": "7c5ad1f5",
+  "build": "scanforge-22caba9c0aeee7e3",
+  "nativeControl": "tests/fixtures/m2-small-adjacent-native-20261107/README.md",
+  "nativeSourceSha256": "29f3e48716eb2d27f0e14ef49cf9a58a3d3d9819003bbb13439f06cdc36e5530",
+  "change": "Component grouping retains each edge with distinct endpoint identities, even when another edge of the face collapses. Boundary and hole safety diagnostics are unchanged.",
+  "browser": {
+    "nativeStlKeyBoundary": {
+      "low": {
+        "vertices": 4,
+        "components": 1
+      },
+      "high": {
+        "vertices": 6,
+        "components": 2
+      },
+      "guiMcp": true
+    },
+    "collapsedUnindexedNativeFixture": {
+      "guiMcpComponents": 1,
+      "triangles": 2,
+      "guiMcpExtractAndUndo": true,
+      "pendingFailureAndRetry": true,
+      "fullAndScopedInventory": true,
+      "originalCornersPreserved": true
+    },
+    "nearEdgeNativeControl": {
+      "nativeComponents": 2,
+      "indexedGuiMcp": 2,
+      "unindexedGuiMcp": 1,
+      "toleranceMm": 0.001
+    },
+    "browserHeapLimitBytes": 4395630592,
+    "nativeLifecycleExport": {
+      "nativeOutputSha256": "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+      "guiMcpOrderedCoordinatesMatch": true,
+      "guiMcpFacetNormalsMatch": true,
+      "guiComponentProgress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.135,
+          "stage": "Building topology"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.22499999999999998,
+          "stage": "Finding connected components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.285,
+          "stage": "Checking vertex surface fans"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Topology complete"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Compacting component indices"
+        }
+      ],
+      "mcpComponentProgress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.135,
+          "stage": "Building topology"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.22499999999999998,
+          "stage": "Finding connected components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.285,
+          "stage": "Checking vertex surface fans"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Topology complete"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Compacting component indices"
+        }
+      ],
+      "sourceRemainder": true,
+      "guiMcpUndoRedo": true,
+      "binaryReopen": true
+    },
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9.00000000000002],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "heldMcpProgress": {
+      "status": "running",
+      "progress": 0.8999999999999999,
+      "stage": "Scan edit complete"
+    },
+    "guiCancelAndBack": true,
+    "heldGuiProgress": {
+      "stage": ""
+    },
+    "heldGuiStatus": "Scan edit complete \u00b7 90%",
+    "progressLayout": {
+      "outsideScroller": true,
+      "panelBusy": null,
+      "controlsBusy": "true",
+      "top": 196,
+      "bottom": 211.390625,
+      "left": 277,
+      "textInset": 10,
+      "panelLeft": 277,
+      "panelTop": 156,
+      "footerTop": 474,
+      "viewportHeight": 600
+    },
+    "independentCornerNormalsGuiMcp": true,
+    "pageErrors": [],
+    "largeIndexedInventory": {
+      "triangles": 66048,
+      "area": 33024,
+      "jsonArray": true,
+      "publicMcpExtractUndoRedo": true,
+      "smallComponentLargeRemainder": true,
+      "progress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.813,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.813,
+          "stage": "Compacting component indices"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.95,
+          "stage": "Preparing component display"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.95,
+          "stage": "Packing precise scan segments"
+        }
+      ]
+    }
+  },
+  "largeUnindexed": {
+    "source": "C:/repo/alignment-example-files/scan-1.stl",
+    "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "faces": 273139,
+    "assertions": [
+      "Every face remained in component inventory.",
+      "Source faces 263015 and 263016 belonged to the same component."
+    ],
+    "method": "Disposable Vitest test called shared scanEdit component inventory with unindexed STL corners and 0.001 mm tolerance.",
+    "limitations": [
+      "This was a direct shared-operation check, not GUI or public MCP for the large scan.",
+      "Active cancellation and larger unindexed degenerate meshes were not tested."
+    ]
+  },
+  "largePlyLifecycle": {
+    "inputFaces": 3691133,
+    "crossOriginIsolated": true,
+    "outputFaces": 3695945,
+    "exportedBytes": 558745713,
+    "reopenedGeometryEqual": true,
+    "cutterPreserved": true,
+    "reopenedUndo": true,
+    "reopenedRedoGeometry": true,
+    "initializedComputedNormals": [
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 5612016,
+        "sha256": "eec667db9a44bda177be4adb84b247ccfcd185548fd8e6f369763da7119510f4"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 11087835,
+        "sha256": "1014207222d90d21bc369cca0c0189654e49274ba3f82b7657905141a8e3384c"
+      }
+    ],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "focusedTests": {
+    "passed": 224,
+    "expectedFailures": 1,
+    "files": 9
+  },
+  "fullSuite": {
+    "passed": 50954,
+    "expectedFailures": 1,
+    "skipped": 77,
+    "filesPassed": 848,
+    "filesSkipped": 30,
+    "exclusion": "**/.resources/**"
+  },
+  "receipts": {
+    "m2-component-collapse-red-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/scan-component-groups.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 377810944,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 1.6703916999977082
+    },
+    "m2-component-collapse-green-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/scan-component-groups.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 388710400,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 1.6995258000097238
+    },
+    "m2-component-collapse-resource-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-component-collapse-resource-temp.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 475770880,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 2.094717700005276
+    },
+    "m2-collapse-ui-status-red-guard-20261107": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 994721792,
+      "totalProcesses": 17,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 8.749724400011473
+    },
+    "m2-collapse-retry-red-guard-20261107": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 983539712,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 19.054833200003486
+    },
+    "m2-collapse-final-focused-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/scan-component-groups.test.ts",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/m2-near-edge-native.test.ts",
+        "tests/scan-edit.test.ts",
+        "tests/scan-indexed-segment-worker.test.ts",
+        "tests/scan-topology-panels.test.tsx",
+        "tests/scan-diagnostics.test.ts",
+        "tests/processing-client.test.ts",
+        "tests/automation-api.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 549904384,
+      "totalProcesses": 16,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 6.6883350999996765
+    },
+    "m2-collapse-retry-vite-20261107": {
+      "command": ["node", "node_modules/vite/bin/vite.js", "build"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1977188352,
+      "totalProcesses": 7,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 7.965822800004389
+    },
+    "m2-collapse-retry-manifest-20261107": {
+      "command": ["node", "scripts/offline-manifest.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 121540608,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 0.22598000000289176
+    },
+    "m2-collapse-retry-typecheck-20261107": {
+      "command": ["node", "scripts/typecheck.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1216225280,
+      "totalProcesses": 17,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 146.5441986000078
+    },
+    "m2-collapse-retry-suite-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1307566080,
+      "totalProcesses": 1006,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 391.7314813000121
+    },
+    "m2-collapse-browser-proof-guard-20261107": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1417744384,
+      "totalProcesses": 17,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.446937799992156
+    },
+    "m2-collapse-ply3-guard-20261107": {
+      "command": [
+        "node",
+        "tests/m2-original-split-persistence-browser-local.mjs"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 5722357760,
+      "totalProcesses": 23,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 202.7210008999973
+    }
+  },
+  "review": "Independent review found no further concrete grouping or UI ownership defect; it noted unindexed degenerate meshes can require additional whole-mesh grouping and duplicate area work.",
+  "limitations": [
+    "The small native fixture was imported with native vertex identity; the matching unindexed component count does not establish general native unindexed semantics or identical welded vertex identities.",
+    "The separate near-edge unindexed native control remains an expected failure under the documented tolerance.",
+    "Areas in the unindexed inventory use welded topology, so collapsed faces can contribute zero area.",
+    "M2 native coverage, active large-mesh cancellation, integration and closure remain open."
+  ]
+}

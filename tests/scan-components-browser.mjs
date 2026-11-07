@@ -157,6 +157,26 @@ try {
         super(url, options);
         if (String(url).includes("processing-worker"))
           this.addEventListener("message", (e) => {
+            if (
+              this.__componentInventory &&
+              window.__holdComponentInventory &&
+              e.data.result
+            ) {
+              e.stopImmediatePropagation();
+              window.__pendingComponentInventory = true;
+              window.__finishComponentInventory = (fail) => {
+                window.__holdComponentInventory = false;
+                this.dispatchEvent(
+                  new MessageEvent("message", {
+                    data: fail
+                      ? { error: "Controlled component inventory failure" }
+                      : e.data,
+                  }),
+                );
+              };
+              return;
+            }
+            const componentAction = this.__componentAction;
             if (this.__componentAction && typeof e.data.progress === "number")
               window.__componentProgressTrace.push({
                 action: this.__componentAction,
@@ -165,13 +185,21 @@ try {
               });
             if (e.data.result || e.data.error)
               this.__componentAction = undefined;
-            if (window.__holdComponentResult && e.data.result) {
+            if (
+              window.__holdComponentResult &&
+              e.data.result &&
+              componentAction
+            ) {
               e.stopImmediatePropagation();
               window.__pendingComponentResult = true;
             }
           });
       }
       postMessage(message, ...rest) {
+        if (message?.kind === "scanEdit")
+          this.__componentInventory =
+            message.action === "inventory" &&
+            message.inventoryScope === "components";
         if (message?.kind === "scanEdit")
           this.__componentAction = message.action?.startsWith("component")
             ? message.action
@@ -1096,6 +1124,167 @@ try {
     nearUnindexed.inventory.components.map((c) => c.triangles.length),
     [2],
   );
+  // Exercise the same native fixture without imported index identity.
+  const collapsedProject = {
+    format: "maliev-scanforge",
+    version: 1,
+    name: "Collapsed component control",
+    units: "mm",
+    entities: [
+      {
+        id: "collapsed",
+        name: "Collapsed component",
+        kind: "mesh",
+        positions: nativeSourceGeometry,
+        color: "#b4bec4",
+        visible: true,
+        opacity: 1,
+      },
+    ],
+  };
+  const collapsedUpload = (
+    await call("artifact_put", {
+      name: "collapsed-component.json",
+      offset: 0,
+      base64: Buffer.from(JSON.stringify(collapsedProject)).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: collapsedUpload.artifactId,
+      replace: true,
+    }),
+  );
+  await call("artifact_delete", { artifactId: collapsedUpload.artifactId });
+  await mutate("object_select", { entityId: "collapsed" });
+  await page.evaluate(() => {
+    window.__holdComponentInventory = true;
+  });
+  await mutate("command_run", { name: "ribbon:editScan" });
+  await page.waitForFunction(
+    () => window.__pendingComponentInventory === true,
+    null,
+    { timeout: 60000 },
+  );
+  assert.equal(
+    await page
+      .locator('output[aria-label="Individual meshes count"]')
+      .textContent(),
+    "Calculating…",
+  );
+  await page.evaluate(() => window.__finishComponentInventory(true));
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('output[aria-label="Individual meshes count"]')
+        ?.textContent?.trim() === "Unavailable",
+  );
+  await page
+    .getByRole("button", { name: "Retry component count", exact: true })
+    .click();
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('output[aria-label="Individual meshes count"]')
+        ?.textContent?.trim() === "1",
+    null,
+    { timeout: 60000 },
+  );
+  const collapsedInventory = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: "collapsed",
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            inventoryScope: "components",
+            tolerance: 0.001,
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  assert.deepEqual(
+    collapsedInventory.inventory.components.map((c) => c.triangles.length),
+    [2],
+  );
+  const collapsedFull = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: "collapsed",
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            tolerance: 0.001,
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  assert.deepEqual(
+    collapsedFull.inventory.components.map((c) => c.triangles.length),
+    [2],
+  );
+  await page
+    .getByRole("button", { name: "Edit individual meshes", exact: true })
+    .click();
+  const collapsedControls = page.getByRole("region", {
+    name: "Individual meshes",
+    exact: true,
+  });
+  await collapsedControls
+    .getByRole("button", { name: /2 triangles/ })
+    .waitFor();
+  const collapsedBaseline = (await call("project_get")).result.undo;
+  await collapsedControls
+    .getByRole("button", { name: "Create new object", exact: true })
+    .click();
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if ((await call("project_get")).result.undo === collapsedBaseline + 1)
+      break;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  await idle();
+  const collapsedGuiProject = (await call("project_get")).result;
+  assert.equal(collapsedGuiProject.objects.length, 2);
+  const collapsedGuiPart = collapsedGuiProject.objects.find(
+    (object) => object.id !== "collapsed",
+  );
+  rawEqual(
+    await geometry(collapsedGuiPart.id),
+    nativeSourceGeometry,
+    "GUI collapsed component changed source corners",
+  );
+  await mutate("history_undo", {});
+  await job(
+    await mutate("mesh_process", {
+      entityId: "collapsed",
+      operation: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [0],
+        tolerance: 0.001,
+      },
+    }),
+  );
+  const collapsedMcpProject = (await call("project_get")).result;
+  assert.equal(collapsedMcpProject.objects.length, 2);
+  const collapsedMcpPart = collapsedMcpProject.objects.find(
+    (object) => object.id !== "collapsed",
+  );
+  rawEqual(
+    await geometry(collapsedMcpPart.id),
+    nativeSourceGeometry,
+    "MCP collapsed component changed source corners",
+  );
+  await mutate("history_undo", {});
+  assert.deepEqual(await geometry("collapsed"), nativeSourceGeometry);
+  if (await collapsedControls.isVisible())
+    await collapsedControls
+      .getByRole("button", { name: "Back", exact: true })
+      .click();
   const positions = [],
     groups = [];
   for (let n = 1; n <= 3; n++) {
@@ -1350,7 +1539,10 @@ try {
       if (c.area) {
         await controls.locator(".app-select > button").click();
         await page
-          .getByRole("option", { name: "Area smaller than (mm²)", exact: true })
+          .getByRole("option", {
+            name: "Area smaller than (mm²)",
+            exact: true,
+          })
           .click();
       }
       await controls
@@ -1888,6 +2080,14 @@ try {
       low: { vertices: 4, components: 1 },
       high: { vertices: 6, components: 2 },
       guiMcp: true,
+    },
+    collapsedUnindexedNativeFixture: {
+      guiMcpComponents: 1,
+      triangles: 2,
+      guiMcpExtractAndUndo: true,
+      pendingFailureAndRetry: true,
+      fullAndScopedInventory: true,
+      originalCornersPreserved: true,
     },
     nearEdgeNativeControl: {
       nativeComponents: 2,

@@ -633,7 +633,7 @@ export function runIndexedComponentExtract(
 
 /** Worker-only inventory after exact indexed-corner admission. */
 export function runIndexedComponentInventory(
-  mesh: import("./types").IndexedMesh,
+  mesh: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
   o: ScanEditOptions = {},
   compactIndices = false,
 ): ScanEditResult {
@@ -872,10 +872,10 @@ function scanEdit(
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t, o.signal);
-    if (r.sourceIndexed)
+    if (r.sourceIndexed || t.degenerateTriangles > 0)
       inventory.components = runIndexedComponentInventory(
-        r.sourceIndexed,
-        o,
+        r.sourceIndexed ?? { vertices: t.vertices, triangles: t.triangles },
+        { ...o, onProgress: undefined },
       ).inventory!.components;
     if (r.inventoryScope === "components")
       return {
@@ -972,11 +972,17 @@ function scanEdit(
     : cachedMatches
       ? { vertices: t.vertices, triangles: t.triangles }
       : undefined;
+  const components = t.degenerateTriangles
+    ? runIndexedComponentInventory(
+        { vertices: t.vertices, triangles: t.triangles },
+        { ...o, onProgress: undefined },
+      ).inventory!.components.map((component) => component.triangles)
+    : t.components;
   return componentEdit(
     r,
     o,
-    t.components.length,
-    (index) => t.components[index],
+    components.length,
+    (index) => components[index],
     indexed,
   );
 }

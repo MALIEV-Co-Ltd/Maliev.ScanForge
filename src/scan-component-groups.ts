@@ -53,12 +53,12 @@ export function compactComponentGroups(
       c * 3 + 2 >= vertices.length
     )
       throw new Error("Indexed component vertex is out of range.");
-    // Native component traversal follows stored edges even for zero-area faces.
-    if (a === b || b === c || c === a) continue;
+    // Component connectivity retains nonzero edges even when a face collapses.
     for (let local = 0; local < 3; local++) {
       const corner = face * 3 + local;
       const from = triangles[corner],
         to = triangles[face * 3 + ((local + 1) % 3)];
+      if (from === to) continue;
       const u = Math.min(from, to),
         v = Math.max(from, to);
       let slot = hash(u, v) & (slots.length - 1);

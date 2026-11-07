@@ -4,6 +4,14 @@ import { compactComponentGroups } from "../src/scan-component-groups";
 import { runIndexedComponentExtract, runScanEdit } from "../src/scan-edit";
 
 describe("compact indexed components", () => {
+  it("joins nonzero shared edges of collapsed faces without joining self edges", () => {
+    const vertices = [0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0, 0];
+    const triangles = Uint32Array.from([0, 0, 1, 1, 0, 2, 3, 3, 3]);
+    const result = compactComponentGroups(vertices, triangles);
+    expect(result.count).toBe(2);
+    expect(Array.from(result.groups)).toEqual([0, 0, 1]);
+  });
+
   it("does not report coordinate or index preparation as complete", () => {
     const positions = new Float32Array([
       0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
@@ -156,7 +164,6 @@ describe("compact indexed components", () => {
     ["point-only contact", [0, 1, 2, 0, 3, 4]],
     ["nonmanifold edge", [0, 1, 2, 1, 0, 3, 0, 1, 4]],
     ["duplicate facets", [0, 1, 2, 0, 1, 2]],
-    ["degenerate facet", [0, 1, 2, 0, 0, 1]],
     ["coincident indexed faces", [0, 1, 2, 5, 6, 7]],
   ])("matches full topology for %s", (_name, values) => {
     const vertices = new Float64Array([
@@ -207,16 +214,13 @@ describe("compact indexed components", () => {
         expected[start] = group;
         const pending = [start];
         for (const face of pending) {
-          if (new Set(faces[face]).size !== 3) continue;
+          const currentVertices = new Set(faces[face]);
           for (let next = 0; next < faces.length; next++) {
-            if (
-              expected[next] !== 0xffffffff ||
-              new Set(faces[next]).size !== 3
-            )
-              continue;
-            if (
-              faces[next].filter((id) => faces[face].includes(id)).length >= 2
-            ) {
+            if (expected[next] !== 0xffffffff) continue;
+            const shared = [...new Set(faces[next])].filter((id) =>
+              currentVertices.has(id),
+            );
+            if (shared.length >= 2) {
               expected[next] = group;
               pending.push(next);
             }

@@ -23,12 +23,9 @@ const componentCounts = (tolerance: number) =>
     tolerance,
   }).inventory!.components.map((c) => c.triangles.length);
 
-it.fails(
-  "matches the native single component at the application tolerance",
-  () => {
-    expect(componentCounts(0.001)).toEqual([2]);
-  },
-);
+it("matches the native single component at the application tolerance", () => {
+  expect(componentCounts(0.001)).toEqual([2]);
+});
 
 it("groups this same control at finer tolerance", () => {
   expect(componentCounts(0.000001)).toEqual([2]);
@@ -96,4 +93,22 @@ it("connects the native collinear-face control across its shared edge", () => {
   expect(result.inventory!.components.map((c) => c.triangles.length)).toEqual([
     2,
   ]);
+});
+
+it("uses the same component for scoped inventory and extraction after welding", () => {
+  const base = { kind: "scanEdit" as const, positions, tolerance: 0.001 };
+  const scoped = runScanEdit({
+    ...base,
+    action: "inventory",
+    inventoryScope: "components",
+  });
+  expect(scoped.inventory!.components.map((c) => c.triangles.length)).toEqual([
+    2,
+  ]);
+  const extracted = runScanEdit({
+    ...base,
+    action: "componentExtract",
+    indices: [0],
+  });
+  expect(extracted.segments!.map((segment) => segment.length / 9)).toEqual([2]);
 });
