@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { CheckCircle2, CircleAlert, TriangleAlert, Info } from "lucide-react";
+import { Check, Circle, Triangle } from "./GeneratedUiIcons";
 import type { ProcessingResult } from "../processing-client";
 import "./MeshOperationResult.css";
 
@@ -83,13 +83,7 @@ export function MeshOperationResult({ result }: { result: ProcessingResult }) {
         insufficientOverlap: "Insufficient compatible overlap",
       }[fine.terminationReason]
     : undefined;
-  const Icon = success
-    ? CheckCircle2
-    : unchanged
-      ? CircleAlert
-      : fine || result.refinement
-        ? TriangleAlert
-        : Info;
+  const Icon = success ? Check : fine || result.refinement ? Triangle : Circle;
   const diagnostics: Metric[] = Object.entries(result.diagnostics)
     .filter(
       ([key]) => !["pointCloudPose", "localBuffersRetained"].includes(key),

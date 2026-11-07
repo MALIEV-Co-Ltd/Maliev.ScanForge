@@ -12,7 +12,7 @@
   gap: 8px;
   align-items: flex-start;
 }
-.mesh-result-outcome > svg {
+.mesh-result-outcome > img {
   flex: 0 0 auto;
   margin-top: 1px;
 }
