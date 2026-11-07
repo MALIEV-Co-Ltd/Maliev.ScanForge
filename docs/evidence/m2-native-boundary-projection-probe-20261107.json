@@ -1,0 +1,19 @@
+{
+  "scope": "Locate and probe native planar boundary projection on the retained two-triangle imported STL; no output geometry comparison",
+  "nativeApplication": "QuickSurface Pro 8.0.123",
+  "sourceFixture": "tests/fixtures/m2-small-adjacent-native-20261107/source.stl",
+  "sourceSha256": "29f3e48716eb2d27f0e14ef49cf9a58a3d3d9819003bbb13439f06cdc36e5530",
+  "nativeImportedObject": "m2-small-adjacent-native-20261107",
+  "observations": [
+    "Edit Scan reported one individual mesh and one hole; Edit boundaries reported one boundary.",
+    "In Edit Scan, the third Additional tools icon showed the tooltip Project the mesh boundaries on OXY plane.",
+    "Activating that icon with no explicit boundary or triangle selection returned to the same edit dialog; after closing it, inspection of the object list did not show a new sketch.",
+    "The original scan was restored as the visible selected object and the fixture was hidden."
+  ],
+  "limitations": [
+    "No geometry or exported sketch was captured; the action may require a selection or another context.",
+    "The visible object list is not proof that no transient internal output was created.",
+    "The exact selection and publication semantics and GUI/MCP/native equivalence remain unverified."
+  ],
+  "nextProbe": "Establish any required selection or active sketch context before comparing native projected curves and publication with GUI and public MCP."
+}
