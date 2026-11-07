@@ -37,9 +37,18 @@
     "peakWithinLimit": false,
     "processCleanupConfirmed": true
   },
+  "localFilePickerReopenControl": {
+    "passed": false,
+    "method": "Open the same retained project through Chromium's local file-input path without a preceding export or download.",
+    "guiImportReportedComplete": true,
+    "failure": "Browser disconnected during the first post-reopen geometry digest.",
+    "peakJobBytes": 4295237632,
+    "peakWithinLimit": false,
+    "processCleanupConfirmed": true
+  },
   "limitations": [
     "The comparison and reopen are separate runs, and the failed run does not establish post-reopen geometry or history correctness.",
-    "Both reopen runs timed out and recorded peaks above the limit. The runs do not establish the cause of either timeout or isolate a preceding download as the cause.",
+    "Three reopen runs failed and recorded peaks above the limit. The runs do not establish the cause of the failures or isolate a preceding download as the cause.",
     "Neither run fixes or validates independent mutable restore ownership or native Split parity."
   ]
 }
