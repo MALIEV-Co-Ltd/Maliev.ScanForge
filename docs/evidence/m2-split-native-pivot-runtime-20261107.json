@@ -1,0 +1,120 @@
+{
+  "evidence_id": "ev_6a316cd26601b36e8a02b2eef613d64c8da29ce60a3458e36a8c303f4d6ab9e2",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "8f7c31c8-c7de-4b59-aab3-0397dd664df8"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "8f7c31c8-c7de-4b59-aab3-0397dd664df8",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "name": "rea-dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "type": "send",
+        "payload": {
+          "event": "ready",
+          "base": "0x140000000",
+          "path": "C:\\Program Files\\KVS Ltd\\QUICKSURFACE2026\\QuickSurface.exe"
+        }
+      },
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "type": "send",
+        "payload": {
+          "event": "pivot",
+          "n": 1,
+          "start": 0,
+          "end": 2,
+          "values": [
+            4,
+            5,
+            3
+          ],
+          "result": 1,
+          "thread": 36336
+        }
+      },
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "type": "send",
+        "payload": {
+          "event": "pivot",
+          "n": 2,
+          "start": 0,
+          "end": 2,
+          "values": [
+            3,
+            6,
+            4
+          ],
+          "result": 1,
+          "thread": 36336
+        }
+      },
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "type": "send",
+        "payload": {
+          "event": "pivot",
+          "n": 3,
+          "start": 0,
+          "end": 2,
+          "values": [
+            6,
+            4,
+            5
+          ],
+          "result": 1,
+          "thread": 36336
+        }
+      },
+      {
+        "script_id": "dddfdb33-f2b7-4cce-b60a-a1d3a0fb697a",
+        "type": "send",
+        "payload": {
+          "event": "pivot",
+          "n": 4,
+          "start": 0,
+          "end": 2,
+          "values": [
+            5,
+            3,
+            6
+          ],
+          "result": 1,
+          "thread": 36336
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}
