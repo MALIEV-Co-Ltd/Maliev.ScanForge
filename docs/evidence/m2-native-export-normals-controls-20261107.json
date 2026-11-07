@@ -44,5 +44,30 @@
     "Reconstructed topology is derived from exported STL coordinates; it does not establish native internal vertex ownership, seam identity, or all exporter behavior.",
     "This is evidence from retained native exports, not a new QuickSurface execution; one crossing result contains the separately documented unsafe native Split behavior.",
     "No STL exporter behavior changed. The geometric normal records currently exported by ScanForge differ from the recorded native Flip output."
-  ]
+  ],
+  "savedTopologyFollowup": {
+    "scope": "Use pinned QSF saved vertex identities and triangle indices instead of reconstructing topology from STL coordinates for closed and folded Split controls.",
+    "sessions": [
+      {
+        "path": "tests/fixtures/m2-closed-interior-split-20261105/session.qsf",
+        "sha256": "14b86c19f1f05336fb4ca7d72bbb93534ca79718a9c71ca99daa7dc3441b2fc5",
+        "facets": 8
+      },
+      {
+        "path": "tests/fixtures/m2-folded-open-native-20261105/native.qsf",
+        "sha256": "8924eb8b08dc57f1578d09087ba9a68f3fefb18e75c3ccd270a2f75da28a1455",
+        "facets": 11
+      }
+    ],
+    "result": "All 57 Float32 normal components match native STL normals, matched by oriented facet coordinates; stored QSF coordinates and indices are used to compute the vertex normals.",
+    "focusedTestsPassed": 7,
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 306032640,
+    "activeProcessesAfter": 0,
+    "limitations": [
+      "The QSF offsets are fixture-specific and preverified; they do not establish a general QSF parser.",
+      "Vertex normals were recomputed from the saved topology; native in-memory normal vectors were not directly decoded.",
+      "Only these two saved fixtures were checked."
+    ]
+  }
 }

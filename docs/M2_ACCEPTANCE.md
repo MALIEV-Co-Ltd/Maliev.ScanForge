@@ -10,6 +10,8 @@ On the original 273,139-facet scan, GUI and public MCP STL exports after Flip we
 
 Five additional retained QuickSurface exports contain 195 normal components that exactly match the Float32-staged mean of computed vertex normals on their reimported topology. [Evidence](evidence/m2-native-export-normals-controls-20261107.json). This does not establish native internal seam identity or general STL exporter behavior; ScanForge still exports geometric facet normals.
 
+The closed and folded Split controls also match all 57 exported normal components when computed from their pinned QuickSurface project vertex identities and triangle indices. [Evidence](evidence/m2-native-export-normals-controls-20261107.json). Native in-memory vertex-normal values and general seam cases remain unverified.
+
 Read-only REA inspection now connects the native STL branch to candidate visible- and single-object writers containing Float32 add/add/divide-by-three record assembly. [Evidence](evidence/m2-native-stl-writer-static-20261107.json). The path has not been traced during an export, and source normal ownership and other branches remain unverified; the ScanForge export difference remains open.
 
 The same original scan also passed GUI, public MCP and preview comparison for four noise iterations with boundary smoothing off, including cancellation, history and binary reopening under the system-memory guard. A subsequent QuickSurface preview and export produced the identical ordered coordinate digest; REA observed its preview handler and correction routine. [Evidence](evidence/m2-noise-four-boundaryoff-parity-20261107.json). Native STL normals and object-publication equivalence were not compared.
@@ -31,6 +33,8 @@ Pinned candidate `5529cd6` subsequently passed the production build and full sui
 A subsequent review found that component extraction rejected editable sampled plane and CAD-kind objects that the GUI and MCP previously accepted. Shared publication now converts their remainder to a mesh; focused tests and rendered GUI/MCP extraction, undo and binary reopen passed for both kinds. [Evidence](evidence/m2-sampled-component-extraction-20261107.json). The new correction requires final integrated validation.
 
 The normal exact-CAD GUI already required a mesh copy. A follow-up adds the same protection at shared component publication and checks for exact-CAD metadata changes while the panel worker is running. Fifty-four focused tests and an isolated genuine CAD box GUI/public-MCP refusal control passed, alongside sampled plane and CAD-kind extraction. This is a guard control, not native geometry acceptance. [Evidence](evidence/m2-sampled-component-extraction-20261107.json).
+
+Hosted [run 42373798869](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/42373798869) passed build, full suite, both CAD smoke checks and formatting for `b5e0ceb`. The later saved-topology and evidence updates require their own exact-head checks.
 
 Hosted validation of `9736c7a` passed its build, full suite and both CAD smoke checks, but failed repository formatting. The format-only repair and the separately byte-verified Poisson loader exclusion are recorded [here](evidence/m2-hosted-format-repair-20261107.json); the resulting checkpoint `f48386b` passed hosted build, full suite, both CAD smoke checks and formatting in [run 42372108539](https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/42372108539). Subsequent changes need their own validation.
 
