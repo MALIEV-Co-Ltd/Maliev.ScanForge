@@ -174,7 +174,7 @@ large-scan or native behavior. A separate 2,697,877-facet PLY replay observed in
 cancelled through both GUI and public MCP with source buffers and history
 unchanged; the public-MCP cancel arrived before worker dispatch. A subsequent
 Flip and Undo passed. Cancellation delivery remains scheduling-dependent.
-Native original-scan Flip remains open.
+The later [original scan 1 native control](evidence/m2-native-flip-original-scan1-20261107.json) records a live QuickSurface Flip and REA handler/kernel/normal-refresh calls on 273,139 triangles. All native exported faces reverse the input winding exactly, and the shared ScanForge operation produces the same ordered coordinate digest without changing its source. Native STL normal records were not simply bitwise-negated input records; their relationship to ScanForge normal carriers remains unverified. The same-input GUI/public-MCP replay and broad native original-scan acceptance remain open.
 
 ## Boundary smoothing minimum-strength control (2026-10-27)
 

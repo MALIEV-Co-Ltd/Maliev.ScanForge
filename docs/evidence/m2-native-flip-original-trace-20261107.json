@@ -1,0 +1,75 @@
+{
+  "evidence_id": "ev_4bceb099010f538d50c6c7eb398dc17e448b25cc20b811f272e0d02f70578858",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "3991558c-2ed3-4367-b6d3-4e60cba4e3a7"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "3991558c-2ed3-4367-b6d3-4e60cba4e3a7",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "cc21eff0-df45-44cc-89af-3fc9f4a6e8d7",
+        "name": "rea-cc21eff0-df45-44cc-89af-3fc9f4a6e8d7"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "cc21eff0-df45-44cc-89af-3fc9f4a6e8d7",
+        "type": "send",
+        "payload": {
+          "event": "ready",
+          "base": "0x140000000"
+        }
+      },
+      {
+        "script_id": "cc21eff0-df45-44cc-89af-3fc9f4a6e8d7",
+        "type": "send",
+        "payload": {
+          "event": "handler",
+          "count": 1
+        }
+      },
+      {
+        "script_id": "cc21eff0-df45-44cc-89af-3fc9f4a6e8d7",
+        "type": "send",
+        "payload": {
+          "event": "kernel",
+          "count": 1
+        }
+      },
+      {
+        "script_id": "cc21eff0-df45-44cc-89af-3fc9f4a6e8d7",
+        "type": "send",
+        "payload": {
+          "event": "refresh",
+          "count": 1
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}
