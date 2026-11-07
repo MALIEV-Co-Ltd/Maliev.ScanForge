@@ -1,0 +1,14 @@
+{
+  "baseline": "c4f933a2",
+  "scope": "Local codec ownership diagnostic; mutations deliberately violate the current immutable-geometry convention",
+  "method": "Encode a project containing two different entities whose distinct coordinate arrays have equal values, and a history entry referring to both entities; decode it and mutate the first restored array.",
+  "observed": {
+    "ordinaryArray": "Both entities received the same array; mutation through one was visible through the other.",
+    "float32Array": "Both entities received the same typed array; mutation through one was visible through the other.",
+    "historyAlias": "The history entry retained the intended alias to its corresponding current entity."
+  },
+  "cause": "The encoder deduplicates chunks by content hash and the decoder caches values by chunk and type, so distinct equal source arrays are not distinguished by this format path.",
+  "regression": { "ordinaryAndFloat32Cases": 2, "status": "expected failure for independent mutable ownership", "peakJobBytes": 342093824, "cleanupConfirmed": true },
+  "fullSuiteBeforeNewRegression": { "passed": 50871, "expectedFailures": 2, "skipped": 77, "peakJobBytes": 1345748992, "cleanupConfirmed": true },
+  "limitations": ["The test uses direct in-memory mutations, not a demonstrated GUI or MCP operation.", "No binary-format or decoder change is included; legacy-file compatibility, intended history aliases and memory limits require a coherent design.", "Float64 restore remains experimental and M2 remains open."]
+}
