@@ -1,0 +1,59 @@
+{
+  "scope": "Current candidate compiled original three-scan reconstruction against retained native output; no new native run",
+  "candidate": "7884835a",
+  "bundle": "scanforge-04c9de551ba72a9f",
+  "inputFileSha256": [
+    "d43ea51367880cc315e215b7e8a3e833cfeacb32e143cc7d0cb4e8bd4619a59a",
+    "1ff4c8a524067d3442c8d50fe60826e68c2ec1255d8af6ba18eddc486870b9cf",
+    "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f"
+  ],
+  "result": {
+    "guiMcpNativeOrderedCoordinatesEqual": true,
+    "facetCount": 136,
+    "newOwner": true,
+    "hiddenUnchangedInputs": true,
+    "undoRedo": true,
+    "retryProtected": true,
+    "cancellationRollback": true,
+    "failureRollback": true,
+    "indexedSaveReopen": true,
+    "pageErrors": [],
+    "originalThreeScans": {
+      "inputTriangles": 6147452,
+      "outputTriangles": 50895,
+      "orderedCoordinateSha256": "e3a54940e0d1f2be3b291bab672dd40cd09914339f24cd17671d01bea57a08a2",
+      "guiMcpNativeEqual": true,
+      "allSourceBuffersUnchanged": true,
+      "historyVisibilityRollback": true
+    }
+  },
+  "resource": {
+    "buildPeakJobBytes": 1810587648,
+    "replayPeakJobBytes": 2326704128,
+    "limitBytes": 4294967296,
+    "buildCleanupConfirmed": true,
+    "replayCleanupConfirmed": true,
+    "helperCleanup": [
+      {
+        "port": 54919,
+        "closed": true
+      },
+      {
+        "pid": 26980,
+        "exited": true
+      },
+      {
+        "port": 54920,
+        "closed": true
+      },
+      {
+        "pid": 25096,
+        "exited": true
+      }
+    ]
+  },
+  "limits": [
+    "Retained native output and input poses, not a fresh native run.",
+    "Does not establish general native reconstruction quality or remaining M2 gates."
+  ]
+}
