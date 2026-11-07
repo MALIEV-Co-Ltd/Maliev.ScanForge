@@ -1,0 +1,45 @@
+{
+  "scope": "Fresh native Split export and GUI/public-MCP comparison for one manufactured crossing-segment fixture",
+  "candidate": "0c5b6029",
+  "productionBuild": "scanforge-12844615819f2f7e",
+  "native": {
+    "application": "QUICKSURFACE Pro 8.0.123",
+    "units": "mm",
+    "sourceTriangles": 1,
+    "cutterTriangles": 4,
+    "mode": "Split with another body or a mesh; Envelope unchecked; Preview then OK",
+    "resultTriangles": 14,
+    "individualMeshes": 2,
+    "holes": 2,
+    "resultArea": 0.5,
+    "savedSceneReopened": true,
+    "reopenedSourceTriangles": 14,
+    "reopenedCutterTriangles": 4,
+    "cutterRoundtripFacetMultisetMatches": true
+  },
+  "scanforge": {
+    "resultTriangles": 16,
+    "indexedComponents": 2,
+    "resultArea": 0.5,
+    "commonUnorderedFloat32Facets": 9,
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "pageErrors": [],
+    "peakJobBytes": 935837696,
+    "cleanupConfirmed": true
+  },
+  "files": {
+    "source.stl": "c067e2f6a518d7ddb475b5726e9217ff852f194ef552b864d9a8dc8f9e5491f4",
+    "cutter.stl": "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
+    "native-result.stl": "a4bd38115e18d5d5a8a9095f13c80dff68b795441666302e274beadb0c2522ce",
+    "native-cutter.stl": "0ec4196cb148e51d70a559a50589afd4fdb05e278154c8d105f44a72fab08590",
+    "pivot-split.qsf": "5041cb5fe349ac08023ded1e3b1ffde732e7826f659ce460b7ebaba8b489278c",
+    "native-preview.jpg": "9c80f726fde999732cdea782b42deeb61abce7d36a7216d50021cdf2a9342e28",
+    "native-result-ui.jpg": "5751660c9fc05fee44b6f9b5168722bc8f6a186a3310cc423cfeac7475e67d6f"
+  },
+  "checks": { "focusedTest": "passed", "testTypecheck": "passed", "browserDriver": "tests/scan-split-browser.mjs with SCANFORGE_SPLIT_CASE=native-pivot-crossing" },
+  "limitations": ["This is one manufactured input and does not establish general native parity or the cause of the difference.", "Area equality alone does not prove both results preserve every cutter constraint or have equivalent topology.", "The native session was not placed under the separate browser validation job; the listed peak applies to the compiled browser replay.", "The first browser driver attempt incorrectly expected separate output objects; the corrected in-place lifecycle replay passed.", "No production behavior was changed and the remaining M2 gates remain open."]
+}

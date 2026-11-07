@@ -983,6 +983,35 @@ try {
       inventoryRegression,
     });
   }
+  if (process.env.SCANFORGE_SPLIT_CASE === "native-pivot-crossing") {
+    assert(
+      inputDirectory,
+      "Native pivot comparison needs its fixture directory",
+    );
+    const parseAsciiStl = async (name) =>
+      Array.from(
+        (await readFile(`${inputDirectory}/${name}`, "utf8")).matchAll(
+          /vertex\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)/g,
+        ),
+        (match) => match.slice(1).map((value) => Math.fround(Number(value))),
+      ).flat();
+    fileInputs["native-pivot-crossing"] = ["source.stl", "cutter.stl"];
+    cases.push({
+      name: "native-pivot-crossing",
+      source: await parseAsciiStl("source.stl"),
+      target: await parseAsciiStl("cutter.stl"),
+      kind: "mesh",
+      parts: 2,
+      requiredPoint: [0, 0, 0],
+      method: "open surface signed nearest grouping",
+      fileHashes: {
+        "source.stl":
+          "c067e2f6a518d7ddb475b5726e9217ff852f194ef552b864d9a8dc8f9e5491f4",
+        "cutter.stl":
+          "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
+      },
+    });
+  }
   for (const c of cases) {
     if (radiusDirectory && !c.name.startsWith("point-radius-")) continue;
     if (
