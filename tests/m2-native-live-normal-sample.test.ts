@@ -43,6 +43,32 @@ it.skipIf(!sourcePath)(
         sample.normals,
       );
     }
+    const facets = JSON.parse(
+      readFileSync(
+        new URL(
+          "./fixtures/m2-native-live-facet-sample-20261107.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ) as { vertices: { coordinates: number[]; normals: number[] }[] }[];
+    expect(facets).toHaveLength(7);
+    for (const facet of facets) {
+      const coordinates = facet.vertices.flatMap(
+        (vertex) => vertex.coordinates,
+      );
+      const slots: number[] = [];
+      for (let i = 0; i < positions.length; i += 9)
+        if (coordinates.every((value, k) => Object.is(value, positions[i + k])))
+          slots.push(i / 3);
+      expect(slots).toHaveLength(1);
+      for (let vertex = 0; vertex < 3; vertex++) {
+        const offset = mesh.triangles[slots[0] + vertex] * 3;
+        expect(Array.from(normals.slice(offset, offset + 3))).toEqual(
+          facet.vertices[vertex].normals,
+        );
+      }
+    }
   },
   120000,
 );

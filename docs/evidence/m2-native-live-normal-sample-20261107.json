@@ -29,5 +29,21 @@
       "This is a raw-byte search only; it does not cover read-only mappings, indirect representations, register values, or memory that changed during scanning.",
       "The result does not prove these records are stale, and it does not connect either allocation to a scene object or writer invocation."
     ]
+  },
+  "facetPointerFollowup": {
+    "reaPointerEvidence": "ev_6a79d2a0820a532e2b57de1ac0e3af00d8a6e2bfd784a41447167e53cffb1e5f",
+    "reaSampleEvidence": "ev_01df96a939a938a2adc09101c862a394bc1b2c389e84857fa79bab9bd3ca224b",
+    "scope": "A third matching allocation was found by scanning readable process memory for its pointer. Seven candidate records contain three such pointers; each references an ordered facet of the original scan.",
+    "fixture": "tests/fixtures/m2-native-live-facet-sample-20261107.json",
+    "fixtureSha256": "29cf116952b2d088f7948c42ac4365dff84ac21be4088b6867ce0c6138e84cbe",
+    "result": "All seven facet coordinate sequences uniquely match the original input; all 63 referenced normal components match ScanForge computed geometry normals exactly.",
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 458698752,
+    "activeProcessesAfter": 0,
+    "limitations": [
+      "These are raw memory observations, not a captured export invocation or proof that the records are owned by the currently visible scene object.",
+      "Seven neighboring facets and one scan do not cover all vertices, seam cases, or formats.",
+      "The first two allocations had no references in the writable ranges scanned; this third allocation was found in readable ranges."
+    ]
   }
 }
