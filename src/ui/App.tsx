@@ -695,6 +695,7 @@ export function App() {
     through: false,
   });
   const [axis, setAxis] = useState<"x" | "y" | "z">("z");
+  const [sectionScope, setSectionScope] = useState<"all" | "visible">("all");
   const [offset, setOffset] = useState(10);
   const [measure, setMeasure] = useState<Vec3[]>([]);
   const [measurementKind, setMeasurementKind] =
@@ -859,9 +860,9 @@ export function App() {
       sampledSelected &&
       selected.kind !== "pointcloud" &&
       selected.positions.length <= 2_250_000
-        ? inspectSection(selected, axis, offset)
+        ? inspectSection(selected, axis, offset, sectionScope)
         : { segments: [], length: 0 },
-    [mode, selected, axis, offset],
+    [mode, selected, axis, offset, sectionScope],
   );
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -4683,6 +4684,7 @@ export function App() {
       }
       setAxis(section.axis);
       setOffset(section.offset);
+      setSectionScope(section.scope ?? "all");
       setMode("section");
       showTools("section");
     },
@@ -6744,6 +6746,21 @@ export function App() {
                       </ToolSection>
                       <ToolSection tools={["section"]}>
                         <Panel title="Cross section" className="section-panel">
+                          <label>
+                            Triangles
+                            <select
+                              aria-label="Section triangle scope"
+                              value={sectionScope}
+                              onChange={(e) =>
+                                setSectionScope(
+                                  e.target.value as "all" | "visible",
+                                )
+                              }
+                            >
+                              <option value="all">All triangles</option>
+                              <option value="visible">Visible triangles</option>
+                            </select>
+                          </label>
                           <label className="select-field">
                             Axis
                             <AppSelect

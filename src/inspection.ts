@@ -75,6 +75,7 @@ export function measureGeometry(input: MeasurementInput) {
   };
 }
 
+export type InspectionSampleScope = "all" | "visible";
 export const INSPECTION_COORDINATE_LIMIT = 2_250_000;
 function admit(entity: Entity) {
   assertSampledGeometry(entity);
@@ -98,7 +99,10 @@ export function inspectSection(
   entity: Entity,
   axis: "x" | "y" | "z",
   offset: number,
+  scope: InspectionSampleScope = "all",
 ) {
+  if (scope !== "all" && scope !== "visible")
+    throw new Error("Invalid section scope.");
   if (entity.kind === "pointcloud")
     throw new Error(
       "A point cloud has no triangle surface for section extraction.",
@@ -106,7 +110,7 @@ export function inspectSection(
   admit(entity);
   const visible = inspectionVisible(entity);
   return sectionMesh(entity.positions, axis, offset, {
-    includeTriangle: (slot) => visible(slot * 3),
+    includeTriangle: (slot) => scope === "all" || visible(slot * 3),
   });
 }
 /** Keep only supported analytic parameters; unknown caller fields are never retained. */
@@ -142,12 +146,11 @@ export function inspectionFit(fit: FitResult): FitResult {
   deviations([0, 0, 0], result);
   return result;
 }
-export type AnalyticDeviationScope = "all" | "visible";
 function* deviationTraversal(
   entity: Entity,
   fit: FitResult,
   tolerance = 0.1,
-  scope: AnalyticDeviationScope = "all",
+  scope: InspectionSampleScope = "all",
 ) {
   admit(entity);
   fit = inspectionFit(fit);
@@ -228,7 +231,7 @@ export function inspectDeviation(
   entity: Entity,
   fit: FitResult,
   tolerance = 0.1,
-  scope: AnalyticDeviationScope = "all",
+  scope: InspectionSampleScope = "all",
 ) {
   const traversal = deviationTraversal(entity, fit, tolerance, scope);
   let step = traversal.next();
@@ -243,7 +246,7 @@ export async function inspectDeviationAsync(
   options: {
     check?: () => void;
     progress?: (fraction: number, stage: string) => void;
-    scope?: AnalyticDeviationScope;
+    scope?: InspectionSampleScope;
   } = {},
 ) {
   options.check?.();

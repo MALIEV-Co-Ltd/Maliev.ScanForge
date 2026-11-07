@@ -137,7 +137,8 @@ describe("shared inspection", () => {
       excluded: 3,
       rms: 2,
     });
-    expect(inspectSection(mesh, "x", 2)).toMatchObject({
+    expect(inspectSection(mesh, "x", 2)).toMatchObject({ length: 3 });
+    expect(inspectSection(mesh, "x", 2, "visible")).toMatchObject({
       length: 1.5,
       segments: [2, 0, 2, 2, 1.5, 2],
     });

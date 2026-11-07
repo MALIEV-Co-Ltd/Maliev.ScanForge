@@ -753,6 +753,63 @@ try {
     historyUnchanged: true,
   };
 
+  // A section of the hidden-face fixture must match through GUI and MCP for both scopes.
+  await mutate("inspection_display", {
+    action: "section",
+    entityId: indexedId,
+    axis: "x",
+    offset: 5,
+    scope: "visible",
+  });
+  const sectionScopeControl = page.getByLabel("Section triangle scope", {
+    exact: true,
+  });
+  assert.equal(await sectionScopeControl.inputValue(), "visible");
+  for (const scope of ["visible", "all"]) {
+    await sectionScopeControl.selectOption(scope);
+    if (scope === "all")
+      await page.screenshot({
+        path: fileURLToPath(new URL("section-scope.png", artifactDir)),
+      });
+    const pending = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export section CSV", exact: true })
+      .click();
+    const stream = await (await pending).createReadStream();
+    const pieces = [];
+    for await (const chunk of stream) pieces.push(chunk);
+    const measured = await job(
+      await call("analysis_section", {
+        entityId: indexedId,
+        axis: "x",
+        offset: 5,
+        scope,
+      }),
+    );
+    assert.equal(
+      measured.scope,
+      scope === "all" ? "all-triangles" : "visible-triangles",
+    );
+    assert.equal(measured.segments, scope === "all" ? 2 : 1);
+    const artifact = (
+      await call("artifact_read", {
+        artifactId: measured.csv.artifactId,
+        offset: 0,
+      })
+    ).result;
+    assert.equal(
+      Buffer.concat(pieces).toString(),
+      Buffer.from(artifact.base64, "base64").toString(),
+    );
+  }
+  assert.deepEqual((await call("history_get")).result, historyBeforeScope);
+  ledger.sectionScope = {
+    guiMcpEqual: true,
+    allSegments: 2,
+    visibleSegments: 1,
+    historyUnchanged: true,
+  };
+
   await mutate("scan_selection_control", {
     entityId: indexedId,
     action: "reveal",

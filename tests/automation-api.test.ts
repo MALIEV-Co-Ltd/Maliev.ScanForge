@@ -868,10 +868,21 @@ describe("M6 inspection API", () => {
         fit,
         tolerance: 1,
       });
+      const allSection = await job("analysis_section", {
+        entityId: "scan",
+        axis: "x",
+        offset: 2,
+      });
+      expect(allSection).toMatchObject({
+        length: 3,
+        segments: 2,
+        scope: "all-triangles",
+      });
       const section = await job("analysis_section", {
         entityId: "scan",
         axis: "x",
         offset: 2,
+        scope: "visible",
       });
       expect(section).toMatchObject({
         length: 1.5,
@@ -879,6 +890,14 @@ describe("M6 inspection API", () => {
         units: "mm",
         scope: "visible-triangles",
       });
+      expect(
+        await api.invoke("analysis_section", {
+          entityId: "scan",
+          axis: "x",
+          offset: 2,
+          scope: "invalid",
+        }),
+      ).toMatchObject({ ok: false });
       expect(state.entities[0].positions).toBe(positions);
       expect(api.currentRevision()).toBe(0);
       expect(state.history).toEqual([]);
@@ -1241,6 +1260,23 @@ it("exposes the measurement overlay and visible section plane through guarded MC
       entityId: "source",
       axis: "x",
       offset: 2,
+      scope: "all",
+    });
+    expect(
+      await api.invoke("inspection_display", {
+        action: "section",
+        entityId: "source",
+        axis: "x",
+        offset: 2,
+        scope: "visible",
+        ...mutation(api, "show-visible-section"),
+      }),
+    ).toMatchObject({ ok: true, result: { scope: "visible-triangles" } });
+    expect(host.showSection).toHaveBeenLastCalledWith({
+      entityId: "source",
+      axis: "x",
+      offset: 2,
+      scope: "visible",
     });
     expect(
       await api.invoke("inspection_display", {

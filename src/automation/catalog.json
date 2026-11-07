@@ -1647,7 +1647,7 @@
   },
   {
     "name": "analysis_section",
-    "description": "Compute a section of visible triangles and CSV/DXF artifacts in world millimetres. Hidden faces are excluded; point clouds are rejected. Limited to 250000 triangles.",
+    "description": "Compute a section of all triangles by default, or visible triangles with scope visible and CSV/DXF artifacts in world millimetres. Visible scope excludes hidden faces; point clouds are rejected. Limited to 250000 triangles.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1662,6 +1662,11 @@
         "axis": {
           "type": "string",
           "enum": ["x", "y", "z"]
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["all", "visible"],
+          "description": "Source triangle scope; defaults to all."
         },
         "offset": {
           "type": "number"
@@ -7354,7 +7359,7 @@
   },
   {
     "name": "inspection_display",
-    "description": "Show or clear the most recent retained deviation report on its original source geometry using the editor heatmap. Read analysis_deviation.inspectionId first. Requires revision/retry guards; adds no modeling history. Reports expire after 15 minutes, another analysis, source/reference edits or API disposal. Gray denotes hidden/unmatched samples. Recompute stale reports. Actions measurement and section display validated world picks or the selected visible triangle section using the same GUI controls; clear also removes these overlays.",
+    "description": "Show or clear the most recent retained deviation report on its original source geometry using the editor heatmap. Read analysis_deviation.inspectionId first. Requires revision/retry guards; adds no modeling history. Reports expire after 15 minutes, another analysis, source/reference edits or API disposal. Gray denotes hidden/unmatched samples. Recompute stale reports. Actions measurement and section display validated world picks or the selected all- or visible-triangle section using the same GUI controls; clear also removes these overlays.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -7497,6 +7502,11 @@
             "axis": {
               "type": "string",
               "enum": ["x", "y", "z"]
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["all", "visible"],
+              "description": "Source triangle scope; defaults to all."
             },
             "offset": {
               "type": "number"

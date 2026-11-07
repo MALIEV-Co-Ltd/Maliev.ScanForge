@@ -69,7 +69,12 @@ export interface WorkspaceHost {
     measurement: import("../inspection").MeasurementInput | null,
   ): void;
   showSection?(
-    section: { entityId: string; axis: "x" | "y" | "z"; offset: number } | null,
+    section: {
+      entityId: string;
+      axis: "x" | "y" | "z";
+      offset: number;
+      scope?: "all" | "visible";
+    } | null,
   ): void;
   showInspection?(display: InspectionDisplay | null): void;
   inspectScanSelection?(): unknown;

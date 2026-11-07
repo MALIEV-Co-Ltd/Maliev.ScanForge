@@ -2381,10 +2381,13 @@ positive means along the plane normal or outside radial surfaces. They do not
 certify watertight inside/outside, finite cap distances, general scan-to-CAD
 surface distances or continuous surface-error bounds. GUI exports the same report.
 
-`analysis_section` and GUI sections exclude hidden triangles and use world-mm
-axis/offset settings. Results include `units`, `axis`, `offset`,
-`scope:"visible-triangles"`, length, segment count and CSV/DXF artifacts. Point
-clouds are rejected because point order does not define a triangle surface.
+`analysis_section` and GUI sections use world-mm axis/offset settings and
+`scope:"all"` or `scope:"visible"`. The default is `all`, preserving the
+original whole-mesh behavior; visible excludes hidden triangles. The GUI's
+**Triangles** control selects the same scope, and `inspection_display` action
+`section` accepts it as well. Results include `units`, `axis`, `offset`,
+`scope:"all-triangles"` or `scope:"visible-triangles"`, length, segment count and
+CSV/DXF artifacts. Point clouds are rejected because point order does not define a triangle surface.
 Inspection admission retains the existing 2,250,000 coordinate limit: 750,000
 point/corner samples, or 250,000 triangles. Reduce a copy when the limit is
 exceeded. Analysis is read-only, adds no model-history entry, and exported report

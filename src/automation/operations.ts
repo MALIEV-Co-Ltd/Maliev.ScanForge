@@ -1725,7 +1725,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       const s = host.snapshot(),
         e = object(s, a.entityId);
       c.check();
-      const section = inspectSection(e, a.axis, a.offset);
+      const section = inspectSection(e, a.axis, a.offset, a.scope);
       const rows = ["x1,y1,z1,x2,y2,z2"];
       for (let i = 0; i < section.segments.length; i += 6)
         rows.push(section.segments.slice(i, i + 6).join(","));
@@ -1734,7 +1734,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         units: "mm",
         axis: a.axis,
         offset: a.offset,
-        scope: "visible-triangles",
+        scope: a.scope === "visible" ? "visible-triangles" : "all-triangles",
         length: section.length,
         segments: section.segments.length / 6,
         csv: c.artifact(rows.join("\n"), "section.csv", "text/csv"),

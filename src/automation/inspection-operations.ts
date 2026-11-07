@@ -147,19 +147,21 @@ export function createInspectionOperations(
           throw new Error(
             "Select the inspection source object before showing its section.",
           );
-        const section = inspectSection(source, a.axis, a.offset);
+        const section = inspectSection(source, a.axis, a.offset, a.scope);
         if (!host.showSection)
           throw new Error("Section display is unavailable.");
         host.showSection({
           entityId: source.id,
           axis: a.axis,
           offset: a.offset,
+          scope: a.scope ?? "all",
         });
         return {
           entityId: source.id,
           axis: a.axis,
           offset: a.offset,
           units: "mm",
+          scope: a.scope === "visible" ? "visible-triangles" : "all-triangles",
           length: section.length,
           segments: section.segments.length / 6,
         };
