@@ -40,5 +40,15 @@
         "Frida session was detached; the native source visibility and selection were restored."
       ]
     }
+  },
+  "boundedDispatchCallTrace": {
+    "method": "REA Frida Stalker followed the UI thread around synchronous SendMessageW WM_COMMAND 40013 on the same retained two-triangle fixture.",
+    "evidenceId": "ev_96456920d836a141acd5213be24bc1018d28dec0c14e37f858efb73bcad6dc7a",
+    "result": "The call summaries returned no application-module calls; this technique did not resolve the handler.",
+    "limitations": [
+      "An empty capture does not establish that the handler made no calls or that projection was a no-op.",
+      "The method followed inside the interception callback and did not trace the handler independently."
+    ],
+    "cleanup": "Frida scripts unloaded and the session detached. Original native scene visibility restored."
   }
 }
