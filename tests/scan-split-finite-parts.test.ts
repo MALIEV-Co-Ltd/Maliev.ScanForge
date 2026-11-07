@@ -50,6 +50,27 @@ it("retains number-array seam coordinates in indexed and expanded parts", () => 
   );
 });
 
+it("preserves Float64 seam coordinates and charges their full typed allocation", () => {
+  const vertices = new Float64Array([0.1, -0, 0, 1.1, 0, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2]);
+  const groups = new Uint32Array([0]);
+  const [part] = partitionFiniteIndexedParts(vertices, triangles, groups);
+  expect(part.positions).toBeInstanceOf(Float64Array);
+  expect(part.indexedMesh.vertices).toBeInstanceOf(Float64Array);
+  expect(Array.from(part.positions)).toEqual(Array.from(vertices));
+  expect(Array.from(part.indexedMesh.vertices)).toEqual(Array.from(vertices));
+  expect(() =>
+    partitionFiniteIndexedParts(vertices, triangles, groups, {
+      maxTypedBytes: 195,
+    }),
+  ).toThrow(/memory/i);
+  expect(() =>
+    partitionFiniteIndexedParts(vertices, triangles, groups, {
+      maxTypedBytes: 196,
+    }),
+  ).not.toThrow();
+});
+
 it("carries a precise seam through grouping and part creation", () => {
   const source = new Float32Array([
     100000000, 0, 0, 100000008, 8, 0, 99999992, 16, 0,

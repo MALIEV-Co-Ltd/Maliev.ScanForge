@@ -1,5 +1,7 @@
 /** Experimental compact parts; allowance covers typed buffers, not JS objects. */
-export function partitionFiniteIndexedParts<T extends Float32Array | number[]>(
+export function partitionFiniteIndexedParts<
+  T extends Float32Array | Float64Array | number[],
+>(
   vertices: T,
   triangles: Uint32Array,
   groups: Uint32Array,
@@ -27,7 +29,8 @@ export function partitionFiniteIndexedParts<T extends Float32Array | number[]>(
     );
   const allowance = options.maxTypedBytes ?? Number.MAX_SAFE_INTEGER;
   // The array estimate includes numeric payload, not JavaScript engine overhead.
-  const bytes = n * (Array.isArray(vertices) ? 172 : 100) + count * 8;
+  const wide = Array.isArray(vertices) || vertices instanceof Float64Array;
+  const bytes = n * (wide ? 172 : 100) + count * 8;
   if (!Number.isSafeInteger(allowance) || allowance < 0 || bytes > allowance)
     throw new Error("Finite part typed memory budget exceeded.");
   const limit = options.maxWork ?? 2_000_000 + triangles.length * 16;
@@ -86,10 +89,14 @@ export function partitionFiniteIndexedParts<T extends Float32Array | number[]>(
     if (!counts[g]) continue;
     const positions = Array.isArray(vertices)
       ? new Array<number>(counts[g] * 9)
-      : new Float32Array(counts[g] * 9);
+      : vertices instanceof Float64Array
+        ? new Float64Array(counts[g] * 9)
+        : new Float32Array(counts[g] * 9);
     const partVertices = Array.isArray(vertices)
       ? new Array<number>(counts[g] * 9)
-      : new Float32Array(counts[g] * 9);
+      : vertices instanceof Float64Array
+        ? new Float64Array(counts[g] * 9)
+        : new Float32Array(counts[g] * 9);
     const partTriangles = new Uint32Array(counts[g] * 3);
     let localCount = 0,
       corner = 0;
