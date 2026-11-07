@@ -10,6 +10,8 @@ On the original 273,139-facet scan, GUI and public MCP STL exports after Flip we
 
 Five additional retained QuickSurface exports contain 195 normal components that exactly match the Float32-staged mean of computed vertex normals on their reimported topology. [Evidence](evidence/m2-native-export-normals-controls-20261107.json). This does not establish native internal seam identity or general STL exporter behavior; ScanForge still exports geometric facet normals.
 
+Read-only REA inspection now connects the native STL branch to candidate visible- and single-object writers containing Float32 add/add/divide-by-three record assembly. [Evidence](evidence/m2-native-stl-writer-static-20261107.json). The path has not been traced during an export, and source normal ownership and other branches remain unverified; the ScanForge export difference remains open.
+
 The same original scan also passed GUI, public MCP and preview comparison for four noise iterations with boundary smoothing off, including cancellation, history and binary reopening under the system-memory guard. A subsequent QuickSurface preview and export produced the identical ordered coordinate digest; REA observed its preview handler and correction routine. [Evidence](evidence/m2-noise-four-boundaryoff-parity-20261107.json). Native STL normals and object-publication equivalence were not compared.
 
 At 75% remaining, QuickSurface, the GUI and public MCP produced the same ordered coordinates and 204,853 triangles from that original scan. GUI/MCP cancellation, history and binary reopening also passed under the system-memory guard. [Evidence](evidence/m2-native-reduction-75-20261107.json). This is a second native reduction setting, not general native or publication parity.
