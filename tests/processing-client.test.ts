@@ -1101,6 +1101,53 @@ describe("processing worker resource ownership", () => {
     });
     await pending;
   });
+  it("transfers marked Flip topology copies and strips forged markers", async () => {
+    const vertices = markPrivateDecodingView(
+      new Float64Array([0.1, 0, 0, 1.1, 0, 0, 0.1, 1, 0]),
+    );
+    const request = {
+      kind: "scanTools" as const,
+      positions: vertices as unknown as number[],
+      operation: {
+        kind: "flipNormals" as const,
+        sourceTopology: {
+          vertices: vertices as unknown as number[],
+          triangles: new Uint32Array([0, 1, 2]),
+        },
+      },
+      privateFlipVertices: true,
+    };
+    const pending = processMesh(request);
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent).toHaveProperty("privateFlipVertices", true);
+    expect(worker.transfers).not.toContain(vertices.buffer);
+    if (!worker.sent) throw new Error("Expected a processing request");
+    const copied = structuredClone(worker.sent, { transfer: worker.transfers });
+    expect(vertices.byteLength).toBe(72);
+    expect(
+      copied.kind === "scanTools" &&
+        copied.operation.kind === "flipNormals" &&
+        copied.operation.sourceTopology?.vertices,
+    ).toEqual(vertices);
+    worker.reply({ result: { kind: "scanTools", diagnostics: {} } });
+    await pending;
+    const untrusted = new Float64Array(vertices);
+    const second = processMesh({
+      ...request,
+      positions: untrusted as unknown as number[],
+      operation: {
+        ...request.operation,
+        sourceTopology: {
+          ...request.operation.sourceTopology,
+          vertices: untrusted as unknown as number[],
+        },
+      },
+    });
+    const worker2 = ProcessingWorkerDouble.latest;
+    expect(worker2.sent).not.toHaveProperty("privateFlipVertices");
+    worker2.reply({ result: { kind: "scanTools", diagnostics: {} } });
+    await second;
+  });
   it("packs large precise component inputs without cloning scene arrays", async () => {
     const source = Array.from({ length: 65538 }, (_, i) =>
       i === 0 ? 100000004 : i / 8,

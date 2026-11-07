@@ -1150,11 +1150,21 @@ function runProcessingRequest(
       delete (
         copied as ProcessingRequest & { privateScanEditVertices?: unknown }
       ).privateScanEditVertices;
+      delete (copied as ProcessingRequest & { privateFlipVertices?: unknown })
+        .privateFlipVertices;
       worker.postMessage(
         {
           ...copied,
           ...(session ? { geometryKey: session.key } : {}),
           ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+          ...(copied.kind === "scanTools" &&
+          copied.operation.kind === "flipNormals" &&
+          copied.operation.sourceTopology &&
+          request.kind === "scanTools" &&
+          request.operation.kind === "flipNormals" &&
+          isPrivateDecodingView(request.operation.sourceTopology?.vertices)
+            ? { privateFlipVertices: true }
+            : {}),
           ...(copied.kind === "scanEdit" &&
           copied.sourceIndexed &&
           request.kind === "scanEdit" &&

@@ -230,6 +230,26 @@ scope.onmessage = async ({ data: incoming }) => {
       incoming as ProcessingRequest & { privateScanEditVertices?: unknown }
     ).privateScanEditVertices;
   }
+  const privateFlipVertices = (
+    incoming as ProcessingRequest & { privateFlipVertices?: unknown }
+  ).privateFlipVertices;
+  if (privateFlipVertices !== undefined) {
+    const vertices =
+      incoming.kind === "scanTools" && incoming.operation.kind === "flipNormals"
+        ? incoming.operation.sourceTopology?.vertices
+        : undefined;
+    if (
+      privateFlipVertices !== true ||
+      !(vertices instanceof Float64Array) ||
+      !(vertices.buffer instanceof ArrayBuffer)
+    ) {
+      scope.postMessage({ error: "Invalid private Flip vertices." });
+      return;
+    }
+    markPrivateDecodingView(vertices);
+    delete (incoming as ProcessingRequest & { privateFlipVertices?: unknown })
+      .privateFlipVertices;
+  }
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })
     .geometryKey;

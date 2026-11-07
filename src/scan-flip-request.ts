@@ -1,4 +1,5 @@
 import { indexedMeshMatches } from "./indexed-mesh";
+import { isEncodingNumeric } from "./project-encoding-numeric";
 import { yieldScanTask } from "./scan-task";
 import type { Entity, IndexedMesh, Positions } from "./types";
 
@@ -40,7 +41,11 @@ export async function flipSourceTopology(
   if (!mesh) return undefined;
   const { vertices, triangles, normals, geometryNormals, facetNormals } = mesh;
   if (
-    !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
+    !(
+      Array.isArray(vertices) ||
+      vertices instanceof Float32Array ||
+      isEncodingNumeric(vertices)
+    ) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
     !vertices.length ||
     vertices.length % 3 ||

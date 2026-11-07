@@ -1,4 +1,5 @@
 import type { IndexedMesh, Positions } from "./types";
+import { isEncodingNumeric } from "./project-encoding-numeric";
 
 /** Check whether indexed vertices reproduce every authored corner bit-for-bit.
  * A false result means callers must retain the expanded source. */
@@ -14,7 +15,11 @@ export async function indexedExactAdmission(
   const { vertices, triangles, normals, geometryNormals, facetNormals } = mesh;
   check();
   if (
-    !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
+    !(
+      Array.isArray(vertices) ||
+      vertices instanceof Float32Array ||
+      isEncodingNumeric(vertices)
+    ) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
     !vertices.length ||
     vertices.length % 3 ||

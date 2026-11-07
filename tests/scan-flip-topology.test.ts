@@ -4,6 +4,7 @@ import {
   decodeProjectContents,
 } from "../src/project-file-codec";
 import { indexedMeshMatches } from "../src/indexed-mesh";
+import { markPrivateDecodingView } from "../src/project-private-decoding-views";
 import {
   flipSourceTopology,
   flipSourceTopologySync,
@@ -100,6 +101,22 @@ it("preserves the synchronous topology admission contract across invalid and spa
       flipSourceTopologySync(source),
     );
   }
+});
+
+it("admits verified private Float64 topology consistently and rejects untrusted or invalid vertices", async () => {
+  const vertices = new Float64Array([0.1, 0, 0, 1.1, 0, 0, 0.1, 1, 0]);
+  const source = {
+    positions: vertices,
+    indexedMesh: { vertices, triangles: [0, 1, 2] },
+  } as never;
+  expect(await flipSourceTopology(source)).toBeUndefined();
+  markPrivateDecodingView(vertices);
+  expect(await flipSourceTopology(source)).toEqual(
+    flipSourceTopologySync(source),
+  );
+  expect(await flipSourceTopology(source)).toBeDefined();
+  vertices[0] = NaN;
+  expect(await flipSourceTopology(source)).toBeUndefined();
 });
 afterEach(() => vi.unstubAllGlobals());
 

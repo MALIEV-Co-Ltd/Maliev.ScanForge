@@ -1,5 +1,22 @@
 import { expect, it, vi } from "vitest";
 import { indexedExactAdmission } from "../src/indexed-exact-admission";
+import { markPrivateDecodingView } from "../src/project-private-decoding-views";
+
+it("admits private Float64 indexed vertices only when finite and exact", async () => {
+  const vertices = new Float64Array([0.1, -0, 0, 1.1, 0, 0, 0.1, 1, 0]);
+  const mesh = {
+    vertices: vertices as never,
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  const positions = Array.from(vertices);
+  expect(await indexedExactAdmission(mesh, positions)).toBe(false);
+  markPrivateDecodingView(vertices);
+  expect(await indexedExactAdmission(mesh, positions)).toBe(true);
+  positions[1] = 0;
+  expect(await indexedExactAdmission(mesh, positions)).toBe(false);
+  vertices[0] = NaN;
+  expect(await indexedExactAdmission(mesh, positions)).toBe(false);
+});
 
 it("accepts exact indexed corners and rejects signed-zero or coordinate differences", async () => {
   const mesh = {
