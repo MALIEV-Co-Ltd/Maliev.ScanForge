@@ -1,0 +1,142 @@
+{
+  "scope": "Isolated current-build PLY-3 diagnostic with ordinary numeric reuse disabled; not an integrated fix",
+  "candidate": "4f6af7f5",
+  "bundle": "scanforge-04c9de551ba72a9f",
+  "method": "The isolated HTTP server removed exactly one numeric reuse callback from each served agent-api response; shared chunk verification remained enabled.",
+  "runs": [
+    {
+      "guardPassed": false,
+      "peakJobBytes": 4296855552,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "injectionResponses": 2,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        "source-imported",
+        "source-digest",
+        "cutter-imported",
+        "gui-split-started",
+        "gui-split-committed",
+        "gui-output-digest",
+        "component-inventory-opened",
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-undone",
+        "gui-extract-undo-digest-verified",
+        "gui-extract-project-exported",
+        "gui-extract-project-downloaded",
+        "gui-extract-gui-project-imported",
+        "gui-extract-gui-reopen-verified",
+        "gui-extract-reopen-gui-undo-verified",
+        "gui-extract-reopen-gui-redo-verified",
+        "gui-extract-redo-verified"
+      ],
+      "download": {
+        "artifactDownloadSha256": "38ec8ccb1abaa0d132dfddb3775f6ad0981f51dde8d2238d8cd485df7df46201",
+        "fileSha256": "38ec8ccb1abaa0d132dfddb3775f6ad0981f51dde8d2238d8cd485df7df46201",
+        "bytes": 475563378
+      }
+    },
+    {
+      "guardPassed": true,
+      "peakJobBytes": 4007940096,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true,
+      "injectionResponses": 2,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        "source-imported",
+        "source-digest",
+        "cutter-imported",
+        "gui-split-started",
+        "gui-split-committed",
+        "gui-output-digest",
+        "component-inventory-opened",
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-undone",
+        "gui-extract-undo-digest-verified",
+        "gui-extract-project-exported",
+        "gui-extract-project-downloaded",
+        "gui-extract-gui-project-imported",
+        "gui-extract-gui-reopen-verified",
+        "gui-extract-reopen-gui-undo-verified",
+        "gui-extract-reopen-gui-redo-verified",
+        "gui-extract-redo-verified"
+      ],
+      "download": {
+        "artifactDownloadSha256": "5d3a81c6139143f521fbee4f916e35aa2a1255fe90469a25aad5463bd931c85c",
+        "fileSha256": "5d3a81c6139143f521fbee4f916e35aa2a1255fe90469a25aad5463bd931c85c",
+        "bytes": 475563378
+      }
+    }
+  ],
+  "limits": [
+    "One run exceeded 4 GiB despite successful functional checks; one passed. This does not establish reliable resource compliance.",
+    "This injection does not prove all restored array ownership properties or constitute a production implementation."
+  ]
+}
