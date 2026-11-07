@@ -24,8 +24,8 @@
       { "triangles": 272857, "areaMm2": 8221.57130665994 },
       { "triangles": 282, "areaMm2": 7.024150063864754 }
     ],
-    "nativeDialogValues": [8221.57, 7.02415],
-    "comparison": "Counts match the native remainder and new object; reported values agree at the native display precision. This is consistent with the native field being component area, but does not prove matching facet membership or coordinates.",
+    "nativeDialogValuesCorrection": "The values 8221.57 and 7.02415 observed during the earlier interaction were in the editable 'By area smaller than' cleanup threshold field. When opening the separate two-facet fixture, the field retained 7.02415; it is not reliable evidence of the selected component's area.",
+    "comparison": "Triangle counts match the native remainder and new object. Component areas, facet membership and coordinates have not been independently compared against native output.",
     "guardPeakBytes": 466780160,
     "guardLimitBytes": 34110816256,
     "processCleanupConfirmed": true
