@@ -63,7 +63,17 @@
       "peakJobBytes": 985198592,
       "activeAfter": 0
     },
-    "limitations": "The large system-memory run preceded the guard's added Node heap option; the final component replay exercised that option. The browser reports a smaller JavaScript heap limit than the requested physical-memory setting. These runs do not establish general resource reliability."
+    "limitations": "The large system-memory run preceded the guard's added Node heap option; the final component replay exercised that option. The browser reports a smaller JavaScript heap limit than the requested physical-memory setting. These runs do not establish general resource reliability.",
+    "subsequentChromeHeapControl": {
+      "date": "2026-11-07",
+      "method": "Fresh headless Chrome pages requested 512 MiB and 32530 MiB with --js-flags=max-old-space-size. performance.memory.jsHeapSizeLimit was read in non-cross-origin-isolated pages, so values are rounded.",
+      "requested512MiBReportedBytes": 662000000,
+      "requested32530MiBReportedBytes": 3760000000,
+      "browserProcessesClosed": true,
+      "interpretation": "The system-sized request is passed to Chrome, but the browser reports a substantially lower JavaScript heap ceiling. This is separate from the system-sized Windows Job limit and does not limit total process memory to the JavaScript heap size.",
+      "v8Source": "https://chromium.googlesource.com/v8/v8/+/db1cbfa124770ec6b96924fa3bafcc5357f1ab91/src/heap/heap.cc",
+      "limitation": "V8 source describes a compressed-pointer allocator constraint; this control does not inspect the installed Chrome build configuration or prove its exact limiting mechanism."
+    }
   },
   "tests": {
     "focused": "38 passed, two expected failures in the separately invoked optional low-level reuse API; four test files",
