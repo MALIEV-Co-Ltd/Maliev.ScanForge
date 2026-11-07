@@ -136,3 +136,41 @@ it("records the second native recovery replacing the first crossing edge", () =>
   expect(hasEdge(calls[1].after, 3, 4)).toBe(false);
   expect(hasEdge(calls[1].after, 5, 6)).toBe(true);
 });
+
+it("traces the native initial triangulation through both strip recoveries", () => {
+  const trace = JSON.parse(
+    readFileSync(
+      new URL(
+        "../docs/evidence/m2-split-native-recovery-stages-20261107.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  expect(trace.normalized_result.messages_truncated).toBe(false);
+  const events = trace.normalized_result.messages
+    .map((m: { payload: any }) => m.payload)
+    .filter((p: { event: string }) =>
+      ["initial", "recover", "strip"].includes(p.event),
+    );
+  expect(events.map((e: { event: string }) => e.event)).toEqual([
+    "initial",
+    "strip",
+    "recover",
+    "strip",
+    "recover",
+  ]);
+  const [initial, strip1, recover1, strip2, recover2] = events;
+  expect(initial.before).toEqual([]);
+  expect(initial.after).toEqual(strip1.before);
+  expect(strip1.after).toEqual(recover1.after);
+  expect(strip2.before).toEqual(recover1.after);
+  expect(strip2.after).toEqual(recover2.after);
+  const canonical = (faces: number[][]) =>
+    faces.map((t) => [...t].sort((a, b) => a - b).join(",")).sort();
+  expect(canonical(recover2.after)).toEqual(canonical(initial.after));
+  expect(strip1.arg2).toBe("0x6");
+  expect(strip1.arg3).toBe("0x5");
+  expect(strip2.arg2).toBe("0x3");
+  expect(strip2.arg3).toBe("0x4");
+});

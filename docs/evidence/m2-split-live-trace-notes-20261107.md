@@ -36,6 +36,14 @@ after recovery of `[5,6]` no longer contains it. The latter list contains edge
 publication routine. These records and the original call trace are observations
 of a small fixture, not complete algorithm extraction.
 
+An additional bounded trace captured the initial native triangulation and the
+nested `0x14032dae0` strip-recovery calls. The initial eight faces already
+contain edge `[5,6]`. Recovery of `[3,4]` invokes the strip routine across
+`[6,5]` and replaces those two adjacent faces; recovery of `[5,6]` invokes it
+across `[3,4]` and returns to the initial unordered eight-face set. This pins
+the replacement to these calls for this input; it does not prove the native
+algorithm's behavior on every crossed strip or its output validation.
+
 A guarded REA CLI/Ghidra function analysis of the earlier runtime-derived image
 timed out during full auto-analysis after 177 seconds, with a 2,847,506,432-byte
 peak under the 4 GiB job cap and confirmed child cleanup. It produced no new

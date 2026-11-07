@@ -983,7 +983,11 @@ try {
       inventoryRegression,
     });
   }
-  if (process.env.SCANFORGE_SPLIT_CASE === "native-pivot-crossing") {
+  if (
+    ["native-pivot-crossing", "native-crossing-pair"].includes(
+      process.env.SCANFORGE_SPLIT_CASE,
+    )
+  ) {
     assert(
       inputDirectory,
       "Native pivot comparison needs its fixture directory",
@@ -995,20 +999,23 @@ try {
         ),
         (match) => match.slice(1).map((value) => Math.fround(Number(value))),
       ).flat();
-    fileInputs["native-pivot-crossing"] = ["source.stl", "cutter.stl"];
+    const caseName = process.env.SCANFORGE_SPLIT_CASE;
+    fileInputs[caseName] = ["source.stl", "cutter.stl"];
     cases.push({
-      name: "native-pivot-crossing",
+      name: caseName,
       source: await parseAsciiStl("source.stl"),
       target: await parseAsciiStl("cutter.stl"),
       kind: "mesh",
-      parts: 2,
+      parts: caseName === "native-crossing-pair" ? 1 : 2,
       requiredPoint: [0, 0, 0],
       method: "open surface signed nearest grouping",
       fileHashes: {
         "source.stl":
           "c067e2f6a518d7ddb475b5726e9217ff852f194ef552b864d9a8dc8f9e5491f4",
         "cutter.stl":
-          "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
+          caseName === "native-crossing-pair"
+            ? "95fe07473c1daf7fb26bd8b74930f141d5b16686aaa24cf670dd24bf7dc9b424"
+            : "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
       },
     });
   }
@@ -1140,6 +1147,73 @@ try {
         );
       }
       const guiPositions = await geometry(sourceId);
+      if (c.name === "native-crossing-pair") {
+        // Each finite segment must remain represented by mesh edges. The first
+        // intersection extends outside the source, so compare to its clipped
+        // extent established by the shared-kernel fixture.
+        const edges = [];
+        for (let i = 0; i < guiPositions.length; i += 9)
+          for (let j = 0; j < 3; j++) {
+            const a = i + 3 * j,
+              b = i + 3 * ((j + 1) % 3);
+            edges.push([
+              [guiPositions[a], guiPositions[a + 1]],
+              [guiPositions[b], guiPositions[b + 1]],
+            ]);
+          }
+        const coverage = (a, b) => {
+          const dx = b[0] - a[0],
+            dy = b[1] - a[1],
+            length = Math.hypot(dx, dy),
+            intervals = [];
+          for (const [p, q] of edges) {
+            const distance = (v) =>
+              Math.abs(dx * (v[1] - a[1]) - dy * (v[0] - a[0])) / length;
+            if (distance(p) > 1e-6 || distance(q) > 1e-6) continue;
+            const t = (v) =>
+              ((v[0] - a[0]) * dx + (v[1] - a[1]) * dy) / (length * length);
+            const lo = Math.max(0, Math.min(t(p), t(q))),
+              hi = Math.min(1, Math.max(t(p), t(q)));
+            if (hi - lo > 1e-7) intervals.push([lo, hi]);
+          }
+          intervals.sort((x, y) => x[0] - y[0]);
+          const merged = [];
+          for (const interval of intervals) {
+            const last = merged.at(-1);
+            if (last && interval[0] <= last[1] + 1e-6 / length)
+              last[1] = Math.max(last[1], interval[1]);
+            else merged.push([...interval]);
+          }
+          return merged.reduce((sum, v) => sum + v[1] - v[0], 0);
+        };
+        const result = [];
+        for (let i = 0; i < c.target.length; i += 9) {
+          const intersections = [];
+          for (let j = 0; j < 3; j++) {
+            const u = i + 3 * j,
+              v = i + 3 * ((j + 1) % 3),
+              z = c.target[u + 2],
+              zz = c.target[v + 2];
+            if (z * zz < 0) {
+              const t = -z / (zz - z);
+              intersections.push([
+                c.target[u] + t * (c.target[v] - c.target[u]),
+                c.target[u + 1] + t * (c.target[v + 1] - c.target[u + 1]),
+              ]);
+            }
+          }
+          assert.equal(intersections.length, 2);
+          result.push(coverage(...intersections));
+        }
+        assert(
+          Math.abs(result[0] - 0.981078) < 1e-5,
+          `First cutter coverage: ${result[0]}`,
+        );
+        assert(
+          Math.abs(result[1] - 1) < 1e-5,
+          `Second cutter coverage: ${result[1]}`,
+        );
+      }
       if (c.inventoryRegression) {
         const inventory = async (inventoryScope) =>
           artifactJson(
