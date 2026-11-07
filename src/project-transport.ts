@@ -10,6 +10,8 @@ export function containsLargeNumericArrays(
   value: unknown,
   seen = new Set<object>(),
 ): boolean {
+  // Private views need role-aware transport even when they are small.
+  if (isPrivateDecodingView(value)) return true;
   if (
     !value ||
     typeof value !== "object" ||
@@ -45,11 +47,23 @@ export async function packProjectTransport(
     check();
     if (!v || typeof v !== "object") return v;
     if (memo.has(v)) return memo.get(v);
-    if (options.ownedTypedArrays && isPrivateDecodingView(v)) {
+    if (isPrivateDecodingView(v)) {
       const ref = {};
       memo.set(v, ref);
-      numbers.push({ ref, values: v });
-      if (v.buffer instanceof ArrayBuffer) buffers.add(v.buffer);
+      const values = options.ownedTypedArrays ? v : new Float64Array(v.length);
+      if (!options.ownedTypedArrays)
+        for (let first = 0; first < v.length; first += CHUNK) {
+          check();
+          values.set(
+            v.subarray(first, Math.min(v.length, first + CHUNK)),
+            first,
+          );
+          if (options.cooperative !== false && first + CHUNK < v.length)
+            await yieldScanTask();
+        }
+      check();
+      numbers.push({ ref, values });
+      if (values.buffer instanceof ArrayBuffer) buffers.add(values.buffer);
       return ref;
     }
     if (ArrayBuffer.isView(v)) {
