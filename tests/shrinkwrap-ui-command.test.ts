@@ -37,7 +37,7 @@ it("GUI routes every ShrinkWrap phase through the discoverable shared lifecycle"
     "utf8",
   );
   expect(app).toContain('parameters.kind === "shrinkwrap"');
-  expect(app).toContain("runShrinkwrapPreviewCommand(workspaceApi");
+  expect(app).toContain("runScanPreviewCommand(workspaceApi");
   expect(app).toContain("workspaceApi.discardScanPreview()");
   expect(app).toMatch(
     /cancelShrinkwrapOperation\(\s*workspaceApi,\s*scanToolAbort\.current,?\s*\)/,

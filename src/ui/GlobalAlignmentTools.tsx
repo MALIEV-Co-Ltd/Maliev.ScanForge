@@ -1,3 +1,5 @@
+import { HelpPopover } from "./HelpPopover";
+import { ToolTitle } from "./controls";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ApplicationApi } from "../automation/api";
 import type { Entity } from "../types";
@@ -20,6 +22,7 @@ export function GlobalAlignmentDiagnostics({
   entities: Entity[];
 }) {
   if (state.state !== "preview") return null;
+  const NativeContainer = state.surfaceRefinement ? "details" : "div";
   return (
     <section aria-label="Global alignment diagnostics">
       <p role="status">Preview ready · originals and history unchanged.</p>
@@ -28,43 +31,99 @@ export function GlobalAlignmentDiagnostics({
       )}
       {state.converged === false && (
         <p role="alert">
-          Alignment did not converge. Inspect the preview and scan diagnostics
-          before choosing Apply anyway.
+          {state.surfaceRefinement
+            ? "The native pass did not reach its strict target. Review the subsequent surface fit below before applying."
+            : "Alignment did not converge. Inspect the preview and scan diagnostics before choosing Apply anyway."}
         </p>
       )}
-      {state.outer && <p>{state.outer.passes} refinement passes</p>}
-      {state.outer?.states.map((scan) => (
+      {state.surfaceRefinement && (
         <section
-          key={scan.id}
-          aria-label={`Diagnostics for ${entities.find((entity) => entity.id === scan.id)?.name ?? scan.id}`}
+          className="mesh-operation-result"
+          aria-label="Surface fitting results"
         >
           <strong>
-            {entities.find((entity) => entity.id === scan.id)?.name ?? scan.id}
+            Surface fit{" "}
+            <HelpPopover label="Surface fitting metrics">
+              <p>
+                Fits bounded samples against complete surfaces. Fit RMS uses the
+                selected 40% or 80% closest correspondences; it is not a
+                whole-scan accuracy certificate. Candidate selection checks all
+                fitting samples with distances capped at the search tolerance.
+              </p>
+              <p>
+                Native diagnostics describe the earlier pass. The complete final
+                transforms are available through MCP coordinateStages.
+              </p>
+            </HelpPopover>
           </strong>
-          <dl>
-            <dt>Mean distance (mm)</dt>
-            <dd>{metric(scan.mean)}</dd>
-            <dt>Coverage (%)</dt>
-            <dd>{metric(scan.coveragePercent)}</dd>
-            <dt>Stable</dt>
-            <dd>
-              {scan.stable === undefined
-                ? "Unavailable"
-                : scan.stable
-                  ? "Yes"
-                  : "No"}
-            </dd>
-            <dt>Converged</dt>
-            <dd>
-              {scan.converged === undefined
-                ? "Unavailable"
-                : scan.converged
-                  ? "Yes"
-                  : "No"}
-            </dd>
+          <dl className="mesh-result-metrics">
+            {state.surfaceRefinement.fits.map((f) => (
+              <div key={f.id} className="surface-fit-metric">
+                <dt>{entities.find((e) => e.id === f.id)?.name ?? f.id}</dt>
+                <dd>
+                  {f.id === state.surfaceRefinement!.anchorId
+                    ? "Fixed"
+                    : `${metric(f.fittingRms)} mm`}
+                  {f.id !== state.surfaceRefinement!.anchorId &&
+                    f.samplePoints !== undefined && (
+                      <small>
+                        {Math.round(
+                          ((f.overlapPoints ?? 0) / f.samplePoints) * 100,
+                        )}
+                        % within search distance
+                      </small>
+                    )}
+                </dd>
+              </div>
+            ))}
           </dl>
+          {state.surfaceRefinement.fits.some((f) => f.ambiguous) && (
+            <p role="status">
+              Several poses fit similarly. Verify the orientation before
+              applying.
+            </p>
+          )}
         </section>
-      ))}
+      )}
+      <NativeContainer>
+        {state.surfaceRefinement && (
+          <summary>Native refinement diagnostics</summary>
+        )}
+        {state.outer && <p>{state.outer.passes} refinement passes</p>}
+        {state.outer?.states.map((scan) => (
+          <section
+            key={scan.id}
+            aria-label={`Diagnostics for ${entities.find((entity) => entity.id === scan.id)?.name ?? scan.id}`}
+          >
+            <strong>
+              {entities.find((entity) => entity.id === scan.id)?.name ??
+                scan.id}
+            </strong>
+            <dl>
+              <dt>Mean distance (mm)</dt>
+              <dd>{metric(scan.mean)}</dd>
+              <dt>Coverage (%)</dt>
+              <dd>{metric(scan.coveragePercent)}</dd>
+              <dt>Stable</dt>
+              <dd>
+                {scan.stable === undefined
+                  ? "Unavailable"
+                  : scan.stable
+                    ? "Yes"
+                    : "No"}
+              </dd>
+              <dt>Converged</dt>
+              <dd>
+                {scan.converged === undefined
+                  ? "Unavailable"
+                  : scan.converged
+                    ? "Yes"
+                    : "No"}
+              </dd>
+            </dl>
+          </section>
+        ))}
+      </NativeContainer>
     </section>
   );
 }
@@ -85,6 +144,7 @@ export function GlobalAlignmentTools({
   });
   const [searchTolerance, setSearchTolerance] = useState("0.5");
   const [parallel, setParallel] = useState(true);
+  const [automatic, setAutomatic] = useState(true);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const disposed = useRef(false);
@@ -153,6 +213,7 @@ export function GlobalAlignmentTools({
           if (next.settings) {
             setSearchTolerance(String(next.settings.searchTolerance));
             setParallel(next.settings.parallel);
+            setAutomatic(next.settings.initialization !== "current");
           }
         }
       } catch (failure) {
@@ -172,18 +233,20 @@ export function GlobalAlignmentTools({
       const owned = ownedJob.current;
       if (owned?.generation === generation) {
         ownedJob.current = null;
-        void owned.api
-          .invoke("global_alignment_cancel", {
-            jobId: owned.jobId,
-            expectedRevision: owned.api.currentRevision(),
-            requestId: crypto.randomUUID(),
-          })
-          .then((response) => {
-            if (!response.ok) throw new Error(response.error.message);
-          })
-          .catch((failure) =>
-            console.error("Global alignment cleanup failed", failure),
-          );
+        queueMicrotask(() => {
+          void owned.api
+            .invoke("global_alignment_cancel", {
+              jobId: owned.jobId,
+              expectedRevision: owned.api.currentRevision(),
+              requestId: crypto.randomUUID(),
+            })
+            .then((response) => {
+              if (!response.ok) throw new Error(response.error.message);
+            })
+            .catch((failure) =>
+              console.error("Global alignment cleanup failed", failure),
+            );
+        });
       }
     };
   }, [api, invoke]);
@@ -210,6 +273,7 @@ export function GlobalAlignmentTools({
       let result = (await invoke("global_alignment_preview", {
         searchTolerance: Number(searchTolerance),
         parallel,
+        initialization: automatic ? "automatic" : "current",
       })) as GlobalAlignmentPreviewState & { jobId?: string };
       if (result.jobId) {
         const jobId = result.jobId;
@@ -291,11 +355,11 @@ export function GlobalAlignmentTools({
       className="inspector tool-panel global-alignment-panel"
       aria-label="Global fine align"
     >
-      <h2>Global fine align</h2>
+      <ToolTitle title="Global fine align" onClose={() => void cancel()} />
       <div className="tool-panel-content">
         <p>
-          Refine all visible raw meshes together. Preview preserves originals;
-          Apply records one history step.
+          Place visible scans automatically, then refine their overlap. Preview
+          preserves originals; Apply records one history step.
         </p>
         <p className="muted">
           Point clouds and CAD objects are not supported by this command.
@@ -325,6 +389,14 @@ export function GlobalAlignmentTools({
           <label className="check-row">
             <input
               type="checkbox"
+              checked={automatic}
+              onChange={(e) => setAutomatic(e.target.checked)}
+            />
+            Automatic initial placement
+          </label>
+          <label className="check-row">
+            <input
+              type="checkbox"
               checked={parallel}
               onChange={(event) => setParallel(event.target.checked)}
             />
@@ -346,26 +418,36 @@ export function GlobalAlignmentTools({
             range.
           </p>
         )}
-        {busy && <p role="status">Preparing global alignment…</p>}
+        {busy && (
+          <p role="status">
+            {state.progress
+              ? state.progress.stage
+                ? state.progress.stage
+                : state.progress.phase === "initializing"
+                  ? "Placing scans automatically…"
+                  : `Refining scan poses · pass ${state.progress.pass + 1}`
+              : automatic
+                ? "Finding automatic placement…"
+                : "Preparing global alignment…"}
+          </p>
+        )}
         {error && <p role="alert">{error}</p>}
         <GlobalAlignmentDiagnostics state={state} entities={entities} />
-        <div className="global-alignment-actions">
-          <button
-            disabled={
-              busy || staged || !validTolerance || !candidates.canPreview
-            }
-            onClick={() => void preview()}
-          >
-            Preview
-          </button>
-          <button
-            disabled={busy || !staged || !state.previewId}
-            onClick={() => void apply()}
-          >
-            {state.converged === false ? "Apply anyway" : "Apply"}
-          </button>
-          <button onClick={() => void cancel()}>Cancel / close</button>
-        </div>
+      </div>
+      <div className="tool-panel-actions global-alignment-actions">
+        <button
+          disabled={busy || staged || !validTolerance || !candidates.canPreview}
+          onClick={() => void preview()}
+        >
+          Preview
+        </button>
+        <button
+          disabled={busy || !staged || !state.previewId}
+          onClick={() => void apply()}
+        >
+          {state.converged === false ? "Apply anyway" : "Apply"}
+        </button>
+        <button onClick={() => void cancel()}>Cancel / close</button>
       </div>
     </aside>
   );

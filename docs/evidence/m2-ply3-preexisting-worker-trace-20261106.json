@@ -1,0 +1,36 @@
+{
+  "scope": "Diagnostic GUI reopen of a retained PLY-3 project after a new GUI Split/Extract and public MCP export stream; not same-session round-trip acceptance",
+  "sourceCommit": "ad489f2",
+  "bundle": "scanforge-64e154f9c3cab8dc",
+  "retainedProject": {
+    "bytes": 475563378,
+    "sha256": "d96929e100cbfa5a17cc1f231c8442c07c98414f5c92655990d56b427a5f8790"
+  },
+  "newExportStream": {
+    "bytes": 475563378,
+    "sha256": "2452908114dec46b906e797096a874475fae97341843b4eca859e3cfa4cd64c7"
+  },
+  "decoderMessage": {
+    "error": null,
+    "privateFloat64BufferBytes": [266108040, 44896128, 127929168, 21541272],
+    "totalBytes": 460474608
+  },
+  "result": {
+    "openedRetainedProject": true,
+    "crossSessionGeometry": "The reopened project contained objects matching the new session's extracted-part, source and cutter core geometry digests.",
+    "jobPeakBytes": 4231397376,
+    "jobLimitBytes": 4294967296,
+    "passed": false,
+    "reason": "The post-reopen history check queried an object ID from the new session, which is absent from the older retained project.",
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0,
+    "minimumFreeDiskBytes": 4109103104
+  },
+  "timing": "The job high-water mark rose from 4022255616 bytes at 182.616 seconds to 4231397376 bytes by 201.542 seconds. The retained project import stage completed approximately 199.3 seconds after the guard acquired its lane. Sampling a high-water mark does not locate the exact allocation.",
+  "limitations": [
+    "The new export stream and the reopened retained file came from different sessions and have different hashes and object IDs.",
+    "The driver stage named gui-extract-gui-reopen-verified checks core geometry across sessions; it is not evidence of a same-session round trip or post-reopen history.",
+    "This under-limit diagnostic does not supersede the three full-download resource failures or establish the cause of their peaks.",
+    "The worker message and its numeric buffer sizes are console observations; the job receipt and browser ledger were retained outside the repository."
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "scope": "Current GUI/public-MCP selected smoothing, two retained finite native controls and closed-selection rendering cleanup; M2 remains open.",
+  "baseCommit": "fd4e32e25a500036695af807e054be82f41268e2",
+  "failure": {
+    "browser": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-selected-smooth-browser-20261026-r1-full.receipt.json",
+      "sha256": "bd7eb1aa469a42be7118b5c7b0aacc712615d0cf023115892f7fdcb2ce7b082f",
+      "passed": false,
+      "elapsedSeconds": 4.9600555000361055,
+      "peakOwnedJobBytes": 935546880,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "unit": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-overlay-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "9d9919974a246b296e580e806f27282be19935db7c05f87f4e8bce06b1c2b247",
+      "passed": false,
+      "elapsedSeconds": 1.2203520000330172,
+      "peakOwnedJobBytes": 353275904,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "observed": "Eight THREE.Object3D.add(undefined) console errors. Closed selected surfaces have no exposed outline segments; adding an empty spread invokes Object3D.add without an object. Native coordinates and lifecycle assertions had passed before the console-error gate.",
+    "failedReceiptsRetained": true
+  },
+  "fix": {
+    "implementation": "Viewport.setTriangleSelection adds the overlay and optional outlines together; the Object3D argument is always present.",
+    "sharedCapability": "Existing GUI selection and MCP selection_set / mesh_process use the same viewport and shared edit operation; no schema or new tool required.",
+    "independentSourceReview": "No actionable blockers; no reviewer jobs were run."
+  },
+  "build": {
+    "id": "scanforge-371efeb2c74e6b42",
+    "inputs": 2994,
+    "inputsUnchanged": true,
+    "manifestSha256": "081e4304b4b1f6ae201dc306455cec50251b37f31f575906b9602a76750d79c7",
+    "typescriptBatches": 13,
+    "warnings": 0,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-overlay-build-20261026-r1-build.receipt.json",
+      "sha256": "39648f44789fa349a32ce576d4399b1895e4f3255586ea1dcea7075d984daf53",
+      "passed": true,
+      "elapsedSeconds": 150.5929883000208,
+      "peakOwnedJobBytes": 1722572800,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "laterChanges": "Browser-driver and documentation only after frozen build; production fingerprints checked separately."
+  },
+  "focused": {
+    "passed": 13,
+    "failed": 0,
+    "files": 6,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smoothing-overlay-green-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "3192d1ef17a97c44afe354c112a184ba6bebbbd769c285924bc10e26a52c9ebd",
+      "passed": true,
+      "elapsedSeconds": 2.584249000006821,
+      "peakOwnedJobBytes": 391417856,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "browser": {
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-selected-smooth-browser-20261026-r2-full.receipt.json",
+      "sha256": "0f23ed2c228ae27a332354aa90b55d748ca18637cfdf043d83caa652aeafcd9a",
+      "passed": true,
+      "elapsedSeconds": 5.413868699979503,
+      "peakOwnedJobBytes": 939495424,
+      "jobLimitBytes": 4294967296,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "ledgerSha256": "b2226d5eeaba21e639a1a173c1b551a0bd2d8c707d8c397938ec233cc538c0a2",
+    "result": {
+      "action": "smoothSelected",
+      "annularTwoPass": {
+        "inputTriangles": 96,
+        "selectedFacets": 16,
+        "iterations": 2,
+        "strength": 0.5,
+        "toleranceMm": 0.001,
+        "maxCoordinateErrorMm": 2.384185791015625e-7,
+        "unchangedUnmarkedCornerSlots": 198,
+        "undoRedo": true,
+        "nativeExportSha256": "864a7317c3427e697cf21448f170a8dc1e012127611ef4a3534d70a13403eb4a"
+      },
+      "nativeSixPassCoordinatesEqual": true,
+      "defeatureCanvasOnlyStatus": false,
+      "largePatch": false,
+      "selectedFacets": 8,
+      "manufacturedFailureClassOnly": false,
+      "guiMcpEqual": true,
+      "outputCoordinateSha256": "0d76b06946e74fbc7e2b8f0518aeb9d4255d0327d8d3a60142c3632f1150bf03",
+      "undoRedo": true,
+      "sourcePreserved": true,
+      "cancellationRollback": true,
+      "failureRollback": false,
+      "saveReopen": true,
+      "worstDeviation": null,
+      "diagnostics": {
+        "method": "Selected vertex averaging with concave boundary relaxation",
+        "topologyCache": "persistent-hit",
+        "topologyCacheBytes": 644
+      },
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 56271,
+        "closed": true
+      },
+      {
+        "pid": 50968,
+        "exited": true
+      },
+      {
+        "port": 56272,
+        "closed": true
+      },
+      {
+        "pid": 53960,
+        "exited": true
+      }
+    ],
+    "annularScreenshotVisuallyInspected": true,
+    "sameCameraBeforeAndAfterGuiOperation": true,
+    "guiDefault": {
+      "iterations": 6,
+      "strength": 0.5,
+      "nativeClicks": 3,
+      "fixture": "tests/fixtures/smooth-six-passes-observed.json",
+      "nativeExportSha256": "90f746b5e68ce06dee90293ba29b0011b6bf19579699862a046a5ddaa6d8f357"
+    }
+  },
+  "existingDefeatureBrowser": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-smooth-harness-defeature-browser-20261026-r1-full.receipt.json",
+    "sha256": "6ac233e42ec3c35b9c9672b098195bf2391918e54dc4a04eea1ebcdbaf4daf4d",
+    "passed": true,
+    "elapsedSeconds": 5.059664000000339,
+    "peakOwnedJobBytes": 919240704,
+    "jobLimitBytes": 4294967296,
+    "childJobFinalActive": 0,
+    "cleanupErrors": []
+  },
+  "limitations": [
+    "Eight-facet disconnected fan and 96-facet annular controls; no arbitrary-mesh native-equivalence claim.",
+    "GUI default six-pass and explicit two-pass MCP controls have different retained native exports/settings, recorded separately.",
+    "Current original/available production-scan smoothing, nonmanifold-edge and inconsistent-winding native acceptance remain open.",
+    "The first unchanged-camera six-pass screenshot is small; fitted annular screenshot supplies separate rendered surface evidence.",
+    "Injected result holding verifies cancellation rollback; it is not a timing/performance claim.",
+    "The smoothing browser does not exercise a failing geometry job; no failure rollback pass is claimed."
+  ]
+}

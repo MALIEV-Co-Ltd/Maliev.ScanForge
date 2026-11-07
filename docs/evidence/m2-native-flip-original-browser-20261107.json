@@ -1,0 +1,92 @@
+{
+  "scope": "Original scan 1 GUI and public MCP Flip against QuickSurface coordinate digest",
+  "candidate": "73f30823",
+  "productionBuild": "scanforge-12844615819f2f7e",
+  "browser": "Browser plugin unavailable; isolated Playwright Chrome",
+  "viewport": [1400, 900],
+  "result": {
+    "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "nativeCoordinateSha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf",
+    "triangles": 273139,
+    "guiDigest": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+      },
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 819417,
+        "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+      }
+    ],
+    "mcpDigest": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+      },
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 819417,
+        "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+      }
+    ],
+    "binaryReopen": true,
+    "undoRedo": true,
+    "pageErrors": []
+  },
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakJobBytes": 1119293440,
+    "cleanupConfirmed": true,
+    "ownedProcessesRemaining": 0,
+    "priorPassingPeakJobBytes": 1116844032
+  },
+  "limitations": [
+    "Native comparison is the ordered Float32 coordinate stream, not the exported normal records or every internal native carrier.",
+    "GUI execution and public MCP execution were compared after Undo; binary reopen and history were checked after the MCP execution.",
+    "The QuickSurface process was outside this browser Job; this resource observation covers the browser and its owned helpers only.",
+    "One original STL does not establish broad native parity, all M2 processing modes, or resource repeatability."
+  ]
+}

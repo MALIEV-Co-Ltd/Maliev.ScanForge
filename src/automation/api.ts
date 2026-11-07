@@ -69,7 +69,12 @@ export interface WorkspaceHost {
     measurement: import("../inspection").MeasurementInput | null,
   ): void;
   showSection?(
-    section: { entityId: string; axis: "x" | "y" | "z"; offset: number } | null,
+    section: {
+      entityId: string;
+      axis: "x" | "y" | "z";
+      offset: number;
+      scope?: "all" | "visible";
+    } | null,
   ): void;
   showInspection?(display: InspectionDisplay | null): void;
   inspectScanSelection?(): unknown;
@@ -118,6 +123,9 @@ export interface WorkspaceHost {
     session?: { history: Revision[]; future: Revision[]; projectId?: string },
   ): void;
   select(id: string | null, modifiers?: ObjectSelectionModifiers): void;
+  showGlobalAlignmentProgress?(
+    poses: readonly { entityId: string; matrix: readonly number[] }[] | null,
+  ): void;
   present?(signal?: AbortSignal): Promise<void>;
   showDatumPreview?(entities: Entity[] | null): void;
   showReferenceConstructionPreview?(
@@ -133,7 +141,7 @@ export interface WorkspaceHost {
       source: Entity["positions"];
       output: Float32Array;
       summary: string;
-      settings?: import("../shrinkwrap-request").ShrinkwrapParameters;
+      settings: import("../scan-preview-request").ScanPreviewParameters;
       comparison?: NonNullable<
         import("../processing-client").ProcessingResult["noiseComparison"]
       >;
@@ -474,7 +482,8 @@ export class ApplicationApi {
       sketches: next.authoring.sketches?.map((s) => [
         s.id,
         s.name,
-        identity(s.sketch),
+        s.kind === "spatial" ? identity(s.curves) : identity(s.sketch),
+        s.visible,
       ]),
       activeSketchId: next.authoring.activeSketchId,
       inspections: next.authoring.inspections,
@@ -843,15 +852,24 @@ export class ApplicationApi {
             .arrayBuffer(),
         );
         this.checkOwner(ownerEpoch);
-        // Bound conversion scratch; per-byte concatenation creates a string
-        // node for every byte during repeated full-project downloads.
-        const text: string[] = [];
-        for (let start = 0; start < data.length; start += 8192)
-          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
+        const nativeBase64 = (data as Uint8Array & { toBase64?: () => string })
+          .toBase64;
+        let base64: string;
+        if (typeof nativeBase64 === "function")
+          base64 = nativeBase64.call(data);
+        else {
+          // Bound conversion scratch in browsers without native Base64 encoding.
+          const text: string[] = [];
+          for (let start = 0; start < data.length; start += 8192)
+            text.push(
+              String.fromCharCode(...data.subarray(start, start + 8192)),
+            );
+          base64 = btoa(text.join(""));
+        }
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text.join("")),
+          base64,
           nextOffset: offset + data.length,
           eof: offset + data.length === entry.blob.size,
         });

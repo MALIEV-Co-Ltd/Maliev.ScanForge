@@ -147,13 +147,15 @@ it("keeps selection lists as arrays when they share a u32 chunk with topology", 
   };
   const file = await encodeProjectFileLocally(session([mesh(), big]));
   const header = new DataView(await file.slice(0, 16).arrayBuffer());
-  const manifest = JSON.parse(
-    await file.slice(16, 16 + header.getUint32(8, true)).text(),
-  );
-  expect(manifest.records[0].indexedMesh.triangles.chunk).toBe(
-    manifest.records[1].meshSelection.hidden.chunk,
-  );
-  const restored = await decodeProjectContents(file);
+  const oldLength = header.getUint32(8, true);
+  const manifest = JSON.parse(await file.slice(16, 16 + oldLength).text());
+  const sharedChunk = manifest.records[0].indexedMesh.triangles.chunk;
+  manifest.records[1].meshSelection.hidden.chunk = sharedChunk;
+  manifest.records[1].meshSelection.saved[0].triangles.chunk = sharedChunk;
+  const encoded = new TextEncoder().encode(JSON.stringify(manifest));
+  header.setUint32(8, encoded.length, true);
+  const legacy = new Blob([header.buffer, encoded, file.slice(16 + oldLength)]);
+  const restored = await decodeProjectContents(legacy);
   expect(restored.project.entities[0].indexedMesh!.triangles).toBeInstanceOf(
     Uint32Array,
   );

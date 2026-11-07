@@ -1,5 +1,6 @@
 import type { Entity, MeshStats, Vec3 } from "./types";
 import { referenceEntitySummary } from "./reference-entity";
+import { referenceFrameSummary } from "./reference-frame";
 import { displayMeshStats } from "./scan-render-data";
 import { pointCloudStats } from "./point-cloud";
 
@@ -18,7 +19,8 @@ export type EntityDisplayStats =
 
 /** Semantic summaries never enter triangle statistics or their position cache. */
 export function entityDisplayStats(entity: Entity): EntityDisplayStats {
-  const semantic = referenceEntitySummary(entity);
+  const semantic =
+    referenceFrameSummary(entity) ?? referenceEntitySummary(entity);
   if (semantic) {
     const min: Vec3 = [...semantic.bounds.min],
       max: Vec3 = [...semantic.bounds.max];

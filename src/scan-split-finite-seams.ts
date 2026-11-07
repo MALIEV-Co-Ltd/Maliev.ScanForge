@@ -1,0 +1,715 @@
+type SeamOptions = {
+  signal?: AbortSignal;
+  maxWork?: number;
+  maxTypedBytes?: number;
+  check?: () => void;
+  retainFaceParents?: boolean;
+  preciseCoordinates?: boolean;
+  retainIsolatedInterior?: boolean;
+};
+type SeamResult<V> = {
+  vertices: V;
+  triangles: Uint32Array;
+  faceParents?: Uint32Array;
+};
+
+export function materializeFiniteSeams(
+  source: Float32Array | Float64Array,
+  triangles: Uint32Array,
+  cuts: Uint32Array,
+  options: SeamOptions & { preciseCoordinates: true },
+): SeamResult<number[]>;
+export function materializeFiniteSeams(
+  source: Float32Array,
+  triangles: Uint32Array,
+  cuts: Uint32Array,
+  options?: SeamOptions & { preciseCoordinates?: false },
+): SeamResult<Float32Array>;
+/** Experimental indexed seam construction. Allocation allowance excludes JS maps. */
+export function materializeFiniteSeams(
+  source: Float32Array | Float64Array,
+  triangles: Uint32Array,
+  cuts: Uint32Array,
+  options: SeamOptions = {},
+): SeamResult<Float32Array | number[]> {
+  if (source.length % 3 || triangles.length % 3 || cuts.length % 2)
+    throw new Error("Finite seam geometry is incomplete.");
+  const limit =
+    options.maxWork ?? 2_000_000 + triangles.length * 100 + cuts.length * 40;
+  if (!Number.isSafeInteger(limit) || limit < 1)
+    throw new Error("Finite seam work budget is invalid.");
+  let work = 0;
+  const tick = () => {
+    if (options.signal?.aborted)
+      throw new DOMException("Aborted", "AbortError");
+    options.check?.();
+    if (options.signal?.aborted)
+      throw new DOMException("Aborted", "AbortError");
+    if (++work > limit) throw new Error("Finite seam work budget exceeded.");
+  };
+  tick();
+  const key = (a: number, b: number) => (a < b ? `${a}:${b}` : `${b}:${a}`);
+  const vertexCount = source.length / 3;
+  for (let i = 0; i < source.length; i++) {
+    if ((i & 4095) === 0) tick();
+    if (!Number.isFinite(source[i]))
+      throw new Error("Finite seam coordinates must be finite.");
+  }
+  const addedVertices: number[] = [];
+  const midpoint = new Map<string, number>();
+  const splitEdges = new Set<string>();
+  const cutVertices = new Set<number>();
+  const cutKeys = new Set<string>();
+  const degrees = new Map<number, number | bigint>();
+  for (let i = 0; i < cuts.length; i += 2) {
+    tick();
+    const a = cuts[i],
+      b = cuts[i + 1],
+      k = key(a, b);
+    if (a >= vertexCount || b >= vertexCount || a === b)
+      throw new Error("Finite seam edge is invalid.");
+    if (cutKeys.has(k)) continue;
+    cutKeys.add(k);
+    degrees.set(a, Number(degrees.get(a) ?? 0) + 1);
+    degrees.set(b, Number(degrees.get(b) ?? 0) + 1);
+  }
+  // Existing junctions separate vertex fans. Only an isolated edge needs a
+  // new midpoint to open a seam while keeping its two tips connected.
+  let closed = cutKeys.size > 0;
+  for (const degree of degrees.values()) {
+    tick();
+    if (degree !== 2) {
+      closed = false;
+      break;
+    }
+  }
+  const allowance = options.maxTypedBytes ?? Number.MAX_SAFE_INTEGER;
+  if (!Number.isSafeInteger(allowance) || allowance < 0)
+    throw new Error("Finite seam typed memory budget exceeded.");
+  // The added lookup has a separate, conservative JS-entry allowance. The
+  // existing typed-array limit below is not a total-process memory guarantee.
+  const extraEntryLimit = Math.floor(
+    Math.min(allowance, 256 * 1024 * 1024) / 256,
+  );
+  let extraEntries = 0;
+  const reserveEntry = () => {
+    if (++extraEntries > extraEntryLimit)
+      throw new Error("Finite seam boundary work memory budget exceeded.");
+  };
+  const isolatedTips = new Set<number>();
+  if (!closed)
+    for (let i = 0; i < cuts.length; i += 2) {
+      tick();
+      const a = cuts[i],
+        b = cuts[i + 1];
+      if (degrees.get(a) === 1 && degrees.get(b) === 1) {
+        for (const v of [a, b])
+          if (!isolatedTips.has(v)) {
+            reserveEntry();
+            isolatedTips.add(v);
+          }
+      }
+    }
+  // Follow only components reachable from an endpoint. Closed loops need no
+  // fan lookup; paths that meet a branch are rejected before building one.
+  let hasCandidatePaths = false;
+  const startBit = 1n << 69n;
+  const none = 0xffffffff;
+  const mask = 0xffffffffn;
+  const links = (vertex: number) => {
+    const value = degrees.get(vertex) as bigint;
+    return [
+      Number((value >> 2n) & mask) - 1,
+      Number((value >> 34n) & mask) - 1,
+    ];
+  };
+  let packedDegrees = false;
+  const degreeOf = (v: number) => {
+    const value = degrees.get(v);
+    return value === undefined
+      ? 0
+      : packedDegrees
+        ? Number(BigInt(value) & 3n)
+        : Number(value);
+  };
+  if (
+    options.retainIsolatedInterior &&
+    !closed &&
+    isolatedTips.size < degrees.size
+  ) {
+    let hasEndpoint = false;
+    for (const k of cutKeys) {
+      tick();
+      const [a, b] = k.split(":").map(Number);
+      if (
+        (degrees.get(a) === 1 && degrees.get(b) === 2) ||
+        (degrees.get(b) === 1 && degrees.get(a) === 2)
+      ) {
+        hasEndpoint = true;
+        break;
+      }
+    }
+    if (hasEndpoint) {
+      if (vertexCount >= 0xffffffff)
+        throw new Error("Finite seam index capacity exceeded.");
+      // Reuse each existing degree-map entry for two 32-bit links and a
+      // visited bit. Bound the added boxed-value estimate separately from the
+      // typed-array stage budget; no unrelated per-component graph is allocated.
+      const packedValueBytes = degrees.size * 32;
+      if (
+        !Number.isSafeInteger(packedValueBytes) ||
+        packedValueBytes > Math.min(allowance, 256 * 1024 * 1024)
+      )
+        throw new Error("Finite seam boundary work memory budget exceeded.");
+      const visitedBit = 1n << 66n;
+      for (const [vertex, degree] of degrees) {
+        tick();
+        degrees.set(vertex, BigInt(Math.min(Number(degree), 3)));
+      }
+      packedDegrees = true;
+      const wasVisited = (vertex: number) =>
+        ((degrees.get(vertex) as bigint) & visitedBit) !== 0n;
+      for (const k of cutKeys) {
+        tick();
+        const [a, b] = k.split(":").map(Number);
+        for (const [v, n] of [
+          [a, b],
+          [b, a],
+        ]) {
+          if (degreeOf(v) > 2) continue;
+          const value = degrees.get(v) as bigint;
+          const shift = ((value >> 2n) & mask) === 0n ? 2n : 34n;
+          degrees.set(v, value | (BigInt(n + 1) << shift));
+        }
+      }
+      for (const [start] of degrees) {
+        tick();
+        if (degreeOf(start) !== 1 || wasVisited(start)) continue;
+        const [first] = links(start);
+        if (first < 0 || degreeOf(first) === 1) continue;
+        let previous = none,
+          current = start,
+          valid = false;
+        while (current !== none && !wasVisited(current)) {
+          tick();
+          if (degreeOf(current) > 2) break;
+          const [a, b] = links(current);
+          degrees.set(current, (degrees.get(current) as bigint) | visitedBit);
+          if (current !== start && degreeOf(current) === 1) {
+            valid = true;
+            break;
+          }
+          const next = a === previous ? b : a;
+          previous = current;
+          current = next < 0 ? none : next;
+        }
+        if (!valid) continue;
+        degrees.set(start, (degrees.get(start) as bigint) | startBit);
+        hasCandidatePaths = true;
+      }
+    }
+  }
+  const edgeCounts = new Map<string, { a: number; b: number; count: number }>();
+  const fans = new Map<number, Map<number, number>>();
+  const fanRoot = (parents: Map<number, number>, id: number): number => {
+    let current = id;
+    while (parents.get(current) !== current) {
+      tick();
+      current = parents.get(current)!;
+    }
+    let path = id;
+    while (path !== current) {
+      tick();
+      const next = parents.get(path)!;
+      parents.set(path, current);
+      path = next;
+    }
+    return current;
+  };
+  if (isolatedTips.size)
+    for (let i = 0; i < triangles.length; i += 3) {
+      tick();
+      for (let j = 0; j < 3; j++) {
+        const a = triangles[i + j],
+          b = triangles[i + ((j + 1) % 3)];
+        if (isolatedTips.has(a)) {
+          const c = triangles[i + ((j + 2) % 3)];
+          let parents = fans.get(a);
+          if (!parents) {
+            reserveEntry();
+            parents = new Map();
+            fans.set(a, parents);
+          }
+          for (const v of [b, c])
+            if (!parents.has(v)) {
+              reserveEntry();
+              parents.set(v, v);
+            }
+          const rb = fanRoot(parents, b),
+            rc = fanRoot(parents, c);
+          if (rb !== rc) parents.set(rb, rc);
+        }
+        if (!isolatedTips.has(a) && !isolatedTips.has(b)) continue;
+        const k = key(a, b),
+          e = edgeCounts.get(k);
+        if (e) e.count++;
+        else {
+          reserveEntry();
+          edgeCounts.set(k, { a, b, count: 1 });
+        }
+      }
+    }
+  const boundary = new Set<number>();
+  for (const e of edgeCounts.values()) {
+    tick();
+    if (e.count === 1) {
+      for (const v of [e.a, e.b])
+        if (!boundary.has(v)) {
+          reserveEntry();
+          boundary.add(v);
+        }
+    }
+  }
+  const connectedBoundaryCache = new Map<number, boolean>();
+  const connectedBoundary = (v: number) => {
+    const cached = connectedBoundaryCache.get(v);
+    if (cached !== undefined) return cached;
+    if (!boundary.has(v)) return false;
+    const parents = fans.get(v);
+    if (!parents || !parents.size) return false;
+    let root: number | undefined;
+    for (const id of parents.keys()) {
+      tick();
+      const r = fanRoot(parents, id);
+      if (root !== undefined && r !== root) {
+        reserveEntry();
+        connectedBoundaryCache.set(v, false);
+        return false;
+      }
+      root = r;
+    }
+    reserveEntry();
+    connectedBoundaryCache.set(v, true);
+    return true;
+  };
+  const connectedInterior = (v: number) => {
+    const parents = fans.get(v);
+    if (boundary.has(v) || !parents?.size) return false;
+    let first: number | undefined;
+    for (const id of parents.keys()) {
+      tick();
+      const r = fanRoot(parents, id);
+      if (first !== undefined && first !== r) return false;
+      first = r;
+    }
+    return true;
+  };
+  for (let i = 0; i < cuts.length; i += 2) {
+    tick();
+    const a = cuts[i],
+      b = cuts[i + 1],
+      k = key(a, b);
+    if (
+      options.retainIsolatedInterior &&
+      degreeOf(a) === 1 &&
+      degreeOf(b) === 1 &&
+      edgeCounts.get(k)?.count === 2 &&
+      ((connectedBoundary(a) && connectedInterior(b)) ||
+        (connectedBoundary(b) && connectedInterior(a)))
+    )
+      continue;
+    // A nonseparating interior edge stays shared in the tested native Split
+    // cases. Disconnected or boundary fans keep the existing seam behavior.
+    if (
+      options.retainIsolatedInterior &&
+      degreeOf(a) === 1 &&
+      degreeOf(b) === 1 &&
+      edgeCounts.get(k)?.count === 2 &&
+      connectedInterior(a) &&
+      connectedInterior(b)
+    )
+      continue;
+    if (
+      ((connectedBoundary(a) || connectedBoundary(b)) &&
+        edgeCounts.get(k)?.count === 2) ||
+      closed ||
+      degreeOf(a) > 1 ||
+      degreeOf(b) > 1
+    ) {
+      cutVertices.add(a);
+      cutVertices.add(b);
+      splitEdges.add(k);
+      continue;
+    }
+    if (midpoint.has(k)) continue;
+    const m = vertexCount + addedVertices.length / 3;
+    const p = [0, 1, 2].map((axis) => {
+      const value = (source[3 * a + axis] + source[3 * b + axis]) / 2;
+      return options.preciseCoordinates ? value : Math.fround(value);
+    });
+    if ([a, b].some((id) => p.every((v, axis) => v === source[id * 3 + axis])))
+      throw new Error(
+        "Finite seam midpoint cannot be represented at output precision.",
+      );
+    addedVertices.push(...p);
+    cutVertices.add(a);
+    cutVertices.add(b);
+    cutVertices.add(m);
+    midpoint.set(k, m);
+    splitEdges.add(key(a, m));
+    splitEdges.add(key(m, b));
+  }
+  const expandedVertexCount = vertexCount + addedVertices.length / 3;
+  let faceSlots = triangles.length;
+  const countedCuts = new Set<string>();
+  for (let f = 0; f < triangles.length; f += 3) {
+    tick();
+    const a = triangles[f],
+      b = triangles[f + 1],
+      c = triangles[f + 2];
+    if (
+      a >= vertexCount ||
+      b >= vertexCount ||
+      c >= vertexCount ||
+      a === b ||
+      b === c ||
+      c === a
+    )
+      throw new Error("Finite seam triangle indices are invalid.");
+    for (const [start, end] of [
+      [a, b],
+      [b, c],
+      [c, a],
+    ]) {
+      const k = key(start, end);
+      if (cutKeys.has(k)) countedCuts.add(k);
+      if (midpoint.has(k)) {
+        faceSlots += 3;
+      }
+    }
+  }
+  if (countedCuts.size !== cutKeys.size)
+    throw new Error("Finite seam edge is missing.");
+  if (faceSlots >= 0xffffffff || expandedVertexCount >= 0xffffffff)
+    throw new Error("Finite seam index capacity exceeded.");
+  // Includes the face buffer, parent, edge-sort buffers, mapping, output
+  // indices and worst-case output coordinates, plus the per-vertex table. The
+  // number-array estimate covers its numeric payload, not engine overhead.
+  const typedBytes =
+    faceSlots * (options.preciseCoordinates ? 48 : 36) +
+    expandedVertexCount * 4 +
+    (options.retainFaceParents ? (faceSlots / 3) * 4 : 0);
+  if (typedBytes > allowance)
+    throw new Error("Finite seam typed memory budget exceeded.");
+  const faces = new Uint32Array(faceSlots);
+  const faceParents = options.retainFaceParents
+    ? new Uint32Array(faceSlots / 3)
+    : undefined;
+  let faceOffset = 0;
+  const seenCuts = new Set<string>();
+  for (let f = 0; f < triangles.length; f += 3) {
+    tick();
+    const original = [triangles[f], triangles[f + 1], triangles[f + 2]];
+    if (
+      original.some((id) => id >= vertexCount) ||
+      new Set(original).size !== 3
+    )
+      throw new Error("Finite seam triangle indices are invalid.");
+    let parts = [original];
+    for (let edge = 0; edge < 3; edge++) {
+      const a = original[edge],
+        b = original[(edge + 1) % 3],
+        k = key(a, b),
+        m = midpoint.get(k);
+      if (m === undefined) continue;
+      seenCuts.add(k);
+      const next: number[][] = [];
+      for (const part of parts) {
+        tick();
+        const side = part.findIndex(
+          (id, i) =>
+            (id === a && part[(i + 1) % 3] === b) ||
+            (id === b && part[(i + 1) % 3] === a),
+        );
+        if (side < 0) next.push(part);
+        else {
+          const start = part[side],
+            end = part[(side + 1) % 3],
+            third = part[(side + 2) % 3];
+          next.push([start, m, third], [m, end, third]);
+        }
+      }
+      parts = next;
+    }
+    if (parts.length > 1) {
+      const point = (id: number) => {
+        const values = id < vertexCount ? source : addedVertices;
+        const offset = (id < vertexCount ? id : id - vertexCount) * 3;
+        return [values[offset], values[offset + 1], values[offset + 2]];
+      };
+      const normal = (ids: number[]) => {
+        const [a, b, c] = ids.map(point);
+        const u = b.map((v, axis) => v - a[axis]);
+        const v = c.map((value, axis) => value - a[axis]);
+        return [
+          u[1] * v[2] - u[2] * v[1],
+          u[2] * v[0] - u[0] * v[2],
+          u[0] * v[1] - u[1] * v[0],
+        ];
+      };
+      const reference = normal(original);
+      const total = [0, 0, 0];
+      let totalMagnitude = 0;
+      for (const part of parts) {
+        tick();
+        const result = normal(part);
+        const orientation = result.reduce(
+          (sum, value, axis) => sum + value * reference[axis],
+          0,
+        );
+        if (!Number.isFinite(orientation) || orientation <= 0)
+          throw new Error(
+            "Finite seam face collapses or reverses at Float32 precision.",
+          );
+        for (let axis = 0; axis < 3; axis++) total[axis] += result[axis];
+        totalMagnitude += Math.hypot(...result);
+      }
+      const coverageError = Math.hypot(
+        ...total.map((value, axis) => value - reference[axis]),
+      );
+      const tolerance =
+        Math.max(Math.hypot(...reference), totalMagnitude) *
+        Math.max(
+          Number.EPSILON * 128 * (parts.length + 1),
+          options.preciseCoordinates ? 1e-9 : 1e-3,
+        );
+      if (!Number.isFinite(coverageError) || coverageError > tolerance)
+        throw new Error(
+          "Finite seam face coverage changes at output precision.",
+        );
+    }
+    for (const part of parts) {
+      if (faceParents) faceParents[faceOffset / 3] = f / 3;
+      faces.set(part, faceOffset);
+      faceOffset += 3;
+    }
+  }
+  if (seenCuts.size !== midpoint.size)
+    throw new Error("Finite seam edge is missing.");
+  if (faceOffset !== faceSlots)
+    throw new Error("Finite seam face count is inconsistent.");
+  const parent = Uint32Array.from({ length: faces.length }, (_, i) => i);
+  const root = (i: number): number => {
+    while (parent[i] !== i) {
+      tick();
+      parent[i] = parent[parent[i]];
+      i = parent[i];
+    }
+    return i;
+  };
+  let order = new Uint32Array(
+    allocateImportedReadonlyBuffer(faces.length * 4, true),
+  );
+  for (let i = 0; i < order.length; i++) order[i] = i;
+  let scratch = new Uint32Array(
+    allocateImportedReadonlyBuffer(faces.length * 4, true),
+  );
+  const next = (slot: number) => slot - (slot % 3) + (((slot % 3) + 1) % 3);
+  const min = (slot: number) => Math.min(faces[slot], faces[next(slot)]);
+  const max = (slot: number) => Math.max(faces[slot], faces[next(slot)]);
+  const compare = (a: number, b: number) =>
+    min(a) - min(b) || max(a) - max(b) || a - b;
+  for (let width = 1; width < order.length; width *= 2) {
+    for (let start = 0; start < order.length; start += width * 2) {
+      const middle = Math.min(start + width, order.length),
+        end = Math.min(start + width * 2, order.length);
+      let i = start,
+        j = middle;
+      for (let k = start; k < end; k++) {
+        tick();
+        scratch[k] =
+          j >= end || (i < middle && compare(order[i], order[j]) <= 0)
+            ? order[i++]
+            : order[j++];
+      }
+    }
+    [order, scratch] = [scratch, order];
+  }
+  const firstCorner = new Uint32Array(expandedVertexCount);
+  if (hasCandidatePaths) {
+    // The normal edge sort already contains the full refined topology. Join
+    // all incident faces once to classify original fans before applying cuts.
+    // This reuses the existing corner and union buffers instead of allocating
+    // one lookup per face around every candidate vertex.
+    const boundaryBit = 1n << 67n;
+    const disconnectedBit = 1n << 68n;
+    const addFlag = (vertex: number, bit: bigint) => {
+      const value = degrees.get(vertex);
+      if (value !== undefined) degrees.set(vertex, (value as bigint) | bit);
+    };
+    for (let i = 0; i < order.length;) {
+      tick();
+      const lo = min(order[i]),
+        hi = max(order[i]);
+      let end = i + 1;
+      while (
+        end < order.length &&
+        min(order[end]) === lo &&
+        max(order[end]) === hi
+      ) {
+        tick();
+        end++;
+      }
+      if (end - i > 2) throw new Error("Finite seam edge is non-manifold.");
+      if (end - i === 1) {
+        addFlag(lo, boundaryBit);
+        addFlag(hi, boundaryBit);
+      } else {
+        const first = order[i],
+          second = order[i + 1];
+        for (const a of [first, next(first)]) {
+          const b = faces[a] === faces[second] ? second : next(second);
+          if (faces[a] !== faces[b])
+            throw new Error("Finite seam edge indices are inconsistent.");
+          const x = root(a),
+            y = root(b);
+          if (x !== y) parent[Math.max(x, y)] = Math.min(x, y);
+        }
+      }
+      i = end;
+    }
+    for (let slot = 0; slot < faces.length; slot++) {
+      tick();
+      const v = faces[slot];
+      if (!degrees.has(v)) continue;
+      const first = firstCorner[v];
+      if (first === 0) firstCorner[v] = slot + 1;
+      else if (root(first - 1) !== root(slot)) addFlag(v, disconnectedBit);
+    }
+    const walk = (
+      start: number,
+      visit: (v: number, previous: number, end: boolean) => void,
+    ) => {
+      let previous = none,
+        current = start;
+      while (current !== none) {
+        tick();
+        const end = current !== start && degreeOf(current) === 1;
+        visit(current, previous, end);
+        if (end) return;
+        const [a, b] = links(current);
+        const n = a === previous ? b : a;
+        previous = current;
+        current = n < 0 ? none : n;
+      }
+      throw new Error("Finite seam path is incomplete.");
+    };
+    for (const [start, entry] of degrees) {
+      tick();
+      if (((entry as bigint) & startBit) === 0n) continue;
+      let boundaryEndpoints = 0,
+        valid = true;
+      walk(start, (v, _previous, end) => {
+        const flags = degrees.get(v) as bigint;
+        if ((flags & disconnectedBit) !== 0n) valid = false;
+        if ((flags & boundaryBit) !== 0n) {
+          if (v === start || end) boundaryEndpoints++;
+          else valid = false;
+        }
+      });
+      if (valid && boundaryEndpoints === 1)
+        walk(start, (v, previous) => {
+          if (previous !== none) splitEdges.delete(key(previous, v));
+        });
+    }
+    for (let i = 0; i < parent.length; i++) {
+      if ((i & 4095) === 0) tick();
+      parent[i] = i;
+    }
+    firstCorner.fill(0);
+  }
+  for (let i = 0; i < order.length;) {
+    tick();
+    const lo = min(order[i]),
+      hi = max(order[i]);
+    let end = i + 1;
+    while (
+      end < order.length &&
+      min(order[end]) === lo &&
+      max(order[end]) === hi
+    ) {
+      tick();
+      end++;
+    }
+    if (end - i > 2) throw new Error("Finite seam edge is non-manifold.");
+    if (end - i === 2 && !splitEdges.has(key(lo, hi))) {
+      const first = order[i],
+        second = order[i + 1];
+      for (const a of [first, next(first)]) {
+        const b = faces[a] === faces[second] ? second : next(second);
+        if (faces[a] !== faces[b])
+          throw new Error("Finite seam edge indices are inconsistent.");
+        const x = root(a),
+          y = root(b);
+        if (x !== y) parent[Math.max(x, y)] = Math.min(x, y);
+      }
+    }
+    i = end;
+  }
+  // A vertex that is unrelated to any cut keeps its authored identity even
+  // when its incident triangles meet only at that vertex.
+  for (let slot = 0; slot < faces.length; slot++) {
+    tick();
+    const vertex = faces[slot];
+    if (cutVertices.has(vertex)) continue;
+    const first = firstCorner[vertex];
+    if (first === 0) firstCorner[vertex] = slot + 1;
+    else {
+      const x = root(first - 1),
+        y = root(slot);
+      if (x !== y) parent[Math.max(x, y)] = Math.min(x, y);
+    }
+  }
+  // The edge sort is complete; reuse its scratch storage for output indices.
+  const outputTriangles = scratch;
+  for (let slot = 0; slot < faces.length; slot++) {
+    tick();
+    outputTriangles[slot] = root(slot);
+  }
+  // All roots are now materialized, so the union-find buffer can serve as
+  // the root-to-output mapping without allocating another corner-sized array.
+  parent.fill(0);
+  let outputVertexCount = 0;
+  for (let slot = 0; slot < faces.length; slot++) {
+    if ((slot & 4095) === 0) tick();
+    const r = outputTriangles[slot];
+    let id = parent[r];
+    if (id === 0) {
+      id = ++outputVertexCount;
+      parent[r] = id;
+    }
+    outputTriangles[slot] = id - 1;
+  }
+  // Most corners share vertices. Allocate only the established vertex count
+  // rather than reserving three coordinates for every triangle corner.
+  const outputVertices = options.preciseCoordinates
+    ? new Array<number>(outputVertexCount * 3)
+    : new Float32Array(outputVertexCount * 3);
+  for (let slot = 0; slot < faces.length; slot++) {
+    if ((slot & 4095) === 0) tick();
+    const vertex = faces[slot];
+    const values = vertex < vertexCount ? source : addedVertices;
+    const offset = (vertex < vertexCount ? vertex : vertex - vertexCount) * 3;
+    const target = outputTriangles[slot] * 3;
+    outputVertices[target] = values[offset];
+    outputVertices[target + 1] = values[offset + 1];
+    outputVertices[target + 2] = values[offset + 2];
+  }
+  tick();
+  return {
+    vertices: outputVertices,
+    triangles: outputTriangles,
+    ...(faceParents ? { faceParents } : {}),
+  };
+}
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";

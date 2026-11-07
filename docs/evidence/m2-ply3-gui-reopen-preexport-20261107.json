@@ -1,0 +1,30 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract and reopen of an earlier saved project after a fresh export, without artifact download",
+  "candidate": "8a33db086866d2dbc571667d8d176ca577b2431e",
+  "build": "scanforge-526b3f920644a76e",
+  "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "reopenedFileSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+  "driverSha256": "88589ae44d583e3bfa59fbfc72179cc42e1a9383cde639dde7bc3b6ed9e344f0",
+  "method": "Export the newly created scene and delete that artifact without downloading it; reopen the retained earlier project through the GUI local-file picker. Match its object IDs by exact geometry digests before checking history.",
+  "result": {
+    "passed": true,
+    "inputTriangles": 3691133,
+    "splitTriangles": 3695945,
+    "extractedTriangles": 1776794,
+    "sourceCutterAndExtractedGeometryMatched": true,
+    "guiUndoAfterReopen": true,
+    "guiRedoAfterReopen": true,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "peakJobBytes": 3840917504,
+    "jobLimitBytes": 4294967296,
+    "processCleanupConfirmed": true
+  },
+  "earlierControl": "An earlier run matched all three reopened geometry digests but its history check used IDs from the newly created scene and failed. A subsequent mapping run passed undo and redo but failed in its final report because that report still used the old source ID. The final driver retains that ID only for the pre-reopen report and completed cleanly.",
+  "limitations": [
+    "The preceding export may populate reuse caches; no cache-hit instrumentation establishes which buffers were reused.",
+    "This is one guarded run without a full artifact download, not proof that cold GUI reopen or the download-and-reopen path meets the resource limit.",
+    "The retained 475 MB project remains because automatic approval review rejected its cleanup.",
+    "This is not native Split parity or full M2 acceptance."
+  ]
+}

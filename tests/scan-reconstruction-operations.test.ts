@@ -84,7 +84,7 @@ function harness(entities: Entity[] = [entity()]) {
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
 
-it("routes GUI and MCP through identical multi-mesh reconstruction and diagnostics", async () => {
+it("routes GUI and MCP through identical explicit voxel reconstruction and diagnostics", async () => {
   const source = entity(),
     target = entity({ id: "target", positions: triangle });
   const h = harness([source, target]);

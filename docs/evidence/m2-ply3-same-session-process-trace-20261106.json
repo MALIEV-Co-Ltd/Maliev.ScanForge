@@ -1,0 +1,58 @@
+{
+  "scope": "One original PLY-3 GUI Split/Extract, public MCP project export and full artifact download, and same-session GUI reopen with post-reopen history",
+  "sourceCommit": "ca9e66d",
+  "bundle": "scanforge-64e154f9c3cab8dc",
+  "input": {
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "faces": 3691133
+  },
+  "artifact": {
+    "bytes": 475563378,
+    "streamSha256": "951c8f655d41d21e367f0c87fa28802d54451be508cfac190bc86ced85e0e41d",
+    "fileSha256": "951c8f655d41d21e367f0c87fa28802d54451be508cfac190bc86ced85e0e41d"
+  },
+  "result": {
+    "guiGeometryAndPostReopenUndoRedo": "passed",
+    "pageErrors": [],
+    "consoleErrors": [],
+    "decoderPrivateNumericBytes": 460474608,
+    "peakJobBytes": 4252835840,
+    "jobLimitBytes": 4294967296,
+    "headroomBytes": 42131456,
+    "minimumFreeDiskBytes": 3676020736,
+    "exitCode": 0,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "processSamples": {
+    "units": "private committed bytes; sampled every two seconds outside the job",
+    "afterExtractUndo": {
+      "renderer": 1720291328,
+      "chromeUnclassified": 133902336,
+      "gpu": 821018624
+    },
+    "afterDownload": {
+      "renderer": 1698607104,
+      "chromeUnclassified": 981471232,
+      "gpu": 453922816
+    },
+    "afterProjectImport": {
+      "renderer": 2190364672,
+      "chromeUnclassified": 908972032,
+      "gpu": 524292096
+    },
+    "note": "These are nearby point samples, not the job peak or proof of allocation ownership. Chrome without a --type argument is labeled unclassified."
+  },
+  "retainedEvidence": {
+    "receiptSha256": "1a079bc39ba198dfb5abc20c3ed04a76bab3b335be79e8d872638a74b4a64c79",
+    "ledgerSha256": "3fb28b8c4b18270cc22bb9f62089803b1949033de871e031770eb7d12e97f522",
+    "consoleLogSha256": "a10d9c4b443bb869e30195c27aef58ffdf9d5d64476d613f9c931dd5e96fe202",
+    "driverSha256": "0d2f3e76d69198016de006441d8519d1b4506bfd2fa45ee2c8037c72a89eb2e7",
+    "jobGuardSha256": "89dea654cec0b514fe991b3e62359294c1edfcb0abf3b32cfe473fb2773710ee"
+  },
+  "limitations": [
+    "This is one passing instrumented run with only about 40 MiB of headroom; earlier same-workflow runs exceeded the limit.",
+    "The process samples do not identify a specific allocation or establish a general resource guarantee.",
+    "Other M2 native, parity, review, integration and milestone closure gates remain open."
+  ]
+}

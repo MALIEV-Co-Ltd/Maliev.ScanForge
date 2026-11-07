@@ -1,0 +1,94 @@
+{
+  "evidence_id": "ev_3196c7519c9dfa1d72a3b02d6476a974227a5629be5824636b25cbc1f320d03d",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "dbabd70f-fcc2-46da-8b50-a7e5e4ffdfa0"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "dbabd70f-fcc2-46da-8b50-a7e5e4ffdfa0",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "58f0c363-724d-420b-b658-02b84a5909fb",
+        "name": "rea-58f0c363-724d-420b-b658-02b84a5909fb"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "58f0c363-724d-420b-b658-02b84a5909fb",
+        "type": "send",
+        "payload": {
+          "event": "ready"
+        }
+      },
+      {
+        "script_id": "58f0c363-724d-420b-b658-02b84a5909fb",
+        "type": "send",
+        "payload": {
+          "event": "edge",
+          "n": 1,
+          "pair": "0x400000003",
+          "ids": [3, 4],
+          "points": [
+            {
+              "id": 3,
+              "part0": "0000000000000000000000000000000000000000000000000000000000000000",
+              "part1": "01000000e8ffffff18000000010000006f30d200000000000000000000000000"
+            },
+            {
+              "id": 4,
+              "part0": "01000000e8ffffff1700000001000000d9c07a00000000000000000000000000",
+              "part1": "01000000e7ffffff1700000001000000c9b67400000000000000000000000000"
+            }
+          ]
+        }
+      },
+      {
+        "script_id": "58f0c363-724d-420b-b658-02b84a5909fb",
+        "type": "send",
+        "payload": {
+          "event": "edge",
+          "n": 2,
+          "pair": "0x600000005",
+          "ids": [5, 6],
+          "points": [
+            {
+              "id": 5,
+              "part0": "01000000e7ffffff1800000001000000eb9d9c00000000000000000000000000",
+              "part1": "01000000e8ffffff1700000001000000337c7500000000000000000000000000"
+            },
+            {
+              "id": 6,
+              "part0": "01000000e6ffffff1800000001000000d3928400000000000000000000000000",
+              "part1": "01000000e9ffffff16000000010000008dde2b00000000000000000000000000"
+            }
+          ]
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

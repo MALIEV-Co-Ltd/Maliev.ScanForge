@@ -1,0 +1,116 @@
+{
+  "scope": "Original PLY-2 independent GUI/public MCP Split and Extract comparisons using the same finite cutter.",
+  "applicationCommit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+  "build": "scanforge-b9363ff5ad191d86",
+  "input": {
+    "path": "C:/repo/alignment-example-files/ply-2.ply",
+    "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "faces": 2697877
+  },
+  "split": {
+    "result": {
+      "inputSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "inputFaces": 2697877,
+      "outputFaces": 2706309,
+      "diagnostics": {
+        "affectedFaces": 2108,
+        "sourceFaces": 2697877,
+        "parts": 2,
+        "cutEdges": 2108,
+        "sourceIdentity": "retained-indexed",
+        "changed": true
+      },
+      "guiMcpDigestEqual": true,
+      "sourceUndo": true,
+      "cutterPreserved": true,
+      "redo": true,
+      "redoInitializedComputedNormals": [
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 4151814,
+          "sha256": "9b249539582458a277a9d6b8e874936a31c88f7ef4e78314699f201289d99d03"
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 8118927,
+          "sha256": "50a360e5b1741b54d6cc5b2931bb3bf00d115ab143aec14a3a11744b9b16f088"
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "gui-undo-verified",
+      "mcp-split-committed",
+      "mcp-redo-digest"
+    ],
+    "guard": {
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 2545532928,
+      "cleanupConfirmed": true
+    },
+    "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply2-gui-mcp-split-20261029-r1\\split-lifecycle-browser-ledger.json",
+    "ledgerSha256": "826f369b6768b5d022b839673f57154420b2d4188b1e83f348c7d62a2d54616b",
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply2-gui-mcp-split-20261029-r1-guard.json",
+    "receiptSha256": "bab68c69f779d3dd3fabb536dfe107831496078db08acc328d280f40632a22c3"
+  },
+  "extract": {
+    "result": {
+      "inputSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "inputFaces": 2697877,
+      "splitFaces": 2706309,
+      "extractedFaces": 1353615,
+      "diagnostics": {
+        "extractedComponents": 1
+      },
+      "guiMcpEqual": true,
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndo": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "mcp-extract-committed",
+      "gui-mcp-extract-verified"
+    ],
+    "guard": {
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 3438186496,
+      "cleanupConfirmed": true
+    },
+    "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply2-gui-mcp-extract-20261029-r1\\split-lifecycle-browser-ledger.json",
+    "ledgerSha256": "b5049859f3b34c8793cd83ad7eef2cd63c249c2de8a0bbf6bd625af2f593ad3b",
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply2-gui-mcp-extract-20261029-r1-guard.json",
+    "receiptSha256": "6d39b6bd955be9dd2bf378a636c87432fb9125dd51b433057a6ac0262f8931e2"
+  },
+  "harness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-history-diagnostic-local.mjs",
+    "sha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4"
+  },
+  "limitations": [
+    "These are two separate application runs on one scan and one cutter, not a native comparison or general memory guarantee.",
+    "The Extract comparison follows GUI Split, then compares GUI and MCP Extract core geometry after Undo; it does not independently compare Split in that run.",
+    "The Split run compares GUI and MCP results, Undo and Redo; the Extract run does not verify post-reopen history."
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "scope": "Finite Split shared-edge controls on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98, test commit eaaf4216e509ee14848c3d84aa9af1ccfa5a1daa",
+  "testSha256": "9f3c7410fac4de70c9b15f09c977a756b125978494533448705d74aa82890033",
+  "coplanar": {
+    "result": {
+      "cases": [
+        {
+          "name": "coplanar-shared-edge",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 90,
+              "sha256": "eb70994befe6bd190416b7b6937eacd84186a5ffe4adfbf135f18abb50274dd7"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 30,
+              "sha256": "e60e7a36328dc42ab159d5421b2d45d5fe4fb47ae85a6838719023a68a455e0f"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 30,
+              "sha256": "b64ea3d8f217b88bdbd9ed70143e30f9bd0039e51135181f77737dcde635ddae"
+            }
+          ],
+          "outputArea": 1,
+          "diagnostics": {
+            "affectedFaces": 2,
+            "sourceFaces": 2,
+            "parts": 1,
+            "cutEdges": 1,
+            "sourceIdentity": "exact-corner-index",
+            "changed": true,
+            "topologyCache": "persistent-hit",
+            "topologyCacheBytes": 280
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+              "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+            },
+            "mcpRedo": {
+              "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+              "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+            },
+            "reopened": {
+              "geometryNormals": "3755b69bc28ab7f87787c3269dac46ae3bccc7d9422a6a28a09923644fa6a672",
+              "facetNormals": "a91ca39cb1537168705186d8e8d428fe0da83d8d89806b1ad60e95ec5a3139ac"
+            }
+          }
+        },
+        {
+          "name": "float32-precision",
+          "guiAndMcpFailure": true,
+          "unchangedGeometryAndHistory": true,
+          "retry": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "sharedEdgeIntervals": ["0,0.3", "0.3,0.5", "0.5,0.7", "0.7,1"],
+    "eachIntervalIncidence": 2,
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 900190208,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "toleranceNear": {
+    "passed": false,
+    "stage": "GUI Split",
+    "observedError": "Finite assembly face coverage is incomplete at face 0 (expected 2.2500000000000003e-12, observed 2.2499999999996682e-12).",
+    "observation": "The viewport showed Split failed and original mesh retained. The browser harness timed out waiting for the expected history step.",
+    "guard": {
+      "passed": false,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 906530816,
+      "cleanupConfirmed": true,
+      "activeAfter": 0
+    }
+  },
+  "limitations": [
+    "The old separate-segment route generated three edge intervals; current retained-source route creates four including a 0.5 subdivision. No native output is available to judge topology fidelity.",
+    "The tolerance-near error has not been established as benign; coverage and topology validation must remain strict until the arithmetic is investigated.",
+    "Tolerance-near MCP behavior, full default suite, native parity and the original large-scan in-place reopen remain open."
+  ]
+}

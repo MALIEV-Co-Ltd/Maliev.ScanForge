@@ -18,6 +18,8 @@ const verifiedWorkflows: Record<string, string> = {
     "docs/NATIVE_ALIGNMENT.md: ordinary point-pair command admission, native registration/refinement, source-only sessions, real mesh/cloud canvas picking and shared GUI/MCP preview/reset/accept",
   fineAlign:
     "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: indexed surface refinement; GUI/shared MCP parity and native owner-scan captures",
+  surfaceRefinement:
+    "docs/NATIVE_ALIGNMENT_TARGET_GROUPS.md: indexed surface refinement GUI and shared MCP operation",
   reducePolygons:
     "docs/SCAN_DATA_TOOLS.md: reduction targets and geometry validation",
   reduceNoise:

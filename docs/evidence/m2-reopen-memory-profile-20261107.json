@@ -1,0 +1,36 @@
+{
+  "scope": "Read-only manifest inventory and process samples for the retained PLY-3 reopen failure",
+  "candidate": "630f188d",
+  "build": "scanforge-04b9f118ac7ac299",
+  "projectSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+  "manifest": {
+    "version": 2,
+    "records": 5,
+    "chunks": 18,
+    "historyRevisions": 4,
+    "totalRawChunkBytes": 1046558376,
+    "currentSourcePositionsBytes": 266108040,
+    "currentExtractedPositionsBytes": 127929168,
+    "historyOnlyOriginalPositionsAndNormalsBytes": 265761576
+  },
+  "profile": {
+    "method": "Preexisting project and Chromium local file picker; sampled owned processes before import and attempted another sample after import.",
+    "beforeImport": {
+      "rendererPrivateBytes": 2361880576,
+      "gpuPrivateBytes": 461918208
+    },
+    "afterImportSampler": "Failed with exit code 0x80131623; no post-import snapshot was captured by that sampler.",
+    "laterExternalRendererSample": {
+      "privateBytes": 3265028096,
+      "observedThreadStates": "40 waiting, all reported suspended"
+    },
+    "jobPeakBytes": 4303323136,
+    "jobLimitBytes": 4294967296,
+    "outcome": "Guarded lease expired; owned processes were terminated and cleanup was confirmed."
+  },
+  "limitations": [
+    "The process sampler itself ran in the guarded job and could affect memory and timing.",
+    "The external sample was taken after the sampler failed and does not identify which allocations remained live or why threads were suspended.",
+    "The manifest records stored bytes, not live object ownership or peak memory. No production fix or post-reopen validation is established."
+  ]
+}

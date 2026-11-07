@@ -1,0 +1,12 @@
+{
+  "scope": "Static conditional mesh-wrapper routing on the retained runtime-derived image; no native Split operation executed.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "observation": "The wrapper query candidate 0x14088ae10 directly accepts the mesh-wrapper and common-feature identifiers; for other identifiers it delegates through its payload pointer at wrapper root +0x160. The concrete cMesh query candidate 0x140b39b40 accepts only four distinct identifier values. A digest-bound byte comparison shows that the three alternate target identifiers in 0x14067df80 are distinct from the wrapper's direct identities and the cMesh query's direct identities.",
+  "conditionalInference": "If the target is a cMeshObject using the observed wrapper query and its payload resolves to the concrete cMesh query, then the three alternate interface queries return zero. If the other 0x1b0 state field is also zero and the command's preceding admission and dialog conditions pass, the static caller routes the wrapper to candidate 0x14067cec0. This is a conditional analysis, not an observed native operation.",
+  "validation": "Compared all nine 16-byte values from the digest-bound image under m2-split-interface-disjoint-20261028-r1-guard.json. The job had a 4 GiB limit and confirmed cleanup. Private comparison artifact SHA-256 2ccb0f4fed3224cebe82e7edb438fc3502518ea7245cef1962e1ea0acfb29607. Query decompilations and original-query class associations are retained in m2-split-native-interface-bindings-20261028.json and its referenced evidence.",
+  "limitations": [
+    "The actual target object's payload class and the caller's 0x1b0 state were not observed for the prepared Split fixtures.",
+    "A different concrete payload may implement other interfaces, and derived-image function boundaries, runtime branch selection and target geometry remain unverified.",
+    "This does not establish native result object count, output geometry, GUI behavior or MCP parity."
+  ]
+}

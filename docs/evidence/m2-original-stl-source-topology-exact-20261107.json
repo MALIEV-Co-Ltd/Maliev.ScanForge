@@ -1,0 +1,61 @@
+{
+  "scope": "Three fixture-gated original STL reader topology controls at the integration candidate",
+  "candidate": "e79baeb13d3e525c0a4a28e1bd37312dda74d393",
+  "test": "tests/scan-native-stl-user-examples.test.ts",
+  "environment": "SCANFORGE_ALIGNMENT_EXAMPLES=C:/repo/alignment-example-files; system-memory guard",
+  "sources": [
+    {
+      "file": "scan-1.stl",
+      "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "vertexCount": 139338,
+      "triangleCount": 273139,
+      "verticesSha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7",
+      "trianglesSha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+    },
+    {
+      "file": "scan-2.stl",
+      "sourceSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+      "vertexCount": 1299033,
+      "triangleCount": 2547403,
+      "verticesSha256": "2a63d6de27fe10cca28a782fdb398e70810665466cac1f348e34d86ea92525b9",
+      "trianglesSha256": "86046f407a8b3dccbb6efb4f2fb6adf9756e830a7ca7f7658ed54bce5c172979"
+    },
+    {
+      "file": "scan-3.stl",
+      "sourceSha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e",
+      "vertexCount": 1683605,
+      "triangleCount": 3326910,
+      "verticesSha256": "6e1b9429a6b6b62a874127951b810c22c3ec46b2642b8dc39c8d509532f3f3f1",
+      "trianglesSha256": "c5f52276c470f4872eccd00834b5c6dce0fa51b5e805ffbb13ac6efca6b78265"
+    }
+  ],
+  "testsPassed": 3,
+  "guard": {
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "tests/scan-native-stl-user-examples.test.ts",
+      "--maxWorkers=1",
+      "--reporter=dot"
+    ],
+    "jobLimitBytes": 34110816256,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 1405657088,
+    "totalProcesses": 8,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 11.105411500000628
+  },
+  "assertions": [
+    "Input file SHA-256 matches the native fixture.",
+    "Imported triangle coordinates match the returned indexed topology.",
+    "Ordered vertex and triangle counts and SHA-256 digests match the retained native optimized-reader capture."
+  ],
+  "limitations": [
+    "This tests the shared reader in a Node test, not an interactive GUI or public MCP import.",
+    "The retained fixture covers the native optimized binary STL reader for three specific files, not other formats or arbitrary inputs.",
+    "Subsequent M2 processing and full milestone acceptance are not established by reader parity."
+  ]
+}

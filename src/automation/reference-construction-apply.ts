@@ -109,9 +109,9 @@ export function applyReferenceConstructionToWorkspace(
         throw new Error("Reference source identity binding changed.");
       const reference = copyReferenceEntityData({
         version: 1,
-        definition: candidate.definition,
+        definition: { ...candidate.definition, sources: [] },
         geometry: candidate.preview.geometry,
-        evaluation: candidate.preview.state,
+        evaluation: { completionWord: 0x100 },
       });
       const entity: Entity =
         target.kind === "edit"
@@ -136,35 +136,21 @@ export function applyReferenceConstructionToWorkspace(
               selectable: true,
             };
       validateReferenceEntity(entity);
-      const assigned = new Map(
-        identities.assignments.map((source) => [
-          source.id,
-          source.constructionOrderKey,
-        ]),
-      );
       const next = snapshot.entities.map((source) =>
-        source.id === target.id
-          ? entity
-          : assigned.has(source.id)
-            ? { ...source, constructionOrderKey: assigned.get(source.id)! }
-            : source,
+        source.id === target.id ? entity : source,
       );
       if (target.kind === "create") next.push(entity);
-      const policy = { constructionIdentityMigration: identities.assignments };
-      if (lockedObjectEdit(snapshot.entities, next, policy))
+      if (lockedObjectEdit(snapshot.entities, next))
         throw new Error("Reference Apply would edit locked geometry.");
       mutate(() =>
         host.commit(
           next,
           `${target.kind === "create" ? "Create" : "Edit"} reference ${reference.geometry.kind}`,
-          policy,
         ),
       );
       publication = {
         entityId: entity.id,
-        assignedSources: identities.assignments.map((source) => ({
-          ...source,
-        })),
+        assignedSources: [],
       };
     },
   );

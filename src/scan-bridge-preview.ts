@@ -55,7 +55,7 @@ export class BridgePreviewController {
         )
           return;
         if (
-          !result.positions ||
+          !(result.positions instanceof Float32Array) ||
           result.diagnostics.filledHoles !== 1 ||
           result.positions.length <= this.source.length
         )
@@ -84,7 +84,11 @@ export class BridgePreviewController {
       });
   }
   private finish(active: NonNullable<typeof this.active>): void {
-    if (this.active !== active || !active.result?.positions) return;
+    if (
+      this.active !== active ||
+      !(active.result?.positions instanceof Float32Array)
+    )
+      return;
     this.active = undefined;
     this.callbacks.display();
     this.callbacks.commit(active.result.positions, "Bridge mesh edges");

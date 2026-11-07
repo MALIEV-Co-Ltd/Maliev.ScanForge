@@ -152,7 +152,7 @@ export class ReferencePreviewDisplay {
       state: this.current && !this.pending.size ? "ready" : "retiring",
       pendingDisposals: this.pending.size,
       units: "mm",
-      ...(data
+      ...(data && "geometry" in data
         ? {
             geometry: copyReferenceGeometry(data.geometry),
             geometryEncoding: encodeReferenceGeometry(data.geometry),

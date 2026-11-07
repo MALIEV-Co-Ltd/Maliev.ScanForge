@@ -1,0 +1,827 @@
+{
+  "owner": "global-alignment-browser",
+  "runId": "3f178f6c-39ff-49ef-b1e2-05f72292a265",
+  "pid": 30796,
+  "startedAt": "2026-11-06T20:43:31.8194077Z",
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "expiresAt": "2026-11-06T20:47:32.671Z",
+  "persistentData": false,
+  "distIndexSha256": "7f2f9ba78c847504da82414aeffb1793b90134360dc80e005b88828e44cf45cc",
+  "fixture": {
+    "scans": 2,
+    "facetsPerScan": 5120,
+    "format": "generated binary STL",
+    "units": "mm"
+  },
+  "admission": {
+    "availableMiB": 17397,
+    "requiredMiB": 4608,
+    "oldSpaceMiB": 768,
+    "semiSpaceMiB": 16,
+    "heapLimitMiB": 816
+  },
+  "resources": [
+    {
+      "kind": "http-server",
+      "pid": 30796,
+      "startedAt": "2026-11-06T20:43:31.8194077Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "port": 59140,
+      "bind": "127.0.0.1",
+      "persistentData": false,
+      "purpose": "isolated candidate dist"
+    },
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 11296,
+      "startedAt": "2026-11-06T20:43:32.6855418Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "persistentData": false,
+      "port": 59141,
+      "bind": "127.0.0.1",
+      "purpose": "actual stdio MCP bridge"
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 15352,
+      "startedAt": "2026-11-06T20:43:33.3053989Z",
+      "executable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "persistentData": false,
+      "purpose": "isolated headless browser profile",
+      "port": 59143,
+      "bind": "127.0.0.1"
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "mcp-stdio-child",
+      "pid": 11296,
+      "exited": true
+    },
+    {
+      "kind": "disposable-browser",
+      "pid": 15352,
+      "exited": true
+    },
+    {
+      "port": 59140,
+      "closed": true
+    },
+    {
+      "port": 59141,
+      "closed": true
+    },
+    {
+      "port": 59143,
+      "closed": true
+    }
+  ],
+  "checks": [
+    {
+      "check": "GUI preview/cancel",
+      "converged": false,
+      "authoredHashes": [
+        {
+          "id": "cbde2231-b2ba-4b08-8238-0ebe6faab62b",
+          "sha256": "9cf7620bfd9aa629b3716c8fc119823ad791991bfd51e5183ef78d2c051c9244",
+          "coordinates": 46080
+        },
+        {
+          "id": "07a1f775-dcb2-4a98-b342-fa741b5a28df",
+          "sha256": "343b491326ad40ea7f9fca020ff314a0c6332e0133029e711ca14159fce56a77",
+          "coordinates": 46080
+        }
+      ]
+    },
+    {
+      "check": "MCP mismatched job cleanup preserves current preview"
+    },
+    {
+      "check": "MCP cached Apply + one history step + Undo/Redo",
+      "converged": false,
+      "appliedGeometry": [
+        {
+          "id": "cbde2231-b2ba-4b08-8238-0ebe6faab62b",
+          "sha256": "5e803b9f9e61683bc520217465147e074ffc0ea30d9fe9d22d4fa3dc13fd1bae",
+          "coordinates": 46080
+        },
+        {
+          "id": "07a1f775-dcb2-4a98-b342-fa741b5a28df",
+          "sha256": "4b2af6d2e2e745d75b64bf6071293792974099896e79c886eff558abce970bcc",
+          "coordinates": 46080
+        }
+      ],
+      "historyCursor": 3,
+      "noWorkersStartedOnApply": true
+    }
+  ],
+  "callTimings": [
+    {
+      "name": "project_get",
+      "elapsedMs": 13
+    },
+    {
+      "name": "artifact_put",
+      "elapsedMs": 21
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "project_import",
+      "elapsedMs": 9
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 5
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 3
+    },
+    {
+      "name": "artifact_put",
+      "elapsedMs": 20
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "project_import",
+      "elapsedMs": 6
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 6
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 3
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_select",
+      "elapsedMs": 5
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 87
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 17
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 8
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 2
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 75
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 21
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 6
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 2
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 2
+    },
+    {
+      "name": "session_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 3
+    },
+    {
+      "name": "session_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 3
+    },
+    {
+      "name": "session_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 76
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 23
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 8
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 16
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 8
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 6
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 74
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 21
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 16
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 3
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 2
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 76
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 35
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 17
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 75
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 23
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 18
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 4
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 7
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 5
+    },
+    {
+      "name": "global_alignment_preview",
+      "elapsedMs": 7
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 7
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "job_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 3
+    },
+    {
+      "name": "session_get",
+      "elapsedMs": 2
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 3
+    },
+    {
+      "name": "global_alignment_cancel",
+      "elapsedMs": 3
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 80
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 22
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 10
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 9
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 3
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 128
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 33
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 15
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 5
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "global_alignment_apply",
+      "elapsedMs": 21
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 7
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 131
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 23
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 23
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 14
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 24
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 13
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 19
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 4
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 136
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 20
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 24
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 19
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 19
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 14
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 14
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 7
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 6
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 4
+    },
+    {
+      "name": "history_undo",
+      "elapsedMs": 23
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 151
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 29
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 15
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 13
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 15
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 4
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 133
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 21
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 25
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 17
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 14
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 16
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 13
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 8
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 8
+    },
+    {
+      "name": "project_get",
+      "elapsedMs": 5
+    },
+    {
+      "name": "history_redo",
+      "elapsedMs": 26
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 111
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 34
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 18
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 16
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 17
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 22
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 14
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 4
+    },
+    {
+      "name": "object_get",
+      "elapsedMs": 131
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 29
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 21
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 20
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 12
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 13
+    },
+    {
+      "name": "artifact_read",
+      "elapsedMs": 11
+    },
+    {
+      "name": "artifact_delete",
+      "elapsedMs": 5
+    },
+    {
+      "name": "history_get",
+      "elapsedMs": 5
+    },
+    {
+      "name": "global_alignment_state",
+      "elapsedMs": 4
+    }
+  ],
+  "workers": [
+    {
+      "url": "http://127.0.0.1:59140/assets/import-worker-D9f0Kz35.js",
+      "createdAt": 1793997814323,
+      "terminatedAt": 1793997814353
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/import-worker-D9f0Kz35.js",
+      "createdAt": 1793997814523,
+      "terminatedAt": 1793997814549
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/scan-global-scene-worker-CXEyabhO.js",
+      "createdAt": 1793997815147,
+      "terminatedAt": 1793997815159
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/scan-global-controller-worker-ryohg3K1.js",
+      "name": "global-alignment-controller",
+      "createdAt": 1793997815160,
+      "terminatedAt": 1793997815316
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/datum-transform-worker-DSJ-VX6g.js",
+      "createdAt": 1793997815318,
+      "terminatedAt": 1793997815332
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/datum-transform-worker-DSJ-VX6g.js",
+      "createdAt": 1793997815318,
+      "terminatedAt": 1793997815332
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/scan-global-scene-worker-CXEyabhO.js",
+      "createdAt": 1793997816316,
+      "terminatedAt": 1793997816331
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/scan-global-controller-worker-ryohg3K1.js",
+      "name": "global-alignment-controller",
+      "createdAt": 1793997816332,
+      "terminatedAt": 1793997816479
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/datum-transform-worker-DSJ-VX6g.js",
+      "createdAt": 1793997816481,
+      "terminatedAt": 1793997816497
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/datum-transform-worker-DSJ-VX6g.js",
+      "createdAt": 1793997816481,
+      "terminatedAt": 1793997816497
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/processing-worker-DXqnk8xY.js",
+      "createdAt": 1793997817950,
+      "terminatedAt": 1793997818265
+    },
+    {
+      "url": "http://127.0.0.1:59140/assets/processing-worker-DXqnk8xY.js",
+      "createdAt": 1793997818521,
+      "terminatedAt": null
+    }
+  ],
+  "limitations": [
+    "Synthetic small binary STL fixture; full native application UI/import/OS scheduling equivalence is not established.",
+    "Worker and diagnostic reuse verifies no recomputation on Apply; staged private coordinate buffers are not directly exposed by the public API.",
+    "This GUI replay does not repeat the separately retained complete native seeded geometry-setter comparison."
+  ],
+  "completed": true,
+  "passed": true
+}

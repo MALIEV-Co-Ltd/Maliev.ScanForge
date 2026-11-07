@@ -1,0 +1,40 @@
+{
+  "scope": "Static analysis of one native Split worker candidate; no new native operation or production change",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "workerCandidate": "0x14032b140",
+  "evidence": {
+    "workerDecompilationSha256": "d4da5613a9390d614dad747956a440afc9bba99a733ad63975f842ae364d2546",
+    "independentSlicePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-worker-tolerance-slice-20261029.json",
+    "independentSliceSha256": "2304fa05b8baf9b509cc9bb16d4d73893b2cb30e075b92d4ee88a98905fa9b3f",
+    "scriptSha256": "5568a7f82cd3b204bfda62912e953e8625c67780397487b2a5736f1bba6b92b5",
+    "guardSha256": "1dbfef7ae7e12fad84d967ea8d174ae7028f9261898a22c27c4cf30507418309",
+    "peakJobBytes": 66392064,
+    "earlierAttempt": "The r3 diagnostic rejected an incorrectly transcribed branch-displacement byte. The assertion was corrected against the independent decode and r4 passed; r3 cleanup was confirmed.",
+    "cleanupConfirmed": true
+  },
+  "observations": [
+    "The retained worker decompilation identifies its current triangle record before constructing a bounding box and testing candidates. After the intersection routine reports a positive result, two three-coordinate outputs are each compared with the triangle record's first three Float32 point records.",
+    "For each output, the loop computes a sum of squared coordinate differences in double precision and calls 0x140d5cfac. The independently decoded thunk targets IAT RVA 0xeaeb88, previously bound to sqrt in reference-geometry-numerics-20261023.json.",
+    "The worker reads its owner's double at offset 0x18 and records the first of the three point pointers when the computed distance is strictly less than that value. Equality does not take the match branch for ordinary finite values.",
+    "The parent candidate stores its third argument at that offset; a previously inspected Split-related caller passes 0.001 as that argument. The call chain is static and does not establish which interactive paths use it.",
+    "The parent decompilation copies the 80-byte worker records into face-keyed buffers. Its subsequent point-search calls are conditional on null pointers at record offsets 0x30 and 0x38, the same offsets where the worker stores its two matched-corner pointers. Independent decoding confirms both null checks and branch targets."
+  ],
+  "interpretation": "The second tolerance supports conditional association of intersection endpoints with current-triangle corners, rather than demonstrating a global point-search radius. The parent skips point search for a record whose corresponding corner pointer is already populated; the subsequent effect on triangulation is not established by these slices.",
+  "offlineHypothesis": {
+    "method": "For each application-collected intersection endpoint, first associate it with the first corner of its current source triangle at distance strictly below 0.001, then otherwise reuse a first-seen point within the previously inferred Float32-derived 0.0001 radius. Compare distinct Float32 vertex sets with ten retained native outputs.",
+    "result": "All ten modeled vertex sets matched: rotated, three small-radius, two wide-radius, convex, concave, cyclic and dense. The rotated case used no corner associations and 17 point reuses; the small-radius cases each used two corner associations. The diagnostic asserts that the missing and extra vertex sets are empty for each case.",
+    "testPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/tests/m2-corner-association-hypothesis-20261029.test.ts",
+    "testSha256": "d739a8c8aaa50b82daa0435aaf5b073e17507b99fdbce8d31b09d58334064cb6",
+    "resultPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-cavity-projection-trace-20261029/corner-association-hypothesis-20261029.json",
+    "resultSha256": "78a61134f7684bdba0e30f0bb0955fdb2f8a0f661c3c2edd29e7e5a67645033f",
+    "guardSha256": "fa9f8bfeb0bc58846ba551d5da2856a619f69fda05d0f7940a89696d60ff82e8",
+    "peakJobBytes": 345886720,
+    "cleanupConfirmed": true,
+    "limitations": "These controls were already observed when the model was selected. Application collector order and inferred corner association substitute for native runtime order, and matching vertex sets does not compare facets or prove safe coverage."
+  },
+  "limitations": [
+    "The runtime-derived analysis image differs from the installed executable; prior provenance and entry-prefix bindings do not establish every instruction's live reachability.",
+    "Record types and intersection-output roles are inferred from static data flow; there is no new native execution or scaled-control output.",
+    "This does not establish general snapping, triangle removal, topology, facet equivalence, or GUI/MCP behavior."
+  ]
+}

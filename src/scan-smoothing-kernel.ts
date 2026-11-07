@@ -82,8 +82,17 @@ export function smoothingTargets(
       );
       const turn = cross(lastDirection, firstDirection);
       if (turn.reduce((sum, v, a) => sum + v * normal[a], 0) <= 0) continue;
-      const d1 = Math.fround(Math.hypot(...firstDirection)),
-        d2 = Math.fround(Math.hypot(...lastDirection));
+      // Native distance multiplies each Double difference by its Float32 copy.
+      const distance = (p: number[]) => {
+        const dx = p[0] - current[0],
+          dy = p[1] - current[1],
+          dz = p[2] - current[2];
+        return Math.sqrt(
+          dy * Math.fround(dy) + dx * Math.fround(dx) + dz * Math.fround(dz),
+        );
+      };
+      const d1 = distance(first),
+        d2 = distance(last);
       if (!(d1 + d2 > 0)) continue;
       for (let a = 0; a < 3; a++) {
         const weighted = Math.fround(

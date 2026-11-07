@@ -13,6 +13,9 @@ export function scanMeshCopy(
     name: `${source.name} — mesh copy`,
     kind: "mesh",
     positions: positions ?? source.positions.slice(),
+    ...(source.emptyComponentSource && !(positions ?? source.positions).length
+      ? { emptyComponentSource: true as const }
+      : {}),
     color: source.color,
     visible: true,
     opacity: source.opacity,

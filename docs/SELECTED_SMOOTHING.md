@@ -19,13 +19,23 @@ and the gate awaits both thread exits. This is correctness coverage of the
 already integrated multicore path, not a new measured speedup or arbitrary-mesh
 parity claim.
 
-Selected-area Smooth now marks every vertex referenced by selected facets, including vertices shared with unselected facets and open boundary loops. Interior targets use the neighboring vertex mean. Concave boundary corners use the distance-weighted endpoint target with a half step; convex and straight boundary corners remain unchanged. Each iteration computes all targets from the old coordinates before publishing Float32 coordinates. The edit command applies two iterations immediately, without the earlier invented strength and iteration controls.
+Selected-area Smooth now marks every vertex referenced by selected facets, including vertices shared with unselected facets and open boundary loops. Interior targets use the neighboring vertex mean. Concave boundary corners use the distance-weighted endpoint target with a half step; convex and straight boundary corners remain unchanged. Each iteration computes all targets from the old coordinates before publishing Float32 coordinates. The application edit command defaults to six iterations at strength 0.5, with the same parameters exposed through GUI and MCP. A native Smooth click applies two iterations; the application preset corresponds to three native clicks, rather than one. Explicit two-iteration requests retain the one-click comparison below.
 
 Connectivity does not change. The successor retains indexed adjacency and refreshes geometric diagnostics without vertex welding. Cancellation preserves the input. The ordered neighborhood follows only the fan attached to the first incident facet, including native traversal limits. Disconnected fans sharing a vertex are not averaged together. Pairing at edges with more than two incident facets or inconsistent orientation remains unverified; these edges are treated as open in the port.
 
 ## Extraction and observed comparison
 
 The recovered edit handler is `0x1405b6280`, reached by command `0x838d` and control 1052. Although it reads a stored algorithm setting with default 3, assembly resets that dispatch variable to zero before choosing a kernel. The actual path calls `0x140a83c00`, which computes per-vertex targets through `0x140a827b0` and publishes them synchronously. The unused setting-3 kernel was rejected after its output failed the numerical comparison.
+
+The boundary investigation on 2026-10-27 corrected the endpoint distance used by
+this shared target kernel. Native helper `0x14017b820` multiplies each Double
+coordinate difference by its Float32 copy, sums Y then X then Z in Double, and
+returns the Double square root. Rounding a Euclidean distance to Float32 changes
+the weighted endpoint target. The new 32-point inner-rim control matches every
+unprojected native Float32 coordinate after twenty passes exactly; the later
+curve-projected head is checked separately. GUI, MCP and smoothing workers use
+the same corrected helper. This stage result does not close whole-boundary
+smoothing or M2; see `docs/evidence/native-boundary-smoothing-20261027.json`.
 
 REA analysis Evidence IDs:
 
@@ -39,3 +49,36 @@ The native run used the same 96-triangle noisy annular STL and the same 16-facet
 `tests/scan-selected-smooth.test.ts` compares the application against that observed output, verifies consistent and injective native vertex correspondence, unchanged unmarked vertices, retained connectivity, two boundary loops and topology reuse. The coordinate tolerance is 0.000001 mm. Raw exports, canonical REA dossiers, tool ownership and runtime records remain outside the repository. This is fixture-specific numerical evidence; broader native parity remains to be verified.
 
 A second native run selects all eight facets of two asymmetric closed tetrahedra sharing one vertex. One Smooth click moves that shared vertex to `(0.8888888955, 1.3333333731, 1.7777777910)`, confirming first-facet fan traversal. The application matches every exported Float32 coordinate exactly and reuses topology without welding or rebuilding. Input SHA-256: `a11aa5209e91deda3bdad0e80cdbd97925240c803a3e780c53ee5d7d13d808fd`; native output SHA-256: `de0f9698f637beaf001ff9f3b8d9f712352eb83f17e49c686649758bd034e73a`.
+
+A fresh native three-click run on the eight-facet disconnected-fan control matches the application six-pass default at every ordered Float32 coordinate. `tests/fixtures/smooth-six-passes-observed.json` pins the observed output (native STL SHA-256 `90f746b5e68ce06dee90293ba29b0011b6bf19579699862a046a5ddaa6d8f357`); `scan-smoothing-defaults.test.ts` verifies this comparison. This is a selected-all fan fixture, not evidence for every nonmanifold edge or winding case.
+
+## Current rendered GUI and public MCP replay, 2026-10-26
+
+The shared browser driver `tests/defeature-curvature-browser.mjs` accepts
+`SCANFORGE_EDIT_ACCEPTANCE=smooth`. This mode uses the retained eight-facet
+three-click native control for the six-pass GUI/default MCP route, checking exact
+coordinates, unchanged camera, cancellation rollback, undo/redo and binary
+save/reopen. It additionally imports the original 96-facet annulus with its exact
+16-facet selection for explicit two-pass public MCP, checks native coordinates
+within 0.000001 mm and unchanged unmarked corners, and captures fitted rendering.
+`SCANFORGE_QA_DIST` can pin the frozen production build and
+`SCANFORGE_DEFEATURE_OUTPUT` keeps each browser receipt in a separate directory.
+See [the current lifecycle evidence](evidence/m2-selected-smoothing-lifecycle-20261026.json).
+This does not establish arbitrary native mesh, nonmanifold/winding or performance
+parity. The default mode of this driver still validates Defeature.
+
+## Stationary source-corner preservation
+
+Welded adjacency guides smoothing, but stationary vertices keep their original
+raw per-corner coordinates. Vertices that move publish one Float32 target to all
+aliases, including corners on adjacent unselected facets. This applies to both
+selected-area and boundary smoothing. Representatives and connectivity survive,
+so compatible successor adjacency remains reusable. Warm/cold regressions and
+binary-reopened production-scan diagnostics agree.
+
+The browser's optional `SCANFORGE_DEFEATURE_CASE_DIR` can supply a digest-pinned
+available-scan input/selection with `SCANFORGE_EDIT_ACCEPTANCE=smooth`. This route
+checks exact preservation outside the selected-face bounds expanded by 0.001 mm, GUI/MCP
+equality, cancellation/history/reopening, and topology consistency. It makes no
+native-six-pass claim for that production scan. See
+[the source-preservation evidence](evidence/m2-smoothing-source-preservation-20261026.json).

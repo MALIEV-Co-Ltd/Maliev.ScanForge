@@ -50,6 +50,7 @@ export const SHORTCUT_REGISTRY: readonly ShortcutBinding[] = [
   binding("Mod+N", "New project", "new"),
   binding("Mod+O", "Open scan or project", "open"),
   binding("Mod+S", "Save project", "save"),
+  binding("Mod+A", "Select all objects", "select-all-objects", ["main"], true),
   binding("F2", "Rename selected objects", "rename-objects", undefined, true),
   binding(
     "Delete",

@@ -1,0 +1,108 @@
+{
+  "evidence_id": "ev_aeb54170035b9b93394fb1254d581c5c1645bfee8b6fe104e3b15d3af4859326",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "1d5ede1c-6066-4bc0-b4a7-19c228216d0f"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "1d5ede1c-6066-4bc0-b4a7-19c228216d0f",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "ba9a8246-e875-44dd-af41-dffda0004797",
+        "name": "rea-ba9a8246-e875-44dd-af41-dffda0004797"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "ba9a8246-e875-44dd-af41-dffda0004797",
+        "type": "send",
+        "payload": {
+          "event": "ready"
+        }
+      },
+      {
+        "script_id": "ba9a8246-e875-44dd-af41-dffda0004797",
+        "type": "send",
+        "payload": {
+          "event": "recovery",
+          "n": 1,
+          "pair": "0x400000003",
+          "before": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [6, 5, 3]
+          ],
+          "after": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ]
+        }
+      },
+      {
+        "script_id": "ba9a8246-e875-44dd-af41-dffda0004797",
+        "type": "send",
+        "payload": {
+          "event": "recovery",
+          "n": 2,
+          "pair": "0x600000005",
+          "before": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ],
+          "after": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [5, 3, 6]
+          ]
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

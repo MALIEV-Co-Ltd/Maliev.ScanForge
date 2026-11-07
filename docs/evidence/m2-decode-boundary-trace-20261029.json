@@ -1,0 +1,51 @@
+{
+  "scope": "Decode boundary trace of original PLY-3 Split/Extract in-place project replacement; application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "scriptSha256": "4fcc50ec6ba78a9395f60d67aa54d1541cfaf63cb3f9b0c588e4dc166408b90d",
+  "decoderEvents": [
+    {
+      "event": "decoder-start",
+      "at": 98661.59499999881
+    },
+    {
+      "event": "decoder-message",
+      "at": 108593.07499998808,
+      "error": null,
+      "numericBuffers": 4,
+      "numericBytes": 461164920,
+      "numericSizes": [
+        {
+          "bytes": 266454504,
+          "shared": false
+        },
+        {
+          "bytes": 45011616,
+          "shared": false
+        },
+        {
+          "bytes": 128100312,
+          "shared": false
+        },
+        {
+          "bytes": 21598488,
+          "shared": false
+        }
+      ]
+    }
+  ],
+  "observation": "The decoder worker returned without a reported error with four private Float64 transport buffers. The monitored aggregate job peak crossed 4 GiB afterward, and the harness was stopped before replacement completion.",
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4303425536,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true,
+    "elapsedSeconds": 110.68624400001136
+  },
+  "limitations": [
+    "The worker-message listener runs before or alongside the application handler; the trace does not identify which allocation caused the peak or establish exactly how far unpacking progressed.",
+    "Crossing the cap stopped the test before project import and post-reopen geometry could be verified.",
+    "One instrumented run does not prove native parity or a general memory bound."
+  ]
+}

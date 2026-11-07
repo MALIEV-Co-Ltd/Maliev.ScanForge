@@ -1,0 +1,104 @@
+{
+  "scope": "Independent numeric restore comparison of early selection-session reset versus passive cleanup; isolated served bundles",
+  "candidate": "c6349595",
+  "bundle": "scanforge-e9b6ee80c0577089",
+  "method": "Reuse-disabled seeded numeric copying is unchanged from the two prior current-build trials. In the control only, remove selectionSessions.current.clear() from the served minified reset function; the ordinary entity-change effect remains. Each source replacement was required exactly once. Run original PLY-3 GUI Split/Extract, full MCP artifact stream to disk, GUI reopen and undo/redo under the same 4 GiB guard.",
+  "priorEarlyResetPeaksBytes": [4035375104, 3997769728],
+  "passiveCleanupControl": {
+    "passed": true,
+    "peakJobBytes": 4066443264,
+    "headroomBytes": 228524032,
+    "processCleanupConfirmed": true,
+    "streamAndDownloadedSha256": "222667c68c642d306b9ed3e57993b58ccc146b6113271093613d9c13746790fc",
+    "bytes": 475563378,
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776794,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 15991146,
+          "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2692659,
+          "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5330382,
+          "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "binaryReopen": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      {
+        "name": "gui-extract-project-downloaded",
+        "at": "2026-11-07T02:59:41.210Z",
+        "harness": {
+          "rss": 176283648,
+          "heapTotal": 92033024,
+          "heapUsed": 54249104,
+          "external": 45486649,
+          "arrayBuffers": 41548751
+        },
+        "browserHeap": {
+          "used": 796394295,
+          "total": 799289867,
+          "limit": 3321888768
+        }
+      },
+      {
+        "name": "gui-extract-gui-project-imported",
+        "at": "2026-11-07T02:59:55.678Z",
+        "harness": {
+          "rss": 134660096,
+          "heapTotal": 91770880,
+          "heapUsed": 58181976,
+          "external": 4685646,
+          "arrayBuffers": 747748
+        },
+        "browserHeap": {
+          "used": 1043436469,
+          "total": 1109030881,
+          "limit": 3321888768
+        }
+      },
+      {
+        "name": "gui-extract-gui-reopen-verified",
+        "at": "2026-11-07T03:00:04.897Z",
+        "harness": {
+          "rss": 142786560,
+          "heapTotal": 60313600,
+          "heapUsed": 54958688,
+          "external": 5207623,
+          "arrayBuffers": 1269725
+        },
+        "browserHeap": {
+          "used": 587232217,
+          "total": 589984945,
+          "limit": 3321888768
+        }
+      }
+    ]
+  },
+  "interpretation": "The control peak was 31,068,160 and 68,673,536 bytes above the two early-reset trials. One control versus two trials, without synchronized allocation measurements, cannot attribute that variation to cleanup timing; previous independent-copy runs exceeded the cap.",
+  "limitations": [
+    "Diagnostic bundle injection, not production code or an ownership fix.",
+    "The control leaves normal passive cleanup enabled and did not instrument individual retained session references.",
+    "One scan and cutter; no general native, resource or milestone acceptance."
+  ]
+}

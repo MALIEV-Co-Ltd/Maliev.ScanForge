@@ -1,4 +1,4 @@
-import type { SavedSketch, Vec3 } from "./types";
+import type { PlanarSavedSketch, Vec3 } from "./types";
 import { datumFrame } from "./origin";
 import { validateSketch } from "./sketch";
 
@@ -8,7 +8,7 @@ export function boundarySketches(
   plane: { origin: Vec3; normal: Vec3 },
   label: string,
   id: () => string = () => crypto.randomUUID(),
-): SavedSketch[] {
+): PlanarSavedSketch[] {
   const frame = datumFrame(plane.origin, plane.normal);
   return curves
     .filter((curve) => curve.length >= 6)
@@ -72,4 +72,18 @@ export function boundarySketches(
       validateSketch(sketch);
       return { id: id(), name: `${label} ${index + 1}`, sketch };
     });
+}
+
+/** One validated publication path for the GUI and public boundary projection. */
+export function projectedBoundarySketches(
+  curves: number[][],
+  plane: { origin: Vec3; normal: Vec3 },
+  id: () => string = () => crypto.randomUUID(),
+): PlanarSavedSketch[] {
+  if (
+    !curves.length ||
+    curves.some((curve) => !Array.isArray(curve) || curve.length < 6)
+  )
+    throw new Error("No complete boundary curves were produced.");
+  return boundarySketches(curves, plane, "Projected boundary", id);
 }

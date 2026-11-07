@@ -1,7 +1,7 @@
 /** Original facet task arithmetic. Output writes perform the native Float32
  * cache rounding, including sub-epsilon cross products and signed zero. */
 export function nativeGlobalFacetNormal(
-  vertices: Float32Array,
+  vertices: ArrayLike<number>,
   triangles: Uint32Array,
   face: number,
   output: Float32Array,
@@ -11,12 +11,17 @@ export function nativeGlobalFacetNormal(
     a = triangles[slot] * 3,
     b = triangles[slot + 1] * 3,
     c = triangles[slot + 2] * 3;
-  const ux = vertices[b] - vertices[a],
-    uy = vertices[b + 1] - vertices[a + 1],
-    uz = vertices[b + 2] - vertices[a + 2],
-    vx = vertices[c] - vertices[a],
-    vy = vertices[c + 1] - vertices[a + 1],
-    vz = vertices[c + 2] - vertices[a + 2];
+  // Native facet evaluation reads Float32 coordinates. Round each value on
+  // access so precise authored arrays need no full-size temporary copy.
+  const ax = Math.fround(vertices[a]),
+    ay = Math.fround(vertices[a + 1]),
+    az = Math.fround(vertices[a + 2]);
+  const ux = Math.fround(vertices[b]) - ax,
+    uy = Math.fround(vertices[b + 1]) - ay,
+    uz = Math.fround(vertices[b + 2]) - az,
+    vx = Math.fround(vertices[c]) - ax,
+    vy = Math.fround(vertices[c + 1]) - ay,
+    vz = Math.fround(vertices[c + 2]) - az;
   let x = vz * uy - vy * uz,
     y = vx * uz - vz * ux,
     z = vy * ux - vx * uy;

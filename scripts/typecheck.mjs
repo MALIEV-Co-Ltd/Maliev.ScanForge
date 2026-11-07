@@ -27,6 +27,9 @@ const source = parsed.fileNames.filter((name) => !tests.includes(name));
 const batches = [source];
 for (let offset = 0; offset < tests.length; offset += 64)
   batches.push([...source, ...tests.slice(offset, offset + 64)]);
+const heapMiB = Number(process.env.SCANFORGE_TYPECHECK_HEAP_MIB ?? 1536);
+if (!Number.isSafeInteger(heapMiB) || heapMiB <= 0)
+  throw new Error("SCANFORGE_TYPECHECK_HEAP_MIB must be a positive integer.");
 const outputRoot = join(root, ".resources");
 await mkdir(outputRoot, { recursive: true });
 const temporary = await mkdtemp(join(outputRoot, "typecheck-"));
@@ -35,7 +38,7 @@ let exitCode = 0;
 try {
   for (const [index, files] of batches.entries()) {
     console.log(
-      `Typecheck ${index + 1}/${batches.length}: ${index ? "source and test batch" : "source"} (${files.length} root files; 1536 MiB heap)`,
+      `Typecheck ${index + 1}/${batches.length}: ${index ? "source and test batch" : "source"} (${files.length} root files; ${heapMiB} MiB heap)`,
     );
     const path = join(temporary, "tsconfig.json");
     await writeFile(
@@ -45,7 +48,7 @@ try {
     const child = spawnSync(
       process.execPath,
       [
-        "--max-old-space-size=1536",
+        `--max-old-space-size=${heapMiB}`,
         compiler,
         "--noEmit",
         "--project",

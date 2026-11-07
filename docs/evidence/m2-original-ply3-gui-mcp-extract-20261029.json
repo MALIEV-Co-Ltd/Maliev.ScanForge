@@ -1,0 +1,58 @@
+{
+  "scope": "Original PLY-3 GUI Split and GUI/public MCP Extract core geometry comparison after GUI Undo.",
+  "applicationCommit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+  "build": "scanforge-b9363ff5ad191d86",
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "diagnostics": {
+      "extractedComponents": 1
+    },
+    "guiMcpEqual": true,
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndo": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "mcp-extract-committed",
+    "gui-mcp-extract-verified"
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4200738816,
+    "cleanupConfirmed": true
+  },
+  "harness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-history-diagnostic-local.mjs",
+    "sha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4"
+  },
+  "ledger": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply3-gui-mcp-extract-20261029-r2\\split-lifecycle-browser-ledger.json",
+    "sha256": "2e96f37b53aaa2afc1b4c07b402c5243d28d03761c4ac889e88c0e429bb78286"
+  },
+  "receipt": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply3-gui-mcp-extract-20261029-r2-guard.json",
+    "sha256": "078fe829f13c62cb4ef1ccf2402a41b8f269e3dcc6d961125e4eb0936d8507b9"
+  },
+  "limitations": [
+    "One original scan and one finite cutter; no native comparison or general memory guarantee.",
+    "This compares Extract core geometry following GUI Split; it does not independently compare GUI and MCP Split or post-reopen history in this run.",
+    "Peak was close to the job limit; measurements do not establish a comfortable memory margin."
+  ]
+}

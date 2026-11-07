@@ -1,0 +1,24 @@
+{
+  "scope": "Instrumented original PLY-3 Split, Extract and in-place reopen against application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "observations": [
+    "The replay completed GUI Split, component inventory, Extract, Undo verification, Redo digest checks, project export and project import.",
+    "After import the geometry digest job reported Hashing geometry at progress 0.03612253395144133, proving artifact deletion and digest submission returned in this run.",
+    "A sampled aggregate job peak of 4295225344 bytes exceeded the 4294967296-byte limit. The owned test process was stopped; no post-reopen digest result was obtained."
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4295225344,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true,
+    "elapsedSeconds": 126.11869890001253
+  },
+  "limitations": [
+    "This is a separate run, not proof of which command timed out in the previous run.",
+    "The aggregate peak does not identify a responsible process or allocation; digest progress alone does not prove the digest caused the peak.",
+    "Stopping the harness prevents completion of post-reopen comparison; native comparison and M2 resource acceptance remain open."
+  ]
+}

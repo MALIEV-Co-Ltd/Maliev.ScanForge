@@ -1,0 +1,67 @@
+{
+  "scope": "Boundary edge recovery for rotated finite mesh Split; native parity remains incomplete",
+  "base": "e287787478f9cca5884c0d4cfa678f3f06671173",
+  "behavior": "When a non-registered point lies on an existing edge and a cavity boundary is collinear, subdivide all triangles incident to that edge before continuing. Cancellation checks remain in the scans.",
+  "nativeComparison": "Rotated raw output shares 35 of 36 native unordered Float32 facets, with 3 additional facets. Endpoint reuse and full native equivalence remain open.",
+  "facetDiagnostic20261105": {
+    "observation": "The single unmatched native facet contains the rounded source-edge contact [3.2092130184173584, -1.8834589719772339, 5.456369400024414]. The three unmatched application facets subdivide that region using both this contact and the cutter-seam contact [3.2092130184173584, -1.8834590911865234, 5.456369400024414]. The rounded Y values differ by one Float32 step; the exact application-computed contacts are distinct before rounding.",
+    "scope": "Comparison of the retained native STL and current shared-operation output as unordered Float32 facet triples, plus current application intersection calculations. No new native operation, general tolerance or winding behavior is established.",
+    "details": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-rotated-contact-diagnostic-20261105.json",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-rotated-contact-diagnostic-guard-20261105.json"
+  },
+  "postOutputWeldDiagnostic20261105": {
+    "method": "On disposable output only, seed a point list with exact source vertices, map each output point to the first point within the previously inferred Float32-derived 0.0001 radius, and remove zero-area triangles. Compare unordered Float32 facet multisets against nine retained native exports. This is not a model of the recovered native insertion order and does not modify the application.",
+    "result": "The model changes the rotated control from one missing and three extra facets to an exact unordered facet match, removing two zero-area facets. Convex, concave, cyclic and wide-above remain matched. Below, at, above and wide-below still differ from native. A passing diagnostic means all nine cases were evaluated; it does not mean the model matched all cases or is safe to ship.",
+    "details": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-posthoc-weld-probe-20261105.json",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-posthoc-weld-probe-guard-20261105.json",
+    "limitations": "The radius and order are a diagnostic hypothesis, STL comparison ignores winding and native topology, and this postprocessing can change authored geometry. It does not establish native tolerance, safety, GUI/MCP parity or full M2 acceptance."
+  },
+  "oneUlpAssociationExperiment20261105": {
+    "method": "In an isolated checkout, bind an otherwise unbound finite-segment endpoint to a unique registered source-edge contact if every rounded coordinate is equal or one Float32 step apart; remove a segment if this collapses both endpoints. Keep the existing downstream coverage checks.",
+    "result": "After an initial degenerate-constraint failure, this candidate matched the retained rotated unordered native facet multiset and passed 123 focused Split tests. A new synthetic face-input control then showed that it also moves a distinct interior endpoint from [0.5, 1.0000001192092896, 0] to [0.5, 1, 0]. The unchanged application preserves the endpoint. The candidate is not integrated; one-step proximity alone is insufficient to establish shared contact identity.",
+    "candidateGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-candidate-r2-guard-20261105.json",
+    "focusedGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-safety-guard-20261105.json",
+    "counterexampleGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-distinct-red-20261105.json",
+    "baselineGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-one-ulp-distinct-baseline-20261105.json",
+    "adjacentSeamControl": "A second manufactured control uses two cutter triangles with an exactly shared edge. Both collected intersections contain the same interior seam endpoint one Float32 step from a separate source-edge contact. The isolated candidate removes that endpoint; the current shared collector and face-input path retain it. The control shows that adjacency and proximity alone do not prove the contacts are identical. It does not establish what native does on that input.",
+    "adjacentSeamCandidateGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-seam-control-red-20261105.json",
+    "adjacentSeamBaselineGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-seam-regression-20261105.json",
+    "adjacentSeamFullOperation": "The shared runScanEdit Split operation also retains both distinct points and returns two parts for the adjacent-cutter control. A regression in scan-split-finite-candidate.test.ts passed on the current code and failed against the isolated one-step association candidate because that candidate removed the interior seam point. This is an application control, not a native comparison.",
+    "adjacentSeamFullBaselineGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-regression-20261105.json",
+    "adjacentSeamFullCandidateGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-rejected-candidate-20261105.json",
+    "adjacentSeamBrowserControl": "An isolated Chrome and public MCP bridge replay of the same synthetic geometry checked both distinct points in GUI output, exact GUI/MCP geometry digests, undo and redo, binary project reopen, MCP held-result cancellation and GUI close cancellation. Output has five triangles, area 0.5 and two parts; no page errors were observed. The existing build scanforge-5670239e7281cd8a was built at e10f32a8; there are no application, build-script or package changes between that commit and 0eaef3ec. Peak guarded job memory was 924459008 bytes, with cleanup confirmed. This is not a native result.",
+    "adjacentSeamBrowserDriver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-browser-driver-20261105.mjs (SHA-256 13b23d1fb0c9de4f45ad4a78402d4468429ba65432215b288c74593672e3804d; copy into tests/ to resolve relative paths)",
+    "adjacentSeamBrowserLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-browser-20261105/split-lifecycle-browser-ledger.json (SHA-256 3a01ee4e5cf8a5398c4aecc0405aad3bfde7e21f45329cf3f80ce280af02926e)",
+    "adjacentSeamBrowserGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-adjacent-browser-guard-20261105.json",
+    "limitations": "The counterexamples test application contact identity and do not claim corresponding native runs. The candidate was not tested through GUI or MCP and does not establish general native tolerance or behavior."
+  },
+  "contactInvestigation": {
+    "scope": "Read-only examination of the existing rotated fixture using the current shared finite-triangle contact routine; no new native run or application behavior change.",
+    "observation": "Source facet 1 and cutter facet 73 produce two different contacts, separated by approximately 2.15539943e-8 mm. One contact is on source edge 0; the other is shared with adjacent cutter facet 70, whose triangle shares an edge with facet 73. Their Float32 output coordinates differ by one step in Y. The retained native export uses one of these output vertices where the application retains both, creating two additional thin facets and replacing one native facet with a third.",
+    "interpretation": "These contacts arise from distinct input intersections. Their proximity alone does not establish native's tolerance rule or justify welding arbitrary nearby contacts. The previous endpoint-reuse description is a hypothesis, not proof of native internals.",
+    "validation": "The rotated regression identifies the two contacts and verifies their source and cutter adjacency as well as the existing facet and area checks. The public GUI and MCP Split paths continue to share the existing operation; this investigation makes no behavioral or MCP contract change.",
+    "limitations": "One retained rotated control, unordered Float32 facets, and application contact calculations only. This does not establish native snapping thresholds, winding, arbitrary geometry, or full M2 acceptance."
+  },
+  "mcp": "The shared Split operation is used by GUI and public MCP. Isolated production build and actual 5173 preview each passed GUI/MCP geometry equality, undo/redo, cancellation and binary reopen for the rotated control.",
+  "validation": {
+    "focused": "338 passed, 5 skipped",
+    "full": "50545 passed, 76 skipped",
+    "fullPeakJobBytes": 1340260352,
+    "typecheck": "14 batches passed after final regression assertions",
+    "previewPeakJobBytes": 881745920,
+    "reviewer": "Independent review found no concrete recovery-path blocker after the test asserted both differences and area."
+  },
+  "sha256": {
+    "source": "5445b2d74c1434c340527dfb2dd36be827762409c95e22563e8428897d330ab0",
+    "test": "dc65af4905a81a59517494a073c958809d7f292ec2dbb07fd5f86f2389bc3329",
+    "fullGuard": "a28b3b312c40fd45f4c3da7fd9e6aaf1ab3baf36e6f6374814428b4427a99eb2",
+    "previewGuard": "cd11b83d6017ec152eae0405901f16ab9ce202ce5779d2cf262af0fe7c5b531c",
+    "typecheckGuard": "a3003336b7d321e8e887efae27e0224d5058e97c930953ca955ec8f82d798ef0"
+  },
+  "limitations": [
+    "A previous 240 second suite timed out with clean process cleanup; the subsequent 600 second run passed.",
+    "The raw rotated output is not identical to native; small-radius snapping and filtering are not implemented.",
+    "The original large-project full MCP download and GUI reopen under 4 GiB and other native M2 acceptance gates remain open.",
+    "Area and duplicate-facet checks do not independently rule out all overlap or topology defects."
+  ]
+}

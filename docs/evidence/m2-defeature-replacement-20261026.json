@@ -1,0 +1,230 @@
+{
+  "scope": "Owner-approved replacement-file Defeature regression, not the unavailable original reported selection. Native repair-mode and final milestone gates remain open.",
+  "base": "b5a35505235dbaa1d00bd544e3da985f7a396b60",
+  "input": {
+    "scope": "Available original scan as an owner-approved replacement input; not the lost original selection",
+    "sourceStlSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "inputTriangles": 273139,
+    "sourceCoordinateSha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    "inputJsonSha256": "addca479f2cea6d1a198181adadf21be29c8e2f86597de50a5e07266c245b9dc",
+    "selectionSha256": "140c387ea891a7c538116f1dcf98fc5de315c098eb15cafee5a0eadb3482c577",
+    "selectedFacets": 64,
+    "seedFace": 38510,
+    "seedCenter": [
+      0.11944771682222684, -6.650937080383301, -314.55519612630206
+    ],
+    "seedNormal": [
+      -0.08310435049864208, 0.22343365149499808, 0.9711699492405079
+    ],
+    "selectionRule": "64 connected interior facets, positive normal dot >=0.995, centroid radius <=3mm; deterministic face-index order"
+  },
+  "selectedFaceIndices": [
+    15108, 15109, 15110, 15111, 15857, 15858, 17549, 17550, 17551, 17552, 17554,
+    17555, 17556, 38442, 38443, 38444, 38445, 38446, 38447, 38448, 38449, 38504,
+    38505, 38506, 38507, 38508, 38509, 38510, 38511, 38731, 38735, 38736, 38737,
+    38738, 38740, 38844, 38850, 38851, 38852, 38853, 38981, 38984, 41239, 41240,
+    41241, 41242, 41244, 41245, 92421, 92422, 92423, 92424, 92425, 92429, 92430,
+    92431, 92432, 92433, 250567, 250568, 250573, 250574, 250575, 250576
+  ],
+  "settings": {
+    "units": "mm",
+    "action": "defeature",
+    "selectionOnly": true,
+    "topologyTolerance": 0.001
+  },
+  "rootCause": "Publishing every face from tolerance-welded representatives moved unselected raw corners; omitted MCP tolerance also differed from GUI. Shared publication now copies retained source corners exactly and GUI/MCP default to 0.001 mm, retaining explicit previous 0.000001 mm requests.",
+  "firstRealInputFailure": {
+    "label": "m2-real-defeature-browser-20261026-r1",
+    "assertion": "Retained Float32 corner equality",
+    "stderrSha256": "8a16df7861a4967c9acb4facba2caf28fbc0befbc6ecb0d4d1320ae1d71ef639"
+  },
+  "firstCorrectedReplay": {
+    "build": "scanforge-6f95718105a661d8",
+    "sourceIdentity": {
+      "head": "b5a35505235dbaa1d00bd544e3da985f7a396b60",
+      "files": 2985,
+      "unchanged": true,
+      "manifestSha256": "c6ccbd8e36c253a716582ff0808e03e07fb6fdf08fdbaee01de5ee3d932433a5"
+    },
+    "resources": {
+      "exitCode": 0,
+      "elapsedSeconds": 121.16055510001024,
+      "childPeakJobMemoryBytes": 3182702592,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "checks": {
+      "guiMcpEqual": true,
+      "sourcePreserved": true,
+      "undoRedo": true,
+      "cancellationRollback": true,
+      "failureRollback": true,
+      "saveReopen": true,
+      "pageErrors": []
+    },
+    "originalTopology": {
+      "vertices": 139334,
+      "triangles": 273139,
+      "components": 8,
+      "boundaryLoops": 13,
+      "boundaryChains": 0,
+      "boundaryEdges": 5553,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 6,
+      "duplicateTriangles": 0
+    },
+    "outputTopology": {
+      "vertices": 139331,
+      "triangles": 273133,
+      "components": 8,
+      "boundaryLoops": 13,
+      "boundaryChains": 0,
+      "boundaryEdges": 5553,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 6,
+      "duplicateTriangles": 0
+    },
+    "diagnostics": {
+      "removedTriangles": 64,
+      "prunedTriangles": 0,
+      "filledHoles": 1,
+      "fillAttempts": 1,
+      "insertedVertices": 10,
+      "curvaturePatches": 0,
+      "curvatureFitRms": 0,
+      "curvatureFallback": "collar crosses a sharp edge or overhang",
+      "method": "Spatial advancing-corner repatching with retained indexed adjacency",
+      "topologyCache": "memory-hit"
+    },
+    "visualInspection": "Actual after.png inspected: repaired retained scan visible; screenshot is local private evidence.",
+    "command": "node tests/defeature-curvature-browser.mjs",
+    "environment": {
+      "SCANFORGE_DEFEATURE_CASE_DIR": "external retained case directory identified by input digests",
+      "SCANFORGE_QA_DIST": "frozen build scanforge-6f95718105a661d8"
+    }
+  },
+  "cacheReview": {
+    "finding": "Raw retained publication could leave the old welded representative in successor cache, diverging from fresh analysis after reopening.",
+    "red": "m2-defeature-cache-red-20261026-r1:9passed1failed",
+    "green": "m2-defeature-cache-green-20261026-r1:10passed0failed",
+    "fix": "Invalidate successor adjacency only when retained raw corners differ from its indexed expansion; unchanged exact successors still reuse topology.",
+    "review": "Read-only follow-up found no further actionable findings.",
+    "affectedRegression": {
+      "label": "m2-retained-corners-contract-20261026-r2",
+      "passed": 293,
+      "failed": 0,
+      "resources": {
+        "exitCode": 0,
+        "elapsedSeconds": 16.326224999967963,
+        "childPeakJobMemoryBytes": 1024376832,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "testFiles": [
+        "tests/unroll-auxiliary.test.ts",
+        "tests/scan-average-operations.test.ts",
+        "tests/scan-unroll-native.test.ts",
+        "tests/saved-sketch-display.test.ts",
+        "tests/authoring-operations.test.ts",
+        "tests/model-sketch-history.test.ts",
+        "tests/model-timeline.test.ts",
+        "tests/project-file.test.ts",
+        "tests/reconstruction-history.test.ts",
+        "tests/reference-display.test.ts",
+        "tests/reference-frame-display.test.ts",
+        "tests/geometry-digest.test.ts",
+        "tests/object-operations.test.ts",
+        "tests/sketch-authoring-host-history.test.ts",
+        "tests/processing-client.test.ts",
+        "tests/scan-native-repolygonize.test.ts",
+        "tests/scan-repolygonize-operations.test.ts",
+        "tests/scan-reconstruction-operations.test.ts",
+        "tests/scan-reconstruction.test.ts",
+        "tests/scan-tools-panel.test.tsx",
+        "tests/reconstruction-ui-command.test.ts",
+        "tests/mesh-facet-normal-lifecycle.test.ts",
+        "tests/reference-preview-display.test.ts",
+        "tests/scan-hole-native-curvature.test.ts",
+        "tests/scan-defeature-curvature.test.ts",
+        "tests/automation-operations.test.ts",
+        "tests/noise-comparison-overlay.test.ts"
+      ],
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 [explicit testFiles] --reporter=json --outputFile=<private-results.json>"
+    }
+  },
+  "resourcePolicy": {
+    "aggregateJobLimitBytes": 4294967296,
+    "cpuPercent": 25,
+    "serializedMutex": "Local\\ScanForge.BoundedValidation",
+    "ownedHelpersOnly": true
+  },
+  "finalBuild": {
+    "tag": "scanforge-8602b889358c497b",
+    "typeBatches": 13,
+    "warnings": 0,
+    "sourceIdentity": {
+      "head": "b5a35505235dbaa1d00bd544e3da985f7a396b60",
+      "files": 2986,
+      "unchanged": true,
+      "manifestSha256": "05b3e47484eeb40624cdaed7035864fa8fdd25804c456d89d7657664e523b1f3"
+    },
+    "resources": {
+      "exitCode": 0,
+      "elapsedSeconds": 242.56327649997547,
+      "childPeakJobMemoryBytes": 1572139008,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "finalReplay": {
+    "label": "m2-real-defeature-browser-20261026-r3",
+    "sameInputAndSelection": true,
+    "resources": {
+      "exitCode": 0,
+      "elapsedSeconds": 122.76343639998231,
+      "childPeakJobMemoryBytes": 3215618048,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "checks": {
+      "guiMcpEqual": true,
+      "sourcePreserved": true,
+      "undoRedo": true,
+      "cancellationRollback": true,
+      "failureRollback": true,
+      "saveReopen": true,
+      "pageErrors": []
+    },
+    "reopenedDiagnosticsEqual": true,
+    "outputCoordinateSha256": "a51444c0efd31e327c230d782c59f39cbf13a9d801c32b3bb20e7899869bb569",
+    "outputTopology": {
+      "vertices": 139331,
+      "triangles": 273133,
+      "components": 8,
+      "boundaryLoops": 13,
+      "boundaryChains": 0,
+      "boundaryEdges": 5553,
+      "nonManifoldEdges": 0,
+      "nonManifoldVertices": 0,
+      "inconsistentEdges": 0,
+      "degenerateTriangles": 6,
+      "duplicateTriangles": 0
+    },
+    "diagnostics": {
+      "removedTriangles": 64,
+      "prunedTriangles": 0,
+      "filledHoles": 1,
+      "fillAttempts": 1,
+      "insertedVertices": 10,
+      "curvaturePatches": 0,
+      "curvatureFitRms": 0,
+      "curvatureFallback": "collar crosses a sharp edge or overhang",
+      "method": "Spatial advancing-corner repatching with retained indexed adjacency",
+      "topologyCache": "memory-hit"
+    }
+  }
+}

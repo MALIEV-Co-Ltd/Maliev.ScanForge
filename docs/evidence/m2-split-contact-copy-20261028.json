@@ -1,0 +1,34 @@
+{
+  "scope": "Incremental shared Split precision correction; no native equivalence or whole-milestone claim.",
+  "baseCommit": "86385d30edbe6d3fec73a0532a1d60c215628ab7",
+  "failure": "Original ply-1 face 7207 was rejected after two neighboring numerical copies of a cutter contact rounded to the same Float32 point. The committed baseline rejects the same facet.",
+  "correction": "Before output triangulation, collapse adjacent near-identical Float32 contact copies only when both match an observed cutter contact; preserve pairs of original source corners. The GUI and MCP use the shared Split implementation.",
+  "focused": "Original face direct regression checks both output sides, source winding and projected area. Existing affected tests passed, with the pre-existing finite interior segment regression still marked expected failure.",
+  "browser": {
+    "cases": 9,
+    "result": "GUI and public MCP agree for the original face and eight existing cutter controls, with matching geometry and metadata, source ownership, history, project reopening and cancellation checks; a separate precision-failure control also passed.",
+    "guardSha256": "14c4e74a2f4885bc51930152e4644a6fa317135012812c7741f23e6b33a7c0e2",
+    "cleanupConfirmed": true
+  },
+  "originalScans": {
+    "scope": "Each original scan separately, one manufactured large planar triangle cutter per scan; direct shared operation, not browser or native.",
+    "files": [
+      { "name": "ply-1.ply", "faces": 274154, "matchingSeamEdges": 761 },
+      { "name": "ply-2.ply", "faces": 2697877, "matchingSeamEdges": 2108 },
+      { "name": "ply-3.ply", "faces": 3691133, "matchingSeamEdges": 2406 }
+    ],
+    "checks": "Source and cutter digests unchanged; both output seam-edge sets match; total area within 1e-5 relative. Individual helper jobs below 4 GiB with cleanup confirmed. This does not prove general manifoldness, all edge multiplicities, or simultaneous three-scan resource use."
+  },
+  "typecheck": {
+    "batches": 13,
+    "passed": true,
+    "guardSha256": "5361e1d96675e743ae927eb6dc32e148590c13bc8af43cf20b04ee3dba8caa5c"
+  },
+  "suite": {
+    "passed": 50098,
+    "expectedFailures": 1,
+    "skipped": 70,
+    "guardSha256": "09894131d3cbee7ba999610a7cb8cd61338ced7bdf955d940d7a2625ddb6a65b"
+  },
+  "remaining": "Finite interior-cutter support-plane extension, native Split comparison, broader lifecycle/resource checks, final review and CI remain open."
+}

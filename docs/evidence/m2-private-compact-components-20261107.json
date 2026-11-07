@@ -1,0 +1,55 @@
+{
+  "baseline": "6e4debb0",
+  "change": "The shared processing client considers marked private Float64 source positions for compact indexed component inventory and extraction. Existing exact-corner validation, including signed-zero and finite checks, still gates that path.",
+  "focusedTests": {
+    "passed": 109,
+    "peakJobBytes": 483254272,
+    "cleanupConfirmed": true,
+    "checks": [
+      "marked exact inputs use compact path",
+      "signed-zero mismatch falls back",
+      "unmarked inputs do not use compact path",
+      "source buffers are not transferred"
+    ]
+  },
+  "productionBuild": {
+    "passed": true,
+    "id": "scanforge-12844615819f2f7e",
+    "peakJobBytes": 2030276608,
+    "cleanupConfirmed": true,
+    "note": "The final unmarked-input assertion was added after this build and passed in the focused rerun."
+  },
+  "privateWorkerBrowser": {
+    "passed": true,
+    "environment": "development browser with explicitly marked private Float64 buffers",
+    "triangles": 65536,
+    "components": 1,
+    "checks": [
+      "inventory",
+      "extract",
+      "exact 0.1 and 1.1",
+      "negative zero",
+      "source buffers retained"
+    ],
+    "peakJobBytes": 634376192,
+    "cleanupConfirmed": true
+  },
+  "productionBrowser": {
+    "passed": true,
+    "checks": [
+      "GUI and public MCP component parity",
+      "undo and redo",
+      "binary reopen",
+      "GUI and MCP cancellation",
+      "66048-triangle public MCP inventory and extraction with undo and redo"
+    ],
+    "peakJobBytes": 1218015232,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Experimental Float64 project restore remains disabled.",
+    "The private-buffer test did not exercise a restored project through GUI and MCP.",
+    "The fixture does not establish original large-project resource reliability or fresh native parity.",
+    "The full suite, independent restore ownership, integration and milestone closure remain open."
+  ]
+}

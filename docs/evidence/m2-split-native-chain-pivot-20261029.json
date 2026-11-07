@@ -1,0 +1,62 @@
+{
+  "scope": "Bounded static observations of two candidate helpers downstream of a retained Split-related call chain; no native runtime binding.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "chainHelper": {
+    "address": "0x14032f980",
+    "body": "14032f980..14032fb34",
+    "observation": "The decompilation initializes a stack with first and last indices of an input integer sequence. For intervals with an interior index, it calls 0x140330350, invokes a virtual method with the two endpoint values and the chosen intermediate value, then pushes two resulting index intervals. This is consistent with recursive polygon triangulation but element types and virtual method semantics remain unverified.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-chain-helper-static-20261029-r1/evidence.json",
+    "evidenceSha256": "b5db9e55716a175c395b35c4b05d2c2dd3af4971bdb465da8ccf2497f1d7d646",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-chain-helper-guard-20261029-r1.json",
+    "guardSha256": "a8db7a2b25d4fc30bc57d3ce5d42c1a7f929129203424b9b4251f43d3d2f5f84",
+    "peakJobBytes": 676028416
+  },
+  "pivotHelper": {
+    "address": "0x140330350",
+    "body": "140330350..1403305dc",
+    "observation": "For an interval with more than one interior candidate, the decompilation initializes a candidate from the first interior sequence value and examines later values using calls to 0x140332120 and 0x140332b40. The comparison operands appear as structured exact-value objects. Return type and numeric meaning are not recovered, so no pivot rule is asserted.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-static-20261029-r1/evidence.json",
+    "evidenceSha256": "c8e18ad3234c0a154c8a98cbd600a237ad627f5f0a3a245da81168a6ced69037",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-guard-20261029-r1.json",
+    "guardSha256": "cf1fd5f4d3f873c043f86c5e156f94daf4b71b61ac6b0b7a7158a7a5a4fd8e53",
+    "peakJobBytes": 672256000
+  },
+  "jobLimitBytes": 4294967296,
+  "limitations": [
+    "All function boundaries and pseudocode derive from a runtime-derived image, not a live call trace. The observed native Split path and function parameter types are not established.",
+    "No application change or exact native parity is claimed. M2 remains open."
+  ],
+  "pivotMath": {
+    "method": "Read-only Ghidra 12.1.4 import without automatic analysis; three explicitly selected callee addresses.",
+    "bodies": [
+      "140332120..1403327fe",
+      "140332b40..140332cc0",
+      "140335570..14033576d"
+    ],
+    "observation": "The pivot candidate calls 0x140332120 for interior values and 0x140332b40 when comparing some structured results. The latter compares integer metadata and arrays of 32-bit words. The former combines values associated with three indices and large structured operands. These observations suggest nontrivial numeric comparison but do not identify its mathematical formula, return type or live role.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-math-static-20261029-r1/evidence.json",
+    "evidenceSha256": "23944722de7f44452f834956f6943b943d5c1d99c00e896a2101890d6f4ef62b",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-pivot-math-guard-20261029-r1.json",
+    "guardSha256": "2ea3d92d6056f472a3b316122c5b45eb807857d0d74a64843c073b029ab30cde",
+    "peakJobBytes": 676282368
+  },
+  "arithmeticFollowup": {
+    "method": "Read-only Ghidra import with automatic analysis disabled and three selected helper entries.",
+    "bodies": [
+      "1403305e0..1403306fa",
+      "140330700..14033092e",
+      "140333630..140333843"
+    ],
+    "observation": "The selected helper at 1403305e0 multiplies sign fields, adds exponent-like fields and calls a word-array operation. The helper at 140330700 copies the first operand if the third is zero and negates the third if the first is zero; 140333630 copies the nonzero operand in either case. These observations are consistent with multiplication, subtraction and addition, respectively, but their types and full contracts are not established.",
+    "hypothesis": "Under those arithmetic interpretations, 140332120 combines two coordinate differences with a baseline vector, branches on their projections, and in one branch forms squared-length products minus a squared projection. This is consistent with a scaled point-to-segment distance calculation. The choice of extremum, return convention, exact geometry types and native Split runtime binding remain unverified.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-arithmetic-static-20261029-r1/evidence.json",
+    "evidenceSha256": "c80a743b66b435467c728815323c832e15cb19f71d5c5304b7c4bb4e7d50b2af",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-arithmetic-guard-20261029-r1.json",
+    "guardSha256": "bc24e654dda21a5adc620da1cd04e4bdf9e696fa0e59ac8619afde20b72db320",
+    "peakJobBytes": 675753984
+  },
+  "pivotAssemblyReturn": {
+    "observation": "The retained assembly initializes R14 to the first interior sequence index, replaces it with the candidate index on an update path, and returns R14 via RAX. This resolves the decompiler void-signature omission for the observed instructions. The comparator appears consistent with selecting the minimum structured score; score semantics and Split runtime binding remain unverified.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pivot-assembly-followup-20261029.json"
+  }
+}

@@ -115,13 +115,6 @@ try {
       offset: 0,
       base64: Buffer.from(bytes).toString("base64"),
     });
-  const saved = await upload("cloud.json", JSON.stringify(original));
-  await job(
-    await mutate("project_import", {
-      artifactId: saved.result.artifactId,
-      replace: true,
-    }),
-  );
   const geometry = async (entityId) => {
     const info = (await call("object_get", { entityId, includeGeometry: true }))
       .result;
@@ -134,6 +127,118 @@ try {
     assert(data.eof);
     return JSON.parse(Buffer.from(data.base64, "base64").toString());
   };
+  const mesh = (id, z) => ({
+    id,
+    name: `${id}.stl`,
+    kind: "mesh",
+    visible: true,
+    color: "#80ff80",
+    opacity: 1,
+    positions: [0, 0, z, 2, 0, z, 0, 2, z],
+  });
+  const mixed = {
+    ...original,
+    name: "Mixed reconstruction defaults",
+    entities: [mesh("mesh", 0), mesh("reference", 0.1), cloud("extra", 0.2)],
+  };
+  const mixedArtifact = await upload("mixed.json", JSON.stringify(mixed));
+  await job(
+    await mutate("project_import", {
+      artifactId: mixedArtifact.result.artifactId,
+      replace: true,
+    }),
+  );
+  await mutate("object_select", { entityId: "mesh" });
+  await mutate("command_run", { name: "ribbon:repolygonize" });
+  const mixedPanel = page.getByRole("region", {
+    name: "Re-polygonize",
+    exact: true,
+  });
+  const meshReference = mixedPanel.getByRole("checkbox", {
+    name: "reference.stl",
+    exact: true,
+  });
+  const cloudReference = mixedPanel.getByRole("checkbox", {
+    name: "extra.asc",
+    exact: true,
+  });
+  await meshReference.waitFor();
+  assert.equal(
+    await meshReference.isChecked(),
+    true,
+    "native defaults include visible mesh references",
+  );
+  assert.equal(
+    await cloudReference.isChecked(),
+    false,
+    "native defaults exclude point clouds",
+  );
+  await cloudReference.check();
+  assert.equal(
+    await cloudReference.isChecked(),
+    true,
+    "selecting a cloud retains that reference",
+  );
+  assert.equal(
+    await meshReference.isChecked(),
+    true,
+    "switching to voxel retains the selected mesh",
+  );
+  assert.equal(
+    await mixedPanel
+      .locator('select[aria-label="Reconstruction method"]')
+      .inputValue(),
+    "voxel",
+  );
+  await mixedPanel
+    .getByRole("button", { name: "Reconstruction method", exact: true })
+    .click();
+  await page
+    .getByRole("option", { name: "Native surface reconstruction", exact: true })
+    .click();
+  assert.equal(
+    await cloudReference.isChecked(),
+    false,
+    "returning to native excludes clouds",
+  );
+  assert.equal(
+    await meshReference.isChecked(),
+    true,
+    "returning to native restores visible mesh defaults",
+  );
+  await page.screenshot({ path: join(out, "mixed-native-defaults.png") });
+  await cloudReference.check();
+  await page.screenshot({ path: join(out, "mixed-voxel-selection.png") });
+  await mixedPanel.getByRole("button", { name: "Apply", exact: true }).click();
+  await mixedPanel
+    .getByText(/Verified watertight voxel surface/)
+    .waitFor({ timeout: 60000 });
+  const mixedGui = await geometry("mesh");
+  await mutate("history_undo");
+  const mixedRun = await job(
+    await mutate("mesh_process", {
+      entityId: "mesh",
+      targetIds: ["reference", "extra"],
+      operation: {
+        kind: "scanTools",
+        operation: { kind: "repolygonize", method: "voxel", resolution: 0.5 },
+      },
+    }),
+  );
+  assert.deepEqual(
+    await geometry("mesh"),
+    mixedGui,
+    "mixed mesh/cloud GUI and MCP geometry match",
+  );
+  assert.equal(mixedRun.diagnostics.inputMeshes, 2);
+  assert.equal(mixedRun.diagnostics.inputPointClouds, 1);
+  const saved = await upload("cloud.json", JSON.stringify(original));
+  await job(
+    await mutate("project_import", {
+      artifactId: saved.result.artifactId,
+      replace: true,
+    }),
+  );
   const before = await geometry("source"),
     target = await geometry("target");
   await mutate("object_select", { entityId: "source" });

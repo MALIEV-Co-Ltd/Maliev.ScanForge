@@ -1,0 +1,28 @@
+{
+  "scope": "QuickSurface, GUI and public MCP original-scan polygon reduction at 75 percent remaining",
+  "build": "scanforge-3ac0509beaf027d7",
+  "driver": "tests/large-reduction-browser.mjs",
+  "source": "C:/repo/alignment-example-files/scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "percentageRemaining": 75,
+  "requestedTriangles": 204854,
+  "outputTriangles": 204853,
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "keepOriginalMesh": true,
+    "outputStlSha256": "960e7a8aa02de1b9dba246638b310935693a5666a0e9adb68308da56b9917976",
+    "outputCoordinateSha256": "b225e4c40ce3e25a1bdd0d300919cf61d3095821c468fffac2a12f8e519fd275"
+  },
+  "guiAndMcpCoordinateSha256": "b225e4c40ce3e25a1bdd0d300919cf61d3095821c468fffac2a12f8e519fd275",
+  "guiMcpPreviewCancellationHistoryAndBinaryReopen": true,
+  "jobLimitBytes": 34110816256,
+  "peakJobBytes": 1731653632,
+  "activeProcessesAfter": 0,
+  "limitations": [
+    "The native and application comparison covers ordered Float32 coordinates, not STL normal fields or native object-publication behavior.",
+    "One input and setting do not establish all native polygon-reduction behavior.",
+    "The native export was hash-verified and removed."
+  ]
+}

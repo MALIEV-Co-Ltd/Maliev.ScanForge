@@ -1,0 +1,30 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract and public-MCP in-place binary project replacement on application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98",
+  "testScriptSha256": "4fcc50ec6ba78a9395f60d67aa54d1541cfaf63cb3f9b0c588e4dc166408b90d",
+  "build": "Same exact application snapshot and production offline manifest scanforge-b8bfbb2f06154578 as fresh-project control.",
+  "observations": [
+    "Split, Extract, Undo/Redo digest checks and project export completed.",
+    "Project import reported Starting but had not reported completion when the sampled job peak crossed the 4 GiB limit. The monitor stopped the owned test harness; the guard terminated descendants and confirmed cleanup."
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4309491712,
+    "passed": false,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "jobTerminationRequested": true,
+    "elapsedSeconds": 109.69978080000146
+  },
+  "comparison": {
+    "freshProjectEvidence": "m2-original-fresh-reopen-20261029.json",
+    "freshProjectPeakBytes": 4136673280,
+    "inPlacePeakBytes": 4309491712,
+    "difference": "The fresh-project control called project_new before import; this run did not. Both used the same app build, script and guard strategy, but ran separately."
+  },
+  "limitations": [
+    "The sampled peak exceeded the job limit before the monitor could stop the child; this run fails the resource gate.",
+    "One run per path and independent scheduling do not prove the precise source of allocation or establish repeatability.",
+    "No post-import or native geometry result was obtained for this run."
+  ]
+}

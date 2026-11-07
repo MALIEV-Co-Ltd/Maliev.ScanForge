@@ -1,0 +1,34 @@
+{
+  "scope": "Isolated compiled-browser GUI and public MCP crossing-pair Split replay",
+  "productionBuild": "scanforge-12844615819f2f7e",
+  "fixture": "tests/fixtures/m2-crossing-pair-native-20261107",
+  "browserPath": "Browser plugin unavailable; existing Playwright driver and isolated browser",
+  "result": {
+    "guiMcpGeometryEqual": true,
+    "outputTriangles": 10,
+    "indexedComponents": 1,
+    "area": 0.5,
+    "firstIntersectionEdgeCoverage": "0.981078 of full input segment, clipped to source",
+    "secondIntersectionEdgeCoverage": 1,
+    "positionsSha256": "5df92b851bab4f36878a48b11439ef060670228c344f7ffa1fe28bd1186484af",
+    "indexedVerticesSha256": "1881d30508d89d8645c47c4d53ca1eb955ac4557502f08d76e72bb07a642af27",
+    "indexedTrianglesSha256": "61b102b4ebd68267fae16aeb8e44070d983d1284020ee2f963e1d11a2411da47",
+    "undoRedo": true,
+    "binaryReopen": true,
+    "mcpHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "pageErrors": []
+  },
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakJobBytes": 931950592,
+    "cleanupConfirmed": true,
+    "ownedProcessesRemaining": 0
+  },
+  "firstAttempt": "Failed before import because the new fixture lacked a manifest; the manifest was added and the subsequent replays passed. Its owned processes were cleaned up.",
+  "limitations": [
+    "This verifies one manufactured input and the compiled build named above, not complete M2 parity.",
+    "QuickSurface's two-cutter result omits the first constraint edge; the user directed preservation of ScanForge's safety checks.",
+    "No production behavior changed in this evidence-only replay."
+  ]
+}

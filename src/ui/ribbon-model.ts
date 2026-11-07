@@ -59,6 +59,7 @@ export const RIBBON_ACTION_IDS = [
   "mirrorMesh",
   "unroll",
   "fineAlign",
+  "surfaceRefinement",
   "globalFineAlign",
   "alignNPoints",
   "alignInteractive",
@@ -179,6 +180,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
           tool("alignInteractive", "Move / rotate scan", "transform", true),
           tool("alignNPoints", "Between scans: point pairs", "select"),
           tool("fineAlign", "Between scans: fine alignment", "align"),
+          tool("surfaceRefinement", "Indexed surface refinement", "align"),
         ),
       ),
       {
@@ -287,6 +289,7 @@ export const RIBBON_TABS: readonly RibbonTab[] = [
         tool("alignInteractive", "Interactive", "transform", true),
         tool("alignNPoints", "By N points", "select"),
         tool("fineAlign", "Fine align", "align"),
+        tool("surfaceRefinement", "Surface refinement", "align"),
         tool("globalFineAlign", "Global fine align", "align"),
       ),
       group(

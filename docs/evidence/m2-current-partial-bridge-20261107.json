@@ -1,0 +1,40 @@
+{
+  "scope": "Current compiled GUI and public MCP partial-hole and bridge lifecycle replay",
+  "build": "scanforge-3ac0509beaf027d7",
+  "driver": "tests/bridge-drag-browser.mjs",
+  "cases": [
+    {
+      "scenario": "native-semi-tangent",
+      "nativeFixture": "tests/fixtures/hole-observed-semi-tangent-curved.json",
+      "sourceTriangles": 64,
+      "outputTriangles": 164,
+      "guiMcpAndNativeOrientedGeometryEqual": true,
+      "sourceCornersHistoryAndBinaryReopen": true
+    },
+    {
+      "scenario": "original-scan-partial-tangent",
+      "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "sourceTriangles": 273139,
+      "outputTriangles": 273143,
+      "outputCoordinateSha256": "5d47cd39a2afc3005a5cdb72de5c1008f25fe7de27f195b95aeba159c8c9c2e1",
+      "guiMcpSourceCornersAndUndoRedo": true,
+      "nativeComparison": false
+    },
+    {
+      "scenario": "native-flat-bridge",
+      "nativeFixture": "tests/fixtures/bridge-observed-flat-annulus.json",
+      "patchTriangles": 20,
+      "guiMcpAndNativeOrientedGeometryEqual": true,
+      "hoverCameraCancellationHistoryAndBinaryReopen": true
+    }
+  ],
+  "jobLimitBytes": 34110816256,
+  "peakJobBytes": 1597939712,
+  "activeProcessesAfter": 0,
+  "pageErrors": [],
+  "limitations": [
+    "The native comparisons use retained fixture outputs, not a new QuickSurface run.",
+    "The original-scan partial fill has GUI/MCP parity but no native comparison.",
+    "These finite controls do not establish all partial-fill or bridge algorithms."
+  ]
+}

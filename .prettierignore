@@ -3,6 +3,8 @@ dist
 public/kernel
 # Preserve upstream packaged dependencies as distributed.
 public/vendor
+# Generated Poisson loader is byte-verified against its provenance manifest.
+public/poisson/poisson.mjs
 .resources
 package-lock.json
 LICENSE

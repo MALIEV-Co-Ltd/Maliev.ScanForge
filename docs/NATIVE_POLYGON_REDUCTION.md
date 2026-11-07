@@ -290,15 +290,20 @@ targets also retain source coordinates. Source validation and cancellation run
 before either shortcut. Progress includes topology preparation, collapse and
 facet export; cancelled exports do not publish a result.
 
-The object-based whole-mesh kernel has a conservative 256 MiB record budget,
-estimated from vertices, facets and growing incidence scratch. Inputs beyond
-that admission continue through the existing spatial-patch path; each admitted
-patch uses the recovered kernel. Both half-million-facet regression tests still
-require actual reduction and valid stored triangles. This preserves large-mesh
-support while memory-efficient global reduction is unfinished. Independent
-patch collapse is not claimed to reproduce the native global sequence. Deviation
-mode retains its previous conservative implementation. It has not been shown
-to reproduce the native count-preview/comparison route extracted below.
+The production whole-mesh kernel now uses compact typed records under a 1536 MiB
+working admission budget. This replaces the historical 256 MiB object-record
+estimate. Weld growth, typed topology validation, growing incidence snapshots
+and export are admitted before allocation; source and retained indexed arrays
+are included. GUI preview reuses its bounded indexed original for reduction.
+Only dedicated working-budget exhaustion permits the existing explicit spatial
+fallback, after compact leases unwind. Cancellation and invalid topology do not
+trigger that fallback. Both half-million-facet regression tests require actual
+reduction and valid stored triangles; an admitted request now retains the global
+sequence. These working estimates are separate from the unchanged aggregate
+4 GiB validation-process limit. Independent patch collapse is not claimed to
+reproduce the native global sequence. Deviation mode retains its previous
+conservative implementation and has not been shown to reproduce the native
+count-preview/comparison route extracted below.
 
 The refreshed Codex browser completed 33-percent retained reduction on the
 loaded 96-facet annular object, producing 38 facets and reporting the recovered

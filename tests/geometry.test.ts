@@ -196,6 +196,13 @@ describe("independent analytical geometry", () => {
       "finite XYZ coordinates",
     );
   });
+  it("rejects nonnumeric and infinite ordinary mesh coordinates", () => {
+    for (const value of ["1", Infinity, -Infinity, NaN, undefined]) {
+      expect(() =>
+        meshStats([0, 0, 0, 1, 0, 0, 0, 1, value] as number[]),
+      ).toThrow("finite triangle coordinates");
+    }
+  });
   it("aligns a rotated elongated scan into a centered right-handed principal frame", () => {
     const corners: number[] = [];
     for (const x of [-4, 4])

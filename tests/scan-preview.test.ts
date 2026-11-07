@@ -3,6 +3,10 @@ import { ScanPreviewSession } from "../src/scan-preview";
 import { reduceScanNoise, reduceScanMesh } from "../src/scan-tools-reduction";
 import { runScanTool } from "../src/scan-tools";
 import * as tree from "../src/scan-noise-octree";
+import * as samples from "../src/scan-resident-samples";
+import * as weld from "../src/mesh-weld";
+import * as reductionAdapter from "../src/scan-reduction-adapter";
+import { reductionGrid } from "./helpers/reduction-grid";
 import selected3 from "./fixtures/noise-annular-selected-3.json";
 import type {
   ProcessingRequest,
@@ -14,6 +18,62 @@ afterEach(() => {
   vi.clearAllTimers();
   vi.useRealTimers();
   vi.unstubAllGlobals();
+});
+it("prepares polygon comparison once with bounded storage and reuses its indexed source for the edit", async () => {
+  const source = reductionGrid(8, 8),
+    before = source.slice();
+  const legacy = vi.spyOn(samples, "weldScanSamples"),
+    preparation = vi.spyOn(weld, "weldMeshPositions"),
+    edit = vi.spyOn(reductionAdapter, "prepareReductionSource");
+  const preview = await ScanPreviewSession.create({
+    kind: "scanPreview",
+    phase: "create",
+    previewId: "bounded-original",
+    positions: source,
+    operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+  });
+  expect(legacy).not.toHaveBeenCalled();
+  expect(preparation).toHaveBeenCalledOnce();
+  expect(preparation.mock.calls[0][3]).toBeTypeOf("function");
+  expect(edit).toHaveBeenCalledOnce();
+  expect(edit.mock.results[0].value.vertices).toBe(preview.original!.vertices);
+  expect(edit.mock.results[0].value.triangles).toBe(
+    preview.original!.triangles,
+  );
+  expect(source).toEqual(before);
+});
+it.each([3, 8])(
+  "preserves the polygon caller's unchanged target %s without adding topology rejection",
+  async (targetTriangles) => {
+    const source = new Float32Array(8 * 9);
+    const preview = await ScanPreviewSession.create({
+      kind: "scanPreview",
+      phase: "create",
+      previewId: "shortcut",
+      positions: source,
+      operation: { kind: "reducePolygons", mode: "triangles", targetTriangles },
+    });
+    expect(preview.output).toEqual(source);
+  },
+);
+it("does not relabel a stale diagnostic cache as the current preview source", async () => {
+  const source = reductionGrid(8, 8),
+    stale = reductionGrid(4, 4);
+  const topology = (await import("../src/mesh-processing")).analyzeMesh(stale);
+  const preview = await ScanPreviewSession.create(
+    {
+      kind: "scanPreview",
+      phase: "create",
+      previewId: "stale",
+      positions: source,
+      operation: { kind: "reducePolygons", mode: "percentage", percentage: 50 },
+    },
+    { topologyCache: { positions: stale, tolerance: 1e-6, topology } },
+  );
+  expect(preview.output).toEqual(
+    reduceScanMesh(source, { mode: "percentage", percentage: 50 }).positions,
+  );
+  expect(preview.original!.triangles.length).toBe(source.length / 3);
 });
 it.each(["reduceNoise", "reducePolygons"] as const)(
   "%s preview retains original geometry and caches comparison without repeating its edit",

@@ -1,0 +1,61 @@
+{
+  "scope": "QuickSurface 8.0.123 interactive observation on one original STL; no native output geometry export or ScanForge comparison",
+  "source": {
+    "path": "C:\\repo\\alignment-example-files\\scan-1.stl",
+    "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "initialTriangles": 273139,
+    "nativeIndividualMeshes": 2,
+    "nativeHoles": 13
+  },
+  "action": "In Edit Scan > Individual meshes, select the first component and activate Create new object.",
+  "observed": {
+    "sourceTrianglesAfter": 272857,
+    "createdObjectTriangles": 282,
+    "sourceIndividualMeshesAfter": 1,
+    "sourceHolesAfter": 12,
+    "createdObjectIndividualMeshes": 1,
+    "createdObjectHoles": 1,
+    "undoAttempt": "Ctrl+Z did not restore the source in this interactive session."
+  },
+  "sharedOperationControl": {
+    "method": "Read the SHA-256-verified original STL through Three.js STLLoader and call the shared runScanEdit components inventory directly. No browser or MCP bridge was exercised in this control.",
+    "inputTriangles": 273139,
+    "components": [
+      { "triangles": 272857, "areaMm2": 8221.57130665994 },
+      { "triangles": 282, "areaMm2": 7.024150063864754 }
+    ],
+    "nativeDialogValuesCorrection": "The values 8221.57 and 7.02415 observed during the earlier interaction were in the editable 'By area smaller than' cleanup threshold field. When opening the separate two-facet fixture, the field retained 7.02415; it is not reliable evidence of the selected component's area.",
+    "comparison": "Triangle counts match the native remainder and new object. Component areas, facet membership and coordinates have not been independently compared against native output.",
+    "guardPeakBytes": 466780160,
+    "guardLimitBytes": 34110816256,
+    "processCleanupConfirmed": true
+  },
+  "browserAndPublicMcpControl": {
+    "build": "scanforge-526b3f920644a76e",
+    "driverSha256": "5f07b4a489a28d8120df8dab602592967723930b1bdebdff95202beb769cae45",
+    "source": "The same SHA-256-verified original STL, imported through the GUI.",
+    "defaultInventory": [
+      { "triangles": 272856, "areaMm2": 8221.571306324522 },
+      { "triangles": 282, "areaMm2": 7.024150063864754 },
+      {
+        "triangles": 1,
+        "areaMm2": 0.00000033550895750522614,
+        "sourceFaceIndex": 263015
+      }
+    ],
+    "explicitToleranceMm": 0.000001,
+    "explicitToleranceInventoryTriangles": [272857, 282],
+    "guiAndMcp": "Extracting the 282-triangle component through the GUI and public MCP produced identical position and indexed topology digests. Both retained and hid the original source. GUI undo and MCP undo/redo passed for the checked geometry.",
+    "extractedPositionSha256": "4009c02877af4c44ab77bf03e3835d2b900ef38df6e3d545761471904d992ac5",
+    "guardPeakBytes": 1073438720,
+    "guardLimitBytes": 34110816256,
+    "processCleanupConfirmed": true,
+    "diagnostic": "The shared topology code excludes faces whose cross-product magnitude is at most tolerance squared from adjacency. The singleton area is below half of 0.001 squared, and using 0.000001 groups it with the larger component. This establishes the observed tolerance sensitivity for this input, not the vendor rule or a general fix. Computed normals appeared asynchronously after redo, so redo equality here covers positions and indexed topology rather than generated normal-buffer presence."
+  },
+  "sceneRecovery": "The source file was not overwritten. It was imported again as an intact 273139-triangle object; the modified original and the extracted object were hidden. The native scene remains unsaved.",
+  "limitations": [
+    "Triangle counts do not establish coordinate or topology equality.",
+    "This observation does not identify the vendor algorithm or establish behavior on other inputs.",
+    "ScanForge currently publishes extracted components while retaining the hidden source; the GUI and MCP native comparison and lifecycle decision remain open."
+  ]
+}

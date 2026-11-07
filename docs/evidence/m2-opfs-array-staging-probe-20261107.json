@@ -1,0 +1,46 @@
+{
+  "scope": "Isolated Chrome controls for reconstructing independent numeric arrays from a browser-private file; not a ScanForge restore or production change.",
+  "baseCommit": "327a02994722ed093e13932b321e03dc8e539497",
+  "method": "Separate guarded headless Chrome runs generated 16777216 Float64 values, including negative zero, and checked every reconstructed value. The baseline copied a resident buffer into a pre-sized ordinary array. The staged case wrote the buffer to an origin-private file in 2 MiB pieces, detached the original buffer, then reconstructed the same array from 2 MiB file slices. A second staged variant detached each read buffer immediately after copying. A third recorded aggregate Chrome process groups at each stage.",
+  "results": {
+    "baselinePeakJobBytes": 737660928,
+    "fileStagingPeakJobBytes": 944963584,
+    "fileStagingWithReadReleasePeakJobBytes": 942227456,
+    "instrumentedProcessBreakdownPeakJobBytes": 933126144,
+    "allValuesMatched": true,
+    "negativeZeroMatched": true,
+    "allOwnedProcessCleanupConfirmed": true,
+    "temporaryFileRemoved": true,
+    "copyOnlyElapsedMs": {
+      "baseline": 1099,
+      "fileStaging": 1238,
+      "fileStagingWithReadRelease": 1274
+    },
+    "stagingElapsedMs": {
+      "fileStaging": 222.6,
+      "fileStagingWithReadRelease": 219.8
+    },
+    "processObservation": "In the instrumented run, the browser process private-byte sample rose from 39284736 at baseline to 173117440 after staging and source detachment. This is process accounting, not an identified allocation or proof of causation."
+  },
+  "drivers": [
+    {
+      "path": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-copy-probe-20261107.cjs",
+      "sha256": "76639dd50baf2030cf7a1474fb3da2b2cb2a9ea28f8bee82bdbc47a89c9884cc"
+    },
+    {
+      "path": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-copy-release-probe-20261107.cjs",
+      "sha256": "e1b00684b50675074f6d7e6fa04bef1b9f0284cfd14051c97f65d70611b75b69"
+    },
+    {
+      "path": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-copy-process-probe-20261107.cjs",
+      "sha256": "02be085d8f254e1bab534a1dc9e6730de119efc5dc7476d3d8550caa1d165599"
+    }
+  ],
+  "processReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-copy-process-guard-20261107.json",
+  "processReceiptSha256": "1c8a7c069d24bf1ff4a061a54ed84e9db86dd68755c209ab8a831cabc000f7bb",
+  "limitations": [
+    "These single synthetic controls do not reproduce a full project restore or establish that all file-backed staging designs are infeasible.",
+    "Process sampling adds work and separate-run memory varies. The browser process observation does not identify the allocation.",
+    "No prototype is integrated; restore ownership, resource, native-comparison and M2 closure gates remain open."
+  ]
+}

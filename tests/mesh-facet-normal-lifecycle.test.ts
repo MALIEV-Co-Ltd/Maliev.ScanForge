@@ -1,7 +1,8 @@
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import type { Entity, IndexedMesh, Positions } from "../src/types";
 import { prepareStoredScanRenderData } from "../src/scan-render-data";
 import { nativeGlobalFacetNormals } from "../src/scan-native-global-surface";
+import { meshFacetNormals } from "../src/mesh-geometry-normals";
 import { nativeGlobalMeshTargetData } from "../src/scan-native-global-mesh-target";
 import { createDatumTransformExecutor } from "../src/datum-transform-pool";
 import { transformDatumCoordinateStages } from "../src/datum-transform-kernel";
@@ -42,6 +43,51 @@ const frames = [
   [0, -1, 0, 100000, 1, 0, 0, -200000, 0, 0, 1, 300000],
   [1, 0, 0, 0.03, 0, 0, -1, 0.07, 0, 1, 0, 0.09],
 ];
+it("derives the same Float32 facet normals from precise vertices without copying the vertex array", () => {
+  const vertices = [
+    100000004.1, -0, 0.00000003, 100000012.4, 0.123456789, 0.02, 100000004.2,
+    8.2, 0.91, 999.123456789, -100, 5,
+  ];
+  const triangles = new Uint32Array([0, 1, 2, 1, 3, 2]);
+  const expected = nativeGlobalFacetNormals(
+    Float32Array.from(vertices),
+    triangles,
+  ).normals;
+  const expectedBits = Buffer.from(expected.buffer).toString("hex");
+  const from = vi.spyOn(Float32Array, "from");
+  try {
+    expect(
+      Buffer.from(meshFacetNormals({ vertices, triangles }).buffer).toString(
+        "hex",
+      ),
+    ).toBe(expectedBits);
+    expect(from).not.toHaveBeenCalled();
+  } finally {
+    from.mockRestore();
+  }
+});
+
+it("preserves Float32 facet-normal bits across varied precise indexed coordinates", () => {
+  let seed = 0x1f23ab89;
+  const vertices = Array.from({ length: 3000 }, (_, i) => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return i % 31 === 0
+      ? -0
+      : (seed / 0xffffffff - 0.5) * (i % 7 === 0 ? 1e-7 : 1e8);
+  });
+  const triangles = Uint32Array.from(
+    { length: 3000 },
+    (_, i) => (i * 149 + 23) % 1000,
+  );
+  const expected = nativeGlobalFacetNormals(
+    Float32Array.from(vertices),
+    triangles,
+  ).normals;
+  const actual = meshFacetNormals({ vertices, triangles });
+  expect(Buffer.from(actual.buffer).equals(Buffer.from(expected.buffer))).toBe(
+    true,
+  );
+});
 it("initializes computed facet normals on the original indexed geometry during stored render preparation", () => {
   const entity = source(),
     mesh = entity.indexedMesh!;

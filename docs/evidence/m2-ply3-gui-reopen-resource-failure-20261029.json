@@ -1,0 +1,34 @@
+{
+  "scope": "Guarded browser diagnostics of GUI in-place reopening of an exported original PLY-3 Split/Extract project; failure, not acceptance",
+  "build": "scanforge-6c98716b7e959ddb",
+  "applicationCommit": "d992650e5ae196a51a2553a840485782e77b9bf8",
+  "testPath": "C:/Users/Shoung/.codex/worktrees/m2-coverage-review-20261029/Maliev.ScanForge/tests/m2-ply3-gui-open-diagnostic-20261029.mjs",
+  "testSha256": "f04d161776da60fa7ad53350fc89d9267cc243afd4148bc535d3d7477538cf98",
+  "runs": [
+    {
+      "name": "r3-remote-playwright-file",
+      "observation": "The 475566423-byte artifact was streamed to disk and Playwright selected it. The decoder started; the page crashed before a decoder result or replacement confirmation was recorded. The guarded process exited with failure and cleaned up.",
+      "logSha256": "3d6c64ea7e37cc8b88d92179742378ad592149ec3d3c4ba553f87614cc25892a",
+      "guardSha256": "50fc9d40474e8dff2bf69299e1a02221a49512ca6763b46ee53261822f3b5f81",
+      "peakJobBytes": 4298006528
+    },
+    {
+      "name": "r4-direct-local-cdp-file",
+      "observation": "The same workflow selected the locally written file directly in the local browser using CDP, avoiding the remote Playwright file-copy path. The decoder started, but the completion wait and page-state probe timed out without a decoder result or confirmation. No crash event was observed before cleanup. The guarded process exited with failure and cleaned up.",
+      "filePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-ply3-gui-open-20261029-r4/gui-reopen.scanforge",
+      "fileBytes": 475566423,
+      "fileSha256": "ef27c0bb37e012836cbaaaa012a9511bff86769960cd05a463aa395e20444dbb",
+      "logSha256": "969acd3448d1047b0b972dfd7fe56adc3f31fe9d982b80cc20a63e97d16dde58",
+      "ledgerSha256": "320bab3d5ea1e245862964454f2ad9bdb525e0cc4e2fda6f4f4fdd14dc86c916",
+      "guardSha256": "a84ebfdf170838cc323dab78e76a3e858f8907860c3331697003fb69872bbdd0",
+      "peakJobBytes": 4559056896
+    }
+  ],
+  "guardLimitBytes": 4294967296,
+  "interpretation": "The direct-file failure means the remote Playwright file-copy path alone does not explain this result. The GUI and public MCP both invoke the shared project decoder, but the separately passing MCP in-place import does not establish GUI file-open success. The precise allocation or scheduling cause remains unproven.",
+  "limitations": [
+    "The harness runs an isolated browser and retains the current scene during decode. The recorded job peak exceeded the nominal job limit; the guard reports successful cleanup, not acceptance.",
+    "The decoder did not report its internal stage before failure, so the evidence does not isolate file reads, decompression, reconstruction, browser memory accounting, or other process allocations.",
+    "The earlier r1 and r2 failures are retained in the same work directory; r2's post-timeout page-state probe also timed out. No production or MCP change is claimed."
+  ]
+}

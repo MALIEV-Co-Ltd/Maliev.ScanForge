@@ -1,0 +1,32 @@
+{
+  "scope": "Internal Float64 finite Split part partition prerequisite; no application restore carrier change",
+  "before": "Float64 input allocated Float32 output and rounded 0.1",
+  "after": "Float64 expanded and indexed coordinates retain their values including signed zero; typed-memory estimate accounts for both double-width outputs",
+  "checks": {
+    "unit": {
+      "passed": 267,
+      "skipped": 2,
+      "peakJobBytes": 370749440
+    },
+    "build": {
+      "passed": true,
+      "manifest": "scanforge-e9b6ee80c0577089",
+      "peakJobBytes": 1888468992
+    },
+    "compiledGuiMcp": {
+      "passed": true,
+      "sourceFaces": 1,
+      "outputFaces": 3,
+      "parts": 2,
+      "geometryEqual": true,
+      "undoRedo": true,
+      "binaryReopen": true,
+      "peakJobBytes": 926355456
+    }
+  },
+  "limitations": [
+    "Browser comparison exercises existing public geometry carriers, not Float64 input.",
+    "Project validation, indexed mesh validation and other geometry paths still need a complete Float64 audit; restore still reconstructs ordinary arrays and ownership and memory gates remain open.",
+    "Native acceptance, merge and milestone closure remain open."
+  ]
+}

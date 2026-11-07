@@ -1,7 +1,7 @@
 /** Position-only equivalent of the display weld's 1e-6 quantization. Hash slots
  * reference the first encountered source corner; no per-vertex strings or JS arrays. */
 export function weldDisplayPositions(input: ArrayLike<number>) {
-  const p = input instanceof Float32Array ? input : Float32Array.from(input);
+  const p = input;
   if (p.length % 9)
     throw new Error("Smooth display requires complete triangles.");
   const count = p.length / 3,
@@ -9,7 +9,9 @@ export function weldDisplayPositions(input: ArrayLike<number>) {
   let table: Uint32Array = new Uint32Array(1024),
     first: Uint32Array = new Uint32Array(Math.min(count, 1024)),
     unique = 0;
-  const quant = (v: number) => (v * 1e6 + 0.5) | 0;
+  // The previous Float32 copy rounded every coordinate before quantization.
+  // Round each value on access instead, without duplicating the full mesh.
+  const quant = (v: number) => (Math.fround(v) * 1e6 + 0.5) | 0;
   const hash = (x: number, y: number, z: number) => {
     const h =
       Math.imul(x, 73856093) ^ Math.imul(y, 19349663) ^ Math.imul(z, 83492791);

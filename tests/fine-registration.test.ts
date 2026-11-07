@@ -147,6 +147,8 @@ it("retains better overlap fits above the accuracy target when more iterations r
     ...options,
     maxIterations: 6,
   });
+  if (short.overlapRms === null || long.overlapRms === null)
+    throw new Error("Expected measurable overlap for both runs");
   expect(long.overlapRms).toBeLessThanOrEqual(short.overlapRms + 1e-12);
 });
 it("reports iteration exhaustion and validates target RMS", () => {

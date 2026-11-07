@@ -39,6 +39,34 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("CAD worker ownership and cancellation", () => {
+  it("resolves the CAD asset from a processing worker without a document", async () => {
+    const urls: string[] = [];
+    vi.stubGlobal("document", undefined);
+    vi.stubGlobal(
+      "Worker",
+      class extends WorkerDouble {
+        constructor(url: URL) {
+          super();
+          urls.push(url.href);
+        }
+      },
+    );
+    for (const href of [
+      "https://example.test/scanforge/assets/processing-worker-abc.js",
+      "https://example.test/scanforge/src/processing-worker.ts?worker_file&type=module",
+    ]) {
+      vi.stubGlobal("self", { location: { href } });
+      const client = new CadClient();
+      const pending = client.primitive(box).catch((error) => error);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(urls.at(-1)).toBe("https://example.test/scanforge/cad-worker.js");
+      WorkerDouble.instances
+        .at(-1)!
+        .reply({ kernelId: "worker-cad", positions: [] });
+      expect(await pending).toEqual({ kernelId: "worker-cad", positions: [] });
+      client.dispose();
+    }
+  });
   it("routes import progress without completing the request or clearing its timeout", async () => {
     const client = new CadClient();
     const progress = vi.fn();
@@ -253,4 +281,36 @@ describe("CAD worker ownership and cancellation", () => {
     expect(WorkerDouble.instances).toHaveLength(1);
     expect(vi.getTimerCount()).toBe(0);
   });
+});
+
+it("owns a private Curvature surface and evaluates its original UV coordinates", async () => {
+  const client = new CadClient();
+  const patch = { format: "scanforge-nurbs", version: 1 } as never;
+  const matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0];
+  const pending = client.curvatureSurface(patch, matrix);
+  await vi.advanceTimersByTimeAsync(0);
+  const worker = WorkerDouble.instances[0];
+  expect(worker.messages[0]).toMatchObject({
+    operation: "curvatureSurface",
+    payload: { patch, matrix },
+  });
+  const mesh = {
+    kernelId: "private-cap",
+    vertices: new Float32Array(9),
+    triangles: new Uint32Array([0, 1, 2]),
+    uvs: new Float64Array(9),
+  };
+  worker.reply(mesh);
+  expect(await pending).toBe(mesh);
+  const uvs = new Float64Array([0.25, 0.75, 0]);
+  const evaluated = client.curvatureEvaluate("private-cap", uvs);
+  await vi.advanceTimersByTimeAsync(0);
+  expect(worker.messages.at(-1)).toMatchObject({
+    operation: "curvatureEvaluate",
+    payload: { kernelId: "private-cap", uvs },
+  });
+  worker.reply(new Float32Array([1, 2, 3]));
+  expect(await evaluated).toEqual(new Float32Array([1, 2, 3]));
+  client.dispose();
+  expect(worker.terminated).toBe(true);
 });

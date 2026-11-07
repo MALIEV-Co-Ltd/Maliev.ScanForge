@@ -1,6 +1,29 @@
 import { expect, it, vi } from "vitest";
 import { weldMeshPositions } from "../src/mesh-weld";
 
+it("admits initial, simultaneous growth, rehash and slice allocations before proceeding", () => {
+  const source = Float32Array.from({ length: 6000 * 3 }, (_, i) =>
+    i % 3 === 0 ? i : 0,
+  );
+  const expected = weldMeshPositions(source, 1e-6),
+    peaks: number[] = [];
+  expect(
+    weldMeshPositions(source, 1e-6, undefined, (bytes) => peaks.push(bytes)),
+  ).toEqual(expected);
+  expect(peaks.length).toBeGreaterThan(4);
+  expect(peaks[0]).toBe(6000 * 4 + 1024 * 28 + 8192);
+  for (let stop = 0; stop < peaks.length; stop++) {
+    let admissions = 0;
+    const denied = new Error("allocation denied");
+    expect(() =>
+      weldMeshPositions(source, 1e-6, undefined, () => {
+        if (admissions++ === stop) throw denied;
+      }),
+    ).toThrow(denied);
+    expect(admissions).toBe(stop + 1);
+  }
+});
+
 // Frozen pre-optimization 27-cell search. Its ordering is part of the contract.
 function reference(p: ArrayLike<number>, tolerance: number) {
   const vertices: number[] = [],

@@ -7,7 +7,7 @@ import type { FitResult } from "./types";
 export type InspectionDefinition =
   | { kind: "measurement"; measurement: MeasurementInput }
   | ({ kind: "deviation"; entityId: string; tolerance?: number } & (
-      | { fit: FitResult }
+      | { fit: FitResult; scope?: "all" | "visible" }
       | { referenceId: string; maxDistance: number; signed?: boolean }
     ));
 export interface SavedInspection {
@@ -49,6 +49,7 @@ export function validateInspectionDefinitions(
       if (d.referenceId !== undefined) {
         if (
           d.fit !== undefined ||
+          d.scope !== undefined ||
           !text(d.referenceId) ||
           d.referenceId === d.entityId ||
           !(d.maxDistance > 0) ||
@@ -61,6 +62,8 @@ export function validateInspectionDefinitions(
           throw new Error(
             "Analytic deviation does not accept reference-surface settings.",
           );
+        if (d.scope !== undefined && d.scope !== "all" && d.scope !== "visible")
+          throw new Error("Invalid analytic deviation scope.");
         inspectionFit(d.fit);
       }
     } else throw new Error("Unsupported saved inspection kind.");
@@ -99,7 +102,10 @@ export function validateInspectionDefinitions(
             entityId: d.entityId,
             ...(d.tolerance === undefined ? {} : { tolerance: d.tolerance }),
             ...(d.referenceId === undefined
-              ? { fit: inspectionFit(d.fit) }
+              ? {
+                  fit: inspectionFit(d.fit),
+                  ...(d.scope === undefined ? {} : { scope: d.scope }),
+                }
               : {
                   referenceId: d.referenceId,
                   maxDistance: d.maxDistance,

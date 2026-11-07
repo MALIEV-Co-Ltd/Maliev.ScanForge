@@ -1,0 +1,73 @@
+{
+  "scope": "Compare retained QuickSurface STL normal records with Float32-staged averages of computed vertex normals on the reimported exported topology",
+  "applicationCommit": "7083d13aca77b6f0f380a759f97ac562fbac6cfc",
+  "fixtures": [
+    {
+      "path": "tests/fixtures/m2-closed-interior-split-20261105/native-result.stl",
+      "sha256": "0f6d0c02c31b13a14328c5dbac84df47385b3a193e9aabc15f6512dfcad1c033",
+      "facets": 8,
+      "exactComponents": 24
+    },
+    {
+      "path": "tests/fixtures/m2-folded-open-native-20261105/native-result.stl",
+      "sha256": "3887de1097ed584c36a29b6bf2c4d9ec1cf2cbd33eb6cdc24727f1e15274ba12",
+      "facets": 11,
+      "exactComponents": 33
+    },
+    {
+      "path": "tests/fixtures/m2-rotated-recovery-20261029/native-rotated-result-20261029.stl",
+      "sha256": "05ea52970253179382885d3ea716b8cc5b88f9e1b68e0c5f796abed39e69b9d3",
+      "facets": 36,
+      "exactComponents": 108
+    },
+    {
+      "path": "tests/fixtures/m2-crossing-pair-native-20261107/native-result.stl",
+      "sha256": "2b5f4cb006f50079364d5779b50123c774f83b025245cef074573775f0f60548",
+      "facets": 8,
+      "exactComponents": 24
+    },
+    {
+      "path": "tests/fixtures/m2-native-extract-lifecycle-20261107/native-two-triangle.stl",
+      "sha256": "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+      "facets": 2,
+      "exactComponents": 6
+    }
+  ],
+  "test": "tests/m2-native-export-normal-fixtures.test.ts",
+  "result": "All 195 components across five retained native exports match exactly, including signed zero as checked by the test. The existing original 273139-facet Flip digest control also passed.",
+  "guard": {
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 433950720,
+    "activeProcessesAfter": 0
+  },
+  "limitations": [
+    "Reconstructed topology is derived from exported STL coordinates; it does not establish native internal vertex ownership, seam identity, or all exporter behavior.",
+    "This is evidence from retained native exports, not a new QuickSurface execution; one crossing result contains the separately documented unsafe native Split behavior.",
+    "No STL exporter behavior changed. The geometric normal records currently exported by ScanForge differ from the recorded native Flip output."
+  ],
+  "savedTopologyFollowup": {
+    "scope": "Use pinned QSF saved vertex identities and triangle indices instead of reconstructing topology from STL coordinates for closed and folded Split controls.",
+    "sessions": [
+      {
+        "path": "tests/fixtures/m2-closed-interior-split-20261105/session.qsf",
+        "sha256": "14b86c19f1f05336fb4ca7d72bbb93534ca79718a9c71ca99daa7dc3441b2fc5",
+        "facets": 8
+      },
+      {
+        "path": "tests/fixtures/m2-folded-open-native-20261105/native.qsf",
+        "sha256": "8924eb8b08dc57f1578d09087ba9a68f3fefb18e75c3ccd270a2f75da28a1455",
+        "facets": 11
+      }
+    ],
+    "result": "All 57 Float32 normal components match native STL normals, matched by oriented facet coordinates; stored QSF coordinates and indices are used to compute the vertex normals.",
+    "focusedTestsPassed": 7,
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 306032640,
+    "activeProcessesAfter": 0,
+    "limitations": [
+      "The QSF offsets are fixture-specific and preverified; they do not establish a general QSF parser.",
+      "Vertex normals were recomputed from the saved topology; native in-memory normal vectors were not directly decoded.",
+      "Only these two saved fixtures were checked."
+    ]
+  }
+}

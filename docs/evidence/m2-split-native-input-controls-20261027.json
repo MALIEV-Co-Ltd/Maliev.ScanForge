@@ -1,0 +1,116 @@
+{
+  "scope": "Prepared manufactured inputs for native Split comparisons; native command, source/target binding, results and parity have not been observed.",
+  "applicationControl": "tests/scan-split-browser.mjs",
+  "inputFiles": {
+    "disjoint-source": {
+      "file": "disjoint-source.stl",
+      "sha256": "86208348d2200cf78ad30ccd78b194a97aa10ba28b997a86ddcddffb125496f2",
+      "facets": 1,
+      "units": "mm"
+    },
+    "finite-plane-cutter": {
+      "file": "finite-plane-cutter.stl",
+      "sha256": "6bc09b0c998bdd68883144fcd5157e0d2ccf0794603506f22361b7a09bd9566d",
+      "facets": 2,
+      "units": "mm"
+    },
+    "square-source": {
+      "file": "square-source.stl",
+      "sha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+      "facets": 2,
+      "units": "mm"
+    },
+    "convex-cutter": {
+      "file": "convex-cutter.stl",
+      "sha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+      "facets": 12,
+      "units": "mm"
+    },
+    "concave-cutter": {
+      "file": "concave-cutter.stl",
+      "sha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+      "facets": 28,
+      "units": "mm"
+    }
+  },
+  "cases": [
+    {
+      "name": "finite-disjoint-plane",
+      "source": "disjoint-source",
+      "cutter": "finite-plane-cutter",
+      "applicationObservedParts": 1,
+      "applicationObservedAreaMm2": [1]
+    },
+    {
+      "name": "closed-convex",
+      "source": "square-source",
+      "cutter": "convex-cutter",
+      "applicationObservedParts": 2,
+      "applicationObservedAreaMm2": [1, 15]
+    },
+    {
+      "name": "closed-concave",
+      "source": "square-source",
+      "cutter": "concave-cutter",
+      "applicationObservedParts": 2,
+      "applicationObservedAreaMm2": [3, 13]
+    }
+  ],
+  "checks": "Five generated binary STLs independently re-read with matching SHA-256, file lengths and facet counts. A separate comparison against the current browser control source arrays and cubeCells helper confirmed every Float32 triangle corner and its order.",
+  "readiness": "A fresh owned native session was opened, but native window input returned GetCursorPos access denied. No Split inputs were loaded or native operation attempted. Owned process and bounded job exited with cleanup confirmed.",
+  "remaining": [
+    "Observe native command availability, settings, source/cutter selection and outputs from fresh original input for each case.",
+    "Compare complete output geometry, topology and ownership and verify GUI/public MCP lifecycle on the same inputs.",
+    "These manufactured controls do not establish native behavior until those comparisons are performed."
+  ],
+  "applicationReplay": {
+    "candidateBaseCommit": "5565c142abd1c7aaed376f87480aad25222ccda7",
+    "build": "scanforge-f00172bd8f19929e",
+    "driver": "tests/scan-split-browser.mjs with SCANFORGE_SPLIT_INPUT_DIR set to the prepared directory",
+    "inputs": "Exact pinned STL files imported independently for each GUI and public MCP execution; millimetres, placeAtOrigin:false.",
+    "cases": [
+      {
+        "name": "finite-disjoint-plane",
+        "parts": 1,
+        "areasMm2": [1],
+        "outputFloat32Sha256": [
+          "9a056a8f4e2baf22c4041d8938c7759dac0d8bc5a1e54af2cf365af9646ac56f"
+        ]
+      },
+      {
+        "name": "closed-convex",
+        "parts": 2,
+        "areasMm2": [1, 15],
+        "outputFloat32Sha256": [
+          "97832c9dad9136c7961a3686fdf09d2f06ec3e70ed5a1775784e9a35c5becb1e",
+          "cb2b33e628da053e78e162f19a37b166b3303f69cac5a42e6351447ebe3bfdd6"
+        ]
+      },
+      {
+        "name": "closed-concave",
+        "parts": 2,
+        "areasMm2": [3, 13],
+        "outputFloat32Sha256": [
+          "36af6f7e1414010e750af711a810ef441a30bffb6b5df74494fd7591f0488358",
+          "b9205faed1e6e7731ca5dada51073f730567c2ebdc2c8f6414a57ce37d92010c"
+        ]
+      }
+    ],
+    "guiPublicMcpGeometryAndMetadataEqual": true,
+    "sourceCutterPreserved": true,
+    "undoRedoReopenAndHeldResultCancellation": true,
+    "guiCloseCancellation": true,
+    "pageErrors": [],
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 908431360,
+    "cleanupConfirmed": true,
+    "scope": "Manufactured input GUI/public-MCP lifecycle; no native Split execution or parity established.",
+    "defaultDriverRegression": {
+      "cases": 5,
+      "passed": true,
+      "peakJobBytes": 906301440,
+      "cleanupConfirmed": true,
+      "scope": "Existing project-fixture path, separate from the three pinned-STL import cases."
+    }
+  }
+}

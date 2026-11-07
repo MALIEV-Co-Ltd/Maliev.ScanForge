@@ -627,6 +627,7 @@ try {
         entityId: indexedId,
         fit,
         tolerance: 2,
+        scope: "visible",
       }),
     );
     const data = (
@@ -667,6 +668,16 @@ try {
   const stale =
     staleRaw.structuredContent ?? JSON.parse(staleRaw.content[0].text);
   assert.equal(stale.ok, false, "hidden faces accepted a stale heatmap");
+  const allHidden = await job(
+    await call("analysis_deviation", {
+      entityId: indexedId,
+      fit,
+      tolerance: 2,
+    }),
+  );
+  assert.equal(allHidden.scope, "all");
+  assert.equal(allHidden.samples, 6);
+  assert.equal(allHidden.excluded, 0);
   const hidden = await indexedReport([0, 0, 1, null, null, null]);
   assert.equal(hidden.samples, 3);
   assert.equal(hidden.excluded, 3);
@@ -678,6 +689,126 @@ try {
     hiddenPixel[1] > hiddenPixel[0] + 10,
     "orientation shading obscured the indexed inspection heatmap",
   );
+
+  // Compare the rendered analytic scope control to the same public MCP operation.
+  const historyBeforeScope = (await call("history_get")).result;
+  await mutate("ui_set", {
+    workspace: "fit",
+    mode: "inspect",
+    toolPanelOpen: true,
+  });
+  await page.locator("body").evaluate((body) => body.focus());
+  await page.keyboard.press("p");
+  const scopeControl = page.getByLabel("Deviation sample scope", {
+    exact: true,
+  });
+  await scopeControl.waitFor();
+  assert.equal(await scopeControl.inputValue(), "all");
+  async function exportedAnalytic() {
+    const pending = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export deviation JSON", exact: true })
+      .click();
+    return readDownload(await pending);
+  }
+  const guiAll = await exportedAnalytic();
+  assert.equal(guiAll.scope, "all");
+  assert.equal(guiAll.samples, 6);
+  for (const scope of ["all", "visible"]) {
+    await scopeControl.selectOption(scope);
+    if (scope === "visible")
+      await page.screenshot({
+        path: fileURLToPath(new URL("analytic-scope.png", artifactDir)),
+      });
+    const gui = await exportedAnalytic();
+    const remote = await job(
+      await call("analysis_deviation", {
+        entityId: indexedId,
+        fit: gui.fit,
+        tolerance: gui.tolerance,
+        scope,
+      }),
+    );
+    assert.equal(gui.scope, scope);
+    assert.equal(gui.samples, scope === "all" ? 6 : 3);
+    assert.equal(remote.rms, gui.rms);
+    assert.equal(remote.samples, gui.samples);
+    assert.equal(remote.excluded, gui.excluded);
+    const artifact = (
+      await call("artifact_read", {
+        artifactId: remote.artifact.artifactId,
+        offset: 0,
+      })
+    ).result;
+    assert.deepEqual(
+      JSON.parse(Buffer.from(artifact.base64, "base64").toString()),
+      gui.distances,
+    );
+  }
+  assert.deepEqual((await call("history_get")).result, historyBeforeScope);
+  ledger.analyticScope = {
+    guiMcpEqual: true,
+    default: "all",
+    explicit: "visible",
+    historyUnchanged: true,
+  };
+
+  // A section of the hidden-face fixture must match through GUI and MCP for both scopes.
+  await mutate("inspection_display", {
+    action: "section",
+    entityId: indexedId,
+    axis: "x",
+    offset: 5,
+    scope: "visible",
+  });
+  const sectionScopeControl = page.getByLabel("Section triangle scope", {
+    exact: true,
+  });
+  assert.equal(await sectionScopeControl.inputValue(), "visible");
+  for (const scope of ["visible", "all"]) {
+    await sectionScopeControl.selectOption(scope);
+    if (scope === "all")
+      await page.screenshot({
+        path: fileURLToPath(new URL("section-scope.png", artifactDir)),
+      });
+    const pending = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export section CSV", exact: true })
+      .click();
+    const stream = await (await pending).createReadStream();
+    const pieces = [];
+    for await (const chunk of stream) pieces.push(chunk);
+    const measured = await job(
+      await call("analysis_section", {
+        entityId: indexedId,
+        axis: "x",
+        offset: 5,
+        scope,
+      }),
+    );
+    assert.equal(
+      measured.scope,
+      scope === "all" ? "all-triangles" : "visible-triangles",
+    );
+    assert.equal(measured.segments, scope === "all" ? 2 : 1);
+    const artifact = (
+      await call("artifact_read", {
+        artifactId: measured.csv.artifactId,
+        offset: 0,
+      })
+    ).result;
+    assert.equal(
+      Buffer.concat(pieces).toString(),
+      Buffer.from(artifact.base64, "base64").toString(),
+    );
+  }
+  assert.deepEqual((await call("history_get")).result, historyBeforeScope);
+  ledger.sectionScope = {
+    guiMcpEqual: true,
+    allSegments: 2,
+    visibleSegments: 1,
+    historyUnchanged: true,
+  };
 
   await mutate("scan_selection_control", {
     entityId: indexedId,
@@ -820,6 +951,118 @@ try {
     historyUnchanged: true,
     noResultArtifacts: true,
   };
+  // Reopening the same saved geometry must discard transient selection for
+  // both GUI and MCP project replacement.
+  const positions = Array.from({ length: 7282 }, () => [
+    0, 0, 0, 1, 0, 0, 0, 1, 0,
+  ]).flat();
+  const reopenProject = {
+    format: "maliev-scanforge",
+    version: 1,
+    name: "Selection reopen",
+    units: "mm",
+    entities: [
+      {
+        id: "reopen-mesh",
+        name: "Mesh",
+        kind: "mesh",
+        visible: true,
+        color: "#b4bec4",
+        opacity: 1,
+        positions,
+      },
+    ],
+  };
+  const reopenUpload = (
+    await call("artifact_put", {
+      name: "reopen.json",
+      offset: 0,
+      base64: Buffer.from(JSON.stringify(reopenProject)).toString("base64"),
+    })
+  ).result;
+  await job(
+    await mutate("project_import", {
+      artifactId: reopenUpload.artifactId,
+      replace: true,
+    }),
+  );
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "configure",
+    tool: "brush",
+  });
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "hide",
+  });
+  const reopenSaved = await job(
+    await call("project_export", { format: "project" }),
+  );
+  const savedBytes = (
+    await call("artifact_read", {
+      artifactId: reopenSaved.artifactId,
+      offset: 0,
+    })
+  ).result;
+  assert.equal(
+    savedBytes.eof,
+    true,
+    "reopen fixture must fit in one artifact chunk",
+  );
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [1] });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    1,
+  );
+  await page.locator('input[type="file"][accept*=".scanforge"]').setInputFiles({
+    name: "selection-reopen.scanforge",
+    mimeType: "application/octet-stream",
+    buffer: Buffer.from(savedBytes.base64, "base64"),
+  });
+  await page.locator('.status-message[title^="Opened · 1/1 files"]').waitFor();
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "GUI project reopen retained the previous selection",
+  );
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "revealSelected",
+  });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "GUI project reopen retained the previous last-hidden selection",
+  );
+  assert.equal((await call("scan_selection_get")).result.hiddenCount, 1);
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [1] });
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "hide",
+  });
+  await job(
+    await mutate("project_import", {
+      artifactId: reopenSaved.artifactId,
+      replace: true,
+    }),
+  );
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "MCP project replacement retained the previous selection",
+  );
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "revealSelected",
+  });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "MCP project replacement retained the previous last-hidden selection",
+  );
+  assert.equal((await call("scan_selection_get")).result.hiddenCount, 1);
+  ledger.selectionReopen = { gui: "cleared", mcp: "cleared", triangles: 7282 };
   assert.equal(errors.length, 0, errors.join("\n"));
   assert.equal(stderr, "", stderr);
   ledger.steps = [
@@ -831,6 +1074,7 @@ try {
     "saved inspection metadata preserves history and binary project save/reopen reproduces GUI report",
     "retained report tolerance controls legend and heatmap independently of GUI input",
     "indexed source corner mapping, hidden face filtering, stale rejection, alignment transform, edit and Undo/Redo",
+    "GUI and MCP project replacement clear the previous transient selection",
   ];
   console.log("PASS: " + ledger.steps.join("; "));
 } catch (error) {

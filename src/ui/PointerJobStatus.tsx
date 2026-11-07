@@ -162,6 +162,11 @@ export function PointerJobStatus({
             {imports.files.filter((file) => file.status === "failed").length}{" "}
             failed
           </span>
+          {imports.admission && (
+            <span className="pointer-job-outcomes">
+              {imports.admission.message}
+            </span>
+          )}
           {imports.files
             .filter(
               (file) =>

@@ -1,0 +1,132 @@
+{
+  "scope": "Isolated single-element array-seeding diagnostic with independent numeric restore; no production change",
+  "candidate": "859e1123",
+  "bundle": "scanforge-aa65eecf68269aa5",
+  "method": "The isolated server removed the numeric reuse callback and seeded one destination element before the existing chunked copy. Each bundle replacement was required to occur exactly once.",
+  "syntheticControls": [
+    {
+      "mode": "baseline",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 0,
+      "maxSliceMs": 25.599999994039536,
+      "durationMs": 1322,
+      "peakJobBytes": 720367616
+    },
+    {
+      "mode": "one",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 23.5,
+      "maxSliceMs": 5,
+      "durationMs": 1337.2999999970198,
+      "peakJobBytes": 666427392
+    },
+    {
+      "mode": "full",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 21.5,
+      "maxSliceMs": 4.5999999940395355,
+      "durationMs": 1293.1000000089407,
+      "peakJobBytes": 664059904
+    },
+    {
+      "mode": "full",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 21.599999994039536,
+      "maxSliceMs": 4.5,
+      "durationMs": 1290.9000000059605,
+      "peakJobBytes": 665735168
+    },
+    {
+      "mode": "one",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 23.200000002980232,
+      "maxSliceMs": 4.299999997019768,
+      "durationMs": 1330,
+      "peakJobBytes": 662806528
+    },
+    {
+      "mode": "baseline",
+      "length": 16777216,
+      "signedZero": true,
+      "seedMs": 0,
+      "maxSliceMs": 25.899999991059303,
+      "durationMs": 1318.6000000089407,
+      "peakJobBytes": 713449472
+    }
+  ],
+  "fullPly3": {
+    "functionalChecksPassed": true,
+    "guardPassed": false,
+    "peakJobBytes": 4310855680,
+    "limitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776794,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 15991146,
+          "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2692659,
+          "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5330382,
+          "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "binaryReopen": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-extract-project-exported",
+      "gui-extract-project-downloaded",
+      "gui-extract-gui-project-imported",
+      "gui-extract-gui-reopen-verified",
+      "gui-extract-reopen-gui-undo-verified",
+      "gui-extract-reopen-gui-redo-verified",
+      "gui-extract-redo-verified"
+    ],
+    "download": {
+      "artifactDownloadSha256": "82740d81d170d20f016671e90b6850a31dfb50b86e0a75fef28b15dc5f2ebac2",
+      "fileSha256": "82740d81d170d20f016671e90b6850a31dfb50b86e0a75fef28b15dc5f2ebac2",
+      "bytes": 475563378
+    }
+  },
+  "limits": [
+    "Single full PLY-3 run exceeded the 4 GiB limit despite passing functional checks.",
+    "Synthetic slice timings and peaks do not establish production responsiveness or memory behavior.",
+    "No ownership fix was integrated."
+  ]
+}

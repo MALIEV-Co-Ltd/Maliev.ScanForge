@@ -6,6 +6,7 @@ The child starts suspended, so every descendant inherits the Job boundary.
 import ctypes as c
 from ctypes import wintypes as w
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -75,7 +76,10 @@ receipt.parent.mkdir(parents=True, exist_ok=True)
 job = check(k.CreateJobObjectW(None, None))
 limits, process = Extended(), Process()
 limits.basic.flags = 0x2000 | 0x200
-limits.jobMemory = 4 * 1024**3
+memory_override = os.environ.get("SCANFORGE_JOB_MEMORY_BYTES")
+limits.jobMemory = int(memory_override) if memory_override else 4 * 1024**3
+if limits.jobMemory <= 0:
+    raise ValueError("SCANFORGE_JOB_MEMORY_BYTES must be positive")
 started = time.monotonic()
 report = {"command": sys.argv[2:], "jobLimitBytes": limits.jobMemory, "leaseSeconds": 900}
 assigned = False

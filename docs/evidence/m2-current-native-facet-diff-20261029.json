@@ -1,0 +1,52 @@
+{
+  "scope": "Current shared Split output compared with three retained native STL controls; no new native execution or application change",
+  "applicationCommit": "94153b76bcc2675a8a026addda3a3e0c9642d0e0",
+  "method": "Compare unordered Float32 vertex sets and facet multisets from the current shared operation and the retained, hash-checked native convex, concave and cyclic fixtures. Facet keys sort their three vertices, so this comparison does not test winding or facet order.",
+  "results": [
+    {
+      "case": "convex",
+      "applicationFaces": 18,
+      "nativeFaces": 18,
+      "applicationVertices": 12,
+      "nativeVertices": 12,
+      "extraVertices": 0,
+      "missingVertices": 0,
+      "extraFaces": 6,
+      "missingFaces": 6
+    },
+    {
+      "case": "concave",
+      "applicationFaces": 34,
+      "nativeFaces": 34,
+      "applicationVertices": 20,
+      "nativeVertices": 20,
+      "extraVertices": 0,
+      "missingVertices": 0,
+      "extraFaces": 12,
+      "missingFaces": 12
+    },
+    {
+      "case": "cyclic",
+      "applicationFaces": 18,
+      "nativeFaces": 18,
+      "applicationVertices": 12,
+      "nativeVertices": 12,
+      "extraVertices": 0,
+      "missingVertices": 0,
+      "extraFaces": 8,
+      "missingFaces": 8
+    }
+  ],
+  "validation": "The diagnostic asserts those measured counts; the original fixture tests hash their inputs. Across four test files, five tests passed and the three native facet comparisons remained expected failures. The guard peaked at 347058176 bytes and confirmed cleanup.",
+  "diagnosticPath": "C:/Users/Shoung/.codex/worktrees/m2-response-worker-control/Maliev.ScanForge/tests/m2-current-native-split-diff-diagnostic.test.ts",
+  "outputPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-native-facet-diff-20261029.json",
+  "sha256": {
+    "src/scan-split-finite-face.ts": "b73ccd73df45d1084a338edeb305cd4c3cdbc5f116461d02e72f361dab21510a",
+    "src/scan-edit-general-split.ts": "ebfb6a3488c4625b963586a7214d8b1e17c926c6a9a58aeeeb98f09ff00a97db",
+    "diagnostic": "5977e1140993d80ec02dd1d8559f1be043a4c316de69188eb7775ca1727c8c94",
+    "output": "c4f737ea7ea68778df54e807eaed70db2d3c0d3973c2ad3f39f022888c3f2194",
+    "guard": "aa83187e6572c567de7ae381fff7b2898ba13af436eafc26ab2adebfb5ad54fa"
+  },
+  "interpretation": "For these three inputs, equal vertex sets and face counts localize the mismatch to facet connectivity rather than missing or displaced Float32 vertices. The earlier offline cavity and point-association experiment is related but does not establish safe general triangulation or native runtime ordering.",
+  "limits": "Three known manufactured fixtures only; unordered vertex keys do not compare duplicates, winding, face order, native execution, GUI/MCP behavior or arbitrary geometry. Native facet parity remains open."
+}

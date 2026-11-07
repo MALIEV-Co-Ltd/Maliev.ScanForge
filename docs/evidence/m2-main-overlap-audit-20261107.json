@@ -1,0 +1,80 @@
+{
+  "scope": "Read-only samples of overlap between the M2 branch and existing uncommitted files in the main checkout, including isolated textual merge checks; no application merge or conflict resolution.",
+  "mainCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "candidateCommit": "2386bd42fc25d77f6cc0d31985a66a2d194d2c79",
+  "mergeBase": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "method": "Compared branch-changed paths to porcelain status with all untracked files expanded, then compared Git-normalized working-file hashes with the base and candidate blobs. Git ran without optional index locks and hash-object was used without writing objects. Raw porcelain output matched before and after the sample.",
+  "counts": {
+    "branchChangedPaths": 1411,
+    "dirtyPathsExpanded": 1057,
+    "overlappingPaths": 493,
+    "workingFileMatchesCandidate": 291,
+    "workingFileMatchesBase": 0,
+    "workingFileDiffersFromBoth": 202,
+    "overlapUntracked": 350,
+    "overlapWithStagedStatus": 0,
+    "unsupportedOrMissing": 0
+  },
+  "threeWaySample": {
+    "candidateCommit": "e1f4bf839224f7863ccb5e7bb6855eb33b17dd90",
+    "differingPaths": 202,
+    "differingAdditionsOnBothSides": 120,
+    "trackedFilesWithTextConflicts": 49,
+    "trackedFilesWithCleanTextMerge": 33,
+    "skipped": 0,
+    "changedDuringIndividualReads": 0,
+    "statusOutputUnchanged": true,
+    "scratchRemoved": true,
+    "method": "For tracked files, Git merge-file compared normalized copies of the working file, base blob and candidate blob in a verified temporary directory; merge output was discarded. Differing files absent from the base were classified separately as additions on both sides. The first run was repeated with UTF-8 byte-order-mark preservation; the counts agreed.",
+    "peakJobBytes": 79048704,
+    "ownedProcessCleanupConfirmed": true,
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-20261107.cjs",
+    "scriptSha256": "c694eb4de93edfe0a9e9f4b1ae3dbb1c6195950effecaa5f9e175879b7466daf",
+    "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-r2-guard-20261107.json",
+    "guardReceiptSha256": "f6b622315f7d29a8c56833116ab10c2f05e035c6e449d01041ecf682a8345b78",
+    "report": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-three-way-audit-r2-20261107.log",
+    "reportSha256": "110e5448337948b7fe98e1de2722766c2155f2f164129831e9753182b9d77dd4"
+  },
+  "catalogCompatibilitySample": {
+    "candidateCommit": "bf0af1a508574555fb785573fea5df76021a9778",
+    "localCatalogSha256": "bfdd5347400cd9ef6aa1b1db59a2ee230c1f0a12b1ea153c18cd71b2d8830d85",
+    "candidateCatalogSha256": "1cac06b9dac33e09c566a08498e8c15b428f9f626a7eceba8280654f6d2a0d37",
+    "method": "Compared tool names and validated concrete request examples against both JSON schemas with the locally installed Ajv. Inspected the local implementations and test sources for the advertised features; no runtime behavior was executed.",
+    "toolNames": {
+      "local": 93,
+      "candidate": 97,
+      "localOnly": 0,
+      "candidateOnly": [
+        "inspection_display",
+        "inspection_get",
+        "inspection_manage",
+        "inspection_run"
+      ]
+    },
+    "localSchemaAcceptsCandidateRejects": [
+      "object_select with all:true",
+      "global_alignment_preview with initialization:automatic",
+      "alignment_preview with automatic CAD setup",
+      "alignment_apply with automatic CAD setup"
+    ],
+    "falsePositiveExcluded": "An initial top-level property comparison flagged analysis_deviation, but the candidate schema uses alternatives; the sampled entityId/fit request is accepted by both schemas.",
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-catalog-examples-20261107.cjs",
+    "scriptSha256": "a3beda9e373efd6490d2242d25f30923e57cc559dd7a3b0aa44ce84bd4c04f7a",
+    "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-catalog-examples-r2-guard-20261107.json",
+    "guardReceiptSha256": "f3d0580421c371eb7f4d2a0c33e1c4c54664442d5503a31de2092942677c2d38",
+    "ownedProcessCleanupConfirmed": true,
+    "limitations": "The local catalog is uncommitted and may change. These are schema examples and source observations, not proof that either checkout's runtime currently implements every advertised behavior. Nested schema compatibility beyond the examples was not established."
+  },
+  "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-20261107.cjs",
+  "scriptSha256": "5927e54af9c5f6757416e668156412ad09a511cf1c06e6f76903d89c76bc7422",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-r2-guard-20261107.json",
+  "guardReceiptSha256": "16b4a3c47d716fc01febaa3574dd4b3a102e3ee05add780dbc6d26dbeef09561",
+  "report": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-overlap-audit-r2-20261107.log",
+  "reportSha256": "6eeb0634b7cf6aa7ac132a028be53435d77a1560f9a269e6224d927ece0ff8d8",
+  "limitations": [
+    "The sample is non-atomic; unchanged status output does not prove file contents or refs remained unchanged during the entire audit.",
+    "Textual merge results do not establish file-mode, staged-state, dependency or semantic compatibility. Matching untracked files can still prevent a checkout or merge.",
+    "Staged content outside the overlap, directory collisions and other worktrees were not audited. No files, branches or user changes were merged or replaced.",
+    "All native, restore ownership, resource and milestone acceptance gates remain open."
+  ]
+}

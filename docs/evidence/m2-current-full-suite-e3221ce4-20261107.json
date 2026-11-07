@@ -1,0 +1,18 @@
+{
+  "scope": "Full suite on M2 integration candidate after global pose cancellation fix",
+  "candidate": "e3221ce4",
+  "command": "npm test",
+  "testFilesPassed": 830,
+  "testFilesSkipped": 30,
+  "testsPassed": 50849,
+  "expectedFailures": 2,
+  "testsSkipped": 77,
+  "peakJobBytes": 1383448576,
+  "jobLimitBytes": 4294967296,
+  "guardPassed": true,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "The two expected failures cover restored numeric-array ownership.",
+    "The full suite does not establish native comparison, reliable large-project resource compliance or completion of M2."
+  ]
+}

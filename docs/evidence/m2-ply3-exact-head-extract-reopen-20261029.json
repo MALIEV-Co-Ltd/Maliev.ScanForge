@@ -1,0 +1,53 @@
+{
+  "scope": "Original PLY-3 GUI Split and Extract, public-MCP undo/redo before save, project export and in-place import, and post-reopen geometry digests",
+  "applicationCommit": "d992650e5ae196a51a2553a840485782e77b9bf8",
+  "laterHead": "4a26d2d37cc2cb8cba115544c7c2515a7cc585a8",
+  "laterHeadDifference": "Documentation and evidence only; no application or build source differs from applicationCommit.",
+  "build": "scanforge-6c98716b7e959ddb",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "inputFaces": 3691133,
+  "splitFaces": 3695945,
+  "extractedFaces": 1776794,
+  "outputGeometry": [
+    {
+      "path": "positions",
+      "encoding": "f64",
+      "elements": 15991146,
+      "sha256": "b17188daeff181ee224bb42d7fe335ec3dbc4ce54031724dae84177d066c0422"
+    },
+    {
+      "path": "indexedMesh.vertices",
+      "encoding": "f64",
+      "elements": 2692662,
+      "sha256": "6ceaee62b3868d501346f7dd671f01d9982efcad4852095178c82387c746d4f5"
+    },
+    {
+      "path": "indexedMesh.triangles",
+      "encoding": "u32",
+      "elements": 5330382,
+      "sha256": "43f0e804105859bd189b9f8420ed5fa35b7efab4aa4a14d32b3c3f44395634ca"
+    }
+  ],
+  "observations": [
+    "GUI Split and Extract completed; the source and cutter geometry were preserved and public-MCP Extract undo/redo succeeded before export.",
+    "Public MCP exported and reimported the project in place. The extracted part, source and cutter geometry digests matched after reopen.",
+    "The browser was cross-origin isolated; page and console error lists were empty. No diagnostic garbage collection option was enabled."
+  ],
+  "harnessPath": "C:/Users/Shoung/.codex/worktrees/m2-split-precision/Maliev.ScanForge/tests/m2-original-split-browser-local.mjs",
+  "harnessSha256": "c1ff5bf25f07718cc58110bd67c069faa0c4c094b24cf84d5d57206a1e76e588",
+  "ledgerPath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-head-ply3-normal-20261029/split-lifecycle-browser-ledger.json",
+  "ledgerSha256": "bd6ff70b110fa40eb9d9a8bcbbb966137c30f66cc929f103cee999c1ff1abb7a",
+  "logSha256": "4caafe09e41dc771f30b202dcf5b72bab3922d530cda6aa387c3e96e2e059350",
+  "guardSha256": "b5353a4aec4996627a54f1294b2e98e8c096d7e48d3bd259ad8feb1d5b419195",
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakBytes": 4151283712,
+    "elapsedSeconds": 120.3393204999993,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "This is one run of this exact application build and does not establish a general memory or responsiveness guarantee; peak usage was close to the 4 GiB cap.",
+    "The run used an instrumented local harness and did not establish GUI undo/redo, a GUI file-open path, post-reopen history, public-MCP Extract or native Split equivalence.",
+    "The earlier instrumented PLY-3 run used a different build and yielded a different Split facet count; it is not a repeat of the same application candidate."
+  ]
+}

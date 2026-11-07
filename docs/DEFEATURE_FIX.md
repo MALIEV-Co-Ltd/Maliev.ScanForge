@@ -1,5 +1,7 @@
 # Defeature and persistent topology
 
+The current default first attempts the [curvature surface extension](DEFEATURE_CURVATURE.md), then uses the spatial fallback described here. The observed native comparison below binds that spatial helper and its historical default, not the current fitted patch topology.
+
 Defeature now uses the recovered spatial advancing-corner fill path rather than the general projected hole filler. The port preserves pre-edit angle-weighted vertex normals, chooses the smallest valid oriented corner, uses the recovered 75-degree/chord branches and cubic midpoint step, and bounds each fill loop at 10,000 iterations. It retains the largest marked component by triangle area, preserves unrelated components, and makes at most two boundary-fill attempts.
 
 Facet deletion and insertion reuse indexed vertices and update existing edge uses. Derived component and boundary summaries refresh after edits; vertices are compacted without spatial welding. Normals refresh between fill attempts. The published successor includes valid indexed topology, so diagnostics and selection actions reuse it immediately.

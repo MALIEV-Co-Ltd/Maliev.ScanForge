@@ -1,0 +1,76 @@
+{
+  "scope": "Cancellable background STL encoding shared by GUI and public MCP",
+  "baseCommit": "28ddc1307cccbc6bf421ffe2f615abb4abfd0069",
+  "change": "A disposable worker encodes STL without transferring workspace-owned input buffers. GUI exposes a cancel control, MCP cancellation uses job_cancel, and the project_export stage reports Encoding STL. Excluded point clouds and reference frames are filtered before accessing geometry.",
+  "implementation": [
+    "src/stl-export-client.ts",
+    "src/stl-export-worker.ts",
+    "src/ui/App.tsx",
+    "src/automation/operations.ts"
+  ],
+  "focused": {
+    "testsPassed": 85,
+    "files": 7,
+    "scope": "Worker lifecycle and private Float64 topology, indexed normals, IO, automation API and MCP server before the additional progress-stage regression.",
+    "subsequentChecks": "The excluded-object and progress-stage regressions each failed before their fixes and passed afterward."
+  },
+  "build": {
+    "id": "scanforge-14d857d6a6b84840",
+    "typecheckBatches": 15,
+    "peakJobBytes": 2035593216,
+    "activeProcessesAfter": 0,
+    "passed": true
+  },
+  "browser": {
+    "driver": "tests/m2-original-flip-browser.mjs",
+    "mode": "isolated Playwright Chrome; Browser plugin unavailable",
+    "large": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "facets": 3691133,
+      "bytes": 184556734,
+      "guiMcpSha256": "b59df7caa10123c5b49a0122640f60371a7c0c502474ac02274a807a7d866661",
+      "guiAndMcpWorkerStartedBeforeCancel": true,
+      "bothWorkersTerminatedBeforeResult": true,
+      "mcpStage": "Encoding STL",
+      "sourceGeometryRevisionHistoryAndArtifactsUnchanged": true,
+      "observedMaximumTimerGapMs": 164.1,
+      "peakJobBytes": 3774709760,
+      "activeProcessesAfter": 0
+    },
+    "originalFlip": {
+      "facets": 273139,
+      "guiMcpSha256": "db695cddc7bc30d404f73fa036f7cae74e25238762d9ac300dd9109b1b5c2751",
+      "nativeNormalDigest": "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+      "guiMcpNormalDigestMatchesNative": true,
+      "undoRedoAndBinaryReopen": true,
+      "peakJobBytes": 1297907712,
+      "activeProcessesAfter": 0
+    },
+    "pageErrors": [],
+    "jobLimitBytes": 34110816256
+  },
+  "review": "Independent review identified excluded point-cloud materialization; a failing-then-passing regression and filter corrected it. A follow-up review found no further concrete defect.",
+  "priorAttempts": [
+    "An initial browser driver failed after its checks because of a misplaced result-recording spread; its worker processes exited and temporary files were removed.",
+    "A second driver failed its console check because a quick Vite-only bundle lacked the offline service worker; the complete bundle retry passed."
+  ],
+  "limitations": [
+    "Worker-start notification is emitted immediately before encoding; the test cancels after that notification and before a result, but does not pinpoint an instruction within the encoder.",
+    "Structured cloning of included ordinary geometry is synchronous and cannot itself be interrupted; shared immutable buffers are not transferred.",
+    "The large run is a single input; peak and timer-gap measurements do not establish general resource or responsiveness guarantees.",
+    "Missing or stale indexed topology still exports geometric facet normals; native equivalence for that case remains unverified.",
+    "Browser worker availability is required for interruptible encoding; the non-worker fallback remains synchronous.",
+    "The full M2 milestone still requires its remaining native, integration and exact-head hosted gates."
+  ],
+  "fullSuite": {
+    "testFilesPassed": 847,
+    "testFilesSkipped": 30,
+    "testsPassed": 50949,
+    "expectedFailures": 2,
+    "testsSkipped": 77,
+    "peakJobBytes": 1300852736,
+    "jobLimitBytes": 34110816256,
+    "activeProcessesAfter": 0,
+    "passed": true
+  }
+}

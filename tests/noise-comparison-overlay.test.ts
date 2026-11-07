@@ -110,6 +110,28 @@ it("shows original surface separately, suppresses selected facets and restores v
   expect(materialDisposed).toHaveBeenCalledOnce();
   view.setEntities([], null);
 });
+
+it("retains precise scan coordinates in the noise comparison overlay", () => {
+  const { view, scene, entity } = setup();
+  const x = 100000000;
+  const precise = [x, 0, 0, x + 4, 0, 0, x + 4, 4, 0];
+  entity.positions = precise;
+  entity.meshSelection = { hidden: [], saved: [] };
+  try {
+    view.setEntities([entity], null);
+    view.setNoiseComparison(entity.id, precise, new Uint8Array(9));
+    const overlay = (scene.getObjectByName("Noise comparison") as THREE.Group)
+      .children[0] as THREE.Mesh;
+    const attr = overlay.geometry.getAttribute("position");
+    expect(attr.getX(1) - attr.getX(0)).toBe(4);
+    const box = new THREE.Box3().setFromObject(overlay);
+    expect(box.min.x).toBe(x);
+    expect(box.max.x).toBe(x + 4);
+  } finally {
+    view.setNoiseComparison();
+    view.setEntities([], null);
+  }
+});
 it("setEntities applies current visibility after clearing comparison and releases replacement scratch", () => {
   const { view, scene, entity, mesh } = setup(false);
   view.setNoiseComparison("scan", positions, rgb);
@@ -174,14 +196,38 @@ it("dispose releases original comparison geometry and restores underlying mesh",
     bridgePreview,
     sketchGeometry: new THREE.Group(),
     sketchPreview: new THREE.Group(),
+    savedSketchObjects: new Map(),
     originGeometry: new THREE.Group(),
   });
+  view.setSavedSketchDisplays([
+    {
+      id: "saved-line",
+      name: "Saved model line",
+      visible: true,
+      sketch: {
+        version: 1,
+        points: [
+          { id: "a", x: 0, y: 0 },
+          { id: "b", x: 1, y: 0 },
+        ],
+        segments: [{ id: "line", a: "a", b: "b" }],
+        constraints: [],
+      },
+    },
+  ]);
+  const savedDisplay = scene.getObjectByName(
+    "Saved model line",
+  ) as THREE.LineSegments<THREE.BufferGeometry, THREE.LineBasicMaterial>;
+  const savedGeometryDisposed = vi.spyOn(savedDisplay.geometry, "dispose");
+  const savedMaterialDisposed = vi.spyOn(savedDisplay.material, "dispose");
   vi.stubGlobal("window", { removeEventListener: vi.fn() });
   view.dispose();
   expect(zoomWindowOverlay.remove).toHaveBeenCalledOnce();
   expect(zoomWindowHint.remove).toHaveBeenCalledOnce();
   expect(disposed).toHaveBeenCalledOnce();
   expect(bridgeDisposed).toHaveBeenCalledOnce();
+  expect(savedGeometryDisposed).toHaveBeenCalledOnce();
+  expect(savedMaterialDisposed).toHaveBeenCalledOnce();
   expect(mesh.visible).toBe(true);
   expect(scene.children).toHaveLength(0);
 });

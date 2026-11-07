@@ -107,7 +107,7 @@ it("splits retained mesh diagonals instead of making nonmanifold or duplicate ca
 });
 
 it.each([false, true])(
-  "keeps a folded retained quadrilateral manifold (alternate diagonal: %s)",
+  "recovers a folded retained quadrilateral manifold (alternate diagonal: %s)",
   (alternate) => {
     const vertices = [
       [0, 0, 0],
@@ -132,7 +132,7 @@ it.each([false, true])(
       action: "fillHoles",
       positions,
       indices: [0],
-      algorithm: "automatic",
+      algorithm: "surfaceRecovery",
       tolerance: 0.001,
     });
     expect(result.diagnostics.filledHoles).toBe(1);

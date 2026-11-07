@@ -1,0 +1,675 @@
+{
+  "scope": "Shared noise stationary raw-corner preservation and direct/preview published-surface comparison, with real-input rendered GUI/public MCP lifecycle. Not native production-scan numerical equivalence or M2 closure.",
+  "baseCommit": "f86e02d8ef258312a095cb43fd749d272b067089",
+  "changes": {
+    "publication": "Sync and async paths retain raw source corners when their welded representative is stationary at Float32 precision; moved shared vertices still expand consistently.",
+    "comparison": "Compare actual published packed facets, not a separately expanded welded target; query/leaf/native smoothing arithmetic and defaults are unchanged.",
+    "mcp": "Existing mesh_process scanTools.reduceNoise and scan_preview contracts; no new schema/tool. Direct selected noise binds top-level and inner selectionOnly; preview binds its inner flag.",
+    "cancellation": "Publication and identity-index preparation check abort every4096slots; existing jobs/revisions/retry/history/resource semantics retained."
+  },
+  "unitRegression": {
+    "stationarySource": "ActualRED0pass/3fail sync/async selected unrelated component and whole boundary-off. Corrected control uses a moving curved6x6component plus unrelated aliased quad and retains full warm/cold cache equality.",
+    "comparison": "Moving pyramid near stationary aliased plane reports8/9 via welded target versus9/9 from published facets; actual unit RED3pass/1fail, then GREEN.",
+    "review": "Independent source review identified measured-target consequence; fixed in the same coherent change and verified by actual unit and full browser RED/GREEN.",
+    "minor": "Selected browser AABB exclusion is conservative2e-6mm because two aliases can each be1e-6mm from a representative. The original-scan final case retains2457012 scalar Float32 slots outside that box; this is not all unselected shared corners."
+  },
+  "focused": {
+    "passed": 667,
+    "failed": 0,
+    "files": 25,
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-comparison-focused-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "079db13863c1eed6e758e9abf5abcb9d7ddb766ae2cd384d9cbc5aa7a6b8aa76",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 15.02109560003737,
+      "outerPeakJobMemoryBytes": 597786624,
+      "childPeakJobMemoryBytes": 579461120,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "build": {
+    "id": "scanforge-dc23d600e7862cae",
+    "typescriptBatches": 13,
+    "sourceIdentity": {
+      "head": "f86e02d8ef258312a095cb43fd749d272b067089",
+      "files": 3018,
+      "unchanged": true,
+      "manifestSha256": "98a80bea32cb10b54927247de7c0a1bc5cd2ab468f967dd2abf37845d8346546"
+    },
+    "changedFrozenApplicationInputs": [],
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-comparison-build-20261026-r1-build.receipt.json",
+      "sha256": "6305713fd5c5ab35eaa45671a624e864b4129aec9572d1c6048de97000370b55",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 150.53770799998892,
+      "outerPeakJobMemoryBytes": 1714348032,
+      "childPeakJobMemoryBytes": 1692819456,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "note": "Later harness-only configurable input support and manufactured fixture metadata are separately frozen per browser run; compiled application inputs are unchanged."
+  },
+  "realInputRuns": [
+    {
+      "label": "m2-noise-fixed-whole-true-20261026-r1",
+      "driver": {
+        "sha256": "45d66cacd58f0b401a65722914709cbb1b010392f7c04e036109ffb988fbc75f",
+        "iterations": 3,
+        "boundary": "true",
+        "selection": "whole",
+        "buildId": "scanforge-dc23d600e7862cae",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-comparison-build-20261026-r1\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-whole-true-20261026-r1-artifacts\\noise-input-browser-ledger.json",
+      "ledgerSha256": "0765fee41675663c5d0fb207e379a8a6ac2859ead32043b80730129b7d8888d1",
+      "passed": true,
+      "result": {
+        "passed": true,
+        "inputTriangles": 273139,
+        "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "sourceFile": "C:/repo/alignment-example-files/scan-1.stl",
+        "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "iterations": 3,
+        "applyBoundaryEdges": true,
+        "selectionOnly": false,
+        "selectedFaces": [],
+        "guiComparisonSummary": "Original-to-surface comparison: 96.86% (134963/139338) within 0.05 mm; 963 unmatched.",
+        "publicComparisonSummary": "Original-to-surface comparison: 96.86% (134963/139338) within 0.05 mm; 963 unmatched.",
+        "directComparisonSummary": "Noise reduced with 3 iteration(s). Entire mesh smoothed. Boundary smoothing enabled. Original-to-surface comparison: 96.86% (134963/139338) within 0.05 mm; 963 unmatched beyond the 0.25 mm search radius.",
+        "comparisonDiagnosticsParity": true,
+        "previewMs": 1793.0119999999997,
+        "guiGeometrySha256": "ad4725b5fd5ee28de045f1646f052b63086ade3c138e038f7759befe49266ff3",
+        "mcpGeometrySha256": "ad4725b5fd5ee28de045f1646f052b63086ade3c138e038f7759befe49266ff3",
+        "previewGeometrySha256": "ad4725b5fd5ee28de045f1646f052b63086ade3c138e038f7759befe49266ff3",
+        "comparisonBeforePreview": true,
+        "guiCancelBeforeAccept": true,
+        "previewSourceHistoryIsolation": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "errors": []
+      },
+      "comparisonDiagnostics": null,
+      "unrelatedRawCoordinateSlots": null,
+      "cleanup": [
+        {
+          "port": 64514,
+          "closed": true
+        },
+        {
+          "pid": 8260,
+          "exited": true
+        },
+        {
+          "port": 64515,
+          "closed": true
+        },
+        {
+          "pid": 46896,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-fixed-whole-true-20261026-r1-full.receipt.json",
+        "sha256": "81caea91891afed98b00a8ae8380081288ed735dc2f01b715fb38d7481696338",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 27.039991899975576,
+        "outerPeakJobMemoryBytes": 1960869888,
+        "childPeakJobMemoryBytes": 1942425600,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-whole-true-20261026-r1-artifacts\\preview.png",
+        "sha256": "f986206685698d9a6f025bf82f7232e16a15f898ae6e46e60a71e2f69f0cd7a5"
+      }
+    },
+    {
+      "label": "m2-noise-fixed-whole-false-20261026-r1",
+      "driver": {
+        "sha256": "45d66cacd58f0b401a65722914709cbb1b010392f7c04e036109ffb988fbc75f",
+        "iterations": 3,
+        "boundary": "false",
+        "selection": "whole",
+        "buildId": "scanforge-dc23d600e7862cae",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-comparison-build-20261026-r1\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-whole-false-20261026-r1-artifacts\\noise-input-browser-ledger.json",
+      "ledgerSha256": "e8ad5f5c0f8adef23236808452c091792c2947d8912eea8e405c66c17e2f5afd",
+      "passed": true,
+      "result": {
+        "passed": true,
+        "inputTriangles": 273139,
+        "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "sourceFile": "C:/repo/alignment-example-files/scan-1.stl",
+        "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "iterations": 3,
+        "applyBoundaryEdges": false,
+        "selectionOnly": false,
+        "selectedFaces": [],
+        "guiComparisonSummary": "Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched.",
+        "publicComparisonSummary": "Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched.",
+        "directComparisonSummary": "Noise reduced with 3 iteration(s). Entire mesh smoothed. Boundary vertices retained. Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched beyond the 0.25 mm search radius.",
+        "comparisonDiagnosticsParity": true,
+        "previewMs": 2309.466299999999,
+        "guiGeometrySha256": "a7ff82b5f8a3caa52214cd3fc8e053a291c5e64c04ee08981965fcc9b7920c2a",
+        "mcpGeometrySha256": "a7ff82b5f8a3caa52214cd3fc8e053a291c5e64c04ee08981965fcc9b7920c2a",
+        "previewGeometrySha256": "a7ff82b5f8a3caa52214cd3fc8e053a291c5e64c04ee08981965fcc9b7920c2a",
+        "comparisonBeforePreview": true,
+        "guiCancelBeforeAccept": true,
+        "previewSourceHistoryIsolation": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "errors": []
+      },
+      "comparisonDiagnostics": null,
+      "unrelatedRawCoordinateSlots": null,
+      "cleanup": [
+        {
+          "port": 63135,
+          "closed": true
+        },
+        {
+          "pid": 47820,
+          "exited": true
+        },
+        {
+          "port": 63136,
+          "closed": true
+        },
+        {
+          "pid": 55844,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-fixed-whole-false-20261026-r1-full.receipt.json",
+        "sha256": "33394564531aea1bb94a116d38bdb975a48102f9a4357ea7f12b15b7e7aec4f0",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 27.596250500006136,
+        "outerPeakJobMemoryBytes": 1954660352,
+        "childPeakJobMemoryBytes": 1936244736,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-whole-false-20261026-r1-artifacts\\preview.png",
+        "sha256": "93a00765f72cfa7beac23168ecadd8fb5fe140357fbd763d26c44a7238991ad8"
+      }
+    },
+    {
+      "label": "m2-noise-fixed-selected-true-20261026-r1",
+      "driver": {
+        "sha256": "45d66cacd58f0b401a65722914709cbb1b010392f7c04e036109ffb988fbc75f",
+        "iterations": 3,
+        "boundary": "true",
+        "selection": "selected",
+        "buildId": "scanforge-dc23d600e7862cae",
+        "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-comparison-build-20261026-r1\\dist"
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-selected-true-20261026-r1-artifacts\\noise-input-browser-ledger.json",
+      "ledgerSha256": "0daa0693477e005be07cd8978b5c6b80f0dc7503084261b3543ec6607b338a1c",
+      "passed": true,
+      "result": {
+        "passed": true,
+        "inputTriangles": 273139,
+        "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+        "sourceFile": "C:/repo/alignment-example-files/scan-1.stl",
+        "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+        "iterations": 3,
+        "applyBoundaryEdges": true,
+        "selectionOnly": true,
+        "selectedFaces": [
+          15108, 15109, 15110, 15111, 15857, 15858, 17549, 17550, 17551, 17552,
+          17554, 17555, 17556, 38442, 38443, 38444, 38445, 38446, 38447, 38448,
+          38449, 38504, 38505, 38506, 38507, 38508, 38509, 38510, 38511, 38731,
+          38735, 38736, 38737, 38738, 38740, 38844, 38850, 38851, 38852, 38853,
+          38981, 38984, 41239, 41240, 41241, 41242, 41244, 41245, 92421, 92422,
+          92423, 92424, 92425, 92429, 92430, 92431, 92432, 92433, 250567,
+          250568, 250573, 250574, 250575, 250576
+        ],
+        "guiComparisonSummary": "Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched.",
+        "publicComparisonSummary": "Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched.",
+        "directComparisonSummary": "Noise reduced with 3 iteration(s). Selected vertices and shared seams smoothed. Boundary smoothing enabled. Original-to-surface comparison: 100.00% (139338/139338) within 0.05 mm; 0 unmatched beyond the 0.25 mm search radius.",
+        "comparisonDiagnosticsParity": true,
+        "previewMs": 1686.2559,
+        "guiGeometrySha256": "a79e4e7d2f9bcd5974a9e20b73a33a21f125ca68c288cc937d467fc16ad60feb",
+        "mcpGeometrySha256": "a79e4e7d2f9bcd5974a9e20b73a33a21f125ca68c288cc937d467fc16ad60feb",
+        "previewGeometrySha256": "a79e4e7d2f9bcd5974a9e20b73a33a21f125ca68c288cc937d467fc16ad60feb",
+        "comparisonBeforePreview": true,
+        "guiCancelBeforeAccept": true,
+        "previewSourceHistoryIsolation": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "errors": []
+      },
+      "comparisonDiagnostics": null,
+      "unrelatedRawCoordinateSlots": 2457012,
+      "cleanup": [
+        {
+          "port": 61421,
+          "closed": true
+        },
+        {
+          "pid": 61516,
+          "exited": true
+        },
+        {
+          "port": 61422,
+          "closed": true
+        },
+        {
+          "pid": 11924,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-fixed-selected-true-20261026-r1-full.receipt.json",
+        "sha256": "529ed1798a81f4f4129f5f0d59ab7190e763093b0255d144b9a65699b5ed4f9b",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 26.787616799992975,
+        "outerPeakJobMemoryBytes": 1978400768,
+        "childPeakJobMemoryBytes": 1960067072,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-fixed-selected-true-20261026-r1-artifacts\\preview.png",
+        "sha256": "86f58a85459e31080ea35c03e552fbb1b7a20c85ceb154e1f2f6425f1f2c8d1f"
+      }
+    }
+  ],
+  "aliasControl": {
+    "fixture": "tests/fixtures/noise-published-alias-control.json",
+    "fixtureSha256": "f8f0f040c594f399d5e1f2a51c09a5d3567ed60266cfcade3135fd12882d24e0",
+    "red": {
+      "label": "m2-noise-published-alias-browser-red-20261026-r1",
+      "driver": {
+        "sha256": "66bc0494de7fe6efd1fe0f5f4923818fb0d54f386d95895012224978d43bfa1d",
+        "mode": "red",
+        "buildId": "scanforge-248ebabf637a51bf",
+        "sourceIdentity": {
+          "head": "f86e02d8ef258312a095cb43fd749d272b067089",
+          "files": 3018,
+          "unchanged": true,
+          "manifestSha256": "955f442e25371a5b26ad3c45e5b5000b1f7d7f9dd79ea26a14dda34da4b06143"
+        },
+        "control": {
+          "input": {
+            "sourcePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-control-20261026-r1\\moving-pyramid-stationary-alias-plane.stl",
+            "sourceStlSha256": "6f356cc5c93b36949459894250986ce2c5de9812351dded8511d04bde4d79eca",
+            "sourceCoordinateSha256": "f1b5f4b7fd765d94bb03d1251faeb84098a1a5d147ed058e389ff52a880d5a73"
+          },
+          "selectedFaceIndices": [0, 1, 2, 3],
+          "settings": {
+            "iterations": 2,
+            "applyBoundaryEdges": false,
+            "comparisonThreshold": 0.00999985
+          },
+          "scope": "Manufactured direct-versus-preview published-target comparison, not native fixture."
+        }
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-browser-red-20261026-r1-artifacts\\noise-input-browser-ledger.json",
+      "ledgerSha256": "524482108f77de721da3469272c16192a8551053d2dc2554bf3d67322d8918da",
+      "passed": false,
+      "result": null,
+      "comparisonDiagnostics": {
+        "gui": "Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched.",
+        "direct": "Noise reduced with 2 iteration(s). Selected vertices and shared seams smoothed. Boundary vertices retained. Original-to-surface comparison: 88.89% (8/9) within 0.00999985 mm; 0 unmatched beyond the 0.049999249999999995 mm search radius."
+      },
+      "unrelatedRawCoordinateSlots": 18,
+      "cleanup": [
+        {
+          "port": 53126,
+          "closed": true
+        },
+        {
+          "pid": 43532,
+          "exited": true
+        },
+        {
+          "port": 53127,
+          "closed": true
+        },
+        {
+          "pid": 60448,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-alias-browser-red-20261026-r1-full.receipt.json",
+        "sha256": "c2f46066a283b7cd2566a8651c7022fc6d1f49d3962317d6e74a7755baf5dc47",
+        "completed": false,
+        "exitCode": 1,
+        "elapsedSeconds": 5.009558700025082,
+        "outerPeakJobMemoryBytes": 953933824,
+        "childPeakJobMemoryBytes": 935919616,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-browser-red-20261026-r1-artifacts\\preview.png",
+        "sha256": "4e0a56ada755b3b688ec0c4084a0dd450904f6b43aef0eceef1bff8be9c90aec"
+      }
+    },
+    "green": {
+      "label": "m2-noise-published-alias-browser-green-20261026-r2",
+      "driver": {
+        "sha256": "66bc0494de7fe6efd1fe0f5f4923818fb0d54f386d95895012224978d43bfa1d",
+        "mode": "fixed",
+        "buildId": "scanforge-dc23d600e7862cae",
+        "sourceIdentity": {
+          "head": "f86e02d8ef258312a095cb43fd749d272b067089",
+          "files": 3018,
+          "unchanged": true,
+          "manifestSha256": "98a80bea32cb10b54927247de7c0a1bc5cd2ab468f967dd2abf37845d8346546"
+        },
+        "control": {
+          "input": {
+            "sourcePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-control-20261026-r1\\moving-pyramid-stationary-alias-plane.stl",
+            "sourceStlSha256": "6f356cc5c93b36949459894250986ce2c5de9812351dded8511d04bde4d79eca",
+            "sourceCoordinateSha256": "f1b5f4b7fd765d94bb03d1251faeb84098a1a5d147ed058e389ff52a880d5a73"
+          },
+          "selectedFaceIndices": [0, 1, 2, 3],
+          "settings": {
+            "iterations": 2,
+            "applyBoundaryEdges": false,
+            "comparisonThreshold": 0.00999985
+          },
+          "scope": "Manufactured direct-versus-preview published-target comparison, not native fixture."
+        }
+      },
+      "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-browser-green-20261026-r2-artifacts\\noise-input-browser-ledger.json",
+      "ledgerSha256": "7b812b5ff6d91cfd1b0fb53d4df19b5ecb221ce8c35a28639ed3ac075d6651ff",
+      "passed": true,
+      "result": {
+        "passed": true,
+        "inputTriangles": 6,
+        "inputSha256": "6f356cc5c93b36949459894250986ce2c5de9812351dded8511d04bde4d79eca",
+        "sourceFile": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-control-20261026-r1\\moving-pyramid-stationary-alias-plane.stl",
+        "sourceGeometrySha256": "f1b5f4b7fd765d94bb03d1251faeb84098a1a5d147ed058e389ff52a880d5a73",
+        "iterations": 2,
+        "applyBoundaryEdges": false,
+        "comparisonThreshold": 0.00999985,
+        "selectionOnly": true,
+        "selectedFaces": [0, 1, 2, 3],
+        "guiComparisonSummary": "Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched.",
+        "publicComparisonSummary": "Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched.",
+        "directComparisonSummary": "Noise reduced with 2 iteration(s). Selected vertices and shared seams smoothed. Boundary vertices retained. Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched beyond the 0.049999249999999995 mm search radius.",
+        "comparisonDiagnosticsParity": true,
+        "previewMs": 210.14190000000008,
+        "guiGeometrySha256": "5d2e287ff757d782e70111cd75e549d24a0a819f7948657cbea089afc82b02b1",
+        "mcpGeometrySha256": "5d2e287ff757d782e70111cd75e549d24a0a819f7948657cbea089afc82b02b1",
+        "previewGeometrySha256": "5d2e287ff757d782e70111cd75e549d24a0a819f7948657cbea089afc82b02b1",
+        "comparisonBeforePreview": true,
+        "guiCancelBeforeAccept": true,
+        "previewSourceHistoryIsolation": true,
+        "publicPreviewDiscard": true,
+        "cancelledWorkerResultRollback": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "errors": []
+      },
+      "comparisonDiagnostics": {
+        "gui": "Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched.",
+        "direct": "Noise reduced with 2 iteration(s). Selected vertices and shared seams smoothed. Boundary vertices retained. Original-to-surface comparison: 100.00% (9/9) within 0.00999985 mm; 0 unmatched beyond the 0.049999249999999995 mm search radius."
+      },
+      "unrelatedRawCoordinateSlots": 18,
+      "cleanup": [
+        {
+          "port": 63861,
+          "closed": true
+        },
+        {
+          "pid": 59500,
+          "exited": true
+        },
+        {
+          "port": 63862,
+          "closed": true
+        },
+        {
+          "pid": 45904,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-alias-browser-green-20261026-r2-full.receipt.json",
+        "sha256": "c1f90d2e0285d4a2212fcf6e9a503db4510cdc9499060981dc0e9e52e08eaf3e",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 5.615604099992197,
+        "outerPeakJobMemoryBytes": 930639872,
+        "childPeakJobMemoryBytes": 911597568,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "childJobFinalActive": 0,
+        "cleanupErrors": []
+      },
+      "screenshot": {
+        "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-alias-browser-green-20261026-r2-artifacts\\preview.png",
+        "sha256": "d0acca05cff9e56ad5a0e7b16e563c7ae4d7b087bfc3fd70a9e933dc6add67a3"
+      }
+    },
+    "interpretation": "Actual old intermediate build248ebab GUI100%9/9 versus direct MCP88.89%8/9 at0.00999985mm. Corrected builddc23d6 GUI/direct/public preview all9/9, with source isolation, Cancel/discard/job_cancel/history and binary reopen. This is a manufactured application control, not a native capture."
+  },
+  "postFixGlobalReduction": {
+    "label": "m2-global-reduction-post-noise-20261026-r1",
+    "driver": {
+      "sha256": "3f9e3bec99ed58480c61ee8fa900e3b10880ace28eb7566bd76cc0809f556de7",
+      "mode": "global",
+      "buildId": "scanforge-dc23d600e7862cae",
+      "applicationBaseCommit": "f86e02d8ef258312a095cb43fd749d272b067089",
+      "sourceIdentity": {
+        "head": "f86e02d8ef258312a095cb43fd749d272b067089",
+        "files": 3018,
+        "unchanged": true,
+        "manifestSha256": "98a80bea32cb10b54927247de7c0a1bc5cd2ab468f967dd2abf37845d8346546"
+      },
+      "dist": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-noise-published-comparison-build-20261026-r1\\dist"
+    },
+    "ledgerPath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-global-reduction-post-noise-20261026-r1-artifacts\\large-reduction-browser-ledger.json",
+    "ledgerSha256": "1517c0fb61161f7a11c1a7b99b5e327628393ac6ca618ecada79de479880cf09",
+    "passed": true,
+    "result": {
+      "passed": true,
+      "inputTriangles": 40960,
+      "inputSha256": "efacf062c2859727989d61ee25f8d991fa931d059fbf78f3b2f0ccd31bf00a5a",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+      "logicalProcessors": 24,
+      "systemBytes": 34110816256,
+      "renderer": "isolated headless browser, software GPU",
+      "outputTriangles": 20480,
+      "mcpTriangles": 18432,
+      "previewMs": 900.8516999999997,
+      "mcpMs": 879.5076000000008,
+      "guiPreviewAndAccept": true,
+      "comparisonRequired": true,
+      "previewPreservesSource": true,
+      "mcpDirectComparison": true,
+      "sameInputGeometryParity": true,
+      "directCountMatchesGuiPercentage": true,
+      "globalSequenceObserved": true,
+      "sourceFile": null,
+      "rawSourceGeometrySha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+      "sourceGeometrySha256": "ae4651a12980cab3b4a2a5838fc5fc8d5f46fd3da0c6ae8ca8894c766b4c22b9",
+      "frozenGlobalControl": true,
+      "guiCancelBeforeAccept": true,
+      "publicPreviewDiscard": true,
+      "cancelledWorkerResultRollback": true,
+      "undoRedo": true,
+      "binarySaveReopen": true,
+      "finalGeometrySha256": "6435f138eb50f47501b3283955c8554d25f1e298b9095bdefc869116cabcbed5",
+      "guiGeometrySha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+      "mcpGeometrySha256": "da6cd048c791b77bd93d23c678c29d9d55b2065440a4a9fe479f8a2161408ed4",
+      "errors": []
+    },
+    "comparisonDiagnostics": null,
+    "unrelatedRawCoordinateSlots": null,
+    "cleanup": [
+      {
+        "port": 52401,
+        "closed": true
+      },
+      {
+        "pid": 50780,
+        "exited": true
+      },
+      {
+        "port": 52402,
+        "closed": true
+      },
+      {
+        "pid": 47088,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-global-reduction-post-noise-20261026-r1-full.receipt.json",
+      "sha256": "06b08e2d11da29ebc9a794ca604153f9219701ccf1952a0b5970308b74d67848",
+      "completed": true,
+      "exitCode": 0,
+      "elapsedSeconds": 11.426441400020849,
+      "outerPeakJobMemoryBytes": 1114660864,
+      "childPeakJobMemoryBytes": 1096343552,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "screenshot": {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-global-reduction-post-noise-20261026-r1-artifacts\\preview.png",
+      "sha256": "23f115186ef41321df9581243181c6dbab65692354bd8769b52a31269b811703"
+    }
+  },
+  "retainedFailedReceipts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-stationary-source-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "21cf2a884cb68ddea1e63eba1120177f0c14da7047c092308e2308ef1e656291",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 0.916039899981115,
+      "outerPeakJobMemoryBytes": 333680640,
+      "childPeakJobMemoryBytes": 314941440,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-stationary-source-red-20261026-r2-mirror-focused.receipt.json",
+      "sha256": "8082ba327472ab5f218f99dfd6ab7413c95c912a0ec1e5b3a70a5977ae11ca41",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 0.8664180999621749,
+      "outerPeakJobMemoryBytes": 334729216,
+      "childPeakJobMemoryBytes": 316313600,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-stationary-source-green-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "25aebac9cf13131a8bf4e3bafb71de81ccee0ce4f9124063c2448f9cc245f5f1",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 4.200716199993622,
+      "outerPeakJobMemoryBytes": 498765824,
+      "childPeakJobMemoryBytes": 480026624,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-stationary-cache-diagnostic-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "02d4831f262bad56444e53c1e4c7c42896588d6e456357c615d61902e0039e61",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 0.8650902000372298,
+      "outerPeakJobMemoryBytes": 335855616,
+      "childPeakJobMemoryBytes": 317140992,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-comparison-red-20261026-r1-mirror-focused.receipt.json",
+      "sha256": "2900c402d45dcde5e42560fe4b5fec8480a3d029e96e8d3160fc56a4ccbe4163",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 1.4214691999950446,
+      "outerPeakJobMemoryBytes": 394358784,
+      "childPeakJobMemoryBytes": 376164352,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-noise-published-comparison-red-20261026-r2-mirror-focused.receipt.json",
+      "sha256": "7ed9d9f035392d10309d63e48475c5a68250ed2e4629ff6283498ae33ab1f7c2",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 1.4733413000358269,
+      "outerPeakJobMemoryBytes": 381263872,
+      "childPeakJobMemoryBytes": 362872832,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-real-noise-boundary-on-20261026-r1-full.receipt.json",
+      "sha256": "52fd2ad0f02805fd68a8505c0db942ef4d1f8ecefbbe7c51742d12451747dc62",
+      "completed": false,
+      "exitCode": 1,
+      "elapsedSeconds": 5.109723699977621,
+      "outerPeakJobMemoryBytes": 944562176,
+      "childPeakJobMemoryBytes": 926109696,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "failedControlNotes": "Initial two-triangle active component produced coincident vertices under unchanged native smoothing, so warm/cold equality was not an appropriate control; a curved grid retains those assertions and proves movement. Initial alias-grid comparison search did not distinguish surfaces and is retained as an unsuccessful precondition, not a reproduced production failure. First browser startup used an absent idle helper and exited cleanly; fixed harness before successful replays.",
+  "lastFullCi": {
+    "commit": "f86e02d8ef258312a095cb43fd749d272b067089",
+    "runId": 40349616658,
+    "jobId": 121665776372,
+    "conclusion": "success",
+    "passed": 49893,
+    "conditionalSkips": 64,
+    "passedFiles": 716,
+    "skippedFiles": 18,
+    "buildCadCurvatureAndFormat": "success",
+    "newCandidateCi": "Still required after pushing this correction."
+  },
+  "remaining": "Fresh installed-native production-scan noise/dialog equivalence, other M2 inventory/native gates, complete-candidate review, exact integrated-head CI and main merge remain open. Source/target comparison correctness on these controls does not establish complete domain parity."
+}

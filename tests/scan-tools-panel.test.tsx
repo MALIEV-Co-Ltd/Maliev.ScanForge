@@ -79,6 +79,25 @@ function render(
     />,
   );
 }
+it("offers comparison updates for an existing polygon reduction preview", () => {
+  const panel = (disabled: boolean) =>
+    renderToStaticMarkup(
+      <ScanToolsPanel
+        tool="reducePolygons"
+        selected={mesh}
+        entities={[mesh]}
+        previewReady
+        disabled={disabled}
+        onApply={() => {}}
+        onAccept={() => {}}
+        onCompare={() => {}}
+        onCancel={() => {}}
+        onClose={() => {}}
+      />,
+    );
+  expect(panel(false)).toContain(">Update comparison</button>");
+  expect(panel(true)).toContain('disabled="">Update comparison</button>');
+});
 it("shows only the current tool and its generated technical illustration", () => {
   const html = render("reducePolygons");
   expect(html).toContain('aria-haspopup="listbox"');
@@ -192,6 +211,22 @@ it("gates averaging and unrolling on eligible reference objects", () => {
   expect(render("unroll", mesh, [mesh, cylinder])).not.toContain(
     'disabled="">Apply',
   );
+});
+it("offers exact capped CAD references without fitting their display vertices", () => {
+  const capped: Entity = {
+    ...mesh,
+    id: "capped",
+    name: "Imported capped cylinder",
+    kind: "cad",
+    kernelId: "exact-capped-cylinder",
+    positions: new Float32Array([
+      0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 2, 1, 2, 0, 1, 2, 0, 0, 2, 0, 1, 0,
+      2, 0,
+    ]),
+  };
+  const html = render("unroll", mesh, [mesh, capped]);
+  expect(html).toContain("Imported capped cylinder");
+  expect(html).not.toContain('disabled="">Apply');
 });
 it("requires mesh copies for exact CAD and explains an empty selection", () => {
   expect(

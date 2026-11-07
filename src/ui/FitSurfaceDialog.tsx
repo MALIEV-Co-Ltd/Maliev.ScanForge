@@ -1,3 +1,4 @@
+import { ToolTitle } from "./controls";
 import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
 import { useState } from "react";
@@ -42,7 +43,7 @@ export function FitSurfaceDialog({
   }
   return (
     <aside className="inspector tool-panel" aria-label="Fit Surface">
-      <h2>Fit Surface</h2>
+      <ToolTitle title="Fit Surface" onClose={onCancel} />
       <section className="tool-section tool-panel-content">
         <p>
           {session.source.name} · {session.triangles.toLocaleString()} selected

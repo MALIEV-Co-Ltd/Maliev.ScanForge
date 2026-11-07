@@ -1,3 +1,4 @@
+import { ToolTitle } from "./controls";
 import { AppSelect } from "./AppSelect";
 import { PreviewButton } from "./PreviewButton";
 import type { Entity } from "../types";
@@ -35,7 +36,7 @@ export function LandmarkAlignmentDialog({
   const controls = landmarkPreviewControls(session);
   return (
     <aside className="inspector tool-panel" aria-label="N-points alignment">
-      <h2>Align by N points</h2>
+      <ToolTitle title="Align by N points" onClose={onCancel} />
       <div className="tool-panel-content">
         <p>
           Moving scan: <strong>{session.moving.name}</strong>

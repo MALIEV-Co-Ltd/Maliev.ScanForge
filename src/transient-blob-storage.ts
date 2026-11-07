@@ -1,15 +1,9 @@
 export const DISK_BLOB_BLOCK_BYTES = 64 * 1024 * 1024;
 
-/** IndexedDB returns immutable, browser-owned file backing. Deleting the record
- * releases persistent ownership while the returned Blob keeps its bytes alive. */
-export async function diskBackedBlob(
-  blob: Blob,
+async function openTransientDatabase(
   signal?: AbortSignal,
-): Promise<Blob> {
-  signal?.throwIfAborted();
-  if (blob.size < DISK_BLOB_BLOCK_BYTES || typeof indexedDB === "undefined")
-    return blob;
-  const db = await new Promise<IDBDatabase>((resolve, reject) => {
+): Promise<IDBDatabase> {
+  return new Promise<IDBDatabase>((resolve, reject) => {
     let finished = false;
     const finish = (error?: unknown, value?: IDBDatabase) => {
       if (finished) {
@@ -43,8 +37,63 @@ export async function diskBackedBlob(
       finish(error);
     }
   });
-  const key = crypto.randomUUID();
-  const transaction = <T>(run: (store: IDBObjectStore) => () => T) =>
+}
+
+/** Remove one terminated worker's staging record without touching other saves. */
+export async function deleteTransientBlob(key: string): Promise<void> {
+  if (typeof indexedDB === "undefined") return;
+  const db = await openTransientDatabase();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction("blobs", "readwrite");
+      const timer = setTimeout(() => {
+        try {
+          tx.abort();
+        } catch {
+          /* Already settled. */
+        }
+        reject(new Error("Temporary blob cleanup timed out."));
+      }, 30_000);
+      tx.oncomplete = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      tx.onerror = tx.onabort = () => {
+        clearTimeout(timer);
+        reject(tx.error ?? new Error("Temporary blob cleanup failed."));
+      };
+      try {
+        tx.objectStore("blobs").delete(key);
+      } catch (error) {
+        clearTimeout(timer);
+        try {
+          tx.abort();
+        } catch {
+          /* Already settled. */
+        }
+        reject(error);
+      }
+    });
+  } finally {
+    db.close();
+  }
+}
+
+/** Deleting the database record leaves the returned browser-owned Blob alive. */
+export async function diskBackedBlob(
+  blob: Blob,
+  signal?: AbortSignal,
+  temporaryKey?: string,
+): Promise<Blob> {
+  signal?.throwIfAborted();
+  if (blob.size < DISK_BLOB_BLOCK_BYTES || typeof indexedDB === "undefined")
+    return blob;
+  const db = await openTransientDatabase(signal);
+  const key = temporaryKey ?? crypto.randomUUID();
+  const transaction = <T>(
+    run: (store: IDBObjectStore) => () => T,
+    operationSignal: AbortSignal | null = signal ?? null,
+  ) =>
     new Promise<T>((resolve, reject) => {
       const tx = db.transaction("blobs", "readwrite");
       let finished = false;
@@ -52,7 +101,7 @@ export async function diskBackedBlob(
         if (finished) return;
         finished = true;
         clearTimeout(timer);
-        signal?.removeEventListener("abort", cancel);
+        operationSignal?.removeEventListener("abort", cancel);
         if (error) {
           try {
             tx.abort();
@@ -70,24 +119,26 @@ export async function diskBackedBlob(
       };
       const cancel = () =>
         finish(
-          signal?.reason ?? new DOMException("Storage cancelled", "AbortError"),
+          operationSignal?.reason ??
+            new DOMException("Storage cancelled", "AbortError"),
         );
       const timer = setTimeout(
         () => finish(new Error("Temporary blob transaction timed out.")),
         30_000,
       );
-      signal?.addEventListener("abort", cancel, { once: true });
+      operationSignal?.addEventListener("abort", cancel, { once: true });
       let result: () => T;
       tx.oncomplete = () => finish();
       tx.onerror = tx.onabort = () =>
         finish(tx.error ?? new Error("Temporary blob transaction failed."));
       try {
-        signal?.throwIfAborted();
+        operationSignal?.throwIfAborted();
         result = run(tx.objectStore("blobs"));
       } catch (error) {
         finish(error);
       }
     });
+  let completed = false;
   try {
     await transaction((store) => {
       const cursor = store.openCursor();
@@ -100,7 +151,7 @@ export async function diskBackedBlob(
       store.put({ file: blob, expires: Date.now() + 900_000 }, key);
       return () => undefined;
     });
-    return await transaction((store) => {
+    const file = await transaction((store) => {
       const request = store.get(key);
       store.delete(key);
       return () => {
@@ -110,7 +161,19 @@ export async function diskBackedBlob(
         return file;
       };
     });
+    completed = true;
+    return file;
   } finally {
+    if (!completed) {
+      try {
+        await transaction((store) => {
+          store.delete(key);
+          return () => undefined;
+        }, null);
+      } catch {
+        // The expiry sweep remains a fallback if storage is unavailable.
+      }
+    }
     db.close();
   }
 }

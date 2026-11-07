@@ -4,6 +4,7 @@ import type { NurbsPatch } from "../surfaces";
 import { validateSketchFrame, type SketchFrame } from "../sketch-frame";
 import type { CadAlignmentInput } from "./alignment-reference";
 import { nativeDatumInverseFrame } from "../scan-native-datum-apply";
+import type { BoundaryCurveFit } from "../scan-boundary-fit";
 
 export type CadPattern =
   | { kind: "linear"; count: number; step: Vec3 }
@@ -14,13 +15,21 @@ export type CadPattern =
       axis: Vec3;
       angleDegrees: number;
     };
+export interface CurvatureSurfaceMesh extends IndexedMesh {
+  vertices: Float32Array;
+  triangles: Uint32Array;
+  kernelId: string;
+  uvs: Float64Array;
+}
 type Result =
   | KernelMesh
   | KernelMesh[]
   | Uint8Array
   | boolean
   | CadAlignmentInput[]
-  | IndexedMesh;
+  | IndexedMesh
+  | CurvatureSurfaceMesh
+  | Float32Array;
 type Reply = { id: number; result?: Result; error?: string; progress?: number };
 
 /** Owns one isolated browser-local CAD worker. Reset invalidates all kernel IDs. */
@@ -197,6 +206,40 @@ export class CadClient {
     return this.request("surface", patch) as Promise<KernelMesh>;
   }
 
+  /** Internal whole-hole surface, owned only by the processing request. */
+  curvatureSurface(
+    patch: NurbsPatch,
+    matrix: number[],
+  ): Promise<CurvatureSurfaceMesh> {
+    return this.request("curvatureSurface", {
+      patch,
+      matrix,
+    }) as Promise<CurvatureSurfaceMesh>;
+  }
+
+  curvatureEvaluate(
+    kernelId: string,
+    uvs: Float64Array,
+  ): Promise<Float32Array> {
+    return this.request("curvatureEvaluate", {
+      kernelId,
+      uvs,
+    }) as Promise<Float32Array>;
+  }
+
+  /** Request-owned boundary curve; no CAD handle is retained in the scene. */
+  boundaryCurveProject(
+    curve: BoundaryCurveFit,
+    positions: Float32Array,
+  ): Promise<Float32Array> {
+    return this.request("boundaryCurveProject", {
+      poles: curve.poles.slice(),
+      knots: curve.knots.slice(),
+      periodic: curve.periodic,
+      positions: positions.slice(),
+    }) as Promise<Float32Array>;
+  }
+
   /** Sew compatible patches into one finite, validated closed CAD solid. */
   closedShell(patches: NurbsPatch[], tolerance = 1e-6): Promise<KernelMesh> {
     return this.request("closedShell", {
@@ -284,7 +327,10 @@ export class CadClient {
   private getWorker(): Worker {
     if (this.disposed) throw new Error("CAD client disposed.");
     if (!this.worker) {
-      const base = new URL(import.meta.env.BASE_URL, document.baseURI);
+      const base =
+        typeof document === "undefined"
+          ? new URL("../", self.location.href)
+          : new URL(import.meta.env.BASE_URL, document.baseURI);
       this.worker = new Worker(new URL("cad-worker.js", base), {
         name: "scanforge-cad",
       });

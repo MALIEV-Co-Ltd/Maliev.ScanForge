@@ -7,7 +7,11 @@ import type { ConstructionIdentityAssignment } from "./reference-construction-id
 export interface ModelCommitPolicy {
   /** Shared modeling publication may hide inputs atomically with its geometry edit. */
   readonly modelVisibilityFor?: readonly string[];
+  /** Trusted noise preview: same facet IDs, selection follows the new coordinates. */
+  readonly preserveFacetSelectionFor?: string;
   readonly constructionIdentityMigration?: readonly ConstructionIdentityAssignment[];
+  /** New saved sketches published atomically with their owning model operation. */
+  readonly newModelSketches?: readonly import("./types").SavedSketch[];
 }
 
 function migratedSourceIds(

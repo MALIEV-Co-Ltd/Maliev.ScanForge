@@ -1,0 +1,30 @@
+{
+  "scope": "Production build and full local Vitest suite on the pinned M2 integration candidate",
+  "commit": "5529cd6f4e698e58494f037f309b68d5b1488cc5",
+  "buildId": "scanforge-3ac0509beaf027d7",
+  "jobLimitBytes": 34110816256,
+  "typecheckHeapRequestedMiB": 32530,
+  "build": {
+    "command": "npm run build",
+    "typecheckBatches": 15,
+    "passed": true,
+    "peakJobBytes": 1870483456,
+    "activeProcessesAfter": 0
+  },
+  "suite": {
+    "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --exclude **/.resources/** --reporter=dot",
+    "passedFiles": 840,
+    "skippedFiles": 32,
+    "passedTests": 50916,
+    "expectedFailures": 2,
+    "skippedTests": 79,
+    "peakJobBytes": 1348206592,
+    "activeProcessesAfter": 0
+  },
+  "reviewServer": "Port 5173 returned HTTP 200 for the page and processing client after the run.",
+  "limitations": [
+    "Two expected unindexed-connectivity failures and all skipped tests remain explicitly outside passing coverage.",
+    "The suite emitted Git line-ending notices from its release-workflow fixtures.",
+    "These local checks do not replace native acceptance, hosted exact-head checks or review."
+  ]
+}

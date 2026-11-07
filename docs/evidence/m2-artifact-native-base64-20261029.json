@@ -1,0 +1,27 @@
+{
+  "scope": "Native Base64 encoding for public MCP artifact reads, with a fallback for browsers that lack it; no change to the artifact protocol.",
+  "comparison": {
+    "method": "In isolated Chrome contexts, encode the same deterministic 262144-byte input 1600 times using the existing chunked string/btoa path and Uint8Array.toBase64. Samples are JavaScript heap sizes, not whole-renderer memory. The output length and sampled characters matched; separate exact-byte tests cover actual output.",
+    "fallbackElapsedMs": 6130.5,
+    "nativeElapsedMs": 34.6,
+    "fallbackPeakSampledJsHeapBytes": 34557540,
+    "nativePeakSampledJsHeapBytes": 1594516,
+    "peakJobBytes": 470298624,
+    "cleanupConfirmed": true,
+    "limitation": "One synthetic run per method, with repeated identical bytes and no network or project restoration. Timing and sampled JS heap are not full application memory attribution."
+  },
+  "validation": {
+    "focused": "73 API, artifact, staging and bridge tests passed; native and fallback paths were checked against exact byte slices including EOF.",
+    "build": "Production build and 14 TypeScript batches passed; peak Job memory 1633656832 bytes.",
+    "publicMcp": "The paired production-build browser and public MCP SDK passed artifact upload, canonical Base64 and exact readback at 1, 2, 8193 and 262144-byte boundaries, EOF and deletion, along with the existing smoke workflow. Instrumentation observed all six native Base64 calls. Peak Job memory 1382817792 bytes; cleanup confirmed."
+  },
+  "originalPly3Replay": {
+    "method": "Using the production build and original 3691133-face scan, run GUI Split and Extract, Undo, project export and full public-MCP artifact download, then reopen with the GUI without forced garbage collection.",
+    "result": "Split, Extract, Undo, export and the 475563378-byte download completed. GUI reopen timed out after 120 seconds; the page probe also timed out and no reopened geometry was obtained. The downloaded SHA-256 b4e06ec5fb2dae8d583798562cb49b87896feb408104b8e9a1f033406aacc2ad has no independent reference.",
+    "peakJobBytes": 4554739712,
+    "jobLimitBytes": 4294967296,
+    "resourcePass": false,
+    "cleanupConfirmed": true,
+    "limitations": "The recorded peak exceeded the nominal limit and the guard terminated remaining descendants after the failed test. This single run does not isolate allocation cause or demonstrate the full-download/reopen resource gate. No post-reopen history or native Split equivalence was established."
+  }
+}

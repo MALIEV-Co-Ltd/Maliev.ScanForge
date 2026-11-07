@@ -1,0 +1,28 @@
+{
+  "provenance": "Manufactured source/publication comparison control, not an installed-native capture.",
+  "units": "mm",
+  "positions": [
+    0.0, 0.0, 1.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 0.0, 0.0, 1.0, 1.0, -1.0,
+    0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, -1.0, 1.0, 0.0, -1.0, -1.0, 0.0, -2.0, -2.0, 0.9900000095367432, 2.0,
+    -2.0, 0.9900000095367432, 2.0, 2.0, 0.9900000095367432, -2.0, -2.0,
+    0.9900006055831909, 2.0, 2.0, 0.9900000095367432, -2.0, 2.0,
+    0.9900000095367432
+  ],
+  "selectedFaceIndices": [0, 1, 2, 3],
+  "settings": {
+    "iterations": 2,
+    "applyBoundaryEdges": false,
+    "comparisonThreshold": 0.00999985
+  },
+  "input": {
+    "sourceStlSha256": "6f356cc5c93b36949459894250986ce2c5de9812351dded8511d04bde4d79eca",
+    "sourceCoordinateSha256": "f1b5f4b7fd765d94bb03d1251faeb84098a1a5d147ed058e389ff52a880d5a73"
+  },
+  "stlRecipe": "84-byte zero header with little-endian face count6 at offset80; each50-byte face has normal[0,0,1], nine Float32 coordinates in listed order and uint16 attribute0.",
+  "expectedComparison": {
+    "originalSamples": 9,
+    "beforePublishedSurfaceFixWithin": 8,
+    "publishedSurfaceWithin": 9
+  }
+}

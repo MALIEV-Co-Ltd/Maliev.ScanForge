@@ -1,4 +1,6 @@
 import { AppSelect } from "./AppSelect";
+import { HelpPopover } from "./HelpPopover";
+import { MeshOperationResult } from "./MeshOperationResult";
 import { useEffect, useRef, useState } from "react";
 import type { ProcessingRequest, ProcessingResult } from "../processing-client";
 import type { Entity } from "../types";
@@ -6,20 +8,24 @@ import type { RegionClassification } from "../mesh-processing";
 import { Field, Panel } from "./controls";
 import { alignmentTriangleMask } from "../registration-selection";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { fineAlignmentInput } from "../fine-alignment-input";
 import { parseLandmarkSeedVertices } from "../native-landmark-region";
 import { processScanRegistration } from "../scan-registration";
 import { registrationTargetPoints } from "../registration-target";
 
 function fineAlignmentStatus(reason: string): string {
-  return reason === "targetReached"
-    ? "Target accuracy reached"
-    : reason === "stoppedImproving"
-      ? "Stopped improving; target accuracy not reached"
-      : "Iteration limit reached; target accuracy not reached";
+  return reason === "insufficientOverlap"
+    ? "Insufficient compatible overlap; geometry unchanged"
+    : reason === "targetReached"
+      ? "Target accuracy reached"
+      : reason === "stoppedImproving"
+        ? "Stopped improving; target accuracy not reached"
+        : "Iteration limit reached; target accuracy not reached";
 }
 
 export type MeshTool =
   | "fineAlign"
+  | "surfaceRefinement"
   | "repairMesh"
   | "segmentMesh"
   | "smoothMesh"
@@ -178,9 +184,15 @@ export function MeshTools({
         return;
       }
       const registration = outcome.registration;
+      if (registration && "applied" in registration && !registration.applied) {
+        onStatus(
+          "Insufficient compatible overlap; geometry unchanged. Reduce expected overlap or improve the starting alignment.",
+        );
+        return;
+      }
       const summary = registration
         ? "overlapRms" in registration
-          ? ` · Overlap RMS ${registration.overlapRms.toPrecision(4)} mm · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
+          ? ` · Overlap RMS ${registration.overlapRms === null ? "unavailable" : `${registration.overlapRms.toPrecision(4)} mm`} · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
           : ` · RMS ${registration.rms.toPrecision(4)} mm · ${registration.converged ? "converged" : "iteration limit reached"}`
         : "";
       onStatus(`${label} complete${summary}`);
@@ -218,6 +230,7 @@ export function MeshTools({
       title={
         {
           fineAlign: "Fine alignment",
+          surfaceRefinement: "Surface refinement",
           repairMesh: "Repair topology",
           segmentMesh: "Segment surfaces",
           smoothMesh: "Smooth mesh",
@@ -434,7 +447,9 @@ export function MeshTools({
             </p>
           </>
         )}
-        {["fineAlign", "globalAlignment"].includes(tool) && (
+        {["fineAlign", "globalAlignment", "surfaceRefinement"].includes(
+          tool,
+        ) && (
           <>
             <label className="select-field">
               Registration target
@@ -477,23 +492,42 @@ export function MeshTools({
               max={100}
               step={1}
             />
-            <label className="field">
-              <span>
-                Fitting sample count:{" "}
-                <output>{fittingSampleCount.toLocaleString()}</output>
-              </span>
-              <input
-                aria-label="Fitting sample count"
-                type="range"
-                min={3}
-                max={100000}
+            <details>
+              <summary>Advanced ICP settings</summary>
+              <p>
+                Fitting samples control computation cost. Maximum iterations
+                limits the search; numerical stopping uses a tolerance of
+                0.00001. Target overlap RMS is the separate accuracy goal.
+              </p>
+              <label className="field">
+                <span>
+                  Fitting sample count:{" "}
+                  <output>{fittingSampleCount.toLocaleString()}</output>
+                </span>
+                <input
+                  aria-label="Fitting sample count"
+                  type="range"
+                  min={3}
+                  max={100000}
+                  step={1}
+                  value={fittingSampleCount}
+                  onChange={(event) =>
+                    setFittingSampleCount(event.target.valueAsNumber)
+                  }
+                />
+              </label>
+              <Field
+                label="ICP maximum iterations"
+                value={icpIterations}
+                onChange={setIcpIterations}
+                min={1}
                 step={1}
-                value={fittingSampleCount}
-                onChange={(event) =>
-                  setFittingSampleCount(event.target.valueAsNumber)
-                }
               />
-            </label>
+            </details>
+          </>
+        )}
+        {tool === "surfaceRefinement" && (
+          <>
             <fieldset>
               <legend>Additional fixed surfaces</legend>
               {targets
@@ -561,13 +595,6 @@ export function MeshTools({
                 step={1}
               />
             )}
-            <Field
-              label="ICP maximum iterations"
-              value={icpIterations}
-              onChange={setIcpIterations}
-              min={1}
-              step={1}
-            />
             <button
               className="wide"
               disabled={
@@ -614,54 +641,64 @@ export function MeshTools({
         )}
         {tool === "fineAlign" && (
           <>
-            <button
-              className="wide"
-              disabled={!targets.some((entity) => entity.id === targetId)}
-              onClick={() => {
-                const target = targets.find((entity) => entity.id === targetId);
-                if (selected && target)
-                  void run(
-                    () => ({
-                      kind: "icp",
-                      positions: selected.positions,
-                      sourceTriangleMask:
-                        selected.kind === "pointcloud"
-                          ? undefined
-                          : alignmentTriangleMask(
-                              selected.positions.length / 9,
-                              triangleSelection,
-                              selected.meshSelection?.hidden,
-                            ),
-                      target: registrationTargetPoints(target),
-                      maxDistance: distance,
-                      maxIterations: icpIterations,
-                      sampleSize: fittingSampleCount,
-                      targetSampleSize: 20000,
-                      targetRms,
-                      overlapPercent,
-                      tolerance: 0.00001,
-                    }),
-                    "Fine align scans with dense ICP",
+            <div className="alignment-actions">
+              <button
+                className="wide"
+                disabled={!targets.some((entity) => entity.id === targetId)}
+                onClick={() => {
+                  const target = targets.find(
+                    (entity) => entity.id === targetId,
                   );
-              }}
-            >
-              Fine align with dense ICP
-            </button>
-            <p className="muted">
-              {selected?.kind === "pointcloud"
-                ? "The whole cloud moves. "
-                : triangleSelection?.some((value) => value !== 0)
-                  ? "Selected visible triangles drive fine alignment; the whole scan moves. "
-                  : "Visible triangles drive fine alignment; the whole scan moves. "}
-              ICP fits up to {fittingSampleCount.toLocaleString()} source points
-              against the full target cloud. Target accuracy uses overlap RMS
-              for the closest {overlapPercent}% of eligible source points within
-              the search distance. Whole-cloud RMS includes every eligible
-              source point, including unmatched regions. Both final metrics are
-              verified independently of fitting samples. Start from approximate
-              alignment; symmetric geometry can settle into an incorrect local
-              match.
-            </p>
+                  if (selected && target)
+                    void run(
+                      () => ({
+                        kind: "icp",
+                        positions: selected.positions,
+                        sourceTriangleMask:
+                          selected.kind === "pointcloud"
+                            ? undefined
+                            : alignmentTriangleMask(
+                                selected.positions.length / 9,
+                                triangleSelection,
+                                selected.meshSelection?.hidden,
+                              ),
+                        target: registrationTargetPoints(target),
+                        ...fineAlignmentInput(selected, target),
+                        maxDistance: distance,
+                        maxIterations: icpIterations,
+                        sampleSize: fittingSampleCount,
+                        targetSampleSize: 20000,
+                        targetRms,
+                        overlapPercent,
+                        tolerance: 0.00001,
+                      }),
+                      "Fine align scans with dense ICP",
+                    );
+                }}
+              >
+                Fine align with dense ICP
+              </button>
+              <HelpPopover label="Fine alignment help">
+                <p>
+                  {selected?.kind === "pointcloud"
+                    ? "The whole cloud moves. "
+                    : triangleSelection?.some((value) => value !== 0)
+                      ? "Selected visible triangles drive fine alignment; the whole scan moves. "
+                      : "Visible triangles drive fine alignment; the whole scan moves. "}
+                  ICP fits up to {fittingSampleCount.toLocaleString()} source
+                  points against the full target, which stays fixed. Available
+                  normals reject matches over 60° apart. Target accuracy uses
+                  overlap RMS for the closest {overlapPercent}% of eligible
+                  source points within the search distance. Whole-cloud RMS
+                  includes every eligible source point, including unmatched
+                  regions. Both final metrics are verified independently of
+                  fitting samples. Start from approximate alignment; symmetric
+                  geometry can settle into an incorrect local match. If overlap
+                  is insufficient, geometry stays unchanged; lower expected
+                  overlap or improve the starting alignment.
+                </p>
+              </HelpPopover>
+            </div>
           </>
         )}
         {tool === "globalAlignment" && (
@@ -728,93 +765,7 @@ export function MeshTools({
           </>
         )}
       </fieldset>
-      {result && (
-        <div role="status" aria-label="Mesh operation result">
-          <h4>Result</h4>
-          {result.registration &&
-            "terminationReason" in result.registration && (
-              <p>
-                {fineAlignmentStatus(result.registration.terminationReason)} ·
-                Overlap RMS {result.registration.overlapRms.toPrecision(4)} mm ·
-                Target {result.registration.targetRms} mm
-              </p>
-            )}
-          {result.registration && "overlapRms" in result.registration && (
-            <>
-              <p>
-                Whole-cloud RMS{" "}
-                {result.registration.wholeCloudRms.toPrecision(4)} mm
-              </p>
-              <p>
-                Expected overlap {result.registration.overlapPercent}% · Overlap
-                points {result.registration.overlapPoints} /{" "}
-                {result.registration.requiredOverlapPoints} required · Within
-                search distance{" "}
-                {(result.registration.overlapFraction * 100).toFixed(1)}%
-              </p>
-              <p>
-                Fitting samples {result.registration.fittingSamples} /{" "}
-                {result.registration.sampleSize} requested
-              </p>
-              {!result.registration.overlapSatisfied && (
-                <p role="alert">
-                  Insufficient overlap within the search distance; target
-                  accuracy not reached.
-                </p>
-              )}
-            </>
-          )}
-          {result.topology && (
-            <dl>
-              {Object.entries(result.topology).map(([key, value]) => (
-                <div key={key}>
-                  <dt>{key.replace(/([A-Z])/g, " $1")}</dt>
-                  <dd>{value.toLocaleString()}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          {Object.entries(result.diagnostics)
-            .filter(
-              ([key]) =>
-                !["pointCloudPose", "localBuffersRetained"].includes(key),
-            )
-            .filter(
-              ([key]) =>
-                !(result.registration && "overlapRms" in result.registration) ||
-                ["iterations", "maxError", "rejectedPoints"].includes(key),
-            )
-            .map(([key, value]) => (
-              <p key={key}>
-                {key.replace(/([A-Z])/g, " $1")}: {String(value)}
-              </p>
-            ))}
-          {result.segmentClassifications?.map((classification, index) => (
-            <p key={index}>
-              Region {index + 1}:{" "}
-              {classification.kind === "freeform"
-                ? "unclassified / freeform"
-                : classification.kind}{" "}
-              · {classification.samples} samples
-              {classification.rms !== undefined
-                ? ` · RMS ${classification.rms.toPrecision(4)} mm · max ${classification.maxError?.toPrecision(4)} mm`
-                : ""}{" "}
-              · tolerance {classification.tolerance.toPrecision(4)} mm ·{" "}
-              {classification.reason}
-            </p>
-          ))}
-          {result.repairSheets?.map((sheet, index) => (
-            <p key={`sheet-${index}`}>
-              Sheet {index + 1}: {sheet.triangles.toLocaleString()} triangles ·{" "}
-              {sheet.watertight
-                ? "watertight topology"
-                : `${sheet.boundaryEdges} boundary edges`}{" "}
-              · {sheet.nonManifoldEdges} nonmanifold edges ·{" "}
-              {sheet.nonManifoldVertices} nonmanifold vertices
-            </p>
-          ))}
-        </div>
-      )}
+      {result && <MeshOperationResult result={result} />}
       <p className="muted">Cancel releases the operation worker immediately.</p>
     </Panel>
   );

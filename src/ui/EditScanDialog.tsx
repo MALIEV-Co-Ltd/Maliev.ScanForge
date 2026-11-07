@@ -1,5 +1,5 @@
 import "./ToolPanel.css";
-import type { Positions } from "../types";
+import type { IndexedMesh, Positions } from "../types";
 import { useState } from "react";
 import { ScanDiagnostics } from "./ScanDiagnostics";
 import type { ScanClipBounds } from "../scan-clip-box";
@@ -14,6 +14,7 @@ export interface EditScanDialogProps {
   onConnected?: () => void;
   pointTools?: import("react").ReactNode;
   positions: Positions;
+  sourceIndexed?: IndexedMesh;
   tool: ScanSelectionTool;
   onTool: (tool: ScanSelectionTool) => void;
   angle: number;
@@ -199,6 +200,7 @@ export function EditScanDialog(props: EditScanDialogProps) {
           ) : (
             <ScanDiagnostics
               positions={props.positions}
+              sourceIndexed={props.sourceIndexed}
               onEdit={props.onTopology}
             />
           )}

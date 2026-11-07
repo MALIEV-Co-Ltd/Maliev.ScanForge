@@ -1,0 +1,79 @@
+{
+  "scope": "Parent cleanup of one project-encoding worker's transient IndexedDB staging record after worker termination; shared GUI and MCP export path.",
+  "baseCommit": "8ec384bc",
+  "buildFingerprint": "scanforge-729373536e64f6dd",
+  "sourceSha256": {
+    "src/project-encoding-client.ts": "28be980b865d61712d55a05e5fa5bfb304a383d07d58d6b3057b6b5035756ead",
+    "src/project-encoding-worker.ts": "b8545a70f108691d6d48af33c77bda31b7aeb0f4344036be1c3ce0b0b9226e7d",
+    "src/project-file-codec.ts": "7442fbc9f48329f301e3d0d856f8fdaad9943990308df2bd50bed202c597cef6",
+    "src/transient-blob-storage.ts": "c6362e963bd9d761cf73f3681628ded0f81f4125cde57619688587196b47158f"
+  },
+  "verification": {
+    "fullSuite": {
+      "passed": 50716,
+      "expectedFailures": 2,
+      "skipped": 76,
+      "peakJobBytes": 1442598912,
+      "cleanupConfirmed": true
+    },
+    "productionBuild": "passed, including 15 typecheck batches",
+    "publicMcpBrowserSmoke": {
+      "passed": true,
+      "peakJobBytes": 1761763328,
+      "cleanupConfirmed": true
+    },
+    "realBrowserWorkerTermination": {
+      "passed": true,
+      "peakJobBytes": 552030208,
+      "unrelatedRecordPreserved": true
+    },
+    "realBrowserByteComparison": {
+      "passed": true,
+      "bytes": 113118064,
+      "sha256": "3f72ab60119d9b5dd209d08f10a5bb7e3142b355f57fc69c3b1a47cd79ab5751",
+      "checkpointBytes": 84836900,
+      "remainingRecords": 0,
+      "historyPreserved": true,
+      "peakJobBytes": 1458737152
+    },
+    "publicMcpOriginalPlyCancellation": {
+      "passed": true,
+      "sourceFaces": 3691133,
+      "interleaving": "injected worker storage-commit hold and handshake",
+      "sourceCutterExtractGeometryUnchanged": true,
+      "unrelatedRecordPreserved": true,
+      "subsequentExportBytes": 475563378,
+      "peakJobBytes": 3755372544,
+      "cleanupConfirmed": true
+    },
+    "originalPlyFullRoundTrip": {
+      "passed": true,
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776794,
+      "exportBytes": 475563378,
+      "streamAndDownloadedFileSha256": "61264b5b623472735b9c73df0c863dd8f148008fed3a6f4144eb0a2c20a3c94f",
+      "guiReopenAndUndoRedo": true,
+      "peakJobBytes": 4103761920,
+      "cleanupConfirmed": true
+    },
+    "originalPlyFullRoundTripRepeat": {
+      "passed": true,
+      "codeCommit": "c639f591d17d4d131b89f3723db4896ac6e22d0a",
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776794,
+      "exportBytes": 475563378,
+      "streamAndDownloadedFileSha256": "b05d0846d94eda2813602c49c6c3264bd9e6b670e751fa293274fe11dbc2ee49",
+      "guiReopenAndUndoRedo": true,
+      "peakJobBytes": 4209803264,
+      "cleanupConfirmed": true
+    }
+  },
+  "limitations": [
+    "The cancellation interleaving was injected; natural occurrence and GUI Save cancellation were not demonstrated.",
+    "A failed cleanup still relies on the existing expiry sweep; page shutdown cleanup is best effort.",
+    "The two expected failures cover unresolved low-level restore ownership races; no normal GUI or MCP trigger has been established.",
+    "The native comparison, resource repeatability, integration and milestone closure gates remain open."
+  ]
+}

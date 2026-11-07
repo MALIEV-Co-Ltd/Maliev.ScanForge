@@ -31,6 +31,8 @@ it("bounds parallelism by geometry size, CPU availability and memory", () => {
   vi.stubGlobal("navigator", { hardwareConcurrency: 8, deviceMemory: 8 });
   expect(selectionWorkerCount(99_999)).toBe(1);
   expect(selectionWorkerCount(100_000)).toBe(2);
+  expect(selectionWorkerCount(400_000, true)).toBe(1);
+  expect(selectionWorkerCount(400_000)).toBe(2);
   expect(selectionWorkerCount(1_000_000)).toBe(1);
   vi.stubGlobal("navigator", { hardwareConcurrency: 2, deviceMemory: 8 });
   expect(selectionWorkerCount(100_000)).toBe(1);
@@ -50,6 +52,22 @@ it("initializes point workers with one mask slot per XYZ sample", async () => {
     expect(worker.sent[1].range).toEqual({ start: 0, end: 2 });
     worker.onmessage?.({ data: { mask: new Uint8Array([1, 0]), start: 0 } });
     expect([...(await pending)]).toEqual([1, 0]);
+  } finally {
+    index.dispose();
+  }
+});
+
+it("sends precise mesh positions to the selection worker without Float32 rounding", () => {
+  vi.stubGlobal("Worker", WorkerDouble);
+  const positions = [100000000, 0, 0, 100000004, 0, 0, 100000004, 4, 0];
+  const original = [...positions];
+  const index = new AsyncScreenSelectionIndex(positions);
+  try {
+    index.prepare();
+    const sent = WorkerDouble.latest.sent[0].initialize.positions;
+    expect(sent).toBeInstanceOf(Float64Array);
+    expect(sent[3]).toBe(100000004);
+    expect(positions).toEqual(original);
   } finally {
     index.dispose();
   }

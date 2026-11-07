@@ -154,7 +154,7 @@ class ControllerWorker {
     }));
     const rpc = (
       request: Partial<Extract<WorkerReply, { kind: "rpc" }>> & {
-        action: "check" | "clock" | "pass" | "progress";
+        action: "check" | "clock" | "pass" | "pose" | "progress";
       },
     ) => {
       const id = ++sequence;
@@ -193,6 +193,18 @@ class ControllerWorker {
       });
       return;
     }
+    if (
+      ["pose", "bad-pose"].includes(ControllerWorker.behavior) &&
+      !rpc({
+        action: "pose",
+        pass: 0,
+        ordered:
+          ControllerWorker.behavior === "bad-pose"
+            ? [states[0], states[0]]
+            : states,
+      })
+    )
+      return;
     if (
       !rpc({ action: "check" }) ||
       !rpc({ action: "pass", pass: 0, ordered: states }) ||
@@ -267,6 +279,88 @@ beforeEach(() => {
   vi.stubGlobal("crossOriginIsolated", true);
   vi.stubGlobal("navigator", { hardwareConcurrency: 2 });
   vi.stubGlobal("Worker", ControllerWorker);
+});
+
+it("forwards validated intermediate poses from the controller worker", async () => {
+  ControllerWorker.behavior = "pose";
+  const source = sceneInput();
+  const onPose = vi.fn();
+  await runSharedGlobalController(
+    source,
+    source,
+    { clock: () => 1, onPose },
+    "target-average",
+    5,
+  );
+  expect(onPose).toHaveBeenCalledOnce();
+  expect(onPose.mock.calls[0][0]).toBe(0);
+  expect(onPose.mock.calls[0][1].map((s: { id: string }) => s.id)).toEqual([
+    "a",
+    "b",
+  ]);
+  expect(trace).toContain("ack:pose");
+});
+it("propagates an intermediate pose callback failure and terminates the controller", async () => {
+  ControllerWorker.behavior = "pose";
+  const source = sceneInput();
+  const sentinel = Error("pose callback failed");
+  await expect(
+    runSharedGlobalController(
+      source,
+      source,
+      {
+        clock: () => 1,
+        onPose: () => {
+          throw sentinel;
+        },
+      },
+      "target-average",
+      5,
+    ),
+  ).rejects.toBe(sentinel);
+  expect(ControllerWorker.instances[0].terminated).toBe(true);
+});
+it("aborts an isolated controller when cancellation occurs during a pose callback", async () => {
+  ControllerWorker.behavior = "pose";
+  const source = sceneInput();
+  const abort = new AbortController();
+  const reason = new DOMException("cancelled during pose", "AbortError");
+  await expect(
+    runSharedGlobalController(
+      source,
+      source,
+      {
+        clock: () => 1,
+        signal: abort.signal,
+        onPose: () => abort.abort(reason),
+      },
+      "target-average",
+      5,
+    ),
+  ).rejects.toBe(reason);
+  expect(
+    Atomics.load(
+      new Int32Array(ControllerWorker.instances[0].start!.control),
+      2,
+    ),
+  ).toBe(1);
+  expect(ControllerWorker.instances[0].terminated).toBe(true);
+});
+it("rejects malformed intermediate pose identities before publication", async () => {
+  ControllerWorker.behavior = "bad-pose";
+  const source = sceneInput();
+  const onPose = vi.fn();
+  await expect(
+    runSharedGlobalController(
+      source,
+      source,
+      { clock: () => 1, onPose },
+      "target-average",
+      5,
+    ),
+  ).rejects.toThrow();
+  expect(onPose).not.toHaveBeenCalled();
+  expect(ControllerWorker.instances[0].terminated).toBe(true);
 });
 afterEach(() => {
   ControllerWorker.behavior = "normal";

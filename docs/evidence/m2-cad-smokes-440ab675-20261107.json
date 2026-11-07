@@ -1,0 +1,39 @@
+{
+  "scope": "Current candidate CAD and curvature kernel smoke tests",
+  "candidate": "440ab675",
+  "cad": {
+    "command": "npm run test:cad",
+    "passed": true,
+    "nativeCadAlignmentFaces": 24,
+    "nativeCadAlignmentBoxes": 3,
+    "nativeDatumMatrices": 338,
+    "inputBrepMutations": [],
+    "peakJobBytes": 813015040,
+    "cleanupConfirmed": true
+  },
+  "curvature": {
+    "command": "npm run test:cad:curvature",
+    "passed": true,
+    "sharedAsyncEdit": {
+      "facets": 1702,
+      "vertices": 884,
+      "maxDistance": 0,
+      "missing": 0,
+      "extra": 0,
+      "remainingHandles": 0
+    },
+    "workerProtocol": {
+      "checks": 11,
+      "vertices": 1529,
+      "facets": 2984,
+      "remainingHandles": 0
+    },
+    "peakJobBytes": 715612160,
+    "cleanupConfirmed": true
+  },
+  "limitBytes": 4294967296,
+  "limitations": [
+    "Curvature uses the pinned CAD protocol in a VM transport, not the browser or public MCP.",
+    "These checks do not substitute for current native QuickSurface comparisons or the remaining M2 acceptance gates."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "command": [
+    "node",
+    "C:/Users/Shoung/AppData/Roaming/npm/node_modules/rea-agents/scripts/rea.mjs",
+    "function",
+    "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/native-capture-42612/runtime-analysis-only.exe",
+    "0x14032c400",
+    "--provider",
+    "ghidra",
+    "--format",
+    "json"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 180,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": false,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 2847506432,
+  "totalProcesses": 152,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 17991761920,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 31932,
+  "error": "TimeoutError: Granted work window expired",
+  "jobTerminationRequested": true,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 177.0270814000105,
+  "outerLeaseExceeded": false,
+  "peakWithinLimit": true,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-07T04:51:40.502891+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

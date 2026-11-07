@@ -1,0 +1,21 @@
+{
+  "scope": "Isolated independent-array restore and extra UI-render diagnostic; no application change adopted",
+  "baseCommit": "ba577c84",
+  "candidate": "Disable the decoder's mutable ordinary numeric-array reuse; source SHA-256 7d770246eae19b85c896d2936c1b7d5bcd7950680727bc8d5f468dffc072576e. The production build had this one diagnostic change and bundle scanforge-6929e89a9c0ab5d8.",
+  "method": "On the original 3691133-face PLY-3, run GUI Split and Extract, stream the entire project artifact through public MCP, verify the downloaded file hash, and reopen the same file in the GUI. Open and close Settings after the GUI reports the import, then run the ordinary geometry and history verification. This adds an actual UI state change but does not force garbage collection or prove which references React or the browser retained.",
+  "observed": {
+    "downloadBytes": 475563378,
+    "streamAndFileSha256": "295b455edf610a27ed6dd7876f4be1efcb944212ca435a33ee4f5f760a149fd7",
+    "guiImportedPageHeapBytes": 1100190835,
+    "afterSettingsPageHeapBytes": 1101922953,
+    "result": "The project reported imported and Settings opened and closed, but the subsequent checks did not complete. The browser reported a fatal out-of-memory error. The guarded run failed above 4 GiB; zero owned processes remained.",
+    "peakJobBytes": 4296900608,
+    "jobLimitBytes": 4294967296
+  },
+  "interpretation": "This single extra UI refresh did not reduce the measured page heap or make the replay pass. It neither proves a React retention mechanism nor excludes one; process timing and garbage collection can vary. The independent-array candidate and M2 resource gate remain open.",
+  "cleanup": "The generated download was deleted after its hash matched; the isolated worktree and verified dependency junction were removed.",
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-restore-render-diagnostic-20261107.mjs",
+  "driverSha256": "5605187f3702ee5557249a05887c7cd844e6f04aa62a629ca73071358608b71d",
+  "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-restore-render-guard-20261107.json",
+  "guardSha256": "101053d78d395db24714556174c938e75ef7833fa6af6d8edd2c143b08a642c9"
+}

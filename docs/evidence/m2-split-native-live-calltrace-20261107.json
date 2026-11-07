@@ -1,0 +1,454 @@
+{
+  "evidence_id": "ev_16e4e024795e9cbe23e15ebe8c9d91dfd9988b24763084a3660a0d24fb7c4db4",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "9037ff7f-124f-4b57-9750-6a1c5690447c"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "9037ff7f-124f-4b57-9750-6a1c5690447c",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "name": "rea-da052ecd-52b4-40dc-9007-d8d66bd6d1b9"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "module",
+          "base": "0x140000000",
+          "path": "C:\\Program Files\\KVS Ltd\\QUICKSURFACE2026\\QuickSurface.exe",
+          "size": 150818816
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "67df80",
+          "bytes": "488bc45741544155415641574881ec6008000048c7442440feffffff48895810"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "67cec0",
+          "bytes": "488bc44889501057415641574881eca000000048c74080feffffff4889580848"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "32a500",
+          "bytes": "488bc44489482048894808555356574154415541564157488da838ffffff4881"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "3290a0",
+          "bytes": "488bc453565741544155415641574881ec0004000048c780f8fcfffffeffffff"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "32c400",
+          "bytes": "405556574154415541564157488d6c24e04881ec2001000048c74580feffffff"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "32dae0",
+          "bytes": "44894c24204489442418555356574154415541564157488d6c24884881ec7801"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "32f980",
+          "bytes": "4055565741544155415641574883ec7048c7442468feffffff48899c24c00000"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "binding",
+          "rva": "330350",
+          "bytes": "40554154415541564157488dac24b0ceffffb850320000e8d4b2a200482be048"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "ready"
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "67df80",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x7ffd11425e14",
+          "backtrace": [
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934",
+            "0x7ffd11378279",
+            "0x7ffdd98c52e6",
+            "0x7ffdd98c4b6c"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "67cec0",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14067e276",
+          "backtrace": [
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934",
+            "0x7ffd11378279",
+            "0x7ffdd98c52e6"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32a500",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14067d15b",
+          "backtrace": [
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934",
+            "0x7ffd11378279"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "3290a0",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14032ac30",
+          "backtrace": [
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32c400",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x140329bbd",
+          "backtrace": [
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "3290a0",
+          "n": 2,
+          "thread": 36336,
+          "returnAddress": "0x14032ac30",
+          "backtrace": [
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "3290a0",
+          "n": 3,
+          "thread": 36336,
+          "returnAddress": "0x14032ac30",
+          "backtrace": [
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e",
+            "0x7ffd114d5934"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32c400",
+          "n": 2,
+          "thread": 36336,
+          "returnAddress": "0x140329bbd",
+          "backtrace": [
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32c400",
+          "n": 3,
+          "thread": 36336,
+          "returnAddress": "0x140329bbd",
+          "backtrace": [
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02",
+            "0x7ffd114d556e"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32dae0",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14032c65b",
+          "backtrace": [
+            "0x14032c65b",
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1",
+            "0x7ffd114d7d02"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32f980",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14032e03a",
+          "backtrace": [
+            "0x14032e03a",
+            "0x14032c65b",
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "330350",
+          "n": 1,
+          "thread": 36336,
+          "returnAddress": "0x14032fa56",
+          "backtrace": [
+            "0x14032fa56",
+            "0x14032e03a",
+            "0x14032c65b",
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "32f980",
+          "n": 2,
+          "thread": 36336,
+          "returnAddress": "0x14032e046",
+          "backtrace": [
+            "0x14032e046",
+            "0x14032c65b",
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89",
+            "0x7ffd114d7da1"
+          ]
+        }
+      },
+      {
+        "script_id": "da052ecd-52b4-40dc-9007-d8d66bd6d1b9",
+        "type": "send",
+        "payload": {
+          "event": "call",
+          "rva": "330350",
+          "n": 2,
+          "thread": 36336,
+          "returnAddress": "0x14032fa56",
+          "backtrace": [
+            "0x14032fa56",
+            "0x14032e046",
+            "0x14032c65b",
+            "0x140329bbd",
+            "0x14032ac30",
+            "0x14067d15b",
+            "0x14067e276",
+            "0x7ffd11425e14",
+            "0x7ffd11450122",
+            "0x7ffd114d8c89"
+          ]
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

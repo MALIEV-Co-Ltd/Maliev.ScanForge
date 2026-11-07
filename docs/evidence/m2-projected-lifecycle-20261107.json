@@ -1,0 +1,594 @@
+{
+  "origin": "http://127.0.0.1:5173",
+  "browser": "Browser plugin unavailable; disposable Playwright Chrome and real public MCP",
+  "startedAt": "2026-11-06T22:23:48.284Z",
+  "passed": true,
+  "checks": [
+    "Three cancellations observed inside a real triangulating processing worker",
+    "No cancelled mesh/history/revision or source-coordinate change",
+    "Exact request retries return cancelled receipt without launching another worker",
+    "500000-point successor succeeds after cancellation, worker terminates, Undo restores source",
+    "500001 points rejected before worker construction without mutation",
+    "Successful GUI mesh reports success after selecting its new output, not cancellation",
+    "Real ASC deterministic surface patch GUI/public-MCP coordinate+topology parity",
+    "Real source positions/normals preserved, single history step and exact Undo/Redo"
+  ],
+  "resourceScope": "Worker constructor/terminate/message observer plus actual Playwright Worker close events; real native Worker implementation and unmodified processing results. JS heap snapshots are not aggregate process RSS or a process-memory-cap certificate.",
+  "cancellations": [
+    {
+      "run": 1,
+      "observedStage": "Triangulating projected surface",
+      "terminalStatus": "cancelled",
+      "unchangedRevision": 2,
+      "undo": 0,
+      "probe": {
+        "records": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 2975.814999997616,
+            "terminated": 4158.479999996722,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0442368,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1015808,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1540096,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          }
+        ],
+        "active": 0,
+        "jsHeapBytes": 98809592,
+        "workerTargets": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:51.936Z",
+            "closedAt": "2026-11-06T22:23:54.102Z"
+          }
+        ],
+        "activeWorkerTargets": 0
+      },
+      "retryRetainedSameJob": true
+    },
+    {
+      "run": 2,
+      "observedStage": "Triangulating projected surface",
+      "terminalStatus": "cancelled",
+      "unchangedRevision": 2,
+      "undo": 0,
+      "probe": {
+        "records": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 2975.814999997616,
+            "terminated": 4158.479999996722,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0442368,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1015808,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1540096,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 5386.284999996424,
+            "terminated": 6506.079999998212,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0606208,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1327104,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1933312,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          }
+        ],
+        "active": 0,
+        "jsHeapBytes": 98983029,
+        "workerTargets": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:51.936Z",
+            "closedAt": "2026-11-06T22:23:54.102Z"
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:54.331Z",
+            "closedAt": "2026-11-06T22:23:56.498Z"
+          }
+        ],
+        "activeWorkerTargets": 0
+      },
+      "retryRetainedSameJob": true
+    },
+    {
+      "run": 3,
+      "observedStage": "Triangulating projected surface",
+      "terminalStatus": "cancelled",
+      "unchangedRevision": 2,
+      "undo": 0,
+      "probe": {
+        "records": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 2975.814999997616,
+            "terminated": 4158.479999996722,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0442368,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1015808,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1540096,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 5386.284999996424,
+            "terminated": 6506.079999998212,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0606208,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1327104,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1933312,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "started": 7789.945000000298,
+            "terminated": 8959.964999996126,
+            "stages": [
+              {
+                "fraction": 0,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.0540672,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.1081344,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.15728640000000002,
+                "stage": "Validating projected cloud"
+              },
+              {
+                "fraction": 0.25,
+                "stage": "Triangulating projected surface"
+              }
+            ],
+            "result": false,
+            "error": null
+          }
+        ],
+        "active": 0,
+        "jsHeapBytes": 64814136,
+        "workerTargets": [
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:51.936Z",
+            "closedAt": "2026-11-06T22:23:54.102Z"
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:54.331Z",
+            "closedAt": "2026-11-06T22:23:56.498Z"
+          },
+          {
+            "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+            "openedAt": "2026-11-06T22:23:56.756Z",
+            "closedAt": "2026-11-06T22:23:58.939Z"
+          }
+        ],
+        "activeWorkerTargets": 0
+      },
+      "retryRetainedSameJob": true
+    }
+  ],
+  "maximumAccepted": {
+    "diagnostics": {
+      "algorithm": "projected-delaunay-2.5d",
+      "projectionPlane": "xy",
+      "sourcePoints": 500000,
+      "uniqueProjectedPoints": 500000,
+      "duplicatePoints": 0,
+      "triangles": 997931,
+      "prunedTriangles": 2017,
+      "maxEdgeLength": 0.1,
+      "normalsRequired": false,
+      "summary": "Created 997931 projected triangles; source cloud preserved. Gaps are controlled by maximum 3D edge length."
+    },
+    "probe": {
+      "records": [
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 2975.814999997616,
+          "terminated": 4158.479999996722,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.0442368,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.1015808,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.1540096,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            }
+          ],
+          "result": false,
+          "error": null
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 5386.284999996424,
+          "terminated": 6506.079999998212,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.0606208,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.1327104,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.1933312,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            }
+          ],
+          "result": false,
+          "error": null
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 7789.945000000298,
+          "terminated": 8959.964999996126,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.0540672,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.1081344,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.15728640000000002,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            }
+          ],
+          "result": false,
+          "error": null
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 16243.739999994636,
+          "terminated": 18631.869999997318,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.049152,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.10321920000000001,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.15728640000000002,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            },
+            {
+              "fraction": 0.35,
+              "stage": "Pruning long mesh edges"
+            },
+            {
+              "fraction": 0.5896284606799553,
+              "stage": "Pruning long mesh edges"
+            },
+            {
+              "fraction": 0.8394974538676011,
+              "stage": "Pruning long mesh edges"
+            },
+            {
+              "fraction": 0.85,
+              "stage": "Preparing projected mesh"
+            },
+            {
+              "fraction": 0.9333211915453072,
+              "stage": "Preparing projected mesh"
+            },
+            {
+              "fraction": 1,
+              "stage": "Projected point-cloud mesh complete"
+            },
+            {
+              "fraction": 0.99,
+              "stage": "Preparing mesh display"
+            }
+          ],
+          "result": true,
+          "error": null
+        }
+      ],
+      "active": 0,
+      "jsHeapBytes": 221689687,
+      "workerTargets": [
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:23:51.936Z",
+          "closedAt": "2026-11-06T22:23:54.102Z"
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:23:54.331Z",
+          "closedAt": "2026-11-06T22:23:56.498Z"
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:23:56.756Z",
+          "closedAt": "2026-11-06T22:23:58.939Z"
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:24:05.209Z",
+          "closedAt": "2026-11-06T22:24:07.439Z"
+        }
+      ],
+      "activeWorkerTargets": 0
+    },
+    "sourcePositionsSha256": "e3fd66cc1576405849fb76798cbdc1d21f299bfc81edb4fd1fa64abc5223c2fc"
+  },
+  "overLimit": {
+    "points": 500001,
+    "error": {
+      "code": "OPERATION_FAILED",
+      "message": "Projected meshing requires 3 to 500,000 points; reduce the cloud first."
+    },
+    "probe": {
+      "records": [],
+      "active": 0,
+      "jsHeapBytes": 140302572,
+      "workerTargets": [],
+      "activeWorkerTargets": 0
+    },
+    "unchangedRevision": 8,
+    "undo": 0
+  },
+  "realSurface": {
+    "manifest": "../real-surface/manifest.json",
+    "diagnostics": {
+      "algorithm": "projected-delaunay-2.5d",
+      "projectionPlane": "xz",
+      "sourcePoints": 333,
+      "uniqueProjectedPoints": 333,
+      "duplicatePoints": 0,
+      "triangles": 275,
+      "prunedTriangles": 374,
+      "maxEdgeLength": 0.35,
+      "normalsRequired": false,
+      "summary": "Created 275 projected triangles; source cloud preserved. Gaps are controlled by maximum 3D edge length."
+    },
+    "sourcePositionsSha256": "690de94e0d066bef7b18836c85b167a611eb6c6d8562a8ac79b2d751b9cb270f",
+    "probe": {
+      "records": [
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 30569.704999998212,
+          "terminated": 30916.75,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            },
+            {
+              "fraction": 0.35,
+              "stage": "Pruning long mesh edges"
+            },
+            {
+              "fraction": 0.85,
+              "stage": "Preparing projected mesh"
+            },
+            {
+              "fraction": 1,
+              "stage": "Projected point-cloud mesh complete"
+            },
+            {
+              "fraction": 0.99,
+              "stage": "Preparing mesh display"
+            }
+          ],
+          "result": true,
+          "error": null
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 31253.719999998808,
+          "terminated": 31372.894999995828,
+          "stages": [],
+          "result": false,
+          "error": null
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "started": 31810.044999994338,
+          "terminated": 32233.054999999702,
+          "stages": [
+            {
+              "fraction": 0,
+              "stage": "Validating projected cloud"
+            },
+            {
+              "fraction": 0.25,
+              "stage": "Triangulating projected surface"
+            },
+            {
+              "fraction": 0.35,
+              "stage": "Pruning long mesh edges"
+            },
+            {
+              "fraction": 0.85,
+              "stage": "Preparing projected mesh"
+            },
+            {
+              "fraction": 1,
+              "stage": "Projected point-cloud mesh complete"
+            },
+            {
+              "fraction": 0.99,
+              "stage": "Preparing mesh display"
+            }
+          ],
+          "result": true,
+          "error": null
+        }
+      ],
+      "active": 0,
+      "jsHeapBytes": 165209701,
+      "workerTargets": [
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:24:19.406Z",
+          "closedAt": "2026-11-06T22:24:19.723Z"
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:24:20.074Z",
+          "closedAt": "2026-11-06T22:24:20.207Z"
+        },
+        {
+          "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
+          "openedAt": "2026-11-06T22:24:20.643Z",
+          "closedAt": "2026-11-06T22:24:21.038Z"
+        }
+      ],
+      "activeWorkerTargets": 0
+    }
+  },
+  "errors": [],
+  "finishedAt": "2026-11-06T22:24:21.479Z"
+}

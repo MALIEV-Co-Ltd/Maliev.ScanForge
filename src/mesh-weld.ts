@@ -8,6 +8,7 @@ export function weldMeshPositions(
   positions: Positions,
   tolerance: number,
   progress?: (fraction: number) => void,
+  admitBytes?: (simultaneousBytes: number) => void,
 ): { vertices: Float64Array; triangles: Uint32Array } {
   if (!positions.length || positions.length % 9)
     throw new Error("Expected complete triangle coordinates.");
@@ -15,6 +16,7 @@ export function weldMeshPositions(
     throw new Error("Weld tolerance must be positive and finite.");
   progress?.(0);
   const corners = positions.length / 3;
+  admitBytes?.(corners * 4 + Math.min(corners, 1024) * 28 + 8192);
   const triangles = new Uint32Array(corners);
   let capacity = Math.min(corners, 1024),
     count = 0,
@@ -53,6 +55,7 @@ export function weldMeshPositions(
       throw new Error("Mesh weld exceeds cell index capacity.");
     const oldHead = head,
       oldTail = tail;
+    admitBytes?.(triangles.byteLength + capacity * 28 + oldHead.length * 24);
     head = new Uint32Array(oldHead.length * 2);
     tail = new Uint32Array(head.length);
     for (let slot = 0; slot < oldHead.length; slot++) {
@@ -107,6 +110,12 @@ export function weldMeshPositions(
         }
     if (id < 0) {
       if (count === capacity) {
+        admitBytes?.(
+          triangles.byteLength +
+            capacity * 28 +
+            Math.min(corners, capacity * 2) * 28 +
+            head.length * 8,
+        );
         capacity = Math.min(corners, capacity * 2);
         const grown = new Float64Array(capacity * 3);
         grown.set(vertices);
@@ -130,5 +139,8 @@ export function weldMeshPositions(
     }
     triangles[i / 3] = id;
   }
+  admitBytes?.(
+    triangles.byteLength + capacity * 28 + head.length * 8 + count * 24,
+  );
   return { vertices: vertices.slice(0, count * 3), triangles };
 }

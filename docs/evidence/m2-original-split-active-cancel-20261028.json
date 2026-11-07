@@ -1,0 +1,29 @@
+{
+  "scope": "Public MCP cancellation during active finite Split on original PLY3",
+  "bundle": "scanforge-a195abaab1693f1e",
+  "input": {
+    "path": "C:/repo/alignment-example-files/ply-3.ply",
+    "faces": 3691133,
+    "cutter": "Finite triangle generated from independently recorded scan bounds"
+  },
+  "result": {
+    "observedStage": "Collecting finite cutter intersections",
+    "observedProgress": 0.018176662829543125,
+    "terminalStatus": "cancelled",
+    "sourceAndCutterDigestsUnchanged": true,
+    "revisionAndUndoCountUnchanged": true,
+    "processingWorkersBefore": { "created": 1, "terminated": 0 },
+    "processingWorkersAfter": { "created": 1, "terminated": 1 },
+    "pageAndConsoleErrors": 0,
+    "peakJobBytes": 2737143808,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-cancel-20261028-r4-guard.json",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-cancel-20261028-r4/split-lifecycle-browser-ledger.json"
+  },
+  "limitations": [
+    "This observes MCP cancellation at the finite-cutter collection stage on one original scan and cutter; it does not cover every cancellation stage or an independent GUI cancel gesture.",
+    "Native Split parity, large-scan save/reopen, and the other M2 acceptance gates remain open.",
+    "The initial test-driver attempt had an illegal top-level return and did not start a browser; its failed receipt is retained as m2-original-split-cancel-20261028-r1-guard.json."
+  ]
+}

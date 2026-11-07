@@ -85,6 +85,8 @@ export function useWorkspaceApi(host: WorkspaceHost) {
           throw new Error("Reference construction preview unavailable");
         current.current.showReferenceConstructionPreview(owner, candidate);
       },
+      showGlobalAlignmentProgress: (poses) =>
+        current.current.showGlobalAlignmentProgress?.(poses),
       showDatumPreview: (entities) =>
         mutate(() => {
           if (!current.current.showDatumPreview)

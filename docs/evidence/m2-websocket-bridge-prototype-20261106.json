@@ -1,0 +1,24 @@
+{
+  "scope": "Disposable alternate-result-transport prototype based on fc2234b7; not integrated or production-ready",
+  "prototype": "A local-only WebSocket result channel was added to the existing HTTP pairing and poll protocol. The synthetic comparison motivated this test. This intentionally incomplete prototype lacks production-grade security, compatibility, error and lifecycle validation and must not be deployed.",
+  "build": "scanforge-882785c64c410e11",
+  "validation": {
+    "focused": "14 existing browser-bridge and MCP-bridge tests passed after adding HTTP fallback. These tests exercised the fallback in Node, not the WebSocket data path.",
+    "browserMcp": "The browser/public-MCP smoke passed exact artifact readback and other existing checks; guard peak 1785548800 bytes and cleanup confirmed. An earlier instrumented smoke observed the authenticated socket and a large reply, but failed its empty-stderr assertion because of diagnostic logging; that failed run's descendants were terminated by the guard. The subsequent passing run removed only that server logging.",
+    "smokeReceiptSha256": "0cae48de8794172a84901457d5fabb39daeaf4399fc4c631944a5509c4d9e197"
+  },
+  "fullPly3": {
+    "result": "Failed. GUI Split, Extract, undo and the complete 475563378-byte public-MCP artifact download completed; stream and file SHA-256 matched. GUI reopen reported success, then public MCP disconnected before geometry verification; reopen history was not reached. The reported Job peak exceeded the 4 GiB limit. Because the path could fall back silently and the full run had no path counter, it is not proven which transport carried its large replies.",
+    "artifactSha256": "6165c982731f5bded4e8ca54e0b43244b37c4782719d8bcee558a40662cd9262",
+    "peakJobBytes": 4370526208,
+    "jobLimitBytes": 4294967296,
+    "processSample": "At 237.456 seconds, near the 237.967-second recorded peak, the renderer reported 2129514496 private bytes, the owned Node driver 688779264, and an unclassified Chrome process 686743552. The driver reported 530009728 JS heap-used bytes at download completion versus 61756360 at export. These sampled values do not identify retained objects or prove causation.",
+    "cleanupConfirmed": true,
+    "receiptSha256": "22e69e173d674052e96c6fb30a39c6d1a1e9b5b0e1361a39f4d9d7062973a751",
+    "logSha256": "9820a96c97120140a9bfb93ff0053651ee69d2641c4533428ad626ebc202e965"
+  },
+  "patch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/ws-bridge-prototype-20261106.patch",
+  "patchSha256": "c971e65ec4d01432bead6aea64515abae26f5e31b51ec39b03339a45641b7dca",
+  "cleanup": "The generated project was independently hash-verified and removed; the isolated worktree and its verified node_modules junction were removed. Automatic review rejected recursive deletion of the temporary ws dependency directory, so its known files were individually verified and removed, followed by its empty directories. No production files were modified.",
+  "limitations": "The synthetic comparison is not a real-project resource guarantee. This incomplete prototype does not solve the reproducibility gate, the numeric-array ownership issue, or the remaining native and milestone acceptance requirements."
+}

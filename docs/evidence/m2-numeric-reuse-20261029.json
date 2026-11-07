@@ -1,0 +1,180 @@
+{
+  "scope": "Uncommitted candidate for numeric geometry reuse on project restore; not native Split equivalence or M2 completion.",
+  "build": "scanforge-edea62e4b86207d8",
+  "sourceSha256": {
+    "src/project-numeric-reuse.ts": "a6dd046022ac47b2eda4facdb7617e2353ec1eec927c004690250583589a041a",
+    "src/project-transport.ts": "d4302d4d162ee21b900f6907c3ad82bd5b669e33aee41c552aeb427e2e7a507f",
+    "src/project-encoding-chunks.ts": "4e5c3af3e5244d8d88ec1df26a7aa3a6b82fa9dcfcabf48e0ff5b32c3e7281e1",
+    "src/project-encoding-client.ts": "b6413e48928b7a786193dc38716ea3cdc87f12b821558b5ffa96a3717e57320c",
+    "src/project-decoding-client.ts": "ff728136c0a00364d4653d5d71779360f921b96fa0cd69ba5ac4b02ef4b1c245"
+  },
+  "originalRun": {
+    "build": "scanforge-edea62e4b86207d8",
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3700757,
+      "extractedFaces": 1779171,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 16012539,
+          "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2699811,
+          "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5337513,
+          "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "binaryReopen": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "guard": {
+      "passed": true,
+      "peakJobBytes": 4175196160,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "scope": "GUI Split/Extract, GUI history before save, public MCP export and in-place import; geometry digests after import. Does not independently establish GUI import or post-import undo on this scan."
+  },
+  "priorMixedRun": {
+    "scope": "Earlier candidate, before handoff and identity corrections; GUI and public MCP reopen with post-reopen history.",
+    "result": {
+      "crossOriginIsolated": true,
+      "fileSha256": "a05e204ee6f5c75e29d12d38739fd91a976ef219ebb4eaee9431c626ac539941",
+      "fileBytes": 17530027,
+      "mcpReopen": true,
+      "guiReopen": true,
+      "geometry": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 103392,
+          "sha256": "0bcb04c66485ccebf4db4b7ad6fa268e7d44efed6fbb95bd6ffa52b33ff1df08"
+        },
+        {
+          "path": "normals",
+          "encoding": "f64",
+          "elements": 103392,
+          "sha256": "e55c540fab2a58141848495820caa32179cda32c429a25286156dfd1f21ca1e3"
+        },
+        {
+          "path": "edgePositions",
+          "encoding": "f64",
+          "elements": 228,
+          "sha256": "c906de7061d3a72044ec42554cbfa421f6f048d9075b2e3876528ff51a780f41"
+        }
+      ],
+      "scanInputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "scanEdit": "flipNormals",
+      "scanGeometry": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+        },
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 418014,
+          "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 819417,
+          "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+        }
+      ],
+      "scanOriginalGeometry": [
+        {
+          "path": "positions",
+          "encoding": "f32",
+          "elements": 2458251,
+          "sha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f32",
+          "elements": 418014,
+          "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 819417,
+          "sha256": "f0f89ed4efd99fa3b6afa75cc23cdac0949212366ca3387d1482c9496a12120a"
+        }
+      ],
+      "scanUndoRedoAfterBothReopens": true,
+      "pageErrors": []
+    },
+    "peakJobBytes": 2331430912
+  },
+  "failedIntermediateRun": {
+    "scope": "Handoff correction before identity fix; missing offline manifest caused a console 404. Reopen reached but test failed. Owned descendants required termination; cleanup confirmed.",
+    "peakJobBytes": 4070195200,
+    "guardPassed": false,
+    "cleanupConfirmed": true
+  },
+  "focusedTests": {
+    "files": 7,
+    "passed": 74,
+    "receipt": "m2-numeric-identity-green-20261029.json",
+    "regressionEvidence": [
+      "m2-numeric-handoff-red-20261029.json",
+      "m2-numeric-identity-red-20261029.json"
+    ]
+  },
+  "limitations": [
+    "Cached arrays rely on the existing immutable-after-publication geometry contract.",
+    "Bounded candidate count and comparison budget can force full-size allocations; one workload does not guarantee 4 GiB on all projects.",
+    "Native Split comparison and other M2 acceptance remain open."
+  ],
+  "buildScope": "Candidate snapshot based on HEAD 4ec59c79, with the numeric reuse source changes and catalog description. It does not include the later uncommitted editor and MCP import changes in the M2 worktree.",
+  "typecheck": {
+    "batches": 14,
+    "passed": true,
+    "receipt": "m2-numeric-identity-typecheck-20261029.json",
+    "peakJobBytes": 1203740672
+  },
+  "applicationCommit": "9df3ae1faf184d2819b2a2d319b2dc1a82571cae",
+  "fullSuite": {
+    "testFilesPassed": 767,
+    "testFilesSkipped": 29,
+    "testsPassed": 50513,
+    "testsExpectedFailure": 1,
+    "testsSkipped": 76,
+    "peakJobBytes": 1339584512,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "m2-numeric-identity-suite-20261029.json"
+  }
+}

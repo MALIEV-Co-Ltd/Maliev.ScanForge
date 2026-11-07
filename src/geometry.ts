@@ -25,13 +25,18 @@ function validatePositions(positions: Positions, mesh = false): void {
         ? "Expected finite triangle coordinates."
         : "Expected finite XYZ coordinates.",
     );
-  for (let i = 0; i < positions.length; i++)
-    if (!Number.isFinite(positions[i]))
+  for (let i = 0; i < positions.length; i++) {
+    const value = positions[i];
+    if (
+      typeof value !== "number" ||
+      !(value >= -Number.MAX_VALUE && value <= Number.MAX_VALUE)
+    )
       throw new Error(
         mesh
           ? "Expected finite triangle coordinates."
           : "Expected finite XYZ coordinates.",
       );
+  }
 }
 
 function points(positions: Positions, mesh = false): Vec3[] {

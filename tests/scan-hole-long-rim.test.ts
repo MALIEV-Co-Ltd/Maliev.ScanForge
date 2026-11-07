@@ -61,7 +61,8 @@ it("fills both dense holes left by a bridge without rewelding the successor", as
     },
     options,
   ).inventory!;
-  const inner = inventory.boundaries.findIndex((b) => b.diameter < 13);
+  // Select by the physical perimeter, independently of diameter estimation.
+  const inner = inventory.boundaries.findIndex((b) => b.length < 30);
   const sourceTopology = topologyCache.topology!;
   const [unchangedKey, unchangedUses] = [...sourceTopology.edges].find(
     ([, uses]) => uses.length === 2,
@@ -108,7 +109,7 @@ it("fills both dense holes left by a bridge without rewelding the successor", as
     options,
   ).inventory!;
   const holes = remaining.boundaries.flatMap((b, i) =>
-    b.diameter < 13 ? [i] : [],
+    b.length < 30 ? [i] : [],
   );
   expect(holes).toHaveLength(2);
   const filled = runScanEdit(
@@ -118,7 +119,7 @@ it("fills both dense holes left by a bridge without rewelding the successor", as
       action: "fillHoles",
       mode: "entire",
       indices: holes,
-      algorithm: "automatic",
+      algorithm: "surfaceRecovery",
       tolerance: 0.001,
     },
     { ...options, onProgress: (_, stage) => stages.push(stage) },
@@ -132,7 +133,7 @@ it("fills both dense holes left by a bridge without rewelding the successor", as
   expect(final.inconsistentEdges).toBe(0);
 });
 
-it("refreshes adjacency when Float32 output collapses an existing facet", async () => {
+it("does not quantize or replace cached geometry for an empty fill", async () => {
   const { runScanEdit } = await import("../src/scan-edit");
   const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
   const source = [1e8, 0, 0, 1e8 + 1, 0, 0, 1e8, 1, 0],
@@ -148,7 +149,7 @@ it("refreshes adjacency when Float32 output collapses an existing facet", async 
   );
   const before = cache.topology!;
   expect(before.edges.size).toBe(3);
-  runScanEdit(
+  const unchanged = runScanEdit(
     {
       kind: "scanEdit",
       positions: source,
@@ -158,7 +159,68 @@ it("refreshes adjacency when Float32 output collapses an existing facet", async 
     },
     options,
   );
-  expect(cache.topology!.degenerateTriangles).toBe(1);
-  expect(cache.topology!.edges.size).toBe(0);
+  expect(unchanged.diagnostics.changed).toBe(false);
+  expect(cache.topology).toBe(before);
+  expect(cache.positions).toBe(source);
+  expect(cache.topology!.degenerateTriangles).toBe(0);
+  expect(cache.topology!.edges.size).toBe(3);
   expect(before.edges.size).toBe(3);
+});
+
+it("refreshes adjacency when an accepted patch's Float32 output collapses an existing facet", async () => {
+  const { runScanEdit } = await import("../src/scan-edit");
+  const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const tetra = [
+    [0, 0, 0],
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1],
+  ];
+  const source = [
+    1e8,
+    0,
+    0,
+    1e8 + 1,
+    0,
+    0,
+    1e8,
+    1,
+    0,
+    ...[
+      [0, 1, 3],
+      [1, 2, 3],
+      [2, 0, 3],
+    ].flatMap((face) => face.flatMap((id) => tetra[id])),
+  ];
+  const options = { topologyCache: cache, tolerance: 0.001 };
+  const inventory = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "inventory",
+      positions: source,
+      tolerance: 0.001,
+    },
+    options,
+  ).inventory!;
+  const hole = inventory.boundaries.findIndex((boundary) =>
+    boundary.points.every((v) => Math.abs(v) < 2),
+  );
+  expect(hole).toBeGreaterThanOrEqual(0);
+  const before = cache.topology!;
+  const result = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "fillHoles",
+      positions: source,
+      indices: [hole],
+      algorithm: "flat",
+      tolerance: 0.001,
+    },
+    options,
+  );
+  expect(result.diagnostics.filledHoles).toBe(1);
+  expect(cache.topology).not.toBe(before);
+  expect(cache.topology!.degenerateTriangles).toBe(1);
+  expect(cache.topology!.edges.size).toBe(6);
+  expect(before.edges.size).toBe(9);
 });

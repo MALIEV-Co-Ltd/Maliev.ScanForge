@@ -1,0 +1,58 @@
+{
+  "origin": "http://127.0.0.1:5173",
+  "browser": "Browser plugin not available; isolated Playwright Chrome",
+  "startedAt": "2026-11-06T22:22:14.819Z",
+  "passed": true,
+  "checks": [
+    "GUI/public MCP identical expanded and indexed geometry",
+    "source unchanged",
+    "single history entry",
+    "Undo/Redo restore exact mesh",
+    "XZ/YZ projections via public MCP",
+    "3D edge cutoff rejects a steep triangle and leaves revision/history unchanged"
+  ],
+  "guiMcp": {
+    "algorithm": "projected-delaunay-2.5d",
+    "projectionPlane": "xy",
+    "sourcePoints": 100,
+    "uniqueProjectedPoints": 100,
+    "duplicatePoints": 0,
+    "triangles": 162,
+    "prunedTriangles": 0,
+    "maxEdgeLength": 2,
+    "normalsRequired": false,
+    "summary": "Created 162 projected triangles; source cloud preserved. Gaps are controlled by maximum 3D edge length."
+  },
+  "edgeCutoff": {
+    "failure": {
+      "code": "OPERATION_FAILED",
+      "message": "No triangle remains after maximum edge pruning; increase maximum edge length or choose another projection."
+    },
+    "unpruned": {
+      "algorithm": "projected-delaunay-2.5d",
+      "projectionPlane": "xy",
+      "sourcePoints": 3,
+      "uniqueProjectedPoints": 3,
+      "duplicatePoints": 0,
+      "triangles": 1,
+      "prunedTriangles": 0,
+      "maxEdgeLength": 0,
+      "normalsRequired": false,
+      "summary": "Created 1 projected triangles; source cloud preserved. Gaps are controlled by maximum 3D edge length."
+    }
+  },
+  "nativeFixture": {
+    "algorithm": "projected-delaunay-2.5d",
+    "projectionPlane": "xy",
+    "sourcePoints": 437,
+    "uniqueProjectedPoints": 437,
+    "duplicatePoints": 0,
+    "triangles": 772,
+    "prunedTriangles": 83,
+    "maxEdgeLength": 2,
+    "normalsRequired": false,
+    "summary": "Created 772 projected triangles; source cloud preserved. Gaps are controlled by maximum 3D edge length."
+  },
+  "errors": [],
+  "finishedAt": "2026-11-06T22:22:20.273Z"
+}

@@ -160,7 +160,7 @@ afterEach(() => {
   expect(vi.getTimerCount()).toBe(0);
   vi.useRealTimers();
 });
-it("publishes cached geometry and only selected source keys in one history change", async () => {
+it("publishes numeric geometry without migrating inactive source keys", async () => {
   const { apply, state, commit, preview, host } = setup();
   const [source, unselected] = state.entities;
   const response = await apply();
@@ -174,9 +174,9 @@ it("publishes cached geometry and only selected source keys in one history chang
   expect(source.constructionOrderKey).toBeUndefined();
   expect(state.entities[0].locked).toBe(true);
   expect(state.entities[0].positions).toBe(source.positions);
-  expect(state.entities[0].constructionOrderKey).toBe(
-    preview.definition.sources[0].constructionOrderKey,
-  );
+  expect(state.entities[0]).toBe(source);
+  expect(state.entities[0].constructionOrderKey).toBeUndefined();
+  expect(response).toMatchObject({ result: { assignedSources: [] } });
   expect(state.entities[1]).toBe(unselected);
   expect(unselected.constructionOrderKey).toBeUndefined();
   const created = state.entities[2];

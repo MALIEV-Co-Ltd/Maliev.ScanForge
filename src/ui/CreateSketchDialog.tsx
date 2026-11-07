@@ -1,3 +1,4 @@
+import { ToolTitle } from "./controls";
 import { isSampledScan } from "../scan-source";
 import { AppSelect } from "./AppSelect";
 import "./ToolPanel.css";
@@ -36,7 +37,7 @@ export function CreateSketchDialog({
   };
   return (
     <aside className="inspector tool-panel" aria-label="Create Sketch">
-      <h2>Create Sketch</h2>
+      <ToolTitle title="Create Sketch" onClose={onCancel} />
       <section className="tool-section tool-panel-content">
         <p>{source.name} · For extruded surface</p>
         {source.scanSource && isSampledScan(source.scanSource) && (

@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "file": "source.stl",
+      "sha256": "f58fac8359d3cd2936682d4730f955acd5f899a224d343337d7acdb3f3e124a6"
+    },
+    {
+      "file": "cutter-near.stl",
+      "sha256": "7873e556fb2a1187dee21284b7c6eed5364c7864122f68b184b1604d739370a9"
+    }
+  ]
+}

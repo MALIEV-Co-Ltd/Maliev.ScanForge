@@ -1,0 +1,56 @@
+{
+  "scope": "Finite mesh Split integration on M2 PR base e0e88c4e1ec1551bba2c36cc65c79cb841ae67e3",
+  "bundle": "scanforge-727ff65baa8a05af",
+  "typecheck": {
+    "batchesPassed": 14,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-typecheck-20261028-r1.json"
+  },
+  "focused": {
+    "testsPassed": 431,
+    "expectedFailures": 1,
+    "skipped": 5,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-focused-20261028-r1.json"
+  },
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "guiMcpGeometryEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "redo": true,
+    "peakJobBytes": 4305391616,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-original-ply3-20261028-r1-guard.json"
+  },
+  "isolatedPersistence": {
+    "crossOriginIsolated": true,
+    "exportReopenUndoRedo": true,
+    "geometryAndCutterPreserved": true,
+    "peakJobBytes": 4092231680,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-isolated-persistence-20261028-r1-guard.json"
+  },
+  "isolatedOriginalGuiMcp": {
+    "crossOriginIsolated": true,
+    "inputFaces": 3691133,
+    "guiMcpGeometryEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "repeatedRedo": true,
+    "peakJobBytes": 4037271552,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-pr-split-isolated-gui-mcp-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The non-isolated original GUI/MCP run completed functionally but exceeded the 4 GiB memory gate by 10424320 bytes.",
+    "One expected Float32 seam failure and five conditional skips remain.",
+    "Native Split output, object ownership and the full M2 milestone remain unverified."
+  ]
+}

@@ -31,6 +31,7 @@ await mkdir(artifactDir, { recursive: true });
 const evidence = new URL("browser-validation.json", artifactDir);
 let browserServer, browser, client, transport;
 let failed;
+const ownershipComplete = Symbol("ownership test complete");
 const mime = {
   html: "text/html",
   js: "application/javascript",
@@ -178,7 +179,21 @@ try {
     viewport: { width: 1440, height: 1000 },
   });
   const errors = [];
-  page.on("dialog", (dialog) => dialog.accept());
+  let rejectNextProjectReplacement = false;
+  let projectDecodeWorkers = 0;
+  page.on("worker", (worker) => {
+    if (worker.url().includes("project-decoding-worker"))
+      projectDecodeWorkers++;
+  });
+  page.on("dialog", (dialog) => {
+    if (
+      rejectNextProjectReplacement &&
+      dialog.message().startsWith("Replace the current project?")
+    ) {
+      rejectNextProjectReplacement = false;
+      void dialog.dismiss();
+    } else void dialog.accept();
+  });
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
@@ -223,6 +238,179 @@ try {
     }
     throw Error("Geometry job failed to settle");
   }
+  async function checkOwnershipRoundtrip() {
+    const positions = Buffer.from(
+      new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]).buffer,
+    );
+    const chunks = [positions, positions].map((data, index) => ({
+      offset: index * data.length,
+      bytes: data.length,
+      rawBytes: data.length,
+      codec: "raw",
+      sha256: createHash("sha256").update(data).digest("hex"),
+    }));
+    const record = (id, name, chunk) => ({
+      id,
+      name,
+      kind: "mesh",
+      visible: true,
+      color: "#aaaaaa",
+      opacity: 1,
+      positions: { chunk, type: "f32" },
+    });
+    const manifest = Buffer.from(
+      JSON.stringify({
+        format: "scanforge-binary",
+        version: 2,
+        units: "mm",
+        name: "Ownership",
+        current: [0, 1],
+        history: [{ label: "Before copy", entities: [0] }],
+        future: [],
+        records: [
+          record("typed-mesh", "Typed scanner normals", 0),
+          record("typed-copy", "Typed independent copy", 1),
+        ],
+        chunks,
+      }),
+    );
+    const header = Buffer.alloc(16);
+    header.write("SCANFRG2");
+    header.writeUInt32LE(manifest.length, 8);
+    header.writeUInt32LE(positions.length * 2, 12);
+    const file = Buffer.concat([header, manifest, positions, positions]);
+    await page
+      .locator('input[type=file][accept*=".scanforge"]')
+      .first()
+      .setInputFiles({
+        name: "independent-geometry.scanforge",
+        mimeType: "application/x-scanforge",
+        buffer: file,
+      });
+    await page
+      .getByRole("button", { name: "Typed independent copy", exact: true })
+      .waitFor();
+    async function checkExport() {
+      const artifact = await job(
+        await call("project_export", { format: "project" }),
+      );
+      const wire = await call("artifact_read", {
+        artifactId: artifact.artifactId,
+      });
+      const bytes = Buffer.from(wire.result.base64, "base64");
+      const size = bytes.readUInt32LE(8);
+      const result = JSON.parse(bytes.subarray(16, 16 + size).toString());
+      assert.equal(result.version, 2);
+      const [first, second] = result.current.map(
+        (i) => result.records[i].positions,
+      );
+      assert.notEqual(first.chunk, second.chunk);
+      assert.equal(
+        result.chunks[first.chunk].sha256,
+        result.chunks[second.chunk].sha256,
+      );
+      assert.equal(result.history.at(-1).entities[0], result.current[0]);
+      await call("artifact_delete", { artifactId: artifact.artifactId });
+    }
+    await checkExport();
+    const upload = await call("artifact_put", {
+      name: "independent-geometry.scanforge",
+      offset: 0,
+      base64: file.toString("base64"),
+    });
+    await job(
+      await mutate("project_import", {
+        artifactId: upload.result.artifactId,
+        replace: true,
+      }),
+    );
+    await call("artifact_delete", { artifactId: upload.result.artifactId });
+    await checkExport();
+    assert.deepEqual(
+      (await call("project_get")).result.objects.map((o) => o.name),
+      ["Typed scanner normals", "Typed independent copy"],
+    );
+  }
+  if (process.argv.includes("--ownership-only")) {
+    await checkOwnershipRoundtrip();
+    assert.equal(errors.length, 0, errors.join("\n"));
+    assert.equal(stderr, "", stderr);
+    ledger.steps = [
+      "GUI and public MCP reopen and export independent equal geometry with history",
+    ];
+    console.log(`PASS: ${ledger.steps.join("; ")}`);
+    throw ownershipComplete;
+  }
+  const artifactBytes = Buffer.from(
+    Uint8Array.from({ length: 262145 }, (_, i) => (i * 47 + 31) & 255),
+  );
+  const artifactUpload = await call("artifact_put", {
+    name: "base64-boundary.bin",
+    base64: artifactBytes.toString("base64"),
+    offset: 0,
+  });
+  const nativeBase64Available = await page.evaluate(() => {
+    const descriptor = Object.getOwnPropertyDescriptor(
+      Uint8Array.prototype,
+      "toBase64",
+    );
+    if (typeof descriptor?.value !== "function") return false;
+    globalThis.__m2Base64Descriptor = descriptor;
+    globalThis.__m2Base64Calls = 0;
+    Object.defineProperty(Uint8Array.prototype, "toBase64", {
+      ...descriptor,
+      value: function (...args) {
+        globalThis.__m2Base64Calls++;
+        return descriptor.value.apply(this, args);
+      },
+    });
+    return true;
+  });
+  for (const [offset, length] of [
+    [0, 1],
+    [1, 2],
+    [3, 8193],
+    [0, 262144],
+    [262144, 1],
+    [262145, 1],
+  ]) {
+    const read = await call("artifact_read", {
+      artifactId: artifactUpload.result.artifactId,
+      offset,
+      length,
+    });
+    assert.deepEqual(
+      Buffer.from(read.result.base64, "base64"),
+      artifactBytes.subarray(offset, offset + length),
+    );
+    assert.equal(
+      read.result.base64,
+      artifactBytes.subarray(offset, offset + length).toString("base64"),
+    );
+    assert.equal(
+      read.result.nextOffset,
+      Math.min(offset + length, artifactBytes.length),
+    );
+    assert.equal(read.result.eof, offset + length >= artifactBytes.length);
+  }
+  await call("artifact_delete", {
+    artifactId: artifactUpload.result.artifactId,
+  });
+  if (nativeBase64Available) {
+    const nativeCalls = await page.evaluate(() => {
+      const calls = globalThis.__m2Base64Calls;
+      Object.defineProperty(
+        Uint8Array.prototype,
+        "toBase64",
+        globalThis.__m2Base64Descriptor,
+      );
+      delete globalThis.__m2Base64Calls;
+      delete globalThis.__m2Base64Descriptor;
+      return calls;
+    });
+    assert.equal(nativeCalls, 6);
+  }
+  ledger.nativeBase64Available = nativeBase64Available;
   const empty = await call("project_get");
   assert.equal(empty.result.objects.length, 0);
   const created = await job(
@@ -373,12 +561,30 @@ try {
     await page
       .getByLabel(`Reference 1 point (mm) ${axis}`, { exact: true })
       .fill(value);
-  await page
-    .getByRole("checkbox", {
-      name: "Move CAD alignment companion",
-      exact: true,
-    })
-    .check();
+  const companionControl = page.getByRole("checkbox", {
+    name: "Move CAD alignment companion",
+    exact: true,
+  });
+  assert.equal(await page.locator(".display-panel").isVisible(), false);
+  await page.screenshot({
+    path: fileURLToPath(new URL("alignment-panel.png", artifactDir)),
+  });
+  try {
+    await companionControl.check();
+  } catch (error) {
+    const details = await companionControl.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const x = rect.left + rect.width / 2,
+        y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return { rect: rect.toJSON(), hit: hit?.outerHTML.slice(0, 300) };
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("alignment-failure.png", artifactDir)),
+    });
+    console.error(JSON.stringify({ alignmentCompanionHit: details }));
+    throw error;
+  }
   await page
     .getByRole("button", { name: "Preview alignment", exact: true })
     .click();
@@ -395,6 +601,7 @@ try {
       exact: true,
     })
     .waitFor();
+  assert.equal(await page.locator(".display-panel").isVisible(), true);
   const placedReferences = await job(
     await call("alignment_references", { entityId: created.entityIds[0] }),
   );
@@ -431,7 +638,9 @@ try {
   assert.deepEqual(
     (
       await job(
-        await call("alignment_references", { entityId: created.entityIds[0] }),
+        await call("alignment_references", {
+          entityId: created.entityIds[0],
+        }),
       )
     ).references,
     references.references,
@@ -450,7 +659,9 @@ try {
   assert.deepEqual(
     (
       await job(
-        await call("alignment_references", { entityId: created.entityIds[0] }),
+        await call("alignment_references", {
+          entityId: created.entityIds[0],
+        }),
       )
     ).references,
     placedReferences.references,
@@ -475,7 +686,7 @@ try {
   const saved = await job(await call("project_export", { format: "project" }));
   assert(saved.bytes > 0);
   assert(await page.evaluate(() => crossOriginIsolated));
-  const artifactBytes = async (artifactId) => {
+  const readArtifactBytes = async (artifactId) => {
     const parts = [];
     let offset = 0;
     for (;;) {
@@ -487,7 +698,7 @@ try {
       assert(part.length > 0);
     }
   };
-  const exactSavedBytes = await artifactBytes(saved.artifactId);
+  const exactSavedBytes = await readArtifactBytes(saved.artifactId);
   const savedGeometry = (bytes) => {
     const manifest = JSON.parse(bytes.subarray(16, 16 + bytes.readUInt32LE(8)));
     // Compare every saved state and byte digest, independently of compression.
@@ -519,7 +730,7 @@ try {
       await call("project_export", { format: "project" }),
     );
     assert.deepEqual(
-      savedGeometry(await artifactBytes(artifact.artifactId)),
+      savedGeometry(await readArtifactBytes(artifact.artifactId)),
       exactSavedGeometry,
     );
     await call("artifact_delete", { artifactId: artifact.artifactId });
@@ -538,8 +749,12 @@ try {
     }),
   );
   await verifySavedGeometry();
-  await call("artifact_delete", { artifactId: exactUpload.result.artifactId });
-  const copied = await mutate("mesh_copy", { entityId: created.entityIds[0] });
+  await call("artifact_delete", {
+    artifactId: exactUpload.result.artifactId,
+  });
+  const copied = await mutate("mesh_copy", {
+    entityId: created.entityIds[0],
+  });
   const meshId = copied.result.entityId;
   const transformed = await mutate("mesh_transform", {
     entityId: meshId,
@@ -761,7 +976,10 @@ try {
     }),
   );
   await page
-    .getByRole("button", { name: "Pick reference face on canvas", exact: true })
+    .getByRole("button", {
+      name: "Pick reference face on canvas",
+      exact: true,
+    })
     .click();
   const canvas = await page.locator(".viewport canvas").first().boundingBox();
   assert(canvas);
@@ -790,7 +1008,10 @@ try {
   await page
     .getByRole("button", { name: "Cancel alignment", exact: true })
     .click();
-  await mutate("object_update", { entityId: meshId, patch: { visible: true } });
+  await mutate("object_update", {
+    entityId: meshId,
+    patch: { visible: true },
+  });
   const repair = await job(
     await mutate("mesh_process", {
       entityId: meshId,
@@ -903,6 +1124,38 @@ try {
   typedHeader.writeUInt32LE(typedManifest.length, 8);
   typedHeader.writeUInt32LE(72, 12);
   const typedFile = Buffer.concat([typedHeader, typedManifest, ...payloads]);
+  const beforeDecline = (await call("project_get")).result;
+  await mutate("object_update", {
+    entityId: beforeDecline.objects[0].id,
+    patch: { name: "Unsaved before open" },
+  });
+  const dirtyBeforeDecline = (await call("project_get")).result;
+  const workersBeforeDecline = projectDecodeWorkers;
+  rejectNextProjectReplacement = true;
+  const declinedDialog = page.waitForEvent("dialog", {
+    predicate: (dialog) =>
+      dialog.message().startsWith("Replace the current project?"),
+  });
+  await page
+    .locator('input[type=file][accept*=".scanforge"]')
+    .first()
+    .setInputFiles({
+      name: "typed-normals.scanforge",
+      mimeType: "application/x-scanforge",
+      buffer: typedFile,
+    });
+  await declinedDialog;
+  await page
+    .getByText("Import cancelled · 0/1 files", { exact: true })
+    .waitFor();
+  assert.equal(
+    projectDecodeWorkers,
+    workersBeforeDecline,
+    "Declined project replacement started a decoder",
+  );
+  const dirtyAfterDecline = (await call("project_get")).result;
+  assert.equal(dirtyAfterDecline.revision, dirtyBeforeDecline.revision);
+  assert.deepEqual(dirtyAfterDecline.objects, dirtyBeforeDecline.objects);
   await page
     .locator('input[type=file][accept*=".scanforge"]')
     .first()
@@ -945,6 +1198,31 @@ try {
     offset: 0,
     base64: typedFile.toString("base64"),
   });
+  const workersBeforeMcpRefusal = projectDecodeWorkers;
+  const beforeMcpRefusal = (await call("project_get")).result;
+  const refusedImport = await mutate("project_import", {
+    artifactId: typedUpload.result.artifactId,
+    replace: false,
+  });
+  let refusedJob;
+  for (let i = 0; i < 120; i++) {
+    refusedJob = (await call("job_get", { jobId: refusedImport.result.jobId }))
+      .result;
+    if (refusedJob.status !== "running") break;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  assert.equal(refusedJob?.status, "failed");
+  assert.match(
+    JSON.stringify(refusedJob),
+    /Project import requires replace:true/,
+  );
+  assert.equal(projectDecodeWorkers, workersBeforeMcpRefusal);
+  const afterMcpRefusal = (await call("project_get")).result;
+  assert.equal(afterMcpRefusal.revision, beforeMcpRefusal.revision);
+  assert.deepEqual(
+    afterMcpRefusal.objects.map(({ meshPreparation, ...object }) => object),
+    beforeMcpRefusal.objects.map(({ meshPreparation, ...object }) => object),
+  );
   await job(
     await mutate("project_import", {
       artifactId: typedUpload.result.artifactId,
@@ -970,6 +1248,8 @@ try {
   await page
     .getByRole("button", { name: "Typed scanner normals", exact: true })
     .waitFor();
+
+  await checkOwnershipRoundtrip();
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByRole("button", { name: "Disconnect agent", exact: true })
@@ -996,6 +1276,7 @@ try {
     "mesh copy/transform/winding worker/topology",
     "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
     "GUI and MCP import the independent v2 typed-normal fixture and export identical Float32 bytes including signed zero",
+    "GUI and public MCP reopen and export distinct equal geometry with history in v2",
     "disconnect rejects calls",
   ];
   await page.screenshot({
@@ -1003,8 +1284,10 @@ try {
   });
   console.log(`PASS: ${ledger.steps.join("; ")}`);
 } catch (error) {
-  failed = error;
-  throw error;
+  if (error !== ownershipComplete) {
+    failed = error;
+    throw error;
+  }
 } finally {
   await cleanup();
 }

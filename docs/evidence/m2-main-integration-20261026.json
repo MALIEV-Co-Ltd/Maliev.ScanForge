@@ -1,0 +1,49 @@
+{
+  "scope": "M2 integration with main 57c77aa; remaining milestone gates stay open",
+  "parents": [
+    "43445fea61655918b171fd4cd9b85e075838d528",
+    "57c77aae0727763a63e1c4a451cb85a708846ae8"
+  ],
+  "integration": "Preserves owned Unroll sketches and tangent frames alongside facet-normal transport, cloud reconstruction and streamed geometry artifacts. GUI and MCP retain shared operation, history and persistence paths.",
+  "corrections": [
+    "Removed duplicate reconstruction transport admission left by the automatic merge",
+    "Used reconstructionMode in the panel effect and its dependency list",
+    "Updated the noise overlay fake viewport with the saved-sketch display map and verified geometry/material disposal",
+    "Added binary manifest 6 owned-history and facet-normal byte preservation coverage"
+  ],
+  "regression": { "passed": 236, "failed": 0, "suites": 27 },
+  "build": {
+    "tag": "scanforge-2ab3fc2854ef56ae",
+    "typeBatches": 13,
+    "warnings": 0,
+    "inputFiles": 2979,
+    "unchangedInputs": true,
+    "manifestSha256": "6b83812119af1f57b1697072c101b503f778e613d472d3a123714cb504e9c6b5",
+    "elapsedSeconds": 150.3050482,
+    "peakJobMemoryBytes": 1616158720
+  },
+  "renderedAcceptance": {
+    "unroll": "Production GUI and public SDK/MCP agree; saved seam display, hidden tangent frame, unrelated draft, undo/redo/seek, retry, rollback and binary reopen verified",
+    "curvature": "1702 oriented facets and 884 vertices match the retained native annulus; GUI/MCP agree, source preserved, undo and reopen verified",
+    "screenshotsViewed": true
+  },
+  "resourceControls": {
+    "memoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "mutex": "Local\\ScanForge.BoundedValidation",
+    "allSuccessfulReceiptsExitCode": 0,
+    "allSuccessfulReceiptsFinalChildActive": 0,
+    "cleanupErrors": []
+  },
+  "retainedFailures": [
+    "Initial integration regression: duplicate transport declaration and missing ignored pinned kernel assets",
+    "Initial integration build: stale reconstructionMethod identifier in panel effect",
+    "43445fe hosted CI: one obsolete noise-overlay test fixture; 49150 tests passed and 64 skipped"
+  ],
+  "limits": [
+    "Full integrated hosted CI and original three-scan replay remain pending",
+    "Native capture remains black in the read-only availability check; no native input was sent",
+    "Broader native operation comparisons and the unavailable original defeature selection are unresolved",
+    "This integration evidence does not close M2"
+  ]
+}

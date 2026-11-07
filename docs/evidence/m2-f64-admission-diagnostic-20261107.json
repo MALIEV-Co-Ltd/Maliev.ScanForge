@@ -1,0 +1,26 @@
+{
+  "candidate": "75c905ed",
+  "scope": "In-memory diagnostic of experimental private Float64 indexed geometry, not an enabled restore path",
+  "fixture": {
+    "positionsAndVertices": [0.1, 0, 0, 1.1, 0, 0, 0.1, 1, 0],
+    "triangles": [0, 1, 2],
+    "sharedMarkedFloat64Buffer": true
+  },
+  "observed": {
+    "flipSourceTopologySync": "accepted indexed topology",
+    "flipSourceTopology": "returned undefined",
+    "indexedExactAdmission": false
+  },
+  "sourceObservations": [
+    "The asynchronous Flip admission and exact-indexed admission accept ordinary arrays and Float32 vertices, but not the marked private Float64 vertices accepted by synchronous indexed validation.",
+    "The component compact-path dispatch also requires ordinary position arrays; direct Float64 retention would skip that path.",
+    "Flip currently constructs Float32 output and indexed vertices; preserving compatibility and the intended precision requires a complete operation and worker-boundary review before enabling Float64 restore."
+  ],
+  "validation": {
+    "vitestCases": 1,
+    "passed": true,
+    "peakJobBytes": 278872064,
+    "cleanupConfirmed": true
+  },
+  "limitations": "This is a small in-memory diagnostic, not a browser, MCP, native or resource acceptance test. Float64 restore remains disabled."
+}

@@ -1,0 +1,18 @@
+{
+  "scope": "Isolated deferred reconstruction plus incremental chunk hashing; not a production fix",
+  "base": "m2-deferred-project-reconstruction-experiment-20261029.json",
+  "build": "scanforge-a475af92d85763f6",
+  "method": "Keep the earlier private deferred mesh-coordinate representation and replace WebCrypto chunk hashing with the existing incremental SHA-256 implementation. Run the original PLY-3 GUI Split and Extract, export, read the entire artifact through public MCP, delete the artifact and open the existing saved project in the GUI without diagnostic garbage collection.",
+  "result": "The download completed, but the GUI open and subsequent page probe timed out without a decoder result. The guard recorded 4299194368 peak job bytes, above its 4294967296-byte nominal limit. The parent exited with failure and remaining owned descendants were terminated; cleanup was confirmed. This does not identify the exact allocation or establish a production fix.",
+  "focusedValidation": "45 tests passed in five files covering the prototype, project files, index storage, value hashing and transport, including damaged project rejection. The corrected prototype before the hashing change also passed the complete 14-batch TypeScript check; that check does not cover the subsequent hashing edit.",
+  "retainedExperiment": "C:/Users/Shoung/.codex/worktrees/m2-deferred-reconstruct/Maliev.ScanForge",
+  "sha256": {
+    "project-file-codec.ts": "60ad5d182e638124798618e143e22c1be07e718b738980d2c0091d1455dd5e97",
+    "m2-deferred-reconstruct-experiment.test.ts": "8a75808a31d4db36c95be65033f4b71ffde8b690ee6abf6347a79dc7e5b7375b",
+    "replayLog": "6b0489f7cd70d2c2400a72a920529308c62ec0a537ca63d6c9447de955ee10bd",
+    "replayGuard": "a6d3d0773adc88edbfc17ec16e846e677d3b132013f2c9ea6230327580a35ca3",
+    "typecheckGuard": "83eb967d9ad505d0e6afa44086c83f4e7cfb706addd482018422a629086805f9",
+    "focusedGuard": "561e3cf458729110a071c3bd29a81581ff32bb77b7fb0ea85adc8027e7d8dd44"
+  },
+  "limits": "One instrumented browser run; no post-reopen geometry verification, public-MCP import replay, full suite, concurrency or cancellation validation. Native M2 acceptance is separate and remains open."
+}

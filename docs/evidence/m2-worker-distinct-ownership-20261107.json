@@ -1,0 +1,17 @@
+{
+  "scope": "Controlled local codec and worker-transport ownership regression",
+  "baseCommit": "6775337d",
+  "method": "Encode two entities with distinct equal coordinate arrays and shared history references; decode with worker numeric options, pack and structured-clone its transport, unpack, then mutate one restored entity.",
+  "observation": "For ordinary and Float32 inputs, the corresponding history reference retains the intended alias, but mutating one restored entity changes the other. Both tests fail at the independence assertion when run without the expected-failure marker.",
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakJobBytes": 340840448,
+    "cleanupConfirmed": true,
+    "ownedProcessesRemaining": 0
+  },
+  "limitations": [
+    "The mutation is injected and violates the existing immutable-geometry convention; no normal GUI or MCP trigger was demonstrated.",
+    "This exercises the codec and transport functions with worker options locally, not an actual browser Worker or public MCP session.",
+    "Preserving independent identities in the file must also preserve intended history aliases, old-file compatibility, and the large-project resource limit. No production fix is included."
+  ]
+}

@@ -36,7 +36,9 @@ try {
       body: "<title>Encoding checkpoints</title>",
     }),
   );
-  await page.goto("http://127.0.0.1:5173/project-encoding-disk-regression");
+  await page.goto(
+    `${process.env.SCANFORGE_TEST_ORIGIN ?? "http://127.0.0.1:5173"}/project-encoding-disk-regression`,
+  );
   const result = await page.evaluate(async () => {
     const { encodeProjectFile, encodeProjectFileLocally, decodeProjectFile } =
       await import("/tests/helpers/project-worker-browser.ts");

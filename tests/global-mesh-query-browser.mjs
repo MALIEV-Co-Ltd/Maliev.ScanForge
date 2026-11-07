@@ -58,6 +58,9 @@ try {
           sharedPreparedBuffers: true,
           evaluatorOnlyInputs: 0,
           queryWorker: String(url).includes("scan-global-query-worker"),
+          controllerWorker: String(url).includes(
+            "scan-global-controller-worker",
+          ),
           compactTargets: 0,
           packedTargets: 0,
         };
@@ -344,8 +347,11 @@ try {
   );
   assert.equal(
     result.workers.reduce((n, w) => n + w.preparedInitializations, 0),
-    33,
+    result.cases,
   );
+  // Registration runs in a controller worker; its child query workers are
+  // not visible to the page's Worker wrapper.
+  assert(result.workers.some((w) => w.controllerWorker && w.terminated));
   assert(result.workers.every((w) => w.sharedPreparedBuffers));
   assert(result.workers.some((w) => w.evaluatorOnlyInputs > 0));
   assert(result.workers.some((w) => w.compactTargets > 0));

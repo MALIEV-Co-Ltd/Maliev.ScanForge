@@ -122,6 +122,12 @@ it("selects the triangles of an individual connected mesh and extracts that comp
     "Remove small meshes",
   );
 });
+it("does not republish an unchanged component selection on an idle update", () => {
+  const props = { ...defaults(), selection: new Uint8Array([1, 0]) };
+  ScanTopologyControls(props);
+  effects.forEach((effect) => effect());
+  expect(props.onSelection).not.toHaveBeenCalled();
+});
 it("defaults to entire-hole automatic fill and excludes open boundary chains from multiple fill", () => {
   const props = { ...defaults(), section: "holes" as const },
     tree = ScanTopologyControls(props);
@@ -136,7 +142,8 @@ it("defaults to entire-hole automatic fill and excludes open boundary chains fro
     {
       action: "fillHoles",
       indices: [0],
-      algorithm: "automatic",
+      batch: true,
+      diameter: 0,
       mode: "entire",
       start: 0,
       end: 1,
@@ -161,8 +168,22 @@ it("projects every boundary to the actual origin XY plane and forwards smoothing
   );
   click(tree, "Smooth selected");
   expect(props.onOperation).toHaveBeenLastCalledWith(
-    { action: "boundarySmooth", indices: [0], strength: 0.3, iterations: 3 },
+    { action: "boundarySmooth", indices: [0], strength: 1, iterations: 1 },
     "Smooth selected boundary",
+  );
+  click(tree, "Smooth all");
+  expect(props.onOperation).toHaveBeenLastCalledWith(
+    { action: "boundarySmooth", indices: [0, 1], strength: 1, iterations: 1 },
+    "Smooth all boundaries",
+  );
+});
+it("requests a spatial sketch for the selected closed boundary", () => {
+  const props = { ...defaults(), section: "boundaries" as const };
+  const tree = ScanTopologyControls(props);
+  click(tree, "3D sketch from selected");
+  expect(props.onOperation).toHaveBeenCalledWith(
+    { action: "boundarySpatialSketch", indices: [0], fitTolerance: 0.05 },
+    "Create 3D sketch from selected boundary",
   );
 });
 it("blocks geometry operations for empty input and during processing while preserving cancellation", () => {

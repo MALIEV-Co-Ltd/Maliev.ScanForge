@@ -66,13 +66,19 @@ try {
       sourcePositions: base.positions,
       matrixBits: cloudPoseBits([1, 0, 0, 10, 0, 1, 0, 20, 0, 0, 1, 30]),
     });
+    const meshCopy = {
+      ...mesh,
+      id: "mesh-copy",
+      name: "Mesh copy",
+      positions: mesh.positions.slice(),
+    };
     const session = {
       project: {
         format: "maliev-scanforge",
         version: 1,
         name: "Worker parity",
         units: "mm",
-        entities: [mesh, cloud],
+        entities: [mesh, cloud, meshCopy],
       },
       history: [{ label: "Import", entities: [mesh] }],
       future: [{ label: "Cloud", entities: [mesh, cloud] }],
@@ -83,6 +89,12 @@ try {
     );
     const background = await encodeProjectFile(session),
       bytes = new Uint8Array(await background.arrayBuffer());
+    const manifestLength = new DataView(bytes.buffer).getUint32(8, true);
+    const manifest = JSON.parse(
+      new TextDecoder().decode(bytes.subarray(16, 16 + manifestLength)),
+    );
+    if (manifest.version !== 3)
+      throw Error("Distinct equal buffers changed the binary version");
     if (local.length !== bytes.length || local.some((n, i) => n !== bytes[i]))
       throw Error("Worker changed lossless project bytes");
     if (
@@ -112,10 +124,21 @@ try {
       reopenedPositions.length,
     );
     const saved = originalBits[0];
+    const copyPositions = decoded.project.entities[2].positions;
+    const copyBits = new Uint32Array(
+      copyPositions.buffer,
+      copyPositions.byteOffset,
+      copyPositions.length,
+    );
+    const copySaved = copyBits[0];
     try {
       originalBits[0] ^= 1;
       if (reopenedBits[0] !== originalBits[0])
         throw Error("Repeat restore duplicated shared geometry");
+      if (copyBits[0] !== copySaved)
+        throw Error("Distinct equal geometry shared mutable backing");
+      if (decoded.history[0].entities[0].positions !== originalPositions)
+        throw Error("History lost its intended geometry alias");
     } finally {
       originalBits[0] = saved;
     }
@@ -156,6 +179,7 @@ try {
       authoredBuffersIntact: true,
       cloudPoseRetained: true,
       repeatRestoreSharesBacking: true,
+      distinctEqualGeometryIndependent: true,
       invalidGeometryRejected: true,
       queueRecovered: true,
       cancellationReleased: true,

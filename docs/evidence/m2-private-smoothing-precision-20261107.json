@@ -1,0 +1,48 @@
+{
+  "baseline": "5e095158",
+  "failure": "Smoothing a selected component rounded unrelated coordinates from 100000004 to 100000000 and from 100000012 to 100000016 when source positions were Float64Array.",
+  "change": "Shared smoothing publication detects double-buffer inputs containing coordinates that need double precision and retains ordinary precise output, as it already did for ordinary numeric arrays.",
+  "focusedTests": {
+    "passed": 45,
+    "peakJobBytes": 754364416,
+    "cleanupConfirmed": true,
+    "coverage": [
+      "selected smoothing",
+      "worker publication and indexed topology",
+      "boundary cleanup",
+      "untouched precise component"
+    ]
+  },
+  "build": {
+    "passed": true,
+    "id": "scanforge-52d167960c44c004",
+    "peakJobBytes": 1940594688,
+    "cleanupConfirmed": true
+  },
+  "privateWorkerBrowser": {
+    "passed": true,
+    "fixture": "annular selection and an untouched precise triangle",
+    "environment": "development browser with explicitly marked private Float64 source",
+    "preservedCoordinates": [100000004, 0, 0, 100000012, 0, 0, 100000004, 8, 0],
+    "sourceBufferPreserved": true,
+    "peakJobBytes": 614944768,
+    "cleanupConfirmed": true
+  },
+  "productionBrowser": {
+    "passed": true,
+    "scenario": "precise selected smoothing",
+    "guiMcpEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "cancellationRollback": true,
+    "retainedNativeFixtureComparison": true,
+    "pageErrors": 0,
+    "peakJobBytes": 929456128,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Experimental Float64 restore remains disabled.",
+    "The private-buffer worker control did not exercise GUI/MCP project restore.",
+    "The full suite, broad double-carrier audit, large-project resource reliability, fresh native comparison, integration and closure remain open."
+  ]
+}

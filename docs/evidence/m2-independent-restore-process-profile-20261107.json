@@ -1,0 +1,107 @@
+{
+  "scope": "Original PLY-3 independent-array restore; owned process private-memory snapshots",
+  "candidate": "215bc6ed",
+  "bundle": "scanforge-914672edba381122",
+  "method": "Isolated server removed the numeric-array reuse callback and seeded ordinary destination arrays. At download, GUI import completion and post-reopen verification, the guarded harness launched a process-tree snapshot and summed private bytes by Chrome process type. The snapshot helper itself is included in the job and can influence the peak.",
+  "profiles": [
+    {
+      "stage": "gui-extract-project-downloaded",
+      "samplingStatus": 0,
+      "privateBytesByProcessType": {
+        "utility": 38789120,
+        "renderer": 1815080960,
+        "gpu-process": 443781120,
+        "crashpad-handler": 2588672,
+        "browser-or-other": 1103171584
+      },
+      "chromeRenderers": [
+        {
+          "pid": 20824,
+          "privateBytes": 36925440
+        },
+        {
+          "pid": 25448,
+          "privateBytes": 1759920128
+        },
+        {
+          "pid": 33384,
+          "privateBytes": 18235392
+        }
+      ]
+    },
+    {
+      "stage": "gui-extract-gui-project-imported",
+      "samplingStatus": 0,
+      "privateBytesByProcessType": {
+        "utility": 37019648,
+        "renderer": 2936614912,
+        "gpu-process": 545271808,
+        "crashpad-handler": 2588672,
+        "browser-or-other": 494546944
+      },
+      "chromeRenderers": [
+        {
+          "pid": 20824,
+          "privateBytes": 36925440
+        },
+        {
+          "pid": 25448,
+          "privateBytes": 2881454080
+        },
+        {
+          "pid": 33384,
+          "privateBytes": 18235392
+        }
+      ]
+    },
+    {
+      "stage": "gui-extract-gui-reopen-verified",
+      "samplingStatus": 0,
+      "privateBytesByProcessType": {
+        "utility": 36970496,
+        "renderer": 2814476288,
+        "gpu-process": 321200128,
+        "crashpad-handler": 2588672,
+        "browser-or-other": 498335744
+      },
+      "chromeRenderers": [
+        {
+          "pid": 20824,
+          "privateBytes": 36925440
+        },
+        {
+          "pid": 25448,
+          "privateBytes": 2759315456
+        },
+        {
+          "pid": 33384,
+          "privateBytes": 18235392
+        }
+      ]
+    }
+  ],
+  "guard": {
+    "passed": true,
+    "peakJobBytes": 4160872448,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true
+  },
+  "functional": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3695945,
+    "extractedFaces": 1776794,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "binaryReopen": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "interpretation": "The primary renderer process is the dominant observed growth between sampled download and import; Chrome browser private memory fell over the same interval and GPU private memory changed. This is a lead, not proof of the allocation source.",
+  "limitations": [
+    "Snapshots are not simultaneous measurements and do not identify the peak allocation, distinguish individual renderer workers or prove causation.",
+    "This is one injected diagnostic run with sampling overhead; previous independent-copy runs exceeded 4 GiB.",
+    "No production code changed and no native acceptance is implied."
+  ]
+}

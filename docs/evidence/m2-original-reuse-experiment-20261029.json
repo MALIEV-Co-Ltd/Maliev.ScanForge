@@ -1,0 +1,76 @@
+{
+  "scope": "Experimental original PLY-3 in-place reopen using weakly referenced export arrays; based on application commit 182a740a054009514a1a4d61e6f2bcfcc747acbd",
+  "diagnosticSourcePath": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-reuse-probe-candidate\\src\\project-transport.ts",
+  "diagnosticSourceSha256": "e4db89c1848620a81fe91d72738993b78c2ff6bb22f827cb90fab5b006f89754",
+  "method": "Diagnostic-only cache keeps weak references to large arrays encountered while encoding. On decode, it reuses an array only after comparing every numeric element, including signed zero, with its transferred buffer. The experiment has no production ownership or isolation guarantees.",
+  "build": "Isolated experimental build scanforge-96be9e4c56ad38fe.",
+  "reuseEvents": [
+    {
+      "event": "experimental-array-reuse",
+      "elements": 33306813,
+      "reused": true
+    },
+    {
+      "event": "experimental-array-reuse",
+      "elements": 5626452,
+      "reused": true
+    },
+    {
+      "event": "experimental-array-reuse",
+      "elements": 16012539,
+      "reused": true
+    },
+    {
+      "event": "experimental-array-reuse",
+      "elements": 2699811,
+      "reused": true
+    }
+  ],
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiOutputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 16012539,
+        "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 2699811,
+        "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 5337513,
+        "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+      }
+    ],
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "binaryReopen": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4128636928,
+    "cleanupConfirmed": true,
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "elapsedSeconds": 118.72743070000433
+  },
+  "limitations": [
+    "This is experimental code, not a production fix. Cross-project aliasing, mutability, stale weak entries, cancellation, retries, resource bounds, untrusted input and concurrent snapshots require design and tests.",
+    "One run below 4 GiB does not establish a general memory bound; independent prior runs are not a controlled quantitative comparison.",
+    "The result covers one original scan Split/Extract lifecycle and does not establish native Split parity or other M2 gates."
+  ]
+}

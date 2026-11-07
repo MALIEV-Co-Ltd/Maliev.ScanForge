@@ -21,6 +21,7 @@ class DecodeWorker {
   static hold = false;
   static bad = false;
   static cloud = false;
+  static largePositions: number[] | undefined;
   terminated = false;
   input: any;
   onmessage?: ({ data }: { data: any }) => void;
@@ -39,6 +40,8 @@ class DecodeWorker {
       return;
     }
     let e = entity();
+    if (DecodeWorker.largePositions)
+      e = { ...e, positions: DecodeWorker.largePositions.slice() };
     if (DecodeWorker.cloud)
       e = transformDatumScan(
         { ...e, kind: "pointcloud" },
@@ -55,14 +58,15 @@ class DecodeWorker {
       history: [],
       future: [{ label: "Future", entities: [e] }],
     };
-    const displays = DecodeWorker.cloud
-      ? []
-      : [
-          {
-            positions: e.positions,
-            data: prepareScanRenderData(e.positions as Float32Array),
-          },
-        ];
+    const displays =
+      DecodeWorker.cloud || DecodeWorker.largePositions
+        ? []
+        : [
+            {
+              positions: e.positions,
+              data: prepareScanRenderData(e.positions as Float32Array),
+            },
+          ];
     const transport = await packProjectTransport({
       snapshot: projectEncodingSnapshot(session),
       displays,
@@ -86,6 +90,17 @@ afterEach(() => {
   DecodeWorker.hold = false;
   DecodeWorker.bad = false;
   DecodeWorker.cloud = false;
+  DecodeWorker.largePositions = undefined;
+});
+it("restores independent numeric geometry while retaining project history aliases", async () => {
+  vi.stubGlobal("Worker", DecodeWorker);
+  const earlierOwner = Array.from({ length: 65538 }, (_, i) => i + 1);
+  DecodeWorker.largePositions = earlierOwner;
+  const restored = await decodeProjectInBackground(new Blob());
+  const geometry = restored.project.entities[0].positions;
+  expect(restored.future[0].entities[0].positions).toBe(geometry);
+  earlierOwner[0] = 999;
+  expect(geometry[0]).toBe(1);
 });
 it("returns a validated prepared snapshot with retained history and cached geometry identity", async () => {
   vi.stubGlobal("Worker", DecodeWorker);

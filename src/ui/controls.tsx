@@ -1,5 +1,30 @@
 import type { ReactNode } from "react";
 import type { Vec3 } from "../types";
+export function ToolTitle({
+  title,
+  onClose,
+  disabled = false,
+  id,
+}: {
+  title: string;
+  onClose: () => void;
+  disabled?: boolean;
+  id?: string;
+}) {
+  return (
+    <h2 id={id} aria-label={title}>
+      {title}
+      <button
+        type="button"
+        aria-label={`Close ${title}`}
+        disabled={disabled}
+        onClick={onClose}
+      >
+        ×
+      </button>
+    </h2>
+  );
+}
 export function Field({
   label,
   value,

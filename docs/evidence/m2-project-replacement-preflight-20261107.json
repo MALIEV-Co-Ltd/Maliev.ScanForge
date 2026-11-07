@@ -1,0 +1,48 @@
+{
+  "scope": "Ask before decoding a project that would replace unsaved GUI work, and report a declined replacement as cancelled. Existing MCP project import already requires replace:true before decoding.",
+  "baseCommit": "da5f34339884608e93da4d8a0a2fdc77019ef370",
+  "sourceSha256": "170bf0087893e41f727dc254833b90ae391c56f77647c513c1e7e390c7fa068a",
+  "browserTestSha256": "7d9bff3ca30c6812c493faedc9dc435ead9199fe48b206b26e5af5f19a9a5274",
+  "buildFingerprint": "scanforge-d24c6c4aadc7ed7e",
+  "before": "The browser test declined the replacement prompt after observing a new project-decoding worker; it failed with worker count 4 versus 3. The guarded run closed all owned processes.",
+  "after": {
+    "browserAndPublicMcp": "Passed. GUI decline reports Import cancelled with zero completed files, does not start a decoder, and preserves project revision and objects. Public MCP project_import with replace:false fails before starting a decoder and preserves revision and objects. A subsequent GUI and MCP import of the same valid binary fixture succeeds, including exact normal-byte checks.",
+    "browserPeakJobBytes": 1768562688,
+    "focusedUnitTestsPassed": 21,
+    "focusedUnitFiles": 3,
+    "fullSuite": {
+      "testedCommit": "6dc3beed3d01f15133c34507f06601ea814fe0aa",
+      "passed": 50716,
+      "expectedFailures": 2,
+      "skipped": 76,
+      "filesPassed": 810,
+      "filesSkipped": 29,
+      "peakJobBytes": 1405243392,
+      "cleanupConfirmed": true,
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-current-full-suite-20261107.json",
+      "receiptSha256": "59ef2c65ce5e54698c3adfc6185f93e79fe850859d935fa64898a1bb4c53ef51"
+    },
+    "build": "All 15 TypeScript batches, production bundle and offline manifest passed.",
+    "buildPeakJobBytes": 1614036992,
+    "ownedProcessCleanupConfirmed": true,
+    "originalPly3ConfirmedReplacement": {
+      "testedCommit": "bcb7d1eb33f9b569cee625a6da548162626b7839",
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "faces": 3691133,
+      "exportBytes": 475563378,
+      "streamAndDownloadedFileSha256": "719c36d18bfc7f26964051d794556f3090ae79f6ddb641eac56e13ad18365436",
+      "result": "Passed GUI Split/Extract, project export, complete public MCP download, early replacement confirmation, GUI reopen, geometry comparison and post-reopen GUI Undo/Redo.",
+      "peakJobBytes": 4095434752,
+      "ownedProcessCleanupConfirmed": true,
+      "temporaryDownloadRemoved": true,
+      "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-ply3-20261107.mjs",
+      "driverSha256": "4b75bac02b84aca98401522869d8687fc79cdd47af56ef37304be80b31922d46",
+      "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-preflight-ply3-guard-20261107.json",
+      "guardReceiptSha256": "5225c4a20b8c2ce7b9113f11f5d39493f543d39a7f7466a6c465b9d7c0de9bbc"
+    }
+  },
+  "limitations": [
+    "This avoids decoding when replacement is declined; it does not reduce peak memory for a confirmed restore or resolve numeric-array ownership.",
+    "The native comparison and remaining M2 resource, integration and closure gates remain open."
+  ]
+}

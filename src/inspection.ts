@@ -75,6 +75,7 @@ export function measureGeometry(input: MeasurementInput) {
   };
 }
 
+export type InspectionSampleScope = "all" | "visible";
 export const INSPECTION_COORDINATE_LIMIT = 2_250_000;
 function admit(entity: Entity) {
   assertSampledGeometry(entity);
@@ -98,7 +99,10 @@ export function inspectSection(
   entity: Entity,
   axis: "x" | "y" | "z",
   offset: number,
+  scope: InspectionSampleScope = "all",
 ) {
+  if (scope !== "all" && scope !== "visible")
+    throw new Error("Invalid section scope.");
   if (entity.kind === "pointcloud")
     throw new Error(
       "A point cloud has no triangle surface for section extraction.",
@@ -106,7 +110,7 @@ export function inspectSection(
   admit(entity);
   const visible = inspectionVisible(entity);
   return sectionMesh(entity.positions, axis, offset, {
-    includeTriangle: (slot) => visible(slot * 3),
+    includeTriangle: (slot) => scope === "all" || visible(slot * 3),
   });
 }
 /** Keep only supported analytic parameters; unknown caller fields are never retained. */
@@ -142,11 +146,18 @@ export function inspectionFit(fit: FitResult): FitResult {
   deviations([0, 0, 0], result);
   return result;
 }
-function* deviationTraversal(entity: Entity, fit: FitResult, tolerance = 0.1) {
+function* deviationTraversal(
+  entity: Entity,
+  fit: FitResult,
+  tolerance = 0.1,
+  scope: InspectionSampleScope = "all",
+) {
   admit(entity);
   fit = inspectionFit(fit);
   if (!(tolerance > 0) || !Number.isFinite(tolerance))
     throw new Error("Deviation tolerance must be positive and finite.");
+  if (scope !== "all" && scope !== "visible")
+    throw new Error("Invalid analytic deviation scope.");
   const count = entity.positions.length / 3,
     visible = inspectionVisible(entity);
   const distances: (number | null)[] = new Array(count);
@@ -166,7 +177,7 @@ function* deviationTraversal(entity: Entity, fit: FitResult, tolerance = 0.1) {
     const values = deviations(coordinates, fit);
     for (let i = start; i < end; i++) {
       const d = values[i - start];
-      if (!visible(i)) {
+      if (scope === "visible" && !visible(i)) {
         distances[i] = null;
         continue;
       }
@@ -181,7 +192,12 @@ function* deviationTraversal(entity: Entity, fit: FitResult, tolerance = 0.1) {
       if (Math.abs(d) <= tolerance) withinTolerance++;
     }
   }
-  if (!samples) throw new Error("Deviation requires visible samples.");
+  if (!samples)
+    throw new Error(
+      scope === "visible"
+        ? "Deviation requires visible samples."
+        : "Deviation requires samples.",
+    );
   if (!Number.isFinite(sum + squares))
     throw new Error("Deviation statistics exceed numeric range.");
   return {
@@ -189,6 +205,7 @@ function* deviationTraversal(entity: Entity, fit: FitResult, tolerance = 0.1) {
     entityId: entity.id,
     units: "mm",
     semantics: "oriented-analytic-surface",
+    scope,
     sampleOrder:
       entity.kind === "pointcloud"
         ? "source-points"
@@ -214,8 +231,9 @@ export function inspectDeviation(
   entity: Entity,
   fit: FitResult,
   tolerance = 0.1,
+  scope: InspectionSampleScope = "all",
 ) {
-  const traversal = deviationTraversal(entity, fit, tolerance);
+  const traversal = deviationTraversal(entity, fit, tolerance, scope);
   let step = traversal.next();
   while (!step.done) step = traversal.next();
   return step.value;
@@ -228,10 +246,11 @@ export async function inspectDeviationAsync(
   options: {
     check?: () => void;
     progress?: (fraction: number, stage: string) => void;
+    scope?: InspectionSampleScope;
   } = {},
 ) {
   options.check?.();
-  const traversal = deviationTraversal(entity, fit, tolerance);
+  const traversal = deviationTraversal(entity, fit, tolerance, options.scope);
   let step = traversal.next();
   while (!step.done) {
     options.progress?.(step.value, "Measuring signed primitive deviation");

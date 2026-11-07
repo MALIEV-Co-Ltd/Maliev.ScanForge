@@ -1,0 +1,31 @@
+{
+  "scope": "Allocation diagnostic and injected original PLY-3 replay; no production code change.",
+  "baseCommit": "01004a5302dea52eb52d93d76268032523a29beb",
+  "allocationProbe": {
+    "runtime": "Node.js 22.22.0, separate guarded processes, explicit collection before and after each allocation",
+    "values": 8388608,
+    "method": "Convert a Float64Array of fractional values to an ordinary numeric array. The indexed method allocates an empty array at final length and assigns each value; the seeded method starts with a fractional value, sets the final length and assigns each value. Both check the first and last values.",
+    "indexedPeakJobBytes": 222937088,
+    "seededPeakJobBytes": 155975680,
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-array-allocation-probe-20261107.cjs",
+    "scriptSha256": "87f18b72de88351c0a740c722911fd99fa66b2c65dc31a8817dbfa23767f6ca6",
+    "limitations": "A synthetic Node/V8 measurement with collection is not a browser heap profile or proof of production memory savings."
+  },
+  "browserReplay": {
+    "method": "The isolated server removed the decoder's numeric reuse callback and changed one ordinary-array allocation in the served minified bundle to use a fractional seed. Both replacements were counted in served responses. The integration worktree and production build were not modified.",
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "exportBytes": 475563378,
+    "streamAndFileSha256": "e339a4ccf169982c117ba62081f135808b60fd4884fe291156e75c35c8a33b1c",
+    "result": "Split, Extract, export and download completed. The GUI selected the project and confirmed replacement, but the MCP bridge disconnected before reopened geometry and history could be checked.",
+    "passed": false,
+    "peakJobBytes": 4310933504,
+    "limitBytes": 4294967296,
+    "ownedProcessCleanupConfirmed": true,
+    "temporaryDownloadRemoved": true,
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-no-reuse-double-ply3-20261107.mjs",
+    "driverSha256": "878c943ba90628d56b7b5ea3bb0580591cecac8830fced261b4f55f4989374bc",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-no-reuse-double-ply3-guard-20261107.json",
+    "receiptSha256": "6db868aaaec68587c6eceb54d243c723607c4ff4b9c0726c7cb50c5e7ea62934"
+  },
+  "interpretation": "The synthetic allocation improvement did not produce a passing full-size independent restore. Differences between individual runs cannot establish causality or a resource guarantee. The ownership and M2 acceptance gates remain open."
+}

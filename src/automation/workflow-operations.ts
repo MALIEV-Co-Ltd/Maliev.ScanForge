@@ -67,6 +67,7 @@ export function coordinateAlignmentInterface(
         "pointNoise",
         "pointReduce",
         "fineAlign",
+        "surfaceRefinement",
       ].includes(patch.workspace ?? ""))
   )
     assertSampledGeometry(selected);

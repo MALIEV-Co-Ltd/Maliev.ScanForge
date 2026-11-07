@@ -1,0 +1,34 @@
+{
+  "scope": "QuickSurface GUI Flip Normals on original scan 1 and shared ScanForge coordinate comparison",
+  "candidate": "fecb0b3",
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "input": "C:/repo/alignment-example-files/scan-1.stl",
+    "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "units": "mm",
+    "triangles": 273139,
+    "operation": "Select mesh and click Scan Data > Flip Normals once; export visible STL",
+    "outputStlSha256": "bb998c42328bdcc30d1ebd317d0af603213a0f9236e8307f8e6279a858a4133d",
+    "outputCoordinateSha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf",
+    "outputNormalRecordSha256": "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+    "orderedReversedFacets": 273139,
+    "otherFacets": 0,
+    "facetNormalsEqualBitwiseNegatedInput": 0,
+    "trace": "m2-native-flip-original-trace-20261107.json"
+  },
+  "sharedOperation": {
+    "test": "tests/m2-original-flip-native.test.ts",
+    "outputCoordinateSha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf",
+    "sourceUnchanged": true,
+    "jobPeakBytes": 411824128,
+    "jobLimitBytes": 4294967296,
+    "jobCleanupConfirmed": true
+  },
+  "limitations": [
+    "The QuickSurface process was already running and was not inside the test Job; a 605626368-byte private-memory snapshot after export is not a peak measurement.",
+    "This comparison covers ordered coordinates and winding for one original STL. The native exported normal records were not simply bitwise-negated input records; their relationship to ScanForge normal carriers is not established here.",
+    "The ScanForge result was exercised through the shared operation locally, not through GUI or public MCP on this exact input; earlier separate GUI/MCP Flip controls are not a substitute for that replay.",
+    "The temporary native STL was removed after hashing; the compact evidence and input-pinned coordinate regression remain. No broad native parity or milestone completion is claimed."
+  ]
+}

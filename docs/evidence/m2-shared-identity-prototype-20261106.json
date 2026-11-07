@@ -1,0 +1,25 @@
+{
+  "scope": "Isolated shared-buffer identity prototype; not integrated into M2",
+  "base": "174c47b0",
+  "smallBrowser": {
+    "result": "Four previously verified shared buffers retained the original main-thread buffer wrappers after worker decode; numeric positions were reused. This does not address mutable numeric-array ownership.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/shared-rebind-small-20261106.json"
+  },
+  "focusedTests": "46 passed across project transport, decoding reuse, and indexed viewport display, including mismatch source tokens, alias offsets, and independent-buffer rebuilds.",
+  "fullPly3": {
+    "result": "Failed: Split, Extract, undo and hash-verified 475563378-byte project download succeeded, but GUI reopen timed out. The Job peak exceeded the 4 GiB limit; cleanup was confirmed. The failure does not identify whether identity rebinding occurred before timeout.",
+    "peakJobBytes": 4392914944,
+    "limitBytes": 4294967296,
+    "artifactSha256": "4ea1663cab3faa5f53294f99cfb7fb0d8b37933c8e2c56080b05aeebf2151d20",
+    "receiptSha256": "4616125e27665adfa1af94e685dc02cb41f2c2819dfb140fd6d3b1adb1abb2a7",
+    "logSha256": "f014c6556a2f1839f8d48ff208640ce7aecf93209587c40672e70a610886dba3",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/shared-rebind-ply3-20261106.json",
+    "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-rebind-ply3-20261106.log"
+  },
+  "prototypePatch": {
+    "path": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-rebind-prototype-20261106.patch",
+    "sha256": "da2b1f3048a60c613642ab39e542bbc34599b682b6cde36918d762db7efa96df",
+    "note": "Includes subsequent equivalent extraction of token validation and extra tests after the full-size build; not a byte-exact record of that build. It is unvalidated for integration."
+  },
+  "cleanup": "The generated project download was hash-checked against the log and deleted. No production or MCP behavior was changed."
+}

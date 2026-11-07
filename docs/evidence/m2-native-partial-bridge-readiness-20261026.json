@@ -1,0 +1,53 @@
+{
+  "scope": "Recovered native input and observed Semi/Flat gesture only; no exported geometry comparison",
+  "applicationCandidate": "dac81dcae48e17c43aa5abf3ec1fb576aec3666d",
+  "native": {
+    "originalExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "retainedAnalysisImageExecuted": false,
+    "freshOwnedProcess": true,
+    "identityVerified": true,
+    "inputRecovered": true,
+    "maximizedBeforeModelInput": true,
+    "source": {
+      "name": "flat-square-annulus.stl",
+      "sha256": "ec54d4c2d2b06e1c836bb7d53b700176dd89970919ffd7b5948a3a56c7d39b9b",
+      "units": "mm",
+      "facets": 8,
+      "meshes": 1,
+      "holes": 2
+    },
+    "observedOperation": {
+      "mode": "Semi",
+      "algorithm": "Flat",
+      "firstBoundaryPointMm": [-3, -3, 0],
+      "secondBoundaryPointMm": [3, 3, 0],
+      "gesture": "Two boundary-corner clicks complete the operation immediately",
+      "observedFacetsAfter": 9,
+      "observedPatch": "Upper-left half of inner square",
+      "intermediateAttempts": "A drag and an interior click did not complete the operation; the final opposite boundary-corner click did."
+    },
+    "export": {
+      "saveDialogReached": true,
+      "destinationTyped": true,
+      "savedFilePresentAfterExit": false,
+      "geometryComparisonPassed": false,
+      "reason": "Scheduled owned-session finish occurred before Save was confirmed."
+    },
+    "resources": {
+      "leaseSeconds": 480,
+      "scheduledFinishSeconds": 450,
+      "stopReason": "scheduled-owned-finish",
+      "jobMemoryLimitBytes": 4294967296,
+      "cpuRatePercent": 25,
+      "exitCode": 0,
+      "elapsedSeconds": 451.2231783999596,
+      "peakJobMemoryBytes": 731004928,
+      "ownedProcessExited": true,
+      "watchdogStopped": true,
+      "allProcessAndThreadHandlesClosed": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "remaining": "Export Semi/Flat and Bridge/Flat from separate original-source states, bind the observed settings and gestures, compare exact oriented geometry and verify the same controls through GUI/public MCP. Broader M2 inventory gates remain open."
+}

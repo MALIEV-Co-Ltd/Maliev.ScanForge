@@ -86,3 +86,13 @@ it("keeps returned hits independent when subsequent queries reuse leaf scratch",
   expect(first).toEqual(saved);
   expect(point).toEqual([0.5, 0.5, 0.125]);
 });
+
+it("continues returning face hits when the visit counter wraps", () => {
+  const query = createNativeAlignmentSurfaceQuery(target(), {
+    includeTriangle: true,
+  });
+  const expected = query([0.5, 0.5, 0.125], 10);
+  for (let i = 0; i < 65535; i++) query([0.5, 0.5, 0.125], 10);
+  expect(query([0.5, 0.5, 0.125], 10)).toEqual(expected);
+  expect(expected?.triangle).toBe(0);
+});
