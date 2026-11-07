@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-07",
+  "scope": "Global alignment provisional pose cancellation and malformed worker updates",
+  "directController": "A cancellation raised by onPose previously allowed a query to start; a deterministic test reproduced this and now passes with an immediate cancellation check. Callback failure closes the query pool.",
+  "workerClient": "Deterministic injected pose tests cover callback failure, abort propagation and rejection of duplicate IDs before publication.",
+  "focused": {"testFiles": 8, "testsPassed": 105, "peakJobBytes": 405037056, "cleanupConfirmed": true},
+  "build": {"manifest": "scanforge-bdc991ade61f74bb", "passed": true, "peakJobBytes": 1893806080, "cleanupConfirmed": true},
+  "compiledBrowser": {"passed": true, "observedRefining": true, "checks": ["GUI and public MCP shared preview", "live canvas changes", "unmodified source and history before apply", "apply and history", "in-flight cancel restores display and history"], "peakJobBytes": 1409249280, "cleanupConfirmed": true},
+  "limits": "The exact callback cancellation race is tested deterministically, not reproduced at a specific browser timing. The browser fixture is synthetic and does not prove native convergence, general accuracy, large-scan performance or all milestone gates. The full suite has not been rerun after this fix."
+}
