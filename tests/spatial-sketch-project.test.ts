@@ -31,6 +31,48 @@ const spatial = {
   ],
 } as unknown as SavedSketch;
 
+it("preserves spatial history and distinct equal geometry in binary version 7", async () => {
+  const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+  const entity = (id: string, values: number[]) => ({
+    id,
+    name: id,
+    kind: "mesh" as const,
+    positions: values,
+    visible: true,
+    opacity: 1,
+    color: "#ffffff",
+  });
+  const entities = [entity("a", positions), entity("b", positions.slice())];
+  const publication = prepareModelSketchPublication({ sketches: [] }, [
+    spatial,
+  ]);
+  const file = await encodeProjectFileLocally({
+    project: {
+      format: "maliev-scanforge",
+      version: 1,
+      units: "mm",
+      name: "Spatial",
+      entities,
+      authoring: publication.authoring,
+    },
+    history: [
+      { label: "Spatial", entities, sketchChanges: publication.changes },
+    ],
+    future: [],
+  });
+  const header = new DataView(await file.slice(0, 16).arrayBuffer());
+  const manifest = JSON.parse(
+    await file.slice(16, 16 + header.getUint32(8, true)).text(),
+  );
+  expect(manifest.version).toBe(7);
+  const restored = await decodeProjectContents(file);
+  expect(restored.project.authoring?.sketches).toEqual([spatial]);
+  expect(restored.history[0].sketchChanges).toEqual(publication.changes);
+  expect(restored.project.entities[0].positions).not.toBe(
+    restored.project.entities[1].positions,
+  );
+});
+
 it("preserves spatial curves through versioned JSON, binary and owned history", async () => {
   validateSavedSketchDisplay(spatial);
   const publication = prepareModelSketchPublication({ sketches: [] }, [

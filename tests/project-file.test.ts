@@ -191,7 +191,7 @@ it("rejects invalid geometry before saving", async () => {
   source.history[0].entities = [{ ...entity, positions: [NaN] }];
   await expect(encodeProjectFile(source)).rejects.toThrow(/geometry/);
 });
-it("stores hidden and saved facet indices as deduplicated unsigned binary chunks", async () => {
+it("stores distinct equal hidden and saved facet indices as separate unsigned chunks", async () => {
   const source = session();
   source.project.entities = [
     {
@@ -212,5 +212,8 @@ it("stores hidden and saved facet indices as deduplicated unsigned binary chunks
   );
   const selection = manifest.records[0].meshSelection;
   expect(selection.hidden.type).toBe("u32");
-  expect(selection.hidden.chunk).toBe(selection.saved[0].triangles.chunk);
+  expect(selection.hidden.chunk).not.toBe(selection.saved[0].triangles.chunk);
+  expect(manifest.chunks[selection.hidden.chunk].sha256).toBe(
+    manifest.chunks[selection.saved[0].triangles.chunk].sha256,
+  );
 });

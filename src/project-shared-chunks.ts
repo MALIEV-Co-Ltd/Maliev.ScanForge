@@ -25,8 +25,11 @@ export function rememberProjectSharedChunks(
   values: readonly ProjectSharedChunk[],
 ) {
   if (typeof WeakRef === "undefined") return;
+  const seen = new Set<string>();
   for (const { sha256, buffer } of values) {
     const key = `${sha256}:${buffer.byteLength}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
     chunks.delete(key);
     chunks.set(key, new WeakRef(buffer));
     if (chunks.size > 128) chunks.delete(chunks.keys().next().value!);

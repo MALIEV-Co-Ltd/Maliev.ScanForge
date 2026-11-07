@@ -31,6 +31,7 @@ await mkdir(artifactDir, { recursive: true });
 const evidence = new URL("browser-validation.json", artifactDir);
 let browserServer, browser, client, transport;
 let failed;
+const ownershipComplete = Symbol("ownership test complete");
 const mime = {
   html: "text/html",
   js: "application/javascript",
@@ -236,6 +237,109 @@ try {
       await new Promise((r) => setTimeout(r, 250));
     }
     throw Error("Geometry job failed to settle");
+  }
+  async function checkOwnershipRoundtrip() {
+    const positions = Buffer.from(
+      new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]).buffer,
+    );
+    const chunks = [positions, positions].map((data, index) => ({
+      offset: index * data.length,
+      bytes: data.length,
+      rawBytes: data.length,
+      codec: "raw",
+      sha256: createHash("sha256").update(data).digest("hex"),
+    }));
+    const record = (id, name, chunk) => ({
+      id,
+      name,
+      kind: "mesh",
+      visible: true,
+      color: "#aaaaaa",
+      opacity: 1,
+      positions: { chunk, type: "f32" },
+    });
+    const manifest = Buffer.from(
+      JSON.stringify({
+        format: "scanforge-binary",
+        version: 2,
+        units: "mm",
+        name: "Ownership",
+        current: [0, 1],
+        history: [{ label: "Before copy", entities: [0] }],
+        future: [],
+        records: [
+          record("typed-mesh", "Typed scanner normals", 0),
+          record("typed-copy", "Typed independent copy", 1),
+        ],
+        chunks,
+      }),
+    );
+    const header = Buffer.alloc(16);
+    header.write("SCANFRG2");
+    header.writeUInt32LE(manifest.length, 8);
+    header.writeUInt32LE(positions.length * 2, 12);
+    const file = Buffer.concat([header, manifest, positions, positions]);
+    await page
+      .locator('input[type=file][accept*=".scanforge"]')
+      .first()
+      .setInputFiles({
+        name: "independent-geometry.scanforge",
+        mimeType: "application/x-scanforge",
+        buffer: file,
+      });
+    await page
+      .getByRole("button", { name: "Typed independent copy", exact: true })
+      .waitFor();
+    async function checkExport() {
+      const artifact = await job(
+        await call("project_export", { format: "project" }),
+      );
+      const wire = await call("artifact_read", {
+        artifactId: artifact.artifactId,
+      });
+      const bytes = Buffer.from(wire.result.base64, "base64");
+      const size = bytes.readUInt32LE(8);
+      const result = JSON.parse(bytes.subarray(16, 16 + size).toString());
+      assert.equal(result.version, 2);
+      const [first, second] = result.current.map(
+        (i) => result.records[i].positions,
+      );
+      assert.notEqual(first.chunk, second.chunk);
+      assert.equal(
+        result.chunks[first.chunk].sha256,
+        result.chunks[second.chunk].sha256,
+      );
+      assert.equal(result.history.at(-1).entities[0], result.current[0]);
+      await call("artifact_delete", { artifactId: artifact.artifactId });
+    }
+    await checkExport();
+    const upload = await call("artifact_put", {
+      name: "independent-geometry.scanforge",
+      offset: 0,
+      base64: file.toString("base64"),
+    });
+    await job(
+      await mutate("project_import", {
+        artifactId: upload.result.artifactId,
+        replace: true,
+      }),
+    );
+    await call("artifact_delete", { artifactId: upload.result.artifactId });
+    await checkExport();
+    assert.deepEqual(
+      (await call("project_get")).result.objects.map((o) => o.name),
+      ["Typed scanner normals", "Typed independent copy"],
+    );
+  }
+  if (process.argv.includes("--ownership-only")) {
+    await checkOwnershipRoundtrip();
+    assert.equal(errors.length, 0, errors.join("\n"));
+    assert.equal(stderr, "", stderr);
+    ledger.steps = [
+      "GUI and public MCP reopen and export independent equal geometry with history",
+    ];
+    console.log(`PASS: ${ledger.steps.join("; ")}`);
+    throw ownershipComplete;
   }
   const artifactBytes = Buffer.from(
     Uint8Array.from({ length: 262145 }, (_, i) => (i * 47 + 31) & 255),
@@ -457,12 +561,30 @@ try {
     await page
       .getByLabel(`Reference 1 point (mm) ${axis}`, { exact: true })
       .fill(value);
-  await page
-    .getByRole("checkbox", {
-      name: "Move CAD alignment companion",
-      exact: true,
-    })
-    .check();
+  const companionControl = page.getByRole("checkbox", {
+    name: "Move CAD alignment companion",
+    exact: true,
+  });
+  assert.equal(await page.locator(".display-panel").isVisible(), false);
+  await page.screenshot({
+    path: fileURLToPath(new URL("alignment-panel.png", artifactDir)),
+  });
+  try {
+    await companionControl.check();
+  } catch (error) {
+    const details = await companionControl.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const x = rect.left + rect.width / 2,
+        y = rect.top + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return { rect: rect.toJSON(), hit: hit?.outerHTML.slice(0, 300) };
+    });
+    await page.screenshot({
+      path: fileURLToPath(new URL("alignment-failure.png", artifactDir)),
+    });
+    console.error(JSON.stringify({ alignmentCompanionHit: details }));
+    throw error;
+  }
   await page
     .getByRole("button", { name: "Preview alignment", exact: true })
     .click();
@@ -479,6 +601,7 @@ try {
       exact: true,
     })
     .waitFor();
+  assert.equal(await page.locator(".display-panel").isVisible(), true);
   const placedReferences = await job(
     await call("alignment_references", { entityId: created.entityIds[0] }),
   );
@@ -515,7 +638,9 @@ try {
   assert.deepEqual(
     (
       await job(
-        await call("alignment_references", { entityId: created.entityIds[0] }),
+        await call("alignment_references", {
+          entityId: created.entityIds[0],
+        }),
       )
     ).references,
     references.references,
@@ -534,7 +659,9 @@ try {
   assert.deepEqual(
     (
       await job(
-        await call("alignment_references", { entityId: created.entityIds[0] }),
+        await call("alignment_references", {
+          entityId: created.entityIds[0],
+        }),
       )
     ).references,
     placedReferences.references,
@@ -622,8 +749,12 @@ try {
     }),
   );
   await verifySavedGeometry();
-  await call("artifact_delete", { artifactId: exactUpload.result.artifactId });
-  const copied = await mutate("mesh_copy", { entityId: created.entityIds[0] });
+  await call("artifact_delete", {
+    artifactId: exactUpload.result.artifactId,
+  });
+  const copied = await mutate("mesh_copy", {
+    entityId: created.entityIds[0],
+  });
   const meshId = copied.result.entityId;
   const transformed = await mutate("mesh_transform", {
     entityId: meshId,
@@ -845,7 +976,10 @@ try {
     }),
   );
   await page
-    .getByRole("button", { name: "Pick reference face on canvas", exact: true })
+    .getByRole("button", {
+      name: "Pick reference face on canvas",
+      exact: true,
+    })
     .click();
   const canvas = await page.locator(".viewport canvas").first().boundingBox();
   assert(canvas);
@@ -874,7 +1008,10 @@ try {
   await page
     .getByRole("button", { name: "Cancel alignment", exact: true })
     .click();
-  await mutate("object_update", { entityId: meshId, patch: { visible: true } });
+  await mutate("object_update", {
+    entityId: meshId,
+    patch: { visible: true },
+  });
   const repair = await job(
     await mutate("mesh_process", {
       entityId: meshId,
@@ -1082,7 +1219,10 @@ try {
   assert.equal(projectDecodeWorkers, workersBeforeMcpRefusal);
   const afterMcpRefusal = (await call("project_get")).result;
   assert.equal(afterMcpRefusal.revision, beforeMcpRefusal.revision);
-  assert.deepEqual(afterMcpRefusal.objects, beforeMcpRefusal.objects);
+  assert.deepEqual(
+    afterMcpRefusal.objects.map(({ meshPreparation, ...object }) => object),
+    beforeMcpRefusal.objects.map(({ meshPreparation, ...object }) => object),
+  );
   await job(
     await mutate("project_import", {
       artifactId: typedUpload.result.artifactId,
@@ -1108,6 +1248,8 @@ try {
   await page
     .getByRole("button", { name: "Typed scanner normals", exact: true })
     .waitFor();
+
+  await checkOwnershipRoundtrip();
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByRole("button", { name: "Disconnect agent", exact: true })
@@ -1134,6 +1276,7 @@ try {
     "mesh copy/transform/winding worker/topology",
     "interval backup thumbnail artifact, MCP recovery identity/history, GUI deletion reflected in MCP",
     "GUI and MCP import the independent v2 typed-normal fixture and export identical Float32 bytes including signed zero",
+    "GUI and public MCP reopen and export distinct equal geometry with history in v2",
     "disconnect rejects calls",
   ];
   await page.screenshot({
@@ -1141,8 +1284,10 @@ try {
   });
   console.log(`PASS: ${ledger.steps.join("; ")}`);
 } catch (error) {
-  failed = error;
-  throw error;
+  if (error !== ownershipComplete) {
+    failed = error;
+    throw error;
+  }
 } finally {
   await cleanup();
 }

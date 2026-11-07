@@ -173,7 +173,9 @@ export async function encodeProjectFileLocally(
       });
       if (candidate) options.onSharedChunk(candidate);
     }
-    let chunk = chunkIds.get(sha256);
+    // Equal but distinct numeric arrays must not become the same mutable value
+    // after restore. Identical references still return through valueCache.
+    let chunk = typeof value === "string" ? chunkIds.get(sha256) : undefined;
     if (chunk === undefined) {
       const zipped = await projectValueBlob(value, type, true),
         smaller = zipped.size < rawBytes;
@@ -201,7 +203,7 @@ export async function encodeProjectFileLocally(
         pendingBytes = 0;
       }
       offset += data.size;
-      chunkIds.set(sha256, chunk);
+      if (typeof value === "string") chunkIds.set(sha256, chunk);
     }
     const ref: Ref = { chunk, type };
     if (typeof value !== "string") valueCache.set(value, ref);
@@ -428,6 +430,7 @@ export async function decodeProjectContents(
   const data: Uint8Array[] = [];
   const privateChunk: boolean[] = [];
   const reusable = new Map<string, SharedArrayBuffer>();
+  const borrowedChunkKeys = new Set<string>();
   if (
     options.sharedReadonlyBuffers &&
     globalThis.crossOriginIsolated === true &&
@@ -503,7 +506,11 @@ export async function decodeProjectContents(
     ).getReader();
     // Decompress into the final readonly backing. Keeping private chunks and
     // later copying all geometry into shared buffers doubles restore storage.
-    const existing = reusable.get(`${chunk.sha256}:${chunk.rawBytes}`);
+    const reuseKey = `${chunk.sha256}:${chunk.rawBytes}`;
+    const existing = borrowedChunkKeys.has(reuseKey)
+      ? undefined
+      : reusable.get(reuseKey);
+    if (existing) borrowedChunkKeys.add(reuseKey);
     let borrowed = existing !== undefined;
     const types = chunkTypes.get(data.length);
     const privateFloat64 = types?.size === 1 && types.has("f64");

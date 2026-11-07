@@ -167,7 +167,7 @@ it("preserves ordinary array aliases when a mesh chunk also belongs to a point c
     id: "cloud",
     name: "cloud",
     kind: "pointcloud",
-    positions: [...mesh.positions],
+    positions: mesh.positions,
   });
   const file = await encodeProjectFileLocally(session);
   const result = await decodeProjectContents(file, {

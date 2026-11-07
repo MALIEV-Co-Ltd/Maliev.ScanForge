@@ -1217,6 +1217,14 @@ attributes and placement. JSON exports include both world compatibility geometry
 and placement, using wire version 2 for cloud attributes or version 3 for
 construction identity metadata.
 
+Binary saves store distinct numeric arrays as separate chunks even when their
+contents are equal; the same array still shares its chunk across current state
+and history. This can make saves larger when a project contains equal but
+separate arrays. The binary format version is unchanged. Older content-deduplicated
+files remain readable, but cannot recover distinctions that were not recorded.
+GUI open, backups and MCP project import/export use the same codec. Older readers
+may still merge equal chunks when reusing cached data.
+
 Ordinary objects may carry a persisted `constructionOrderKey`, exposed by
 `object_get` as 32 lowercase hexadecimal characters. It is read-only through
 `object_update`; duplicate an object through `object_duplicate` to receive a new

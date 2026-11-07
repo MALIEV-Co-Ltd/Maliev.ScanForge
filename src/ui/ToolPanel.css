@@ -451,6 +451,9 @@
   flex: 1;
   min-height: 0;
 }
+.inspector.datum-command-host > div > :not(.datum-setup-panel) {
+  display: none;
+}
 .inspector.datum-command-host .datum-setup-panel {
   flex: 1;
   min-height: 0;

@@ -8,8 +8,7 @@ import {
   unpackProjectTransport,
 } from "../src/project-transport";
 
-// The current immutable-geometry convention does not enforce independent storage.
-it.fails.each(["array", "float32"])(
+it.each(["array", "float32"])(
   "keeps equal but distinct %s coordinates independent across worker transport",
   async (kind) => {
     const coordinates = [0, 0, 0, 1, 0, 0, 0, 1, 0];
