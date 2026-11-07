@@ -104,5 +104,34 @@
       "passed": true,
       "elapsedSeconds": 27.474394299992127
     }
+  },
+  "nativeReadOnlyCoordinateProbe": {
+    "method": "A real browser run captured the first vertex from the GUI 25 percent STL output. REA/Frida searched writable QuickSurface memory ranges no larger than 128 MiB while the native 25 percent preview was visible, then read those matching addresses after Cancel.",
+    "guiFirstVertex": [
+      -2.3498282432556152, -35.77924728393555, -314.6499328613281
+    ],
+    "scannedBytes": 1122766848,
+    "matchingAddressesDuringPreview": 10,
+    "sameAddressesStillMatchingAfterCancel": 0,
+    "searchEvidence": "ev_58cee6fc763c3decd068d4f2a7487282fc826a278b98c8e339244dc3815ae4b9",
+    "afterCancelEvidence": "ev_5b184d44cde639505a531b843f87df17063ff559304ee08fc62cf90aa153f0c2",
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1401090048,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.002016499987803
+    },
+    "limitations": [
+      "This is one coordinate, not a face or whole-mesh comparison; matching byte sequences cannot establish ownership by the active native preview.",
+      "All ten prior addresses had changed or were unreadable after Cancel, consistent with preview-related storage, but memory reuse and unrelated copies remain possible.",
+      "The scan excluded ranges larger than 128 MiB and capped reported matches at 50.",
+      "A second broader scan timed out and produced no usable evidence.",
+      "Native source triangle count returned to 273139 after Cancel; its complete post-cancel geometry was not re-exported."
+    ]
   }
 }
