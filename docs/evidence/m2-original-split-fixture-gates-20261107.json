@@ -1,0 +1,77 @@
+{
+  "scope": "Fixture-gated original PLY Split controls on the integration candidate",
+  "candidate": "25ee3a1bd75f7b6512bf84a392b710a78a9083f1",
+  "tests": [
+    "tests/scan-split-single-mesh-original-local.test.ts",
+    "tests/scan-split-indexed-worker-original-local.test.ts"
+  ],
+  "environment": "SCANFORGE_M2_SHARED_SPLIT=1; one worker; explicit SCANFORGE_M2_ORIGINAL_PLY; system-memory guard",
+  "ply2": {
+    "inputSha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+    "inputFaces": 2697877,
+    "workerOutputFaces": 2702093,
+    "workerInputArea": 6361.909170611134,
+    "workerOutputArea": 6361.909170611132,
+    "workerGeometryKeyEnabled": true,
+    "testsPassed": 2,
+    "guard": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/scan-split-single-mesh-original-local.test.ts",
+        "tests/scan-split-indexed-worker-original-local.test.ts",
+        "--maxWorkers=1",
+        "--testTimeout=300000",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1909751808,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 33.05234130000463
+    }
+  },
+  "ply3": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "workerOutputFaces": 3695945,
+    "workerInputArea": 7083.997795891035,
+    "workerOutputArea": 7083.997795891017,
+    "workerGeometryKeyEnabled": false,
+    "testsPassed": 2,
+    "guard": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/scan-split-single-mesh-original-local.test.ts",
+        "tests/scan-split-indexed-worker-original-local.test.ts",
+        "--maxWorkers=1",
+        "--testTimeout=300000",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2415845376,
+      "totalProcesses": 9,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 46.3140163999924
+    }
+  },
+  "assertions": [
+    "Source positions, indexed vertices and triangle buffers preserve their digests.",
+    "Shared operation produces indexed topology matching its output positions; source and result area agree within 1e-6 relative error.",
+    "Worker dispatcher reports retained indexed source, nonzero cut edges, multiple parts and matching output topology."
+  ],
+  "limitations": [
+    "The worker dispatcher test stubs the worker global in Vitest; it is not an independent browser Worker, GUI or public MCP run.",
+    "Only one request per worker test was made; the geometry-key setting does not prove cache reuse.",
+    "These checks do not compare native Split output, all cutter types or resource behavior on arbitrary inputs."
+  ]
+}
