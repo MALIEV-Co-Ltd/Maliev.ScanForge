@@ -8,12 +8,8 @@
   "comparisons": 64,
   "poseComparisons": 2,
   "fallbackComparisons": 2,
-  "fallbackWorkers": [
-    1
-  ],
-  "physicalWorkers": [
-    2
-  ],
+  "fallbackWorkers": [1],
+  "physicalWorkers": [2],
   "shared": true,
   "workers": [
     {

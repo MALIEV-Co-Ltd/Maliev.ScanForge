@@ -19,7 +19,23 @@
     "peakJobBytes": 832897024,
     "activeProcessesAfter": 0
   },
-  "build": "Vite production bundle passed after the change; full production build and final suite remain required for the new candidate.",
+  "exactCommit": "9736c7a80899c690f2bb45b6a48ed1fb694d88d0",
+  "build": {
+    "passed": true,
+    "id": "scanforge-0ee324161223d5c7",
+    "typecheckBatches": 15,
+    "peakJobBytes": 1893957632,
+    "activeProcessesAfter": 0
+  },
+  "fullSuite": {
+    "passedFiles": 840,
+    "skippedFiles": 32,
+    "passedTests": 50922,
+    "expectedFailures": 2,
+    "skippedTests": 79,
+    "peakJobBytes": 1310093312,
+    "activeProcessesAfter": 0
+  },
   "jobLimitBytes": 34110816256,
   "limitations": [
     "These are editable sampled triangle objects without protected exact CAD geometry, not native QuickSurface comparisons.",

@@ -3,18 +3,49 @@
   "baseline": "9e6a98ee",
   "failure": "An isolated injected retained-Float64 restore lost the private-buffer marker across the worker boundary; indexed component inventory rejected matching geometry.",
   "change": "The shared processing client transfers a copy and attaches internal metadata only for branded private indexed vertices. The worker validates the metadata and restores the marker; caller-supplied metadata is stripped.",
-  "focusedTests": { "passed": true, "peakJobBytes": 483500032, "cleanupConfirmed": true },
-  "productionBuild": { "passed": true, "buildId": "scanforge-17e873d848d8e43d", "peakJobBytes": 1860169728, "cleanupConfirmed": true },
-  "fullSuite": { "passed": 50864, "expectedFailures": 2, "skipped": 77, "peakJobBytes": 1318604800, "cleanupConfirmed": true },
-  "productionBrowserSplit": { "passed": true, "cases": 18, "peakJobBytes": 1042460672, "cleanupConfirmed": true, "pageErrors": 0 },
+  "focusedTests": {
+    "passed": true,
+    "peakJobBytes": 483500032,
+    "cleanupConfirmed": true
+  },
+  "productionBuild": {
+    "passed": true,
+    "buildId": "scanforge-17e873d848d8e43d",
+    "peakJobBytes": 1860169728,
+    "cleanupConfirmed": true
+  },
+  "fullSuite": {
+    "passed": 50864,
+    "expectedFailures": 2,
+    "skipped": 77,
+    "peakJobBytes": 1318604800,
+    "cleanupConfirmed": true
+  },
+  "productionBrowserSplit": {
+    "passed": true,
+    "cases": 18,
+    "peakJobBytes": 1042460672,
+    "cleanupConfirmed": true,
+    "pageErrors": 0
+  },
   "isolatedBrowserExperiment": {
     "passed": true,
     "peakJobBytes": 1617797120,
     "cleanupConfirmed": true,
     "fixture": "A single indexed triangle includes the coordinate 0.1, which is not exactly representable in Float32.",
-    "checks": ["binary project reopen", "matching position and indexed vertex hashes and backing identity", "public MCP component inventory", "GUI and public MCP Split geometry digests match", "undo before GUI Split"],
+    "checks": [
+      "binary project reopen",
+      "matching position and indexed vertex hashes and backing identity",
+      "public MCP component inventory",
+      "GUI and public MCP Split geometry digests match",
+      "undo before GUI Split"
+    ],
     "positionsSha256": "3712b358727bdca9533871e42acd8b9967a9c5b9323aca80f92d4e307795971f",
     "splitPositionsSha256": "e14d63bd35b361560db08d4a1a318fc13c0880ce23ac10cdd6303f392fb3caa6"
   },
-  "limitations": ["Float64 restore was injected into the isolated served bundle and is not enabled in production.", "This small fixture does not establish general carrier compatibility, large-project resource reliability, or native QuickSurface parity.", "The restore ownership, native, integration, and milestone gates remain open."]
+  "limitations": [
+    "Float64 restore was injected into the isolated served bundle and is not enabled in production.",
+    "This small fixture does not establish general carrier compatibility, large-project resource reliability, or native QuickSurface parity.",
+    "The restore ownership, native, integration, and milestone gates remain open."
+  ]
 }

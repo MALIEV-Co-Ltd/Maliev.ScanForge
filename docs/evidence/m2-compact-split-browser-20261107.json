@@ -451,10 +451,7 @@
           "daff8d8b6128c1789239f84854fc71e0aac54a96ad8497bea2617a20837c1ad7",
           "c882ea752e5fcf69d76781416c669dfc6b75d1ba226a7ec46069caef5fa6e2ad"
         ],
-        "areas": [
-          0.0000012499987547511853,
-          0.4999993039536008
-        ],
+        "areas": [0.0000012499987547511853, 0.4999993039536008],
         "sourceArea": 0.50000055,
         "method": "infinite planar surface",
         "guiMcpGeometryAndMetadata": true,
@@ -475,10 +472,7 @@
           "bf787ed6dd85221ba6d1fa4c45350305c6e2ed8450bf4880a4909883d0e5278f",
           "217e63e9c121466e9bc798624119797fe2a0bb3052f6535da565a17c05a978fa"
         ],
-        "areas": [
-          0.5,
-          0.5
-        ],
+        "areas": [0.5, 0.5],
         "sourceArea": 1,
         "method": "infinite planar surface",
         "guiMcpGeometryAndMetadata": true,
@@ -589,10 +583,7 @@
         "binaryReopen": true,
         "mcpHeldResultCancellation": true,
         "guiCloseCancellation": true,
-        "componentAreas": [
-          1,
-          15
-        ],
+        "componentAreas": [1, 15],
         "normalCaches": {
           "initial": {
             "geometryNormals": null,
@@ -650,10 +641,7 @@
         "binaryReopen": true,
         "mcpHeldResultCancellation": true,
         "guiCloseCancellation": true,
-        "componentAreas": [
-          3,
-          13
-        ],
+        "componentAreas": [3, 13],
         "normalCaches": {
           "initial": {
             "geometryNormals": null,

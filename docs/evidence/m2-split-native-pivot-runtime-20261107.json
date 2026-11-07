@@ -44,11 +44,7 @@
           "n": 1,
           "start": 0,
           "end": 2,
-          "values": [
-            4,
-            5,
-            3
-          ],
+          "values": [4, 5, 3],
           "result": 1,
           "thread": 36336
         }
@@ -61,11 +57,7 @@
           "n": 2,
           "start": 0,
           "end": 2,
-          "values": [
-            3,
-            6,
-            4
-          ],
+          "values": [3, 6, 4],
           "result": 1,
           "thread": 36336
         }
@@ -78,11 +70,7 @@
           "n": 3,
           "start": 0,
           "end": 2,
-          "values": [
-            6,
-            4,
-            5
-          ],
+          "values": [6, 4, 5],
           "result": 1,
           "thread": 36336
         }
@@ -95,11 +83,7 @@
           "n": 4,
           "start": 0,
           "end": 2,
-          "values": [
-            5,
-            3,
-            6
-          ],
+          "values": [5, 3, 6],
           "result": 1,
           "thread": 36336
         }

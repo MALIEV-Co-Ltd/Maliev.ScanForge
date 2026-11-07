@@ -9,10 +9,45 @@
     "newAnalyticDefinitionsWithoutScope": "all, recorded explicitly",
     "report": "Records scope and emits numeric values for all samples or nulls for excluded hidden samples"
   },
-  "red": {"testsFailed": 2, "reason": "Legacy all-sample shared and MCP checks observed visible-only output", "cleanupConfirmed": true},
-  "focused": {"filesPassed": 4, "testsPassed": 65, "peakJobBytes": 450412544, "cleanupConfirmed": true},
-  "build": {"passed": true, "manifest": "scanforge-d342e4539c08ecd6", "peakJobBytes": 1891672064, "cleanupConfirmed": true},
-  "compiledBrowser": {"passed": true, "guiMcpReportAndDistanceEquality": true, "hiddenTriangleControl": true, "historyUnchanged": true, "scopeControlScreenshotInspected": true, "pageErrors": 0, "peakJobBytes": 1631223808, "cleanupConfirmed": true, "initialAttempt": "The unverified ribbon Plane command was disabled; the retry used the existing fitting shortcut."},
-  "fullSuite": {"filesPassed": 830, "filesSkipped": 30, "testsPassed": 50853, "expectedFailures": 2, "testsSkipped": 77, "peakJobBytes": 1425305600, "cleanupConfirmed": true},
-  "limits": ["The browser control is a finite indexed synthetic mesh; no general native accuracy claim is made.", "The two expected failures concern independent numeric restore ownership. Other M2 native, resource and merge gates remain open."]
+  "red": {
+    "testsFailed": 2,
+    "reason": "Legacy all-sample shared and MCP checks observed visible-only output",
+    "cleanupConfirmed": true
+  },
+  "focused": {
+    "filesPassed": 4,
+    "testsPassed": 65,
+    "peakJobBytes": 450412544,
+    "cleanupConfirmed": true
+  },
+  "build": {
+    "passed": true,
+    "manifest": "scanforge-d342e4539c08ecd6",
+    "peakJobBytes": 1891672064,
+    "cleanupConfirmed": true
+  },
+  "compiledBrowser": {
+    "passed": true,
+    "guiMcpReportAndDistanceEquality": true,
+    "hiddenTriangleControl": true,
+    "historyUnchanged": true,
+    "scopeControlScreenshotInspected": true,
+    "pageErrors": 0,
+    "peakJobBytes": 1631223808,
+    "cleanupConfirmed": true,
+    "initialAttempt": "The unverified ribbon Plane command was disabled; the retry used the existing fitting shortcut."
+  },
+  "fullSuite": {
+    "filesPassed": 830,
+    "filesSkipped": 30,
+    "testsPassed": 50853,
+    "expectedFailures": 2,
+    "testsSkipped": 77,
+    "peakJobBytes": 1425305600,
+    "cleanupConfirmed": true
+  },
+  "limits": [
+    "The browser control is a finite indexed synthetic mesh; no general native accuracy claim is made.",
+    "The two expected failures concern independent numeric restore ownership. Other M2 native, resource and merge gates remain open."
+  ]
 }

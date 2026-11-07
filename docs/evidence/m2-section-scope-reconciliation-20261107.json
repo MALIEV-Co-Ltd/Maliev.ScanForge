@@ -1,11 +1,51 @@
 {
   "scope": "Restore legacy whole-mesh section behavior while retaining visible-only GUI and MCP sections",
   "baseCommit": "f436deb4",
-  "behavior": {"default": "all", "explicit": ["all", "visible"], "responseScopes": ["all-triangles", "visible-triangles"], "displayActionAcceptsScope": true},
-  "red": {"testsFailed": 2, "reason": "Existing default shared and public MCP section paths excluded hidden triangles", "cleanupConfirmed": true},
-  "focused": {"filesPassed": 4, "testsPassed": 65, "peakJobBytes": 447684608, "cleanupConfirmed": true},
-  "build": {"passed": true, "manifest": "scanforge-914672edba381122", "peakJobBytes": 1950449664, "cleanupConfirmed": true},
-  "compiledBrowser": {"passed": true, "guiMcpCsvEqual": true, "hiddenTriangleControl": {"allSegments": 2, "visibleSegments": 1}, "displayActionScope": "visible", "historyUnchanged": true, "scopeControlScreenshotInspected": true, "pageErrors": 0, "peakJobBytes": 1660026880, "cleanupConfirmed": true},
-  "fullSuite": {"filesPassed": 830, "filesSkipped": 30, "testsPassed": 50853, "expectedFailures": 2, "testsSkipped": 77, "peakJobBytes": 1377660928, "cleanupConfirmed": true},
-  "limitations": ["The browser control is a finite indexed synthetic mesh, not a general or native geometric comparison.", "Two expected failures concern independent numeric restore ownership. Other native, resource and merge gates remain open."]
+  "behavior": {
+    "default": "all",
+    "explicit": ["all", "visible"],
+    "responseScopes": ["all-triangles", "visible-triangles"],
+    "displayActionAcceptsScope": true
+  },
+  "red": {
+    "testsFailed": 2,
+    "reason": "Existing default shared and public MCP section paths excluded hidden triangles",
+    "cleanupConfirmed": true
+  },
+  "focused": {
+    "filesPassed": 4,
+    "testsPassed": 65,
+    "peakJobBytes": 447684608,
+    "cleanupConfirmed": true
+  },
+  "build": {
+    "passed": true,
+    "manifest": "scanforge-914672edba381122",
+    "peakJobBytes": 1950449664,
+    "cleanupConfirmed": true
+  },
+  "compiledBrowser": {
+    "passed": true,
+    "guiMcpCsvEqual": true,
+    "hiddenTriangleControl": { "allSegments": 2, "visibleSegments": 1 },
+    "displayActionScope": "visible",
+    "historyUnchanged": true,
+    "scopeControlScreenshotInspected": true,
+    "pageErrors": 0,
+    "peakJobBytes": 1660026880,
+    "cleanupConfirmed": true
+  },
+  "fullSuite": {
+    "filesPassed": 830,
+    "filesSkipped": 30,
+    "testsPassed": 50853,
+    "expectedFailures": 2,
+    "testsSkipped": 77,
+    "peakJobBytes": 1377660928,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "The browser control is a finite indexed synthetic mesh, not a general or native geometric comparison.",
+    "Two expected failures concern independent numeric restore ownership. Other native, resource and merge gates remain open."
+  ]
 }

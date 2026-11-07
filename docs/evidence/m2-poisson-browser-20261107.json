@@ -20,124 +20,62 @@
   },
   "workerClosureChecks": [
     {
-      "poissonIds": [
-        1
-      ],
+      "poissonIds": [1],
       "allPoissonClosed": true,
       "otherLiveWorkers": [
         {
           "id": 2,
-          "kinds": [
-            "report"
-          ]
+          "kinds": ["report"]
         }
       ]
     },
     {
-      "poissonIds": [
-        1,
-        3
-      ],
+      "poissonIds": [1, 3],
       "allPoissonClosed": true,
       "otherLiveWorkers": [
         {
           "id": 4,
-          "kinds": [
-            "report"
-          ]
+          "kinds": ["report"]
         }
       ]
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5
-      ],
+      "poissonIds": [1, 3, 5],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5
-      ],
+      "poissonIds": [1, 3, 5],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6
-      ],
+      "poissonIds": [1, 3, 5, 6],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6,
-        8
-      ],
+      "poissonIds": [1, 3, 5, 6, 8],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6,
-        8,
-        9
-      ],
+      "poissonIds": [1, 3, 5, 6, 8, 9],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6,
-        8,
-        9,
-        10
-      ],
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6,
-        8,
-        9,
-        10,
-        11
-      ],
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10, 11],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     },
     {
-      "poissonIds": [
-        1,
-        3,
-        5,
-        6,
-        8,
-        9,
-        10,
-        11,
-        13
-      ],
+      "poissonIds": [1, 3, 5, 6, 8, 9, 10, 11, 13],
       "allPoissonClosed": true,
       "otherLiveWorkers": []
     }
@@ -226,9 +164,7 @@
   "probes": [
     {
       "id": 1,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -243,9 +179,7 @@
     },
     {
       "id": 2,
-      "kinds": [
-        "report"
-      ],
+      "kinds": ["report"],
       "stages": [
         "Checking saved mesh topology",
         "Welding vertices",
@@ -263,9 +197,7 @@
     },
     {
       "id": 3,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -280,9 +212,7 @@
     },
     {
       "id": 4,
-      "kinds": [
-        "report"
-      ],
+      "kinds": ["report"],
       "stages": [
         "Checking saved mesh topology",
         "Verifying saved mesh topology",
@@ -295,9 +225,7 @@
     },
     {
       "id": 5,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -310,9 +238,7 @@
     },
     {
       "id": 6,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -327,9 +253,7 @@
     },
     {
       "id": 7,
-      "kinds": [
-        "report"
-      ],
+      "kinds": ["report"],
       "stages": [
         "Checking saved mesh topology",
         "Welding vertices",
@@ -347,9 +271,7 @@
     },
     {
       "id": 8,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -361,9 +283,7 @@
     },
     {
       "id": 9,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -375,9 +295,7 @@
     },
     {
       "id": 10,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -389,9 +307,7 @@
     },
     {
       "id": 11,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -406,9 +322,7 @@
     },
     {
       "id": 12,
-      "kinds": [
-        "report"
-      ],
+      "kinds": ["report"],
       "stages": [
         "Checking saved mesh topology",
         "Verifying saved mesh topology",
@@ -421,9 +335,7 @@
     },
     {
       "id": 13,
-      "kinds": [
-        "pointCloudPoisson"
-      ],
+      "kinds": ["pointCloudPoisson"],
       "stages": [
         "Preparing oriented Poisson normals",
         "Loading bounded Poisson reconstruction engine",
@@ -444,9 +356,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:24.752Z",
       "closed": "2026-11-06T22:21:26.696Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -454,9 +364,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:27.035Z",
       "closed": "2026-11-06T22:21:27.679Z",
-      "requestKinds": [
-        "report"
-      ],
+      "requestKinds": ["report"],
       "terminateObserved": true
     },
     {
@@ -464,9 +372,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:28.590Z",
       "closed": "2026-11-06T22:21:30.518Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -474,9 +380,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:30.852Z",
       "closed": "2026-11-06T22:21:31.295Z",
-      "requestKinds": [
-        "report"
-      ],
+      "requestKinds": ["report"],
       "terminateObserved": true
     },
     {
@@ -484,9 +388,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:31.507Z",
       "closed": "2026-11-06T22:21:33.434Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -494,9 +396,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:34.237Z",
       "closed": "2026-11-06T22:21:36.188Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -504,9 +404,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:36.530Z",
       "closed": "2026-11-06T22:21:37.203Z",
-      "requestKinds": [
-        "report"
-      ],
+      "requestKinds": ["report"],
       "terminateObserved": true
     },
     {
@@ -514,9 +412,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:38.337Z",
       "closed": "2026-11-06T22:21:40.753Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -524,9 +420,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:42.238Z",
       "closed": "2026-11-06T22:21:44.692Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -534,9 +428,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:46.087Z",
       "closed": "2026-11-06T22:21:48.524Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -544,9 +436,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:49.748Z",
       "closed": "2026-11-06T22:21:51.713Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     },
     {
@@ -554,9 +444,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:52.067Z",
       "closed": "2026-11-06T22:21:53.093Z",
-      "requestKinds": [
-        "report"
-      ],
+      "requestKinds": ["report"],
       "terminateObserved": true
     },
     {
@@ -564,9 +452,7 @@
       "url": "http://127.0.0.1:5173/src/processing-worker.ts?worker_file&type=module",
       "opened": "2026-11-06T22:21:54.199Z",
       "closed": "2026-11-06T22:21:56.134Z",
-      "requestKinds": [
-        "pointCloudPoisson"
-      ],
+      "requestKinds": ["pointCloudPoisson"],
       "terminateObserved": true
     }
   ],

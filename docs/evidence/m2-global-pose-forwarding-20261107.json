@@ -5,22 +5,14 @@
   "focusedTestsPassed": 100,
   "development": {
     "frames": 7,
-    "phases": [
-      "initializing",
-      "preparing",
-      "refining"
-    ],
+    "phases": ["initializing", "preparing", "refining"],
     "distinctCanvasFrames": 4,
     "errors": [],
     "guardPeakJobBytes": 1543794688
   },
   "compiled": {
     "frames": 7,
-    "phases": [
-      "initializing",
-      "preparing",
-      "refining"
-    ],
+    "phases": ["initializing", "preparing", "refining"],
     "distinctCanvasFrames": 4,
     "errors": [],
     "guardPeakJobBytes": 1398366208

@@ -3,10 +3,7 @@
   "candidate": "c6349595",
   "bundle": "scanforge-e9b6ee80c0577089",
   "method": "Reuse-disabled seeded numeric copying is unchanged from the two prior current-build trials. In the control only, remove selectionSessions.current.clear() from the served minified reset function; the ordinary entity-change effect remains. Each source replacement was required exactly once. Run original PLY-3 GUI Split/Extract, full MCP artifact stream to disk, GUI reopen and undo/redo under the same 4 GiB guard.",
-  "priorEarlyResetPeaksBytes": [
-    4035375104,
-    3997769728
-  ],
+  "priorEarlyResetPeaksBytes": [4035375104, 3997769728],
   "passiveCleanupControl": {
     "passed": true,
     "peakJobBytes": 4066443264,

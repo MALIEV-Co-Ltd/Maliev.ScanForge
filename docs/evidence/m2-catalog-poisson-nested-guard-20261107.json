@@ -1,8 +1,5 @@
 {
-  "command": [
-    "node",
-    "tests/poisson-production-browser.mjs"
-  ],
+  "command": ["node", "tests/poisson-production-browser.mjs"],
   "jobLimitBytes": 4294967296,
   "leaseSeconds": 240,
   "cleanupReserveSeconds": 3.0,

@@ -984,9 +984,11 @@ try {
     });
   }
   if (
-    ["native-pivot-crossing", "native-crossing-pair", "native-crossing-reversed"].includes(
-      process.env.SCANFORGE_SPLIT_CASE,
-    )
+    [
+      "native-pivot-crossing",
+      "native-crossing-pair",
+      "native-crossing-reversed",
+    ].includes(process.env.SCANFORGE_SPLIT_CASE)
   ) {
     assert(
       inputDirectory,
@@ -1016,8 +1018,8 @@ try {
           caseName === "native-crossing-reversed"
             ? "ea3e69437c395b7958cb432445a0dfe2c69a2e0a37246ecc49adb01c022776aa"
             : caseName === "native-crossing-pair"
-            ? "95fe07473c1daf7fb26bd8b74930f141d5b16686aaa24cf670dd24bf7dc9b424"
-            : "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
+              ? "95fe07473c1daf7fb26bd8b74930f141d5b16686aaa24cf670dd24bf7dc9b424"
+              : "9e875f7c77a1a610c9974af356e2aa09a6c8cb4d779016782107096e3d9d31c8",
       },
     });
   }
@@ -1149,7 +1151,9 @@ try {
         );
       }
       const guiPositions = await geometry(sourceId);
-      if (["native-crossing-pair", "native-crossing-reversed"].includes(c.name)) {
+      if (
+        ["native-crossing-pair", "native-crossing-reversed"].includes(c.name)
+      ) {
         // Each finite segment must remain represented by mesh edges. One
         // intersection extends outside the source; its expected coverage is
         // clipped to the source and follows the cutter's triangle order.
@@ -1207,7 +1211,8 @@ try {
           assert.equal(intersections.length, 2);
           result.push(coverage(...intersections));
         }
-        const expectedCoverage = c.name === "native-crossing-reversed" ? [1, 0.981078] : [0.981078, 1];
+        const expectedCoverage =
+          c.name === "native-crossing-reversed" ? [1, 0.981078] : [0.981078, 1];
         assert(
           Math.abs(result[0] - expectedCoverage[0]) < 1e-5,
           `First cutter coverage: ${result[0]}`,

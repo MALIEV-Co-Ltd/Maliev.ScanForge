@@ -37,7 +37,11 @@
     "defaultInventory": [
       { "triangles": 272856, "areaMm2": 8221.571306324522 },
       { "triangles": 282, "areaMm2": 7.024150063864754 },
-      { "triangles": 1, "areaMm2": 0.00000033550895750522614, "sourceFaceIndex": 263015 }
+      {
+        "triangles": 1,
+        "areaMm2": 0.00000033550895750522614,
+        "sourceFaceIndex": 263015
+      }
     ],
     "explicitToleranceMm": 0.000001,
     "explicitToleranceInventoryTriangles": [272857, 282],

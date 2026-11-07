@@ -13,14 +13,21 @@ function mesh(data: Buffer) {
 function facets(points: number[]) {
   const result = [];
   for (let i = 0; i < points.length; i += 9) {
-    result.push([0, 3, 6].map((j) => points.slice(i + j, i + j + 3).join(",")).sort().join("|"));
+    result.push(
+      [0, 3, 6]
+        .map((j) => points.slice(i + j, i + j + 3).join(","))
+        .sort()
+        .join("|"),
+    );
   }
   return result.sort();
 }
 
 it("pins the reversed cutter and compares the two native exports", () => {
   const cutter = fixture(reversed, "cutter.stl");
-  expect(createHash("sha256").update(cutter).digest("hex")).toBe("ea3e69437c395b7958cb432445a0dfe2c69a2e0a37246ecc49adb01c022776aa");
+  expect(createHash("sha256").update(cutter).digest("hex")).toBe(
+    "ea3e69437c395b7958cb432445a0dfe2c69a2e0a37246ecc49adb01c022776aa",
+  );
   const first = mesh(fixture(original, "cutter.stl"));
   const second = mesh(cutter);
   expect(first).toHaveLength(18);
@@ -33,13 +40,31 @@ it("pins the reversed cutter and compares the two native exports", () => {
 
 it("compares captured recovery transitions for the two input orders", () => {
   function calls(file: string) {
-    const trace = JSON.parse(readFileSync(new URL(`../docs/evidence/${file}`, import.meta.url), "utf8"));
+    const trace = JSON.parse(
+      readFileSync(
+        new URL(`../docs/evidence/${file}`, import.meta.url),
+        "utf8",
+      ),
+    );
     expect(trace.normalized_result.messages_truncated).toBe(false);
-    return trace.normalized_result.messages.map((m: {payload: any}) => m.payload)
-      .filter((p: {event: string}) => p.event === "recovery")
-      .map(({pair, before, after}: {pair: string; before: number[][]; after: number[][]}) => ({pair, before, after}));
+    return trace.normalized_result.messages
+      .map((m: { payload: any }) => m.payload)
+      .filter((p: { event: string }) => p.event === "recovery")
+      .map(
+        ({
+          pair,
+          before,
+          after,
+        }: {
+          pair: string;
+          before: number[][];
+          after: number[][];
+        }) => ({ pair, before, after }),
+      );
   }
   const originalCalls = calls("m2-split-native-face-transitions-20261107.json");
   expect(originalCalls).toHaveLength(2);
-  expect(calls("m2-split-native-reversed-recovery-20261107.json")).toEqual(originalCalls);
+  expect(calls("m2-split-native-reversed-recovery-20261107.json")).toEqual(
+    originalCalls,
+  );
 });

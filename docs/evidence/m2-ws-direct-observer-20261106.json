@@ -2,8 +2,16 @@
   "scope": "Diagnostic comparison of alternate bridge transport and test-observer overhead; no application change or milestone acceptance",
   "synthetic": {
     "method": "A localhost server receives 1400 independently framed JSON messages containing the same deterministic 262144-byte pseudorandom input encoded as Base64. Both browser controls verify the combined 489385690-byte stream against independently generated SHA-256 acb3f61cd286b83d844b98c66d1ca4b1200d6eb0b9c6476fb5f0e3fc6892527f. One uses direct Playwright browser launch; the other uses launchServer/connect. They use a disposable, unauthenticated WebSocket server and do not exercise MCP.",
-    "direct": { "sampledDriverMaxHeapBytes": 69984688, "peakJobBytes": 580825088, "receiptSha256": "2e6f2c0117a780c3d6dd3197aedc72d0be198a693f62839d43d67d65f3f310c8" },
-    "remote": { "sampledDriverMaxHeapBytes": 495408784, "peakJobBytes": 987537408, "receiptSha256": "cf349df7a7bbad884b76288b95c21272236a6d368e914dfdffee1bdfc72c8f18" },
+    "direct": {
+      "sampledDriverMaxHeapBytes": 69984688,
+      "peakJobBytes": 580825088,
+      "receiptSha256": "2e6f2c0117a780c3d6dd3197aedc72d0be198a693f62839d43d67d65f3f310c8"
+    },
+    "remote": {
+      "sampledDriverMaxHeapBytes": 495408784,
+      "peakJobBytes": 987537408,
+      "receiptSha256": "cf349df7a7bbad884b76288b95c21272236a6d368e914dfdffee1bdfc72c8f18"
+    },
     "source": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/m2-ws-observer-entropy-20261106.mjs",
     "sourceSha256": "ec8b78f3b1777a9fd2b6c9327bea0d7805d09e93cc08954c5eda3938348bd7ec",
     "sdkOnly": "A separate official SDK stdio echo of 1835 synthetic artifact reads, 481034240 decoded bytes, passed exact byte hashing; sampled client heaps ranged from 18221264 to 27408112 bytes and peak Job memory was 231731200 bytes. Receipt SHA-256 284c619858592a50317deda1a3cd5a1f36301d97091b07e5ed5ec7c0d000401e. This does not recreate actual browser traffic."

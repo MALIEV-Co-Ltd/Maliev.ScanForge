@@ -4,8 +4,28 @@
   "localMainHead": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
   "remoteMainHead": "b25da68d2369994be91f4472e390b6f0596a2c23",
   "remoteVerifiedBy": "git ls-remote origin refs/heads/main",
-  "relationship": {"localMainIsAncestorOfCandidate": true, "candidateCommitsAfterLocalMain": 437, "remoteMainIsAncestorOfCandidate": true, "candidateCommitsAfterRemoteMain": 395},
-  "mainWorkingTree": {"statusEntriesWithUntrackedFilesExpanded": 1057, "incomingChangedPaths": 1543, "overlappingPaths": 572, "overlapTracked": 172, "overlapUntracked": 400, "hashMatchedCandidate": 360, "hashDifferedFromCandidate": 212, "differentTracked": 83, "differentUntracked": 129, "filesChangedDuringHash": 0},
+  "relationship": {
+    "localMainIsAncestorOfCandidate": true,
+    "candidateCommitsAfterLocalMain": 437,
+    "remoteMainIsAncestorOfCandidate": true,
+    "candidateCommitsAfterRemoteMain": 395
+  },
+  "mainWorkingTree": {
+    "statusEntriesWithUntrackedFilesExpanded": 1057,
+    "incomingChangedPaths": 1543,
+    "overlappingPaths": 572,
+    "overlapTracked": 172,
+    "overlapUntracked": 400,
+    "hashMatchedCandidate": 360,
+    "hashDifferedFromCandidate": 212,
+    "differentTracked": 83,
+    "differentUntracked": 129,
+    "filesChangedDuringHash": 0
+  },
   "method": "Enumerated main status with individual untracked files, intersected with paths changed from local main HEAD to candidate, and compared clean-filtered git blob hashes of existing overlapping files to the candidate tree. Checked size and modification time around hashing. Remote head was read without fetching or changing refs.",
-  "limitations": ["This is a time-specific snapshot, not an exhaustive merge-conflict classification or permission to overwrite local work.", "The candidate gained this evidence commit after measurement; re-evaluate the current state immediately before any integration.", "Native, independent restore ownership and reliable large-project resource gates remain open."]
+  "limitations": [
+    "This is a time-specific snapshot, not an exhaustive merge-conflict classification or permission to overwrite local work.",
+    "The candidate gained this evidence commit after measurement; re-evaluate the current state immediately before any integration.",
+    "Native, independent restore ownership and reliable large-project resource gates remain open."
+  ]
 }

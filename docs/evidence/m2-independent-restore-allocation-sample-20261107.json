@@ -14,5 +14,10 @@
   "driverSha256": "398b2ad6e6db6d3e761092f595383ce56d7fe9e5116dda8dac831f2e94871828",
   "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-restore-sample-guard-20261107.json",
   "guardReceiptSha256": "9fb85d2425e54fc43261a1c7839cea919e331d82642c4fdccdd77fb07a5f5846",
-  "limitations": ["Heap sampling is statistical and measures sampled JavaScript allocations after sampling began; it does not cover all renderer, browser or GPU memory.", "Profiling changes the workload, and the amount attributed to the unpacker does not establish which allocation caused the job peak.", "A completed lifecycle with an over-limit guard is not a passing resource result or proof that seeded allocation alone caused any difference.", "The production restore ownership, native comparisons and milestone gates remain open."]
+  "limitations": [
+    "Heap sampling is statistical and measures sampled JavaScript allocations after sampling began; it does not cover all renderer, browser or GPU memory.",
+    "Profiling changes the workload, and the amount attributed to the unpacker does not establish which allocation caused the job peak.",
+    "A completed lifecycle with an over-limit guard is not a passing resource result or proof that seeded allocation alone caused any difference.",
+    "The production restore ownership, native comparisons and milestone gates remain open."
+  ]
 }

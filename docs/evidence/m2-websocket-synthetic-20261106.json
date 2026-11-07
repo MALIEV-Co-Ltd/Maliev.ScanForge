@@ -2,8 +2,16 @@
   "scope": "Standalone localhost synthetic transport comparison. No ScanForge code, public MCP session, application files, or real project data were used.",
   "baseCommit": "a063b041",
   "method": "In separate guarded Chrome processes, construct and transmit 1400 changing JSON messages through either HTTP POST with Blob bodies or one WebSocket with text messages and per-message acknowledgments. A disposable Node server consumes each payload and verifies its combined SHA-256 against independently generated expected messages. Both sent 489346490 bytes with SHA-256 47dfc4f73dd3496233536c0ba6c0644200c4c4f7300ac55f7438aa79e2484bd0.",
-  "httpBlob": { "peakJobBytes": 1621229568, "browserElapsedMs": 5252.5, "receiptSha256": "29ae122b817cc26e0208c43e8645161bf79171624ab5555e656e83a89b34b1c7" },
-  "websocketText": { "peakJobBytes": 583245824, "browserElapsedMs": 6315.6, "receiptSha256": "79feebba24ba3b7df781186b9e9aeab7c56eaf83d7a8ce063d22c4010023daa6" },
+  "httpBlob": {
+    "peakJobBytes": 1621229568,
+    "browserElapsedMs": 5252.5,
+    "receiptSha256": "29ae122b817cc26e0208c43e8645161bf79171624ab5555e656e83a89b34b1c7"
+  },
+  "websocketText": {
+    "peakJobBytes": 583245824,
+    "browserElapsedMs": 6315.6,
+    "receiptSha256": "79feebba24ba3b7df781186b9e9aeab7c56eaf83d7a8ce063d22c4010023daa6"
+  },
   "fullWebsocketControl": "The WebSocket probe also transferred 1835 changing messages and verified the combined digest 1344960f3bce6403149f180b24b2454f3537ef50068d741f0e44bad3d156eccf at a 583413760-byte guarded peak. This used the previous source revision without the later optional-count argument; the matching 1400-message comparison uses the retained source.",
   "httpLongerFailure": "A separate 1835-message HTTP attempt failed at request 1499 after 523950356 bytes with TypeError: Failed to fetch; the server-side cause is not established. Its guarded peak was 1709273088 bytes; cleanup confirmed. This standalone failure is not evidence that ScanForge MCP fails at that count.",
   "httpLongerReceiptSha256": "663130a1f2c6cf9c8b7f398ce0e52f8f9cc36477b3eb4f82ebc0c20206e4e038",

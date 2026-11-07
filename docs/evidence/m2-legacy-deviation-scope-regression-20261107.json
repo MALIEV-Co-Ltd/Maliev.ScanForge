@@ -4,12 +4,36 @@
   "mainWorkingSource": "C:/repo/Maliev.ScanForge",
   "method": "Read the dirty main and candidate handlers and GUI calls; compare whitespace-normalized deviation function text; run a finite shared-function counterexample. The old handler applies deviations to all source positions. The candidate invokes inspectDeviationAsync, which masks hidden samples.",
   "deviationImplementationNormalizedSha256": "89efeb7abbc4045764716c8c0c8438acb6b0802129378571f9e39e6582f9dd6e",
-  "fixture": {"kind": "mesh", "hiddenTriangles": [0], "plane": "z=0", "triangleZ": [-5, 2]},
-  "legacy": {"distances": [-5,-5,-5,2,2,2], "rms": 3.8078865529319543, "maxError": 5},
-  "candidateResult": {"distances": [null,null,null,2,2,2], "rms": 2, "maxError": 2},
-  "diagnostic": {"passed": true, "guardPeakJobBytes": 279814144, "cleanupConfirmed": true},
-  "focused": {"testsPassed": 51, "expectedFailures": 1, "guardPeakJobBytes": 392626176, "cleanupConfirmed": true},
+  "fixture": {
+    "kind": "mesh",
+    "hiddenTriangles": [0],
+    "plane": "z=0",
+    "triangleZ": [-5, 2]
+  },
+  "legacy": {
+    "distances": [-5, -5, -5, 2, 2, 2],
+    "rms": 3.8078865529319543,
+    "maxError": 5
+  },
+  "candidateResult": {
+    "distances": [null, null, null, 2, 2, 2],
+    "rms": 2,
+    "maxError": 2
+  },
+  "diagnostic": {
+    "passed": true,
+    "guardPeakJobBytes": 279814144,
+    "cleanupConfirmed": true
+  },
+  "focused": {
+    "testsPassed": 51,
+    "expectedFailures": 1,
+    "guardPeakJobBytes": 392626176,
+    "cleanupConfirmed": true
+  },
   "status": "Open compatibility regression: an existing main GUI and MCP input yields different artifact values and statistics for hidden geometry. Resolve with a shared, discoverable scope and explicitly reconcile defaults and retained visible-only inspection behavior before calling integration complete.",
-  "limitations": ["The counterexample tests shared functions and source inspection, not a live cross-check between two running public MCP servers.", "Do not treat the expected failure as a passing compatibility test or a decision to discard visible-only inspection behavior."]
+  "limitations": [
+    "The counterexample tests shared functions and source inspection, not a live cross-check between two running public MCP servers.",
+    "Do not treat the expected failure as a passing compatibility test or a decision to discard visible-only inspection behavior."
+  ]
 }
-

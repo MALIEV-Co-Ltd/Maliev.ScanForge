@@ -10,6 +10,14 @@
   "mainToolsWithValidWitness": 93,
   "candidateRejections": 0,
   "schemaCompileErrors": 0,
-  "guard": {"peakJobBytes": 87420928, "limitBytes": 4294967296, "cleanupConfirmed": true},
-  "limitations": ["Generated examples are finite and do not exhaust combinations, formats, all constraints or alternate branches; validation formats were disabled.", "This only compares declared input schema behavior for synthetic requests; it does not verify runtime validation, defaults, output, actual GUI/MCP parity, or native behavior.", "Dirty main can change; rerun before integration."]
+  "guard": {
+    "peakJobBytes": 87420928,
+    "limitBytes": 4294967296,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Generated examples are finite and do not exhaust combinations, formats, all constraints or alternate branches; validation formats were disabled.",
+    "This only compares declared input schema behavior for synthetic requests; it does not verify runtime validation, defaults, output, actual GUI/MCP parity, or native behavior.",
+    "Dirty main can change; rerun before integration."
+  ]
 }

@@ -1,9 +1,42 @@
 {
   "baseline": "311b0f02",
   "change": "The asynchronous Flip and exact indexed validators accept marked private Float64 vertices under their existing finite, topology and signed-zero checks. The processing client transfers a copy of marked Flip topology, strips caller-supplied metadata, and the worker validates and restores its private marker.",
-  "regressionTests": { "passed": 167, "peakJobBytes": 539398144, "cleanupConfirmed": true },
-  "build": { "passed": true, "id": "scanforge-e8b0cb5a74b174af", "peakJobBytes": 1833353216, "cleanupConfirmed": true },
-  "privateWorkerBrowser": { "passed": true, "fixture": "single indexed triangle containing 0.1 and 1.1", "environment": "development browser, explicitly marked private Float64 buffers", "result": "Flip preserved indexed triangle winding, retained the source buffer and returned the existing Float32 output", "peakJobBytes": 610574336, "cleanupConfirmed": true },
-  "productionBrowser": { "passed": true, "cases": ["Scale mesh", "mirror-origin", "mirror-tilted", "Flip normals"], "checks": ["GUI and public MCP direct geometry match", "undo and redo", "persistence", "coordinate bytes match retained native fixture"], "pageErrors": 0, "peakJobBytes": 927666176, "cleanupConfirmed": true },
-  "limitations": ["Experimental private Float64 restore is not enabled in production.", "The private-buffer browser control calls shared operations directly; it is not a restored-project GUI/MCP comparison.", "The compact component dispatcher still excludes Float64 positions. Flip output is Float32, and broader carrier precision, ownership, large-project resources and fresh native comparison remain open.", "The full suite was not rerun after this change."]
+  "regressionTests": {
+    "passed": 167,
+    "peakJobBytes": 539398144,
+    "cleanupConfirmed": true
+  },
+  "build": {
+    "passed": true,
+    "id": "scanforge-e8b0cb5a74b174af",
+    "peakJobBytes": 1833353216,
+    "cleanupConfirmed": true
+  },
+  "privateWorkerBrowser": {
+    "passed": true,
+    "fixture": "single indexed triangle containing 0.1 and 1.1",
+    "environment": "development browser, explicitly marked private Float64 buffers",
+    "result": "Flip preserved indexed triangle winding, retained the source buffer and returned the existing Float32 output",
+    "peakJobBytes": 610574336,
+    "cleanupConfirmed": true
+  },
+  "productionBrowser": {
+    "passed": true,
+    "cases": ["Scale mesh", "mirror-origin", "mirror-tilted", "Flip normals"],
+    "checks": [
+      "GUI and public MCP direct geometry match",
+      "undo and redo",
+      "persistence",
+      "coordinate bytes match retained native fixture"
+    ],
+    "pageErrors": 0,
+    "peakJobBytes": 927666176,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Experimental private Float64 restore is not enabled in production.",
+    "The private-buffer browser control calls shared operations directly; it is not a restored-project GUI/MCP comparison.",
+    "The compact component dispatcher still excludes Float64 positions. Flip output is Float32, and broader carrier precision, ownership, large-project resources and fresh native comparison remain open.",
+    "The full suite was not rerun after this change."
+  ]
 }

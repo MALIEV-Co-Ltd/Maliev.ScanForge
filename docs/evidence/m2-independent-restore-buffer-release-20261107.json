@@ -16,5 +16,9 @@
   "driverSha256": "867344d336ffcf33a840a38056c08c54185cc61a65ee6902a6725c5f32824af4",
   "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-independent-release-trace-guard-20261107.json",
   "guardReceiptSha256": "dda3adbcc8d6d332f8176b5a1811916b49e004e91bca28857dca154617b0e320",
-  "limitations": ["Detachment proves the JavaScript views were detached, not when the operating system reclaimed physical memory.", "The injected and instrumented workload does not prove production timing, general resource behavior, or a successful independent restore.", "The restore ownership, native comparison and M2 closure gates remain open."]
+  "limitations": [
+    "Detachment proves the JavaScript views were detached, not when the operating system reclaimed physical memory.",
+    "The injected and instrumented workload does not prove production timing, general resource behavior, or a successful independent restore.",
+    "The restore ownership, native comparison and M2 closure gates remain open."
+  ]
 }

@@ -181,12 +181,7 @@
       }
     }
   ],
-  "observedNumericElements": [
-    33263505,
-    5612016,
-    15991146,
-    2692659
-  ],
+  "observedNumericElements": [33263505, 5612016, 15991146, 2692659],
   "observedNumericTotalBytes": 460474608,
   "interpretation": "The first run reached its final high-water after project download and before GUI import completion. In the later marked runs, all four ordinary arrays were reconstructed before import completion; in the release-marker run each temporary ArrayBuffer reported byteLength zero after transfer. The later final high-water samples occurred after the import stage. The trace rules out failure to detach these four staging buffers in that run, but does not prove immediate physical reclamation or identify the entire remaining peak.",
   "limitations": [
