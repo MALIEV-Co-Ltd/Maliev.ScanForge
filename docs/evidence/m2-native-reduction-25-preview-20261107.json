@@ -133,5 +133,36 @@
       "A second broader scan timed out and produced no usable evidence.",
       "Native source triangle count returned to 273139 after Cancel; its complete post-cancel geometry was not re-exported."
     ]
+  },
+  "nativeReadOnlyPrefixProbe": {
+    "method": "During the native 25 percent preview, REA scanned writable memory for the first GUI output vertex, searched nearby for the other two first-face vertices, and sampled coordinate fields at a 24-byte stride. An isolated GUI/MCP browser replay captured its ordered STL coordinates independently.",
+    "candidateFaceStrideBytes": 72,
+    "matchingPrefixFaces": 3740,
+    "matchingPrefixFloatComponents": 33660,
+    "matchingPrefixSha256": "76188d845b0e32f5a14c5851ff5677540e02b362132a7edb3047f9e7150b6e82",
+    "firstUnmatchedMemoryFace": "nine zero float components",
+    "guiFullCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "nativeFullSampleSha256": "a5a502f7960f06da483dcb7dbe4412cf49a0aa45b006413180e902b1891862a4",
+    "sourceMemoryAfterCancel": "The previously sampled address no longer contained the matched first vertex.",
+    "rangeSearchEvidence": "ev_8d5e743c1bc6b0019b6e564f8b57edad38914eb18e2ee99b8b12163ff59aee67",
+    "firstFourFacesEvidence": "ev_18d2fa93225726d6c80c488166261bdf5c47359ba767be05d38a951dbe9cd110",
+    "memoryCaptureEvidence": "ev_1896ff00fa257ea78bae6112b260856970e386e6018f89c5c0b22672b59c2b01",
+    "afterCancelEvidence": "ev_d860845d8ea9f3b62d66a88d58556cb901508bf8c59ea9afc2e068faacc39b1b",
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1367203840,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.300419100007275
+    },
+    "limitations": [
+      "The sampled buffer is not independently bound to the active scene object or native exporter; the address changed after Cancel, consistent with preview-related storage but not proof of ownership.",
+      "The first 3740 faces match bit-for-bit; the sampled area is zero-filled at the next face. Remaining memory is not established as the continuation, so its divergent full digest is not evidence of a native geometry mismatch.",
+      "No native output file was exported; this does not prove all 68283 native faces, normals, publication, or general equivalence."
+    ]
   }
 }
