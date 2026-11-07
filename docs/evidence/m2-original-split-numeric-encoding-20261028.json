@@ -1,0 +1,53 @@
+{
+  "scope": "Private Float64 staging for project encoding and original PLY3 Split persistence",
+  "change": "The disposable encoder retains transferred numeric buffers used exclusively for mesh positions and indexed vertices, instead of reconstructing full ordinary arrays. Numeric arrays used by any other role fall back to ordinary arrays. Private marked buffers are accepted by encoding validation; public project input and decoded representations are unchanged.",
+  "focused": {
+    "testsPassed": 69,
+    "coverage": "Includes byte-identical project output, signed zero, coordinate aliasing, metadata-alias fallback, public Float64 rejection, project transport and codec tests.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-tests-20261028-r2.json"
+  },
+  "typecheck": {
+    "batchesPassed": 15,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-typecheck-20261028-r1.json"
+  },
+  "bundle": "scanforge-cca399a4af87c53b",
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "exportedBytes": 338123261,
+    "reopenedGeometryEqual": true,
+    "cutterPreserved": true,
+    "reopenedUndoRedo": true,
+    "computedNormalsStable": true,
+    "jobLimitBytes": 4294967296,
+    "runs": [
+      {
+        "result": "worker postMessage failed out of memory",
+        "peakJobBytes": 4353171456,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-persistence-20261028-r1-guard.json"
+      },
+      {
+        "result": "functional checks passed; peak exceeds limit",
+        "peakJobBytes": 4295770112,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-persistence-20261028-r2-guard.json"
+      },
+      {
+        "result": "functional checks passed under limit",
+        "peakJobBytes": 4221779968,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encoding-numeric-persistence-20261028-r3-guard.json"
+      }
+    ],
+    "cleanupConfirmedForAllRuns": true
+  },
+  "limitations": [
+    "One of three runs passed below the 4 GiB cap; memory use remains variable and this does not establish a reliable bound.",
+    "Reopening initializes computed vertex and facet normals absent from the initial Split result; their digests were checked across reopened Redo.",
+    "This covers one scan, cutter and project workflow. Native Split parity, full M2 acceptance and merge remain open."
+  ]
+}

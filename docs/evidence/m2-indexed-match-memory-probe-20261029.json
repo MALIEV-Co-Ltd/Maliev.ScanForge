@@ -1,0 +1,98 @@
+{
+  "scope": "Isolated browser sampling of indexedMeshMatches on synthetic geometry sized like the original Split output",
+  "applicationBaseCommit": "182a740a054009514a1a4d61e6f2bcfcc747acbd",
+  "sourceHashes": {
+    "indexed-mesh.ts": "cb646513d8438d11a2dbd038e6de1aa418bece864bb5f3b4378b87f143d16d96",
+    "finite-typed-values.ts": "f9ebe53f4dec43d7e349538a655e3e8aba91fed39b09c84689104d9e9a91c2ba"
+  },
+  "scriptSha256": "9ec2512c20e794b3f361653e53013251704885357066e8674ca239dec07834c5",
+  "geometry": {
+    "vertexCount": 1875484,
+    "triangleCorners": 11102271,
+    "positionElements": 33306813
+  },
+  "method": "CDP sampled allocations after synthetic numeric arrays were allocated; browser loaded the running development preview. Preview source hashes matched the isolated application snapshot for both inspected functions.",
+  "result": {
+    "result": {
+      "matches": true,
+      "elapsedMs": 70.66999998688698
+    },
+    "before": {
+      "usedSize": 466622924,
+      "totalSize": 472530944,
+      "embedderHeapUsedSize": 3086472,
+      "backingStorageSize": 57810712
+    },
+    "after": {
+      "usedSize": 469041080,
+      "totalSize": 475152384,
+      "embedderHeapUsedSize": 3086472,
+      "backingStorageSize": 57810712
+    },
+    "allocations": [
+      [
+        "exports.jsxDEV http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=2d8aa0b6:241",
+        4200484
+      ],
+      [
+        "finiteArrayValues http://127.0.0.1:5173/src/finite-typed-values.ts?t=1793212280169:21",
+        1048596
+      ],
+      [
+        "(anonymous) http://127.0.0.1:5173/src/ui/ribbon-model.ts?t=1793207052940:475",
+        786456
+      ],
+      [
+        "defineKeyPropWarningGetter http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=2d8aa0b6:108",
+        262272
+      ],
+      [
+        "(anonymous) http://127.0.0.1:5173/src/ui/ribbon-model.ts?t=1793207052940:474",
+        262164
+      ],
+      [
+        "ReactElement http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=2d8aa0b6:129",
+        262164
+      ],
+      [
+        "addObjectDiffToProperties http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=6ad185cf:3291",
+        262160
+      ],
+      ["next :0", 262160],
+      ["values :0", 262152],
+      [
+        "indexedMeshMatches http://127.0.0.1:5173/src/indexed-mesh.ts:37",
+        262152
+      ],
+      ["(root) :0", 0],
+      [
+        "performWorkUntilDeadline http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=6ad185cf:16",
+        0
+      ],
+      [
+        "(anonymous) http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=6ad185cf:13868",
+        0
+      ],
+      [
+        "flushPassiveEffects http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=6ad185cf:14219",
+        0
+      ],
+      [
+        "commitPassiveMountOnFiber http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=6ad185cf:12009",
+        0
+      ]
+    ]
+  },
+  "guard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 980324352,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "limitations": [
+    "Sampling at 262144-byte intervals estimates allocations and includes unrelated page activity; it is not retained-byte or peak-job attribution.",
+    "Synthetic values and one call do not reproduce real project decoding, histories, backing buffers, renderer state or in-place replacement.",
+    "The measured check is not evidence of native Split parity or the 4 GiB acceptance gate."
+  ]
+}

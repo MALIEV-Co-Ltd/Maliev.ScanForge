@@ -1,0 +1,31 @@
+{
+  "scope": "Three-triangle STL imported in an isolated application browser; native export compared against GUI and public MCP component extraction",
+  "nativeFixture": "tests/fixtures/m2-native-extract-lifecycle-20261107/README.md",
+  "nativeOutputSha256": "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+  "nativeOneTriangleSha256": "cd01401710e3cfccb0ed1423ae22155c0d7bae192c527dd05ed664dbfb5ac62b",
+  "driver": "tests/scan-components-browser.mjs",
+  "mode": "SCANFORGE_COMPONENT_PRECISE=1",
+  "facetNormalReplay": {
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 991715328,
+    "activeAfter": 0,
+    "pageErrors": []
+  },
+  "results": {
+    "guiAndMcpOrderedCoordinatesMatchNative": true,
+    "guiAndMcpStoredFacetNormalsMatchNativeStl": true,
+    "facetNormalsMatchAfterRedoAndMcpReopen": true,
+    "sourceRemainderMatchesNativeOneTriangleExport": true,
+    "guiAndMcpUndoRedo": true,
+    "mcpBinaryReopen": true,
+    "pageErrors": [],
+    "ownedProcessesExitedAndPortsClosed": true
+  },
+  "limitations": [
+    "The native output was extracted twice in QuickSurface before export; the application directly extracts the matching original component.",
+    "The native one-triangle export is the next extracted object, not the intermediate remainder exported directly.",
+    "The exported native STL facet normals match the application's stored facet normals for this planar fixture; arbitrary normals and other normal representations are not established.",
+    "The native export does not establish selection, history or project reopen equivalence.",
+    "This replay did not measure a job-memory peak and does not establish general native component equivalence or M2 completion."
+  ]
+}

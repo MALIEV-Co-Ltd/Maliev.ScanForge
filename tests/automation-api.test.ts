@@ -74,6 +74,61 @@ const mutation = (api: ApplicationApi, requestId = "request-1") => ({
   requestId,
 });
 describe("shared application API", () => {
+  it("reports STL encoding and cleans up a cancelled export job", async () => {
+    let worker: { terminated: boolean } | undefined;
+    class HeldWorker {
+      terminated = false;
+      onmessage?: unknown;
+      onerror?: unknown;
+      onmessageerror?: unknown;
+      constructor() {
+        worker = this;
+      }
+      postMessage() {}
+      terminate() {
+        this.terminated = true;
+      }
+    }
+    vi.stubGlobal("Worker", HeldWorker);
+    const { api, state } = setup();
+    try {
+      state.entities = [
+        {
+          id: "mesh",
+          name: "mesh",
+          kind: "mesh",
+          positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+          color: "#ffffff",
+          visible: true,
+          opacity: 1,
+        },
+      ];
+      const receipt = await api.invoke("project_export", { format: "stl" });
+      expect(receipt.ok).toBe(true);
+      if (!receipt.ok) throw Error("Export did not start");
+      const jobId = (receipt.result as { jobId: string }).jobId;
+      expect(await api.invoke("job_get", { jobId })).toMatchObject({
+        ok: true,
+        result: { status: "running", stage: "Encoding STL" },
+      });
+      expect((await api.invoke("job_cancel", { jobId })).ok).toBe(true);
+      await vi.waitFor(async () => {
+        expect(await api.invoke("job_get", { jobId })).toMatchObject({
+          ok: true,
+          result: { status: "cancelled" },
+        });
+      });
+      expect(worker?.terminated).toBe(true);
+      expect(await api.invoke("session_get")).toMatchObject({
+        ok: true,
+        result: { artifacts: [] },
+      });
+      expect(state.entities[0].positions).toEqual([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+    } finally {
+      api.dispose();
+      vi.unstubAllGlobals();
+    }
+  });
   it("exposes landmark session edits with revision and retry protection and read-only observation", async () => {
     const { api, host } = setup();
     host.inspectLandmarks = () => ({ active: true, preview: false });
@@ -453,6 +508,67 @@ describe("shared application API", () => {
     });
     api.dispose();
   });
+  it("uses native base64 when available and preserves exact artifact chunks with the fallback", async () => {
+    const { api } = setup();
+    const bytes = Uint8Array.from(
+      { length: 262145 },
+      (_, i) => (i * 47 + 31) & 255,
+    );
+    const uploaded = await api.invoke("artifact_put", {
+      name: "bytes.bin",
+      base64: Buffer.from(bytes).toString("base64"),
+      offset: 0,
+    });
+    expect(uploaded.ok).toBe(true);
+    const artifactId = (uploaded as any).result.artifactId;
+    const original = Object.getOwnPropertyDescriptor(
+      Uint8Array.prototype,
+      "toBase64",
+    );
+    const native = vi.fn(function (this: Uint8Array) {
+      return Buffer.from(this).toString("base64");
+    });
+    try {
+      for (const useNative of [true, false]) {
+        if (useNative)
+          Object.defineProperty(Uint8Array.prototype, "toBase64", {
+            configurable: true,
+            value: native,
+          });
+        else delete (Uint8Array.prototype as any).toBase64;
+        for (const [offset, length] of [
+          [0, 1],
+          [1, 2],
+          [3, 8193],
+          [0, 262144],
+          [262144, 1],
+          [262145, 1],
+        ]) {
+          const result = await api.invoke("artifact_read", {
+            artifactId,
+            offset,
+            length,
+          });
+          expect(result).toMatchObject({
+            ok: true,
+            result: {
+              base64: Buffer.from(
+                bytes.subarray(offset, offset + length),
+              ).toString("base64"),
+              nextOffset: Math.min(offset + length, bytes.length),
+              eof: offset + length >= bytes.length,
+            },
+          });
+        }
+        if (useNative) expect(native).toHaveBeenCalledTimes(6);
+      }
+    } finally {
+      if (original)
+        Object.defineProperty(Uint8Array.prototype, "toBase64", original);
+      else delete (Uint8Array.prototype as any).toBase64;
+      api.dispose();
+    }
+  });
   it("fails closed after disposal and rejects malformed base64", async () => {
     const { api } = setup();
     expect(
@@ -776,10 +892,24 @@ describe("M6 inspection API", () => {
         rms: 0,
         maxError: 0,
       };
+      expect(
+        await api.invoke("analysis_deviation", {
+          entityId: "scan",
+          fit,
+          scope: "invalid",
+        }),
+      ).toMatchObject({ ok: false });
+      const all = await job("analysis_deviation", {
+        entityId: "scan",
+        fit,
+        tolerance: 1,
+      });
+      expect(all).toMatchObject({ samples: 6, excluded: 0, scope: "all" });
       const result = await job("analysis_deviation", {
         entityId: "scan",
         fit,
         tolerance: 1,
+        scope: "visible",
       });
       expect(result).toMatchObject({
         rms: 2,
@@ -793,10 +923,21 @@ describe("M6 inspection API", () => {
         fit,
         tolerance: 1,
       });
+      const allSection = await job("analysis_section", {
+        entityId: "scan",
+        axis: "x",
+        offset: 2,
+      });
+      expect(allSection).toMatchObject({
+        length: 3,
+        segments: 2,
+        scope: "all-triangles",
+      });
       const section = await job("analysis_section", {
         entityId: "scan",
         axis: "x",
         offset: 2,
+        scope: "visible",
       });
       expect(section).toMatchObject({
         length: 1.5,
@@ -804,6 +945,14 @@ describe("M6 inspection API", () => {
         units: "mm",
         scope: "visible-triangles",
       });
+      expect(
+        await api.invoke("analysis_section", {
+          entityId: "scan",
+          axis: "x",
+          offset: 2,
+          scope: "invalid",
+        }),
+      ).toMatchObject({ ok: false });
       expect(state.entities[0].positions).toBe(positions);
       expect(api.currentRevision()).toBe(0);
       expect(state.history).toEqual([]);
@@ -993,6 +1142,87 @@ it("saves and replays project-persistent inspection definitions with guarded edi
     api.dispose();
   }
 });
+it("preserves old visible-only saved inspections and saves new analytic scope explicitly", async () => {
+  const { api, host, state } = setup();
+  host.setAuthoring = (authoring) => {
+    state.authoring = authoring;
+  };
+  state.entities = [
+    {
+      id: "scope-scan",
+      kind: "mesh",
+      name: "scope",
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+      positions: new Float32Array([
+        0, 0, -5, 1, 0, -5, 0, 1, -5, 0, 0, 2, 1, 0, 2, 0, 1, 2,
+      ]),
+      meshSelection: { hidden: [0], saved: [] },
+    },
+  ];
+  const fit = {
+    kind: "plane",
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    rms: 0,
+    maxError: 0,
+  };
+  state.authoring = {
+    ...state.authoring,
+    inspections: [
+      {
+        id: "old",
+        name: "old",
+        definition: { kind: "deviation", entityId: "scope-scan", fit },
+      },
+    ],
+  } as any;
+  const run = async (id: string) => {
+    const receipt = (await api.invoke("inspection_run", {
+      inspectionId: id,
+    })) as any;
+    expect(receipt.ok).toBe(true);
+    for (let i = 0; i < 100; i++) {
+      const result = (await api.invoke("job_get", {
+        jobId: receipt.result.jobId,
+      })) as any;
+      if (result.result.status === "succeeded") return result.result.result;
+      if (result.result.status !== "running")
+        throw Error(JSON.stringify(result));
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    }
+    throw Error("inspection job did not settle");
+  };
+  try {
+    expect(await run("old")).toMatchObject({
+      scope: "visible",
+      samples: 3,
+      rms: 2,
+    });
+    const saved = (await api.invoke("inspection_manage", {
+      action: "save",
+      name: "all",
+      definition: { kind: "deviation", entityId: "scope-scan", fit },
+      ...mutation(api, "scope-save"),
+    })) as any;
+    expect(saved.ok).toBe(true);
+    expect(
+      state.authoring.inspections!.find(
+        (item) => item.id === saved.result.inspectionId,
+      )!.definition,
+    ).toMatchObject({ scope: "all" });
+    expect(await run(saved.result.inspectionId)).toMatchObject({
+      scope: "all",
+      samples: 6,
+      rms: Math.sqrt(14.5),
+    });
+    expect(state.history).toEqual([]);
+  } finally {
+    api.dispose();
+  }
+});
+
 it("publishes only top-level object schemas accepted by the official MCP SDK", () => {
   for (const command of catalog)
     expect(command.inputSchema.type, command.name).toBe("object");
@@ -1085,6 +1315,23 @@ it("exposes the measurement overlay and visible section plane through guarded MC
       entityId: "source",
       axis: "x",
       offset: 2,
+      scope: "all",
+    });
+    expect(
+      await api.invoke("inspection_display", {
+        action: "section",
+        entityId: "source",
+        axis: "x",
+        offset: 2,
+        scope: "visible",
+        ...mutation(api, "show-visible-section"),
+      }),
+    ).toMatchObject({ ok: true, result: { scope: "visible-triangles" } });
+    expect(host.showSection).toHaveBeenLastCalledWith({
+      entityId: "source",
+      axis: "x",
+      offset: 2,
+      scope: "visible",
     });
     expect(
       await api.invoke("inspection_display", {

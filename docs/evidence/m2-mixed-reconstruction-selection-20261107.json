@@ -1,0 +1,26 @@
+{
+  "scope": "Mixed mesh/cloud reconstruction default selection and GUI/public-MCP voxel parity",
+  "priorFailure": "Native mode automatically selected an incompatible visible point cloud.",
+  "checks": [
+    "Visible meshes selected and clouds excluded by native default",
+    "Selecting cloud changes mode to voxel and retains mesh and cloud selections",
+    "Returning to native restores visible mesh defaults",
+    "Mixed GUI and public MCP voxel geometry matches",
+    "Cloud GUI/public MCP parity, undo/redo and project roundtrip",
+    "57 focused tests passed",
+    "Development and production browser replays had no page errors",
+    "Production build and 15 typecheck batches passed"
+  ],
+  "guardPeaks": {
+    "red": 733315072,
+    "unit": 402083840,
+    "development": 924065792,
+    "build": 2017214464,
+    "compiled": 1084190720
+  },
+  "processCleanup": true,
+  "bundle": "scanforge-3b360ff6e3d8ed0a",
+  "limits": [
+    "Synthetic mixed input; no general native reconstruction or large-input resource claim."
+  ]
+}

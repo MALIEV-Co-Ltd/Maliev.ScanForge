@@ -8,6 +8,66 @@ import {
   type ProjectValueType,
 } from "../src/project-value-stream";
 
+it("borrows finite private Float64 bytes for synchronous hashes", () => {
+  const backing = new ArrayBuffer(40);
+  const values = new Float64Array(backing, 8, 3);
+  values.set([0.1, -0, 2.5]);
+  const input = values as unknown as ProjectValue;
+  const chunks = [...projectValueBytes(input, "f64", true)];
+  expect(chunks).toHaveLength(1);
+  expect(chunks[0].buffer).toBe(backing);
+  expect(chunks[0].byteOffset).toBe(8);
+  expect(chunks[0]).toEqual(canonical([0.1, -0, 2.5], "f64"));
+  expect(projectValueHash(input, "f64")).toEqual(
+    projectValueHash([0.1, -0, 2.5], "f64"),
+  );
+  expect([...projectValueBytes(input, "f64")][0].buffer).not.toBe(backing);
+});
+
+it("keeps Float64 shared and nonfinite input on the canonical staging path", () => {
+  const shared = new Float64Array(new SharedArrayBuffer(24));
+  shared.set([0.1, -0, 2.5]);
+  const sharedChunk = [...projectValueBytes(shared, "f64", true)][0];
+  expect(sharedChunk.buffer).not.toBe(shared.buffer);
+  expect(sharedChunk).toEqual(canonical([0.1, -0, 2.5], "f64"));
+  const nonfinite = new Float64Array([NaN]);
+  expect([...projectValueBytes(nonfinite, "f64", true)][0].buffer).not.toBe(
+    nonfinite.buffer,
+  );
+});
+
+it("bounds borrowed Float64 views and retains their byte offsets across chunks", () => {
+  const buffer = new ArrayBuffer(2 * 1024 * 1024 + 16);
+  const values = new Float64Array(buffer, 8, (2 * 1024 * 1024) / 8);
+  values[0] = -0;
+  values[values.length - 1] = 0.1;
+  const chunks = [...projectValueBytes(values, "f64", true)];
+  expect(chunks.map((chunk) => chunk.length)).toEqual([
+    1024 * 1024,
+    1024 * 1024,
+  ]);
+  expect(chunks.every((chunk) => chunk.buffer === buffer)).toBe(true);
+  expect(chunks.map((chunk) => chunk.byteOffset)).toEqual([8, 1024 * 1024 + 8]);
+  expect(projectValueHash(values, "f64")).toEqual(
+    projectValueHash(Array.from(values), "f64"),
+  );
+});
+
+it("reuses bounded staging only for consumers that finish each hash chunk", () => {
+  const values = Array.from({ length: 131075 }, (_, i) => (i % 2 ? -0 : i / 7));
+  const iterator = projectValueBytes(values, "f64", true, true);
+  const first = iterator.next().value!;
+  const firstCopy = first.slice();
+  const second = iterator.next().value!;
+  expect(second.buffer === first.buffer).toBe(true);
+  expect(second.length).toBe(24);
+  const expected = canonical(values, "f64");
+  expect(firstCopy).toEqual(expected.subarray(0, firstCopy.length));
+  expect(second).toEqual(expected.subarray(firstCopy.length));
+  expect(iterator.next().done).toBe(true);
+  expect(projectValueHash(values, "f64").rawBytes).toBe(expected.length);
+});
+
 function canonical(value: ProjectValue, type: ProjectValueType) {
   if (typeof value === "string") return new TextEncoder().encode(value);
   const width = type === "f64" ? 8 : 4;
@@ -96,6 +156,19 @@ it("reads shared storage without mutating it and hashes empty numeric values", a
   expect(projectValueHash(new Uint32Array(), "u32")).toEqual({
     sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     rawBytes: 0,
+  });
+});
+
+it("matches WebCrypto for a large byte view with a nonzero offset", async () => {
+  const storage = new Uint8Array(1024 * 1024 + 31);
+  for (let i = 0; i < storage.length; i++) storage[i] = (i * 37 + 11) & 255;
+  const bytes = storage.subarray(7, storage.length - 3);
+  const expected = Buffer.from(
+    await crypto.subtle.digest("SHA-256", bytes),
+  ).toString("hex");
+  expect(projectValueHash(bytes, "u8")).toEqual({
+    sha256: expected,
+    rawBytes: bytes.length,
   });
 });
 

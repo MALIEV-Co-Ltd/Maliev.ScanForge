@@ -41,7 +41,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Restore reconstructs ordinary numeric arrays independently while preserving saved aliases; matching immutable shared-buffer chunks may reuse backing after byte and hash verification. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -145,7 +145,7 @@
   },
   {
     "name": "object_geometry_digest",
-    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Includes indexedMesh.geometryNormals separately from indexedMesh.normals and computed indexedMesh.facetNormals in triangle order when present. Float32 uses little-endian f32, ordinary number arrays f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
+    "description": "Read-only cancellable job: inspect stored display, indexed scan and point-cloud numeric carriers with bounded 1 MiB canonical staging instead of exporting large JSON arrays. Returns entityId, units:mm, per-buffer path/encoding/elements/rawBytes/SHA-256/storage/local backing alias IDs and optional point-cloud pose bits. Includes indexedMesh.geometryNormals separately from indexedMesh.normals and computed indexedMesh.facetNormals in triangle order when present. Float32 uses little-endian f32, ordinary number arrays and Float64 buffers f64, triangle indices u32. Yields between chunks; cancellation or changed project revision discards the result. No geometry/history mutation. Compare path, encoding, counts and hashes; backing IDs are local to one response, not persistent IDs. Poll job_get; cancel through job_cancel. Point-cloud colors are opaque RGBA byte carriers, reported as pointColors with canonical u8 encoding.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -163,7 +163,7 @@
   },
   {
     "name": "object_update",
-    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1\u00e2\u20ac\u201c10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10\u00e2\u20ac\u201c100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
+    "description": "Change name/display/protection properties. Point clouds support pointSize (screen pixels, 1 to 10, default 1), pointColorMode (source: file RGB with object color fallback, default; solid: object color), pointAutoDensity (default true) and pointDensity (10 to 100 percent, default 100). Auto density uses stable camera-adaptive vertex sampling without moving retained points; false displays all eligible points. Source XYZ, RGB, hidden indexing, picking and export are preserved. Display options persist in project files and survive modeling undo. Read effective options with object_get and sampling diagnostics with viewport_get.pointCloudDisplay.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -543,7 +543,9 @@
         },
         "tolerance": {
           "type": "number",
-          "exclusiveMinimum": 0
+          "exclusiveMinimum": 0,
+          "default": 0.001,
+          "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
         }
       },
       "required": ["entityId"],
@@ -552,7 +554,7 @@
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Finite mesh Split updates the source as one indexed mesh and reports connected components; unchanged cuts return changed:false. Isolated interior edges and simple open cut paths with one boundary endpoint remain shared when their fans are connected and each cut edge has two incident faces; other cut topologies retain their applicable seam behavior. Its cutter ordering, hit and point counts have separate 1 GiB-derived temporary estimates; exceeding one rejects before publication, and reducing cutter complexity can make a retry feasible. Uncertain floating-point face coverage is checked against exact binary-coordinate area vectors before rejection; winding, edge and constraint checks still apply. Sampled CAD and other non-mesh cutters retain the existing segment-producing path. Reference-plane Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. Component-edit worker progress is nondecreasing and remains below 100% until the result is returned; use terminal job status to confirm completion. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome. Fine alignment uses fullTargetSurface for visible target mesh surfaces and fullTargetPointToPoint for clouds, with normal compatibility when available. It reports terminationReason, inlierRms, targetRmsBasis:overlap and rejectedNormalPoints. insufficientOverlap returns applied:false and retains the original geometry. Point-cloud meshing creates a new mesh from a whole visible raw cloud. Projected meshing uses an XY, XZ or YZ plane and optional edge limit; Poisson reconstruction uses oriented normals, bounded depth and density options. Omit selectionOnly and targets; createNew:false is rejected. Consult AGENT_GUIDE for limits and diagnostics.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -748,7 +750,8 @@
                         },
                         "tolerance": {
                           "type": "number",
-                          "exclusiveMinimum": 0
+                          "exclusiveMinimum": 0,
+                          "description": "Search radius in mm, narrowed to positive finite Float32 (default 10). Boundary-region hits on open edges and hits exactly at the radius are excluded. Contributions accumulate in Float32 in object-list order."
                         }
                       },
                       "required": ["kind"],
@@ -817,10 +820,46 @@
                           "exclusiveMinimum": 0
                         },
                         "offsetDegrees": {
-                          "type": "number"
+                          "type": "number",
+                          "description": "Positive rotation of the cylinder radial frame in degrees. Seam-crossing facets are removed, using native swap-last deletion order."
+                        },
+                        "instances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3000000,
+                          "default": 1,
+                          "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
                         }
                       },
                       "required": ["kind", "center", "axis", "radius"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": ["unroll"]
+                        },
+                        "offsetDegrees": {
+                          "type": "number",
+                          "description": "Positive rotation of the cylinder radial frame in degrees. Seam-crossing facets are removed, using native swap-last deletion order."
+                        },
+                        "instances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3000000,
+                          "default": 1,
+                          "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
+                        },
+                        "cylinderId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200,
+                          "description": "Existing cylinder reference object. Exact CAD uses its analytic cylinder parameters; one cylinder face with optional planar caps is required. Multiple cylinders and mixed curved bodies reject without changing geometry. Construction cylinders retain their existing binding."
+                        }
+                      },
+                      "required": ["kind", "cylinderId"],
                       "additionalProperties": false
                     }
                   ]
@@ -978,37 +1017,45 @@
                   "exclusiveMinimum": 0,
                   "maximum": 100,
                   "default": 85,
-                  "description": "Expected portion of eligible source points to match (percent). Must have this many points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
+                  "description": "Expected portion of eligible source points to match (percent). Must have this many normal-compatible points within maxDistance before target accuracy can be reached. Use this or legacy trimFraction, not both."
                 },
                 "targetRms": {
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 0.5,
-                  "description": "Desired overlap RMS in mm against the full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
+                  "description": "Desired overlap RMS in mm against the visible target mesh surface or full target cloud. Defaults to 0.5. Distinct from the numerical stopping tolerance."
                 },
                 "maxDistance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum correspondence distance in millimetres. Defaults to 10 mm through the shared GUI/MCP application operation.",
+                  "default": 10
                 },
                 "maxIterations": {
                   "type": "integer",
                   "minimum": 1,
-                  "maximum": 1000
+                  "maximum": 1000,
+                  "default": 200,
+                  "description": "Maximum fitting iterations. Distinct from desired overlap accuracy."
                 },
                 "sampleSize": {
                   "type": "integer",
                   "minimum": 3,
                   "maximum": 100000,
-                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point."
+                  "description": "Maximum source fitting points; final overlap and whole-cloud RMS evaluate every eligible source point.",
+                  "default": 20000
                 },
                 "targetSampleSize": {
                   "type": "integer",
                   "minimum": 3,
-                  "maximum": 100000
+                  "maximum": 100000,
+                  "description": "Optional compatibility setting for older clients; ignored by fine alignment because the complete target is matched."
                 },
                 "tolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "default": 0.00001,
+                  "description": "Numerical stagnation tolerance; distinct from the targetRms accuracy goal."
                 },
                 "trimFraction": {
                   "type": "number",
@@ -1016,14 +1063,7 @@
                   "maximum": 1
                 }
               },
-              "required": [
-                "kind",
-                "maxDistance",
-                "maxIterations",
-                "sampleSize",
-                "targetSampleSize",
-                "tolerance"
-              ],
+              "required": ["kind"],
               "additionalProperties": false
             },
             {
@@ -1157,6 +1197,7 @@
                 },
                 "action": {
                   "type": "string",
+                  "description": "boundaryProjectMeshOxy edits all mesh boundaries in place on the origin XY plane, preserving interior vertices and triangle selection; it rejects degenerate or nonmanifold indexed input/output and is distinct from boundaryProject curve/sketch creation. Omit selectionOnly, createNew, targetId, indices and plane for this action.",
                   "enum": [
                     "inventory",
                     "componentExtract",
@@ -1166,10 +1207,21 @@
                     "fillHoles",
                     "boundarySmooth",
                     "boundaryProject",
+                    "boundaryProjectMeshOxy",
+                    "boundarySpatialSketch",
                     "smoothSelected",
                     "defeature",
                     "split"
                   ]
+                },
+                "inventoryScope": {
+                  "type": "string",
+                  "enum": ["components"],
+                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. Indexed component connectivity includes zero-area faces with three distinct vertex identities; boundary diagnostics use separate degenerate-face checks. Omit for the full inventory."
+                },
+                "createSketches": {
+                  "type": "boolean",
+                  "description": "Boundary projection only. Omit or false for the existing read-only XYZ curve artifact. true publishes validated saved planar sketches in one model-history transaction, retains the source and active authoring session, and returns sketchIds plus the curve artifact. Undo/Redo/Seek and project reopening retain the operation-owned sketch identities. Locked source publication is rejected before processing."
                 },
                 "indices": {
                   "type": "array",
@@ -1182,7 +1234,14 @@
                 },
                 "algorithm": {
                   "type": "string",
-                  "enum": ["automatic", "flat", "tangent", "curvature"]
+                  "enum": [
+                    "automatic",
+                    "flat",
+                    "tangent",
+                    "curvature",
+                    "surfaceRecovery"
+                  ],
+                  "description": "Entire-hole Automatic selects Tangent for at most 40 rim edges and Curvature above 40. Entire-hole Curvature fits a local surface and remeshes the adjacent collar, including the original rim; it is not an append-only cap. surfaceRecovery explicitly continues the retained collar with bounded fallback; it requires mode entire. Partial/bridge Automatic retains its boundary-based choice."
                 },
                 "mode": {
                   "type": "string",
@@ -1203,16 +1262,41 @@
                 },
                 "diameter": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "minimum": 0,
+                  "description": "Maximum enclosing-sphere diameter in mm for hole filling; 0 or omission includes all selected boundaries."
+                },
+                "batch": {
+                  "type": "boolean",
+                  "description": "Native multiple-hole Tangent dispatch, entire holes only. Omit algorithm or specify tangent; selected-hole Flat/Automatic/Curvature and surfaceRecovery require batch omitted or false. Optional indices restrict the batch."
+                },
+                "anchors": {
+                  "type": "array",
+                  "maxItems": 2,
+                  "description": "Boundary smoothing only: zero-based boundary and point indices from the current scanEdit inventory. Two anchors must be on the same closed boundary, with at least two points between them on each side. Obtain a fresh inventory after geometry changes.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "boundary": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "point": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": ["boundary", "point"],
+                    "additionalProperties": false
+                  }
                 },
                 "strength": {
-                  "description": "Selected-area smoothing defaults to 0.5; boundary smoothing defaults to 0.3.",
+                  "description": "Selected-area smoothing defaults to 0.5 and requires (0,1]. Boundary smoothing defaults to 1; [0,1] maps to native slider positions 0–10, rounded to the nearest step. Zero selects minimum native strength, not a disabled operation.",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 "iterations": {
-                  "description": "Selected-area smoothing defaults to 6 passes; boundary smoothing defaults to 3. Explicit values override these defaults.",
+                  "description": "Selected-area smoothing defaults to 6 vertex passes. Boundary smoothing defaults to 1 complete command repetition, each with 10–20 vertex passes plus fitted-curve projection and boundary-preserving correction. Explicit values override these defaults.",
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 100
@@ -1242,11 +1326,13 @@
                 },
                 "tolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Topology weld tolerance in mm. Finite mesh-to-mesh Split defaults to 0.000001; other scan edits default to 0.001. An explicit value overrides either default."
                 },
                 "fitTolerance": {
                   "type": "number",
-                  "exclusiveMinimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Positive boundary projection simplification tolerance or spatial-sketch fitting tolerance in mm. Spatial fitting defaults to 0.05 and is limited to 1024 closed boundaries and 200000 boundary points."
                 }
               },
               "required": ["kind", "action"],
@@ -1346,6 +1432,91 @@
                 }
               },
               "required": ["kind", "sampleBudget", "initialRadius"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pointCloudPoisson"]
+                },
+                "normalMode": {
+                  "type": "string",
+                  "enum": [
+                    "provided",
+                    "estimate-provided",
+                    "estimate-outward",
+                    "estimate-viewpoint"
+                  ],
+                  "default": "provided",
+                  "description": "Provided validates existing oriented normals. estimate-provided estimates PCA normals and uses existing orientations as component anchors. Outward assumes closed components; viewpoint assumes a single scanner position. Estimation uses a graph-consistent spanning forest."
+                },
+                "normalNeighbors": {
+                  "type": "integer",
+                  "minimum": 8,
+                  "maximum": 48,
+                  "default": 24
+                },
+                "viewpoint": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "description": "Scanner viewpoint XYZ in world millimeters; required with estimate-viewpoint."
+                },
+                "depth": {
+                  "type": "integer",
+                  "minimum": 6,
+                  "maximum": 10,
+                  "default": 8,
+                  "description": "Maximum octree depth. Detail and resource use increase with depth; the worker has a fixed 1 GiB WASM heap ceiling."
+                },
+                "pointWeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "default": 2
+                },
+                "samplesPerNode": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 100,
+                  "default": 1.5
+                },
+                "densityThreshold": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 32,
+                  "default": 0,
+                  "description": "Remove triangles with any vertex below this Poisson sampling-depth density. Zero disables trimming; positive values can open boundaries and remove sparse regions."
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["pointCloudMesh"]
+                },
+                "plane": {
+                  "type": "string",
+                  "enum": ["xy", "xz", "yz"],
+                  "description": "Projection plane for a single-valued surface; not closed 3D reconstruction."
+                },
+                "maxEdgeLength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Maximum full 3D triangle edge in mm. Zero disables pruning and fills the projected convex hull, including holes."
+                }
+              },
+              "required": ["kind", "plane"],
               "additionalProperties": false
             }
           ]
@@ -1478,7 +1649,7 @@
   },
   {
     "name": "analysis_section",
-    "description": "Compute a section of visible triangles and CSV/DXF artifacts in world millimetres. Hidden faces are excluded; point clouds are rejected. Limited to 250000 triangles.",
+    "description": "Compute a section of all triangles by default, or visible triangles with scope visible and CSV/DXF artifacts in world millimetres. Visible scope excludes hidden faces; point clouds are rejected. Limited to 250000 triangles.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1494,6 +1665,11 @@
           "type": "string",
           "enum": ["x", "y", "z"]
         },
+        "scope": {
+          "type": "string",
+          "enum": ["all", "visible"],
+          "description": "Source triangle scope; defaults to all."
+        },
         "offset": {
           "type": "number"
         }
@@ -1504,7 +1680,7 @@
   },
   {
     "name": "analysis_deviation",
-    "description": "Compare visible source points/triangle corners in world mm against either an infinite analytic fit or a distinct visible reference triangle surface (referenceId + required maxDistance). Optional signed:true uses local reference winding; default reference distances are unsigned. Returns statistics, coverage, retained parameters, legacy distance artifact and reproducible JSON report. Hidden/unmatched samples are null in source order. CAD reference uses Float32 display tessellation, not exact BREP distance; neither mode certifies continuous bounds or solid containment. Limit 2250000 coordinates per object.",
+    "description": "Compare source points/triangle corners in world mm against either an infinite analytic fit (all samples by default, or scope visible) or a distinct visible reference triangle surface (referenceId + required maxDistance). Optional signed:true uses local reference winding; default reference distances are unsigned. Returns statistics, coverage, retained parameters, legacy distance artifact and reproducible JSON report. Excluded hidden or unmatched samples are null in source order. CAD reference uses Float32 display tessellation, not exact BREP distance; neither mode certifies continuous bounds or solid containment. Limit 2250000 coordinates per object.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1521,6 +1697,11 @@
             "fit": {
               "type": "object",
               "description": "FitResult from analysis_fit"
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["all", "visible"],
+              "description": "Analytic source samples; default all. Visible excludes hidden points or triangles."
             },
             "tolerance": {
               "type": "number",
@@ -3452,7 +3633,7 @@
   },
   {
     "name": "sketch_get",
-    "description": "Inspect current sketch, including frame, curves and constraints.",
+    "description": "Inspect the active planar draft and saved sketches. Spatial boundary sketches use kind:spatial and retain cubic poles, knots, periodic flags and fitting diagnostics in world millimetres; spatial editing is not yet available.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -3636,7 +3817,7 @@
   },
   {
     "name": "sketch_mirror",
-    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside \u00c2\u00b11e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
+    "description": "Copy selected analytic sketch lines/arcs/circles across an existing straight construction axis in local UV millimetres. Uses the active draft and one shared sketch edit. Originals, constraints, shared endpoint topology, construction flags, frame and scan references are preserved; copies have no new constraints and arc direction reverses. Select both stored arcs to copy a two-arc circle. curveIds must be unique, nonempty and exclude axis. Returns changed:true, pointMap, curveMap, createdPointIds and createdCurveIds; maps use source IDs and output IDs are deterministic in stored geometry order. Read sketch_get for copied geometry; history_undo/history_redo scope:sketch steps this edit. Rejects invalid or degenerate axes, unknown curves, coordinates outside +/-1e9 mm, cancellation, changed revisions and exceeded limits atomically. Limits:32768 input/output points,8192 input/output stored curves,4096 constraints,4096 selected curves,2000000 work units.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -3823,7 +4004,7 @@
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Restore reconstructs ordinary numeric arrays independently while preserving saved aliases; matching immutable shared-buffer chunks may reuse backing after byte and hash verification. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Reference construction objects in the current scene, Undo or Redo history are not yet supported; rejection preserves the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3868,7 +4049,7 @@
   },
   {
     "name": "project_import_batch",
-    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 1 GiB. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request.",
+    "description": "Import multiple scan/CAD artifacts with up to two parallel scan parsers and serialized scene/history publication. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers each scan separately on XY with base Z=0 after unit conversion. CAD remains serialized with its placement retained. Large batches, constrained devices or low reported heap headroom fall back to one parser. job_get.progressDetails reports per-file index, name, status, fraction and stage. Each rendered file gets one undo step; preserves completed objects on failure or cancellation. Returns completed results and per-file failures. Artifact storage is bounded to 64 handles totaling 1 GiB. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Admission estimates the two largest active imports using sampled ASC point density or a source-size fallback. The active-pair budget is capped at 1 GiB, less reported main-thread heap use; mesh fallback includes facet-normal storage. Progress details and the completed result expose admission concurrency, reason, estimates and budget. Estimates do not guarantee process memory.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -3915,7 +4096,7 @@
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STL encoding uses a cancellable worker, reports Encoding STL, and writes the Float32 mean of computed vertex normals for valid indexed topology; missing or stale topology uses geometric facet normals, as in GUI export. Cancel the job with job_cancel. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -4253,12 +4434,16 @@
   },
   {
     "name": "object_select",
-    "description": "Select objects in tree order: ordinary selection replaces, toggle adds/removes, range selects from the last ordinary/toggle anchor. Combine toggle and range to add a range. Omit entityId to clear. Returns active and all selected IDs.",
+    "description": "Select objects in tree order: ordinary selection replaces, toggle adds/removes, range selects from the last ordinary/toggle anchor. Combine toggle and range to add a range. Use all:true to select every unlocked/selectable object in Objects-panel order, including hidden objects; do not combine with entityId, toggle or range. Omit entityId and all to clear. Matches Ctrl+A (Command+A on macOS) in the main workspace. Returns active and all selected IDs.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
       "type": "object",
       "properties": {
+        "all": {
+          "type": "boolean",
+          "description": "Select all unlocked/selectable objects, including hidden objects; do not combine with entityId, toggle or range"
+        },
         "entityId": {
           "type": "string",
           "minLength": 1,
@@ -4402,7 +4587,7 @@
   },
   {
     "name": "scan_selection_control",
-    "description": "Configure the shared Edit scan tool, see-through state or clipping box (world mm, null disables); hide/isolate/reveal elements or undo/redo selection history independently of geometry history. Requires an unlocked visible selected scan. Clipping is active while Edit scan is open. Does not commit model geometry. Read scan_selection_get after changes. revealSelected matches Show last hidden: reveal and reselect only the last hidden source slots, retaining earlier hidden batches.",
+    "description": "Configure the shared Edit scan tool, see-through state or clipping box (world mm, null disables); hide/isolate/reveal elements or undo/redo selection history independently of geometry history. Requires an unlocked visible selected scan. Clipping is active while Edit scan is open. Does not commit model geometry. Read scan_selection_get after changes. revealSelected matches Show last hidden: reveal and reselect only the last hidden source slots, retaining earlier hidden batches. Successful project replacement clears that temporary batch while preserving saved hidden slots.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4454,8 +4639,8 @@
                   "type": "array",
                   "items": {
                     "type": "number",
-                    "minimum": -1000000000000.0,
-                    "maximum": 1000000000000.0
+                    "minimum": -1000000000000,
+                    "maximum": 1000000000000
                   },
                   "minItems": 3,
                   "maxItems": 3
@@ -4464,8 +4649,8 @@
                   "type": "array",
                   "items": {
                     "type": "number",
-                    "minimum": -1000000000000.0,
-                    "maximum": 1000000000000.0
+                    "minimum": -1000000000000,
+                    "maximum": 1000000000000
                   },
                   "minItems": 3,
                   "maxItems": 3
@@ -4674,7 +4859,7 @@
   },
   {
     "name": "sketch_manage",
-    "description": "Create/activate/rename/delete a saved sketch. Uses the same authoring state as the editor.",
+    "description": "Create/activate/rename/delete a saved sketch, or set its independent saved visibility with action:visibility and visible:boolean. Spatial sketches may be renamed, deleted or shown/hidden but cannot be activated in the planar editor. Uses the same authoring state and display as the editor. Unset visibility is hidden; Unroll creates its auxiliary sketch visible without replacing the active edit session.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -4682,7 +4867,7 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["create", "activate", "rename", "delete"]
+          "enum": ["create", "activate", "rename", "delete", "visibility"]
         },
         "sketchId": {
           "type": "string",
@@ -4698,6 +4883,10 @@
         },
         "sketch": {
           "type": "object"
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Required for action:visibility; independent of active sketch editing."
         },
         "expectedRevision": {
           "type": "integer",
@@ -5043,7 +5232,7 @@
   },
   {
     "name": "ui_set",
-    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2\u201332 eligible visible scan meshes; close it after Apply or Cancel.",
+    "description": "Set ribbon tab, tool workspace, interaction mode and panel/settings visibility or dismiss displayed error. Semantic reference selections reject sampled-geometry panels and brush/section modes before changing interface state; select a mesh/cloud or CAD object for those controls. Changing workspace rejects active GUI previews; does not accept/cancel them. datumAlignmentOpen opens/closes reference-based coordinate alignment. Opening requires a selected unlocked scan or exact CAD object and opens properties with inspect mode; closing an active alignment preview is rejected until discarded. globalAlignmentOpen opens Global Fine Align for 2 to 32 eligible visible scan meshes; close it after Apply or Cancel.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -5091,6 +5280,7 @@
             "processing",
             "scanTools",
             "fineAlign",
+            "surfaceRefinement",
             "repairMesh",
             "segmentMesh",
             "smoothMesh",
@@ -5732,476 +5922,634 @@
   },
   {
     "name": "alignment_preview",
-    "description": "Preview object coordinate alignment from one to three native plane/direction/point constraints. Targets are unlocked meshes, point clouds or exact CAD bodies. Ordered constraints build the reference frame; its rigid inverse transforms scans. Exact CAD uses verified OpenCascade axis-frame placement and retains exact topology. Model/history stay unchanged; preview_discard target datum restores the committed scene and releases temporary CAD handles. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
+    "description": "Preview object coordinate alignment from one to three native plane/direction/point constraints. Targets are unlocked meshes, point clouds or exact CAD bodies. Ordered constraints build the reference frame; its rigid inverse transforms scans. Exact CAD uses verified OpenCascade axis-frame placement and retains exact topology. Model/history stay unchanged; preview_discard target datum restores the committed scene and releases temporary CAD handles. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable. Optional automatic CAD setup detects a supporting base and footprint axes, with configurable origin, primary axis and base flip. Returns support, RMS, dimensions and ambiguity warnings; review the preview before applying.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
       "type": "object",
-      "properties": {
-        "entityIds": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          },
-          "minItems": 1,
-          "maxItems": 32,
-          "uniqueItems": true
-        },
-        "constraints": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["point"]
-                  }
-                },
-                "required": ["kind", "point", "axis"],
-                "additionalProperties": false
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "entityIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
               },
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "constraints": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["point"]
+                      }
                     },
-                    "minItems": 3,
-                    "maxItems": 3
+                    "required": ["kind", "point", "axis"],
+                    "additionalProperties": false
                   },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["plane"]
-                  },
-                  "direction": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["plane"]
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
                     },
-                    "minItems": 3,
-                    "maxItems": 3
+                    "required": ["kind", "point", "axis", "direction"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["direction"]
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": ["kind", "point", "axis", "direction"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "reference"
+                      },
+                      "entityId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "referenceId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 400
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "centerAt": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": ["kind", "entityId", "referenceId", "axis"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": ["origin"]
+                      },
+                      "reference": {
+                        "type": "string",
+                        "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["kind", "reference", "axis"],
+                    "additionalProperties": false
                   }
-                },
-                "required": ["kind", "point", "axis", "direction"],
-                "additionalProperties": false
+                ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["direction"]
-                  },
-                  "direction": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  }
-                },
-                "required": ["kind", "point", "axis", "direction"],
-                "additionalProperties": false
+              "minItems": 1,
+              "maxItems": 3
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "translation": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
               },
-              {
-                "type": "object",
-                "properties": {
-                  "kind": {
-                    "type": "string",
-                    "const": "reference"
-                  },
-                  "entityId": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 200
-                  },
-                  "referenceId": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 400
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "centerAt": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  }
-                },
-                "required": ["kind", "entityId", "referenceId", "axis"],
-                "additionalProperties": false
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
+            },
+            "translationPoint": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
               },
-              {
-                "type": "object",
-                "properties": {
-                  "kind": {
-                    "type": "string",
-                    "enum": ["origin"]
-                  },
-                  "reference": {
-                    "type": "string",
-                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  }
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
+            },
+            "parallel": {
+              "type": "boolean",
+              "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+            }
+          },
+          "required": [
+            "entityIds",
+            "expectedRevision",
+            "requestId",
+            "constraints"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "parallel": {
+              "type": "boolean",
+              "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+            },
+            "automatic": {
+              "type": "object",
+              "description": "Detect a flat supporting base and footprint axes from this raw scan. One rigid transform moves all targets together. Symmetric front/base choices need preview review.",
+              "properties": {
+                "referenceEntityId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
                 },
-                "required": ["kind", "reference", "axis"],
-                "additionalProperties": false
-              }
-            ]
+                "origin": {
+                  "type": "string",
+                  "enum": ["center", "corner"],
+                  "default": "center"
+                },
+                "primaryAxis": {
+                  "type": "string",
+                  "enum": ["X", "Y"],
+                  "default": "X"
+                },
+                "flipBase": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "planeTolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000,
+                  "description": "mm; omitted uses max(0.01, sample diagonal * 0.003)."
+                }
+              },
+              "required": ["referenceEntityId"],
+              "additionalProperties": false
+            }
           },
-          "minItems": 1,
-          "maxItems": 3
-        },
-        "expectedRevision": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "requestId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
-        },
-        "translation": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "minimum": -1000000000,
-            "maximum": 1000000000
-          },
-          "minItems": 3,
-          "maxItems": 3,
-          "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
-        },
-        "translationPoint": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "minimum": -1000000000,
-            "maximum": 1000000000
-          },
-          "minItems": 3,
-          "maxItems": 3,
-          "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
-        },
-        "parallel": {
-          "type": "boolean",
-          "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+          "required": [
+            "entityIds",
+            "expectedRevision",
+            "requestId",
+            "automatic"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
-      "additionalProperties": false
+      ]
     }
   },
   {
     "name": "alignment_apply",
-    "description": "Apply native coordinate-frame object alignment to unlocked meshes, point clouds or exact CAD bodies as one history transaction. Scan indexed topology and saved selections are preserved; exact CAD uses verified OpenCascade axis-frame placement, retains BRep topology and preserves fitted primitive parameters with verified native transforms and clears stale authoring/display-selection metadata. Same constraints as alignment_preview; source geometry is checked before commit. Cancellation releases temporary CAD outputs; committed source/result handles remain valid for Undo/Redo. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable.",
+    "description": "Apply native coordinate-frame object alignment to unlocked meshes, point clouds or exact CAD bodies as one history transaction. Scan indexed topology and saved selections are preserved; exact CAD uses verified OpenCascade axis-frame placement, retains BRep topology and preserves fitted primitive parameters with verified native transforms and clears stale authoring/display-selection metadata. Same constraints as alignment_preview; source geometry is checked before commit. Cancellation releases temporary CAD outputs; committed source/result handles remain valid for Undo/Redo. Optional translation is in reference-frame axes (mm), not world axes. Constraints may bind reference IDs returned by alignment_references; exact CAD, fitted and semantic point/line inputs are read again from the current revision. Large scans use bounded CPU workers when admitted; each target reports execution diagnostics and serial fallback reason. Source-scan references are retained and reported even when stale fitting patches are cleared. Nonidentity CAD placement retains authoringLinks identity and resolved references when clearing its stale recipe. Include dependent recipes and every output of each affected authoring feature; incomplete groups fail before CAD allocation. Identity placement retains the original recipe. Point-cloud alignment retains immutable local buffers and composes the verified double pose; pointCloudPose in each target is its exact little-endian Float64 hex frame. World geometry remains available through object_get. Rendering retains GPU buffers; derived world bounds/views may use bounded CPU workers. Binary project format 3 deduplicates local cloud buffers through history; older format 2 remains readable. Optional automatic CAD setup detects a supporting base and footprint axes, with configurable origin, primary axis and base flip. Returns support, RMS, dimensions and ambiguity warnings; review the preview before applying.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
       "type": "object",
-      "properties": {
-        "entityIds": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          },
-          "minItems": 1,
-          "maxItems": 32,
-          "uniqueItems": true
-        },
-        "constraints": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["point"]
-                  }
-                },
-                "required": ["kind", "point", "axis"],
-                "additionalProperties": false
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "entityIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
               },
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "constraints": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["point"]
+                      }
                     },
-                    "minItems": 3,
-                    "maxItems": 3
+                    "required": ["kind", "point", "axis"],
+                    "additionalProperties": false
                   },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["plane"]
-                  },
-                  "direction": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["plane"]
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
                     },
-                    "minItems": 3,
-                    "maxItems": 3
+                    "required": ["kind", "point", "axis", "direction"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "point": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["direction"]
+                      },
+                      "direction": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": ["kind", "point", "axis", "direction"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "reference"
+                      },
+                      "entityId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "referenceId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 400
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      },
+                      "centerAt": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": -1000000000,
+                          "maximum": 1000000000
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    },
+                    "required": ["kind", "entityId", "referenceId", "axis"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": ["origin"]
+                      },
+                      "reference": {
+                        "type": "string",
+                        "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                      },
+                      "axis": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "flip": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["kind", "reference", "axis"],
+                    "additionalProperties": false
                   }
-                },
-                "required": ["kind", "point", "axis", "direction"],
-                "additionalProperties": false
+                ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "point": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "kind": {
-                    "type": "string",
-                    "enum": ["direction"]
-                  },
-                  "direction": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  }
-                },
-                "required": ["kind", "point", "axis", "direction"],
-                "additionalProperties": false
+              "minItems": 1,
+              "maxItems": 3
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "translation": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
               },
-              {
-                "type": "object",
-                "properties": {
-                  "kind": {
-                    "type": "string",
-                    "const": "reference"
-                  },
-                  "entityId": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 200
-                  },
-                  "referenceId": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 400
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  },
-                  "centerAt": {
-                    "type": "array",
-                    "items": {
-                      "type": "number",
-                      "minimum": -1000000000,
-                      "maximum": 1000000000
-                    },
-                    "minItems": 3,
-                    "maxItems": 3
-                  }
-                },
-                "required": ["kind", "entityId", "referenceId", "axis"],
-                "additionalProperties": false
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
+            },
+            "translationPoint": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
               },
-              {
-                "type": "object",
-                "properties": {
-                  "kind": {
-                    "type": "string",
-                    "enum": ["origin"]
-                  },
-                  "reference": {
-                    "type": "string",
-                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
-                  },
-                  "axis": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2
-                  },
-                  "flip": {
-                    "type": "boolean"
-                  }
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
+            },
+            "parallel": {
+              "type": "boolean",
+              "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+            }
+          },
+          "required": [
+            "entityIds",
+            "expectedRevision",
+            "requestId",
+            "constraints"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entityIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "parallel": {
+              "type": "boolean",
+              "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+            },
+            "automatic": {
+              "type": "object",
+              "description": "Detect a flat supporting base and footprint axes from this raw scan. One rigid transform moves all targets together. Symmetric front/base choices need preview review.",
+              "properties": {
+                "referenceEntityId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
                 },
-                "required": ["kind", "reference", "axis"],
-                "additionalProperties": false
-              }
-            ]
+                "origin": {
+                  "type": "string",
+                  "enum": ["center", "corner"],
+                  "default": "center"
+                },
+                "primaryAxis": {
+                  "type": "string",
+                  "enum": ["X", "Y"],
+                  "default": "X"
+                },
+                "flipBase": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "planeTolerance": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000,
+                  "description": "mm; omitted uses max(0.01, sample diagonal * 0.003)."
+                }
+              },
+              "required": ["referenceEntityId"],
+              "additionalProperties": false
+            }
           },
-          "minItems": 1,
-          "maxItems": 3
-        },
-        "expectedRevision": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "requestId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
-        },
-        "translation": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "minimum": -1000000000,
-            "maximum": 1000000000
-          },
-          "minItems": 3,
-          "maxItems": 3,
-          "description": "Optional X/Y/Z offsets in mm along the constructed reference frame basis, applied before rigid inversion. Defaults to no offset."
-        },
-        "translationPoint": {
-          "type": "array",
-          "items": {
-            "type": "number",
-            "minimum": -1000000000,
-            "maximum": 1000000000
-          },
-          "minItems": 3,
-          "maxItems": 3,
-          "description": "Optional picked world point in mm. Resolve it in the current source-reference frame and replace translation with those offsets; the picked point becomes the aligned origin."
-        },
-        "parallel": {
-          "type": "boolean",
-          "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
+          "required": [
+            "entityIds",
+            "expectedRevision",
+            "requestId",
+            "automatic"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
-      "additionalProperties": false
+      ]
     }
   },
   {
@@ -6681,7 +7029,7 @@
   },
   {
     "name": "scan_preview",
-    "description": "Preview ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply.",
+    "description": "Preview Reduce noise, Reduce polygons, Scale mesh, Mirror mesh or ShrinkWrap without modifying source or history, compare to the source with sampled surface statistics, accept into history (optionally createNew) or cancel. Create requires operation; later phases require returned previewId and entityId. One disposable preview per editor, expires after 60 seconds; changed source/references or expired worker comparison requires recreation. References and local masks resolve identically to GUI and mesh_process. Compare statistics are sampled, not a certified bound. Revision guards, retry receipts, cancellation and locks apply. Mirror uses a principal plane or referenceId with plane=object. Noise selectionOnly resolves the current source selection. Reduction GUI compares after create; agents can explicitly compare the same retained output before acceptance. Threshold changes never rerun the geometry operation.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -6700,49 +7048,159 @@
           "minLength": 1
         },
         "operation": {
-          "type": "object",
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": ["shrinkwrap"]
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["shrinkwrap"]
+                },
+                "sampleInterval": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Requested sampling spacing in mm; never silently coarsened."
+                },
+                "gapFill": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+                },
+                "organicShape": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "extraThickness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Additional outward offset in mm, tapering at local fixed seams."
+                },
+                "maxDeviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.1,
+                  "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
+                },
+                "scope": {
+                  "type": "string",
+                  "enum": ["whole", "selected", "isolated"],
+                  "default": "whole",
+                  "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "sampleInterval": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.5,
-              "description": "Requested sampling spacing in mm; never silently coarsened."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reduceNoise"]
+                },
+                "iterations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "selectionOnly": {
+                  "type": "boolean"
+                },
+                "applyBoundaryEdges": {
+                  "type": "boolean"
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind"],
+              "additionalProperties": false
             },
-            "gapFill": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Maximum attempted gap scale in mm. Zero disables deliberate bridging."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["reducePolygons"]
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": ["triangles", "percentage", "deviation"]
+                },
+                "targetTriangles": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "percentage": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 100
+                },
+                "deviation": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "paletteThreshold": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "measureDeviation": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["kind", "mode"],
+              "additionalProperties": false
             },
-            "organicShape": {
-              "type": "boolean",
-              "default": false
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["scaleMesh"]
+                },
+                "factor": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "center": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": ["kind", "factor"],
+              "additionalProperties": false
             },
-            "extraThickness": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0,
-              "description": "Additional outward offset in mm, tapering at local fixed seams."
-            },
-            "maxDeviation": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 0.1,
-              "description": "Captured-surface fitting tolerance in mm, separately measured from sample spacing."
-            },
-            "scope": {
-              "type": "string",
-              "enum": ["whole", "selected", "isolated"],
-              "default": "whole",
-              "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["mirrorMesh"]
+                },
+                "plane": {
+                  "type": "string",
+                  "enum": ["OXY", "OYZ", "OXZ", "object"]
+                },
+                "referenceId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": ["kind", "plane"],
+              "additionalProperties": false
             }
-          },
-          "required": ["kind"],
-          "additionalProperties": false
+          ]
         },
         "targetIds": {
           "type": "array",
@@ -6771,6 +7229,16 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 200
+        },
+        "paletteThreshold": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison color threshold in mm; defaults to deviation."
+        },
+        "displayRange": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Comparison display range in mm; defaults to deviation for polygon reduction."
         }
       },
       "required": ["action", "entityId", "expectedRevision", "requestId"],
@@ -6779,7 +7247,7 @@
   },
   {
     "name": "global_alignment_preview",
-    "description": "Preview Global Fine Align for 2\u201332 visible unlocked triangle scan meshes already approximately aligned. Uses the shared multicore controller. Defaults to all eligible visible scans in scene order; point clouds and exact CAD are excluded with reasons, partially hidden meshes are rejected. Search tolerance is absolute Float32 mm (default 0.5; zero allowed). Preparation and query memory admission apply. Job returns a cached 60-second preview and per-scan convergence, stability, distance and coverage diagnostics; non-convergence is explicit and does not commit. Use job_get/job_cancel and global_alignment_state; Apply reuses exactly the staged geometry. Outer diagnostics include copied controller poses and ordered application stages as row-major 3x4 matrices with exact Float64 little-endian hex bits (translation in mm).",
+    "description": "Preview alignment of 2-32 visible unlocked raw scan meshes through the shared GUI/MCP operation. Automatic mode (default) estimates coarse poses, runs the native multicore refinement, then fits bounded samples against complete triangle surfaces. Its fixed reference is selected by estimated triangle surface area, not vertex density; surface fitting visits the strongest overlapping next scan first. initialization:current retains the native refinement-only route for already placed scans. Defaults to all eligible visible scans; point clouds, exact CAD, locks and partial hiding are rejected or reported. Search tolerance is absolute Float32 mm, default 0.5; zero is allowed but insufficient automatic overlap fails explicitly. Native preparation/query admission remains; automatic surface workspace estimate is capped at 512 MiB and its worker lease is 180 seconds. Real trial poses are displayed and exposed while solving, without authored changes. Job returns a cached 60-second preview. Native convergence is separate from subsequent surface-fit stability. Inspect surfaceRefinement metrics/ambiguity and staged geometry; coordinateStages contains every actual Float32 coordinate application, including coarse and surface stages. Use job_get/job_cancel, global_alignment_state and cached global_alignment_apply.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -6812,6 +7280,12 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128
+        },
+        "initialization": {
+          "type": "string",
+          "enum": ["automatic", "current"],
+          "default": "automatic",
+          "description": "Automatic (default) uses bounded coarse multi-pose placement before native refinement. Current preserves already aligned poses and the legacy refinement-only workflow."
         }
       },
       "required": ["expectedRevision", "requestId"],
@@ -6820,7 +7294,7 @@
   },
   {
     "name": "global_alignment_apply",
-    "description": "Apply an unexpired Global Fine Align preview exactly once as one history step, without recomputing. Requires unchanged source geometry, history, settings and authoring state. Non-converged results may be explicitly applied after inspecting diagnostics. Returns the same staged outer transform receipt, including exact matrix bits and controller-issued application sequence.",
+    "description": "Apply one unexpired unchanged alignment preview as one history transaction without another solve. Source geometry, history, authored settings and project checks, locks and retry guards remain. Returns the same native outer diagnostics, automatic initialization/surfaceRefinement summary and authoritative coordinateStages as the preview. Native outer applications alone omit automatic coarse/surface stages; use coordinateStages to reproduce final coordinates with a Float32 store after each stage. Non-converged native passes remain explicit and may be applied after reviewing the later surface results and geometry.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -6875,7 +7349,7 @@
   },
   {
     "name": "global_alignment_state",
-    "description": "Read Global Fine Align state, preview lease, settings, source IDs, memory/input summary and per-scan convergence diagnostics, plus copied outer poses and controller-issued application stages (row-major 3x4 matrices, Float64 little-endian hex bits, translation in mm).",
+    "description": "Read the shared alignment state, lease, source IDs, settings, input admission summary, native outer diagnostics and automatic surfaceRefinement results. Native outer applications/converged describe the native pass, not the subsequent automatic surface stage. coordinateStages is authoritative for final geometry: per-ID ordered row-major 3x4 matrices and exact Float64 little-endian matrixBits; translation is mm and each stage stores Float32 coordinates. surfaceRefinement exposes fixed anchorId, overlap-driven order with one group revisit and per-scan beforeRms/rms over the same capped-distance samples (rmsBasis:cappedSurfaceSamples), fittingRms for the selected 40% or 80% closest fit, trimFraction, samplePoints, initialOverlapPoints/overlapPoints, iterations, stopped-improving convergence and ambiguity. These sample metrics do not certify physical scan accuracy. Preparing progress exposes sequence, phase, stage, pass and exact provisional per-scan matrices. Cancel/failure restores originals and clears owned poses.",
     "readOnly": true,
     "job": false,
     "inputSchema": {
@@ -6887,7 +7361,7 @@
   },
   {
     "name": "inspection_display",
-    "description": "Show or clear the most recent retained deviation report on its original source geometry using the editor heatmap. Read analysis_deviation.inspectionId first. Requires revision/retry guards; adds no modeling history. Reports expire after 15 minutes, another analysis, source/reference edits or API disposal. Gray denotes hidden/unmatched samples. Recompute stale reports. Actions measurement and section display validated world picks or the selected visible triangle section using the same GUI controls; clear also removes these overlays.",
+    "description": "Show or clear the most recent retained deviation report on its original source geometry using the editor heatmap. Read analysis_deviation.inspectionId first. Requires revision/retry guards; adds no modeling history. Reports expire after 15 minutes, another analysis, source/reference edits or API disposal. Gray denotes hidden/unmatched samples. Recompute stale reports. Actions measurement and section display validated world picks or the selected all- or visible-triangle section using the same GUI controls; clear also removes these overlays.",
     "readOnly": false,
     "job": false,
     "inputSchema": {
@@ -7031,6 +7505,11 @@
               "type": "string",
               "enum": ["x", "y", "z"]
             },
+            "scope": {
+              "type": "string",
+              "enum": ["all", "visible"],
+              "description": "Source triangle scope; defaults to all."
+            },
             "offset": {
               "type": "number"
             }
@@ -7104,6 +7583,11 @@
                     "fit": {
                       "type": "object",
                       "description": "FitResult from analysis_fit"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "enum": ["all", "visible"],
+                      "description": "Analytic source samples; default all. Visible excludes hidden points or triangles."
                     },
                     "tolerance": {
                       "type": "number",

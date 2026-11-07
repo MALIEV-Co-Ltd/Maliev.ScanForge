@@ -7,6 +7,7 @@ import {
 } from "./processing-client";
 import { createDatumTransformExecutor } from "./datum-transform-pool";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
+export const DEFAULT_FINE_ALIGNMENT_MAX_DISTANCE = 10;
 
 /** Shared GUI/MCP registration: solve in the processing worker, then compose a
  * cloud's native double pose over immutable local buffers rather than re-rounding
@@ -21,6 +22,11 @@ export async function processScanRegistration(
     check?: () => void;
   } = {},
 ): Promise<ProcessingResult> {
+  if (request.kind === "icp")
+    request = {
+      ...request,
+      maxDistance: request.maxDistance ?? DEFAULT_FINE_ALIGNMENT_MAX_DISTANCE,
+    };
   if (
     source.kind !== "pointcloud" ||
     (request.kind !== "paired" &&
@@ -78,6 +84,8 @@ export async function processScanRegistration(
     throw new Error("Point-cloud registration returned no transform.");
   options.signal?.throwIfAborted();
   options.check?.();
+  if ("applied" in result.registration && !result.registration.applied)
+    return result;
   const { rotation: r, translation: t } = result.registration.transform;
   const matrix = [
     r[0],

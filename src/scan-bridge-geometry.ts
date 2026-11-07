@@ -11,6 +11,7 @@ import {
   subtract,
 } from "./scan-edit";
 import { validHolePatch } from "./scan-hole-refine";
+import { flatHoleTriangles } from "./scan-hole-flat";
 
 /** Validate the final Float32 strip against retained facets, including transverse walls. */
 export function bridgeIntersectsMesh(
@@ -50,7 +51,7 @@ export function bridgeIntersectsMesh(
       checkProgress(
         options,
         face / Math.max(1, topology.triangles.length / 3),
-        "Checking bridge surface intersections",
+        "Checking patch surface intersections",
       );
     const sourceIds = [
       topology.triangles[face * 3],
@@ -244,17 +245,93 @@ export function bridgeInsideBoundary(
 export function validBridgePatch(
   projected: Vector2[],
   triangles: number[][],
+  boundary?: number[],
 ): boolean {
-  const ring = [0, 1];
-  for (let i = 5; i < projected.length; i += 2) ring.push(i);
-  ring.push(2, 3);
-  for (let i = projected.length - 2; i >= 4; i -= 2) ring.push(i);
+  const ring = boundary ?? [0, 1];
+  if (!boundary) {
+    for (let i = 5; i < projected.length; i += 2) ring.push(i);
+    ring.push(2, 3);
+    for (let i = projected.length - 2; i >= 4; i -= 2) ring.push(i);
+  }
   const mapping = new Map(ring.map((id, i) => [id, i]));
   return validHolePatch(
     ring.map((id) => projected[id]),
     triangles.map((face) => face.map((id) => mapping.get(id)!)),
     ring.length,
   );
+}
+
+/** Native Flat samples each free rail at the mean attachment-edge spacing,
+ * then clips the complete rim. The two rails may have different counts.
+ * Only local patch records are allocated; retained mesh edges stay intact. */
+export function refineFlatBridgeStrip(
+  points: Vec3[],
+  projected: Vector2[],
+  normal: Vec3,
+  options: MeshProcessingOptions,
+  retainedDiagonals: readonly string[] = [],
+): { triangles: number[][]; boundary: number[] } {
+  // Native distance mixes widened and Float32 endpoint differences.
+  const distance = (a: Vec3, b: Vec3) =>
+    Math.sqrt(
+      a.reduce(
+        (sum, value, k) => sum + (value - b[k]) * Math.fround(value - b[k]),
+        0,
+      ),
+    );
+  const spacing =
+    (distance(points[0], points[1]) + distance(points[2], points[3])) / 2;
+  const counts = [
+    [0, 3],
+    [1, 2],
+  ].map(([a, b]) =>
+    Math.max(1, Math.floor(distance(points[a], points[b]) / spacing)),
+  );
+  // Smallest-corner clipping rescans the rim. Bound its quadratic work to
+  // about two million candidate visits, rather than lowering native density.
+  if (!counts.every(Number.isSafeInteger) || counts[0] + counts[1] + 2 > 2048)
+    throw new Error("Flat bridge exceeds the supported boundary size.");
+  const rails = [
+    [0, 3],
+    [1, 2],
+  ].map(([a, b], rail) => {
+    const ids = [a],
+      steps = counts[rail],
+      increment = 1 / steps;
+    let fraction = increment;
+    for (let row = 1; row < steps; row++, fraction += increment) {
+      checkProgress(options, row / steps, "Interpolating flat bridge rails");
+      ids.push(points.length);
+      points.push(
+        points[a].map((value, k) =>
+          Math.fround(value + Math.fround(points[b][k] - value) * fraction),
+        ) as Vec3,
+      );
+      projected.push(projected[a].clone().lerp(projected[b], fraction));
+    }
+    ids.push(b);
+    return ids;
+  });
+  const boundary = [0, ...rails[1], ...rails[0].slice(1).reverse()];
+  const triangles = flatHoleTriangles(
+    {
+      vertices: Float64Array.from(points.flat()),
+      edges: new Map(retainedDiagonals.map((key) => [key, []] as const)),
+    },
+    boundary,
+    normal,
+    options.signal,
+  );
+  if (!triangles)
+    throw new Error("Flat bridge triangulation could not close the strip.");
+  for (const tri of triangles) {
+    const a = projected[tri[0]],
+      b = projected[tri[1]],
+      c = projected[tri[2]];
+    if ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) < 0)
+      [tri[1], tri[2]] = [tri[2], tri[1]];
+  }
+  return { triangles, boundary };
 }
 
 /** Use the actual attachment facets, without averaging across unrelated sharp edges. */

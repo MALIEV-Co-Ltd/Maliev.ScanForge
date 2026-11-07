@@ -1,6 +1,9 @@
 import { it, expect, vi } from "vitest";
 import { createAuthoringOperations } from "../src/automation/authoring-operations";
 import { createGridPatch, evaluatePatch } from "../src/surfaces";
+import { objectPickable } from "../src/object-operations";
+import { validateInput } from "../src/automation/api";
+import catalog from "../src/automation/catalog.json";
 import type {
   WorkspaceSnapshot,
   WorkspaceHost,
@@ -24,14 +27,12 @@ it("exposes toggle and range object selection through the same shared MCP operat
     anchorId: null,
   };
   host.select = (id, modifiers) => {
-    selection = id
-      ? selectObject(
-          selection,
-          state.entities.map((e) => e.id),
-          id,
-          modifiers,
-        )
-      : { ids: [], activeId: null, anchorId: null };
+    selection = selectObject(
+      selection,
+      state.entities.filter(objectPickable).map((e) => e.id),
+      id,
+      modifiers,
+    );
     state.selectedId = selection.activeId;
     state.selectedIds = selection.ids;
   };
@@ -45,6 +46,25 @@ it("exposes toggle and range object selection through the same shared MCP operat
     selectedIds: [],
     entityId: null,
   });
+  state.entities[0].visible = false;
+  state.entities[1].locked = true;
+  expect(ops.object_select({ all: true }, context)).toMatchObject({
+    selectedIds: ["a", "c"],
+    entityId: "c",
+  });
+  for (const extra of [{ entityId: "a" }, { toggle: true }, { range: true }]) {
+    expect(() => ops.object_select({ all: true, ...extra }, context)).toThrow(
+      /cannot be combined/,
+    );
+    expect(state.selectedIds).toEqual(["a", "c"]);
+  }
+});
+
+it("discovers select-all through the object_select MCP contract", () => {
+  const schema = catalog.find((t) => t.name === "object_select")!.inputSchema;
+  const args = { expectedRevision: 0, requestId: "all-objects", all: true };
+  expect(() => validateInput(schema, args)).not.toThrow();
+  expect(() => validateInput(schema, { ...args, all: "true" })).toThrow();
 });
 function setup() {
   const patch = createGridPatch();
@@ -127,9 +147,48 @@ it("manages saved sketches in the same authoring collection without altering geo
     context,
   );
   expect(state.authoring.sketches?.[0].name).toBe("Fixture");
+  ops.sketch_manage(
+    { action: "visibility", sketchId: created.sketchId, visible: true },
+    context,
+  );
+  expect(state.authoring.sketches?.[0].visible).toBe(true);
+  expect(() =>
+    ops.sketch_manage(
+      { action: "visibility", sketchId: created.sketchId },
+      context,
+    ),
+  ).toThrow(/visibility|boolean/i);
   ops.sketch_manage({ action: "delete", sketchId: created.sketchId }, context);
   expect(state.authoring.sketches).toEqual([]);
   expect(state.entities).toBe(geometry);
+});
+it("rejects an invalid visible sketch without publishing authoring changes", () => {
+  const { ops, context, state } = setup();
+  const created = ops.sketch_manage(
+    {
+      action: "create",
+      name: "Outside",
+      sketch: {
+        version: 1,
+        points: [
+          { id: "a", x: 2e9, y: 0 },
+          { id: "b", x: 2e9, y: 1 },
+        ],
+        segments: [{ id: "line", a: "a", b: "b" }],
+        constraints: [],
+      },
+    },
+    context,
+  ) as { sketchId: string };
+  const before = state.authoring;
+  expect(() =>
+    ops.sketch_manage(
+      { action: "visibility", sketchId: created.sketchId, visible: true },
+      context,
+    ),
+  ).toThrow(/world|bound|coordinate/i);
+  expect(state.authoring).toBe(before);
+  expect(state.authoring.sketches![0].visible).toBeUndefined();
 });
 it("saves and restores triangle selections and rejects stale saved slots", () => {
   const { ops, context, state } = setup();

@@ -5,6 +5,8 @@ export interface AlignmentQueryVertex {
   flags: number;
 }
 export interface AlignmentQueryHit {
+  /** Included only when the caller requests a triangle identity for UV projection. */
+  triangle?: number;
   distance: number;
   closest: readonly number[];
   normal: readonly number[];

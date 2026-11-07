@@ -1,0 +1,29 @@
+{
+  "scope": "Current-build GUI and public MCP Split parity on five pinned small and wide radius inputs; not complete native or M2 acceptance.",
+  "commit": "e4d612539793f12e4977b5c8891814115dbce505",
+  "build": "scanforge-5670239e7281cd8a",
+  "buildProvenance": "The build was produced at e10f32a8; e4d61253 changes only tests, fixtures and acceptance documentation, not application or build source.",
+  "method": "Isolated Chrome and public MCP bridge with pinned STL imports in millimetres and no import placement; GUI and MCP Split geometry and metadata comparison, history, binary project reopen, MCP held-result cancellation and GUI close cancellation. Browser plugin was unavailable in this session; the retained Playwright driver used independent loopback ports.",
+  "cases": ["below", "at", "above", "wide-below", "wide-above"],
+  "result": "All five application GUI/MCP comparisons passed, with no page errors and owned processes and ports cleaned up. The shared-operation native facet tests separately identify four expected mismatches; wide-above matches the retained native unordered Float32 facet multiset.",
+  "resources": {
+    "smallPeakBytes": 917827584,
+    "widePeakBytes": 924983296,
+    "jobLimitBytes": 4294967296
+  },
+  "artifacts": {
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-radius-parity-driver-20261105.mjs",
+    "driverSha256": "9237430229d17c723dd91d7d63161a046c1e930aa9da4a0ba2edb9b3394d2b26",
+    "smallLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-small-radius-parity-20261105/split-lifecycle-browser-ledger.json",
+    "smallLedgerSha256": "a5464a3f9aa53e84c0a052b892a765f2dc23cd9cd431ba1627f6fb7248a6b396",
+    "smallGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-small-radius-parity-guard-20261105.json",
+    "wideLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-wide-radius-parity-20261105/split-lifecycle-browser-ledger.json",
+    "wideLedgerSha256": "dbfe31e7fb0d0c086d79a3ed781edbef2cc7d60671f2c69207a8a377c3139318",
+    "wideGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-current-wide-radius-parity-guard-20261105.json"
+  },
+  "limitations": [
+    "The archived driver must be copied into the checkout tests directory to resolve its relative paths.",
+    "The retained native viewport was white; the comparison uses exported STL and ignores facet winding and native seam identity.",
+    "These are bounded cases, not a general native or lifecycle guarantee. Four native facet mismatches and the rotated mismatch remain open."
+  ]
+}

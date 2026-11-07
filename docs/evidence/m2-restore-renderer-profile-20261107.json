@@ -1,0 +1,61 @@
+{
+  "scope": "Comparison of one existing committed-build replay and one independent-array decoder experiment; not allocation attribution or acceptance",
+  "method": "For each run, match the driver's recorded stage timestamp to the nearest guarded process sample. Values are process private bytes rounded to MiB; page heap is the driver's performance.memory usedJSHeapSize rounded to MiB. Both used the same original PLY-3, full artifact read, direct browser observation and local file-input reopen. The independent decoder omitted the numeric-array reuse callback; the production code was not changed.",
+  "reuse": {
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/ws-integrated-ply3-20261107.json",
+    "exported": {
+      "elapsedSeconds": 157.3,
+      "rendererMiB": 1494,
+      "browserMiB": 654,
+      "gpuMiB": 439,
+      "pageHeapMiB": 668
+    },
+    "downloaded": {
+      "elapsedSeconds": 182.5,
+      "rendererMiB": 1664,
+      "browserMiB": 679,
+      "gpuMiB": 437,
+      "pageHeapMiB": 682
+    },
+    "imported": {
+      "elapsedSeconds": 207.5,
+      "rendererMiB": 1953,
+      "browserMiB": 654,
+      "gpuMiB": 437,
+      "pageHeapMiB": 668
+    },
+    "reopenVerified": {
+      "elapsedSeconds": 221.5,
+      "rendererMiB": 1349,
+      "browserMiB": 654,
+      "gpuMiB": 441,
+      "pageHeapMiB": 634
+    }
+  },
+  "independent": {
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-guard-20261107.json",
+    "exported": {
+      "elapsedSeconds": 158.9,
+      "rendererMiB": 1499,
+      "browserMiB": 663,
+      "gpuMiB": 441,
+      "pageHeapMiB": 668
+    },
+    "downloaded": {
+      "elapsedSeconds": 183.7,
+      "rendererMiB": 1890,
+      "browserMiB": 679,
+      "gpuMiB": 448,
+      "pageHeapMiB": 675
+    },
+    "imported": {
+      "elapsedSeconds": 209.6,
+      "rendererMiB": 2548,
+      "browserMiB": 656,
+      "gpuMiB": 448,
+      "pageHeapMiB": 1050
+    },
+    "reopenVerified": "Not reached: subsequent geometry digest timed out and the guard reported an over-limit peak."
+  },
+  "interpretation": "At the recorded import stage the independent run's sampled renderer was approximately 595 MiB higher and its page heap approximately 382 MiB higher; browser and GPU samples were within 11 MiB. This points investigation toward renderer-side state, but the sampling times, allocator behavior and garbage collection can vary. It does not show which objects are retained, prove a specific allocation caused the failure, or justify weakening the resource limit."
+}

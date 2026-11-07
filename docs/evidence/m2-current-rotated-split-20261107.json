@@ -1,0 +1,28 @@
+{
+  "scope": "Current shared, GUI and public MCP Split on the retained rotated native fixture",
+  "build": "scanforge-3ac0509beaf027d7",
+  "candidateHead": "3c9b011d",
+  "candidateHasUncommittedChanges": true,
+  "sourceSha256": "b33ffb30fdc5704165f1017584c93f8ff68628c733ae05309e8cf7e07fa2f1a6",
+  "cutterSha256": "eec41aa1580de2960509d206379fe9c5ae0a79b5b6a248ccf2f218a2efecdf01",
+  "nativeResultSha256": "05ea52970253179382885d3ea716b8cc5b88f9e1b68e0c5f796abed39e69b9d3",
+  "nativeComparison": "36 oriented Float32 facets match the retained native export, allowing cyclic vertex rotation but not reversed winding",
+  "guiMcpEqual": true,
+  "sourceTriangles": 2,
+  "outputTriangles": 36,
+  "applicationComponents": 1,
+  "guiAndMcpUndoRedoAndBinaryReopen": true,
+  "guiAndMcpHeldWorkerResultCancellationRollback": true,
+  "focusedTestsPassed": 85,
+  "jobLimitBytes": 34110816256,
+  "focusedPeakJobBytes": 361582592,
+  "browserPeakJobBytes": 934318080,
+  "cancellationReplayPeakJobBytes": 930344960,
+  "orientedReplayPeakJobBytes": 932335616,
+  "activeProcessesAfter": 0,
+  "limitations": [
+    "The native result is a retained export; no new QuickSurface run was performed.",
+    "The oriented-facet comparison does not establish matching stored normals, native component identity or general Split equivalence. Cancellation was tested with a held completed worker result, not during active kernel execution.",
+    "Two initial browser-driver runs failed because they assumed a different fixture's two-component count; both cleaned up and the corrected one-component assertion passed."
+  ]
+}

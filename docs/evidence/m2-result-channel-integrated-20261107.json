@@ -1,0 +1,22 @@
+{
+  "scope": "Committed optional MCP result channel and original PLY-3 lifecycle; not whole-milestone acceptance",
+  "applicationCommit": "604f9a89",
+  "build": "scanforge-6d9d3fe7d94297a7",
+  "buildResult": "The committed integration checkout passed npm run build, including resource admission, kernel preparation, all 15 TypeScript batches, Vite and offline manifest. Guard peak was 1641943040 bytes and cleanup confirmed.",
+  "buildReceiptSha256": "c5e7a787fb6fb4209bbf688985fa1a3e2e5401333cef4d23f35998a0f4f3318c",
+  "browserMcp": "The committed build passed the official SDK/browser smoke, including exact artifact readback and binary project reopening. Guard cleanup confirmed.",
+  "browserMcpReceiptSha256": "368a0644a84b5fd9453d5948b49931ef30bd358b357cfceb0967b107b8747082",
+  "ply3": {
+    "result": "The original 3691133-face PLY-3 passed GUI Split, Extract, undo, full public-MCP project download, GUI reopen, geometry checks and GUI undo/redo. At least 1792 large replies used the optional result channel. The downloaded 475563378-byte stream and independently read file matched SHA-256 8e8243567c8f453a750b0f57b41a1e3790c4b58de316df9607ecd7f002f7d38c.",
+    "peakJobBytes": 4096290816,
+    "limitBytes": 4294967296,
+    "headroomBytes": 198676480,
+    "guardPassed": true,
+    "cleanupConfirmed": true,
+    "receiptSha256": "7e5b973ff8b2c56600d701641fde5be570dc93e9c26242ca6160549cdd748449",
+    "logSha256": "94218449175aa7acd35992fc9d33f2b4548a712cad7e95750250e24076d84e52"
+  },
+  "dependency": "The shared node_modules junction was not modified. A matching local ws 8.22.1 copy was installed under this integration checkout's ignored scripts/node_modules for current validation; a normal clean install uses the committed npm lockfile.",
+  "cleanup": "The driver removed its independently hash-verified temporary download; the guarded jobs reported no remaining owned processes. The isolated worktree and temporary package were removed.",
+  "limitations": "This is one committed-build direct-browser run with about 189 MiB of headroom, in addition to one exact-source isolated run. It does not prove a universal 4 GiB bound or solve numeric-array ownership. Native comparisons, whole-milestone acceptance, final integrated CI, safe main integration and closure remain open."
+}

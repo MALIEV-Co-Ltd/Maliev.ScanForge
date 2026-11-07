@@ -1,0 +1,52 @@
+{
+  "scope": "Direct shared scanEdit Split on the three original PLY scans with one manufactured finite planar triangle cutter per scan. These runs did not use a browser worker or QuickSurface.",
+  "candidate": "Uncommitted combined working tree based on b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02; not the published PR head.",
+  "method": "The opt-in scan-split-single-mesh-original-local test loads each PLY with its original indexed topology, constructs a finite cutter at the X midpoint, calls runScanEdit with sourceIndexed, checks a nonempty cut and indexed/expanded agreement, compares input/output area within 1e-6 relative, and verifies source position, indexed vertex and triangle digests are unchanged. Runs are sequential under the 4 GiB owned-job limit.",
+  "results": [
+    {
+      "input": "ply-1.ply",
+      "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05",
+      "inputFaces": 274154,
+      "outputFaces": 277198,
+      "cutEdges": 761,
+      "components": 30,
+      "inputArea": 8239.89807684384,
+      "outputArea": 8239.898076843809,
+      "peakJobBytes": 461897728,
+      "receipt": "m2-shared-original-ply1-20261028-r2.json",
+      "guard": "m2-shared-original-ply1-20261028-r2-guard.json"
+    },
+    {
+      "input": "ply-2.ply",
+      "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f",
+      "inputFaces": 2697877,
+      "outputFaces": 2706309,
+      "cutEdges": 2108,
+      "components": 2,
+      "inputArea": 6361.909170611134,
+      "outputArea": 6361.909170611182,
+      "peakJobBytes": 1302499328,
+      "receipt": "m2-shared-original-ply2-20261028-r1.json",
+      "guard": "m2-shared-original-ply2-20261028-r1-guard.json"
+    },
+    {
+      "input": "ply-3.ply",
+      "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "outputFaces": 3700757,
+      "cutEdges": 2406,
+      "components": 2,
+      "inputArea": 7083.997795891035,
+      "outputArea": 7083.997795891039,
+      "peakJobBytes": 1594023936,
+      "receipt": "m2-shared-original-ply3-20261028-r1.json",
+      "guard": "m2-shared-original-ply3-20261028-r1-guard.json"
+    }
+  ],
+  "workerDispatcher": "The actual processing-worker dispatcher was invoked in a test harness with structuredClone and its declared transfer list. The first scan passed with a 684920832-byte recorded job peak; m2-worker-original-ply1-20261028-r1-guard.json. The third scan passed indexed/expanded agreement, area and source preservation with a 4295151616-byte recorded job peak; m2-worker-original-ply3-20261028-r1-guard.json. The configured job limit was 4294967296 bytes; the reported peak is 184320 bytes higher, so no usable headroom is demonstrated. This in-process harness includes a structured-clone copy and does not measure a real browser's process distribution. The second scan was not tested through this dispatcher.",
+  "limitations": [
+    "The first test attempt assumed every scan would yield exactly two components and failed for ply-1. The check was corrected to require more than one and record the actual count; it does not establish the original component count or expected native component count.",
+    "The retained source digests do not include the cutter. Area and indexed agreement alone do not prove exact seam placement or native equivalence.",
+    "These direct operation runs do not establish browser-worker transfer, rendered GUI/public-MCP behavior, save/reopen, cancellation, or the full native comparison on these inputs."
+  ]
+}

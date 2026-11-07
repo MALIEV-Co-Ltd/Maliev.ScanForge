@@ -1,0 +1,45 @@
+{
+  "scope": "One original PLY-3 GUI Split/Extract and full public-MCP artifact download followed by GUI file reopen on the shared-index candidate.",
+  "sourceCommit": "90dd1faf1bf3b7bb58e2d743d1177adb48ed6858",
+  "build": "scanforge-678d8b5f043b099b",
+  "input": {
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "faces": 3691133
+  },
+  "result": {
+    "splitFaces": 3695945,
+    "extractedFaces": 1776794,
+    "downloadBytes": 475563378,
+    "streamedDownloadSha256": "41b4e14bb35b2cc614843358182a833c9332406c80edf41d960dbebbb254aa9d",
+    "observation": "GUI Split and Extract, pre-reopen public-MCP Undo/Redo, project export, full public-MCP artifact download and GUI reopen completed. Public MCP core geometry digests for the extracted part, source and cutter matched the pre-reopen checks; the page reported no errors. The test removed its temporary downloaded file during cleanup.",
+    "peakJobBytes": 4259962880,
+    "jobLimitBytes": 4294967296,
+    "headroomBytes": 35004416,
+    "strictPeakPass": true,
+    "cleanupConfirmed": true
+  },
+  "evidence": {
+    "harness": "tests/m2-ply3-gui-open-diagnostic-20261029.mjs",
+    "harnessSha256": "75d7376eef4f349c9aa99055ec454b90876f9cafde6032896e746786be8c061e",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-shared-indices-ply3-reopen-20261029/split-lifecycle-browser-ledger.json",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-shared-indices-ply3-reopen-guard-20261029.json",
+    "scanEditSha256": "d851ce1a6908d266d25ef3ae3e16cc77c176847f7256a2bdfb59fd25374fc1f4",
+    "seamsSha256": "9ef20fca8edddd50d1df1ecfdd16fc541dbf291f3b104baf192c3881f62611b9"
+  },
+  "extendedHistoryReplay": {
+    "method": "A separate run used the same production build and full-download GUI-reopen workflow, followed by actual GUI Undo and Redo with source, cutter and extracted geometry checks.",
+    "ply1": "The 274154-face PLY-1 control completed GUI reopen and post-reopen GUI Undo/Redo with matching checked geometry; reported peak 1359339520 bytes and cleanup confirmed.",
+    "ply3": "The 3691133-face replay completed Split, Extract and download, but GUI reopen timed out after 120 seconds before the new GUI history checks. The reported peak was 4548337664 bytes, above the 4294967296-byte strict threshold; cleanup confirmed. This failed run remains separate from the successful PLY-3 reopen above.",
+    "harness": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-post-reopen-history-harness-20261029.mjs",
+    "harnessSha256": "082aea2899df2fe9dcd2a861616d95dd99434b37429b787c5a906d7c50a4fdbc",
+    "ply1Guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-ply1-post-reopen-history-guard-20261029.json",
+    "ply3Guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-ply3-post-reopen-history-guard-20261029.json"
+  },
+  "limitations": [
+    "The successful run has approximately 35 MB of reported-peak headroom. The subsequent extended run timed out above the strict threshold, so repeatability and general resource bounds remain unestablished.",
+    "Undo and Redo used public MCP before reopening; GUI history controls, post-reopen history and public-MCP Extract were not exercised.",
+    "The streamed download hash was not independently compared to the original export artifact, and the temporary file was removed during cleanup.",
+    "No native Split output was compared. The open combined-preview cancellation timeout was not explained by the separate passing repeats; other M2 gates remain open.",
+    "Older failed over-limit and timeout receipts remain valid observations; this success does not identify the exact cause of their failures."
+  ]
+}

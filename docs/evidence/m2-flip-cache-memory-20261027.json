@@ -1,0 +1,49 @@
+{
+  "scope": "Isolated cached Flip Normals on the indexed second original scan; not rendered GUI/public MCP or installed-native comparison.",
+  "sourceFileSha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad",
+  "acceptedFacets": 2547403,
+  "edgeCount": 3846354,
+  "sourceCoordinatesSha256": "3de56197b72afa79d1f7e34502734920206b653181f80a8b1d705c9ebd189945",
+  "flippedCoordinatesSha256": "abd9f65544472d62b1bb4cf9120157f87350c2a5ebcf1ce6e5b070cadeccd5dc",
+  "sourceUnchanged": true,
+  "matchedFlip": {
+    "previousJobPeakBytes": 2473766912,
+    "viewJobPeakBytes": 1434013696,
+    "previousMs": 3143.4941,
+    "viewMs": 472.7247,
+    "interpretation": "Single measured run each; elapsed times include the shared flip operation, not a browser or full project workflow."
+  },
+  "serializationAndHydration": {
+    "jobPeakBytes": 1837002752,
+    "packedBytes": 158646808,
+    "triangleHashAndBoundaryLoopsMatch": true,
+    "regression": "tests/original-flip-cache-memory.test.ts",
+    "interpretation": "Separate isolated flip, compact cache pack and hydrate; not full browser project save/reopen."
+  },
+  "measurementCaveat": "Two earlier serialization probes compared multi-million-element typed arrays using a deep equality assertion, causing test-only heap expansion and peaks over 4.17 billion bytes. The retained probe uses byte hashes; neither earlier result is an application-only memory measurement.",
+  "jobLimitBytes": 4294967296,
+  "nodeOldSpaceLimitMiB": 3072,
+  "cleanupConfirmed": true,
+  "remaining": [
+    "Native original-scan post-Flip comparison remains open.",
+    "Public MCP cancellation during observed large staged admission and full-operation responsiveness remain open.",
+    "Repeated large appended-overlay reversal and serialization cost are not measured."
+  ],
+  "validation": {
+    "focusedTests": "67 Flip tests and edge overlay and cache codec regressions passed",
+    "typecheck": "All 13 TypeScript batches passed",
+    "viteBuild": "Production Vite build and offline manifest scanforge-abe807d1c1298736 passed",
+    "browser": "Native-coordinate Flip GUI/direct public MCP, Undo/Redo and persistence passed on the small fixture; no page errors. Other Scale/Mirror controls also passed.",
+    "browserJobPeakBytes": 912080896,
+    "browserCleanupConfirmed": true,
+    "failedFirstBrowserAttempt": "The Vite-only build omitted the post-build offline manifest; the driver reported a missing service worker. The same replay passed after generating the manifest.",
+    "fullSuite": {
+      "passed": 50070,
+      "skipped": 69,
+      "filesPassed": 734,
+      "filesSkipped": 22,
+      "peakJobBytes": 1339211776,
+      "cleanupConfirmed": true
+    }
+  }
+}

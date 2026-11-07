@@ -1,0 +1,638 @@
+{
+  "scope": "Isolated, uncommitted global-junction experiment; not M2 acceptance",
+  "base": "e376268c",
+  "bundle": "scanforge-ec40f42cb1e9666b",
+  "sourceHashes": {
+    "scan-edit-general-split.ts": "cdadace35c774e7203d81cf66a3140a729774443f7d348f20756aacf57109e6d",
+    "scan-split-finite-pipeline.ts": "6cd943d6af0d2e6aff3d232bb6f623903b75ed73b03c967ce30ce9a9fe092632",
+    "patch": "4efea77cb10fd43c1b8b3a9bb109b242ba4452d136fcb9f4910a948fe8c5cac4",
+    "browserDriver": "7468d3e2e1d6beb362e954df021fc3cf7440e338c9139aa358d506676c77bdd9"
+  },
+  "smallBrowser": {
+    "result": {
+      "sourceFaces": 1,
+      "outputFaces": 5,
+      "parts": 1,
+      "guiMcpGeometryEqual": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 63180,
+        "closed": true
+      },
+      {
+        "pid": 19304,
+        "exited": true
+      },
+      {
+        "port": 63181,
+        "closed": true
+      },
+      {
+        "pid": 31528,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-junction-browser-experiment-20261105.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 914780160,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 15879692288,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 34628,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 4.029846699995687,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:00:17.386619+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "originalPly3": {
+    "inputSha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f",
+    "result": {
+      "inputFaces": 3326910,
+      "crossOriginIsolated": true,
+      "outputFaces": 3329946,
+      "exportedBytes": 240792872,
+      "reopenedGeometryEqual": true,
+      "cutterPreserved": true,
+      "reopenedUndo": true,
+      "reopenedRedoGeometry": true,
+      "initializedComputedNormals": [
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5059947,
+          "sha256": "3e5ff9584c73491dd41c771de927acab680203915deb0379efc5e837ea27e8a8"
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 9989838,
+          "sha256": "e3526ea87f088416b0370ce70c3b89091c84686a4eca60960eb21b92f60c274f"
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 53697,
+        "closed": true
+      },
+      {
+        "pid": 4104,
+        "exited": true
+      },
+      {
+        "port": 53698,
+        "closed": true
+      },
+      {
+        "pid": 26464,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": [
+        "node",
+        "tests/m2-original-split-persistence-browser-local.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 3001884672,
+      "totalProcesses": 24,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 16054042624,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 7892,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 124.13953620000393,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:04:06.217001+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "buildGuard": {
+    "command": [
+      "node",
+      "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "run",
+      "build"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 600,
+    "cleanupReserveSeconds": 3.0,
+    "leaseIncludesAdmission": true,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "cleanupErrors": [],
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "peakJobBytes": 1616859136,
+    "totalProcesses": 35,
+    "noChildStarted": false,
+    "memoryAdmission": {
+      "method": "GlobalMemoryStatusEx",
+      "availablePhysicalBytes": 14835376128,
+      "requiredBytes": 4294967296,
+      "childProcessCreated": false
+    },
+    "ownedPid": 9580,
+    "exitCode": 0,
+    "ownedRootExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "JobHandleClosed": true,
+    "elapsedSeconds": 254.30639870000596,
+    "outerLeaseExceeded": false,
+    "validationLane": {
+      "name": "Local\\ScanForge.BoundedValidation",
+      "acquiredUtc": "2026-11-05T11:52:00.697155+00:00",
+      "releasedAfterCleanup": true,
+      "zeroWait": true
+    }
+  },
+  "lowLevelPly3Guard": {
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "tests/scan-split-finite-candidate-original-local.test.ts"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 360,
+    "cleanupReserveSeconds": 3.0,
+    "leaseIncludesAdmission": true,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "cleanupErrors": [],
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "peakJobBytes": 1904893952,
+    "totalProcesses": 8,
+    "noChildStarted": false,
+    "memoryAdmission": {
+      "method": "GlobalMemoryStatusEx",
+      "availablePhysicalBytes": 14111006720,
+      "requiredBytes": 4294967296,
+      "childProcessCreated": false
+    },
+    "ownedPid": 35200,
+    "exitCode": 0,
+    "ownedRootExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "JobHandleClosed": true,
+    "elapsedSeconds": 35.95117720001144,
+    "outerLeaseExceeded": false,
+    "validationLane": {
+      "name": "Local\\ScanForge.BoundedValidation",
+      "acquiredUtc": "2026-11-05T11:45:27.505839+00:00",
+      "releasedAfterCleanup": true,
+      "zeroWait": true
+    }
+  },
+  "limitations": [
+    "Experimental code remains outside the application worktree and is not a completed change.",
+    "Shared-edge and ambiguous-corner native comparisons remain expected failures.",
+    "One small public-MCP and GUI Split replay matched the native exported facets; the PLY-3 persistence replay used GUI Split and public-MCP project and history tools; a separate public-MCP Split replay matched GUI geometry digests.",
+    "The screenshot shows the model without an internal wireframe; native facet comparison used downloaded geometry.",
+    "One PLY-3 run is not a repeatability or general resource guarantee.",
+    "No general native equivalence, selection-boundary proof, final full suite or milestone completion is established."
+  ],
+  "originalPly3PublicMcp": {
+    "result": {
+      "inputSha256": "c60b459d3d4799a18880ec87b08c747f12d0ce02f97807911f9f80c2f2445d0f",
+      "inputFaces": 3326910,
+      "outputFaces": 3329946,
+      "diagnostics": {
+        "affectedFaces": 1518,
+        "sourceFaces": 3326910,
+        "parts": 2,
+        "cutEdges": 1518,
+        "sourceIdentity": "retained-indexed",
+        "changed": true
+      },
+      "guiMcpDigestEqual": true,
+      "sourceUndo": true,
+      "cutterPreserved": true,
+      "redo": true,
+      "redoInitializedComputedNormals": [
+        {
+          "path": "indexedMesh.geometryNormals",
+          "encoding": "f32",
+          "elements": 5059947,
+          "sha256": "3e5ff9584c73491dd41c771de927acab680203915deb0379efc5e837ea27e8a8"
+        },
+        {
+          "path": "indexedMesh.facetNormals",
+          "encoding": "f32",
+          "elements": 9989838,
+          "sha256": "e3526ea87f088416b0370ce70c3b89091c84686a4eca60960eb21b92f60c274f"
+        }
+      ],
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 62526,
+        "closed": true
+      },
+      {
+        "pid": 8360,
+        "exited": true
+      },
+      {
+        "port": 62527,
+        "closed": true
+      },
+      {
+        "pid": 34476,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": ["node", "tests/m2-original-split-browser-local.mjs"],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 2809630720,
+      "totalProcesses": 24,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 15265030144,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 26404,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 151.10178710000764,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:16:01.577070+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "fullTestSuite": {
+    "passedTests": 50670,
+    "expectedFailures": 6,
+    "skipped": 76,
+    "guard": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 600,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 1424842752,
+      "totalProcesses": 963,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 16232951808,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 3652,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 358.69299680000404,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:09:21.705440+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "junctionLifecycle": {
+    "driverSha256": "03c78bbb51c50028d43b6e7cde69e7fb5b6e34f34066763ace079a0c460804ce",
+    "result": {
+      "cases": [
+        {
+          "name": "junction-native",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 45,
+              "sha256": "6baf01abdd1f70fa36939749b3eef1081c5958a29cb6761d764d77793f314fd9"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 21,
+              "sha256": "7a7f180f6cce3af77370aa7651c84f5849ede412bf3827d69aa26740c1cb783c"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 15,
+              "sha256": "f4236e4a264480ea6810820e4d387734618ea03a19fbb0f679a0c366980975bd"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 1,
+            "cutEdges": 2,
+            "sourceIdentity": "exact-corner-index",
+            "changed": true,
+            "topologyCache": "persistent-hit",
+            "topologyCacheBytes": 204
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "1aecc706ce08c7466550a9e78f4f496cba82e1896a51c1bc8a0db12067ecdbdc"
+            },
+            "mcpRedo": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "1aecc706ce08c7466550a9e78f4f496cba82e1896a51c1bc8a0db12067ecdbdc"
+            },
+            "reopened": {
+              "geometryNormals": "02e8697c1ad18d0389c149499a78e3c101bf76ddd31b6cd39a2d0ccc57a518b3",
+              "facetNormals": "1aecc706ce08c7466550a9e78f4f496cba82e1896a51c1bc8a0db12067ecdbdc"
+            }
+          }
+        },
+        {
+          "name": "float32-precision",
+          "guiAndMcpFailure": true,
+          "unchangedGeometryAndHistory": true,
+          "retry": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 54091,
+        "closed": true
+      },
+      {
+        "pid": 21916,
+        "exited": true
+      },
+      {
+        "port": 54092,
+        "closed": true
+      },
+      {
+        "pid": 4264,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-junction-lifecycle-browser-20261105.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 927342592,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 15997505536,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 21724,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 5.72582579999289,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:23:12.747910+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  },
+  "boundaryLifecycle": {
+    "driverSha256": "3fc823c78b42eff5d57ffdc10802ac7e51a05739bb2646a6a206d6e9d4218e10",
+    "result": {
+      "cases": [
+        {
+          "name": "junction-boundary-native",
+          "outputDigest": [
+            {
+              "path": "positions",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "a05bff1a8b0bc13bb0997aa9381db275025cab57880cfd80c8672eb23e34117b"
+            },
+            {
+              "path": "indexedMesh.vertices",
+              "encoding": "f64",
+              "elements": 27,
+              "sha256": "a05bff1a8b0bc13bb0997aa9381db275025cab57880cfd80c8672eb23e34117b"
+            },
+            {
+              "path": "indexedMesh.triangles",
+              "encoding": "u32",
+              "elements": 9,
+              "sha256": "921c803abfa6ac88f44f7ab19198e5c137d1c7183e8e6912757a6263e8dee0a5"
+            }
+          ],
+          "outputArea": 0.5,
+          "diagnostics": {
+            "affectedFaces": 1,
+            "sourceFaces": 1,
+            "parts": 3,
+            "cutEdges": 2,
+            "sourceIdentity": "exact-corner-index",
+            "changed": true,
+            "topologyCache": "persistent-hit",
+            "topologyCacheBytes": 204
+          },
+          "guiMcpGeometry": true,
+          "undoRedo": true,
+          "binaryReopen": true,
+          "mcpHeldResultCancellation": true,
+          "guiCloseCancellation": true,
+          "normalCaches": {
+            "initial": {
+              "geometryNormals": null,
+              "facetNormals": null
+            },
+            "guiRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+            },
+            "mcpRedo": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+            },
+            "reopened": {
+              "geometryNormals": "fb4b725883e38c0bbd035c05856e392c286f2b8efc57b5f3e1886c81c18894d3",
+              "facetNormals": "93ffbfc491203a5042ce8729e8bde71460b23b81ce1c3b71292976bcdb6a42bd"
+            }
+          }
+        },
+        {
+          "name": "float32-precision",
+          "guiAndMcpFailure": true,
+          "unchangedGeometryAndHistory": true,
+          "retry": true
+        }
+      ],
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 63734,
+        "closed": true
+      },
+      {
+        "pid": 22228,
+        "exited": true
+      },
+      {
+        "port": 63735,
+        "closed": true
+      },
+      {
+        "pid": 22664,
+        "exited": true
+      }
+    ],
+    "guard": {
+      "command": [
+        "node",
+        "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-junction-boundary-lifecycle-browser-20261105.mjs"
+      ],
+      "jobLimitBytes": 4294967296,
+      "leaseSeconds": 420,
+      "cleanupReserveSeconds": 3.0,
+      "leaseIncludesAdmission": true,
+      "passed": true,
+      "cleanupConfirmed": true,
+      "cleanupErrors": [],
+      "activeAfter": 0,
+      "jobActiveAfter": 0,
+      "peakJobBytes": 921366528,
+      "totalProcesses": 17,
+      "noChildStarted": false,
+      "memoryAdmission": {
+        "method": "GlobalMemoryStatusEx",
+        "availablePhysicalBytes": 16123777024,
+        "requiredBytes": 4294967296,
+        "childProcessCreated": false
+      },
+      "ownedPid": 14900,
+      "exitCode": 0,
+      "ownedRootExited": true,
+      "threadHandleClosed": true,
+      "processHandleClosed": true,
+      "JobHandleClosed": true,
+      "elapsedSeconds": 5.513174899999285,
+      "outerLeaseExceeded": false,
+      "validationLane": {
+        "name": "Local\\ScanForge.BoundedValidation",
+        "acquiredUtc": "2026-11-05T12:23:40.616706+00:00",
+        "releasedAfterCleanup": true,
+        "zeroWait": true
+      }
+    }
+  }
+}

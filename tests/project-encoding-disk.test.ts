@@ -61,6 +61,17 @@ it("stages completed payload batches before the full project is assembled", asyn
   );
 });
 
+it("uses the worker's staging key for every sequential checkpoint", async () => {
+  await encodeProjectFileLocally(session(), { temporaryBlobKey: "worker-key" });
+  const calls = vi.mocked(diskBackedBlob).mock.calls;
+  expect(calls.length).toBeGreaterThan(1);
+  expect(
+    calls.every(
+      ([, signal, key]) => signal === undefined && key === "worker-key",
+    ),
+  ).toBe(true);
+});
+
 it("rejects a failed checkpoint without publishing an incomplete project", async () => {
   vi.mocked(diskBackedBlob).mockRejectedValueOnce(
     new Error("Storage quota exceeded"),

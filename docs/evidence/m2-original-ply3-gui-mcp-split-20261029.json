@@ -1,0 +1,70 @@
+{
+  "scope": "Original PLY-3 independent GUI/public MCP Split comparison with Undo and Redo",
+  "applicationCommit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+  "build": "scanforge-b9363ff5ad191d86",
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "diagnostics": {
+      "affectedFaces": 2406,
+      "sourceFaces": 3691133,
+      "parts": 2,
+      "cutEdges": 2406,
+      "sourceIdentity": "retained-indexed",
+      "changed": true
+    },
+    "guiMcpDigestEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "redo": true,
+    "redoInitializedComputedNormals": [
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 5626452,
+        "sha256": "13136a97aa43fcf27874b71a91b71aa2c3c42f7ab3d5e63f6618fe63524f105d"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 11102271,
+        "sha256": "c94352095bea10c303321ce6fd3711058dd6e42ab7fe75922be485584d559146"
+      }
+    ],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "gui-undo-verified",
+    "mcp-split-committed",
+    "mcp-redo-digest"
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 3162558464,
+    "cleanupConfirmed": true
+  },
+  "harness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-gui-history-diagnostic-local.mjs",
+    "sha256": "a93b6620af33b3944cd5afa80473e7e86f519aa9ea8888e3cc9b391a6d5404f4"
+  },
+  "ledger": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply3-gui-mcp-split-20261029-r1\\split-lifecycle-browser-ledger.json",
+    "sha256": "c4b4580108841f564ad3478d44cc14243926e7677566fd035703b57007c2b826"
+  },
+  "receipt": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-ply3-gui-mcp-split-20261029-r1-guard.json",
+    "sha256": "d583e40fec3a6dfb56ce2d61e3d7bdf4f74aef9a65aca1510a28263570e49de2"
+  },
+  "limitations": [
+    "One original scan and one finite cutter; no native Split result or general memory guarantee.",
+    "This does not establish Extract or post-reopen history; those have separate controls."
+  ]
+}

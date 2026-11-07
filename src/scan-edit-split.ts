@@ -1,6 +1,7 @@
 import type { Vec3 } from "./types";
 import { analyzeMesh, type MeshProcessingOptions } from "./mesh-processing";
 import { splitGeneralCutter } from "./scan-edit-general-split";
+import { appendSplitTriangle } from "./scan-split-triangle";
 import {
   pointAt,
   subtract,
@@ -21,12 +22,7 @@ function normalized(p: Plane): Plane {
     throw new Error("A finite nonzero split plane is required.");
   return { origin: p.origin, normal: p.normal.map((v) => v / length) as Vec3 };
 }
-function cutPolygon(
-  polygon: Vec3[],
-  plane: Plane,
-  positive: boolean,
-  epsilon: number,
-): Vec3[] {
+function cutPolygon(polygon: Vec3[], plane: Plane, positive: boolean): Vec3[] {
   const output: Vec3[] = [];
   for (let i = 0; i < polygon.length; i++) {
     const a = polygon[i],
@@ -37,8 +33,9 @@ function cutPolygon(
       db =
         dotProduct(subtract(b, plane.origin), plane.normal) *
         (positive ? 1 : -1);
-    const aIn = da >= -epsilon,
-      bIn = db >= -epsilon;
+    // Classify against the same plane used to interpolate intersections.
+    const aIn = da >= 0,
+      bIn = db >= 0;
     if (aIn) output.push(a);
     if (aIn !== bIn) {
       const fraction = da / (da - db);
@@ -46,21 +43,12 @@ function cutPolygon(
     }
   }
   return output.filter(
-    (p, i) => i === 0 || Math.hypot(...subtract(p, output[i - 1])) > epsilon,
+    (p, i) => i === 0 || Math.hypot(...subtract(p, output[i - 1])) > 0,
   );
 }
-function appendPolygon(output: number[], polygon: Vec3[], epsilon: number) {
+function appendPolygon(output: number[], polygon: Vec3[]) {
   for (let i = 1; i + 1 < polygon.length; i++)
-    if (
-      Math.hypot(
-        ...crossProduct(
-          subtract(polygon[i], polygon[0]),
-          subtract(polygon[i + 1], polygon[0]),
-        ),
-      ) >
-      epsilon * epsilon
-    )
-      output.push(...polygon[0], ...polygon[i], ...polygon[i + 1]);
+    appendSplitTriangle(output, polygon[0], polygon[i], polygon[i + 1]);
 }
 /** Cuts intersected triangles into fragments, preserving winding. Output is uncapped. */
 export function splitByPlane(
@@ -154,16 +142,8 @@ export function splitByPlane(
         continue;
       }
       const before = inside.length + outside.length;
-      appendPolygon(
-        inside,
-        cutPolygon(triangle, planes[0], false, epsilon),
-        epsilon,
-      );
-      appendPolygon(
-        outside,
-        cutPolygon(triangle, planes[0], true, epsilon),
-        epsilon,
-      );
+      appendPolygon(inside, cutPolygon(triangle, planes[0], false));
+      appendPolygon(outside, cutPolygon(triangle, planes[0], true));
       if (inside.length + outside.length - before > 9) splitTriangles++;
     } else {
       let remaining = triangle;
@@ -174,14 +154,14 @@ export function splitByPlane(
           dotProduct(subtract(p, plane.origin), plane.normal),
         );
         if (distances.every((d) => Math.abs(d) <= epsilon)) continue;
-        const rejected = cutPolygon(remaining, plane, true, epsilon);
+        const rejected = cutPolygon(remaining, plane, true);
         const before = outside.length;
-        appendPolygon(outside, rejected, epsilon);
+        appendPolygon(outside, rejected);
         fragments += (outside.length - before) / 9;
-        remaining = cutPolygon(remaining, plane, false, epsilon);
+        remaining = cutPolygon(remaining, plane, false);
       }
       const before = inside.length;
-      appendPolygon(inside, remaining, epsilon);
+      appendPolygon(inside, remaining);
       fragments += (inside.length - before) / 9;
       if (fragments > 1) splitTriangles++;
     }

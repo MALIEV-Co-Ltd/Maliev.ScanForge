@@ -1,0 +1,584 @@
+{
+  "date": "2026-10-27",
+  "scope": "Shared boundary saved-sketch publication and complete manufactured application lifecycle. Installed-native boundary numerical/dialog comparisons and full M2 closure remain open.",
+  "sourceBaseCommit": "4badead401b7beab8fc684c71b268ebc8391a410",
+  "design": "docs/superpowers/specs/2026-10-27-boundary-projection-publication.md",
+  "contract": {
+    "tool": "mesh_process",
+    "operation": "scanEdit/boundaryProject",
+    "createSketchesDefault": false,
+    "explicitPublication": "createSketches:true returns sketchIds and the existing curve artifact",
+    "sharedConversion": "src/scan-boundary-sketch.ts projectedBoundarySketches",
+    "history": "One model revision may own only new saved sketches; source geometry and active/unrelated authoring are retained. Model undo/redo/seek changes only owned identities.",
+    "schemaValidation": "Option is boolean and action-bound, removed before worker request. Locked publication, cancellation, invalid/empty output reject atomically. Read-only reports retain protected-source access."
+  },
+  "build": {
+    "id": "scanforge-2a46d3d412c3aeea",
+    "sourceIdentity": {
+      "head": "4badead401b7beab8fc684c71b268ebc8391a410",
+      "files": 3028,
+      "unchanged": true,
+      "manifestSha256": "a73b55aec25b52c7b9608409110f4b11ac54c2f66fe571abc339b5deb878e32c"
+    },
+    "receipt": {
+      "mode": "build",
+      "label": "m2-boundary-projection-build-20261027-r1",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "leaseSeconds": 300,
+      "guardMiB": 4096,
+      "heapMiB": 3072,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-build-20261027-r1-build.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-build-20261027-r1-build.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-build-20261027-r1-build.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 10363088896,
+      "immediateChildFreeBytes": 10363080704,
+      "identity": {
+        "pid": 65668,
+        "startFileTime": "134375089174659767",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 1745506304,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 1766760448,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 151.66232690005563,
+      "completed": true
+    },
+    "allCompiledApplicationSourcesUnchangedAfterReplays": 818
+  },
+  "unit": {
+    "red": {
+      "label": "m2-boundary-projection-red-20261027-r1",
+      "passed": 3,
+      "failed": 10,
+      "receipt": {
+        "mode": "mirror-focused",
+        "label": "m2-boundary-projection-red-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/scan-boundary-projection-operations.test.ts",
+          "--reporter=json",
+          "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-red-20261027-r1-results.json"
+        ],
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-red-20261027-r1-mirror-focused.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-red-20261027-r1-mirror-focused.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-red-20261027-r1-mirror-focused.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10329260032,
+        "immediateChildFreeBytes": 10329251840,
+        "identity": {
+          "pid": 36444,
+          "startFileTime": "134375085846083610",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 377102336,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 395845632,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 1.8763327000197023,
+        "completed": false
+      },
+      "note": "Missing schema/publication/action/lock/invalid-output behaviors. Initial nested it.each output fixtures unpacked their array arguments; retain this limitation separately."
+    },
+    "intermediate": {
+      "label": "m2-boundary-projection-green-20261027-r1",
+      "passed": 79,
+      "failed": 2,
+      "note": "Flat malformed worker output was silently filtered; explicit malformed-flat regression retained and curve-array validation added. Corrected short/nonplanar cases use named fixture records."
+    },
+    "green": {
+      "label": "m2-boundary-projection-green-20261027-r2",
+      "passed": 143,
+      "failed": 0,
+      "files": [
+        "automation-api.test.ts",
+        "automation-operations.test.ts",
+        "model-sketch-history.test.ts",
+        "project-file.test.ts",
+        "scan-average-operations.test.ts",
+        "scan-boundary-projection-operations.test.ts",
+        "scan-boundary-sketch.test.ts",
+        "scan-topology-panels.test.tsx"
+      ],
+      "receipt": {
+        "mode": "mirror-focused",
+        "label": "m2-boundary-projection-green-20261027-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\node_modules\\vitest\\vitest.mjs",
+          "run",
+          "--maxWorkers=1",
+          "tests/scan-boundary-projection-operations.test.ts",
+          "tests/scan-boundary-sketch.test.ts",
+          "tests/model-sketch-history.test.ts",
+          "tests/scan-topology-panels.test.tsx",
+          "tests/automation-api.test.ts",
+          "tests/scan-average-operations.test.ts",
+          "tests/automation-operations.test.ts",
+          "tests/project-file.test.ts",
+          "tests/history.test.ts",
+          "--reporter=json",
+          "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-green-20261027-r2-results.json"
+        ],
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-green-20261027-r2-mirror-focused.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-green-20261027-r2-mirror-focused.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-green-20261027-r2-mirror-focused.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10336202752,
+        "immediateChildFreeBytes": 10336194560,
+        "identity": {
+          "pid": 48956,
+          "startFileTime": "134375088604539666",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 536121344,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 554778624,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 6.777662400039844,
+        "completed": true
+      }
+    }
+  },
+  "browserDriver": {
+    "path": "tests/scan-boundary-projection-browser.mjs",
+    "sha256": "542460e61f17401614ce11f2e34bf441ed7d207f45a8e08c65b22677d4f8d1f9",
+    "fallback": "Browser plugin not available; existing owned Playwright/public-MCP harness."
+  },
+  "browserRed": {
+    "label": "m2-boundary-projection-browser-red-20261027-r2",
+    "build": "scanforge-6a1dbd85da287221",
+    "error": "GUI boundary projection has no model-history transaction\n\n0 !== 1\n",
+    "receipt": {
+      "mode": "full",
+      "label": "m2-boundary-projection-browser-red-20261027-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-boundary-projection-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r2-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r2-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r2-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 10348183552,
+      "immediateChildFreeBytes": 10348175360,
+      "identity": {
+        "pid": 49688,
+        "startFileTime": "134375091560807641",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 1,
+      "childPeakJobMemoryBytes": 905621504,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 924008448,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 3.7961957000079565,
+      "completed": false
+    }
+  },
+  "browserGreen": {
+    "label": "m2-boundary-projection-browser-green-20261027-r2",
+    "result": {
+      "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+      "initialAuthoringId": "0ffa2e1d-1f7e-4885-90ed-fd541498e085",
+      "cases": [
+        {
+          "scope": "selected",
+          "sketches": 1,
+          "normalizedSketchSha256": "f9e478c4f0a192e6c170435ef4f791788e88c62474af1bd4ac51afcd55da3f80",
+          "guiMcpParity": true,
+          "sourceUnchanged": true,
+          "closedSharedEndpoints": true,
+          "authoringIsolation": true,
+          "ownedHistoryAndSeek": true,
+          "retryIdempotent": true,
+          "defaultAndExplicitReadonly": true,
+          "binarySaveReopen": true
+        },
+        {
+          "scope": "all",
+          "sketches": 3,
+          "normalizedSketchSha256": "7ea4dc440cdc5cd9c813625ce10a87ea89aaa0efbd1f46e60509cb4de072cb9f",
+          "guiMcpParity": true,
+          "sourceUnchanged": true,
+          "closedSharedEndpoints": true,
+          "authoringIsolation": true,
+          "ownedHistoryAndSeek": true,
+          "retryIdempotent": true,
+          "defaultAndExplicitReadonly": true,
+          "binarySaveReopen": true
+        }
+      ],
+      "mcpHeldResultCancellation": true,
+      "guiCancelAndBack": true,
+      "lockedPublicationRejected": true,
+      "lockedReadonlyAllowed": true,
+      "independentSavedVisibilityRendered": true,
+      "visibleSketchBinaryReopen": true,
+      "hiddenCanvasSha256": "59adb18e675074971abef81a8ff999c9078a419737531c05e9cc24408d9979a6",
+      "visibleCanvasSha256": "873c169e7f27b3d40245ce8f8f7453029569819f110a9744705ecbfac6fe397f",
+      "pageErrors": []
+    },
+    "cleanup": [
+      {
+        "port": 51216,
+        "closed": true
+      },
+      {
+        "pid": 55848,
+        "exited": true
+      },
+      {
+        "port": 51217,
+        "closed": true
+      },
+      {
+        "pid": 42984,
+        "exited": true
+      }
+    ],
+    "receipt": {
+      "mode": "full",
+      "label": "m2-boundary-projection-browser-green-20261027-r2",
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "--max-old-space-size=1024",
+        "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-boundary-projection-browser.mjs"
+      ],
+      "leaseSeconds": 600,
+      "guardMiB": 3072,
+      "heapMiB": 1024,
+      "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r2-full.stdout.log",
+      "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r2-full.stderr.log",
+      "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r2-full.receipt.json",
+      "scope": "Owned validation helper plus descendants only; no native/user application handles",
+      "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+      "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+      "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": [],
+      "rootExited": true,
+      "childJobActive": 0,
+      "admittedFreeBytes": 10342907904,
+      "immediateChildFreeBytes": 10342830080,
+      "identity": {
+        "pid": 37612,
+        "startFileTime": "134375091662931478",
+        "executable": "C:\\Program Files\\nodejs\\node.exe"
+      },
+      "exitCode": 0,
+      "childPeakJobMemoryBytes": 930951168,
+      "childJobFinalActive": 0,
+      "outerPeakJobMemoryBytes": 949157888,
+      "outerJobFinalActive": 1,
+      "elapsedSeconds": 6.72758409997914,
+      "completed": true
+    }
+  },
+  "precedingBrowserRuns": [
+    {
+      "label": "m2-boundary-projection-browser-red-20261027-r1",
+      "passed": false,
+      "error": "GUI boundary projection has no model-history transaction\n\n0 !== 1\n",
+      "result": null,
+      "cleanup": [
+        {
+          "port": 61508,
+          "closed": true
+        },
+        {
+          "pid": 60948,
+          "exited": true
+        },
+        {
+          "port": 61509,
+          "closed": true
+        },
+        {
+          "pid": 43236,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-boundary-projection-browser-red-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-boundary-projection-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-red-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10345349120,
+        "immediateChildFreeBytes": 10345340928,
+        "identity": {
+          "pid": 51768,
+          "startFileTime": "134375086550602990",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 899420160,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 918618112,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 3.9479680999647826,
+        "completed": false
+      }
+    },
+    {
+      "label": "m2-boundary-projection-browser-green-20261027-r1",
+      "passed": true,
+      "error": null,
+      "result": {
+        "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+        "initialAuthoringId": "52a842e3-30b7-4e7a-b7e4-b5a395dcff31",
+        "cases": [
+          {
+            "scope": "selected",
+            "sketches": 1,
+            "normalizedSketchSha256": "f9e478c4f0a192e6c170435ef4f791788e88c62474af1bd4ac51afcd55da3f80",
+            "guiMcpParity": true,
+            "sourceUnchanged": true,
+            "closedSharedEndpoints": true,
+            "authoringIsolation": true,
+            "ownedHistoryAndSeek": true,
+            "retryIdempotent": true,
+            "defaultAndExplicitReadonly": true,
+            "binarySaveReopen": true
+          },
+          {
+            "scope": "all",
+            "sketches": 3,
+            "normalizedSketchSha256": "7ea4dc440cdc5cd9c813625ce10a87ea89aaa0efbd1f46e60509cb4de072cb9f",
+            "guiMcpParity": true,
+            "sourceUnchanged": true,
+            "closedSharedEndpoints": true,
+            "authoringIsolation": true,
+            "ownedHistoryAndSeek": true,
+            "retryIdempotent": true,
+            "defaultAndExplicitReadonly": true,
+            "binarySaveReopen": true
+          }
+        ],
+        "mcpHeldResultCancellation": true,
+        "guiCancelAndBack": true,
+        "lockedPublicationRejected": true,
+        "lockedReadonlyAllowed": true,
+        "pageErrors": []
+      },
+      "cleanup": [
+        {
+          "port": 60102,
+          "closed": true
+        },
+        {
+          "pid": 41600,
+          "exited": true
+        },
+        {
+          "port": 60103,
+          "closed": true
+        },
+        {
+          "pid": 54448,
+          "exited": true
+        }
+      ],
+      "receipt": {
+        "mode": "full",
+        "label": "m2-boundary-projection-browser-green-20261027-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-boundary-projection-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-boundary-projection-browser-green-20261027-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10206490624,
+        "immediateChildFreeBytes": 10206142464,
+        "identity": {
+          "pid": 46308,
+          "startFileTime": "134375090751295715",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 958156800,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 976547840,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 5.767076999996789,
+        "completed": true
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-browser-green-20261027-r2-artifacts\\all-projected.png",
+      "sha256": "9d64550cda1ac2266cfc209f640b1aad495456533dc4b2d43d37b09d17648a5d"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-browser-green-20261027-r2-artifacts\\projection-hidden-canvas.png",
+      "sha256": "59adb18e675074971abef81a8ff999c9078a419737531c05e9cc24408d9979a6"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-browser-green-20261027-r2-artifacts\\projection-visible-canvas.png",
+      "sha256": "873c169e7f27b3d40245ce8f8f7453029569819f110a9744705ecbfac6fe397f"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-browser-green-20261027-r2-artifacts\\projection-visible.png",
+      "sha256": "313ee31b02735e3c252b3b7749de91a92ec69ad49c4cb10fbd3d8d20423f3ff3"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-boundary-projection-browser-green-20261027-r2-artifacts\\selected-projected.png",
+      "sha256": "9049cd939a5c29fcb2ce735bf81a776115d66101227f96fcc0804f04e92afef6"
+    }
+  ],
+  "remaining": [
+    "Installed-native boundary smoothing/projection outputs and native settings/lifecycle",
+    "Other M2 inventory acceptance gates",
+    "Final whole-candidate review, exact-head CI and main merge"
+  ],
+  "publicationCommit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+  "task1Done": {
+    "label": "m2-boundary-projection-task1-done-20261027-r1",
+    "passed": 143,
+    "failed": 0,
+    "receipt": "project-index-validation-m2-boundary-projection-task1-done-20261027-r1-mirror-focused.receipt.json"
+  },
+  "precedingCI": {
+    "commit": "4badead401b7beab8fc684c71b268ebc8391a410",
+    "run": 40366607530,
+    "job": 121725920058,
+    "conclusion": "success",
+    "testsPassed": 49901,
+    "testsSkipped": 64,
+    "testFilesPassed": 717,
+    "testFilesSkipped": 18,
+    "build": true,
+    "cad": true,
+    "cadCurvature": true,
+    "format": true
+  },
+  "integrationCheckpoint": {
+    "liveUrl": "http://127.0.0.1:5174/",
+    "liveCommit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+    "scenePreserved": "Existing base-scan.stl, two facets, timeline two with Scale mesh retained after fast-forward; IABtab7/ownedVite51664 stayed open.",
+    "pr": 18,
+    "issue": 2,
+    "state": "open/draft/unmerged",
+    "latestCI": {
+      "commit": "6d0134625ef675e2ad5421d551b642e7a6df3ea2",
+      "run": 40368918217,
+      "status": "in_progress_at_recording"
+    }
+  }
+}

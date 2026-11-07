@@ -1,0 +1,15 @@
+{
+  "scope": "Original PLY-3 GUI Split/Extract, full public-MCP artifact download, local-CDP file selection, GUI reopen and GUI history with the unchanged integration application",
+  "applicationBase": "fc2234b7; subsequent commits before this run changed evidence only",
+  "driverChange": "A copied external driver changes assert(wire.ok, JSON.stringify(wire)) to serialize the error message only if wire.ok is false. The asserted success condition and failure message remain the same. No production code or resource limit changed; no forced garbage collection was used.",
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-lazy-assert-ply3-20261106.mjs",
+  "driverSha256": "1ecb560c96c932871ac1379d2c6045f3b440a4ebad1bcc5d9d6d7036eccf18fd",
+  "result": "The complete download, GUI reopen, geometry verification and GUI undo/redo succeeded, without page or console errors. The guarded run failed because the reported peak was 4309442560 bytes, 14475264 bytes above 4 GiB. The driver heap-used sample was 57584184 bytes at export and 53788080 at download; this isolated run does not establish why the earlier WebSocket prototype driver grew or prove a memory cause.",
+  "downloadBytes": 475563378,
+  "downloadSha256": "2f639aa3fff20d686a4b56a1124b001a5741294c513a5195fdea80fc2141d815",
+  "cleanup": "The driver removed its independently hash-verified temporary download; the guard confirmed no owned processes remained.",
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/lazy-assert-ply3-20261106.json",
+  "receiptSha256": "b69cf28bfe06885231eeeeac13a532507d10efd74d8890209288e339559616e6",
+  "logSha256": "1e3d530dc833d0f16f2f7b1fd534ae2d2f96d684fde9c5236680003d1fba28bb",
+  "limitations": "This one diagnostic does not prove repeatability, identify the excess allocation, resolve the ownership race, or close the resource, native, hosted-CI or milestone gates."
+}

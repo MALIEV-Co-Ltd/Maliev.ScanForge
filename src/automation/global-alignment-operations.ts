@@ -1,3 +1,10 @@
+import { nativeGlobalInvertRigid } from "../scan-native-global-outer";
+import {
+  initializeGlobalAlignment,
+  refineGlobalSurfaceAlignment,
+  type GlobalInitializationResult,
+} from "../global-alignment-initialization";
+import { composeCloudPose } from "../point-cloud-placement";
 import type {
   CommandContext,
   Handler,
@@ -11,12 +18,31 @@ import { assertNoUnresolvedOwnedWorkers } from "../scan-global-worker-cleanup";
 
 const LEASE_MS = 60_000;
 type Registration = Awaited<ReturnType<typeof refineGlobalScanSet>>;
+export interface GlobalAlignmentProgress {
+  sequence: number;
+  phase: "initializing" | "preparing" | "refining";
+  stage?: string;
+  pass: number;
+  poses: { id: string; matrix: number[]; matrixBits: string }[];
+}
 export interface GlobalAlignmentPreviewState {
+  progress?: GlobalAlignmentProgress;
+  initialization?: GlobalInitializationResult;
+  surfaceRefinement?: GlobalInitializationResult;
   state: "idle" | "preparing" | "preview";
   previewId?: string;
   entityIds: string[];
   expiresAt?: string;
-  settings?: { searchTolerance: number; parallel: boolean };
+  settings?: {
+    searchTolerance: number;
+    parallel: boolean;
+    initialization?: "automatic" | "current";
+  };
+  coordinateStages?: {
+    id: string;
+    matrices: number[][];
+    matrixBits: string[];
+  }[];
   inputSummary?: unknown;
   diagnostics?: Registration["diagnostics"];
   outer?: {
@@ -49,7 +75,15 @@ interface Preview {
   controller: AbortController;
   valid: () => boolean;
   entityIds: string[];
-  settings: { searchTolerance: number; parallel: boolean };
+  settings: {
+    searchTolerance: number;
+    parallel: boolean;
+    initialization: "automatic" | "current";
+  };
+  initialization?: GlobalInitializationResult;
+  surfaceRefinement?: GlobalInitializationResult;
+  progress?: GlobalAlignmentProgress;
+  ownsPoseDisplay?: boolean;
   output?: Entity[];
   result?: Registration;
   inputSummary?: unknown;
@@ -78,6 +112,7 @@ export function releaseGlobalAlignmentPreview(
   preview.output = undefined;
   preview.result = undefined;
   preview.inputSummary = undefined;
+  if (preview.ownsPoseDisplay) host.showGlobalAlignmentProgress?.(null);
   if (preview.ownsDisplay) host.showDatumPreview?.(null);
   return true;
 }
@@ -106,11 +141,71 @@ export function inspectGlobalAlignmentPreview(
     previewId: preview.id,
     entityIds: [...preview.entityIds],
     settings: { ...preview.settings },
+    ...(preview.progress && !preview.output
+      ? {
+          progress: {
+            ...preview.progress,
+            poses: preview.progress.poses.map((p) => ({
+              ...p,
+              matrix: [...p.matrix],
+            })),
+          },
+        }
+      : {}),
+    ...(preview.initialization
+      ? {
+          initialization: {
+            anchorId: preview.initialization.anchorId,
+            fits: preview.initialization.fits.map((p) => ({
+              ...p,
+              matrix: [...p.matrix],
+            })),
+          },
+        }
+      : {}),
     ...(preview.expiresAt !== undefined
       ? { expiresAt: new Date(preview.expiresAt).toISOString() }
       : {}),
+    ...(preview.surfaceRefinement
+      ? {
+          surfaceRefinement: {
+            anchorId: preview.surfaceRefinement.anchorId,
+            order: preview.surfaceRefinement.order
+              ? [...preview.surfaceRefinement.order]
+              : undefined,
+            fits: preview.surfaceRefinement.fits.map((f) => ({
+              ...f,
+              matrix: [...f.matrix],
+            })),
+          },
+        }
+      : {}),
     ...(result
       ? {
+          coordinateStages: preview.entityIds.map((id) => {
+            const matrices: number[][] = [];
+            if (
+              preview.initialization &&
+              id !== preview.initialization.anchorId
+            )
+              matrices.push([
+                ...preview.initialization.fits.find((f) => f.id === id)!.matrix,
+              ]);
+            matrices.push(
+              ...result.outer.applications
+                .filter((a) => a.id === id)
+                .map((a) => [...a.matrix]),
+            );
+            if (
+              preview.surfaceRefinement &&
+              id !== preview.surfaceRefinement.anchorId
+            )
+              matrices.push([
+                ...preview.surfaceRefinement.fits.find((f) => f.id === id)!
+                  .matrix,
+              ]);
+            return { id, matrices, matrixBits: matrices.map(cloudPoseBits) };
+          }),
           inputSummary: preview.inputSummary,
           diagnostics: result.diagnostics,
           outer: {
@@ -145,6 +240,11 @@ export function inspectGlobalAlignmentPreview(
       : {}),
   };
 }
+/** Derived viewport measurements do not change the authored alignment inputs. */
+function authoredSettings(settings: WorkspaceSnapshot["settings"]) {
+  const { effectiveGridSpacing: _grid, scale: _scale, ...authored } = settings;
+  return authored;
+}
 /** Selection is view state; authored geometry, history, settings and project identity invalidate a preview. */
 function sourceGuard(
   host: WorkspaceHost,
@@ -177,7 +277,7 @@ function sourceGuard(
     JSON.stringify({
       name: initial.name,
       projectId: initial.projectId,
-      settings: initial.settings,
+      settings: authoredSettings(initial.settings),
       authoring: initial.authoring,
       entities: entities.map((e) => [
         e.id,
@@ -199,7 +299,7 @@ function sourceGuard(
   const key = metadata();
   return () => {
     const next = host.snapshot();
-    return (
+    const valid =
       next.entities.length === entities.length &&
       next.entities.every(
         (e, i) =>
@@ -213,7 +313,7 @@ function sourceGuard(
       JSON.stringify({
         name: next.name,
         projectId: next.projectId,
-        settings: next.settings,
+        settings: authoredSettings(next.settings),
         authoring: next.authoring,
         entities: next.entities.map((e) => [
           e.id,
@@ -231,8 +331,8 @@ function sourceGuard(
         ]),
         history: next.history.map((r) => r.label),
         future: next.future.map((r) => r.label),
-      }) === key
-    );
+      }) === key;
+    return valid;
   };
 }
 function competingPreview(host: WorkspaceHost): boolean {
@@ -339,13 +439,20 @@ export function createGlobalAlignmentOperations(
       );
       if (args.parallel !== undefined && typeof args.parallel !== "boolean")
         throw Error("Parallel must be a boolean.");
+      const initialization = args.initialization ?? "automatic";
+      if (initialization !== "automatic" && initialization !== "current")
+        throw Error("Choose automatic placement or current scan poses.");
       const preview: Preview = {
         id: crypto.randomUUID(),
         jobId: context.jobId,
         controller: new AbortController(),
         valid: sourceGuard(host, initial),
         entityIds: targets.map((e) => e!.id),
-        settings: { searchTolerance, parallel: args.parallel ?? true },
+        settings: {
+          searchTolerance,
+          parallel: args.parallel ?? true,
+          initialization,
+        },
         ownsDisplay: false,
       };
       const abort = () => preview.controller.abort(context.signal.reason);
@@ -360,15 +467,80 @@ export function createGlobalAlignmentOperations(
             "Workspace or Global Fine Align inputs changed; create a new preview.",
           );
       };
+      const baseMatrices = new Map<string, readonly number[]>(
+        targets.map((e) => [e!.id, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]]),
+      );
+      const publish = (
+        phase: GlobalAlignmentProgress["phase"],
+        pass: number,
+        poses: { id: string; matrix: readonly number[] }[],
+      ) => {
+        check();
+        preview.progress = {
+          sequence: (preview.progress?.sequence ?? 0) + 1,
+          phase,
+          pass,
+          poses: poses.map((p) => ({
+            id: p.id,
+            matrix: [...p.matrix],
+            matrixBits: cloudPoseBits(p.matrix),
+          })),
+        };
+        if (host.showGlobalAlignmentProgress)
+          write(context, () => {
+            check();
+            preview.ownsPoseDisplay = true;
+            host.showGlobalAlignmentProgress!(
+              poses.map((p) => ({ entityId: p.id, matrix: p.matrix })),
+            );
+          });
+      };
       try {
         check();
         assertNoUnresolvedOwnedWorkers();
-        const prepared = await prepareGlobalAlignmentInput(initial.entities, {
+        let inputEntities = targets as Entity[];
+        if (initialization === "automatic") {
+          context.progress(0, "Finding automatic coarse placement");
+          const initialized = await initializeGlobalAlignment(inputEntities, {
+            signal: preview.controller.signal,
+            check,
+            parallel: preview.settings.parallel,
+            onProgress: (n, stage) => {
+              context.progress(n * 0.15, stage);
+              if (preview.progress)
+                preview.progress = {
+                  ...preview.progress,
+                  sequence: preview.progress.sequence + 1,
+                  phase: "preparing",
+                  stage,
+                };
+            },
+            onPose: (poses) => {
+              for (const p of poses) baseMatrices.set(p.id, p.matrix);
+              publish("initializing", 0, poses);
+            },
+          });
+          inputEntities = initialized.entities;
+          preview.initialization = {
+            anchorId: initialized.anchorId,
+            fits: initialized.fits,
+          };
+        }
+        const prepared = await prepareGlobalAlignmentInput(inputEntities, {
           entityIds: preview.entityIds,
           ...preview.settings,
           signal: preview.controller.signal,
           check,
-          onProgress: context.progress,
+          onProgress: (n, stage) => {
+            context.progress(n, stage);
+            if (preview.progress)
+              preview.progress = {
+                ...preview.progress,
+                sequence: preview.progress.sequence + 1,
+                phase: "preparing",
+                stage,
+              };
+          },
         });
         let released = false;
         const releaseOnce = () => {
@@ -411,8 +583,21 @@ export function createGlobalAlignmentOperations(
               parallel: preview.settings.parallel,
               signal: preview.controller.signal,
               check,
-              onProgress: context.progress,
+              onProgress: (n, stage) => {
+                context.progress(n, stage);
+                if (preview.progress)
+                  preview.progress = { ...preview.progress, stage };
+              },
               onInputConsumed: releaseOnce,
+              onPose: (pass, ordered) =>
+                publish(
+                  "refining",
+                  pass,
+                  ordered.map((p) => ({
+                    id: p.id,
+                    matrix: composeCloudPose(p.matrix, baseMatrices.get(p.id)!),
+                  })),
+                ),
               localTolerance: 0.001,
               coverageTolerance: 0.05,
               ...(clock === undefined ? {} : { clock }),
@@ -434,6 +619,63 @@ export function createGlobalAlignmentOperations(
           throw Error(
             "Global Fine Align returned an incomplete staged scan set.",
           );
+        if (initialization === "automatic") {
+          const nativeBases = new Map(baseMatrices);
+          for (const a of result.outer.applications)
+            nativeBases.set(
+              a.id,
+              composeCloudPose(a.matrix, nativeBases.get(a.id)!),
+            );
+          const anchorBase = nativeBases.get(preview.initialization!.anchorId)!;
+          const surfaceCandidates = Object.fromEntries(
+            preview.initialization!.fits.map((f) => [
+              f.id,
+              [
+                composeCloudPose(
+                  composeCloudPose(anchorBase, f.matrix),
+                  nativeGlobalInvertRigid(nativeBases.get(f.id)!),
+                ),
+              ],
+            ]),
+          );
+          context.progress(0.9, "Fitting complete scan surfaces");
+          const finished = await refineGlobalSurfaceAlignment(result.entities, {
+            signal: preview.controller.signal,
+            check,
+            parallel: preview.settings.parallel,
+            surfaceDistance: Math.abs(searchTolerance),
+            anchorId: preview.initialization!.anchorId,
+            surfaceCandidates,
+            onPose: (poses) => {
+              publish(
+                "refining",
+                result.outer.passes + 1,
+                poses.map((p) => ({
+                  id: p.id,
+                  matrix: composeCloudPose(p.matrix, nativeBases.get(p.id)!),
+                })),
+              );
+              if (preview.progress)
+                preview.progress.stage = "Fitting complete scan surfaces";
+            },
+            onProgress: (_n, stage) => {
+              context.progress(0.95, stage);
+              if (preview.progress)
+                preview.progress = {
+                  ...preview.progress,
+                  sequence: preview.progress.sequence + 1,
+                  stage,
+                };
+            },
+          });
+          check();
+          preview.surfaceRefinement = {
+            anchorId: finished.anchorId,
+            order: finished.order,
+            fits: finished.fits,
+          };
+          result = { ...result, entities: finished.entities };
+        }
         const staged = new Map(result.entities.map((e) => [e.id, e]));
         preview.output = initial.entities.map((e) => staged.get(e.id) ?? e);
         preview.result = result;
@@ -447,6 +689,10 @@ export function createGlobalAlignmentOperations(
           preview.timer.unref();
         write(context, () => {
           check();
+          if (preview.ownsPoseDisplay) {
+            host.showGlobalAlignmentProgress?.(null);
+            preview.ownsPoseDisplay = false;
+          }
           preview.ownsDisplay = true;
           host.showDatumPreview!(preview.output!);
         });
@@ -474,8 +720,9 @@ export function createGlobalAlignmentOperations(
           throw Error(
             "Global Fine Align preview changed; create a new preview.",
           );
-        host.commit(preview.output!, "Global Fine Align");
+        const output = preview.output!;
         releaseGlobalAlignmentPreview(host);
+        host.commit(output, "Global Fine Align");
         host.setInterface?.({ globalAlignmentOpen: false });
       });
       return {
@@ -484,6 +731,9 @@ export function createGlobalAlignmentOperations(
         diagnostics: state.diagnostics,
         inputSummary: state.inputSummary,
         settings: state.settings,
+        initialization: state.initialization,
+        surfaceRefinement: state.surfaceRefinement,
+        coordinateStages: state.coordinateStages,
         outer: state.outer,
         converged: state.converged,
       };

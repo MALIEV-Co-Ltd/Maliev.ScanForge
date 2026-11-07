@@ -1,0 +1,25 @@
+{
+  "scope": "Standalone localhost synthetic transport comparison. No ScanForge code, public MCP session, application files, or real project data were used.",
+  "baseCommit": "a063b041",
+  "method": "In separate guarded Chrome processes, construct and transmit 1400 changing JSON messages through either HTTP POST with Blob bodies or one WebSocket with text messages and per-message acknowledgments. A disposable Node server consumes each payload and verifies its combined SHA-256 against independently generated expected messages. Both sent 489346490 bytes with SHA-256 47dfc4f73dd3496233536c0ba6c0644200c4c4f7300ac55f7438aa79e2484bd0.",
+  "httpBlob": {
+    "peakJobBytes": 1621229568,
+    "browserElapsedMs": 5252.5,
+    "receiptSha256": "29ae122b817cc26e0208c43e8645161bf79171624ab5555e656e83a89b34b1c7"
+  },
+  "websocketText": {
+    "peakJobBytes": 583245824,
+    "browserElapsedMs": 6315.6,
+    "receiptSha256": "79feebba24ba3b7df781186b9e9aeab7c56eaf83d7a8ce063d22c4010023daa6"
+  },
+  "fullWebsocketControl": "The WebSocket probe also transferred 1835 changing messages and verified the combined digest 1344960f3bce6403149f180b24b2454f3537ef50068d741f0e44bad3d156eccf at a 583413760-byte guarded peak. This used the previous source revision without the later optional-count argument; the matching 1400-message comparison uses the retained source.",
+  "httpLongerFailure": "A separate 1835-message HTTP attempt failed at request 1499 after 523950356 bytes with TypeError: Failed to fetch; the server-side cause is not established. Its guarded peak was 1709273088 bytes; cleanup confirmed. This standalone failure is not evidence that ScanForge MCP fails at that count.",
+  "httpLongerReceiptSha256": "663130a1f2c6cf9c8b7f398ce0e52f8f9cc36477b3eb4f82ebc0c20206e4e038",
+  "interpretation": "The synthetic text WebSocket used less total Job memory in this matched single-run comparison, at a small elapsed-time cost. The protocols, server processing, and browser memory allocation differ; this does not prove the reduction survives real artifact creation, bridge authorization, GUI reopen, or mixed traffic.",
+  "securityAndCorrectness": "The disposable probe has no authentication, origin checks, session ownership, bounded production frame parser, reconnection, timeouts, retry semantics, cancellation or compatibility negotiation. It must not be used as a production bridge. A production candidate would require these contracts, a maintained protocol implementation, end-to-end byte validation, failure tests, and guarded real-project replay before consideration.",
+  "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/m2-websocket-memory-20261106.mjs",
+  "scriptSha256": "2d174d2e13b6a654d38b9269f38b38e914d8e68c96b51a9e846037e7402838bb",
+  "receiptDirectory": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/",
+  "cleanup": "All guarded processes terminated. The temporary checkout copy was verified against the retained diagnostic and removed. The separately launched empty QuickSurface instance was closed after activation failed twice; no native project or user application was changed.",
+  "limitations": "Single samples, no instrumented breakdown, and matching same-origin localhost rather than the application's cross-origin HTTP bridge. Neither M2 nor its 4 GiB large-project gate is complete."
+}

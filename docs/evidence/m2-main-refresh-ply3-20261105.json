@@ -1,0 +1,33 @@
+{
+  "scope": "Original PLY-3 Split and Extract, MCP artifact download and GUI reopen on the main-integrated M2 build; not general native or M2 acceptance",
+  "commit": "d565e31613aebbae3d8986ae154c893b33117ef3",
+  "build": "scanforge-41eb20a51df15c82",
+  "input": {
+    "path": "C:/repo/alignment-example-files/ply-3.ply",
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "sourceFaces": 3691133,
+    "splitFaces": 3695945,
+    "extractedFaces": 1776794
+  },
+  "result": "GUI Split and Extract, MCP export and complete artifact read, GUI project reopen, geometry digests and post-reopen GUI Undo/Redo passed. Source, cutter and extracted output digests were preserved. No page or console errors were observed. The stream contained 475563378 bytes and had SHA-256 625256277da68b7bbb436a1ee1b7a15254c4c9086e8460469a196094d3d74eaa. This run did not separately hash the downloaded disk file.",
+  "resources": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4220407808,
+    "minimumSampledFreeDiskBytes": 1959022592,
+    "diskSamples": 144,
+    "cleanupConfirmed": true
+  },
+  "artifacts": {
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-refresh-ply3-guard-20261105.json",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-refresh-ply3-20261105/split-lifecycle-browser-ledger.json",
+    "ledgerSha256": "27176c80f7feafbafe94f8a3a81945e159d07feb9af27c825994586eeec573b6",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-refresh-ply3-driver-20261105.mjs",
+    "driverSha256": "cf2fc0f587b6e89d78b1a9f5683d0067bb19aeb0015c0e1961b0c740fceadda1",
+    "diskAndProcessSamples": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-main-refresh-ply3-samples-20261105.jsonl"
+  },
+  "limitations": [
+    "The archived driver must be copied into tests/ to resolve relative imports; it adds post-reopen history checks to the preserved GUI reopen diagnostic.",
+    "This is one run with approximately 71 MiB of job headroom. Earlier runs included an over-limit result; repeatability and general memory bounds are not established.",
+    "This is application lifecycle evidence, not native Split equivalence. The numeric-array reuse race and remaining M2 acceptance gates remain open."
+  ]
+}

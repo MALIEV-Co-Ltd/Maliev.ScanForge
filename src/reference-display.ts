@@ -1,4 +1,8 @@
 import * as THREE from "three";
+import {
+  validateReferenceFrameEntity,
+  referenceFrameBounds,
+} from "./reference-frame";
 import type { Entity } from "./types";
 import {
   referenceEntityBounds,
@@ -12,26 +16,46 @@ export type ReferenceRenderObject =
 export interface ReferenceDisplay {
   object: ReferenceRenderObject;
   bounds: THREE.Box3;
-  data: Entity["reference"];
+  data: Entity["reference"] | Entity["coordinateFrame"];
   dispose(): void;
 }
 
 /** Separate semantic display: no triangle carrier, normals, selection index or BVH. */
 export function createReferenceDisplay(entity: Entity): ReferenceDisplay {
-  const data = validateReferenceEntity(entity);
-  if (!data) throw new Error("Expected semantic reference geometry.");
-  const semantic = data.geometry;
-  const start = new THREE.Vector3(
-    ...(semantic.kind === "point" ? semantic.position : semantic.start),
-  );
-  const end =
-    semantic.kind === "point"
-      ? start.clone()
-      : new THREE.Vector3(...referenceLineEnd(semantic));
-  const local =
-    semantic.kind === "point"
-      ? [0, 0, 0]
-      : [0, 0, 0, end.x - start.x, end.y - start.y, end.z - start.z];
+  const frame = validateReferenceFrameEntity(entity);
+  const data = frame ? undefined : validateReferenceEntity(entity);
+  if (!frame && !data) throw new Error("Expected semantic reference geometry.");
+  let start: THREE.Vector3;
+  let point = false;
+  let segments: [THREE.Vector3, THREE.Vector3][];
+  if (frame) {
+    start = new THREE.Vector3(...frame.frame.origin);
+    segments = [frame.frame.u, frame.frame.v, frame.frame.normal].map(
+      (axis) => [
+        start.clone(),
+        new THREE.Vector3(...axis).multiplyScalar(frame.displaySize).add(start),
+      ],
+    );
+  } else {
+    const semantic = data!.geometry;
+    point = semantic.kind === "point";
+    start = new THREE.Vector3(
+      ...(semantic.kind === "point" ? semantic.position : semantic.start),
+    );
+    segments = [
+      [
+        start.clone(),
+        semantic.kind === "point"
+          ? start.clone()
+          : new THREE.Vector3(...referenceLineEnd(semantic)),
+      ],
+    ];
+  }
+  const local = point
+    ? [0, 0, 0]
+    : segments.flatMap((pair) =>
+        pair.flatMap((v) => [v.x - start.x, v.y - start.y, v.z - start.z]),
+      );
   const values = new Float32Array(local);
   if (!values.every(Number.isFinite))
     throw new Error(
@@ -41,50 +65,52 @@ export function createReferenceDisplay(entity: Entity): ReferenceDisplay {
   geometry.setAttribute("position", new THREE.BufferAttribute(values, 3));
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
-  const object: ReferenceRenderObject =
-    semantic.kind === "point"
-      ? new THREE.Points(
-          geometry,
-          new THREE.PointsMaterial({ size: 7, sizeAttenuation: false }),
-        )
+  const object: ReferenceRenderObject = point
+    ? new THREE.Points(
+        geometry,
+        new THREE.PointsMaterial({ size: 7, sizeAttenuation: false }),
+      )
+    : frame
+      ? new THREE.LineSegments(geometry, new THREE.LineBasicMaterial())
       : new THREE.Line(geometry, new THREE.LineBasicMaterial());
   object.position.copy(start);
-  const preciseBounds = referenceEntityBounds(entity)!;
+  const preciseBounds = (
+    frame ? referenceFrameBounds(entity) : referenceEntityBounds(entity)
+  )!;
   const bounds = new THREE.Box3(
     new THREE.Vector3(...preciseBounds.min),
     new THREE.Vector3(...preciseBounds.max),
   );
-  object.userData.referenceKind = semantic.kind;
+  object.userData.referenceKind = frame ? "frame" : data!.geometry.kind;
   object.userData.referenceBounds = bounds;
-  // Picking uses the same authoritative world values as inspection. Display
-  // Float32 offsets never replace the saved point or finite-line endpoint.
+  // Picking retains authoritative binary64 world geometry independently of GPU offsets.
   object.raycast = (raycaster, hits) => {
-    const onRay = new THREE.Vector3(),
-      onGeometry = new THREE.Vector3();
-    const threshold =
-      semantic.kind === "point"
-        ? raycaster.params.Points.threshold
-        : raycaster.params.Line.threshold;
-    let distanceSquared: number;
-    if (semantic.kind === "point" || start.equals(end)) {
-      onGeometry.copy(start);
-      raycaster.ray.closestPointToPoint(start, onRay);
-      distanceSquared = onRay.distanceToSquared(start);
-    } else
-      distanceSquared = raycaster.ray.distanceSqToSegment(
-        start,
-        end,
-        onRay,
-        onGeometry,
-      );
-    const distance = raycaster.ray.origin.distanceTo(onRay);
-    if (
-      distanceSquared > threshold * threshold ||
-      distance < raycaster.near ||
-      distance > raycaster.far
-    )
-      return;
-    hits.push({ object, point: onGeometry, distance, index: 0 });
+    const threshold = point
+      ? raycaster.params.Points.threshold
+      : raycaster.params.Line.threshold;
+    segments.forEach(([a, b], index) => {
+      const onRay = new THREE.Vector3(),
+        onGeometry = new THREE.Vector3();
+      let distanceSquared: number;
+      if (point || a.equals(b)) {
+        onGeometry.copy(a);
+        raycaster.ray.closestPointToPoint(a, onRay);
+        distanceSquared = onRay.distanceToSquared(a);
+      } else
+        distanceSquared = raycaster.ray.distanceSqToSegment(
+          a,
+          b,
+          onRay,
+          onGeometry,
+        );
+      const distance = raycaster.ray.origin.distanceTo(onRay);
+      if (
+        distanceSquared <= threshold * threshold &&
+        distance >= raycaster.near &&
+        distance <= raycaster.far
+      )
+        hits.push({ object, point: onGeometry, distance, index });
+    });
   };
   const material = object.material;
   const retirement = [
@@ -96,7 +122,7 @@ export function createReferenceDisplay(entity: Entity): ReferenceDisplay {
   const display: ReferenceDisplay = {
     object,
     bounds,
-    data: entity.reference,
+    data: entity.coordinateFrame ?? entity.reference,
     dispose() {
       if (disposing) return;
       disposing = true;

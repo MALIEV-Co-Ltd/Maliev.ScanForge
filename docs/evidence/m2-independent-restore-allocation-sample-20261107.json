@@ -1,0 +1,23 @@
+{
+  "scope": "Sampled browser allocations during an injected independent-array PLY-3 restore; not a production change or passing resource acceptance.",
+  "baseCommit": "ef50fd9fd7c8b167338a648daddea8da246cf77c",
+  "method": "The isolated server used the same no-numeric-reuse and fractional-seed bundle modifications as the prior allocation experiment. Chrome DevTools heap sampling started after full export/download and sampled every three seconds during GUI reopen, with a 1048576-byte interval. No explicit garbage collection was requested. The bundle's sampled function lv is the numeric transport unpacker, identified by its scanforge-numeric-transport-v1 validation and matching source structure.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "streamAndDownloadedFileSha256": "506cf61db534f71a11f9aa5c880bb2fcebe95e63db68de49623e3788bf7e295f",
+  "exportBytes": 475563378,
+  "sampledLiveBytesAttributedToUnpacker": 460474640,
+  "observed": "GUI reopen, geometry checks and post-reopen Undo/Redo completed. The guarded job nevertheless failed because its reported peak exceeded 4 GiB by 208896 bytes. The driver exited zero, all owned processes closed, and the temporary download was removed.",
+  "peakJobBytes": 4295176192,
+  "limitBytes": 4294967296,
+  "guardPassed": false,
+  "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-restore-sample-20261107.mjs",
+  "driverSha256": "398b2ad6e6db6d3e761092f595383ce56d7fe9e5116dda8dac831f2e94871828",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-restore-sample-guard-20261107.json",
+  "guardReceiptSha256": "9fb85d2425e54fc43261a1c7839cea919e331d82642c4fdccdd77fb07a5f5846",
+  "limitations": [
+    "Heap sampling is statistical and measures sampled JavaScript allocations after sampling began; it does not cover all renderer, browser or GPU memory.",
+    "Profiling changes the workload, and the amount attributed to the unpacker does not establish which allocation caused the job peak.",
+    "A completed lifecycle with an over-limit guard is not a passing resource result or proof that seeded allocation alone caused any difference.",
+    "The production restore ownership, native comparisons and milestone gates remain open."
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "scope": "Follow-on bounded static candidate trace and disposable ordering experiments. No behavior change or native parity is claimed.",
+  "nativeStatic": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "method": "Read-only Ghidra 12.1.4 import with automatic analysis disabled; disassemble and decompile the three call targets observed in candidate 0x14032c400.",
+    "bodies": [
+      "14032e330..14032e6b8",
+      "14032edf0..14032f113",
+      "14032dae0..14032e328"
+    ],
+    "observations": [
+      "Candidate 0x14032e330 uses a four-byte FNV-style lookup for an integer key. Its decompilation walks records, searches three integer slots for a key and appends the following two cyclic slots as a pair.",
+      "Candidate 0x14032c400 calls 0x14032edf0 for both values of a returned pair and conditionally calls 0x14032dae0; the data structures and geometry semantics are not established."
+    ],
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-branches-static-20261029-r1/evidence.json",
+    "evidenceSha256": "46993fc6f636f9f76c2e766036d10c2acbb1a4e47fef20fc44b9a223171ec60b",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-branches-guard-20261029-r1.json",
+    "guardSha256": "a495629417396ccbf13d3c0a422c20a8c0e48bee9112e800e8ec645ea1223c9c",
+    "peakJobBytes": 676196352
+  },
+  "applicationExperiments": {
+    "candidateCommit": "6046b7c891c8adf33c48b0bbd17af9d278062bb0",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "baselineMatches": [12, 22, 10],
+    "preserveRawSegmentTraversalMatches": [12, 22, 10],
+    "omitCandidateSortMatches": [10, 20, 11],
+    "omitConstraintSortMatches": [12, 22, 10],
+    "omitAllThreeNormalizationsMatches": [13, 18, 10],
+    "observation": "None of these local ordering variants matches all native outputs. No variant was applied to production.",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-experiments-20261029.json",
+    "resultsSha256": "900ef60a43d4c0c1ddddc22c2f9ba08000fbb95feb91bd33c6928f27f2002d2c",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-guard-20261029.json",
+    "guardSha256": "bbff8b12ab43a168c4742fb487f75cd5dd4b0f7d79ec20fd9b17134c66963daf",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-traversal-runner-20261029.py",
+    "runnerSha256": "867a2f743efe215274d3cd384869eb73f888609422bc291231d399d6c2d79cf7",
+    "peakJobBytes": 358043648
+  },
+  "jobLimitBytes": 4294967296,
+  "limitations": [
+    "Candidate static paths and record types remain unbound to the observed native Split operation.",
+    "Three manufactured examples do not establish general triangulation behavior. Exact native parity and M2 closure remain open."
+  ],
+  "additionalPointOrderExperiments": {
+    "scope": "Disposable shared-kernel ordering experiments, not production changes or native path proof",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "baselineMatches": [12, 22, 10],
+    "result": "Nine candidate orderings based on barycentric sums, differences and distances did not match all three native controls. Best aggregate matches varied by case; none was applied.",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-20261029.json",
+    "resultsSha256": "afe4c9a21c30e38b7b21232c8d27b2586bb674cafb0da373a2fd080ae460e822",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-guard-20261029-r1.json",
+    "guardSha256": "c38766d09f6b3ab6fa4b79d96b11f38cb7afd994bd849fedf5459861c32ee369",
+    "runner": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-point-order-variants-20261029.py",
+    "runnerSha256": "c03a7614f157a09da16af84de47ed4caccaaf043ea1871844043f4ace838c085",
+    "peakJobBytes": 361951232
+  },
+  "distancePivotExperiment": {
+    "scope": "Disposable crossed-strip prototype using closest or farthest point-to-segment pivot; not a faithful native implementation or production code.",
+    "matchesOrderedAs": ["convex", "concave", "cyclic"],
+    "nearestMatches": [12, 22, 10],
+    "farthestMatches": [12, 22, 10],
+    "interpretation": "A deliberate throw showed that at least one crossed strip was reached. A second run deliberately throwing for any successfully constructed strip with a chain longer than three vertices passed all three controls. Thus the prototype did not exercise a choice between multiple interior pivot candidates on these controls, so identical results cannot support or refute the native distance-pivot hypothesis. Further work needs an input with a nontrivial chain and a live native binding.",
+    "prototype": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-prototype-20261029.ts",
+    "prototypeSha256": "a769d2730f36e50f9c729ceb71e2df2706ab32e8941b5f27312b33c1504def90",
+    "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-variants-20261029.json",
+    "resultsSha256": "a6abdf2acd249932388ab13be399e148310e05f6704a615b39b8cb19df40fa8d",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-guard-20261029.json",
+    "guardSha256": "09341b2c1dfca41f65101abccb8630c43761b70a94e5a6ecfbebbf38969510e8",
+    "peakJobBytes": 358965248,
+    "triggerGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-trigger-guard-20261029.json",
+    "triggerGuardSha256": "e959c7b5e3bd1af6614fa60a26bc859293a3808de879eb102d31824e4ac17c49",
+    "nontrivialGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-nontrivial-guard-20261029.json",
+    "nontrivialGuardSha256": "a3d58e71cedd3439c73e3ae1ef930ddaff672e27ac8100aba9a7a50606aed6cd",
+    "limitations": [
+      "The deliberate throw run failed as intended and cleaned up; the other instrumented run passed. Neither verifies native behavior.",
+      "The scratch prototype does not check every polygon validity condition and must not be used in production."
+    ],
+    "nontrivialControl": {
+      "observation": "A deterministic synthetic face and four intersecting segments reached a constructed strip with chain lengths 4 and 3. On this input, nearest-pivot and baseline produced 17 matching unordered facets and passed positive winding and total area checks. The farthest-pivot prototype failed a later constraint recovery. The runner itself exited zero because it records child exit codes, so its passing guard is cleanup evidence, not a pass for both variants. Neither candidate has been compared to a native export.",
+      "input": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-20261029.json",
+      "inputSha256": "6e6fcf591ec52f767870312af9fc0515d0544c440da62751ebddeb9a36225422",
+      "results": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-results-20261029.json",
+      "resultsSha256": "4f4c234f80de3011e7fee1807a7048148e9b552e05fd98b05451314bc773c231",
+      "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-control-guard-20261029.json",
+      "guardSha256": "927fe9dba3ebb60811dc51d740d48ce69ce02fd90e4b0e54325cd8518e74b37e",
+      "peakJobBytes": 290963456,
+      "baseline": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-pivot-one-result-20261029.json",
+      "baselineSha256": "9871053aba416affb3dbc10c65412d013c1ca4070b351821aad72d492a20840e"
+    }
+  }
+}

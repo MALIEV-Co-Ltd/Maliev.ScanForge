@@ -1,0 +1,21 @@
+{
+  "scope": "Read-only REA inspection of the running QuickSurface STL export branch and binary-record writer candidates",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "imageBase": "0x140000000",
+  "evidenceId": "ev_1ea9374e803e9c15fce8cd7dcf58271dca032c75016253acf09ed72842768d37",
+  "observations": [
+    "The routine at 0x1402fc7f0 references the Binary STL Mesh filter and calls 0x1402fe040 after dialog handling.",
+    "The latter references Exporting... and branches on .STL. Its visible-object path calls 0x1408c74c0; its single-object branch calls 0x1408c88a0, which calls 0x1408c6fe0. These are static instruction observations, not a captured export execution.",
+    "In the visible-object writer candidate, three pointers from a facet provide 16-byte vectors at offset 0x10, loaded to xmm15, xmm14 and xmm13 at 0x1408c772d, 0x1408c773d and 0x1408c774f. Three components are accumulated in Float32, divided by the Float32 constant 3 at 0x14126b470, and stored at rsp+0x48, +0x4c and +0x50. The following nine Float32 values are stored at rsp+0x54 through +0x74. A call at 0x1408c78ea receives the 48-byte block, followed by a call receiving two bytes.",
+    "The single-object candidate 0x1408c6fe0 independently contains corresponding three Float32 add/add/divide sequences at 0x1408c7308 through 0x1408c736f.",
+    "Five retained QuickSurface exports and an original-scan Flip output match the independently calculated per-vertex normal average, as recorded in m2-native-export-normals-controls-20261107.json and m2-native-flip-original-export-normals-20261107.json."
+  ],
+  "interpretation": "The static layout and retained output comparison jointly support the per-face Float32 average for these paths; identifying all source normal ownership and runtime dispatch requires additional observation.",
+  "limitations": [
+    "No GUI export was executed during this inspection; the desktop controller could not access the foreground window.",
+    "The 48-byte call target was not identified by symbol, and not every branch, error, attribute field, input type, or seam behavior was traced.",
+    "This did not change ScanForge exporter behavior; the native-output normal mismatch remains open.",
+    "The installed executable hash identifies the disk artifact; only selected instructions and data were read from the running image.",
+    "REA ephemeral sessions detached without modifying the open QuickSurface scene."
+  ]
+}

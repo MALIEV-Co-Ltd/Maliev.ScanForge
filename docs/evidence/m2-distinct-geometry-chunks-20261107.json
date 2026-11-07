@@ -1,0 +1,60 @@
+{
+  "scope": "Distinct equal numeric geometry through binary project encoding and restore",
+  "before": "Content-only chunk deduplication merged distinct equal arrays; four ownership checks failed when made mandatory.",
+  "change": "Store distinct numeric arrays in distinct existing-format chunks, reuse a chunk for repeated references to the same array, and lend a cached shared buffer to at most one chunk per decode. Keep the first matching shared chunk stable when remembering a batch.",
+  "compatibility": "No binary version change. Legacy content-deduplicated files remain readable but cannot recover distinctions absent from their stored references. Older readers may still merge equal chunks when borrowing cached data.",
+  "tradeoff": "Files may be larger when they contain distinct numeric arrays with equal contents.",
+  "checks": {
+    "focusedTests": {
+      "passed": 128,
+      "expectedFailures": 2,
+      "peakJobBytes": 498180096
+    },
+    "legacySharedChunkControl": { "passed": 7, "peakJobBytes": 353017856 },
+    "workerBrowser": {
+      "passed": true,
+      "distinctGeometryIndependent": true,
+      "historyAliasRetained": true,
+      "firstChunkReusedOnRepeatRestore": true,
+      "peakJobBytes": 422252544
+    },
+    "compiledGuiMcp": {
+      "passed": true,
+      "build": "scanforge-ba0bf9185b43a04e",
+      "guiAndMcpReopenAndExport": true,
+      "distinctChunksAndHistory": true,
+      "peakJobBytes": 955338752
+    },
+    "originalPly3McpReopen": {
+      "passed": true,
+      "build": "scanforge-ba0bf9185b43a04e",
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "splitTriangles": 3695945,
+      "extractedTriangles": 1776794,
+      "sourceCutterAndExtractedDigestsMatch": true,
+      "peakJobBytes": 4148670464,
+      "jobLimitBytes": 4294967296,
+      "cleanupConfirmed": true
+    },
+    "fullSuite": {
+      "passed": 50888,
+      "expectedFailures": 2,
+      "skipped": 79,
+      "peakJobBytes": 1417801728,
+      "cleanupConfirmed": true
+    },
+    "broadMcpBrowserSmoke": {
+      "initialFailure": "Alignment companion checkbox was covered by the surrounding properties panels.",
+      "passedAfterPanelCorrection": true,
+      "build": "scanforge-526b3f920644a76e",
+      "peakJobBytes": 1778520064,
+      "cleanupConfirmed": true
+    }
+  },
+  "limitations": [
+    "Older content-deduplicated files do not encode whether equal arrays were distinct.",
+    "Two expected failures remain for mutation of borrowed ordinary arrays after or during numeric-reuse restore.",
+    "The large PLY-3 run used public MCP import without downloading the artifact or reopening through the GUI; a single passing run near the cap does not establish resource reliability.",
+    "Broader native parity, dirty-main integration and milestone closure remain open."
+  ]
+}

@@ -167,6 +167,7 @@ function factorUnchecked(
   input: NumericInput,
   n: number,
   tolerance: number,
+  check?: () => void,
 ): NativeFactorResult {
   const lu = Array.from(input),
     scaling = Array(n).fill(0),
@@ -183,6 +184,7 @@ function factorUnchecked(
   }
   let pivot = 0;
   for (let j = 0; j < n; j++) {
+    check?.();
     for (let i = 0; i < j; i++) {
       let value = lu[i * n + j];
       for (let k = 0; k < i; k++) value = value - lu[k * n + j] * lu[i * n + k];
@@ -518,6 +520,50 @@ export function nativeSolve(
   const result = solveUnchecked(input, rhs, tolerance);
   if (result.accepted) finiteArray(result.output, "Native solved coordinates");
   return result;
+}
+
+/** Dense inversion used by the native thin-plate field, with independent work admission. */
+export function nativeInverseWorkingSet(n: number): {
+  bytes: number;
+  scalarWork: number;
+} {
+  if (!Number.isSafeInteger(n) || n < 1)
+    throw new Error("Native inverse dimension must be a positive integer.");
+  const bytes = 40 * n * n + 4096;
+  const scalarWork = (4 * n * n * n) / 3;
+  if (
+    bytes > NATIVE_SURFACE_MAX_BYTES ||
+    scalarWork > NATIVE_SURFACE_MAX_SCALAR_WORK
+  )
+    throw new Error(
+      "Curvature interpolation exceeds the dense solve resource budget.",
+    );
+  return { bytes, scalarWork };
+}
+
+export function nativeDenseInverse(
+  input: NumericInput,
+  n: number,
+  check?: () => void,
+): Float64Array | undefined {
+  nativeInverseWorkingSet(n);
+  check?.();
+  if (!input || input.length !== n * n)
+    throw new Error("Native inverse matrix must be square.");
+  finiteArray(input, "Native inverse matrix");
+  const factor = factorUnchecked(input, n, Number.EPSILON, check);
+  if (!factor.accepted) return undefined;
+  const inverse = new Float64Array(n * n);
+  const rhs = new Float64Array(n);
+  for (let column = 0; column < n; column++) {
+    check?.();
+    rhs.fill(0);
+    rhs[column] = 1;
+    const solved = substituteUnchecked(factor.lu, n, factor.pivots, rhs);
+    for (let row = 0; row < n; row++) inverse[row * n + column] = solved[row];
+  }
+  finiteArray(inverse, "Native inverse result");
+  return inverse;
 }
 /** Conservative workspace admission; estimates include ordinary JS array overhead. */
 export function nativeSurfaceWorkingSet(

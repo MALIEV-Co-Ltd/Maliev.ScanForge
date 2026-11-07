@@ -1,0 +1,135 @@
+{
+  "scope": "Private Float64 project-encoding worker handoff and isolated retained-buffer lifecycle experiment; production restore remains unchanged",
+  "baseline": "The isolated experiment retained private ArrayBuffer-backed decoder numeric references in the main thread and marked them as private views. A large PLY-3 GUI reopen retained Float64 geometry with matching digests, but subsequent public MCP project_export failed with Invalid triangle geometry because the worker clone lost the private marker.",
+  "change": "Private marked Float64 views now trigger numeric transport and are copied in cancellable bounded chunks into a separate transferable buffer. Role-aware worker unpacking reestablishes the marker for geometry-only references and retains ordinary arrays for mixed roles; the source buffer remains attached.",
+  "checks": {
+    "baselineReopen": {
+      "passed": true,
+      "peakJobBytes": 3813339136
+    },
+    "baselineResave": {
+      "passed": false,
+      "peakJobBytes": 3802693632,
+      "error": "Invalid triangle geometry: coordinates must be finite complete triangles.",
+      "retainedBuffers": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 15991146,
+          "rawBytes": 127929168,
+          "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad",
+          "storage": "array-buffer",
+          "backingId": 0,
+          "shared": false,
+          "byteOffset": 0,
+          "backingBytes": 127929168
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2692659,
+          "rawBytes": 21541272,
+          "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375",
+          "storage": "array-buffer",
+          "backingId": 1,
+          "shared": false,
+          "byteOffset": 0,
+          "backingBytes": 21541272
+        }
+      ]
+    },
+    "focused": {
+      "passed": 68,
+      "expectedFailures": 2,
+      "peakJobBytes": 501329920
+    },
+    "build": {
+      "passed": true,
+      "manifest": "scanforge-9f67859c7f124f34",
+      "peakJobBytes": 1891741696
+    },
+    "experimentalFixedLifecycle": {
+      "passed": true,
+      "peakJobBytes": 3859279872,
+      "cleanupConfirmed": true,
+      "retainedBuffers": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 15991146,
+          "rawBytes": 127929168,
+          "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad",
+          "storage": "array-buffer",
+          "backingId": 0,
+          "shared": false,
+          "byteOffset": 0,
+          "backingBytes": 127929168
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2692659,
+          "rawBytes": 21541272,
+          "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375",
+          "storage": "array-buffer",
+          "backingId": 1,
+          "shared": false,
+          "byteOffset": 0,
+          "backingBytes": 21541272
+        }
+      ],
+      "mcpResaveReimportGeometryMatched": true,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    "normalCarrierBrowser": {
+      "passed": true,
+      "peakJobBytes": 1037705216,
+      "cases": 18
+    },
+    "fullSuite": {
+      "passed": 50862,
+      "expectedFailures": 2,
+      "skipped": 77,
+      "peakJobBytes": 1318031360,
+      "cleanupConfirmed": true
+    }
+  },
+  "limitations": [
+    "The direct-retention experiment marks all private ArrayBuffer-backed packet numeric references; it is not an audited role-specific production policy.",
+    "The fixed lifecycle is one original scan and cutter, not general M2 acceptance or proof of resource reliability.",
+    "Other operations, codecs, validation, rendering, and carrier roles require audit before exposing retained Float64 generally.",
+    "Production restore still reconstructs ordinary arrays and the two ownership tests remain expected failures; native acceptance, merge and closure remain open."
+  ]
+}

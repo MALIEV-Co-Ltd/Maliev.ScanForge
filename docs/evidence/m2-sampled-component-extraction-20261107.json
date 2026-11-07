@@ -1,0 +1,69 @@
+{
+  "scope": "Restore GUI and MCP component extraction for editable sampled plane and CAD-kind triangle objects",
+  "base": "9e987b5eb31e5a8929ca5bdfbf6e30a9796b8dd9",
+  "change": "Shared publication accepts editable sampled triangle objects and changes their extracted source to a mesh, including an empty source when its last component is extracted.",
+  "red": "Four focused regression cases failed before the correction: shared publication and MCP for each sampled kind.",
+  "focused": {
+    "files": 4,
+    "passed": 48,
+    "partialExtractionMcp": true,
+    "peakJobBytes": 488382464,
+    "activeProcessesAfter": 0
+  },
+  "browser": {
+    "driver": "tests/scan-components-browser.mjs",
+    "environment": "SCANFORGE_COMPONENT_SAMPLED_KIND=1",
+    "guiAndMcpKinds": ["plane", "cad"],
+    "geometryUndoAndBinaryReopen": true,
+    "existingComponentControlsPassed": true,
+    "peakJobBytes": 832897024,
+    "activeProcessesAfter": 0
+  },
+  "exactCommit": "9736c7a80899c690f2bb45b6a48ed1fb694d88d0",
+  "build": {
+    "passed": true,
+    "id": "scanforge-0ee324161223d5c7",
+    "typecheckBatches": 15,
+    "peakJobBytes": 1893957632,
+    "activeProcessesAfter": 0
+  },
+  "fullSuite": {
+    "passedFiles": 840,
+    "skippedFiles": 32,
+    "passedTests": 50922,
+    "expectedFailures": 2,
+    "skippedTests": 79,
+    "peakJobBytes": 1310093312,
+    "activeProcessesAfter": 0
+  },
+  "jobLimitBytes": 34110816256,
+  "limitations": [
+    "These are editable sampled triangle objects without protected exact CAD geometry, not native QuickSurface comparisons.",
+    "Protected exact geometry continues to require a mesh copy through the existing operation admission checks."
+  ],
+  "exactCadFollowup": {
+    "scope": "Defense in depth for exact CAD at shared publication and stale panel state; the normal GUI already required a mesh copy.",
+    "focusedTestsPassed": 54,
+    "browser": "Genuine CAD box requires a mesh copy in the GUI; MCP refuses extraction without changing source or history. Sampled plane and CAD-kind GUI/MCP cases also passed.",
+    "jobLimitBytes": 34110816256,
+    "browserPeakJobBytes": 1169780736,
+    "activeProcessesAfter": 0,
+    "limitations": "This is an application guard and one browser control, not native geometry acceptance.",
+    "build": {
+      "passed": true,
+      "id": "scanforge-f7c10a6d03dee25e",
+      "typecheckBatches": 15,
+      "peakJobBytes": 1920942080,
+      "activeProcessesAfter": 0
+    },
+    "fullSuite": {
+      "passedFiles": 840,
+      "skippedFiles": 32,
+      "passedTests": 50928,
+      "expectedFailures": 2,
+      "skippedTests": 79,
+      "peakJobBytes": 1312440320,
+      "activeProcessesAfter": 0
+    }
+  }
+}

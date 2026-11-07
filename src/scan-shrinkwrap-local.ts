@@ -243,7 +243,7 @@ export function shrinkwrapLocalMesh(
         positions: selected,
         indices: eligible,
         diameter: gap,
-        algorithm: options.organicShape ? "automatic" : "flat",
+        algorithm: options.organicShape ? "surfaceRecovery" : "flat",
       },
       topology,
       { signal: options.signal, tolerance: 1e-12 },

@@ -1,0 +1,65 @@
+{
+  "status": "bounded-rendered-transform-lifecycle-compared-m2-still-open",
+  "assetBuildId": "scanforge-bb403834162abf8c",
+  "baseMain": "a8fd1a63b4464b460e7659aecfe3262076fcf476",
+  "driver": "tests/scan-transform-preview-browser.mjs",
+  "nativeScope": "Retained original arithmetic fixture executions only; no new installed-native GUI capture in this browser replay. Imported-plane producer and native picking remain separate gates.",
+  "results": {
+    "cases": [
+      {
+        "case": "Scale mesh",
+        "coordinateBytesMatchRetainedNative": true,
+        "guiDirectMcpEqual": true,
+        "publicPreview": true,
+        "undoRedo": true,
+        "persistence": true
+      },
+      {
+        "case": "mirror-origin",
+        "coordinateBytesMatchRetainedNative": true,
+        "guiDirectMcpEqual": true,
+        "publicPreview": true,
+        "undoRedo": true,
+        "persistence": true
+      },
+      {
+        "case": "mirror-tilted",
+        "coordinateBytesMatchRetainedNative": true,
+        "guiDirectMcpEqual": true,
+        "publicPreview": true,
+        "undoRedo": true,
+        "persistence": true
+      },
+      {
+        "case": "Flip normals",
+        "coordinateBytesMatchRetainedNative": true,
+        "guiDirectMcpEqual": true,
+        "publicPreview": false,
+        "undoRedo": true,
+        "persistence": true
+      }
+    ],
+    "pageErrors": []
+  },
+  "receiptSha256": "19bce2e583c3e73266fa63fa237bf459505590f55c2809bbd818e381a9002e68",
+  "ledgerSha256": "f7b04cda56a77be213238293ecde3ca77d13e5174f43a01028aff3a5bd98c4dd",
+  "peakAggregateBytes": 947449856,
+  "cleanup": [
+    {
+      "port": 59171,
+      "closed": true
+    },
+    {
+      "pid": 15428,
+      "exited": true
+    },
+    {
+      "port": 59172,
+      "closed": true
+    },
+    {
+      "pid": 46032,
+      "exited": true
+    }
+  ]
+}

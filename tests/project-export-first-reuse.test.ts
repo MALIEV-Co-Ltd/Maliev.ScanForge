@@ -290,6 +290,7 @@ it.each(["success", "storage-failure", "cancel-during-storage"])(
     let finishStorage!: (file: Blob) => void;
     const storageEntered = new Promise<void>((resolveEntered) => {
       vi.doMock("../src/transient-blob-storage", () => ({
+        deleteTransientBlob: async () => {},
         diskBackedBlob: (file: Blob) => {
           resolveEntered();
           if (mode === "storage-failure")
@@ -369,6 +370,7 @@ it("rejects a sparse worker response before storage and preserves the weak regis
   vi.resetModules();
   let storageCalls = 0;
   vi.doMock("../src/transient-blob-storage", () => ({
+    deleteTransientBlob: async () => {},
     diskBackedBlob: () => {
       storageCalls++;
       return new Promise<Blob>(() => {});

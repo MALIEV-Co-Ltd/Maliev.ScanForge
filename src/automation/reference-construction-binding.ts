@@ -83,8 +83,8 @@ function capture(snapshot: WorkspaceSnapshot): unknown[] {
       stamp.push(
         sketch.id,
         sketch.name,
-        sketch.sketch,
-        metadata(sketch.sketch),
+        sketch.kind === "spatial" ? sketch.curves : sketch.sketch,
+        metadata(sketch.kind === "spatial" ? sketch.curves : sketch.sketch),
       );
   } else
     stamp.push(snapshot.authoring.sketch, metadata(snapshot.authoring.sketch));

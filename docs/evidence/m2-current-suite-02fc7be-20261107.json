@@ -1,0 +1,67 @@
+{
+  "scope": "Full local Vitest suite on integration candidate; not native, browser, public MCP or large-project acceptance",
+  "commit": "02fc7be0",
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--maxWorkers=1",
+    "--exclude",
+    "**/.resources/**"
+  ],
+  "results": {
+    "testFilesPassed": 829,
+    "testFilesSkipped": 30,
+    "testsPassed": 50837,
+    "testsExpectedFail": 2,
+    "testsSkipped": 77,
+    "durationSeconds": 379.71
+  },
+  "guard": {
+    "command": [
+      "node",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "--maxWorkers=1",
+      "--exclude",
+      "**/.resources/**"
+    ],
+    "jobLimitBytes": 4294967296,
+    "leaseSeconds": 900,
+    "cleanupReserveSeconds": 3,
+    "leaseIncludesAdmission": true,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "cleanupErrors": [],
+    "activeAfter": 0,
+    "jobActiveAfter": 0,
+    "peakJobBytes": 1332711424,
+    "totalProcesses": 987,
+    "noChildStarted": false,
+    "memoryAdmission": {
+      "method": "GlobalMemoryStatusEx",
+      "availablePhysicalBytes": 18153467904,
+      "requiredBytes": 4294967296,
+      "childProcessCreated": false
+    },
+    "ownedPid": 13160,
+    "exitCode": 0,
+    "ownedRootExited": true,
+    "threadHandleClosed": true,
+    "processHandleClosed": true,
+    "JobHandleClosed": true,
+    "elapsedSeconds": 380.32942979999643,
+    "outerLeaseExceeded": false,
+    "peakWithinLimit": true,
+    "validationLane": {
+      "name": "Local\\ScanForge.BoundedValidation",
+      "acquiredUtc": "2026-11-06T23:21:29.112080+00:00",
+      "releasedAfterCleanup": true,
+      "zeroWait": true
+    }
+  },
+  "limitations": [
+    "The expected failures cover restored numeric-array ownership.",
+    "Skipped tests and native, browser, public MCP and large-project acceptance remain separate."
+  ]
+}

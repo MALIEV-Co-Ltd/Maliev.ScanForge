@@ -1,9 +1,11 @@
 import type { Handler, WorkspaceHost, CommandContext } from "./api";
 import type { Entity } from "../types";
 import {
-  bindShrinkwrap,
-  type ShrinkwrapParameters,
-} from "../shrinkwrap-request";
+  bindScanPreview,
+  type ScanPreviewParameters,
+} from "../scan-preview-request";
+import { scaledMeshCopy, mirroredMeshCopy } from "../scan-scaled-copy";
+import { validatePositions } from "../io";
 import { processMesh, type ProcessingResult } from "../processing-client";
 import { scanMeshCopy } from "../scan-mesh-copy";
 import { releaseProcessingPreview } from "../processing-session";
@@ -30,7 +32,7 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
         output: Float32Array;
         diagnostics: ProcessingResult["diagnostics"];
         summary: string;
-        settings: ShrinkwrapParameters;
+        settings: ScanPreviewParameters;
         comparison?: ProcessingResult["noiseComparison"];
         timer: ReturnType<typeof setTimeout>;
       }
@@ -93,20 +95,34 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
     )
       throw Error("ShrinkWrap requires a visible, unlocked raw mesh source.");
     if (args.action === "create") {
-      if (!args.operation || args.operation.kind !== "shrinkwrap")
-        throw Error("Scan preview requires a ShrinkWrap operation.");
+      if (
+        !args.operation ||
+        ![
+          "shrinkwrap",
+          "reduceNoise",
+          "reducePolygons",
+          "scaleMesh",
+          "mirrorMesh",
+        ].includes(args.operation.kind)
+      )
+        throw Error("This tool does not support mesh preview.");
       if (
         "selection" in args.operation ||
         "targets" in args.operation ||
         "targetIds" in args.operation
       )
         throw Error("Inner geometry must refer to workspace objects.");
-      const operation = bindShrinkwrap(
+      if (args.targetIds !== undefined && args.operation.kind !== "shrinkwrap")
+        throw Error("Preview targetIds are supported only for ShrinkWrap.");
+      const settings = {
+        ...args.operation,
+        ...(args.operation.kind === "shrinkwrap"
+          ? { targetIds: args.targetIds }
+          : {}),
+      } as ScanPreviewParameters;
+      const operation = bindScanPreview(
         source,
-        {
-          ...args.operation,
-          targetIds: args.targetIds,
-        } as ShrinkwrapParameters,
+        settings,
         state.entities,
         state.selectedId === source.id ? state.selection : undefined,
       );
@@ -135,22 +151,15 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
       current = {
         id: previewId,
         source,
-        references: (args.targetIds ?? []).map((id: string) =>
-          state.entities.find((e) => e.id === id)!,
-        ),
+        references: (settings.kind === "mirrorMesh" &&
+        settings.plane === "object"
+          ? [settings.referenceId]
+          : (args.targetIds ?? [])
+        ).map((id: string) => state.entities.find((e) => e.id === id)!),
         output: result.positions,
         diagnostics: result.diagnostics,
         summary: String(result.diagnostics.summary ?? "ShrinkWrap preview"),
-        settings: {
-          kind: "shrinkwrap",
-          sampleInterval: operation.sampleInterval,
-          gapFill: operation.gapFill,
-          organicShape: operation.organicShape,
-          extraThickness: operation.extraThickness,
-          maxDeviation: operation.maxDeviation,
-          scope: operation.scope,
-          targetIds: args.targetIds,
-        },
+        settings,
         timer,
       };
       if (c.mutate) c.mutate(present);
@@ -192,7 +201,12 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
           positions: source.positions,
           previewId: preview.id,
           deviation,
-          paletteThreshold: deviation,
+          paletteThreshold: args.paletteThreshold ?? deviation,
+          displayRange:
+            args.displayRange ??
+            (preview.settings.kind === "reducePolygons"
+              ? deviation
+              : undefined),
         },
         { signal: c.signal, onProgress: c.progress, reuseTopology: true },
       );
@@ -215,12 +229,37 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
     }
     if (args.action !== "accept")
       throw Error("Choose create, compare, accept or cancel.");
-    const copy = scanMeshCopy(
-      source,
-      args.createNew ? crypto.randomUUID() : source.id,
-      preview.output,
-    );
-    copy.name = args.createNew ? `${source.name} — ShrinkWrap` : source.name;
+    validatePositions(preview.output);
+    const kind = preview.settings.kind;
+    const title = {
+      shrinkwrap: "ShrinkWrap",
+      reduceNoise: "Reduce noise",
+      reducePolygons: "Reduce polygons",
+      scaleMesh: "Scale mesh",
+      mirrorMesh: "Mirror mesh",
+    }[kind];
+    const copy = args.createNew
+      ? kind === "scaleMesh"
+        ? scaledMeshCopy(source, preview.output, crypto.randomUUID())
+        : kind === "mirrorMesh"
+          ? mirroredMeshCopy(source, preview.output, crypto.randomUUID())
+          : scanMeshCopy(source, crypto.randomUUID(), preview.output)
+      : {
+          ...source,
+          positions: preview.output,
+          normals: undefined,
+          edgePositions: undefined,
+          indexedMesh: undefined,
+          fit: undefined,
+          planeFrame: undefined,
+          scanSource: undefined,
+          surfacePatch: undefined,
+          surfaceScanId: undefined,
+          meshSelection:
+            kind === "reduceNoise" ? source.meshSelection : undefined,
+        };
+    if (args.createNew && kind !== "scaleMesh" && kind !== "mirrorMesh")
+      copy.name = `${source.name} — ${title}`;
     const entities = args.createNew
       ? [...state.entities, copy]
       : state.entities.map((e) => (e.id === source.id ? copy : e));
@@ -228,7 +267,13 @@ export function createScanPreviewOperation(host: WorkspaceHost): Handler {
     // source geometry changes. Track that owned transition with the commit so a
     // second guard cannot report a conflict after geometry was already adopted.
     const write = () => {
-      host.commit(entities.map(retainIndexedMesh), "ShrinkWrap");
+      host.commit(
+        entities.map(retainIndexedMesh),
+        title,
+        !args.createNew && kind === "reduceNoise"
+          ? { preserveFacetSelectionFor: source.id }
+          : undefined,
+      );
       release();
       host.select(copy.id);
     };

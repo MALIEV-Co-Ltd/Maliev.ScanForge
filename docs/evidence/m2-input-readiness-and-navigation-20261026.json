@@ -1,0 +1,72 @@
+{
+  "scope": "Current-candidate hosted CI, Edit Scan GUI/MCP navigation and failed native input readiness; no native modeling acceptance claimed",
+  "compiledCandidate": "b250f0ff8e44ddb82c36dff0d66907d36dd97036",
+  "hostedCi": {
+    "run": 40295641582,
+    "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40295641582",
+    "passed": 49318,
+    "conditionalSkipped": 64,
+    "testFilesPassed": 710,
+    "testFilesSkipped": 18,
+    "build": true,
+    "cadSmoke": true,
+    "curvatureSmoke": true,
+    "repositoryFormatting": true
+  },
+  "navigation": {
+    "driver": "tests/scan-edit-double-click-browser.mjs",
+    "command": "node tests/scan-edit-double-click-browser.mjs",
+    "result": {
+      "initialDoubleClick": true,
+      "guiCloseReopen": true,
+      "guiSimplifyReopen": true,
+      "mcpCloseReopen": true,
+      "mcpWorkspaceReopen": ["transform", "measure", "scanTools"],
+      "mcpEditScanEqual": true,
+      "historyUnchanged": true,
+      "pageErrors": []
+    },
+    "resources": {
+      "exitCode": 0,
+      "elapsedSeconds": 4.351537599985022,
+      "childPeakJobMemoryBytes": 906911744,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    },
+    "retainedFailure": "r1 stopped at obsolete settings setup before MCP connection; current AI agents tab selection fixes the driver. No application correction was needed."
+  },
+  "nativeR7": {
+    "originalExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "freshOwnedProcess": true,
+    "retainedAnalysisImageExecuted": false,
+    "identityVerified": true,
+    "nativeWindowPixelsReadable": true,
+    "maximized": true,
+    "activationOnlyError": {
+      "api": "GetCursorPos",
+      "win32Error": 5
+    },
+    "foregroundWindowId": 0,
+    "sessionId": 1,
+    "sessionState": "Active RDP",
+    "currentThreadDesktop": "Default",
+    "inputDesktop": "Default",
+    "readOnlyProbeAfterOwnerDesktopAction": {
+      "success": false,
+      "win32Error": 5
+    },
+    "modelingOrFileInputPerformed": false,
+    "nativeGeometryAcceptancePassed": false,
+    "authenticatedEarlyFinish": true,
+    "processAndThreadHandlesClosed": true,
+    "watchdogStopped": true,
+    "resources": {
+      "exitCode": 0,
+      "elapsedSeconds": 158.78194349998375,
+      "childPeakJobMemoryBytes": 732176384,
+      "childJobFinalActive": 0,
+      "cleanupErrors": []
+    }
+  },
+  "remaining": "Native repair mode/selection/dialog comparisons remain open. Neither readable pixels nor a successful cleanup receipt proves a modeled result; M2 remains unmerged."
+}

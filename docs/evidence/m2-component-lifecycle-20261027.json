@@ -1,0 +1,466 @@
+{
+  "scope": "Manufactured component application lifecycle; not installed-native numerical or dialog parity. M2 and PR18 remain open/draft/unmerged.",
+  "date": "2026-10-27",
+  "applicationCommit": "a831a2190da4aa774d549d98a45912986203e4af",
+  "buildId": "scanforge-dc23d600e7862cae",
+  "buildSourceIdentity": {
+    "head": "f86e02d8ef258312a095cb43fd749d272b067089",
+    "files": 3018,
+    "unchanged": true,
+    "manifestSha256": "98a80bea32cb10b54927247de7c0a1bc5cd2ab468f967dd2abf37845d8346546"
+  },
+  "driver": {
+    "path": "tests/scan-components-browser.mjs",
+    "sha256": "9102792662da5d2d09a2326c3372c45a319ec2ecb4473a21f9c7a9c28d4ba091",
+    "browserFallback": "Browser plugin not available; existing owned Playwright/public-MCP harness."
+  },
+  "fixture": {
+    "recipe": "Three separate unit-cell planar grids n=1,2,3 at X=10n, side=n mm, two ordered triangles per cell. First Z of n=3 is 2e-7 before Float32 conversion. See frozen driver for exact recipe.",
+    "provenance": "Manufactured source, JSON project import; independent raw-corner oracle",
+    "triangles": 28
+  },
+  "result": {
+    "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9.00000000000002],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "guiCancelAndBack": true,
+    "pageErrors": []
+  },
+  "resourceReceipt": {
+    "mode": "full",
+    "label": "m2-components-browser-20261027-r5",
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "--max-old-space-size=1024",
+      "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+    ],
+    "leaseSeconds": 600,
+    "guardMiB": 3072,
+    "heapMiB": 1024,
+    "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261027-r5-full.stdout.log",
+    "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261027-r5-full.stderr.log",
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261027-r5-full.receipt.json",
+    "scope": "Owned validation helper plus descendants only; no native/user application handles",
+    "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+    "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+    "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "outerJobClosed": true,
+    "childJobClosed": true,
+    "processHandleClosed": true,
+    "threadHandleClosed": true,
+    "cleanupErrors": [],
+    "rootExited": true,
+    "childJobActive": 0,
+    "admittedFreeBytes": 10401890304,
+    "immediateChildFreeBytes": 10401882112,
+    "identity": {
+      "pid": 42292,
+      "startFileTime": "134375077633693432",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "exitCode": 0,
+    "childPeakJobMemoryBytes": 905596928,
+    "childJobFinalActive": 0,
+    "outerPeakJobMemoryBytes": 924327936,
+    "outerJobFinalActive": 1,
+    "elapsedSeconds": 10.868631999997888,
+    "completed": true
+  },
+  "cleanup": [
+    {
+      "port": 61139,
+      "closed": true
+    },
+    {
+      "pid": 49988,
+      "exited": true
+    },
+    {
+      "port": 61140,
+      "closed": true
+    },
+    {
+      "pid": 35700,
+      "exited": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\area-threshold-exclusive-after.png",
+      "sha256": "2f63a5b001e52b81af8081eb1c729e348ae089079668e0aba8d4513e0101be42"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\area-threshold-exclusive-before.png",
+      "sha256": "e4f8fe43f6a19173736a059efa9373f4a03c7478b4134319765cea27e4adf9b6"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\extract-after.png",
+      "sha256": "3476fbe3b60e9233798703398c802b831cd5d7161495a4cedee95b59ea8a961e"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\extract-before.png",
+      "sha256": "08f67fad0f13bb1a50bd10bd9a14808fdded0784d95e08b3927c008283d68794"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\flip-after.png",
+      "sha256": "77436a74c699a45df6b9343f67e40d22eaa3663deb5797de71e0904ee153d37f"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\flip-before.png",
+      "sha256": "1c0e7f2344cddaf355d2182d6ea0a81edbcf7c7c3f38d12186f6cd95261a0901"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\keep-after.png",
+      "sha256": "a9b61656b344e3fe51516b2e7391d7e5278384b59870d3563a0751aa22f79da5"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\keep-before.png",
+      "sha256": "c385720a5883f26499f3d22ad62c5bf31bebf6a2e311dbd8a3643d8b3c5544bc"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\triangle-threshold-inclusive-after.png",
+      "sha256": "d4fe564d7251b6f44d9d05b7a96c87b494249dcb2d9adb63bdf1c1b0c0b65639"
+    },
+    {
+      "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-components-browser-20261027-r5-artifacts\\triangle-threshold-inclusive-before.png",
+      "sha256": "884f5a79d7dccd76f3823deb454f3f67d80d64a28378dcc574e55ed32c042e71"
+    }
+  ],
+  "priorAttempts": [
+    {
+      "label": "m2-components-browser-20261026-r1",
+      "passed": false,
+      "error": "locator.waitFor: Error: strict mode violation: getByRole('region', { name: 'Individual meshes', exact: true }).getByRole('button', { name: /8 triangles/ }) resolved to 2 elements:\n    1) <button aria-pressed=\"false\">Mesh 2 \u00b7 8 triangles \u00b7 4.00 mm\u00b2</button> aka getByRole('button', { name: 'Mesh 2 \u00b7 8 triangles \u00b7 4.00' })\n    2) <button aria-pressed=\"false\">Mesh 3 \u00b7 18 triangles \u00b7 9.00 mm\u00b2</button> aka getByRole('button', { name: 'Mesh 3 \u00b7 18 triangles \u00b7 9.00' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: 'Individual meshes', exact: true }).getByRole('button', { name: /8 triangles/ }) to be visible\u001b[22m\n",
+      "receipt": {
+        "mode": "full",
+        "label": "m2-components-browser-20261026-r1",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r1-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r1-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r1-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10296598528,
+        "immediateChildFreeBytes": 10296590336,
+        "identity": {
+          "pid": 49348,
+          "startFileTime": "134375074694490824",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 898396160,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 917053440,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 3.845823300012853,
+        "completed": false
+      },
+      "cleanup": [
+        {
+          "port": 52185,
+          "closed": true
+        },
+        {
+          "pid": 26504,
+          "exited": true
+        },
+        {
+          "port": 52186,
+          "closed": true
+        },
+        {
+          "pid": 36276,
+          "exited": true
+        }
+      ],
+      "note": "Harness selector/navigation assumption failure; no production defect"
+    },
+    {
+      "label": "m2-components-browser-20261026-r2",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Edit individual meshes', exact: true })\u001b[22m\n",
+      "receipt": {
+        "mode": "full",
+        "label": "m2-components-browser-20261026-r2",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r2-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r2-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r2-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10298363904,
+        "immediateChildFreeBytes": 10298286080,
+        "identity": {
+          "pid": 47436,
+          "startFileTime": "134375074865348500",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 912830464,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 931340288,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 16.985761100018863,
+        "completed": false
+      },
+      "cleanup": [
+        {
+          "port": 62542,
+          "closed": true
+        },
+        {
+          "pid": 67444,
+          "exited": true
+        },
+        {
+          "port": 62543,
+          "closed": true
+        },
+        {
+          "pid": 25896,
+          "exited": true
+        }
+      ],
+      "note": "Harness selector/navigation assumption failure; no production defect"
+    },
+    {
+      "label": "m2-components-browser-20261026-r3",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Edit individual meshes', exact: true })\u001b[22m\n",
+      "receipt": {
+        "mode": "full",
+        "label": "m2-components-browser-20261026-r3",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r3-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r3-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r3-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10247012352,
+        "immediateChildFreeBytes": 10246864896,
+        "identity": {
+          "pid": 61508,
+          "startFileTime": "134375075223173495",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 1,
+        "childPeakJobMemoryBytes": 918908928,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 937295872,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 17.28516369999852,
+        "completed": false
+      },
+      "cleanup": [
+        {
+          "port": 64963,
+          "closed": true
+        },
+        {
+          "pid": 38472,
+          "exited": true
+        },
+        {
+          "port": 64964,
+          "closed": true
+        },
+        {
+          "pid": 18148,
+          "exited": true
+        }
+      ],
+      "note": "Harness selector/navigation assumption failure; no production defect"
+    },
+    {
+      "label": "m2-components-browser-20261026-r4",
+      "passed": true,
+      "error": null,
+      "receipt": {
+        "mode": "full",
+        "label": "m2-components-browser-20261026-r4",
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--max-old-space-size=1024",
+          "C:\\Users\\Shoung\\.codex\\worktrees\\m2-main-integration\\Maliev.ScanForge\\tests\\scan-components-browser.mjs"
+        ],
+        "leaseSeconds": 600,
+        "guardMiB": 3072,
+        "heapMiB": 1024,
+        "stdout": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r4-full.stdout.log",
+        "stderr": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r4-full.stderr.log",
+        "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\project-index-validation-m2-components-browser-20261026-r4-full.receipt.json",
+        "scope": "Owned validation helper plus descendants only; no native/user application handles",
+        "nodeSha256": "bae898add4643fcf890a83ad8ae56e20dce7e781cab161a53991ceba70c99ffb",
+        "abiBasisSha256": "0eef89a47d76d43f4dd17510ac62acedacacd0f0d364fe3e70344c64494a7494",
+        "postValidationBasisSha256": "9193939b06a659fb4a190a31d1631ede67d91d815690ce81f52a08a73eb6c860",
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": [],
+        "rootExited": true,
+        "childJobActive": 0,
+        "admittedFreeBytes": 10273853440,
+        "immediateChildFreeBytes": 10273775616,
+        "identity": {
+          "pid": 23800,
+          "startFileTime": "134375075854304017",
+          "executable": "C:\\Program Files\\nodejs\\node.exe"
+        },
+        "exitCode": 0,
+        "childPeakJobMemoryBytes": 906792960,
+        "childJobFinalActive": 0,
+        "outerPeakJobMemoryBytes": 925388800,
+        "outerJobFinalActive": 1,
+        "elapsedSeconds": 10.869982700038236,
+        "completed": true
+      },
+      "cleanup": [
+        {
+          "port": 60296,
+          "closed": true
+        },
+        {
+          "pid": 64652,
+          "exited": true
+        },
+        {
+          "port": 60297,
+          "closed": true
+        },
+        {
+          "pid": 64680,
+          "exited": true
+        }
+      ],
+      "note": "Initial five-case lifecycle pass before final count/area/navigation and cleanup-exit assertions"
+    }
+  ],
+  "precedingExactHeadCI": {
+    "commit": "a831a2190da4aa774d549d98a45912986203e4af",
+    "run": 40361910539,
+    "job": 121709319094,
+    "conclusion": "success",
+    "testsPassed": 49897,
+    "testsSkipped": 64,
+    "testFilesPassed": 717,
+    "testFilesSkipped": 18,
+    "build": true,
+    "cad": true,
+    "cadCurvature": true,
+    "format": true
+  },
+  "remaining": [
+    "Installed-native equivalent inventory/count/area/cleanup comparisons",
+    "Other inventory/native lifecycle gates in docs/M2_ACCEPTANCE.md",
+    "Final whole-candidate review, CI and main merge"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "scope": "Isolated Chrome storage-lifetime diagnostic; no application behavior changed",
+  "method": "Run the current transient IndexedDB Blob helper on a synthetic 192 MiB Blob, then drop the references and request diagnostic page garbage collection. Separately stream 192 MiB to an origin-private file, obtain a File, remove the entry while retaining that File, and attempt to read it. Samples are nearest guarded process measurements, rounded to MiB; construction methods differ, so they are not an equivalent-workload performance comparison.",
+  "observations": {
+    "empty": { "rendererMiB": 46, "browserMiB": 37, "pageHeapMiB": 1 },
+    "inputBlob": { "rendererMiB": 217, "browserMiB": 236, "pageHeapMiB": 192 },
+    "indexedDbReturned": {
+      "rendererMiB": 217,
+      "browserMiB": 244,
+      "pageHeapMiB": 192
+    },
+    "referencesDropped": {
+      "rendererMiB": 218,
+      "browserMiB": 244,
+      "pageHeapMiB": 192
+    },
+    "afterForcedCollection": {
+      "rendererMiB": 44,
+      "browserMiB": 51,
+      "pageHeapMiB": 0
+    },
+    "originPrivateFile": {
+      "rendererMiB": 44,
+      "browserMiB": 307,
+      "pageHeapMiB": 2
+    },
+    "originPrivateEntryRemovedWithFileRetained": {
+      "rendererMiB": 44,
+      "browserMiB": 50,
+      "pageHeapMiB": 2,
+      "subsequentRead": "NotFoundError"
+    }
+  },
+  "interpretation": "The dropped Blob references remained measurable until explicitly requested diagnostic collection in this single synthetic run. Removing the origin-private entry released the sampled browser memory but invalidated the retained File. The existing helper promises returned Blob bytes remain readable after deleting its database record, so immediately removing an origin-private file cannot replace it. A viable design would need explicit ownership through all readers and lifecycle cleanup; this diagnostic does not prove that such a design would satisfy the large-project memory limit.",
+  "originPrivateFileThroughExistingHelper": {
+    "method": "In a separate disposable run, pass the 192 MiB origin-private File to the existing diskBackedBlob helper, then remove the origin-private entry while retaining both returned objects.",
+    "result": "Both the original File and the helper's returned Blob failed a subsequent read with NotFoundError. IndexedDB staging did not make this source independent in the tested Chrome run. This does not establish behavior for other Blob sources or browsers.",
+    "guardPeakBytes": 1051652096,
+    "guardPassedAndCleanupConfirmed": true,
+    "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-idb-diagnostic-20261107.mjs",
+    "scriptSha256": "34e6c17973cd691b9b9ea98d1f3077e3a5327e497c2e1b8fd38f2afdac1a5509",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-opfs-idb-guard-20261107.json",
+    "receiptSha256": "d062e932b05531afd3407aad5e09ff3a391a64240e9869886022e2895deeeda5"
+  },
+  "guard": {
+    "limitBytes": 4294967296,
+    "peakBytes": 1060196352,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "ownedProcessesRemaining": 0
+  },
+  "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-blob-lifetime-diagnostic-20261107.mjs",
+  "scriptSha256": "9c4b5003e1c04e3db8bbf3f763c83dbffdee1b583af084678516d526369d9f2e",
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-blob-retained-guard-20261107.json",
+  "receiptSha256": "b828b8847557dba9977ede0d0a8f6e9d5aea609416ea446698af5879b58bb5a5",
+  "cleanup": "The disposable origin-private entry was removed; the isolated browser and its processes were closed. No project or user browser data was modified."
+}

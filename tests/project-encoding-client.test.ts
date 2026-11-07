@@ -42,6 +42,78 @@ const session = {
   future: [],
 } as unknown as ProjectSession;
 
+it("cleans the terminated encoder's own temporary storage key on cancellation", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const storage = await import("../src/transient-blob-storage");
+  const cleanup = vi.spyOn(storage, "deleteTransientBlob").mockResolvedValue();
+  const controller = new AbortController();
+  const result = encodeProjectInBackground(session, controller.signal);
+  const cancelled = expect(result).rejects.toMatchObject({
+    name: "AbortError",
+  });
+  await flushEncoding();
+  const worker = EncodingWorker.instances[0];
+  const request = worker.postMessage.mock.calls[0][0] as {
+    temporaryBlobKey: string;
+  };
+  expect(request.temporaryBlobKey).toMatch(/^[0-9a-f-]{36}$/i);
+  controller.abort();
+  await cancelled;
+  await vi.waitFor(() =>
+    expect(cleanup).toHaveBeenCalledWith(request.temporaryBlobKey),
+  );
+  expect(worker.terminate).toHaveBeenCalledOnce();
+  cleanup.mockRestore();
+});
+
+it("does not start the next encoder until terminated-worker cleanup settles", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const storage = await import("../src/transient-blob-storage");
+  let release!: () => void;
+  const cleanup = vi.spyOn(storage, "deleteTransientBlob").mockImplementation(
+    () =>
+      new Promise<void>((resolve) => {
+        release = resolve;
+      }),
+  );
+  const controller = new AbortController();
+  const first = encodeProjectInBackground(session, controller.signal);
+  const cancelled = expect(first).rejects.toMatchObject({ name: "AbortError" });
+  const second = encodeProjectInBackground({
+    ...session,
+    project: { ...session.project, name: "Next" },
+  });
+  await flushEncoding();
+  controller.abort();
+  await cancelled;
+  await flushEncoding();
+  expect(EncodingWorker.instances).toHaveLength(1);
+  release();
+  await vi.waitFor(() => expect(EncodingWorker.instances).toHaveLength(2));
+  EncodingWorker.instances[1].onmessage!({
+    data: { file: new Blob(["next"]) },
+  });
+  await expect(second).resolves.toBeInstanceOf(Blob);
+  cleanup.mockRestore();
+});
+
+it("preserves the encoder error if temporary-storage cleanup fails", async () => {
+  vi.stubGlobal("Worker", EncodingWorker);
+  const storage = await import("../src/transient-blob-storage");
+  const cleanup = vi
+    .spyOn(storage, "deleteTransientBlob")
+    .mockRejectedValue(new Error("Storage unavailable"));
+  const result = encodeProjectInBackground(session);
+  const rejected = expect(result).rejects.toThrow("Invalid geometry");
+  await flushEncoding();
+  EncodingWorker.instances[0].onmessage!({
+    data: { error: "Invalid geometry" },
+  });
+  await rejected;
+  expect(cleanup).toHaveBeenCalledOnce();
+  cleanup.mockRestore();
+});
+
 it("reports large-container disk failures instead of retaining another in-memory result", async () => {
   vi.stubGlobal("Worker", EncodingWorker);
   vi.stubGlobal("indexedDB", {
@@ -84,7 +156,11 @@ it("serializes different snapshots and returns the original lossless blob", asyn
   expect(EncodingWorker.instances).toHaveLength(1);
   const worker = EncodingWorker.instances[0],
     file = new Blob(["exact payload"]);
-  expect(worker.postMessage).toHaveBeenCalledWith({ session, localClouds: [] });
+  expect(worker.postMessage).toHaveBeenCalledWith({
+    session,
+    localClouds: [],
+    temporaryBlobKey: expect.any(String),
+  });
   worker.onmessage!({ data: { file } });
   expect(await first).toBe(file);
   await flushEncoding();

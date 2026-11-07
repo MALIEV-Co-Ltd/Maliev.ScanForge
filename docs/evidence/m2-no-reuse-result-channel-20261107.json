@@ -1,0 +1,16 @@
+{
+  "scope": "Isolated large-project test of decoding without mutable numeric-array reuse; no application change adopted",
+  "baseCommit": "640dd89c",
+  "candidate": "Remove the decoder's reuseNumericArray callback so restored ordinary numeric arrays are independent of the previous project.",
+  "bundle": "scanforge-44e94a457ccb1596",
+  "input": "Original PLY-3, 3691133 faces",
+  "observations": {
+    "completed": "GUI Split, Extract, undo comparison, project export, and public MCP download completed. The 475563378-byte downloaded file matched the streamed SHA-256 5a3d8656bdf93e496e2ce0d637c41b8a3933629cab15b3323b84c1135a07254a.",
+    "reopen": "The GUI reported the project imported, but the subsequent public MCP geometry digest timed out. The full reopen, geometry and undo/redo validation did not pass.",
+    "peakJobBytes": 4299390976,
+    "jobLimitBytes": 4294967296,
+    "guardResult": "Failed: reported peak exceeded the 4 GiB Job limit by 4423680 bytes. The guard confirmed zero remaining owned processes.",
+    "cleanup": "The generated project download was removed after checking its SHA-256."
+  },
+  "interpretation": "Removing mutable reuse addresses the aliasing mechanism, but this run exceeds the required resource limit and cannot establish an acceptable fix. The original injected-mutation race remains unresolved on the integration branch. This result does not identify the allocation that caused the peak."
+}

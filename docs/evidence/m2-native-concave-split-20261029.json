@@ -1,0 +1,85 @@
+{
+  "scope": "Native GUI concave mesh Split compared with the shared ScanForge operation on the same manufactured inputs, in millimetres.",
+  "native": {
+    "product": "QUICKSURFACE Pro 8.0.123",
+    "source": "tests/fixtures/m2-native-concave-split-20261029/square-source.stl",
+    "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+    "cutter": "tests/fixtures/m2-native-concave-split-20261029/concave-cutter.stl",
+    "cutterSha256": "0aa225313e6897518d77eddfee449f3cb61df8afabdb73eefb6da1373e42015d",
+    "command": "Edit square-source > Additional tools > Split Mesh > Split with another body or a mesh > Preview > OK",
+    "envelope": false,
+    "export": "tests/fixtures/m2-native-concave-split-20261029/native-concave-result-20261029.stl",
+    "exportSha256": "590bab9d40c4a026bc5bb7ed3a6b240436a439c2d2a06e0e64058ec6b4f6acca",
+    "nativeProject": "C:/repo/alignment-example-files/m2-native-split-controls-20261027-r1/native-concave-scene-20261029.qsf",
+    "facets": 34,
+    "individualMeshesGui": 2,
+    "holesGui": 3,
+    "exportAreaMm2": 16
+  },
+  "application": {
+    "commit": "f72fe09b96b35354b991786d1d83f3acd37284a4",
+    "splitFaceSha256": "b73ccd73df45d1084a338edeb305cd4c3cdbc5f116461d02e72f361dab21510a",
+    "splitSeamsSha256": "b25e5c1b4e18667ebc1231fb1dff3d6efc50eb533ac0d515925210e6fc1452ad",
+    "facets": 34,
+    "indexedComponents": 2,
+    "nonManifoldEdges": 0,
+    "exactMatchingFacets": 22,
+    "facetsDifferentPerResult": 12,
+    "facetDiagnostic": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-concave-facets-20261029.json",
+    "facetDiagnosticSha256": "246bcca6f00936ef3b78ce1b70bf9ce4c5c84e8bb59a3c4beecccea38d294044"
+  },
+  "regression": {
+    "test": "tests/m2-native-concave-split.test.ts",
+    "result": "Count, components, manifoldness and input ownership pass; exact native facets are an expected failure.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-concave-regression-20261029-r1.json",
+    "receiptSha256": "4ce425697ea2676c0878786dec62eae146ba44c964772500122d5d1f9af4281f",
+    "peakJobBytes": 345616384,
+    "jobLimitBytes": 4294967296
+  },
+  "limitations": [
+    "Native indexed seam identity is not available in STL; native component and hole counts are GUI observations.",
+    "These manufactured controls do not prove general native Split parity. Exact triangulation remains mismatched and M2 remains open."
+  ],
+  "integratedGuiMcp": {
+    "baseCommit": "f72fe09b96b35354b991786d1d83f3acd37284a4",
+    "incomingMain": "3c0f2fb5783fbcdf096dd76b3326cd391ba6284c",
+    "mergeTree": "a74b7d30f9b617fcc6abfd8a090654c83fd52a7d",
+    "build": "scanforge-8ef8d18f7e6854c5",
+    "result": "GUI and public MCP geometry match on the pinned input. 34 facets, two components, areas 3 and 13 mm2, binary reopen, history and held-result cancellation passed.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-concave-integrated-gui-mcp-20261029-r1-guard.json",
+    "receiptSha256": "a2ecdeac5c433ab965285d03a2193c957e4193fc1d4d22e66cd0da1abbaff596",
+    "peakJobBytes": 919859200,
+    "jobLimitBytes": 4294967296
+  },
+  "orderingExperiments": {
+    "scope": "Disposable shared-kernel experiment only; no application change",
+    "baselineMatches": {
+      "convex": 12,
+      "concave": 22
+    },
+    "variants": [
+      {
+        "order": "x ascending, y descending",
+        "convex": 13,
+        "concave": 24
+      },
+      {
+        "order": "y descending, x descending",
+        "convex": 14,
+        "concave": 15
+      },
+      {
+        "order": "y ascending, x ascending",
+        "convex": 6,
+        "concave": 11
+      },
+      {
+        "order": "x descending, y ascending",
+        "convex": 8,
+        "concave": 11
+      }
+    ],
+    "interpretation": "Simple insertion-order changes do not establish native parity; none was applied.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-triangulation-orders-guard-20261029-r1.json"
+  }
+}

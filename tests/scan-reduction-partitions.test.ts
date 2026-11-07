@@ -199,7 +199,7 @@ it("preserves zero surface deviation on planar patches in deviation mode", () =>
   expect(topology.nonManifoldEdges + topology.inconsistentEdges).toBe(0);
 });
 
-it("runs the large reduction through the real worker request and result contract", async () => {
+it("runs admitted large reduction globally through the real worker request and result contract", async () => {
   const messages: any[] = [];
   const scope = {
     onmessage: null as ((event: { data: any }) => void) | null,
@@ -225,11 +225,15 @@ it("runs the large reduction through the real worker request and result contract
     expect(result.kind).toBe("scanTools");
     expect(result.positions.length / 9).toBeLessThan(502002);
     expect(messages.some((m) => m.stage === "Reducing spatial patches")).toBe(
-      true,
+      false,
     );
-    expect(messages.some((m) => m.stage === "Polygon reduction complete")).toBe(
-      true,
-    );
+    expect(
+      messages.some((m) => m.stage === "Collapsing native mesh edges"),
+    ).toBe(true);
+    expect(
+      messages.some((m) => m.stage === "Polygon reduction completed"),
+    ).toBe(true);
+    expect(result.diagnostics.summary).toContain("Boundary vertices preserved");
   } finally {
     vi.unstubAllGlobals();
   }

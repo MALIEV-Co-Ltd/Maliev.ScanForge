@@ -42,6 +42,11 @@ it("rejects corrupt definitions, duplicates and excessive saved records", () => 
       { ...saved, definition: { ...saved.definition, tolerance: 0 } },
     ]),
   ).toThrow();
+  expect(() =>
+    validateInspectionDefinitions([
+      { ...saved, definition: { ...saved.definition, scope: "unknown" } },
+    ]),
+  ).toThrow(/scope/i);
   expect(() => validateInspectionDefinitions([saved, saved])).toThrow();
   expect(() =>
     validateInspectionDefinitions(
@@ -99,3 +104,24 @@ it("normalizes saved definitions without retaining arbitrary caller payloads", (
       .unrelated,
   ).toBeUndefined();
 });
+
+it.each(["all", "visible"])(
+  "retains analytic scope %s through binary reopening",
+  async (scope) => {
+    const scoped = {
+      ...saved,
+      definition: { ...saved.definition, scope },
+    };
+    const project = validateProject({
+      format: "maliev-scanforge",
+      version: 1,
+      name: "scope",
+      units: "mm",
+      entities: [],
+      authoring: { inspections: [scoped] },
+    });
+    const file = await encodeProjectFile({ project, history: [], future: [] });
+    const reopened = await decodeProjectFile(file);
+    expect(reopened.project.authoring?.inspections).toEqual([scoped]);
+  },
+);

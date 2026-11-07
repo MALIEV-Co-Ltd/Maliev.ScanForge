@@ -1,0 +1,27 @@
+{
+  "scope": "Scaled adjacent-seam native control and application GUI/public MCP Split parity; not M2 closure",
+  "commitUnderTest": "c46982ee6746e02989b693e3e784cc0b7d010566",
+  "build": "scanforge-41eb20a51df15c82",
+  "buildProvenance": "The integrated build was produced before c46982ee. Subsequent commits changed only tests, fixtures and evidence, not application or build source.",
+  "native": {
+    "version": "QUICKSURFACE Pro 8.0.123",
+    "fixture": "tests/fixtures/m2-adjacent-seam-scaled-20261105/README.md",
+    "result": "Five source triangles, two individual meshes, area 500000 square mm. Native output retains the distinct boundary and seam contacts, and the untouched cutter round trip retains the input coordinates.",
+    "comparison": "Shared Split matches the native unordered Float32 facets and reports two parts. The original-scale native output has three facets and omits the interior contact; two samples demonstrate scale sensitivity, not a quantified tolerance or general equivalence."
+  },
+  "guiMcp": {
+    "method": "Isolated loopback application and public MCP bridge; Playwright/Chrome fallback because the Browser plugin and browser skill were unavailable. Imported the pinned STLs in mm without origin placement, ran GUI Split and public MCP Split, and compared geometry, metadata, undo/redo, binary reopen, held-result cancellation and GUI-close cancellation.",
+    "result": "Both paths produced five triangles and two parts with matching geometry and normal cache hashes, area 500000, matching rendered canvas before and after redo, and no recorded page errors. All owned processes and ports were cleaned up.",
+    "positionDigest": "fd6fca33a4c6ca4a4b2c63bce89a0046b98053eb5c874f034b5dffad52ad5896",
+    "resources": "4 GiB job limit; peak 914964480 bytes; cleanup confirmed.",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-scaled-seam-browser-20261105/output/split-lifecycle-browser-ledger.json",
+    "ledgerSha256": "df7f1f4d1985dc90f2d7ed047c9ddb6e2bc401f29142e0dfbc4bd13b9b1546a2",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-scaled-seam-browser-20261105/driver.mjs",
+    "driverSha256": "d7b715767d9b8c1e8cccc4fa76f79c01361fb8b264fb8295dbf97fee12f83537",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-scaled-seam-browser-20261105/guard.json",
+    "guardSha256": "b0726e653a58b864f4a6ace679d3b3892818f3b7d5b5cc7ecb8b34e1368f52a6",
+    "screenshot": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-scaled-seam-browser-20261105/output/point-radius-scaled-initial.png",
+    "screenshotSha256": "5d106625609af83b898793893a1b6b6ef0cdd16bd3b37585ee00ee9c6635304e"
+  },
+  "limitations": "The screenshot shows the overall rendered mesh but cannot visually resolve the narrow seam. Native facet comparison ignores winding. Four other radius facet mismatches, the rotated case, broader native acceptance, final CI and milestone closure remain open."
+}

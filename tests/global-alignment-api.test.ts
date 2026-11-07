@@ -625,3 +625,26 @@ it("publishes exact ordered final poses and setter receipts without exposing cac
   expect(solver.refine).toHaveBeenCalledOnce();
   expect(h.host.commit).toHaveBeenCalledOnce();
 });
+
+vi.mock("../src/global-alignment-initialization", () => ({
+  initializeGlobalAlignment: async (entities: Entity[]) => ({
+    entities,
+    anchorId: entities[0].id,
+    fits: entities.map((e) => ({
+      id: e.id,
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      rms: 0,
+      ambiguous: false,
+    })),
+  }),
+  refineGlobalSurfaceAlignment: async (entities: Entity[]) => ({
+    entities,
+    anchorId: entities[0].id,
+    fits: entities.map((e) => ({
+      id: e.id,
+      matrix: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+      rms: 0,
+      ambiguous: false,
+    })),
+  }),
+}));

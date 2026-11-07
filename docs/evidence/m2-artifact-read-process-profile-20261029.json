@@ -1,0 +1,34 @@
+{
+  "scope": "Two isolated process-memory snapshots during original PLY-3 export and full public-MCP artifact read; no reopen or production change",
+  "build": "scanforge-a475af92d85763f6",
+  "method": "After Split and Extract, sample private committed bytes for descendants of the test harness immediately before artifact reads, after the complete read, and after artifact deletion. In the second run, explicitly collect the page heap and sample again. Each run intentionally stops after profiling; its nonzero exit does not represent a reopen test.",
+  "firstRun": {
+    "largestChromeChildBeforeBytes": 1483517952,
+    "largestChromeChildAfterReadBytes": 2402623488,
+    "mcpServerBeforeBytes": 69259264,
+    "mcpServerAfterReadBytes": 126730240,
+    "peakJobBytes": 4123705344,
+    "logSha256": "b62e3501b1205a8c4716ce3fd31d1012d513cbb1681f3aff3ae04a5e48fbc4fc",
+    "guardSha256": "0cfc70f2e27d961d7f187a9f807e2bd144236bfcd60761e09c89ba6bba356869"
+  },
+  "secondRun": {
+    "rendererBeforeBytes": 1482235904,
+    "rendererAfterDeletionBytes": 2361548800,
+    "rendererAfterDiagnosticGcBytes": 2255843328,
+    "browserBeforeBytes": 683503616,
+    "browserAfterDeletionBytes": 713785344,
+    "browserAfterDiagnosticGcBytes": 154894336,
+    "cdpHeapBeforeBytes": 472225360,
+    "cdpHeapAfterDeletionBytes": 494407096,
+    "cdpHeapAfterDiagnosticGcBytes": 471437672,
+    "cdpBackingBeforeBytes": 292852928,
+    "cdpBackingAfterDeletionBytes": 329626854,
+    "cdpBackingAfterDiagnosticGcBytes": 292828159,
+    "peakJobBytes": 4122959872,
+    "logSha256": "74890083a05d503cac10ada9c8fa582c48c30a0a81570fc3da4e66479de25d79",
+    "guardSha256": "5f5946dc7a5d03d10056834e9cc1ca472b9a047747202d02a5897f67c75c0899",
+    "diagnosticHarnessSha256": "6e1a9f709120fd712b208859183ee3d8df92ead517d539cc0a58cb933dc14e82"
+  },
+  "interpretation": "In these snapshots the renderer accounted for much more of the post-read growth than the MCP server. In the second run, after diagnostic collection, renderer private committed bytes remained 773607424 above the pre-read sample, while browser-process private bytes fell by 558891008 from the post-deletion sample. CDP reports only part of a process's memory; the snapshots do not prove whether the remaining difference is live data, allocator reservation, or another browser subsystem.",
+  "limits": "The process snapshots include a short-lived PowerShell measurement process, and report per-process private commitment, not the guard's aggregate peak. Values are single observations in a diagnostic build and cannot establish causality or a resource guarantee. Both intentional stops cleaned up; no GUI reopen or native comparison was attempted."
+}

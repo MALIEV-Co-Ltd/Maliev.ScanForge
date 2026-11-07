@@ -1,0 +1,99 @@
+{
+  "scope": "Split browser regression checks for application commit cc87245dfab154b711d5d5bd6b3608ccb5debc98, test commit 78af65635956e3a495490a393826a1c5afbcb6ee",
+  "testSha256": "ae02a5df31f01b1964d4075b40c94c0145282aa39652c367818129022320a6cd",
+  "originalFace": {
+    "cases": [
+      {
+        "name": "original-scan-face-7207",
+        "outputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 45,
+            "sha256": "9ddc42d376e5fcbe0c41713ca060b74e9f56b3c9690eea4d68b5600e60610b46"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 27,
+            "sha256": "e8b0f6fe23d715211a545e68daf57bd977e4dd71e5b394f008a2ade88d2038c7"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 15,
+            "sha256": "396b6867a5bd61cd28196fa21e4c7e7cdcf8f4e035b8168cf560b639e2969861"
+          }
+        ],
+        "outputArea": 0.029055235867555585,
+        "diagnostics": {
+          "affectedFaces": 1,
+          "sourceFaces": 1,
+          "parts": 2,
+          "cutEdges": 1,
+          "sourceIdentity": "exact-corner-index",
+          "changed": true,
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 204
+        },
+        "guiMcpGeometry": true,
+        "undoRedo": true,
+        "binaryReopen": true,
+        "mcpHeldResultCancellation": true,
+        "guiCloseCancellation": true,
+        "normalCaches": {
+          "initial": {
+            "geometryNormals": null,
+            "facetNormals": null
+          },
+          "guiRedo": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          },
+          "mcpRedo": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          },
+          "reopened": {
+            "geometryNormals": "81e99a8204cca51ffecb7c5802933539e3c2501de97559b7cde483ce6a8b1baf",
+            "facetNormals": "621a08885fe954ce480104f0b0c997fd77da4e928c3e4a1f12480e9307d6c7cd"
+          }
+        }
+      },
+      {
+        "name": "float32-precision",
+        "guiAndMcpFailure": true,
+        "unchangedGeometryAndHistory": true,
+        "retry": true
+      }
+    ],
+    "pageErrors": []
+  },
+  "focusedGuard": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 907816960,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "radiusRerun": {
+    "passed": true,
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 910602240,
+    "cleanupConfirmed": true,
+    "activeAfter": 0
+  },
+  "defaultSuite": {
+    "passed": false,
+    "firstRemainingFailure": "sloped-edge-crossing",
+    "failure": "The legacy test waits for separate output objects after a finite-mesh Split; two objects remained.",
+    "peakJobBytes": 909316096,
+    "cleanupConfirmed": true
+  },
+  "normalPrecisionObservation": "An exploratory check requiring computed facet normals to match the original face normal within 1e-6 failed on this large-coordinate small-face control. The passing lifecycle checks verify finite normal values and matching GUI/MCP/reopened cache digests, not analytic or native normal accuracy.",
+  "limitations": [
+    "Native Split output and ownership were not observed.",
+    "The default suite remains incomplete and later cases were not reached.",
+    "The original-face lifecycle is a single manufactured extraction of scan coordinates and does not establish large-scan in-place reopen or normal fidelity."
+  ]
+}

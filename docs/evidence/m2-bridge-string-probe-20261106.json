@@ -1,0 +1,48 @@
+{
+  "scope": "Isolated request-body hypothesis test; the string-body candidate is not integrated",
+  "baselineCommit": "d802834",
+  "candidate": "In a separate worktree, send serialized bridge requests as strings instead of wrapping payloads of at least 65536 characters in Blobs. The corresponding bridge test was changed to expect a string while retaining the JSON and authorization checks.",
+  "synthetic": {
+    "description": "Separate headless Chromium processes sent 1835 local synthetic JSON requests, totaling 641448830 bytes per run. No application artifact bytes were used.",
+    "blobPeakJobBytes": 1718501376,
+    "stringPeakJobBytes": 868642816,
+    "blobSeconds": 4.591,
+    "stringSeconds": 9.408,
+    "bothCleanedUp": true,
+    "limitation": "One synthetic run per body form; not a real ScanForge or MCP acceptance test."
+  },
+  "candidateValidation": {
+    "bridgeTestsPassed": 14,
+    "fullBuild": "Timed out at the final typecheck batch under a 240-second lease; cleanup confirmed.",
+    "directViteBundle": "scanforge-7d78368c4d200ba9",
+    "fullSizeReplay": "failed: after a full download with matching stream and file SHA-256, the project opened but a subsequent geometry digest request failed with BRIDGE_UNAVAILABLE timeout; post-reopen geometry and history checks did not complete.",
+    "downloadBytes": 475563378,
+    "downloadSha256": "626fc309cf1de3e9cd6855f2de7467d5c907342efc540dbf9270ca39caca239d",
+    "peakJobBytes": 4295581696,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "nearDownloadSamples": {
+    "unit": "private committed bytes in one nearby two-second process sample per run",
+    "existingBlobBridge": {
+      "renderer": 1698607104,
+      "chromeUnclassified": 981471232,
+      "gpu": 453922816
+    },
+    "candidateStringBridge": {
+      "renderer": 2322882560,
+      "chromeUnclassified": 691863552,
+      "gpu": 460627968
+    },
+    "limitation": "Separate runs and point samples; values do not establish a causal allocation or total job peak."
+  },
+  "retainedEvidenceSha256": {
+    "syntheticDriver": "1b61ff5ae320ffd4376eaaa32989bdc2978ea58c2defe2ccaba4416d8f964211",
+    "syntheticBlobReceipt": "1c4c78d13f04f7b8ea12fa081012df39a30080b173e050f1aa3b387cf9e1e179",
+    "syntheticStringReceipt": "100063aa2da8ba78c77d583d57a21291874785b0850db25c44115ef48b0bb589",
+    "candidateReceipt": "a58f62590c2aa860bdb35403aaf32046f0a4a8863ae708395bb9bf536d778850",
+    "candidateLog": "e86923cfa42223ce9bf57e26cd26c9c99b89d83493df8e7817ba8d2b30020c0c"
+  },
+  "conclusion": "The synthetic result does not justify replacing Blob delivery: the real candidate failed and exceeded the hard peak. The underlying resource gate remains open."
+}

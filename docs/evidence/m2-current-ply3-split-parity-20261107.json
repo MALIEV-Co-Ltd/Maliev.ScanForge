@@ -1,0 +1,71 @@
+{
+  "scope": "Current compiled candidate original PLY-3 GUI/public MCP Split and history comparison",
+  "candidate": "14fb1acb",
+  "bundle": "scanforge-04c9de551ba72a9f",
+  "crossOriginIsolated": true,
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "outputFaces": 3695945,
+    "diagnostics": {
+      "affectedFaces": 2406,
+      "sourceFaces": 3691133,
+      "parts": 2,
+      "cutEdges": 2406,
+      "sourceIdentity": "retained-indexed",
+      "changed": true
+    },
+    "guiMcpDigestEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "redo": true,
+    "redoInitializedComputedNormals": [
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 5612016,
+        "sha256": "eec667db9a44bda177be4adb84b247ccfcd185548fd8e6f369763da7119510f4"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 11087835,
+        "sha256": "1014207222d90d21bc369cca0c0189654e49274ba3f82b7657905141a8e3384c"
+      }
+    ],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "gui-undo-verified",
+    "mcp-split-committed",
+    "mcp-redo-digest"
+  ],
+  "guardPeakJobBytes": 3200827392,
+  "guardLimitBytes": 4294967296,
+  "processCleanupConfirmed": true,
+  "helperCleanup": [
+    {
+      "port": 51442,
+      "closed": true
+    },
+    {
+      "pid": 24484,
+      "exited": true
+    },
+    {
+      "port": 51443,
+      "closed": true
+    }
+  ],
+  "limits": [
+    "A single plane cutter on one original scan; no fresh native output or general parity claim.",
+    "Computed normal carriers initialized on redo are recorded separately from the equal initial geometry digests."
+  ]
+}

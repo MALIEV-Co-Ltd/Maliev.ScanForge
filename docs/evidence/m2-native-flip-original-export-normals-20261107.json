@@ -1,0 +1,110 @@
+{
+  "scope": "Original scan 1 native and public MCP STL normal comparison after Flip",
+  "candidate": "2ab97a5f",
+  "productionBuild": "scanforge-12844615819f2f7e",
+  "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "nativeStlSha256": "bb998c42328bdcc30d1ebd317d0af603213a0f9236e8307f8e6279a858a4133d",
+  "browserResult": {
+    "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "nativeCoordinateSha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf",
+    "triangles": 273139,
+    "guiDigest": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+      },
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 819417,
+        "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+      }
+    ],
+    "mcpDigest": [
+      {
+        "path": "positions",
+        "encoding": "f32",
+        "elements": 2458251,
+        "sha256": "ebd5c98c917d3d72a91233c602608d551792c82ec1e5b14a8b0937460c537ebf"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "7906133fbd7093782ba847832348b06d0b0d0b5fa16bc132edb4ba86dccb8ab7"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 819417,
+        "sha256": "8e666b8dcc2ba069af440c63ac31f98e7baef07e83be2f1663f76dbb5986240e"
+      },
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 418014,
+        "sha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 819417,
+        "sha256": "676f1b093753d6504b2752366db1fd0bf1fd971d9012583d680935595f5a9d5b"
+      }
+    ],
+    "stlComparison": {
+      "facets": 273139,
+      "orderedCoordinatesIdentical": true,
+      "exactNormalRecords": 0,
+      "maxComponentDifference": 0.885777473449707,
+      "rmsComponentDifference": 0.028257322781460155,
+      "nativeNormalSha256": "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+      "appNormalSha256": "010a350ce215f54afd0c9105849d138dee2c354124dcb9151d9b9ed12a1ca910",
+      "appStlSha256": "a346e7a8767302a02758c91ec27a5e13f6a55f03b1e2cdff5d99ca52087a47b7"
+    },
+    "binaryReopen": true,
+    "undoRedo": true,
+    "pageErrors": []
+  },
+  "normalInterpretation": {
+    "method": "For each indexed triangle, apply f32(f32(f32(n0+n1)+n2)/3) separately to the three application-computed vertex normals, without renormalization.",
+    "components": 819417,
+    "bitwiseEqualNativeComponents": 819417,
+    "derivedAndNativeNormalSha256": "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+    "applicationVertexNormalSha256": "d7d85da0137d48dac79f4ff157d91dfd0ba87a166a339e8eb671d3dad71cf84c",
+    "test": "tests/m2-native-flip-export-normals.test.ts"
+  },
+  "guard": {
+    "browserPeakBytes": 1245777920,
+    "unitPeakBytes": 567189504,
+    "limitBytes": 4294967296,
+    "bothCleanupConfirmed": true
+  },
+  "limitations": [
+    "The direct STL comparison uses public MCP export after the shared operation; the GUI and MCP Flip geometry and normal-carrier digests matched. The GUI STL export was not separately exercised.",
+    "The per-face average matching does not prove that individual native vertex-normal values match the application values, nor does it identify all native exporter internals.",
+    "The default ScanForge STL exporter continues to write geometric facet normals, which differ from these native smoothed export records. This observation alone does not justify a global format behavior change.",
+    "QuickSurface ran outside the browser validation Job. One scan and one command do not establish broad M2 acceptance.",
+    "The native repeat export was hash-verified then removed; the pinned normal-stream digest remains as the local regression oracle."
+  ]
+}

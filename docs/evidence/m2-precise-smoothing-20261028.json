@@ -1,0 +1,28 @@
+{
+  "scope": "Preserve stationary wider-precision corners during selected-area and boundary smoothing through the shared GUI/MCP operation.",
+  "regression": "Before the fix, smoothing a separate selected component rounded untouched 100000004 and 100000012 coordinates to Float32. A focused test demonstrated the failure.",
+  "behavior": "Stationary raw corners retain their original precision. Moved vertices continue to use the smoothing algorithm's existing Float32 calculations. Matching indexed topology is retained without welding duplicate seam identities.",
+  "checks": {
+    "focused": "95 passed, one existing expected Float32 seam failure; guarded job cleaned up.",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-smoothing-focused-20261028-r3.json",
+    "typecheck": "14 batches passed; guarded job cleaned up.",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-smoothing-typecheck-20261028-r2.json",
+    "bundle": "scanforge-4810ff571f78b7b1",
+    "browser": "The retained native smoothing fixture with a separate off-grid triangle passed GUI/public-MCP equality, unchanged precise triangle, undo/redo, cancellation, save/reopen and native fixture output on the original component.",
+    "browserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-precise-smoothing-browser-20261028-r5-guard.json"
+  },
+  "splitThenSmooth": {
+    "rootCause": "GUI scan edits supplied source indexed topology only for Split, while public MCP supplied matching indexed topology for all scan edits. After Split, GUI smoothing rewelded separate seam vertices and differed from MCP.",
+    "fix": "GUI scan edits now pass matching source indexed topology using the same validity check as the MCP operation.",
+    "control": "One original precision triangle plus a disconnected four-triangle smoothing fan; a finite cutter yields nine faces and three indexed components.",
+    "results": "GUI and public MCP agree after Split and after selected smoothing; two faces on the opposite side remain unchanged. Split undo/redo and save/reopen pass; smoothing public-MCP undo/redo and GUI undo pass.",
+    "build": "scanforge-20e0fd5a83267064",
+    "browserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-smoothing-browser-20261028-r4-guard.json",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-gui-indexed-scan-focused-20261028-r1.json"
+  },
+  "limitations": [
+    "The browser fixture is a small manufactured extension of the retained native control, not a native smoothing run on the off-grid triangle.",
+    "Large-project smoothing with precise coordinates has not been measured under the aggregate 4 GiB limit.",
+    "The separate Float32 finite-seam helper distortion, native Split comparison and M2 closure remain open."
+  ]
+}

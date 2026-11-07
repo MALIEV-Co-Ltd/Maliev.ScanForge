@@ -1,0 +1,202 @@
+{
+  "evidence_id": "ev_d5ceec571103a6f31e2fa4648728b818e629b5b9fdb65b33f70dafd8ffefe452",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "c9a99e4a-4544-46ae-bfa6-f1af91710a56"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "c9a99e4a-4544-46ae-bfa6-f1af91710a56",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "name": "rea-c8f64dd5-14e3-4e02-9736-72c06089430c"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "ready",
+          "base": "0x140000000"
+        }
+      },
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "initial",
+          "id": 1,
+          "arg1": "0x7",
+          "arg2": "0x5ccfbeb0",
+          "arg3": "0xea",
+          "before": [],
+          "after": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [6, 5, 3]
+          ],
+          "ret": "0x1"
+        }
+      },
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "strip",
+          "id": 3,
+          "arg1": "0x15df08",
+          "arg2": "0x6",
+          "arg3": "0x5",
+          "before": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [6, 5, 3]
+          ],
+          "after": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ],
+          "ret": "0x1"
+        }
+      },
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "recover",
+          "id": 2,
+          "arg1": "0x400000003",
+          "arg2": "0x15e010",
+          "arg3": "0x18",
+          "before": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [6, 5, 3]
+          ],
+          "after": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ],
+          "ret": "0x1"
+        }
+      },
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "strip",
+          "id": 5,
+          "arg1": "0x15df08",
+          "arg2": "0x3",
+          "arg3": "0x4",
+          "before": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ],
+          "after": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [5, 3, 6]
+          ],
+          "ret": "0x1"
+        }
+      },
+      {
+        "script_id": "c8f64dd5-14e3-4e02-9736-72c06089430c",
+        "type": "send",
+        "payload": {
+          "event": "recover",
+          "id": 4,
+          "arg1": "0x600000005",
+          "arg2": "0x15e010",
+          "arg3": "0x2",
+          "before": [
+            [4, 0, 1],
+            [4, 5, 3],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [3, 6, 4]
+          ],
+          "after": [
+            [4, 0, 1],
+            [6, 3, 0],
+            [5, 4, 1],
+            [6, 0, 4],
+            [5, 1, 2],
+            [5, 2, 3],
+            [6, 4, 5],
+            [5, 3, 6]
+          ],
+          "ret": "0x1"
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

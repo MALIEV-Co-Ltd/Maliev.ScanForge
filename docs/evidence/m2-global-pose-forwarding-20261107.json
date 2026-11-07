@@ -1,0 +1,44 @@
+{
+  "scope": "Restore intermediate global-alignment pose forwarding across direct and isolated controller routes",
+  "baseCommit": "ef4f38da",
+  "before": "Focused controller regression observed zero onPose callbacks.",
+  "focusedTestsPassed": 100,
+  "development": {
+    "frames": 7,
+    "phases": ["initializing", "preparing", "refining"],
+    "distinctCanvasFrames": 4,
+    "errors": [],
+    "guardPeakJobBytes": 1543794688
+  },
+  "compiled": {
+    "frames": 7,
+    "phases": ["initializing", "preparing", "refining"],
+    "distinctCanvasFrames": 4,
+    "errors": [],
+    "guardPeakJobBytes": 1398366208
+  },
+  "build": {
+    "bundle": "scanforge-aa65eecf68269aa5",
+    "peakJobBytes": 1763729408
+  },
+  "checks": [
+    "Isolated controller worker observed in both browsers",
+    "GUI and public MCP share provisional progress",
+    "Original geometry and history unchanged before Apply",
+    "Cached Apply, undo/redo and in-flight cancellation"
+  ],
+  "cleanupConfirmed": true,
+  "limits": [
+    "Manufactured three-scan control; no claim of native convergence, registration quality or large-scan performance.",
+    "Polling can miss individual intermediate poses."
+  ],
+  "fullSuite": {
+    "testFilesPassed": 830,
+    "testFilesSkipped": 30,
+    "testsPassed": 50844,
+    "expectedFailures": 2,
+    "testsSkipped": 77,
+    "peakJobBytes": 1319710720,
+    "cleanupConfirmed": true
+  }
+}

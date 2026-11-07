@@ -1,0 +1,25 @@
+{
+  "scope": "Isolated Chrome diagnostic of ArrayBuffer detachment, not a ScanForge project restore or production fix.",
+  "baseCommit": "c268d60a15c5e907029623a2ee6899f8d6fe11e2",
+  "method": "A disposable headless installed Chrome page allocated a 268435456-byte ArrayBuffer and touched one byte per 4096-byte page. DevTools Runtime.getHeapUsage and aggregate process counters for the three Chrome renderer descendants were sampled before allocation, after allocation, immediately after transfer(0), two seconds later, and after an explicitly requested diagnostic garbage collection. No ScanForge application code or user profile was loaded.",
+  "result": {
+    "beforeBytes": 268435456,
+    "detachedBytes": 0,
+    "allocatedBackingStorageBytes": 268435485,
+    "detachedBackingStorageBytes": 29,
+    "rendererPrivateBytesBeforeAllocation": 80846848,
+    "rendererPrivateBytesAfterAllocation": 352915456,
+    "rendererPrivateBytesAfterDetach": 84221952,
+    "rendererWorkingSetBytesAfterAllocation": 466747392,
+    "rendererWorkingSetBytesAfterDetach": 198737920,
+    "rendererPrivateBytesTwoSecondsAfterDetach": 84230144,
+    "passed": true,
+    "peakJobBytes": 727875584,
+    "ownedProcessCleanupConfirmed": true
+  },
+  "script": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-chrome-detach-memory-20261107.cjs",
+  "scriptSha256": "9e83aa3d64a1129bafd00fa6bdae8c82aa8d139cc88b4d8c99da02abc193b35e",
+  "guardReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-chrome-detach-memory-guard-20261107.json",
+  "guardReceiptSha256": "eec2532d77a7e3d067c498112197358e9cf96177c5b0f725d91131ca39e4a179",
+  "interpretation": "The first post-detachment sample showed the isolated test buffer's backing-storage accounting and aggregate renderer counters drop by approximately its allocation size before explicit collection. This narrows but does not eliminate delayed reclamation as a hypothesis for the full project workload; process counters are aggregate samples, and the isolated allocation does not reproduce the decoder or its concurrent objects. Restore ownership, the resource gate, native comparisons and M2 closure remain open."
+}

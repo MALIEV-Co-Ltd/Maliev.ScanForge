@@ -1,0 +1,850 @@
+{
+  "main": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "candidate": "5b91c2a949526f8e9df28a60877da97088aada74",
+  "overlap": 519,
+  "differing": 206,
+  "counts": {
+    "bothAddedDifferent": 123,
+    "cleanTextMerge": 29,
+    "conflictingTextMerge": 54,
+    "skipped": 0,
+    "changedDuringSample": 0
+  },
+  "examples": {
+    "bothAddedDifferent": [
+      {
+        "path": "docs/M2_ACCEPTANCE.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/NATIVE_REPOLYGONIZE_FIELD.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/NATIVE_SCAN_PROCESSING_GAPS.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/ORIGINAL_STL_GLOBAL_CURRENT_QUALITY.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/ORIGINAL_STL_GLOBAL_QUALITY.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/adaptive-point-display-revert-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/application-context-menu-policy-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/dense-cloud-pointer-pivot-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/frame-model-depth-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/fresh-orbit-pivot-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/global-fine-complete-numerical-replay-current-20261023.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/global-fine-complete-numerical-replay-final-20261023.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/landmark-live-views-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/original-stl-global-current-quality-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/original-stl-global-full-quality-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/point-cloud-import-recovery-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-cad-pick-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-line-picks-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-numeric-initialization-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-preview-adapter-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-rendered-viewport-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-scene-geometry-bounds-20261025.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-angular-precision-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-backend-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-edit-routes-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-local-replacement-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-placed-replacement-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-point-edit-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-arc-rebuild-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-attachment-disposition-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-backend-20261023.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-child-collection-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-child-fork-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-child-stage-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-edits-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-inputs-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-placed-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-radius-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-rebuild-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-circle-records-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-conic-child-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-conics-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-edge-vertex-separation-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-ellipse-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-ellipse-edits-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-attachment-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-backend-draft-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-body-defaults-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-child-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-conversion-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-creation-hooks-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-curve-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-edits-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-endpoints-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-envelope-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-failure-path-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-geometry-gate-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-parameter-order-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-projection-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-state-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-vertex-bounds-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-wire-candidate-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-line-wire-provider-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-open-topology-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-owner-placement-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-selection-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-spline-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-wire-disposition-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/reference-sketch-wire-vertex-separation-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-aligned-distance-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-aligned-three-field-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-boundary-latch-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-finalized-three-field-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-normals-topology-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-original-boundaries-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-original-field-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-output-finalization-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-partitioned-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-provenance-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-shared-source-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/repolygon-single-root-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/evidence/uniform-point-display-20261024.json",
+        "status": "??"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-10-24-landmark-live-views.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-10-25-fresh-orbit-pivot.md",
+        "status": "??"
+      },
+      {
+        "path": "docs/superpowers/plans/2026-10-25-m2-verification.md",
+        "status": "??"
+      },
+      {
+        "path": "src/automation/reference-construction-apply.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/automation/reference-construction-binding.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/automation/scan-selection-operations.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/entity-display-stats.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/fine-registration.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/mesh-geometry-normals.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/reference-construction-resolver.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/reference-display.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/reference-entity.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/reference-preview-display.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/transient-blob-storage.ts",
+        "status": "??"
+      },
+      {
+        "path": "src/ui/unroll-command.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/automatic-cad-setup-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/fine-alignment-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/fine-alignment-contract.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/fine-alignment-operations.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/fine-registration.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/global-alignment-live-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/m1-import-core.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/m1-original-import-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/m1-selection-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/mesh-selection-fidelity.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/project-decoding-reuse.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/project-encoding-disk-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/project-encoding-disk.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/reference-construction-apply.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/scan-average-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/scan-average-native.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/scan-average-operations.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/scan-selection-api.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/scan-unroll-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/select-all-objects-browser.mjs",
+        "status": "??"
+      },
+      {
+        "path": "tests/sketch-line-collection.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/stored-normal-display.test.ts",
+        "status": "??"
+      },
+      {
+        "path": "tests/stored-normal-global.test.ts",
+        "status": "??"
+      }
+    ],
+    "cleanTextMerge": [
+      {
+        "path": "docs/NATIVE_GLOBAL_COMMAND_CONTRACT.md",
+        "status": " M"
+      },
+      {
+        "path": "package-lock.json",
+        "status": " M"
+      },
+      {
+        "path": "public/cad-worker.js",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/authoring-operations.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/import-worker.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-transport.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-alignment-pool.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-display-buffers.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-global-controller-protocol.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-native-alignment-mesh-query.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-tools-reduction.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/LandmarkAlignmentDialog.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/ScanToolsPanel.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/ScanTopologyPanels.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/StatusFeedback.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/ribbon-model.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/ribbon-verification.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/styles.css",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/tool-guidance.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/automation-api.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/backup-automation.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/global-alignment-input.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/mcp-browser-smoke.mjs",
+        "status": " M"
+      },
+      {
+        "path": "tests/parallel-import.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/point-cloud-automation-edit.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/scan-display-buffers.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/status-feedback.test.tsx",
+        "status": " M"
+      },
+      {
+        "path": "tests/viewport-display.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/workflow-operations.test.ts",
+        "status": " M"
+      }
+    ],
+    "conflictingTextMerge": [
+      {
+        "path": "docs/AGENT_GUIDE.md",
+        "status": " M"
+      },
+      {
+        "path": "docs/MCP_ARCHITECTURE.md",
+        "status": " M"
+      },
+      {
+        "path": "package.json",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/api.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/catalog.json",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/global-alignment-operations.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/operations.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/use-workspace-api.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/automation/workflow-operations.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/datum-alignment.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/datum-staged-scan.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/geometry-digest.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/global-alignment-input-core.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/global-alignment-input.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/history.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/import-batch.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/import-parser.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/indexed-mesh.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/io.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/keyboard-shortcuts.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/native-landmark-refinement.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/native-surface-refinement.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/object-operations.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/processing-client.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/processing-worker.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-decoding-client.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-decoding-worker.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-encoding-client.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-file-codec.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/project-file.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/restored-scan-display.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-native-noise.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-registration.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-render-data.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-tools-transforms.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/scan-tools.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/types.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/App.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/MeshTools.tsx",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/ToolPanel.css",
+        "status": " M"
+      },
+      {
+        "path": "src/ui/scan-tool-request.ts",
+        "status": " M"
+      },
+      {
+        "path": "src/viewport.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/authoring-operations.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/datum-automation.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/defeature-curvature-browser.mjs",
+        "status": " M"
+      },
+      {
+        "path": "tests/import-shared-buffers.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/keyboard-shortcuts.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/mcp-visual-smoke.mjs",
+        "status": " M"
+      },
+      {
+        "path": "tests/mesh-tools-region.test.tsx",
+        "status": " M"
+      },
+      {
+        "path": "tests/object-selection.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/processing-client.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/project-encoding-client.test.ts",
+        "status": " M"
+      },
+      {
+        "path": "tests/scan-noise-browser.mjs",
+        "status": " M"
+      },
+      {
+        "path": "tests/tool-guidance.test.ts",
+        "status": " M"
+      }
+    ],
+    "skipped": [],
+    "changedDuringSample": []
+  },
+  "statusUnchanged": true,
+  "scratchRemoved": true,
+  "limitations": "Non-atomic sample. The text merge checks Git content only, not staged state, file modes, dependencies, application behavior or semantic compatibility. Differing additions were classified separately. Files with unsupported encodings or size were skipped."
+}

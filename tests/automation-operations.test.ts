@@ -1,4 +1,9 @@
+import {
+  scanToolRequest,
+  stagedScanToolRequest,
+} from "../src/ui/scan-tool-request";
 import { describe, it, expect, vi } from "vitest";
+import { Buffer } from "node:buffer";
 import {
   createOperations,
   createCadFeature,
@@ -15,11 +20,45 @@ import type { ParametricRecipe } from "../src/parametric";
 import { processMesh } from "../src/processing-client";
 import { extractSketchSection } from "../src/sketch-section";
 import { createGridPatch } from "../src/surfaces";
-import { runScanEdit, type ScanEditRequest } from "../src/scan-edit";
+import {
+  runScanEdit,
+  runScanEditAsync,
+  type ScanEditRequest,
+} from "../src/scan-edit";
 import smoothingInput from "./fixtures/defeature-annular.json";
+import { runScanTool } from "../src/scan-tools";
+import { reductionGrid } from "./helpers/reduction-grid";
+import { ScanPreviewSession } from "../src/scan-preview";
+import boundaryNative from "./fixtures/boundary-smooth-observed-annulus.json";
+import anchorNative from "./fixtures/boundary-smooth-anchor-inner-native.json";
+import twoAnchorNative from "./fixtures/boundary-smooth-two-anchors-native.json";
+import { analyzeIndexedMesh, analyzeMesh } from "../src/mesh-processing";
+import partialTangentNative from "./fixtures/hole-observed-semi-tangent-curved.json";
+import { nativeStlTopology } from "../src/scan-native-stl-topology";
+import { indexedMeshMatches } from "../src/indexed-mesh";
+import { withCurvatureKernel } from "./helpers/curvature-kernel-vm";
+import type {
+  ProcessingRequest,
+  ProcessingResponse,
+} from "../src/processing-client";
 vi.mock("../src/processing-client", () => ({ processMesh: vi.fn() }));
 
 const triangle = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+it.each([undefined, 0.000001])(
+  "uses GUI analysis tolerance by default and preserves explicit tolerance %s",
+  async (tolerance) => {
+    const h = harness();
+    vi.mocked(processMesh).mockResolvedValueOnce({
+      kind: "report",
+      diagnostics: {},
+    });
+    await h.ops.mesh_analyze({ entityId: "mesh", tolerance }, h.context);
+    expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject({
+      kind: "report",
+      tolerance: tolerance ?? 0.001,
+    });
+  },
+);
 it("uses reusable geometry processing for MCP analysis and inventory", async () => {
   const h = harness();
   vi.mocked(processMesh).mockResolvedValueOnce({
@@ -50,6 +89,37 @@ it("uses reusable geometry processing for MCP analysis and inventory", async () 
     reuseTopology: true,
     signal: h.context.signal,
   });
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+it("serializes transferred component triangle indices as public JSON arrays", async () => {
+  const h = harness();
+  vi.mocked(processMesh).mockResolvedValueOnce({
+    kind: "scanEdit",
+    diagnostics: {},
+    scanEdit: {
+      diagnostics: { scope: "components" },
+      inventory: {
+        scope: "components",
+        components: [{ triangles: new Uint32Array([2, 5]), area: 3 }],
+        boundaries: [],
+      },
+    },
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: {
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+      },
+    },
+    h.context,
+  );
+  const serialized = vi.mocked(h.context.artifact).mock.calls.at(-1)![0];
+  const report = JSON.parse(String(serialized));
+  expect(report.inventory.components).toEqual([{ triangles: [2, 5], area: 3 }]);
+  expect(Array.isArray(report.inventory.components[0].triangles)).toBe(true);
   expect(h.host.commit).not.toHaveBeenCalled();
 });
 it("renames the selected objects in browser order in one transaction", () => {
@@ -282,6 +352,224 @@ function harness(entities: Entity[] = [entity()]) {
   };
   return { host, state, cad, context, controller, ops: createOperations(host) };
 }
+it("retains indexed vertex identities and refreshes geometry normals when flipping a scan", async () => {
+  const vertices = new Float32Array([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 0, 2, 3]);
+  const positions = Float32Array.from(
+    Array.from(triangles).flatMap((id) =>
+      Array.from(vertices.slice(id * 3, id * 3 + 3)),
+    ),
+  );
+  const indexedMesh = { vertices, triangles };
+  const h = harness([entity({ positions, indexedMesh })]);
+  vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+    if (request.kind !== "scanTools") throw new Error("Expected scan tools");
+    const result = runScanTool(request);
+    return {
+      kind: "scanTools",
+      positions: result.positions,
+      indexedMesh: result.indexedMesh,
+      diagnostics: { summary: result.summary },
+    };
+  });
+  await h.ops.mesh_process(
+    {
+      entityId: "mesh",
+      operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+    },
+    h.context,
+  );
+  const result = h.state.entities[0];
+  expect(result.indexedMesh).toBeDefined();
+  expect(Array.from(result.indexedMesh!.triangles)).toEqual([0, 2, 1, 0, 3, 2]);
+  expect(Array.from(result.indexedMesh!.vertices)).toEqual(
+    Array.from(vertices),
+  );
+  expect(Array.from(result.indexedMesh!.geometryNormals!)).toEqual([
+    0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
+  ]);
+  expect(Array.from(triangles)).toEqual([0, 1, 2, 0, 2, 3]);
+});
+
+it("binds the same indexed topology for the Flip Normals ribbon and MCP", () => {
+  const positions = Float32Array.from(triangle);
+  const mesh = {
+    vertices: positions,
+    triangles: new Uint32Array([0, 1, 2]),
+    facetNormals: new Float32Array([0, 0, 1]),
+  };
+  const source = entity({ positions, indexedMesh: mesh });
+  const request = scanToolRequest(source, { kind: "flipNormals" }, [source]);
+  expect(request.operation).toEqual({
+    kind: "flipNormals",
+    sourceTopology: mesh,
+  });
+});
+
+it("cancels GUI and MCP Flip admission without starting the worker or changing the model", async () => {
+  const vertices = new Float32Array(300_000);
+  const triangles = new Uint32Array(300_000);
+  const positions = new Float32Array(900_000);
+  const source = entity({ positions, indexedMesh: { vertices, triangles } });
+  const h = harness([source]);
+  const priorCalls = vi.mocked(processMesh).mock.calls.length;
+  const timer = setTimeout(() => h.controller.abort(), 0);
+  try {
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow();
+  } finally {
+    clearTimeout(timer);
+  }
+  expect(vi.mocked(processMesh).mock.calls.length).toBe(priorCalls);
+  expect(h.host.commit).not.toHaveBeenCalled();
+  expect(h.state.entities[0]).toBe(source);
+  expect(h.context.progress).toHaveBeenCalledWith(
+    0,
+    "Validating indexed topology",
+  );
+
+  const guiProgress = vi.fn();
+  const guiController = new AbortController();
+  const guiTimer = setTimeout(() => guiController.abort(), 0);
+  try {
+    await expect(
+      stagedScanToolRequest(
+        source,
+        { kind: "flipNormals" },
+        [source],
+        undefined,
+        () => guiController.signal.throwIfAborted(),
+        guiProgress,
+      ),
+    ).rejects.toThrow();
+  } finally {
+    clearTimeout(guiTimer);
+  }
+  expect(guiProgress).toHaveBeenCalledWith(0, "Validating indexed topology");
+  expect(source.positions).toBe(positions);
+  expect(source.indexedMesh?.triangles).toBe(triangles);
+});
+
+it("rejects oversized indexed vertices before starting Flip Normals", async () => {
+  const positions = Float32Array.from(triangle);
+  const indexedMesh = {
+    vertices: new Array<number>(27_000_001),
+    triangles: new Uint32Array([0, 1, 2]),
+  };
+  const h = harness([entity({ positions, indexedMesh })]);
+  const priorCalls = vi.mocked(processMesh).mock.calls.length;
+  await expect(
+    h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: { kind: "scanTools", operation: { kind: "flipNormals" } },
+      },
+      h.context,
+    ),
+  ).rejects.toThrow(/indexed vertices exceed/i);
+  expect(vi.mocked(processMesh).mock.calls.length).toBe(priorCalls);
+  expect(h.host.commit).not.toHaveBeenCalled();
+});
+
+it("shares compact global reduction between GUI preview and MCP above the old admission boundary", async () => {
+  const positions = reductionGrid(160, 128),
+    before = positions.slice();
+  const operation = {
+    kind: "reducePolygons" as const,
+    mode: "percentage" as const,
+    percentage: 50,
+  };
+  const preview = await ScanPreviewSession.create({
+    kind: "scanPreview",
+    phase: "create",
+    previewId: "compact-global",
+    positions,
+    operation,
+  });
+  const h = harness([entity({ positions })]);
+  vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+    if (request.kind !== "scanTools")
+      throw new Error("Expected shared scan tool");
+    const result = runScanTool(request);
+    return {
+      kind: "scanTools",
+      positions: result.positions,
+      diagnostics: { summary: result.summary },
+    };
+  });
+  await h.ops.mesh_process(
+    { entityId: "mesh", operation: { kind: "scanTools", operation } },
+    h.context,
+  );
+  expect(h.state.entities[0].positions).toEqual(preview.output);
+  expect(h.state.entities[0].positions.length / 9).toBe(20480);
+  expect(h.host.commit).toHaveBeenCalledOnce();
+  expect(positions).toEqual(before);
+});
+it.each([8, 160])(
+  "MCP invalid global reduction retains source and history at width %s",
+  async (width) => {
+    const valid = reductionGrid(width, 128);
+    for (const invalid of [
+      [0, 0, 0, 1, 0, 0, 1, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0],
+      [
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0,
+        0, 0, 1,
+      ],
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0],
+    ]) {
+      const positions = new Float32Array(valid.length + invalid.length);
+      positions.set(valid);
+      positions.set(
+        invalid.map((x, i) => (i % 3 === 2 ? x : x - 20)),
+        valid.length,
+      );
+      const before = positions.slice(),
+        h = harness([entity({ positions })]);
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        if (request.kind !== "scanTools")
+          throw new Error("Expected shared scan tool");
+        const result = runScanTool(request);
+        return {
+          kind: "scanTools",
+          positions: result.positions,
+          diagnostics: { summary: result.summary },
+        };
+      });
+      await expect(
+        h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            operation: {
+              kind: "scanTools",
+              operation: {
+                kind: "reducePolygons",
+                mode: "percentage",
+                percentage: 50,
+              },
+            },
+          },
+          h.context,
+        ),
+      ).rejects.toThrow("Repair invalid");
+      expect(h.host.commit).not.toHaveBeenCalled();
+      expect(h.state.history).toEqual([]);
+      expect(h.state.entities[0].positions).toBe(positions);
+      expect(
+        Buffer.from(positions.buffer).equals(Buffer.from(before.buffer)),
+      ).toBe(true);
+    }
+  },
+);
 it("retains segmentation classification fits in agent-created regions", async () => {
   const h = harness(),
     fit = {
@@ -311,6 +599,42 @@ it("retains segmentation classification fits in agent-created regions", async ()
 });
 
 describe("shared workspace operation contracts", () => {
+  it("routes partial Tangent through MCP to the shared native-matching result", async () => {
+    const positions = Float32Array.from(partialTangentNative.source);
+    const topology = analyzeMesh(positions, { tolerance: 0.001 });
+    const target = (id: number, sign: number) =>
+      Math.abs(topology.vertices[id * 3] - sign * 2.12132025) < 0.00001 &&
+      Math.abs(topology.vertices[id * 3 + 1] - sign * 2.12132025) < 0.00001;
+    const boundary = topology.boundaryLoops.findIndex(
+      (loop) =>
+        loop.some((id) => target(id, -1)) && loop.some((id) => target(id, 1)),
+    );
+    const loop = topology.boundaryLoops[boundary];
+    const start = loop.findIndex((id) => target(id, 1));
+    const end = loop.findIndex((id) => target(id, -1));
+    const operation = {
+      kind: "scanEdit",
+      action: "fillHoles",
+      mode: "partial",
+      algorithm: "tangent",
+      indices: [boundary],
+      start,
+      end,
+      tolerance: 0.001,
+    } satisfies Omit<ScanEditRequest, "positions">;
+    const h = harness([entity({ positions })]);
+    vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+      const scanEdit = await runScanEditAsync(request as ScanEditRequest);
+      return { kind: "scanEdit", scanEdit, diagnostics: scanEdit.diagnostics };
+    });
+    await h.ops.mesh_process({ entityId: "mesh", operation }, h.context);
+    expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject(operation);
+    expect(h.host.commit).toHaveBeenCalledOnce();
+    expect(h.state.history).toHaveLength(1);
+    const result = h.state.entities[0].positions;
+    expect(result).toEqual(runScanEdit({ ...operation, positions }).positions);
+    expect(result.length / 9).toBe(partialTangentNative.nativeTriangles);
+  });
   it.each([undefined, 1])(
     "reports preview sampling consistently for accepted count %s",
     async (acceptedTriangles) => {
@@ -388,6 +712,224 @@ describe("shared workspace operation contracts", () => {
       expect(h.host.commit).toHaveBeenCalledOnce();
     }
   });
+
+  it("rejects degenerate boundary smoothing through the shared operation without MCP publication", async () => {
+    const positions = Float32Array.from([
+        0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 2, 0, 10, 0, 0, 10, 0,
+        0, 10, 0, 0,
+      ]),
+      before = positions.slice();
+    const h = harness([entity({ positions })]);
+    h.state.selection = new Uint8Array(3);
+    vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+      if (request.kind !== "scanEdit") throw new Error("Unexpected operation");
+      const scanEdit = await runScanEditAsync(request);
+      return { kind: "scanEdit", scanEdit, diagnostics: scanEdit.diagnostics };
+    });
+    await expect(
+      h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "boundarySmooth" },
+        },
+        h.context,
+      ),
+    ).rejects.toThrow(/degenerate/i);
+    expect(h.host.commit).not.toHaveBeenCalled();
+    expect(h.state.history).toHaveLength(0);
+    expect(h.state.entities[0].positions).toBe(positions);
+    expect(positions).toEqual(before);
+  });
+
+  it("routes a boundary inventory anchor through MCP and publishes the native result", async () => {
+    const positions = Float32Array.from(boundaryNative.source);
+    const indexedMesh = nativeStlTopology(positions);
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(indexedMesh.vertices),
+      indexedMesh.triangles,
+    );
+    const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+    const boundary = boundaries.findIndex((ids) =>
+      ids.some((id) =>
+        anchorNative.anchorObservedPosition.every(
+          (v, axis) => topology.vertices[id * 3 + axis] === v,
+        ),
+      ),
+    );
+    const point = boundaries[boundary].findIndex((id) =>
+      anchorNative.anchorObservedPosition.every(
+        (v, axis) => topology.vertices[id * 3 + axis] === v,
+      ),
+    );
+    const h = harness([entity({ positions, indexedMesh })]);
+    await withCurvatureKernel(async () => {
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        const scanEdit = await runScanEditAsync(request as ScanEditRequest, {
+          topologyCache: { positions, tolerance: 1e-6, topology },
+        });
+        return {
+          kind: "scanEdit",
+          scanEdit,
+          diagnostics: scanEdit.diagnostics,
+        };
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: {
+            kind: "scanEdit",
+            action: "boundarySmooth",
+            strength: 0.5,
+            anchors: [{ boundary, point }],
+          },
+        },
+        h.context,
+      );
+      expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject({
+        anchors: [{ boundary, point }],
+      });
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      expect(h.state.history).toHaveLength(1);
+      const result = h.state.entities[0].positions;
+      const zero = 16 * Number.EPSILON * 5;
+      for (let i = 0; i < result.length; i++) {
+        if (
+          Math.abs(result[i]) <= zero &&
+          Math.abs(anchorNative.output[i]) <= zero
+        )
+          continue;
+        expect(result[i], `native MCP coordinate ${i}`).toBe(
+          anchorNative.output[i],
+        );
+      }
+    });
+  }, 30000);
+
+  it("routes two boundary inventory anchors through MCP and publishes the native result", async () => {
+    const positions = Float32Array.from(boundaryNative.source);
+    const indexedMesh = nativeStlTopology(positions);
+    const topology = analyzeIndexedMesh(
+      Float64Array.from(indexedMesh.vertices),
+      indexedMesh.triangles,
+    );
+    const boundaries = [...topology.boundaryLoops, ...topology.boundaryChains];
+    const anchors = twoAnchorNative.anchorObservedPositions.map((position) => {
+      const boundary = boundaries.findIndex((ids) =>
+        ids.some((id) =>
+          position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+        ),
+      );
+      const point = boundaries[boundary].findIndex((id) =>
+        position.every((v, axis) => topology.vertices[id * 3 + axis] === v),
+      );
+      return { boundary, point };
+    });
+    const h = harness([entity({ positions, indexedMesh })]);
+    await withCurvatureKernel(async () => {
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        const scanEdit = await runScanEditAsync(request as ScanEditRequest, {
+          topologyCache: { positions, tolerance: 1e-6, topology },
+        });
+        return {
+          kind: "scanEdit",
+          scanEdit,
+          diagnostics: scanEdit.diagnostics,
+        };
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: {
+            kind: "scanEdit",
+            action: "boundarySmooth",
+            strength: 0.5,
+            anchors,
+          },
+        },
+        h.context,
+      );
+      expect(vi.mocked(processMesh).mock.lastCall?.[0]).toMatchObject({
+        anchors,
+      });
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      expect(h.state.history).toHaveLength(1);
+      const result = h.state.entities[0].positions;
+      const zero = 16 * Number.EPSILON * 5;
+      for (let i = 0; i < result.length; i++) {
+        if (
+          Math.abs(result[i]) <= zero &&
+          Math.abs(twoAnchorNative.output[i]) <= zero
+        )
+          continue;
+        expect(result[i], `native MCP coordinate ${i}`).toBe(
+          twoAnchorNative.output[i],
+        );
+      }
+    });
+  }, 30000);
+
+  it("routes MCP boundary smoothing defaults through the actual worker and pinned CAD kernel", async () => {
+    const positions = Float32Array.from(boundaryNative.source),
+      before = positions.slice();
+    const indexedMesh = nativeStlTopology(positions);
+    const h = harness([entity({ positions, indexedMesh })]);
+    h.state.selection = new Uint8Array(positions.length / 9);
+    await withCurvatureKernel(async () => {
+      let reply: Exclude<ProcessingResponse, { progress: number }> | undefined;
+      const scope = {
+        location: self.location,
+        onmessage: null as
+          null | ((event: { data: ProcessingRequest }) => Promise<void>),
+        postMessage: (
+          response: ProcessingResponse,
+          transfer: Transferable[] = [],
+        ) => {
+          if (!("progress" in response))
+            reply = structuredClone(response, { transfer });
+        },
+      };
+      vi.stubGlobal("self", scope);
+      await import("../src/processing-worker");
+      vi.mocked(processMesh).mockImplementationOnce(async (request) => {
+        await scope.onmessage!({ data: request });
+        if (!reply)
+          throw new Error("Worker did not publish a terminal response.");
+        if ("error" in reply) throw new Error(reply.error);
+        return reply.result;
+      });
+      await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "boundarySmooth" },
+        },
+        h.context,
+      );
+      if (!reply || !("result" in reply))
+        throw new Error("Worker did not publish a result.");
+      expect(reply.result.scanEdit!.diagnostics).toMatchObject({
+        passesPerBoundary: 20,
+        iterations: 1,
+        strength: 1,
+        fittedBoundaries: 2,
+        changed: true,
+      });
+      expect(h.host.commit).toHaveBeenCalledOnce();
+      expect(h.state.history).toHaveLength(1);
+      const successor = h.state.entities[0];
+      expect(successor.indexedMesh!.triangles).toEqual(indexedMesh.triangles);
+      expect(
+        indexedMeshMatches(successor.indexedMesh, successor.positions),
+      ).toBe(true);
+      const zero = 16 * Number.EPSILON * 5;
+      for (let i = 0; i < successor.positions.length; i++) {
+        const actual = successor.positions[i],
+          expected = boundaryNative.output[i];
+        if (Math.abs(actual) <= zero && Math.abs(expected) <= zero) continue;
+        expect(actual, `native MCP coordinate ${i}`).toBe(expected);
+      }
+      expect(positions).toEqual(before);
+    });
+  }, 30000);
 
   it("passes ordered fixed mesh targets through shared refinement without changing them", async () => {
     const indexedMesh = {
@@ -624,6 +1166,63 @@ describe("shared workspace operation contracts", () => {
       expect(h.host.commit).not.toHaveBeenCalled();
     }
   });
+  it.each([
+    { patch: { locked: true }, error: "Object is locked" },
+    { patch: { kernelId: "cad" }, error: "Create a mesh copy" },
+  ])(
+    "protects $patch from boundary smoothing before starting work",
+    async ({ patch, error }) => {
+      const h = harness([entity(patch)]);
+      vi.mocked(processMesh).mockClear();
+      vi.mocked(processMesh).mockResolvedValue({
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { positions: new Float32Array(triangle), diagnostics: {} },
+      });
+      await expect(
+        h.ops.mesh_process(
+          {
+            entityId: "mesh",
+            operation: {
+              kind: "scanEdit",
+              action: "boundarySmooth",
+              indices: [0],
+              strength: 0.3,
+              iterations: 3,
+            },
+          },
+          h.context,
+        ),
+      ).rejects.toThrow(error);
+      expect(processMesh).not.toHaveBeenCalled();
+      expect(h.host.commit).not.toHaveBeenCalled();
+    },
+  );
+  it.each([{ locked: true }, { kernelId: "cad" }])(
+    "retains read-only boundary inspection on protected sources %s",
+    async (patch) => {
+      const h = harness([entity(patch)]);
+      vi.mocked(processMesh).mockClear();
+      vi.mocked(processMesh).mockResolvedValue({
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: {
+          inventory: { components: [], boundaries: [] },
+          diagnostics: {},
+        },
+      });
+      const result = await h.ops.mesh_process(
+        {
+          entityId: "mesh",
+          operation: { kind: "scanEdit", action: "inventory" },
+        },
+        h.context,
+      );
+      expect(result).toHaveProperty("artifact");
+      expect(processMesh).toHaveBeenCalledOnce();
+      expect(h.host.commit).not.toHaveBeenCalled();
+    },
+  );
   it("creates an independent tessellation while retaining exact CAD on its source", async () => {
     const h = harness([entity({ kernelId: "native", brep: "BREP" })]);
     await h.ops.mesh_copy({ entityId: "mesh" }, h.context);

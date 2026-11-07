@@ -49,10 +49,15 @@ describe("spatial defeature repatching", () => {
     expect(planar.completed).toBe(true);
     expect(curved.insertedVertices).not.toEqual(planar.insertedVertices);
     expect(curved.insertedNormals.length).toBe(curved.insertedVertices.length);
+    expect(
+      Array.from(curved.insertedNormals).every(
+        (value) => value === Math.fround(value),
+      ),
+    ).toBe(true);
     for (let i = 0; i < curved.insertedNormals.length; i += 3)
       expect(
         Math.hypot(...curved.insertedNormals.subarray(i, i + 3)),
-      ).toBeCloseTo(1, 10);
+      ).toBeCloseTo(1, 6);
     expect(() =>
       repatchSpatialBoundary(topology, loop, { vertexNormals: [] }),
     ).toThrow("match indexed vertices");

@@ -1,8 +1,8 @@
 import type { EdgeUse } from "./mesh-processing";
 
 /** Insertion-ordered immutable edge directory. Rows are value snapshots, not
- * stable object identities. Consumers copy into Map before editing; resident
- * caches use the directory identity, never transient row references. */
+ * stable object identities. Resident caches use the directory identity, never
+ * transient row references; appended edits can use an immutable overlay. */
 export class MeshEdgeIndex implements ReadonlyMap<string, EdgeUse[]> {
   private slots: Uint32Array = new Uint32Array(2048);
   private first: Uint32Array = new Uint32Array(1024);
@@ -155,4 +155,137 @@ export class MeshEdgeIndex implements ReadonlyMap<string, EdgeUse[]> {
   ): void {
     for (const [key, uses] of this) callback.call(thisArg, uses, key, this);
   }
+}
+
+/** A read-only reversed incidence view retaining the original key order. */
+export class ReversedMeshEdges implements ReadonlyMap<string, EdgeUse[]> {
+  readonly [Symbol.toStringTag] = "ReversedMeshEdges";
+  constructor(readonly source: ReadonlyMap<string, EdgeUse[]>) {}
+  get size() {
+    return this.source.size;
+  }
+  has(key: string) {
+    return this.source.has(key);
+  }
+  get(key: string) {
+    const uses = this.source.get(key);
+    return uses && reverseUses(uses);
+  }
+  keys(): MapIterator<string> {
+    return this.source.keys();
+  }
+  *entries(): MapIterator<[string, EdgeUse[]]> {
+    for (const [key, uses] of this.source.entries())
+      yield [key, reverseUses(uses)];
+  }
+  *values(): MapIterator<EdgeUse[]> {
+    for (const [, uses] of this.entries()) yield uses;
+  }
+  [Symbol.iterator](): MapIterator<[string, EdgeUse[]]> {
+    return this.entries();
+  }
+  forEach(
+    callback: (
+      value: EdgeUse[],
+      key: string,
+      map: ReadonlyMap<string, EdgeUse[]>,
+    ) => void,
+    thisArg?: unknown,
+  ) {
+    for (const [key, uses] of this) callback.call(thisArg, uses, key, this);
+  }
+}
+const reverseUses = (uses: EdgeUse[]) =>
+  uses.map(({ face, from, to }) => ({ face, from: to, to: from }));
+
+/** An immutable insertion-ordered edge overlay for appended triangles. */
+class AppendedMeshEdges implements ReadonlyMap<string, EdgeUse[]> {
+  readonly [Symbol.toStringTag] = "AppendedMeshEdges";
+  readonly size: number;
+  constructor(
+    readonly base: ReadonlyMap<string, EdgeUse[]>,
+    readonly overrides: Map<string, EdgeUse[]>,
+  ) {
+    let added = 0;
+    for (const key of overrides.keys()) if (!base.has(key)) added++;
+    this.size = base.size + added;
+  }
+  get(key: string): EdgeUse[] | undefined {
+    return this.overrides.get(key) ?? this.base.get(key);
+  }
+  has(key: string): boolean {
+    return this.overrides.has(key) || this.base.has(key);
+  }
+  *entries(): MapIterator<[string, EdgeUse[]]> {
+    for (const [key, uses] of this.base.entries())
+      yield [key, this.overrides.get(key) ?? uses];
+    for (const [key, uses] of this.overrides)
+      if (!this.base.has(key)) yield [key, uses];
+  }
+  *keys(): MapIterator<string> {
+    for (const [key] of this.entries()) yield key;
+  }
+  *values(): MapIterator<EdgeUse[]> {
+    for (const [, uses] of this.entries()) yield uses;
+  }
+  [Symbol.iterator](): MapIterator<[string, EdgeUse[]]> {
+    return this.entries();
+  }
+  forEach(
+    callback: (
+      value: EdgeUse[],
+      key: string,
+      map: ReadonlyMap<string, EdgeUse[]>,
+    ) => void,
+    thisArg?: unknown,
+  ): void {
+    for (const [key, uses] of this) callback.call(thisArg, uses, key, this);
+  }
+}
+
+/** Reverse an overlay without stacking views across alternating edits. */
+export function reverseMeshEdges(
+  previous: ReadonlyMap<string, EdgeUse[]>,
+  signal?: AbortSignal,
+): ReadonlyMap<string, EdgeUse[]> {
+  if (signal?.aborted)
+    throw new DOMException("Mesh operation cancelled.", "AbortError");
+  if (previous instanceof ReversedMeshEdges) return previous.source;
+  if (previous instanceof AppendedMeshEdges) {
+    const overrides = new Map<string, EdgeUse[]>();
+    let i = 0;
+    for (const [key, uses] of previous.overrides) {
+      if (i++ % 4096 === 0 && signal?.aborted)
+        throw new DOMException("Mesh operation cancelled.", "AbortError");
+      overrides.set(key, reverseUses(uses));
+    }
+    const base = reverseMeshEdges(previous.base, signal);
+    return overrides.size ? new AppendedMeshEdges(base, overrides) : base;
+  }
+  return new ReversedMeshEdges(previous);
+}
+
+/** Append directed corners without copying the entire existing edge index. */
+export function appendMeshEdges(
+  previous: ReadonlyMap<string, EdgeUse[]>,
+  triangles: ArrayLike<number>,
+  start: number,
+  end = triangles.length,
+  signal?: AbortSignal,
+): ReadonlyMap<string, EdgeUse[]> {
+  if (start === end) return previous;
+  const base = previous instanceof AppendedMeshEdges ? previous.base : previous;
+  const overrides = new Map(
+    previous instanceof AppendedMeshEdges ? previous.overrides : [],
+  );
+  for (let corner = start; corner < end; corner++) {
+    if ((corner - start) % 4096 === 0 && signal?.aborted)
+      throw new DOMException("Mesh operation cancelled.", "AbortError");
+    const from = triangles[corner],
+      to = triangles[corner - (corner % 3) + ((corner + 1) % 3)];
+    const key = from < to ? `${from}:${to}` : `${to}:${from}`;
+    const uses = overrides.get(key) ?? base.get(key) ?? [];
+    overrides.set(key, [...uses, { face: Math.floor(corner / 3), from, to }]);
+  }
+  return new AppendedMeshEdges(base, overrides);
 }

@@ -1,0 +1,57 @@
+{
+  "scope": "Two near-touching triangles, native imported STL versus application indexed and unindexed component inventory",
+  "fixture": "tests/fixtures/m2-near-edge-native-20261107/README.md",
+  "inputSha256": "e3a21262309a84818cb473cefaf93c6d4ee4d57924f452ccb1be8dc0cf2ab0f5",
+  "native": {
+    "version": "QuickSurface Pro 8.0.123",
+    "units": "mm",
+    "points": 6,
+    "triangles": 2,
+    "components": 2,
+    "holes": 2
+  },
+  "nativeStlKeyBoundaryControls": {
+    "low": {
+      "offsetMm": 0.0000004,
+      "sha256": "453163693730696daee6ba369e5120885cc80ce04aeb467e64a48ea24cab2dc8",
+      "nativePoints": 4,
+      "nativeComponents": 1,
+      "nativeHoles": 1,
+      "guiAndMcpPointsAndComponentsMatch": true
+    },
+    "high": {
+      "offsetMm": 0.0000006,
+      "sha256": "5806b2e9b2d8133755bc4a4d61c038c1fca4d4129dd7549b237686e7710005f6",
+      "nativePoints": 6,
+      "nativeComponents": 2,
+      "nativeHoles": 2,
+      "guiAndMcpPointsAndComponentsMatch": true
+    },
+    "browserPeakJobBytes": 1002106880,
+    "jobLimitBytes": 34110816256,
+    "activeAfter": 0
+  },
+  "application": {
+    "build": "scanforge-3ac0509beaf027d7",
+    "toleranceMm": 0.001,
+    "indexedGuiAndPublicMcpComponents": 2,
+    "unindexedGuiAndPublicMcpComponents": 1,
+    "driver": "tests/scan-components-browser.mjs",
+    "pageErrors": [],
+    "peakJobBytes": 1018028032,
+    "jobLimitBytes": 34110816256,
+    "activeAfter": 0
+  },
+  "focusedTests": {
+    "passed": 6,
+    "expectedFailures": 2,
+    "files": 2,
+    "jobLimitBytes": 34110816256,
+    "activeAfter": 0
+  },
+  "limitations": [
+    "The native observation is an indexed STL import; no native operation exposing unindexed arrays or a comparable adjustable weld tolerance was observed.",
+    "The two key-boundary controls are consistent with the recovered optimized STL reader key, but do not establish general connectivity behavior or unindexed application semantics; ScanForge currently documents 0.001 mm welding for unindexed input.",
+    "No application behavior was changed and the native comparison for unindexed input remains an expected failure."
+  ]
+}

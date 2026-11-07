@@ -1,0 +1,54 @@
+{
+  "build": "scanforge-04b9f118ac7ac299",
+  "candidate": "cd076a85",
+  "source": "ply-3.ply",
+  "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "sourceTriangles": 3691133,
+  "driverSha256": "ac03d609435373aead0dbf77ab1bc0eca604827f6d6231b62710cd028fa8c0e",
+  "jobLimitBytes": 4294967296,
+  "guiMcpExtract": {
+    "passed": true,
+    "splitTriangles": 3695945,
+    "extractedTriangles": 1776794,
+    "geometryEqual": true,
+    "guiUndo": true,
+    "peakJobBytes": 3337375744,
+    "processCleanupConfirmed": true
+  },
+  "guiProjectReopen": {
+    "passed": false,
+    "projectExportedAndDownloaded": true,
+    "downloadBytes": 475563378,
+    "downloadSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+    "guiImportReportedComplete": true,
+    "failure": "Public MCP job_get timed out during the first post-reopen geometry digest.",
+    "peakJobBytes": 4351176704,
+    "peakWithinLimit": false,
+    "processCleanupConfirmed": true,
+    "temporaryProjectRetained": "C:/Users/Shoung/AppData/Local/Temp/m2-final-ply3-reopen-20261107/gui-reopen.scanforge",
+    "temporaryProjectCleanup": "Automatic approval review rejected removal as blocked by policy."
+  },
+  "preexistingProjectReopenControl": {
+    "passed": false,
+    "method": "Read the retained project without exporting or downloading it in this run, after a fresh GUI Split and Extract.",
+    "projectSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+    "failure": "GUI did not report the project opened within the 120-second wait; a follow-up probe also timed out.",
+    "peakJobBytes": 4295184384,
+    "peakWithinLimit": false,
+    "processCleanupConfirmed": true
+  },
+  "localFilePickerReopenControl": {
+    "passed": false,
+    "method": "Open the same retained project through Chromium's local file-input path without a preceding export or download.",
+    "guiImportReportedComplete": true,
+    "failure": "Browser disconnected during the first post-reopen geometry digest.",
+    "peakJobBytes": 4295237632,
+    "peakWithinLimit": false,
+    "processCleanupConfirmed": true
+  },
+  "limitations": [
+    "The comparison and reopen are separate runs, and the failed run does not establish post-reopen geometry or history correctness.",
+    "Three reopen runs failed and recorded peaks above the limit. The runs do not establish the cause of the failures or isolate a preceding download as the cause.",
+    "Neither run fixes or validates independent mutable restore ownership or native Split parity."
+  ]
+}

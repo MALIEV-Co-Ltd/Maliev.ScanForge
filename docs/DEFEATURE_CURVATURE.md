@@ -31,11 +31,10 @@ their coordinates at the application's existing Float32 mesh publication precisi
 This is a triangle-mesh reconstruction, not a new CAD surface or a guarantee of
 mathematical G1/G2 continuity for arbitrary noisy scans.
 
-Work is bounded to 2048 rim vertices, 8192 connected support faces, 4096 inserted
-vertices, 12 refinement rounds and 24 diagonal-improvement passes per round.
+Work is bounded to2048 rim vertices,8192 connected support faces,4096 inserted vertices and12 refinement rounds. Diagonal legalization reuses the hole patch's bounded edge queue (at most max4096,64 times the patch facet count candidate visits). Updating only affected edges finishes the triangulation instead of refining long slivers left by24 global flip passes. The normalized sampling density and all existing geometry/process memory limits remain unchanged.
 Support collection stops expanding at its budget; a dense collar can still be
 fitted. Singular fits, sharp/overhanging collars, unsupported boundaries and
-refinement limits fall back to the existing spatial-fill path. Fits require
+unrecoverable refinement limits fall back to the existing spatial-fill path. Fits require
 support RMS error at most 1% of patch radius and rim deviation at most 2%.
 The selection should not include an intended crease or span multiple surfaces.
 If both reconstruction paths fail, the operation fails without adopting a
@@ -54,6 +53,23 @@ The job's existing structured `diagnostics` includes:
 Existing removed/pruned triangle, filled-hole and attempt counts remain available.
 Mixed outcomes are distinguished by the counts and fallback reasons.
 
+GUI and MCP both default to a 0.001 mm topology tolerance. Tolerant adjacency
+does not replace the raw Float32 coordinates of retained, unpruned source
+facets. When those corners differ from the generated indexed expansion, the
+successor drops its derived adjacency and rebuilds it on the next topology
+request, keeping diagnostics consistent after reopening.
+
+The owner-approved real-scan regression is recorded in
+[the replacement evidence](evidence/m2-defeature-replacement-20261026.json).
+To replay a retained external case, set `SCANFORGE_DEFEATURE_CASE_DIR` before
+running `node tests/defeature-curvature-browser.mjs` against a production build.
+The directory contains a legacy project `input.json`, zero-based selected facet
+indices in `selection.json`, and `manifest.json` with their SHA-256 digests,
+the Float32 coordinate digest, triangle/selection counts and the seed center
+and normal. The driver verifies those identities before import. Optional
+`SCANFORGE_QA_DIST` selects a frozen build; `SCANFORGE_DEFEATURE_OUTPUT` selects
+a fresh receipt/screenshot directory. Source scan geometry stays outside Git.
+
 Regression coverage checks known planar, doubly curved, rotated and dense panels,
 unchanged retained geometry, reconstructed height, seam facet slopes, mesh winding,
 closure, fallback and cancellation. The spatial helper still has its independent
@@ -61,3 +77,5 @@ native-reference fixture. `node tests/defeature-curvature-browser.mjs` exercises
 the real contextual GUI command and MCP on identical facets, compares their exact
 output, checks undo/redo and writes screenshots plus a cleanup ledger under
 `.resources/defeature-curvature-browser/`.
+
+A manufactured32768-facet panel with an18425-facet selected patch reproduced the previous refinement-budget/iteration-limit failure. The bounded regression now checks closure, consistent winding, unchanged retained Float32 coordinates and less than0.02mm analytic surface error at patch triangle centroids. This is the same selection size and failure class; the original reported selection remains unavailable and no native comparison is inferred from this manufactured control.

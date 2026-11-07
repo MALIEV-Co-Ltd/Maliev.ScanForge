@@ -321,6 +321,7 @@ try {
   const label = page.locator(".pointer-job-status");
   await label.waitFor({ state: "visible" });
   assert.equal(await label.getByRole("progressbar").count(), 2);
+  assert.match(await label.innerText(), /Parallel import \(2 parsers\)/);
   assert.match(await label.innerText(), new RegExp(`first\\.${extension}`));
   assert.match(await label.innerText(), new RegExp(`second\\.${extension}`));
   assert.match(await label.innerText(), /1 queued/);
@@ -357,6 +358,8 @@ try {
   await page.waitForFunction(() => window.__pendingImports.length === 2);
   const state = (await call("job_get", { jobId: receipt.result.jobId })).result;
   assert.equal(state.progressDetails.kind, "importBatch");
+  assert.equal(state.progressDetails.admission.concurrency, 2);
+  assert.equal(state.progressDetails.admission.reason, "parallel");
   assert.equal(
     state.progressDetails.files.filter((file) => file.status === "importing")
       .length,
@@ -661,6 +664,51 @@ try {
       }
     }
   }
+  // Sequential publication of parallel ASC preparations must not race selection revision updates.
+  await page.evaluate(() => window.__pendingImports.splice(0));
+  await mutate("project_new", { discard: true });
+  const cloudIds = [];
+  for (const offset of [0, 80]) {
+    const cloud = Buffer.from(
+      Array.from(
+        { length: 400 },
+        (_, i) =>
+          `${5000 + offset + (i % 20)} ${-3000 + Math.floor(i / 20)} 200`,
+      ).join("\n"),
+    );
+    cloudIds.push(
+      (
+        await call("artifact_put", {
+          name: `fit-${offset}.asc`,
+          offset: 0,
+          base64: cloud.toString("base64"),
+        })
+      ).result.artifactId,
+    );
+  }
+  const fitReceipt = await mutate("project_import_batch", {
+    artifactIds: cloudIds,
+    placeAtOrigin: false,
+  });
+  await page.waitForFunction(() => window.__pendingImports.length === 2);
+  await page.evaluate(() => window.__pendingImports.shift()());
+  for (let i = 0; i < 100; i++) {
+    if ((await call("project_get")).result.objects.length === 1) break;
+    await page.waitForTimeout(50);
+  }
+  assert.equal((await call("project_get")).result.objects.length, 1);
+  await page.evaluate(() => window.__pendingImports.shift()());
+  const fitted = await job(fitReceipt);
+  assert.deepEqual(fitted.result.failed, []);
+  assert.equal(fitted.result.admission.reason, "parallel");
+  assert(
+    fitted.result.admission.estimates.every(
+      (file) => file.basis === "sampled-asc",
+    ),
+  );
+  assert.equal(fitted.result.completed.length, 2);
+  assert.equal((await call("project_get")).result.objects.length, 2);
+  assert.equal((await call("project_get")).result.undo, 2);
   assert.deepEqual(errors, []);
   ledger.result = {
     guiParallelWorkers: 2,
@@ -668,6 +716,7 @@ try {
     undoSteps: 3,
     pointerBars: 2,
     mcpPerFileProgress: true,
+    sequentialCloudPublication: true,
     cancellationPreservesObjects: true,
     activeImportWorkersAfterCleanup: 0,
     pageErrors: errors,

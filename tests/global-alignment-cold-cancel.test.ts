@@ -60,7 +60,10 @@ it("cancels its owning job while the input module is still loading without mutat
     requestId: `cold-${++request}`,
   });
   try {
-    const start = await api.invoke("global_alignment_preview", mutation());
+    const start = await api.invoke("global_alignment_preview", {
+      ...mutation(),
+      initialization: "current",
+    });
     expect(start.ok).toBe(true);
     if (!start.ok) throw Error(start.error.message);
     const { jobId } = start.result as { jobId: string };

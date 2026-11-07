@@ -1,0 +1,35 @@
+{
+  "baseline": {
+    "guiSelectionAfterReopen": 1,
+    "expected": 0,
+    "testFailedAsExpected": true
+  },
+  "fixture": {
+    "triangles": 7282,
+    "numericValues": 65538,
+    "mode": "saved binary project reopened in isolated built GUI and public MCP"
+  },
+  "after": {
+    "gui": "cleared",
+    "mcp": "cleared",
+    "triangles": 7282
+  },
+  "validation": {
+    "build": {
+      "passed": true,
+      "peakJobBytes": 1850994688,
+      "manifest": "scanforge-c30c0d7119d563e5"
+    },
+    "browser": {
+      "passed": true,
+      "peakJobBytes": 1614176256,
+      "cleanup": true
+    },
+    "focused": {
+      "passed": 82,
+      "expectedFailures": 2,
+      "peakJobBytes": 356397056
+    }
+  },
+  "limits": "Selection replacement check only; does not resolve numeric array ownership, resource reliability, or native M2 acceptance."
+}

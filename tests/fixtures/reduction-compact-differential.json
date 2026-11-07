@@ -1,0 +1,73 @@
+{
+  "scope": "Recovered pre-replacement TypeScript loop baseline; not a new installed native GUI export.",
+  "referenceCommit": "108214d04281a8973a7c0396370340c6c0c48fa7",
+  "referenceSourceSha256": "253d6fe3ed483e4ecf98d4d38fc2db8058e373de8d0e60b27033b09694d96857",
+  "cases": [
+    {
+      "label": "connected curved grid",
+      "inputVerticesSha256": "a53e4e4853a1e9969ef3df4406727b2c82207d5b9a6681f13ab54b7e04e5ea1e",
+      "inputTrianglesSha256": "1bd72b2f363b229412eaac628db5816e57037f254f576d28040aaccc72ad0fe9",
+      "inputFaces": 264,
+      "target": 132,
+      "outputFaces": 132,
+      "outputVerticesSha256": "96bf2dd868f479c4dba675f8c2e8463a80bd94b7b6e491731aa0614764c23ca9",
+      "outputTrianglesSha256": "0db30b8a772a9420b1358fb2d2a264ecfcb15b3984a304549fd4c93d2925a822",
+      "reports": 20
+    },
+    {
+      "label": "flat equal-cost grid through multiple rebuilds",
+      "inputVerticesSha256": "75b36af066f919468335c5670ef63f3bda145534d2b992df9846f212e23eaefa",
+      "inputTrianglesSha256": "5f0e5b79aef0564f1ce68742879a33be9ee6ed19d5c2c51d2e75dea31ba91662",
+      "inputFaces": 512,
+      "target": 4,
+      "outputFaces": 64,
+      "outputVerticesSha256": "91304b5a9ab796af5c1702a599b97f801fd4b5fdac7a774e6b8ea95803409bdf",
+      "outputTrianglesSha256": "4de82185bc6f697ebf095e0245c471a31eda3ee1170df965a8fcc734b4ac9fec",
+      "reports": 1001
+    },
+    {
+      "label": "disconnected shared fan",
+      "inputVerticesSha256": "351045bbab4889b04c2dc9e36a25bf6541875dfe7f2554ff405e8066a3aac722",
+      "inputTrianglesSha256": "2a7e8b2a630682a5b42e1e7cccb3463562b8afd78430c009f1b68062142c40cf",
+      "inputFaces": 8,
+      "target": 4,
+      "outputFaces": 4,
+      "outputVerticesSha256": "54e6e7ef58418b57ea7eecc03c32dcbeff704598bc30b3beefa9625ced2e6b91",
+      "outputTrianglesSha256": "ad0baa2fcaa400f51c9296400cabedfa1f8d53efbde4ac0f766f5b7a56571dbb",
+      "reports": 297
+    },
+    {
+      "label": "closed high-valence bipyramid",
+      "inputVerticesSha256": "ff944c0ed803d39fd5384222d541bbb77dd9a6d33b84bdfb85b43e9d6b7d2ddf",
+      "inputTrianglesSha256": "15948a355cd1f8cb83b8736f7927593d5bfa16c859c1f429782ad657d75da32c",
+      "inputFaces": 258,
+      "target": 128,
+      "outputFaces": 128,
+      "outputVerticesSha256": "83332f86628ad5397cc723071d7aa3a5b4825582a39043ef82e722d06c1ebe17",
+      "outputTrianglesSha256": "c854fc6bdffc9f96cf5a79cb7a9d02201a38e4e6472e55b0858829b339707fd1",
+      "reports": 15
+    },
+    {
+      "label": "degenerate and repeated faces",
+      "inputVerticesSha256": "4165a5be53209fff5ace98d58c3de63f2de6ef10a25df234d95a52b06bca362f",
+      "inputTrianglesSha256": "3a803f29a047c8d48a5c6191d4b1bdcb1bd37bcee3ec15fa57bb3b48deebd7d3",
+      "inputFaces": 6,
+      "target": 2,
+      "outputFaces": 5,
+      "outputVerticesSha256": "7971b3b63954ea29eadbcab60abb430e367142fd50684ebfe8470e11c343f4a7",
+      "outputTrianglesSha256": "2f14186531b484dc08d015c2797a90f4630f9dda40079fe93d44cf58cef1fb51",
+      "reports": 1001
+    },
+    {
+      "label": "whole input 40960",
+      "inputVerticesSha256": "0bf711fae0b43a57c381ced8cf61e832f51d861809538e79d0b66ddc68ce4bc2",
+      "inputTrianglesSha256": "f741790c404c61b42d8581768e880634b65007cbaf9f21c1be8152bdd4cd6f5c",
+      "inputFaces": 40960,
+      "target": 20480,
+      "outputFaces": 20480,
+      "outputVerticesSha256": "96841cb8f0d3e5cf9ff02dbe8577a78e944b52fcc707490d95e441a213cdac18",
+      "outputTrianglesSha256": "4e0775fc434767b6258c72b3b6ec67e8add6eefbb0cd273b294a3f03d13779cf",
+      "reports": 17
+    }
+  ]
+}

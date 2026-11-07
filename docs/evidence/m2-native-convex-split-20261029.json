@@ -1,0 +1,59 @@
+{
+  "scope": "Native GUI Split and current shared GUI/public MCP comparison for one closed convex cutter.",
+  "native": {
+    "product": "QUICKSURFACE Pro 8.0.123",
+    "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "sourceFile": "tests/fixtures/m2-native-convex-split-20261029/square-source.stl",
+    "sourceSha256": "2202c3e08785be8c7694ea4e72aefb7cd3f29460e17435410b1aa7d844d66d19",
+    "cutterFile": "tests/fixtures/m2-native-convex-split-20261029/convex-cutter.stl",
+    "cutterSha256": "30994066b6e33d4d479c894405ffcec5e2350d4e42c89ade4e948a2443823612",
+    "units": "mm",
+    "command": "Edit square-source > Additional tools > Split Mesh",
+    "mode": "Split with another body or a mesh",
+    "selectedCutter": "convex-cutter",
+    "envelope": false,
+    "steps": [
+      "Preview",
+      "OK",
+      "Close Edit",
+      "hide cutter",
+      "Export Visible STL"
+    ],
+    "reportedSourceFacets": 18,
+    "reportedIndividualMeshes": 2,
+    "reportedHoles": 3,
+    "exportFile": "tests/fixtures/m2-native-convex-split-20261029/native-convex-result-20261029.stl",
+    "exportSha256": "6e08cdde5035399ed82c103a4fbd9a973846a1f824f3e77ad5792f8d2bfb7b15",
+    "exportFacets": 18,
+    "exportAreaMm2": 16
+  },
+  "application": {
+    "commit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+    "build": "scanforge-b9363ff5ad191d86",
+    "guiMcpEqual": true,
+    "outputFacets": 34,
+    "outputAreaMm2": 16,
+    "individualComponents": 2,
+    "componentAreasMm2": [1, 15],
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-convex-compare-20261029-r2-guard.json",
+    "ledger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-convex-compare-20261029-r2/split-lifecycle-browser-ledger.json"
+  },
+  "diagnosis": {
+    "refinedFacetsBeforeSeam": 18,
+    "constraintEdges": 8,
+    "exactUnorderedFacetMatchesNative": 12,
+    "afterSeamFacets": 34,
+    "interpretation": "The seam stage splits both incident faces at each of eight constraint midpoints, accounting for 16 added facets. Refined facets still differ from native, so suppressing midpoints alone is insufficient."
+  },
+  "regression": {
+    "redReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-convex-red-20261029-r1.json",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-convex-tests-20261029-r1.json",
+    "status": "Native comparison remains an expected failure: 306 application coordinates vs 162 native coordinates."
+  },
+  "limitations": [
+    "One small manufactured source and convex cutter; not proof of general native Split behavior.",
+    "STL does not preserve native indexed seam identity; geometric position welding joins seam edges. The native two-component count is a GUI observation, not an inference from the STL.",
+    "Native save/reopen, cancellation, preview repeats, other cutters and complete geometry equivalence remain unverified.",
+    "No behavioral correction has been made."
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "scope": "Production build and full-suite restore discovery contract correction",
+  "buildCandidate": "ae983645",
+  "buildIdentity": "scanforge-1f56e87116e8e90f",
+  "build": {
+    "command": ["npm.cmd", "run", "build"],
+    "jobLimitBytes": 34110816256,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 2033033216,
+    "totalProcesses": 39,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 147.47378160001244
+  },
+  "originalSuite": {
+    "guard": {
+      "command": ["npm.cmd", "test"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 1374908416,
+      "totalProcesses": 1012,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 376.18883189999906
+    },
+    "filesPassed": 845,
+    "filesFailed": 1,
+    "filesSkipped": 33,
+    "testsPassed": 50962,
+    "testsFailed": 1,
+    "expectedFailures": 1,
+    "testsSkipped": 80,
+    "failure": "MCP SDK discovery test still expected the removed ordinary-array reuse wording."
+  },
+  "correctedCandidate": "e75aa3c8941e082d6ae1cab3e8befeec8dce0b09",
+  "testBlob": "cd2272c4e1cb51b564e161e5bcc8f3e299f4708d",
+  "focused": {
+    "guard": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/mcp-server.test.ts",
+        "tests/project-decoding-reuse.test.ts",
+        "tests/project-distinct-buffer-ownership.test.ts",
+        "--maxWorkers=1"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 371150848,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 2.6560525000095367
+    },
+    "filesPassed": 3,
+    "testsPassed": 32
+  },
+  "correctedSuite": {
+    "guard": {
+      "command": ["npm.cmd", "test"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1374257152,
+      "totalProcesses": 1012,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 375.0771268999961
+    },
+    "filesPassed": 846,
+    "filesSkipped": 33,
+    "testsPassed": 50963,
+    "expectedFailures": 1,
+    "testsSkipped": 80
+  },
+  "limits": [
+    "The build predates only the discovery test correction; no application source changed between the build and corrected candidate.",
+    "The remaining expected failure is the separate unindexed near-edge native comparison.",
+    "Hosted exact-head checks and broader native, integration and milestone acceptance remain open."
+  ]
+}

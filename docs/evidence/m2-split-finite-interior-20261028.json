@@ -1,0 +1,26 @@
+{
+  "scope": "Manufactured finite interior slit in the experimental Split candidate; no native Split operation executed.",
+  "geometry": {
+    "source": [
+      [0, 0, 0],
+      [1, 0, 0],
+      [0, 1, 0]
+    ],
+    "cutter": [
+      [0.5, 0.1, -1],
+      [0.5, 0.3, -1],
+      [0.5, 0.1, 1]
+    ],
+    "intersection": "x=0.5, y approximately 0.1 through 0.2, z=0",
+    "sourcePerimeter": "2 + sqrt(2)",
+    "twoSeamSidesTotalLength": 0.2
+  },
+  "candidateObservation": "One connected indexed part; every boundary edge lies either on the original triangle perimeter or the finite cutter interval. Measured perimeter and two-sided seam length match the controls. The output matches its indexed positions and preserves source and cutter buffers.",
+  "productionObservation": "The stronger local production regression fails because output parts share boundaries outside the finite cutter interval. The current regression assumes two output parts; the experimental connected-part result has one, so the regression cannot by itself establish the intended native object count.",
+  "verification": "Four files passed 43 tests with one expected folded-cutter failure under m2-interior-finite-boundary-suite-20261028-r1-guard.json. Shared publication and worker controls substitute the candidate at an in-process boundary, so they do not establish actual browser-worker or public MCP behavior.",
+  "limitations": [
+    "No native input, output, result object count or ownership was observed.",
+    "The candidate is not connected to the production GUI/MCP route.",
+    "Rendered selection, picking and local-origin precision remain unverified."
+  ]
+}

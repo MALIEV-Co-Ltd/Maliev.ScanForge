@@ -1,0 +1,38 @@
+{
+  "scope": "Isolated byte-array request-body hypothesis test; the candidate is not integrated",
+  "baselineCommit": "d802834",
+  "candidate": "A separate worktree UTF-8 encodes bridge JSON payloads of at least 65536 characters into Uint8Array request bodies instead of wrapping them in Blobs. Smaller payloads remain strings.",
+  "synthetic": {
+    "method": "One headless Chromium run sent 1835 local synthetic JSON requests, totaling 641448830 bytes; no application artifact data was used.",
+    "peakJobBytes": 718700544,
+    "elapsedSeconds": 9.447,
+    "cleanupConfirmed": true,
+    "limitation": "The synthetic result is not application or MCP acceptance. Its first attempt was rejected before launch because disk headroom was below the guard."
+  },
+  "candidateValidation": {
+    "bridgeTestsPassed": 14,
+    "directViteBundle": "scanforge-3fd217d60ba16e99",
+    "fullBuild": "not run for this candidate",
+    "fullSizeReplay": "failed: after a full download with matching stream and file hashes, the project opened but the browser disconnected before geometry verification; post-reopen history was not reached.",
+    "downloadBytes": 475563378,
+    "downloadSha256": "efc509dd7056ab4c4946e5443eca502f12668dd9b5f7acbeb73696761a080c29",
+    "peakJobBytes": 4322021376,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "nearDownloadSample": {
+    "unit": "private committed bytes in one nearby two-second process sample",
+    "renderer": 2296999936,
+    "chromeUnclassified": 689627136,
+    "gpu": 461819904,
+    "limitation": "The sample does not identify specific allocations or establish causality."
+  },
+  "retainedEvidenceSha256": {
+    "syntheticDriver": "42d713528c6c038ed9ffb43608e4d6d6972bf4771c111836b0325a2ccb0896eb",
+    "syntheticReceipt": "559bb60f8057aad763d3d6f0b5cc200f55d7efa1c68b39cd9de041ab2fba7f61",
+    "candidateReceipt": "5c11cfd470765429a809b1e9d1f92198d4da64cc50172116804d6cfb3b5d40a2",
+    "candidateLog": "5956fea62c80b3664fdd1c561a139ea66b8b58ed1ac9b16d79b760e795ceb732"
+  },
+  "conclusion": "The synthetic improvement did not carry over to a passing real replay. Keep the existing bridge behavior and continue investigating the resource limit."
+}

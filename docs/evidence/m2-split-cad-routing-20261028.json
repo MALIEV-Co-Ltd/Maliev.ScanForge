@@ -1,0 +1,18 @@
+{
+  "scope": "Preserve the existing sampled CAD and non-mesh Split route while using the finite single-mesh route for ordinary mesh cutters. Reference-plane routing is unchanged.",
+  "candidate": "Uncommitted combined working tree based on b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02; this is not the published PR head.",
+  "sharedContract": "GUI and mesh_process/scanEdit/split resolve the cutter through scanSplitCutter. The internal routing flag is derived from the resolved entity and is not an advertised MCP parameter.",
+  "validation": {
+    "integratedTypecheck": "15 batches passed under the 4 GiB job limit, before adding the test-only MCP case; m2-combined-cad-routing-types-20261028-r1.json",
+    "focused": "108 tests in seven files passed; m2-combined-cad-routing-20261028-r2.json",
+    "bundle": "Vite production build passed; m2-combined-cad-build-20261028-r1.json. The external output directory warning is expected for this isolated build.",
+    "browser": "On one manufactured triangle and finite mesh cutter, GUI and public MCP returned equal geometry with five faces and two components; Undo/Redo and binary save/reopen passed with no page or console errors. m2-combined-cad-browser-20261028-r1-guard.json",
+    "cadMcp": "The shared MCP operation test resolved a sampled CAD cutter to the existing segment-producing route and retained the cutter. It used the application operation with a mocked worker transport."
+  },
+  "limitations": [
+    "Native runtime routing and output ownership for mesh and CAD cutters are not established by the retained static evidence.",
+    "The CAD case has not been compared with native QuickSurface or exercised through the rendered GUI.",
+    "The browser mesh fixture is a bounded control and does not establish general Split equivalence or complete M2 acceptance.",
+    "The full 51494-test integrated suite ran before this routing change, not on this exact working tree."
+  ]
+}

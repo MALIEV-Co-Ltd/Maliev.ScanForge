@@ -1,7 +1,10 @@
 import { meshStats } from "./geometry";
 import { indexedMeshMatches } from "./indexed-mesh";
 import type { IndexedMesh, MeshStats, Positions } from "./types";
-import { smoothDisplayNormals } from "./viewport-display";
+import {
+  smoothDisplayNormals,
+  smoothIndexedDisplayNormals,
+} from "./viewport-display";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 
 /** Disposable display data stays outside authored entities and project files. */
@@ -84,6 +87,27 @@ export function prepareScanRenderData(
       : mesh
         ? meshGeometryNormals(mesh, signal)
         : smoothDisplayNormals(positions),
+  };
+}
+
+/** Prepare compact Split display without changing its existing welded shading. */
+export function prepareSplitRenderData(
+  positions: Positions,
+  indexedMesh: IndexedMesh,
+  verified = false,
+): ScanRenderData {
+  const stats = meshStats(positions);
+  const bounds: ScanRenderData["bounds"] = [...stats.min, ...stats.max];
+  return {
+    bounds,
+    radius: Math.hypot(
+      (bounds[3] - bounds[0]) / 2,
+      (bounds[4] - bounds[1]) / 2,
+      (bounds[5] - bounds[2]) / 2,
+    ),
+    stats,
+    indexedMesh,
+    normals: smoothIndexedDisplayNormals(positions, indexedMesh, verified),
   };
 }
 

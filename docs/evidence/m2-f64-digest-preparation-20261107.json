@@ -1,0 +1,34 @@
+{
+  "scope": "Float64 typed carrier hashing and agent digest preparation, not Float64 project restore",
+  "before": [
+    "Agent geometry digest rejected Float64 typed geometry.",
+    "Finite private Float64 hashing rebuilt bytes in staging."
+  ],
+  "after": [
+    "Agent digest hashes Float64 values as canonical little-endian f64 and reports actual buffer offsets/backing.",
+    "Finite private Float64 hashing may borrow bounded typed chunks on little-endian hosts; shared or nonfinite inputs and export streams retain staged bytes."
+  ],
+  "checks": {
+    "focused": {
+      "passed": 57,
+      "peakJobBytes": 701915136
+    },
+    "build": {
+      "passed": true,
+      "manifest": "scanforge-39d93a14730bf848",
+      "peakJobBytes": 1861607424
+    },
+    "browser": {
+      "passed": true,
+      "cases": 18,
+      "peakJobBytes": 1007222784,
+      "cleanupConfirmed": true,
+      "scope": "GUI and public MCP Split and digest on existing supported carriers"
+    }
+  },
+  "limitations": [
+    "Float64 digest API test uses an in-memory workspace host; the GUI does not currently publish Float64 project geometry.",
+    "Other validation, modeling, rendering and project serialization carrier paths remain to be audited.",
+    "Production restore ownership and resource reliability, native acceptance, merge and milestone closure remain open."
+  ]
+}

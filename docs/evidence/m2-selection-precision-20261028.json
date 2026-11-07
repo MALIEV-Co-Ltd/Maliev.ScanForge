@@ -1,0 +1,16 @@
+{
+  "scope": "Experimental precise mesh screen-selection index, worker transport and shared scan_select_region operation; no rendered browser session was exercised.",
+  "problem": "Number-array mesh positions were rounded to world-space Float32 both in the worker client and BVH, collapsing a small triangle at X=100000000.",
+  "change": "Mesh number-array inputs are transferred to workers as Float64Array; the selection BVH uses Float32 coordinates relative to the mesh bounds center. Ray origins and broad-phase bounds are translated between local BVH and world coordinates; clipping remains world-space. Worker-count estimation accounts for the larger precise input. Float32 mesh and point-cloud transport retain their prior representation.",
+  "coverage": "Controls compare rectangle, brush, through, clipping, visibility and partition masks; the scan_select_region operation calls the same index in a mocked host and produces the same mask as the direct selection control. The actual worker dispatcher was invoked in-process with structured-cloned output. Neither test is an actual browser worker, rendered GUI or public MCP transport.",
+  "validation": {
+    "tests": "26 tests across screen selection, worker client, in-process worker dispatcher and public operation: m2-selection-precision-budget-green-20261028-r2-guard.json.",
+    "typecheck": "Focused TypeScript passed with Node and Vite types under m2-selection-precision-types-20261028-r3-guard.json. The first ad hoc typecheck omitted Node types and failed in unrelated timer declarations; it was not a source-code failure.",
+    "large": "A manufactured 400000-triangle number-array mesh retained the selected triangle and source values under m2-selection-large-precision-20261028-r2-guard.json; peak job bytes 373579776. This is an in-process test, not browser-worker memory measurement."
+  },
+  "limitations": [
+    "The BVH remains Float32, so local precision depends on mesh spatial extent.",
+    "Viewport rendering and other picking paths still require local-origin assessment; this change does not prove rendered precision.",
+    "The finite Split candidate is not connected to production, and native parity and actual GUI/public MCP validation remain open."
+  ]
+}

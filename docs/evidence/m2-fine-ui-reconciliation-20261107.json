@@ -1,0 +1,31 @@
+{
+  "scope": "Fine alignment compact advanced settings and help; shared GUI/public-MCP behavior",
+  "browser": "Browser plugin not available; isolated Playwright Chrome",
+  "results": {
+    "advancedSettingsOpened": true,
+    "helpOpened": true,
+    "guiMcpGeometryEqual": true,
+    "pointMatching": "fullTargetPointToPoint",
+    "meshMatching": "fullTargetSurface",
+    "undoRedo": true,
+    "pageErrors": [],
+    "peakJobBytes": 940318720,
+    "cleanupConfirmed": true,
+    "focusedTestsPassed": 22,
+    "focusedPeakJobBytes": 335167488,
+    "typecheck": {
+      "batches": 15,
+      "peakJobBytes": 1219825664,
+      "cleanupConfirmed": true
+    }
+  },
+  "priorAttempt": {
+    "passed": false,
+    "reason": "Outdated point-query distanceTests assertion for a surface query; surface matching does not increment that counter.",
+    "peakJobBytes": 901898240,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "A manufactured browser fixture, not a native alignment comparison or general resource guarantee."
+  ]
+}

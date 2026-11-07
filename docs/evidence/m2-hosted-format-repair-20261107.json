@@ -1,0 +1,13 @@
+{
+  "scope": "Repair formatting failures in the hosted M2 integration check",
+  "failedHostedCommit": "9736c7a80899c690f2bb45b6a48ed1fb694d88d0",
+  "hostedRun": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/42370718234",
+  "hostedResult": "Build, full tests and both CAD smoke checks passed; repository formatting failed.",
+  "repair": "Formatted the flagged tracked evidence, fixture and test files; additional tracked evidence files also reported by the local formatter were formatted. JSON values were compared before and after. The byte-verified generated Poisson loader was excluded from formatting and its provenance verification passed.",
+  "localFormatting": "Passed with a temporary ignore entry for the unrelated untracked .m2-vite-probe.config.ts; the temporary ignore file was removed.",
+  "focused": "10 tests passed across reversed Split and point-cloud meshing checks, with no owned processes left running.",
+  "limitations": [
+    "The hosted check must run again on the commit containing this repair.",
+    "The local untracked probe was not modified and is not part of the hosted commit."
+  ]
+}

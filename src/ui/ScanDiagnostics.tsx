@@ -1,8 +1,9 @@
 import { ScanToolIcon } from "./ScanToolIcon";
-import type { Positions } from "../types";
+import type { IndexedMesh, Positions } from "../types";
 import { useEffect, useState } from "react";
 import { cachedTopologySummary } from "../scan-topology-summary";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
+import { processMesh } from "../processing-client";
 import {
   observeScanDiagnostics,
   watchScanDiagnostics,
@@ -11,9 +12,11 @@ import {
 
 export function ScanDiagnostics({
   positions,
+  sourceIndexed,
   onEdit,
 }: {
   positions: Positions;
+  sourceIndexed?: IndexedMesh;
   onEdit?: (section: "components" | "holes" | "boundaries") => void;
 }) {
   const [result, setResult] = useState<{
@@ -21,6 +24,52 @@ export function ScanDiagnostics({
     state: DiagnosticState;
   }>();
   const [requested, setRequested] = useState<{ positions: Positions }>();
+  const [componentRetry, setComponentRetry] = useState(0);
+  const [componentCount, setComponentCount] = useState<{
+    positions: Positions;
+    sourceIndexed?: IndexedMesh;
+    count?: number;
+    error?: boolean;
+  }>();
+  const state = result?.positions === positions ? result.state : undefined;
+  const topology =
+    state?.phase === "ready"
+      ? state.topology
+      : cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
+  const needsComponentInventory =
+    positions.length >= 9 &&
+    (!!sourceIndexed || (topology?.degenerateTriangles ?? 0) > 0);
+  useEffect(() => {
+    if (!needsComponentInventory) return;
+    const controller = new AbortController();
+    setComponentCount({ positions, sourceIndexed });
+    void processMesh(
+      {
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+        positions,
+        sourceIndexed,
+        tolerance: SCAN_TOPOLOGY_TOLERANCE,
+      },
+      { signal: controller.signal, reuseTopology: true },
+    ).then(
+      (result) => {
+        if (!controller.signal.aborted)
+          setComponentCount({
+            positions,
+            sourceIndexed,
+            count: result.scanEdit?.inventory?.components.length,
+            error: !result.scanEdit?.inventory,
+          });
+      },
+      () => {
+        if (!controller.signal.aborted)
+          setComponentCount({ positions, sourceIndexed, error: true });
+      },
+    );
+    return () => controller.abort();
+  }, [positions, sourceIndexed, needsComponentInventory, componentRetry]);
   useEffect(
     () =>
       watchScanDiagnostics(positions, (state) =>
@@ -38,23 +87,30 @@ export function ScanDiagnostics({
         : undefined,
     [positions, requested],
   );
-  const state = result?.positions === positions ? result.state : undefined;
-  const topology =
-    state?.phase === "ready"
-      ? state.topology
-      : cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
+  const indexedCount =
+    componentCount?.positions === positions &&
+    componentCount.sourceIndexed === sourceIndexed
+      ? componentCount
+      : undefined;
   return (
     <div
       className="scan-diagnostics"
       role="group"
       aria-label="Mesh editing"
-      aria-busy={state?.phase === "pending"}
+      aria-busy={
+        state?.phase === "pending" ||
+        (needsComponentInventory &&
+          indexedCount?.count === undefined &&
+          !indexedCount?.error)
+      }
     >
       {[
         {
           label: "Individual meshes",
           section: "components" as const,
-          value: topology?.components,
+          value: needsComponentInventory
+            ? indexedCount?.count
+            : topology?.components,
           help: "Connected components of the current mesh.",
         },
         {
@@ -79,20 +135,36 @@ export function ScanDiagnostics({
           </span>
           <output aria-label={`${label} count`} title={help}>
             {value?.toLocaleString() ??
-              (state?.phase === "error"
+              ((section === "components" &&
+                needsComponentInventory &&
+                indexedCount?.error) ||
+              state?.phase === "error"
                 ? "Unavailable"
-                : state?.phase === "pending"
+                : (section === "components" && needsComponentInventory) ||
+                    state?.phase === "pending"
                   ? "Calculating…"
                   : "Not calculated")}
           </output>
-          <button
-            disabled={!onEdit}
-            title={`Edit ${label.toLowerCase()}`}
-            onClick={() => onEdit?.(section)}
-            aria-label={`Edit ${label.toLowerCase()}`}
-          >
-            Edit…
-          </button>
+          {section === "components" &&
+          needsComponentInventory &&
+          indexedCount?.error ? (
+            <button
+              type="button"
+              aria-label="Retry component count"
+              onClick={() => setComponentRetry((retry) => retry + 1)}
+            >
+              Retry
+            </button>
+          ) : (
+            <button
+              disabled={!onEdit}
+              title={`Edit ${label.toLowerCase()}`}
+              onClick={() => onEdit?.(section)}
+              aria-label={`Edit ${label.toLowerCase()}`}
+            >
+              Edit…
+            </button>
+          )}
         </div>
       ))}
       {!topology && state?.phase !== "pending" && (

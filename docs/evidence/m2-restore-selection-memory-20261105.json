@@ -1,0 +1,33 @@
+{
+  "scope": "Decoder-worker staging and deferred screen-selection preparation for the M2 original-scan reopen workflow; not complete M2 acceptance.",
+  "baseCommit": "af10f33caf664e5e2bbfdad56e3e10e13487927f",
+  "build": "scanforge-5670239e7281cd8a",
+  "changes": [
+    "Verified worker-private Float64 mesh-coordinate chunks can transfer without first materializing an ordinary numeric array in the decoder worker. Public project values remain ordinary arrays and other carriers retain their existing behavior.",
+    "Screen-selection preparation begins on a selection gesture instead of when brush mode is enabled, avoiding a full scan copy when history restores a selected mesh. GUI and MCP retain their existing selection operations."
+  ],
+  "diagnosis": "An instrumented prior PLY-3 run started screen-selection-worker immediately after GUI Undo and allocated a 266108040-byte Float64 copy. The worker-start event and allocation did not occur at that point after deferring preparation. Browser, graphics, renderer and artifact allocations also contributed to the guarded peak; the trace does not establish a single cause of all prior failures.",
+  "validation": {
+    "fullSuite": "50568 passed, 76 skipped; 4 GiB job guard passed and cleanup confirmed. An earlier run failed three gesture tests due to an optional viewport object-map lookup; the final source passed those focused tests and the full rerun.",
+    "build": "All 14 typecheck batches and the production build passed under the 4 GiB guard.",
+    "selection": "Thirty focused selection, gesture and MCP tests passed. A separate browser replay compared actual GUI gestures with public MCP for rectangle, circle, brush, freehand and line on point clouds and meshes, including subtraction and history.",
+    "decoder": "Thirteen private Float64 decoding tests cover carriers, aliases, signed zero, borrowed buffers and invalid input. A real browser decoder-worker check verified returned arrays, aliases, cancellation and worker termination.",
+    "originalPly3": "The exact final build ran GUI Split and Extract, public MCP artifact export and complete download, GUI in-place project reopen, geometry digests, and GUI Undo/Redo after reopen. Source, cutter and output geometry matched; input had 3691133 facets and output had 3695945 facets. The 4 GiB job guard passed at 4219797504 bytes with cleanup confirmed. An earlier untraced combined candidate passed at 4268969984 bytes; an instrumented run completed the workflow but exceeded the guard at 4297043968 bytes. These are separate runs and do not establish a general memory bound.",
+    "combinedPreview": "The two changes were applied to the existing combined preview without replacing other task work. Forty-six focused tests and a real decoder-worker browser check passed from that checkout. The original PLY-3 replay used the M2 candidate build, not the combined preview."
+  },
+  "receipts": {
+    "build": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-final-selection-build-20261105.json",
+    "fullSuite": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-lazy-selection-full-suite-r2-20261105.json",
+    "selection": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-lazy-selection-parity-guard-20261105.json",
+    "originalPly3": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-lazy-selection-final-guard-20261105.json",
+    "instrumentedOverLimit": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-lazy-selection-ply3-r2-guard-20261029.json",
+    "previewFocused": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-combined-decoder-selection-tests-20261105.json",
+    "previewWorker": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-combined-decoder-browser-20261105.json",
+    "reuseRaceDiagnostic": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-race-red-20261105.json"
+  },
+  "limitations": [
+    "A separate transport diagnostic reproduced stale numeric-array reuse when an already-selected candidate is mutated during a later asynchronous lookup. The diagnostic exercises a low-level callback and does not establish that a normal GUI or MCP action can trigger the mutation; restore safety remains open.",
+    "The PLY-3 peak has less than 72 MiB headroom and a previous instrumented run exceeded the guard. Repeated runs do not guarantee all large projects fit.",
+    "Native rotated Split differs on a retained control, and broader M2 native, lifecycle and resource gates remain open."
+  ]
+}

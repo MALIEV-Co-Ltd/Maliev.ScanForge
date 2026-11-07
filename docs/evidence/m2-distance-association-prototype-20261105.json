@@ -1,0 +1,78 @@
+{
+  "scope": "Isolated finite Split distance and boundary-edge prototype; not a production change or native parity claim",
+  "base": "64c353f6",
+  "nativeControls": "At source scale 1000, the one-step contact at 0.00006103515625 mm produced three native facets while the two-step contact at 0.0001220703125 mm produced five. On the original-size source, a 419-step contact at 0.0000499486923218 mm produced three native facets. Cutter round trips preserved coordinates. See the three pinned fixture README files.",
+  "candidate": "In an isolated worktree, associate an unbound hit endpoint to a unique source-boundary contact within Float32-derived 0.0001 distance, then discard collapsed segments. For isolated cut edges with two incident faces and two boundary vertices, omit the usual synthetic midpoint. The first version omitted the incident-face test and regressed boundary-only cuts; the current version adds it and collects only edges incident to isolated cut tips.",
+  "observations": {
+    "nativeFacetControls": "The rotated mismatch and both new below-radius controls now match unordered native Float32 facets in the prototype. The existing above-radius scaled control still matches. These are not GUI/MCP tests.",
+    "focused": "81 passed, 6 failed. Two failures assert old five-facet results, three assert preservation of close endpoints in shared and face-input paths, and one asserts the previous rotated mismatch. These changed expectations require review; an unconnected nearby-endpoint control has no corresponding native evidence.",
+    "broader": "245 passed across 20 finite Split, coverage, orientation, publication and identity test files.",
+    "originalPly3": "A shared candidate run on the original 3,691,133-face scan passed source preservation, indexed consistency, two-part and area checks under the 4 GiB job cap. Input area 7083.997795891035; output area 7083.997795890635; peak job memory 2123636736 bytes; cleanup confirmed. This is not GUI/MCP lifecycle validation."
+  },
+  "artifacts": {
+    "worktree": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105",
+    "faceInputSha256": "484c71d5cccb73dd03e1d0a552ff01efcdb435bc9f6d9f918f817569165f9445",
+    "seamsSha256": "5c36c2d139450ced03d436bc867bb6f58d130085ab941b62488485f0fb2dc455",
+    "focusedResultsSha256": "da735de35df538ad04233912e4ce1272cbeee1a06b6b8741d15dc23ca0b6801d",
+    "focusedGuardSha256": "4bb014e16bd6ca0dd8ec9dec3574e0b1e5a0a145f9990e95920c108a9f36dd4d",
+    "broaderResultsSha256": "5339712874f353615301390994febf017676cced061980d4947db8dc5fd9bfe6",
+    "broaderGuardSha256": "1c6264b6857c8d78b9737002508e2890c1c83c6c473db27286f16db5b571a866",
+    "ply3ResultSha256": "7f42c524c33fff36cf9af9da4b5547b151f839af9c6dbc7e3125f0a7cd98fe52",
+    "ply3GuardSha256": "b0c0d64c5a00de001640430d61448d0657dc49a5b23dd32c7228ea82333efde6"
+  },
+  "limitations": [
+    "The 0.0001 association is an inferred hypothesis, not a proven general native rule. Unique nearby contacts can be unrelated and the candidate changes authored geometry.",
+    "The prototype has not had full tests, type checking, code review, GUI or MCP replay, native winding or topology comparison, or a worst-case JS-map memory bound. It is not integrated.",
+    "Four radius native discrepancies remain open. Three small-radius native outputs lose nonzero source area; the wide-below case does not show meaningful area loss. Broader M2 acceptance and final CI also remain open."
+  ],
+  "nativeDisjointFollowup": {
+    "fixture": "tests/fixtures/m2-nearby-disjoint-cuts-20261105/README.md",
+    "result": "Two separate cutter faces with endpoints about 0.000064 mm apart were imported in mm. QuickSurface exported six facets joining their near endpoints; the cutter round trip retained unordered input vertices. The isolated prototype matched the native unordered facets; the current shared operation does not. This fixture has on-plane cutter edges and does not prove behavior for all unrelated cuts.",
+    "prototypeTest": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105/tests/m2-nearby-disjoint-native.test.ts",
+    "prototypeTestSha256": "1dd7435df896f22199978d7f15d42c82c94cb2a10184a645dda3d2d7be0c0ff6",
+    "guardSha256": "bc80fec76ef206003674fd1b68a5ee0dae8e410ff0909c04ef7f837b382dda1b",
+    "validation": "2 passed; 4 GiB job peak 329375744 bytes; cleanup confirmed."
+  },
+  "review20261105": {
+    "topology": "Independent review reproduced a closed cut-edge fan whose endpoints also belong to unrelated boundary fans. The prototype counts the vertices as boundary and skips the midpoint, leaving the closed fan cut unopened. tests/m2-seam-branching.test.ts now pins the baseline behavior; the prototype fails it.",
+    "workBudget": "A face with 1100 unrelated interior segments and 1100 boundary contacts exceeds the default work budget in the prototype because every unbound endpoint scans all contacts. tests/scan-split-finite-face-input.test.ts pins the baseline case; the prototype fails it.",
+    "memory": "The prototype collects unaccounted string-keyed edge maps for isolated tips before checking its typed-memory allowance. A high-valence tip or many isolated tips can retain O(triangles) extra objects. An explicitly bounded approach is required before integration.",
+    "scope": "The disjoint on-plane cutter native control supports association on that fixture but does not establish native handling of an unrelated short interior segment whose two ends are both near the same boundary contact."
+  },
+  "status": "Distance association integrated; the revised tolerance change is recorded separately. Four native radius discrepancies and M2 acceptance remain open.",
+  "secondReview20261105": {
+    "findings": "The disconnected-fan fix passed its reproduction. A crowded spatial bucket of 1100 contacts and 1100 nonmatching segments still exceeded the work budget; duplicate cuts on a 2000-triangle open fan repeatedly traversed the same vertex fan and also exceeded its budget. The contact grid had no independent allocation cap. Two baseline regressions now pin the crowded and duplicate cases.",
+    "nativeShortControl": "tests/fixtures/m2-nearby-short-disjoint-20261105/README.md",
+    "nativeShortObservation": "Native dropped the nearby short unrelated segment and exported four facets. The initially reviewed prototype also dropped it but inserted a midpoint in the remaining boundary-to-interior slit, producing six facets. A later isolated experiment omits that midpoint and matches the native facets; one local topology test passed. This revised experiment is not reviewed or integrated.",
+    "status": "The revised isolated candidate needs full validation, memory review and GUI/MCP replay; no production source change is integrated."
+  },
+  "thirdReview20261105": {
+    "finding": "A crowded bucket with two distant clusters can have a chord intersecting each query radius while all contacts lie outside it. The prototype repeatedly scanned the full bucket and exceeded the work budget on 1100 contacts and 1100 segments. A new baseline test pins this case.",
+    "experiment": "A later isolated version adds a projection-sorted bucket range, connected-fan caching and explicit lookup-entry caps. The reviewer reproductions and focused native controls pass, but the new numerical bounds, work and memory behavior need further review and full validation. No production source change is integrated."
+  },
+  "finalCandidate20261105": {
+    "scope": "Revised isolated candidate, not integrated. Earlier artifact hashes above identify earlier versions.",
+    "validation": "Typecheck passed all 14 batches. Full suite: 50614 passed, 76 skipped, four known native mismatches expected to fail, zero unexpected failures; bounded job peak 1308139520 bytes and cleanup confirmed. Review found no further concrete blocker in sampled cases; large-input rejection remains possible under explicit lookup caps.",
+    "shortCutter": "QuickSurface returned four facets. The revised low-level candidate matches those unordered facets at its default 0.000001 mm tolerance. In a browser using build scanforge-2065e3787d12d083, GUI and public MCP both rejected the same imported cutter at the application default 0.001 mm topology tolerance with Split cutter must contain nondegenerate manifold triangles. Geometry and history remained unchanged, with no page errors. This is an unresolved native compatibility gap, not an application parity success for native output.",
+    "browserGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/rejection-guard.json",
+    "browserLedger": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/rejection-output/split-lifecycle-browser-ledger.json",
+    "remaining": "Re-run final candidate on original large fixture and GUI/MCP acceptance controls; resolve native radius and short-cutter discrepancies, final verification, integration, CI and milestone closure.",
+    "explicitMcpTolerance": "On the same isolated build and imported fixture, public MCP with tolerance 0.000001 succeeded and matched the native unordered Float32 facets; output reported one retained-indexed part and one cut edge. The GUI default remained rejected. The 4 GiB bounded job peaked at 926621696 bytes, had no page errors, and cleanup was confirmed.",
+    "explicitToleranceGuard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/tolerance-guard.json",
+    "browserControls": "On build scanforge-2065e3787d12d083, the near, separate-cutter and scaled above-radius controls each passed GUI/public MCP geometry comparison, undo/redo, binary reopen, cancellation and identical GUI redo canvas, with no page errors. All three bounded jobs confirmed cleanup, with peaks 926072832, 1005334528 and 925212672 bytes respectively. Native facet evidence remains scoped to the corresponding pinned controls.",
+    "browserControlGuards": [
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-near-20261105/final-guard.json",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-disjoint-20261105/final-guard.json",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-browser-above-20261105/final-guard.json"
+    ],
+    "finalOriginalPly3": "The final candidate passed the original 3691133-face precise Split test, including input preservation, indexed consistency, area and component checks. The 4 GiB bounded job peaked at 2116431872 bytes with cleanup confirmed. This was a low-level test, not final-build GUI/MCP lifecycle evidence.",
+    "finalOriginalPly3Guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-prototype-20261105/original-ply3-final-guard.json"
+  },
+  "integration20261105": {
+    "distanceCommit": "c1425ab",
+    "toleranceChange": "The GUI and MCP default for finite mesh cutters was revised from 0.001 mm to 0.000001 mm in the processing client; explicit values and other scan-edit defaults are preserved. The earlier default rejection remains documented as historical evidence.",
+    "validation": "On the isolated revised build, the short-cutter native unordered facets matched via GUI and MCP with undo/redo, reopen, cancellation and rendered redo. A prior 0.001 mm mesh report and explicit coarse MCP failure did not alter the successful default result; the coarse failure preserved geometry, revision and history. Focused tests covered truly degenerate and nonmanifold cutters, non-mesh and plane defaults, explicit tolerances, and other edit defaults. All 14 typecheck batches passed. Full suite: 50619 passed, 76 skipped, no unexpected failures, with known native mismatches tracked as expected failures.",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-distance-final-browser-short-20261105/default-cache-coarse-guard.json",
+    "remaining": "Four native radius facet discrepancies, broader M2 acceptance and merge/closure gates remain open."
+  }
+}

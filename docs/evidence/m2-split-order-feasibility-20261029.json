@@ -1,0 +1,54 @@
+{
+  "scope": "Disposable exhaustive per-face insertion-order search on the convex and cyclic native Split controls. No production code changed.",
+  "candidate": "0375a9ca",
+  "result": "Each of two source faces has exactly five unique candidate points. For each control all 120 common point permutations were tried; no trial threw and both faces retained the nine native facet count. Each face separately has at least one permutation matching all nine native unordered Float32 facets; no single rank permutation simultaneously yields both faces for either control.",
+  "bestOrderCounts": {
+    "convex": [3, 12],
+    "cyclic": [3, 3]
+  },
+  "pointSets": "Sorted by local barycentric coordinate, and the same permutation is used in both faces per run. Matching is evaluated per face by x/y half-plane.",
+  "prototype": "m2-exhaustive-order-prototype-20261029.ts",
+  "prototypeSha256": "d4a76d9e7fd1387d6729cec9a8b34b826bdacd79c6cb86db8f44af173cd660d9",
+  "harness": "m2-exhaustive-order-harness-20261029.test.ts",
+  "harnessSha256": "757478ebb55136a04231cf9b6d40a8e8e84df1995b229ab5f04b148c9a09288c",
+  "results": "m2-exhaustive-convex-order-20261029.json",
+  "resultsSha256": "9cac80ab1710e1f291d438a4e55280dbfff219fb5b651ddbad4ec55378855fc7",
+  "guard": "m2-exhaustive-convex-order-exact-guard-20261029.json",
+  "guardSha256": "a34a09136427f9204d02b242a667f5b1a82e21b0cb23adb88cfa7435b83e4844",
+  "peakJobBytes": 373194752,
+  "limitations": [
+    "Independent per-face matching does not prove a combined run, native insertion order, face winding, indexed seam identities, or other geometry.",
+    "A manually selected fixture-specific order would be overfitting; no general rule has been established.",
+    "Concave control has nine points per face and was not exhaustively searched.",
+    "Both complete-result experiments use orders selected from the same expected fixture and therefore do not establish general native behavior."
+  ],
+  "combinedFollowup": {
+    "result": "Using one matching order for each face at the same time produced all 18 unordered Float32 facets in both convex and cyclic controls. Orders were selected from those same expected results and use a fixture-specific half-plane branch. This is a feasibility probe, not an inferred native algorithm or candidate product behavior.",
+    "prototype": "m2-per-face-order-prototype-20261029.ts",
+    "prototypeSha256": "89f4aaf922f0c228d3f4258e1bcdb279167eec5b7799ec32de1e66a375e50846",
+    "harness": "m2-per-face-order-harness-20261029.test.ts",
+    "harnessSha256": "d24ef48c35ef8abc665436e20c420b6480ecb119fef254f24a29bfdfca6bc6af",
+    "results": "m2-per-face-order-result-20261029.json",
+    "resultsSha256": "137d906252e5770e0b2ec79693742ab0252eab8ead955fef4f2af1aa3d723926",
+    "guard": "m2-per-face-order-guard-20261029.json",
+    "guardSha256": "760f3f164e7b48f2840390cce36e10961dd3384951e7e36f94a4f44f3f39120b",
+    "peakJobBytes": 342114304
+  },
+  "artifactRoot": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work",
+  "nativeStaticLead": {
+    "observation": "Candidate 0x1403290a0 uses pointer-like 64-bit keys in a tree traversal, assigns sequence indices to retrieved objects and builds projected points passed to triangulation candidate 0x14032d360. This is consistent with pointer-ordered enumeration, not proof of runtime Split behavior or native nondeterminism.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-point-enumeration-static-20261029.json",
+    "evidenceSha256": "bec7dbe0197490af4b04e11d0d9107a4cad3813622d7bca6de1db7dfff39bc22"
+  },
+  "nativeStaticInsertion": {
+    "method": "Read-only Ghidra import, automatic analysis disabled, with only two selected candidate entries disassembled and decompiled.",
+    "bodies": ["14032ea30..14032ed96", "14032f120..14032f97e"],
+    "observation": "Candidate 14032ea30 scans coordinate pairs for minimum and maximum values along two axes and records extrema indices. Candidate 14032f120 takes an index, consults 14032edf0 while traversing linked/indexed records, and conditionally builds or updates further records. Decompiler-inferred parameters, return types and data structure meanings remain uncertain.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-insertion-static-20261029-r1/evidence.json",
+    "evidenceSha256": "beef2da86db1f1f8f8820672ebcbd42d9c0575a57d512659c16f1d27a95539a2",
+    "guard": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-insertion-guard-20261029-r2.json",
+    "guardSha256": "335a2db907faddc5b76ab8da89315f88f3560e7ab6f01e5a3e31cce2683383a8",
+    "peakJobBytes": 678834176,
+    "priorAttempt": "First launch failed because the isolated project directory did not exist. The guard terminated residual owned descendants and confirmed cleanup; no result was produced."
+  }
+}

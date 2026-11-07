@@ -46,7 +46,7 @@ it.each([0, Math.PI / 2, Math.PI / 5])(
       action: "fillHoles",
       positions,
       indices: [hole],
-      algorithm: "automatic",
+      algorithm: "surfaceRecovery",
     });
     expect(result.diagnostics.filledHoles).toBe(1);
     const patch = result.positions!.subarray(positions.length);
@@ -87,7 +87,7 @@ it("matches retained rim slopes on a varying-curvature panel", () => {
     action: "fillHoles",
     positions,
     indices: [hole],
-    algorithm: "automatic",
+    algorithm: "surfaceRecovery",
   });
   expect(result.diagnostics.filledHoles).toBe(1);
   const after = analyzeMesh(result.positions!);
@@ -160,7 +160,7 @@ it("cancels whole-patch fairing without changing the input scan", () => {
         action: "fillHoles",
         positions,
         indices: [hole],
-        algorithm: "automatic",
+        algorithm: "surfaceRecovery",
       },
       {
         signal: controller.signal,
@@ -206,7 +206,7 @@ it("recovers from a blending numeric failure and closes a valid hole", () => {
       action: "fillHoles",
       positions,
       indices: [hole],
-      algorithm: "automatic",
+      algorithm: "surfaceRecovery",
     });
     expect(unavailable).toHaveBeenCalledOnce();
     expect(result.diagnostics.filledHoles).toBe(1);

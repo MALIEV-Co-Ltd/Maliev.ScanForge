@@ -39,6 +39,14 @@ const defaults: EditScanDialogProps = {
 function render(props: Partial<EditScanDialogProps> = {}) {
   return renderToStaticMarkup(<EditScanDialog {...defaults} {...props} />);
 }
+it("offers the mesh-boundary projection only for mesh editing", () => {
+  expect(render({ onProjectMeshBoundary: noop })).toContain(
+    "Project mesh boundaries to XY",
+  );
+  expect(
+    render({ pointCloud: true, onProjectMeshBoundary: noop }),
+  ).not.toContain("Project mesh boundaries to XY");
+});
 function button(markup: string, label: string) {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return markup.match(

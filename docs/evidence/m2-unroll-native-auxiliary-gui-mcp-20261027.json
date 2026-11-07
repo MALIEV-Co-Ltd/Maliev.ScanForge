@@ -1,0 +1,51 @@
+{
+  "scope": "One retained zero-degree, one-instance +Z cylinder native control; GUI-triggered and direct public MCP structured result comparison, not general native frame-schema or rendered auxiliary parity.",
+  "candidateBaseCommit": "307a76e4c69559a93df993e328e0dcd6fef81aa9",
+  "applicationBuild": "scanforge-f00172bd8f19929e",
+  "nativeSource": {
+    "scanStlSha256": "99bd87ca47cc4d09da5cd59c4765f080cc7ab41f70503a8adc64308f4279575e",
+    "scanFloat32CoordinatesSha256": "d4997b7678deb95c9540cd45414f86927063b5ea88ee5bebb479f25bacc73c2c",
+    "stepSha256": "e6665a64a82901930d593fbc74054da999d5ae88ff9fbe0485d08bb89fb164c7",
+    "stepNormalizedLfFixtureSha256": "6abeecf9c9b322687d334199654aba14c7adeb4851ddfaf369cfa6c00871c52f",
+    "nativeUnrollStlSha256": "34414ff8e25012d33d1e4ea7efbd9bb0a90bfd5b68a7a04ee92a7398dce3397c",
+    "nativeProjectSha256": "557494b57c4e006aa5a4d079ffce2bd87ba036de7918d6032664f033a50f8e47",
+    "nativeFrame96BytesSha256": "269c3668c922ecf0638e009ad17deec8b5e865f7dc1eb6bd18196e7e91e44e19",
+    "nativeSketchIgesSha256": "27de9da740ba86571c283b1dea441280ce550edfb313efc7185917ce1999467b",
+    "bindings": "Actual retained files were rehashed; the native QSF slice matches the fixture, the IGES line matches the recorded endpoints, native STL Float32 corners match the source fixture, and STEP bytes match after CRLF-to-LF normalization."
+  },
+  "settings": {
+    "radiusMm": 2,
+    "center": [0, 0, 0],
+    "axis": [0, 0, 1],
+    "offsetDegrees": 0,
+    "instances": 1
+  },
+  "comparison": {
+    "nativeFrameMatrixInterpretation": "Inferred 3x4 row-major affine matrix adjacent to a named record; not an independently decoded QSF schema or runtime frame capture.",
+    "maxFrameAbsoluteDifference": 6.123233995736766e-17,
+    "frameTolerance": 1e-15,
+    "maxIgesEndpointDifferenceMm": 3.5917224749937304e-10,
+    "endpointToleranceMm": 5e-10,
+    "maxMeshCoordinateToleranceMm": 1e-12,
+    "guiAndMcpFrameAndSketchExact": true,
+    "mappingIdentitiesChecked": true,
+    "sourceAndOtherObjectsPreserved": true,
+    "existingLifecycleChecks": "Undo/Redo, save/reopen, failure and cancellation rollback, history seek, unrelated sketch preservation, reference reopen and two-instance replay also passed.",
+    "nativeVisibility": "Visible sketch and hidden frame were separately observed in retained native UI; new frame/sketch checks use structured public MCP results."
+  },
+  "validation": {
+    "browserDriver": "tests/scan-unroll-browser.mjs",
+    "jobPeakBytes": 1593794560,
+    "jobLimitBytes": 4294967296,
+    "nodeOldSpaceLimitMiB": 3072,
+    "cleanupConfirmed": true,
+    "pageErrors": [],
+    "focusedTestsPassed": 13,
+    "nativeDesktopProbe": "A newly owned native session exposed its UI but input returned access denied; no native operation was attempted and cleanup was confirmed."
+  },
+  "remaining": [
+    "Other cylinder axes, offsets and native frame/sketch conventions are not established.",
+    "The line is compared with its decimal IGES export; its 5e-10 mm tolerance accounts for export precision.",
+    "Full milestone native comparisons, exact-head CI, review, and closure remain open."
+  ]
+}

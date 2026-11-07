@@ -1,0 +1,38 @@
+{
+  "scope": "Two native Split controls around 0.001 mm plus GUI and public MCP lifecycle on retained seam build",
+  "buildId": "scanforge-a00193930136ca3d",
+  "settings": "Millimetres; mesh cutter; Envelope unchecked; preview and apply",
+  "cases": [
+    {
+      "case": "below",
+      "x": 0.0008999999845400453,
+      "nativeFacets": 4,
+      "nativeSha256": "11c7961ed8a23cd1177aa9aea82de56d3d41fb155d75601e4be4a4a31c5fbe89",
+      "appFacets": 5
+    },
+    {
+      "case": "above",
+      "x": 0.0010999999940395355,
+      "nativeFacets": 5,
+      "nativeSha256": "78845bfb3383874ecc79957d14ccfb15cc838900b700396fa70e2ca63bad37a3",
+      "appFacets": 5
+    }
+  ],
+  "guiMcpGeometry": true,
+  "undoRedo": true,
+  "binaryReopen": true,
+  "mcpHeldResultCancellation": true,
+  "guiCloseCancellation": true,
+  "nativeFacetEquality": false,
+  "nativeViewport": "white",
+  "focusedTests": "7 passed, 5 expected native mismatches",
+  "browserPeakJobBytes": 917155840,
+  "unitPeakJobBytes": 350433280,
+  "cleanupConfirmed": true,
+  "limitations": [
+    "Two points bracket a behavior change but do not establish an exact threshold or its cause",
+    "Native viewport remained white",
+    "Equal counts at 0.0011 mm do not mean facet equality",
+    "Retained build predates unrelated changes"
+  ]
+}

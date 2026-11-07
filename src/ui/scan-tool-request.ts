@@ -1,3 +1,7 @@
+import {
+  flipSourceTopology,
+  flipSourceTopologySync,
+} from "../scan-flip-request";
 import { bindShrinkwrap } from "../shrinkwrap-request";
 import {
   reconstructionTargets,
@@ -5,7 +9,8 @@ import {
   reconstructionMethod,
   bindNativeReconstruction,
 } from "../scan-reconstruction-targets";
-import type { Entity } from "../types";
+import { bindAverageMeshes } from "../scan-average-request";
+import type { Entity, IndexedMesh } from "../types";
 import type { ScanToolsRequest, ScanToolOperation } from "../scan-tools";
 import type { ScanToolParameters } from "./ScanToolsPanel";
 import { mirrorReference, cylinderReference } from "../scan-tools-reference";
@@ -16,6 +21,7 @@ export function scanToolRequest(
   parameters: ScanToolParameters,
   entities: Entity[],
   selection?: Uint8Array | null,
+  preparedFlip?: { topology: IndexedMesh | undefined },
 ): ScanToolsRequest {
   if (
     (source.kind !== "mesh" &&
@@ -77,23 +83,19 @@ export function scanToolRequest(
       break;
     }
     case "averageMesh": {
-      const ids = new Set(parameters.targetIds);
-      const targets = entities.filter(
-        (e) =>
-          ids.has(e.id) &&
-          e.id !== source.id &&
-          e.kind === "mesh" &&
-          !e.kernelId &&
-          !e.parametric,
-      );
-      if (!ids.size || targets.length !== ids.size)
-        throw new Error("Choose valid reference meshes to average.");
+      const bound = bindAverageMeshes(source, parameters.targetIds, entities);
       operation = {
         kind: parameters.kind,
         tolerance: parameters.tolerance,
-        targets: targets.map((e) => e.positions),
+        targets: bound.references.map((e) => e.positions),
+        sourceTopology: bound.source.indexedMesh,
+        targetTopology: bound.references.map((e) => e.indexedMesh),
       };
-      break;
+      return {
+        kind: "scanTools",
+        positions: bound.source.positions,
+        operation,
+      };
     }
     case "mirrorMesh": {
       const entity = entities.find(
@@ -127,9 +129,18 @@ export function scanToolRequest(
         kind: parameters.kind,
         ...reference,
         offsetDegrees: parameters.offsetDegrees,
+        instances: parameters.instances,
       };
       break;
     }
+    case "flipNormals":
+      operation = {
+        kind: "flipNormals",
+        sourceTopology: preparedFlip
+          ? preparedFlip.topology
+          : flipSourceTopologySync(source),
+      };
+      break;
     case "reduceNoise":
       if (
         parameters.selectionOnly &&
@@ -151,4 +162,21 @@ export function scanToolRequest(
       operation = parameters;
   }
   return { kind: "scanTools", positions, operation };
+}
+
+/** Yield while binding large indexed Flip inputs before processing begins. */
+export async function stagedScanToolRequest(
+  source: Entity,
+  parameters: ScanToolParameters,
+  entities: Entity[],
+  selection: Uint8Array | null | undefined,
+  check: () => void,
+  progress?: (fraction: number, stage: string) => void,
+): Promise<ScanToolsRequest> {
+  const preparedFlip =
+    parameters.kind === "flipNormals"
+      ? { topology: await flipSourceTopology(source, check, progress) }
+      : undefined;
+  check();
+  return scanToolRequest(source, parameters, entities, selection, preparedFlip);
 }

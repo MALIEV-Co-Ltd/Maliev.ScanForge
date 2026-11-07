@@ -22,7 +22,7 @@ export type AlignmentWorkerResponse =
   | { id: number; error: string };
 export function createAlignmentWorkerState(input: AlignmentWorkerInit) {
   const query = nativeAlignmentTargetGroupQuery(
-    input.surfaces.map(createNativeAlignmentSurfaceQuery),
+    input.surfaces.map((surface) => createNativeAlignmentSurfaceQuery(surface)),
   );
   return (job: Omit<AlignmentBatch, "lanes">) => {
     const batch = {

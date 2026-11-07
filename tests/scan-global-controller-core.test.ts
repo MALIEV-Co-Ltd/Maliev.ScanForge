@@ -52,6 +52,68 @@ const input = () => ({
     geometry: { points: new Float32Array(9), normals: new Float32Array(9) },
   })),
 });
+it("reports intermediate source poses before and after each local refinement", async () => {
+  const source = input();
+  const poses: { pass: number; ids: string[] }[] = [];
+  await runGlobalScanController(
+    source,
+    source,
+    {
+      clock: () => 1,
+      onPose: (pass, ordered) =>
+        poses.push({ pass, ids: ordered.map((s) => s.id) }),
+    },
+    "target-average",
+    5,
+  );
+  expect(poses.length).toBeGreaterThan(0);
+  expect(
+    poses.every(
+      ({ ids }) => ids.length === 2 && ids.includes("a") && ids.includes("b"),
+    ),
+  ).toBe(true);
+});
+it("closes the query pool when an intermediate pose callback fails", async () => {
+  const source = input();
+  const sentinel = Error("pose callback failed");
+  await expect(
+    runGlobalScanController(
+      source,
+      source,
+      {
+        clock: () => 1,
+        onPose: () => {
+          throw sentinel;
+        },
+      },
+      "target-average",
+      5,
+    ),
+  ).rejects.toBe(sentinel);
+  expect(state.trace.at(-1)).toBe("pool-close");
+  expect(state.trace).not.toContain("query:a");
+  expect(state.trace).not.toContain("query:b");
+});
+it("does not start a query after cancellation in an intermediate pose callback", async () => {
+  const source = input();
+  const controller = new AbortController();
+  const reason = new DOMException("cancelled during pose", "AbortError");
+  await expect(
+    runGlobalScanController(
+      source,
+      source,
+      {
+        clock: () => 1,
+        signal: controller.signal,
+        onPose: () => controller.abort(reason),
+      },
+      "target-average",
+      5,
+    ),
+  ).rejects.toBe(reason);
+  expect(state.trace.filter((entry) => entry.startsWith("query:"))).toEqual([]);
+  expect(state.trace.at(-1)).toBe("pool-close");
+});
 it("preserves the full check/clock/pass/progress/query/close trace, with no extra clock check", async () => {
   const source = input();
   const parent = {

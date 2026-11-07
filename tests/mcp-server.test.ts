@@ -38,6 +38,15 @@ it("advertises every application tool through the official MCP SDK", async () =>
     applicationCatalog.find((tool) => tool.name === "selection_set")
       ?.inputSchema,
   );
+  for (const name of ["project_import", "backup_restore"]) {
+    const description = tools.find((tool) => tool.name === name)?.description;
+    expect(description).toBe(
+      applicationCatalog.find((tool) => tool.name === name)?.description,
+    );
+    expect(description).toContain("ordinary numeric arrays independently");
+    expect(description).toContain("immutable shared-buffer chunks");
+    expect(description).toContain("byte and hash verification");
+  }
 });
 afterEach(async () => {
   for (const resource of resources.splice(0).reverse()) await resource.close();
@@ -73,7 +82,10 @@ describe("opt-in bounded long polling", () => {
   it("advertises the bound while legacy clients still receive an immediate empty batch", async () => {
     const bridge = await setup();
     const paired = await (await request(bridge, "/connect", {})).json();
-    expect(paired.capabilities).toEqual({ pollWaitMs: 8000 });
+    expect(paired.capabilities).toEqual({
+      pollWaitMs: 8000,
+      resultWebSocket: true,
+    });
     expect(
       await (
         await request(bridge, `/poll?sessionId=${paired.sessionId}`)

@@ -1,0 +1,33 @@
+{
+  "scope": "Candidate full suite after generated result icon reconciliation",
+  "baseCommit": "fedce86a",
+  "failure": {
+    "test": "tests/generated-icons.test.tsx",
+    "reason": "Result component imported lucide-react in a UI using generated artwork.",
+    "peakJobBytes": 1372327936,
+    "cleanupConfirmed": true
+  },
+  "fix": "Use existing generated Check, Triangle and Circle assets.",
+  "focused": {
+    "testsPassed": 12,
+    "peakJobBytes": 335216640
+  },
+  "browser": {
+    "guiMcpGeometryEqual": true,
+    "pageErrors": [],
+    "peakJobBytes": 948690944
+  },
+  "fullSuite": {
+    "testFilesPassed": 830,
+    "testFilesSkipped": 30,
+    "testsPassed": 50842,
+    "expectedFailures": 2,
+    "testsSkipped": 77,
+    "peakJobBytes": 1321340928,
+    "cleanupConfirmed": true
+  },
+  "limits": [
+    "Expected failures cover restore ownership.",
+    "Native, large-project resource and integration gates remain open."
+  ]
+}

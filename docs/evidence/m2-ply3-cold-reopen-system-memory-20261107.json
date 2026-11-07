@@ -1,0 +1,29 @@
+{
+  "scope": "Original PLY-3 GUI Split and Extract, followed by GUI reopen of an earlier saved project without a preceding project export or download",
+  "candidate": "c8a074f2",
+  "build": "scanforge-526b3f920644a76e",
+  "sourceSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "reopenedFileSha256": "985e008e354360f5ffabad422bc0328c0c63ff47f58be9bdd0d50afb179dca20",
+  "driverSha256": "88589ae44d583e3bfa59fbfc72179cc42e1a9383cde639dde7bc3b6ed9e344f0",
+  "result": {
+    "passed": true,
+    "inputTriangles": 3691133,
+    "splitTriangles": 3695945,
+    "extractedTriangles": 1776794,
+    "sourceCutterAndExtractedGeometryMatched": true,
+    "guiUndoAfterReopen": true,
+    "guiRedoAfterReopen": true,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "peakJobBytes": 4484710400,
+    "jobLimitBytes": 34110816256,
+    "jobLimitSource": "GlobalMemoryStatusEx.totalPhysical",
+    "processCleanupConfirmed": true
+  },
+  "limitations": [
+    "The user increased the validation Job limit from 4 GiB to total physical memory. The observed peak exceeded the former 4 GiB cap.",
+    "One passing run does not establish why previous runs stalled or guarantee repeatability.",
+    "The saved project was from an earlier run and was not downloaded in this run; object identities were matched by geometry digest.",
+    "This is not a same-session export/download/reopen test, native Split parity, or full M2 acceptance."
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "scope": "Shared GUI and MCP binary STL export normal records for validated indexed mesh topology",
+  "baseCommit": "96a7e3c7",
+  "change": "The shared encoder replaces geometric STL facet normals with the Float32-staged mean of the three computed geometry normals when indexed topology matches positions. Scanner-authored normals remain separate. Missing or stale topology retains the prior geometric facet normals.",
+  "nativeEvidence": [
+    "m2-native-stl-writer-static-20261107.json",
+    "m2-native-export-normals-controls-20261107.json",
+    "m2-native-live-normal-sample-20261107.json"
+  ],
+  "red": "The original 273139-facet Flip and a small indexed-control test failed with geometric normal records before the change; the missing/stale fallback control passed.",
+  "focused": {
+    "testsPassed": 90,
+    "files": 6,
+    "includes": "automation API, MCP server, IO, point-cloud exclusion, indexed output and recorded native Flip digest",
+    "jobLimitBytes": 34110816256,
+    "peakJobBytes": 466124800,
+    "activeProcessesAfter": 0,
+    "subsequentNativeFixtureCheck": "11 tests passed, including the five retained native exports and the later mixed-object offset test"
+  },
+  "build": {
+    "id": "scanforge-3be9f5bdd383530a",
+    "typecheckBatches": 15,
+    "passed": true,
+    "peakJobBytes": 1995513856,
+    "activeProcessesAfter": 0,
+    "scope": "Final source and test TypeScript build; subsequent changes were documentation only."
+  },
+  "fullSuite": {
+    "passedFiles": 845,
+    "skippedFiles": 30,
+    "passedTests": 50940,
+    "expectedFailures": 2,
+    "skippedTests": 77,
+    "peakJobBytes": 1311137792,
+    "activeProcessesAfter": 0,
+    "scope": "After production change, before subsequent test-only assertions; exact-head hosted checks still required."
+  },
+  "browser": {
+    "driver": "tests/m2-original-flip-browser.mjs",
+    "originalScan": {
+      "facets": 273139,
+      "guiMcpBytes": 13657034,
+      "guiMcpFileSha256": "db695cddc7bc30d404f73fa036f7cae74e25238762d9ac300dd9109b1b5c2751",
+      "normalSha256": "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+      "guiMcpIdentical": true,
+      "nativeRecordedNormalDigestMatches": true,
+      "undoRedoAndBinaryReopen": true,
+      "peakJobBytes": 1244151808,
+      "activeProcessesAfter": 0,
+      "scope": "Repeated after adding the large-export driver branch."
+    },
+    "originalPly3": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "facets": 3691133,
+      "guiMcpBytes": 184556734,
+      "guiMcpFileSha256": "b59df7caa10123c5b49a0122640f60371a7c0c502474ac02274a807a7d866661",
+      "indexedTopologyAndNonGeometricNormalConfirmed": true,
+      "observedMaxTimerGapMs": 506.7,
+      "peakJobBytes": 2654830592,
+      "activeProcessesAfter": 0,
+      "limitations": "No native PLY3 export or active cancellation was compared; one observed timer gap is not a responsiveness guarantee."
+    },
+    "browserPlugin": "Browser plugin unavailable; isolated Playwright Chrome session",
+    "pageErrors": [],
+    "jobLimitBytes": 34110816256
+  },
+  "review": "Independent focused review found no concrete correctness or GUI/MCP parity defect. Its identified historical documentation ambiguity was corrected. The exporter remains synchronous and does not yield for cancellation; prior STL generation was also synchronous.",
+  "limitations": [
+    "Unindexed or stale-topology meshes retain geometric facet normals; native equivalence is not established for them.",
+    "Export processing remains synchronous, including lazy computed-normal generation and output writing. Cancellation during that synchronous phase is not established.",
+    "Native attribute words and entire-file identity are not replicated or claimed; the comparison covers normal and coordinate streams.",
+    "The GUI invokes the shared encoder directly while MCP uses the project_export job; artifact capacity remains a separate automation transfer quota.",
+    "Other M2 native algorithms, exact-head checks, merge and milestone closure remain open."
+  ]
+}

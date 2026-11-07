@@ -1,0 +1,77 @@
+{
+  "scope": "Original PLY-3 GUI Split and Extract, then public MCP binary project export and in-place import, followed by public MCP Undo and Redo.",
+  "applicationCommit": "9df3ae1faf184d2819b2a2d319b2dc1a82571cae",
+  "build": "scanforge-edea62e4b86207d8",
+  "browser": "Isolated Playwright/Chrome; Browser plugin unavailable. Separate owned local test server; user preview untouched.",
+  "harness": {
+    "path": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-numeric-reuse-candidate\\tests\\m2-original-post-reopen-local.mjs",
+    "sha256": "7ec2afa88b0e4352bb722432b40782a41447a07caa0e50dd14c7cded472bcbdb",
+    "derivedFrom": "tests/m2-original-split-browser-local.mjs; extra post-reopen Undo/Redo and geometry digest assertions."
+  },
+  "result": {
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputFaces": 3691133,
+    "splitFaces": 3700757,
+    "extractedFaces": 1779171,
+    "guiOutputDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 16012539,
+        "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+      },
+      {
+        "path": "indexedMesh.vertices",
+        "encoding": "f64",
+        "elements": 2699811,
+        "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+      },
+      {
+        "path": "indexedMesh.triangles",
+        "encoding": "u32",
+        "elements": 5337513,
+        "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+      }
+    ],
+    "indexedResult": true,
+    "sourcePreserved": true,
+    "cutterPreserved": true,
+    "guiUndoRedo": true,
+    "binaryReopen": true,
+    "postReopenUndoRedo": true,
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "stages": [
+    "source-imported",
+    "source-digest",
+    "cutter-imported",
+    "gui-split-started",
+    "gui-split-committed",
+    "gui-output-digest",
+    "component-inventory-opened",
+    "component-inventory-ready",
+    "gui-extract-committed",
+    "gui-extract-undone",
+    "gui-extract-undo-digest-verified",
+    "gui-extract-project-exported",
+    "gui-extract-project-imported",
+    "gui-extract-reopen-verified",
+    "post-reopen-undo-verified",
+    "post-reopen-redo-verified",
+    "gui-extract-redo-verified"
+  ],
+  "guard": {
+    "jobLimitBytes": 4294967296,
+    "peakJobBytes": 4178944000,
+    "passed": true,
+    "cleanupConfirmed": true,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-post-reopen-20261029-r1-guard.json"
+  },
+  "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-original-post-reopen-20261029-r1\\split-lifecycle-browser-ledger.json",
+  "limitations": [
+    "One original scan and finite planar cutter; this is application lifecycle evidence, not native Split comparison.",
+    "Project reopen and post-reopen history commands were invoked through public MCP; GUI project-open and GUI post-reopen history were not exercised.",
+    "Single guarded run; does not guarantee memory fit for every project or history."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "scope": "Complete local Vitest suite on the integration checkout; not native acceptance or the isolated restore prototype",
+  "commit": "9d8280a8c90335ce0162597ac227663149b14f0e",
+  "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --exclude **/.resources/**",
+  "result": {
+    "testFilesPassed": 806,
+    "testFilesSkipped": 29,
+    "testsPassed": 50686,
+    "testsSkipped": 76,
+    "durationSeconds": 353.91,
+    "peakJobBytes": 1606463488,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "activeProcessesAfter": 0
+  },
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/m2-exact-integration-suite-20261106.json",
+  "receiptSha256": "835628d5b6532d58d973aca40cf16e1c6be3d297cd26efcabb22f64006e9ab0c",
+  "subsequentProductionBuild": {
+    "commit": "41679f569c3db8fa27ba2f769a0e2cca597632b0",
+    "command": "npm run build",
+    "result": "Passed kernel preparation, all 15 TypeScript batches, Vite build and offline manifest generation",
+    "bundle": "scanforge-b4a30452acf5c910",
+    "peakJobBytes": 1577938944,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/m2-exact-integration-build-r2-20261106.json",
+    "receiptSha256": "7b43a5168b9683a74cf1470d3eb2ffbf458ba15c98976558b7bef7b010ff6919",
+    "earlierAttempt": "Stopped at the user's pause request during batch 14; owned descendants were terminated and cleanup was confirmed."
+  },
+  "limitations": [
+    "Skipped tests remain skipped; the suite does not establish all native, browser, public MCP, resource or milestone gates.",
+    "The unintegrated restore-race prototypes were not included.",
+    "The existing QuickSurface backup file remained untracked and untouched."
+  ]
+}

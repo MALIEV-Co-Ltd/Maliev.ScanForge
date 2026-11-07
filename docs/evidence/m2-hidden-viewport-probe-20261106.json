@@ -1,0 +1,54 @@
+{
+  "scope": "Isolated instrumented viewport trace and hidden-mesh deferral prototype on original PLY-3; not an integrated fix",
+  "baseCommit": "8e225e9a",
+  "trace": {
+    "bundle": "scanforge-c7ce40264c3004ec",
+    "method": "Log viewport rebuild predicates for entities with at least one million numeric coordinates during GUI Split, Extract, project download and reopen. Geometry is not logged.",
+    "observation": "During redo and after GUI reopening, the 33263505-value source was hidden, its positions had the same identity, and the topology comparison indicated a change; the existing code therefore entered its display rebuild path. The visible extracted object also indicated changed topology on reopen. This records a rebuild trigger, not allocation size or causality.",
+    "result": "Geometry and history checks completed but the guard reported a 4296040448-byte peak, 1073152 bytes over 4 GiB. The driver exited zero; the guard failed and confirmed cleanup.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/viewport-trace-ply3-20261106.json",
+    "receiptSha256": "b5d1eb5b7cf3ec65e8ae792cc7bb785cc1480d5435648bdaa59e0d58875f92a9",
+    "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-trace-ply3-20261106.log",
+    "logSha256": "1125010b3b0409cf32b217205f8e87f80a9206e5c03035bc2ed18779638af717"
+  },
+  "prototype": {
+    "method": "In an isolated worktree, defer a changed hidden mesh display rebuild until visible while retaining the previous display. No shared geometry or MCP operation was changed.",
+    "focusedTests": "30 tests passed across viewport indexed display, CAD edges, point cloud and viewport agent tests, including a new hidden-change-then-show control. These are not complete GUI or MCP regression coverage.",
+    "bundle": "scanforge-7e82a2942ffdb968",
+    "result": "The full artifact download had matching streamed and disk SHA-256 97602040ea116a8d4b3108358d6a80317f456ae0476024bcfb8adf83d43a9cb5. The decoder reported Array buffer allocation failed before it returned a project; GUI reopen and post-reopen checks did not complete. Peak Job memory was 4334968832 bytes, 40001536 over 4 GiB. Cleanup confirmed zero active processes; the hash-verified temporary download was removed.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/viewport-defer-ply3-20261106.json",
+    "receiptSha256": "5383a24baea000d2dc0fd196734ec45930049327de21c26edf00738b5f6a1c22",
+    "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-defer-ply3-20261106.log",
+    "logSha256": "41593029d98c5533f4afc85ab22f4181c23d92ef35441f54ff6fcf2334498ccd",
+    "patch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/viewport-defer-prototype-20261106.patch",
+    "patchSha256": "201591bb6ec774afbd8441945b82edc1297d1ab2757a8e1f38fa577deddbc5fe",
+    "cleanup": "The diagnostic worktree and its generated build were removed after the patch was retained. Its node_modules junction was unlinked without removing its target."
+  },
+  "sharedWrapperDiagnostic": {
+    "scope": "Synthetic small viewport test, not a worker or full-size replay",
+    "observation": "A structured clone of SharedArrayBuffer-backed topology had different JavaScript buffer wrappers while sharing the same backing bytes. With identical positions and cloned topology wrappers, the current viewport rebuilt its geometry. A temporary Vitest diagnostic passed, confirming the observed rebuild.",
+    "source": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-wrapper-viewport-diagnostic-20261106.test.ts",
+    "sourceSha256": "6c8d5ee234739e76d83f30a686d4a66d0230a3940fe4eefe6b2ffc6f5b2eae17",
+    "realWorkerControl": "A small cross-origin-isolated Chrome control used the real encoding and decoding workers on a synthetic 8192-face mesh. The registry supplied four reusable shared chunks and the decoded numeric positions reused their original array. For vertices, triangles, geometry normals and facet normals, both the typed-array object and its buffer wrapper differed after decoding, while a reversible write to each isolated synthetic buffer demonstrated shared backing. A repeat captured below had a 905338880-byte Job peak and cleanup was confirmed. This is not a full PLY-3 replay.",
+    "workerDriver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-20261106.mjs",
+    "workerDriverSha256": "8cbb39cab4bc07a90437fb213aee10868692582c04d61f3eaa77fa7dd9504192",
+    "workerReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-r3-20261106.json",
+    "workerReceiptSha256": "d8a296aeb5f53dce02a15d137b6d340b3dd13aae5e694035c2a16b570b053856",
+    "workerLog": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/sab-worker-identity-r3-20261106.log",
+    "workerLogSha256": "1870f25c5602b622867e54fa92dc94b2cdfb845be58714c24a1db700d3e840ab",
+    "ply3Trace": {
+      "scope": "Instrumented original PLY-3 browser replay; production geometry unchanged",
+      "bundle": "scanforge-096f767b0268869b",
+      "observations": "On reopening, both the hidden source and visible extracted mesh reused their ordinary numeric position and vertex arrays, while their triangle, geometry-normal and facet-normal views compared unequal and were SharedArrayBuffer-backed on both sides. The decoder reported borrowing shared chunks with the corresponding element types and sizes, including source u32 and f32 facet chunks of 44351340 bytes, source f32 normal chunk of 22448064 bytes, extracted u32 and f32 facet chunks of 21321528 bytes, and extracted f32 normal chunk of 10770636 bytes. Both viewport topology comparisons returned false and entered rebuilding. The trace does not map each view to an individual chunk or establish exclusive causality.",
+      "result": "The driver completed geometry, project reopen and GUI undo/redo; downloaded and streamed file SHA-256 both were 139fa644fa7e935c72f0b501d6c7651c956fa19f6813a1ae8fb7e0f691e782a4. The Job peak was 4269326336 bytes, leaving 25640960 bytes beneath 4 GiB. Cleanup confirmed zero active processes and the driver removed its temporary download. Earlier over-limit runs remain failures.",
+      "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/shared-identity-ply3-20261106.json",
+      "receiptSha256": "c975379ac69d985149ad788cc4bf0bf1aa1150e81cc8dcb1b2bdb8338e17975c",
+      "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-identity-ply3-20261106.log",
+      "logSha256": "be55b1333e761441ed22f7b89d2f771559336d1d24fcea1176a219ce1e3c2ab7",
+      "tracePatch": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/shared-identity-trace-20261106.patch",
+      "tracePatchSha256": "e2563aa49c323ec1b85c5a13ae316fbd36de6f0552d3611b10e8e223847c3d75"
+    },
+    "limitation": "The small control demonstrates a shared-wrapper identity mismatch, and the full-size trace is consistent with it, but the full trace does not prove view-to-chunk association. A safe solution must preserve exact shared backing identity and aliases without transferring shared memory or trusting unverified content."
+  },
+  "limitations": "Separate runs do not establish that deferral caused the allocation failure or determine its effect on aggregate peak. The prototype retains old hidden display memory, has incomplete selection and lifecycle coverage, and is not integrated. Resource acceptance and M2 closure remain open."
+}

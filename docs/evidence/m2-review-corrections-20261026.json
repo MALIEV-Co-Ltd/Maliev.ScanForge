@@ -1,0 +1,35 @@
+{
+  "scope": "Two whole-branch review corrections; remaining M2 native gates open",
+  "base": "b293da8391fbe8a07abb65771245236466a54341",
+  "review": "Whole M2 branch reviewed; both Important findings independently reproduced and prepared fixes re-reviewed without further blocking code issues",
+  "topology": "Real processing-client/worker loopback retains six authored vertex identities and two components across diagnostics and direct tolerance changes; indexed transport reuse clears on non-edit/error and keys successful edits by tolerance",
+  "unroll": "GUI chooser and canvas picker share exact-body candidate admission; shared analytic Apply validation remains authoritative. Actual capped-cylinder BREP plus cap-center display geometry passes rendered GUI/public-MCP equality and source preservation",
+  "regressionsPassed": 240,
+  "regressionsFailed": 0,
+  "build": "scanforge-86498b4101777eb5",
+  "typeBatches": 13,
+  "warnings": 0,
+  "sourceIdentity": {
+    "head": "b293da8391fbe8a07abb65771245236466a54341",
+    "files": 2984,
+    "unchanged": true,
+    "manifestSha256": "ce849a611ac1d11a78c1b510451fdd8436eda2ac7af5e0dae0447d78187ab2e5"
+  },
+  "buildResources": {
+    "exitCode": 0,
+    "childJobFinalActive": 0,
+    "cleanupErrors": [],
+    "elapsedSeconds": 149.89849849999882,
+    "childPeakJobMemoryBytes": 1728204800
+  },
+  "browserResources": {
+    "exitCode": 0,
+    "childJobFinalActive": 0,
+    "cleanupErrors": [],
+    "elapsedSeconds": 9.001103600021452,
+    "childPeakJobMemoryBytes": 1597648896
+  },
+  "retainedFailures": "Two observed RED regressions; initial formatting file-open failure; one busy admission started no child; initial capped screenshot framing corrected in test harness",
+  "earlierHostedCi": "b293da8: 49311 tests passed, 64 conditional skips, build and both CAD smokes passed; only plan formatting failed, now corrected",
+  "ownerDecision": "Original Defeature file no longer exists. Owner requested using other files; missing exact selection is no longer a closure requirement. Keep replacement-input provenance and real-scan controls explicit."
+}

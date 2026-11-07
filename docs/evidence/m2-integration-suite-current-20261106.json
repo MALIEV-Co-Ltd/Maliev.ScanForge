@@ -1,0 +1,18 @@
+{
+  "scope": "Complete local Vitest suite on integration branch; not a native, browser, public-MCP, or large-project resource acceptance",
+  "commit": "492ce4e",
+  "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --exclude **/.resources/**",
+  "filesPassed": 807,
+  "filesSkipped": 29,
+  "testsPassed": 50688,
+  "testsSkipped": 76,
+  "testDurationSeconds": 365.14,
+  "peakJobBytes": 1331441664,
+  "jobLimitBytes": 4294967296,
+  "cleanupConfirmed": true,
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/integration-suite-current-20261106.json",
+  "receiptSha256": "84a655ae42b2cbe69dc0b392d42e4d4d54f7c2f869ee1148aeddb74bb7d0c635",
+  "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/integration-suite-current-20261106.log",
+  "logSha256": "6eefe25baab8d0987409b3c09a3f1dabd82e4e8395e4a1ee0f4746bf8cda3fb1",
+  "limitations": "Skipped cases remain skipped. Test success does not close native, end-to-end, resource, safety, hosted-CI, or milestone gates."
+}

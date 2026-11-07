@@ -1,0 +1,186 @@
+{
+  "scope": "Prevent viewport rebuild when a replaced indexed topology wrapper shares its immutable vertex, triangle, scanner and computed normal arrays, preserving the existing scene geometry.",
+  "baseCommit": "429987cec504db59cd515f250babc9b9f990c951",
+  "viewportSha256": "6155138103534c13d49d9dca5718dd4d4cc5d247ce63a2034866a1864f95b9ad",
+  "diagnosticTrace": {
+    "build": "scanforge-49ebdeb4adcade13",
+    "observation": "After GUI reopen and Undo, source positions, vertex array, triangle array and both computed normal arrays retained identity, but topology wrapper identity changed and viewport rebuilt. Subsequent memory peak exceeded 4 GiB.",
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-topology-trace-20261029-r1-guard.json",
+    "log": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-topology-trace-20261029-r1.log",
+    "limitation": "Diagnostic instrumentation alters the build; timing does not by itself prove the rebuild is the only contributor to peak memory."
+  },
+  "focusedTests": {
+    "passed": 28,
+    "files": 2,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-green-20261029.json",
+    "shadingRedReceipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-red-20261029.json",
+    "coverage": "Wrapper reuse, changed normals/topology, hidden facets, expanded deviation, viewport picking, and both prepared-normal cache directions."
+  },
+  "limitations": [
+    "One original PLY-3 run and one finite cutter do not establish all-project resource behavior.",
+    "Public MCP observes geometry, while the original run exercises GUI Save/Open and GUI history.",
+    "Native Split comparison and other M2 acceptance gates remain open."
+  ],
+  "typecheck": {
+    "passed": true,
+    "batches": 14,
+    "peakJobBytes": 1216057344,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-typecheck-20261029.json"
+  },
+  "previewIntegration": {
+    "scope": "Combined local preview, not the candidate commit. Preserved plane-frame work and fixed a pre-existing coordinate variable mismatch. Applied the corrected topology and effective-normal predicate after its focused, original-scan and typecheck passes.",
+    "testsPassed": 28,
+    "testFiles": 2,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-preview-20261029.json",
+    "failedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-wrapper-preview-tests-20261029.json",
+    "limitation": "The original-scan run used the M2 candidate build, not this combined preview. The same 28 focused tests passed in the combined preview."
+  },
+  "firstCandidateRun": {
+    "build": "scanforge-1120403b0d41602b",
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3700757,
+      "extractedFaces": 1779171,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 16012539,
+          "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2699811,
+          "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5337513,
+          "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "guiBinaryReopen": true,
+      "guiPostReopenUndoRedo": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-project-saved",
+      "gui-file-input-dispatched",
+      "gui-extract-project-imported",
+      "gui-extract-reopen-verified",
+      "before-history-tab",
+      "after-history-tab",
+      "after-undo-click",
+      "post-reopen-undo-verified",
+      "post-reopen-redo-verified",
+      "gui-extract-redo-verified"
+    ],
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4158300160,
+      "cleanupConfirmed": true
+    },
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-viewport-wrapper-original-20261029-r1-guard.json",
+    "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-viewport-wrapper-original-20261029-r1\\split-lifecycle-browser-ledger.json"
+  },
+  "candidateRun": {
+    "build": "scanforge-b9363ff5ad191d86",
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3700757,
+      "extractedFaces": 1779171,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 16012539,
+          "sha256": "2a42bea10bb294a5981b280e0493fb5e04ad4c58343f12e0b58c273b87fbe92a"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2699811,
+          "sha256": "68161b917e672a36b0730b78ff2192ff5f03835eaff8b866347adf4a8b726f66"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5337513,
+          "sha256": "d51f933ecbb1de60c49a93c0a38e8eb1b5d6ba7cff4e4b31857ada80a2475d4a"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "guiBinaryReopen": true,
+      "guiPostReopenUndoRedo": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-project-saved",
+      "gui-file-input-dispatched",
+      "gui-extract-project-imported",
+      "gui-extract-reopen-verified",
+      "before-history-tab",
+      "after-history-tab",
+      "after-undo-click",
+      "post-reopen-undo-verified",
+      "post-reopen-redo-verified",
+      "gui-extract-redo-verified"
+    ],
+    "guard": {
+      "passed": true,
+      "jobLimitBytes": 4294967296,
+      "peakJobBytes": 4161060864,
+      "cleanupConfirmed": true
+    },
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-original-20261029-r1-guard.json",
+    "ledger": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-original-20261029-r1\\split-lifecycle-browser-ledger.json"
+  },
+  "review": "The first candidate passed the original replay but an independent review found a prepared-normal shading mismatch. Two regression tests failed on that candidate and pass with the final predicate, which also compares the normal buffer selected for the new wrapper.",
+  "applicationCommit": "47aa2be191e3a0085b4622a02096a23df5ff21ca",
+  "fullSuite": {
+    "testsPassed": 50518,
+    "testsExpectedFailure": 1,
+    "testsSkipped": 76,
+    "testFilesPassed": 767,
+    "testFilesSkipped": 29,
+    "peakJobBytes": 1335197696,
+    "cleanupConfirmed": true,
+    "receipt": "C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-wrapper-shading-suite-20261029.json"
+  }
+}

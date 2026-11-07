@@ -1,0 +1,26 @@
+{
+  "scope": "Synthetic finite mesh Split controls in millimeters; not general M2 native acceptance.",
+  "native": {
+    "application": "QUICKSURFACE Pro 8.0.123",
+    "operation": "Split Mesh with Envelope unchecked, Preview then OK",
+    "controls": [
+      "One source triangle with cutter edge on the source plane between (0.2, 0.2, 0) and (0.4, 0.4, 0): five source faces and a shared indexed cut edge.",
+      "One source triangle with a cutter crossing the source plane between (0.5, 0.1, 0) and (0.5, 0.2, 0): five source faces and a shared indexed cut edge.",
+      "Closed tetrahedron with the far-corner cutter: eight source faces, all indexed edges incident to two faces."
+    ],
+    "evidence": "Hashed QSF source index blocks are checked against source-only native STL exports in the m2-general-interior, m2-crossing-interior and m2-closed-interior tests. The offsets apply only to those saved sessions."
+  },
+  "integratedValidation": {
+    "splitTests": "375 passed, five expected failures, five skipped; bounded Job peak 440209408 bytes and cleanup confirmed.",
+    "fullTests": "Full Vitest command exited zero under the 4 GiB Job; peak 1356673024 bytes and cleanup confirmed. A subsequent disconnected-fan test was added and passed in the 18-test focused seam run.",
+    "originalPly3": "At 99f7a8cde2628dc67c82201f5859cb1bad470691, the precise low-level candidate test passed on the SHA-256 bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2 original scan. It checks retained input, indexed consistency, parts and area. The bounded Job peaked at 2116788224 bytes and confirmed cleanup. This is not a GUI/MCP lifecycle replay.",
+    "build": "All 14 typecheck batches and production build passed; bounded Job peak 1825472512 bytes and cleanup confirmed.",
+    "guiMcpCrossing": "An isolated rendered browser and public MCP replay matched all five native STL facets and shared indexed edge. GUI and MCP geometry digests matched; undo/redo, binary reopen, cancellation, and rendered redo checks passed. Job peak 926744576 bytes and cleanup confirmed."
+  },
+  "laterNearCornerValidation": "The near-corner expected failure recorded below was resolved on a subsequent candidate; see tests/fixtures/m2-interior-corner-split-20261105/README.md for the focused GUI/public-MCP replay and current scope.",
+  "limitations": [
+    "The near-corner interior fixture remains an expected failure and does not match the native result.",
+    "Other native radius discrepancies, original-scale lifecycle validation, complete milestone acceptance, current-head hosted CI and integration remain open.",
+    "The tested isolated interior edges are nonseparating; this record does not generalize all cutter geometries or override coverage and topology safeguards."
+  ]
+}

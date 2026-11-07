@@ -1,0 +1,25 @@
+{
+  "scope": "Indexed component grouping for small or zero-area triangles with distinct vertices, including GUI and public MCP",
+  "baseCommit": "09afcd1",
+  "build": "scanforge-5a6f3cba1b38eefc",
+  "nativeEvidence": "tests/fixtures/m2-small-adjacent-native-20261107/README.md",
+  "change": "Use indexed shared-edge connectivity for component inventory and edits regardless of face area; preserve separate boundary and hole diagnostics. Retain indexed input for repeated inventory and component requests in retained workers. The Edit Scan count uses the indexed component inventory.",
+  "verification": {
+    "focusedTests": "163 passed, one expected failure, before the final retained-inventory change; the retained-worker tests were included in the final full suite.",
+    "fullSuite": "50893 passed, three expected failures, 79 skipped; 837 files passed and 32 skipped.",
+    "build": "All 15 typecheck batches and production build passed; build identifier above.",
+    "browserPublicMcp": "The native two-facet fixture reports one component in Edit Scan, the component panel, repeated full inventories and component-only MCP inventory; GUI and MCP extraction return both triangles. Existing component lifecycle tests covered keep, flip, extraction, cleanup thresholds, history, binary reopen and cancellation.",
+    "originalScanControl": "For the original 273139-triangle STL, the GUI count and public MCP inventory reported two components of 272857 and 282 triangles in a diagnostic run preceding the final retained-inventory adjustment.",
+    "fullSuitePeakJobBytes": 1383071744,
+    "browserPeakJobBytes": 948015104,
+    "jobLimitBytes": 34110816256,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "Unindexed geometry is welded at the requested tolerance; the native two-facet control remains an expected failure without indexed source topology.",
+    "General mesh diagnostics retain their separate welded, degenerate-filtered component count, which can differ from scanEdit component inventory.",
+    "QuickSurface changed the source when creating a component object; ScanForge currently hides and preserves it. Native publication parity remains open.",
+    "The native evidence establishes the recorded fixtures and observed traversal, not general nonmanifold, duplicate, or arbitrary mesh equivalence.",
+    "M2 is not complete or merged."
+  ]
+}

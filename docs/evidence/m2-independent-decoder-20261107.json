@@ -1,0 +1,164 @@
+{
+  "scope": "Independent ordinary numeric arrays in the production project-decoding client, plus one original-scan persistence replay",
+  "baseCommit": "3c9b011",
+  "candidate": "Uncommitted working tree, including component extraction changes",
+  "build": "scanforge-779ff35073848d3b",
+  "change": "Production decoding no longer adopts ordinary numeric arrays cached by an earlier project owner. Repeated references within the decoded project and its history retain their identity.",
+  "subsequentEncodingCleanup": {
+    "change": "The production encoder no longer collects or caches ordinary numeric geometry for decoder reuse; the unused source-collection helper was removed. Shared immutable chunk handling remains.",
+    "build": "scanforge-774c38b67b36a46e",
+    "focused": "61 passed, two expected failures in the optional low-level reuse API",
+    "preciseGuiMcpComponentAndBinaryReopen": true,
+    "peakJobBytes": 958853120,
+    "jobLimitBytes": 4294967296,
+    "activeAfter": 0,
+    "limitations": "The full suite and large original-scan replay above predate this encoder-only cleanup."
+  },
+  "subsequentReuseRemoval": {
+    "change": "Removed the unused low-level ordinary-array reuse option, its cache and obsolete cache-only tests. The transport always reconstructs numeric arrays while preserving packet graph aliases.",
+    "build": "scanforge-3ac0509beaf027d7",
+    "focused": "70 passed across six files, including independent owners, graph aliases, signed zero and scan-edit ownership",
+    "realBrowserWorker": {
+      "passed": true,
+      "peakJobBytes": 728657920,
+      "activeAfter": 0
+    },
+    "preciseGuiMcpComponentAndBinaryReopen": {
+      "passed": true,
+      "peakJobBytes": 957403136,
+      "activeAfter": 0
+    },
+    "fullSuite": {
+      "passedTests": 50913,
+      "expectedFailures": 1,
+      "skippedTests": 79,
+      "passedFiles": 839,
+      "skippedFiles": 32,
+      "peakJobBytes": 1375461376,
+      "activeAfter": 0
+    },
+    "jobLimitBytes": 4294967296,
+    "limitations": "The large original-scan replays below predate this low-level cleanup. The remaining expected failure is the separate unindexed native-connectivity fixture."
+  },
+  "systemMemoryValidation": {
+    "guard": "tests/m2-bounded.py dynamically uses Windows-reported physical memory and retains the Windows Job timeout and cleanup",
+    "nodeHeap": "The guard requests a system-sized Node old-space limit; a direct verification reported 34160508928 bytes for Node's effective heap limit under the 34110816256-byte job limit.",
+    "browserSetting": "M2 browser drivers request an old-space limit equal to reported system memory",
+    "reportedPhysicalBytes": 34110816256,
+    "browserReportedJsHeapLimitBytes": 4395630592,
+    "originalPly3GuiSplitExtractFullDownloadGuiReopenUndoRedo": true,
+    "subsequentMcpReopenUndoRedo": true,
+    "extractedFaces": 1776963,
+    "downloadedBytes": 436611692,
+    "streamAndFileSha256": "df3a966dc0b690578837b8fef4b5895c26cad04b3a1015e6b60c0e343cae91df",
+    "peakJobBytes": 5526130688,
+    "jobLimitBytes": 34110816256,
+    "activeAfter": 0,
+    "ownedProcessesExitedAndPortsClosed": true,
+    "temporaryDownloadRemoved": true,
+    "finalGuardComponentReplay": {
+      "passed": true,
+      "jobLimitBytes": 34110816256,
+      "browserReportedJsHeapLimitBytes": 4395630592,
+      "peakJobBytes": 985198592,
+      "activeAfter": 0
+    },
+    "limitations": "The large system-memory run preceded the guard's added Node heap option; the final component replay exercised that option. The browser reports a smaller JavaScript heap limit than the requested physical-memory setting. These runs do not establish general resource reliability.",
+    "subsequentChromeHeapControl": {
+      "date": "2026-11-07",
+      "method": "Fresh headless Chrome pages requested 512 MiB and 32530 MiB with --js-flags=max-old-space-size. performance.memory.jsHeapSizeLimit was read in non-cross-origin-isolated pages, so values are rounded.",
+      "requested512MiBReportedBytes": 662000000,
+      "requested32530MiBReportedBytes": 3760000000,
+      "browserProcessesClosed": true,
+      "interpretation": "The system-sized request is passed to Chrome, but the browser reports a substantially lower JavaScript heap ceiling. This is separate from the system-sized Windows Job limit and does not limit total process memory to the JavaScript heap size.",
+      "v8Source": "https://chromium.googlesource.com/v8/v8/+/db1cbfa124770ec6b96924fa3bafcc5357f1ab91/src/heap/heap.cc",
+      "limitation": "V8 source describes a compressed-pointer allocator constraint; this control does not inspect the installed Chrome build configuration or prove its exact limiting mechanism."
+    }
+  },
+  "tests": {
+    "focused": "38 passed, two expected failures in the separately invoked optional low-level reuse API; four test files",
+    "fullSuite": {
+      "command": "npm test",
+      "passedTests": 50926,
+      "expectedFailures": 3,
+      "skippedTests": 79,
+      "passedFiles": 840,
+      "skippedFiles": 32,
+      "peakJobBytes": 1391075328,
+      "jobLimitBytes": 4294967296,
+      "activeAfter": 0
+    },
+    "actualBrowserWorker": {
+      "command": "node tests/project-private-decoding-browser.mjs",
+      "passed": true,
+      "method": "Seed prior numeric owner, decode with a real worker, mutate the prior owner and check decoded data and history identity; also verify cancellation and worker termination.",
+      "peakJobBytes": 730431488,
+      "jobLimitBytes": 4294967296,
+      "activeAfter": 0
+    },
+    "originalScan": {
+      "driver": "tests/m2-original-split-persistence-browser-local.mjs",
+      "input": "ply-3.ply",
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "crossOriginIsolated": true,
+      "guiSplitMcpExportReopenAndUndoRedo": true,
+      "exportedBytes": 337989593,
+      "peakJobBytes": 3272458240,
+      "jobLimitBytes": 4294967296,
+      "activeAfter": 0,
+      "ownedProcessesExitedAndPortsClosed": true
+    },
+    "originalScanExtractGuiReopen": {
+      "driver": "tests/m2-original-split-persistence-browser-local.mjs",
+      "mode": "SCANFORGE_M2_GUI_EXTRACT_REOPEN=1; cross-origin isolated",
+      "guiSplitAndExtractCommitted": true,
+      "fullProjectStreamAndDiskHashesMatched": true,
+      "passed": false,
+      "failure": "The GUI did not report an opened project within 180 seconds after file selection.",
+      "peakJobBytes": 4368478208,
+      "jobLimitBytes": 4294967296,
+      "activeAfter": 0,
+      "ownedProcessesExitedAndPortsClosed": true,
+      "downloadRemoved": true
+    },
+    "originalScanExtractGuiReopenSystemMemoryLimit": {
+      "driver": "tests/m2-original-split-persistence-browser-local.mjs",
+      "mode": "SCANFORGE_M2_GUI_EXTRACT_REOPEN=1; cross-origin isolated; same browser heap setting as the 4 GiB run",
+      "passed": true,
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776963,
+      "downloadedBytes": 436611692,
+      "downloadSha256": "f303108082aa5aeb22f3dfecea40ec826fa5ad1135935ce012de5c07d2b8ee7f",
+      "streamAndFileHashesMatched": true,
+      "guiReopenGeometryAndUndoRedo": true,
+      "subsequentMcpReopenAndUndoRedo": true,
+      "peakJobBytes": 5685387264,
+      "jobLimitBytes": 34110816256,
+      "activeAfter": 0,
+      "ownedProcessesExitedAndPortsClosed": true,
+      "downloadRemoved": true
+    },
+    "originalScanExtractLocalBrowser4GiB": {
+      "driver": "tests/m2-original-split-persistence-browser-local.mjs",
+      "mode": "SCANFORGE_M2_GUI_EXTRACT_REOPEN=1; SCANFORGE_QA_LOCAL_BROWSER=1; cross-origin isolated",
+      "guiSplitAndExtractCommitted": true,
+      "passed": false,
+      "failure": "The public MCP connection closed during project export or artifact reading; the captured page showed project_export succeeded. The run did not reach the completed-download stage.",
+      "peakJobBytes": 4294979584,
+      "jobLimitBytes": 4294967296,
+      "activeAfter": 0,
+      "portsClosedAndJobProcessesExited": true,
+      "temporaryFilesRemoved": true
+    }
+  },
+  "limitations": [
+    "The mutation is a controlled ownership test; it does not prove a normal GUI or MCP operation mutates the earlier owner.",
+    "The optional low-level reuse API discussed in the earlier checkpoints was subsequently removed.",
+    "The fuller Extract, download and GUI file-picker run failed under 4 GiB and passed once under the machine's reported physical-memory job limit; the higher-limit run exceeded 4 GiB and does not establish general resource reliability.",
+    "A local-browser 4 GiB control failed before the complete download, so it cannot isolate the cost of remote file selection.",
+    "Native processing parity, final integration review, merge and milestone closure remain open."
+  ]
+}

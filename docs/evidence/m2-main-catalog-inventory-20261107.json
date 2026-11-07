@@ -1,0 +1,24 @@
+{
+  "scope": "Read-only MCP catalog inventory of dirty local main versus M2 integration",
+  "candidate": "ea900690",
+  "localMainHead": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "mainWorkingCatalogSha256": "bfdd5347400cd9ef6aa1b1db59a2ee230c1f0a12b1ea153c18cd71b2d8830d85",
+  "candidateCatalogSha256": "d80ce5fa407b5da4e2d942c25770664b747581a786605258ae610a07054f165f",
+  "mainToolCount": 93,
+  "candidateToolCount": 97,
+  "mainOnlyToolNames": [],
+  "candidateOnlyToolNames": [
+    "inspection_display",
+    "inspection_get",
+    "inspection_manage",
+    "inspection_run"
+  ],
+  "mainFieldsAbsentFromCandidateUnion": [],
+  "mainEnumValuesAbsentFromCandidateUnion": [],
+  "additionalCandidateRootRequiredFieldsOutsideTopLevelAlternatives": [],
+  "method": "Compared literal tool names; traversed nested properties, items and oneOf/anyOf/allOf branches into a union of field paths and enum/const values; compared direct root required arrays only where neither root is oneOf. Catalog bytes were hashed before comparison.",
+  "limitations": [
+    "Unioning schema alternatives can mask incompatible combinations and does not establish request compatibility, validation bounds, defaults, descriptions, output, implementations or behavior.",
+    "Dirty main and the candidate can change; refresh before integration. Other MCP, GUI, native and milestone gates remain open."
+  ]
+}

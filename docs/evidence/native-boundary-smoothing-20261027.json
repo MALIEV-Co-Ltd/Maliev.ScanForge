@@ -1,0 +1,193 @@
+{
+  "scope": "Captured 64-facet native Smooth all control matches the shared async operation; broader M2 acceptance remains open",
+  "native": {
+    "version": "8.0.123",
+    "installedImageSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+    "sourceStlSha256": "0f383ea9abcf8d76aa41ab01394ea2ee0c11988ff6bb47a683424616a84e9a61",
+    "exportStlSha256": "33e98d62e10a758f1e2415bf3f03a0705d6a9b9c74900466c61d6a86fdf1c5dc",
+    "orderedCoordinatesSha256": "aae0f1098c7ea8a43ec7bf4aac907604403d933acb5af0e41ba9e168efac7b87",
+    "inputFacets": 64,
+    "outputFacets": 64,
+    "boundaries": 2,
+    "units": "mm",
+    "action": "Edit Scan / Boundaries / Smooth all, once, displayed strength 100; Back / Close / Export Visible STL",
+    "anchorsAdded": 0,
+    "viewportLimitation": "Native controls rendered, but mesh viewport was white; no point picking or rendered geometry comparison is claimed",
+    "geometry": {
+      "outerMovedVertices": 1,
+      "outerMovedSource": [5, 0, 0.75],
+      "outerMovedOutput": [5.062124252319336, 2.220446049250313e-16, 0.75],
+      "innerMovedVertices": 32,
+      "innerOutputRadiusRange": [2.473257541656494, 2.5039877840701315],
+      "innerMaximumRadiusSource": [
+        2.4944088459014893, 1.6667107343673706, 0.27000001072883606
+      ],
+      "innerMaximumRadiusOutput": [
+        2.0819897651672363, 1.3911410570144653, 0.27000004053115845
+      ]
+    }
+  },
+  "application": {
+    "fixture": "tests/fixtures/boundary-smooth-observed-annulus.json",
+    "regression": "tests/scan-boundary-native-smooth.test.ts",
+    "result": "PASS: source bytes and facet count preserved; every nonzero Float32 coordinate matches native exactly",
+    "applicationOperationChanged": "Shared native-order smoothing, bounded adaptive cubic fit, request-owned curve projection, boundary-locked correction and swap-last cleanup integrated",
+    "internalCurveFitter": "src/scan-boundary-fit.ts; runBoundarySmoothAsync owns one lazy CadClient and releases it before publication",
+    "mcpCoverage": "GUI boundary editor and mesh_process scanEdit/boundarySmooth share processing-worker; direct executor test runs the actual worker and pinned WASM. Public socket and rendered lifecycle refresh remain required.",
+    "coordinateAcceptance": "Original fixture/raw coordinate hashes remain immutable. Bit equality is required unless both values are within 16*DoubleEPS*max(1,input coordinate magnitude) of zero. No nonzero Float32 ULP tolerance."
+  },
+  "static": {
+    "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "analysisImageExecuted": false,
+    "method": "Focused no-auto-analysis Ghidra decompilation and instruction reads; derived image used only as static bytes",
+    "smoothAllHandler": "0x140668830",
+    "boundaryKernel": "0x1405b7ce0",
+    "curveInputBuilder": "0x1405b72c0",
+    "adaptiveFitter": "0x1405b75f0",
+    "fit": "Cubic least squares with uniform knots, centripetal parameters, closed-end derivative/value constraints, Gaussian solve and at most ten parameter refinements",
+    "refinementStop": "Signed relative maximum-error improvement at most 0.001, including a worsening error; denominator uses current error with a 1e-6 floor",
+    "fitControlLimit": 100,
+    "nativeSliderDefault": 10,
+    "sliderDefaultBasis": "0x140665980 initializes the retained slider setting to 10 and sends TBM_SETPOS after reading its persisted value",
+    "importBinding": "Archived IAT pointers correlate with exact installed DLL export RVAs at inferred historical aligned module bases; this is not a current runtime binding",
+    "projectionIndexFinding": "Whole-loop local index remains zero. Projection reads immutable snapshot coordinates; repeated records do not reproject the modified mesh point."
+  },
+  "diagnostics": {
+    "smoothingStage": {
+      "iterations": 20,
+      "innerRadiusRange": [2.4732574752578023, 2.4732576553936148],
+      "result": "Closely reproduces inner-rim shrinkage; remaining rounding, projection and ordering still unresolved"
+    },
+    "periodicFit": {
+      "poles": 7,
+      "initialMaxError": 0.07454755571656513,
+      "refinedMaxError": 0.07636078572228566,
+      "refinements": 1,
+      "firstX": 5.062124351819072,
+      "publishedFloat32FirstX": 5.062124252319336,
+      "result": "Independent reconstruction matches observed outer first X after Float32 publication; not full-curve or application parity"
+    },
+    "orderingResolved": "The first head probe incorrectly welded expanded positions into new first-seen IDs. Native binary STL import instead retains spatially ordered IDs. Supplying nativeStlTopology through the real worker-equivalent topology cache makes nativeHoleBoundaryWalks recover both observed projected vertices exactly. Both failed first-seen probes are retained.",
+    "cornerVisitDiagnostic": "Six explicit per-facet corner visitation permutations did not resolve the first-seen ordering mismatch; the existing spatial importer did. No new import algorithm is required."
+  },
+  "validation": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "stageProbeReceipt": "project-index-validation-m2-boundary-native-stage-probe-20261027-r2-mirror-focused.receipt.json",
+    "stageProbeExitCode": 1,
+    "fitDiagnosticReceipt": "project-index-validation-m2-boundary-periodic-fit-diagnostic-20261027-r3-cad.receipt.json",
+    "fitDiagnosticExitCode": 0,
+    "fitterRedReceipt": "project-index-validation-m2-boundary-fit-red-20261027-r1-mirror-focused.receipt.json",
+    "fitterRedExitCode": 1,
+    "fitterFirstGreenReceipt": "project-index-validation-m2-boundary-fit-green-20261027-r1-mirror-focused.receipt.json",
+    "fitterFirstGreenTests": 3,
+    "fitterExpandedReceipt": "project-index-validation-m2-boundary-fit-expanded-20261027-r1-mirror-focused.receipt.json",
+    "fitterExpandedTests": 5,
+    "kernelProjectionRedReceipt": "project-index-validation-m2-boundary-kernel-projection-red-20261027-r1-mirror-focused.receipt.json",
+    "kernelProjectionFirstGreenReceipt": "project-index-validation-m2-boundary-kernel-projection-green-20261027-r1-mirror-focused.receipt.json",
+    "kernelProjectionResult": "Actual pinned WASM projects the fitted outer point to the observed Float32 X; temporary curve handles are scoped to the request, scene handle count stays zero and the owned VM transport worker terminates",
+    "combinedFitterProjectionReceipt": "project-index-validation-m2-boundary-fit-and-kernel-20261027-r2-mirror-focused.receipt.json",
+    "combinedFitterProjectionTests": 6,
+    "mixedPrecisionDistance": {
+      "nativeHelper": "0x14017b820",
+      "arithmetic": "sqrt(dy * Float32(dy) + dx * Float32(dx) + dz * Float32(dz)); all products, sums and returned distance remain Double",
+      "redReceipt": "project-index-validation-m2-smoothing-distance-red-20261027-r1-mirror-focused.receipt.json",
+      "greenReceipt": "project-index-validation-m2-smoothing-distance-green-20261027-r1-mirror-focused.receipt.json",
+      "testsPassed": 8,
+      "result": "All 31 inner-rim vertices outside the separately projected head match native Float32 coordinates exactly after twenty passes; existing selected/default suites pass"
+    },
+    "privatePipeline": {
+      "receipt": "project-index-validation-m2-boundary-pipeline-diagnostic-20261027-r3-cad.receipt.json",
+      "maxCoordinateErrorMm": 1.9984014443252818e-15,
+      "differentScalarSlots": 3,
+      "scope": "Only mathematical-zero outer-Y slots differ across OCCT versions. Every nonzero Float32 coordinate matches. Prior stricter hash failures retained."
+    },
+    "interimBuild": {
+      "receipt": "project-index-validation-m2-boundary-fit-wip-build-20261027-r1-build.receipt.json",
+      "typecheckGroups": 13,
+      "buildId": "scanforge-17cd525d1ec01c13",
+      "result": "Passed with unchanged source manifest; predates the subsequent mixed-precision distance correction"
+    },
+    "importBindingReceipt": "project-index-validation-m2-boundary-native-import-binding-20261027-r1-mirror-focused.receipt.json",
+    "importBindingResult": "Native imported loop heads and shared-operation coordinate regression pass under declared zero-roundoff rule",
+    "cleanupErrors": [],
+    "failedDiagnosticLaunchRetained": "First Python diagnostic passed Python arguments to the Node-owned guard entry point and exited 9; corrected Node launcher ran Python as its owned child. Original receipt retained.",
+    "privatePipelinePrevious": {
+      "receipt": "project-index-validation-m2-boundary-pipeline-diagnostic-20261027-r2-cad.receipt.json",
+      "maxCoordinateErrorMm": 1.1920928955078125e-7,
+      "differentScalarSlots": 6,
+      "scope": "Private annulus diagnostic using retained binary import order, twenty smoothing passes, fitted curves, actual pinned WASM projection and boundary-locked correction. Not shared-operation, GUI or MCP acceptance. Native output digest still differs."
+    },
+    "sharedOperation": {
+      "receipt": "project-index-validation-m2-boundary-native-async-green-20261027-r1-mirror-focused.receipt.json",
+      "passed": 8,
+      "failed": 0
+    },
+    "directMcpActualWorker": {
+      "receipt": "project-index-validation-m2-boundary-mcp-worker-green-20261027-r1-mirror-focused.receipt.json",
+      "passed": 80,
+      "failed": 0,
+      "scope": "Direct createOperations, real processing-worker and pinned WASM; not public socket/browser acceptance"
+    },
+    "integratedAffected": {
+      "receipt": "project-index-validation-m2-boundary-integrated-affected-20261027-r1-mirror-focused.receipt.json",
+      "passed": 120,
+      "failed": 0
+    },
+    "cleanup": {
+      "receipt": "project-index-validation-m2-boundary-cleanup-pipeline-green-20261027-r1-mirror-focused.receipt.json",
+      "passed": 8,
+      "scope": "Static-derived folded control, actual WASM and publication lineage; independent folded native export remains required"
+    },
+    "fullBeforeAdmissionFix": {
+      "receipt": "project-index-validation-m2-boundary-integrated-full-20261027-r1-full.receipt.json",
+      "passed": 49947,
+      "conditionalSkips": 64,
+      "failed": 0,
+      "scope": "Predates review admission guard and four new invalid-topology regressions"
+    },
+    "admissionReviewFix": {
+      "review": "One P2 source-topology admission gap; no other actionable source finding",
+      "redReceipt": "project-index-validation-m2-boundary-admission-red-20261027-r1-mirror-focused.receipt.json",
+      "failedRegressionCases": 4,
+      "greenReceipt": "project-index-validation-m2-boundary-admission-green-20261027-r1-mirror-focused.receipt.json",
+      "scope": "Sync/async real-topology source/cache rejection and MCP real-driver no-publication; existing native/cleanup/lifecycle tests remain green",
+      "greenTestsPassed": 65
+    },
+    "reviewedBuild": {
+      "receipt": "project-index-validation-m2-boundary-reviewed-build-20261027-r1-build.receipt.json",
+      "buildId": "scanforge-dd3c0e023e41fd94",
+      "typecheckGroups": 13,
+      "files": 3055,
+      "manifestSha256": "48b00c4c7ab12df1c6c72c80f3c67a15580649253a2a37fcf54f375fbd8e3dae",
+      "unchangedDuringBuild": true,
+      "scope": "After admission fix; later documentation and local CRLF-only normalization are not attributed to this raw source manifest"
+    },
+    "cadSmokeChecks": {
+      "receipt": "project-index-validation-m2-boundary-final-checks-20261027-r1-cad.receipt.json",
+      "cadSmokePassed": true,
+      "curvatureSmokePassed": true,
+      "remainingSceneHandles": 0,
+      "aggregateExitCode": 1,
+      "aggregateFailure": "Both CAD subprocesses passed; following formatting of the entire local folder failed on eleven Git-ignored workflow ledgers, excluded from the shipped repository. Original receipt retained."
+    },
+    "canonicalFormatting": {
+      "receipt": "project-index-validation-m2-boundary-canonical-format-20261027-r2-cad.receipt.json",
+      "passed": true,
+      "canonicalFiles": 2310,
+      "priorFailureRetained": "r1 identified local CRLF in src/object-operations.ts; formatter normalized it to LF and git normalized content hash stayed identical to HEAD. No application patch was added for that file."
+    },
+    "freshReview": {
+      "initial": "One P2 invalid-topology admission gap",
+      "followup": "Resolved; no remaining actionable source defect",
+      "limitations": "Independent native open/anchor/selected/folded/slider semantics, active-kernel cancellation, native cleanup+repetition, large runtime/allocator-level leak behavior and complete M2/CI/merge acceptance remain open"
+    }
+  },
+  "remaining": [
+    "Verify slider range/display percentage binding independently",
+    "Verify selected-command dispatch, anchors, open walks and folded cleanup against independent native controls",
+    "Refresh rendered GUI/public-MCP, repeated commands, history, persistence and cancellation on complete current build",
+    "Validate native 3D Sketch commands separately from planar boundary projection",
+    "Complete all other M2 acceptance gates, whole-candidate review, exact-head CI and authorized merge/closure"
+  ]
+}

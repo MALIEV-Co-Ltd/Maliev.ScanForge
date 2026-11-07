@@ -1,7 +1,5 @@
-import {
-  unpackProjectTransport,
-  type ProjectTransport,
-} from "./project-transport";
+import type { ProjectTransport } from "./project-transport";
+import { unpackProjectEncodingTransport } from "./project-encoding-numeric";
 import { encodeProjectFileLocally } from "./project-file-codec";
 import {
   validateEncodingChunkSources,
@@ -17,21 +15,19 @@ self.onmessage = async ({
 }: MessageEvent<
   (ProjectEncodingSnapshot | ProjectTransport) & {
     sharedChunkSources?: unknown;
+    temporaryBlobKey?: string;
   }
 >) => {
   try {
     const sources = validateEncodingChunkSources(data.sharedChunkSources);
     const snapshot =
-      "kind" in data
-        ? await unpackProjectTransport<ProjectEncodingSnapshot>(data, {
-            cooperative: false,
-          })
-        : data;
+      "kind" in data ? await unpackProjectEncodingTransport(data) : data;
     const sharedChunkTokens: ProjectEncodingChunkToken[] = [];
     const seen = new Set<number>();
     const file = await encodeProjectFileLocally(
       restoreEncodingSnapshot(snapshot),
       {
+        temporaryBlobKey: data.temporaryBlobKey,
         onSharedChunk: (chunk) => {
           const sourceToken = sources.indexOf(chunk.buffer);
           if (sourceToken >= 0 && !seen.has(sourceToken)) {

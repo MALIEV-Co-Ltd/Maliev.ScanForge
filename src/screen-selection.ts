@@ -23,8 +23,9 @@ export interface SelectionView {
 export class ScreenSelectionIndex {
   private readonly geometry = new THREE.BufferGeometry();
   private readonly tree: MeshBVH | undefined;
+  private readonly origin = new THREE.Vector3();
   constructor(
-    private readonly positions: Positions,
+    private readonly positions: Positions | Float64Array,
     private readonly hidden: number[] = [],
   ) {
     if (!positions.length || positions.length % 9)
@@ -34,11 +35,37 @@ export class ScreenSelectionIndex {
         throw new Error(
           "Screen selection requires finite Float32 triangle coordinates.",
         );
+    let localPositions: Float32Array;
+    if (positions instanceof Float32Array) localPositions = positions;
+    else {
+      const bounds = [
+        Infinity,
+        Infinity,
+        Infinity,
+        -Infinity,
+        -Infinity,
+        -Infinity,
+      ];
+      for (let i = 0; i < positions.length; i += 3)
+        for (let axis = 0; axis < 3; axis++) {
+          bounds[axis] = Math.min(bounds[axis], positions[i + axis]);
+          bounds[axis + 3] = Math.max(bounds[axis + 3], positions[i + axis]);
+        }
+      this.origin.set(
+        ...([0, 1, 2].map(
+          (axis) => bounds[axis] + (bounds[axis + 3] - bounds[axis]) / 2,
+        ) as [number, number, number]),
+      );
+      localPositions = new Float32Array(positions.length);
+      for (let i = 0; i < positions.length; i += 3) {
+        localPositions[i] = positions[i] - this.origin.x;
+        localPositions[i + 1] = positions[i + 1] - this.origin.y;
+        localPositions[i + 2] = positions[i + 2] - this.origin.z;
+      }
+    }
     this.geometry.setAttribute(
       "position",
-      positions instanceof Float32Array
-        ? new THREE.BufferAttribute(positions, 3)
-        : new THREE.Float32BufferAttribute(positions, 3),
+      new THREE.BufferAttribute(localPositions, 3),
     );
     if (hidden.length) {
       const hiddenSet = new Set(hidden),
@@ -228,20 +255,25 @@ export class ScreenSelectionIndex {
       if (!view.through) {
         ndc.set(projected.x, projected.y);
         raycaster.setFromCamera(ndc, camera);
+        const localRay = raycaster.ray.clone();
+        localRay.origin.sub(this.origin);
         const hit = clippingPlanes.length
           ? this.tree
-              ?.raycast(raycaster.ray, THREE.DoubleSide)
-              .filter((candidate) => insideClip(candidate.point))
+              ?.raycast(localRay, THREE.DoubleSide)
+              .filter((candidate) =>
+                insideClip(candidate.point.clone().add(this.origin)),
+              )
               .sort((a, b) => a.distance - b.distance)[0]
           : this.tree?.raycastFirst(
-              raycaster.ray,
+              localRay,
               THREE.DoubleSide,
               camera instanceof THREE.PerspectiveCamera ? camera.near : 0,
               camera instanceof THREE.PerspectiveCamera ? camera.far : Infinity,
             );
         if (
           !hit ||
-          hit.point.distanceTo(point) > Math.max(1e-5, hit.distance * 1e-6)
+          hit.point.add(this.origin).distanceTo(point) >
+            Math.max(1e-5, hit.distance * 1e-6)
         )
           return;
       }
@@ -265,9 +297,9 @@ export class ScreenSelectionIndex {
       for (let c = 0; c < 8; c++) {
         corner
           .set(
-            c & 1 ? box.max.x : box.min.x,
-            c & 2 ? box.max.y : box.min.y,
-            c & 4 ? box.max.z : box.min.z,
+            (c & 1 ? box.max.x : box.min.x) + this.origin.x,
+            (c & 2 ? box.max.y : box.min.y) + this.origin.y,
+            (c & 4 ? box.max.z : box.min.z) + this.origin.z,
             1,
           )
           .applyMatrix4(projection);

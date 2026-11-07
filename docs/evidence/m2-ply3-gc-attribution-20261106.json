@@ -1,0 +1,23 @@
+{
+  "scope": "Diagnostic-only original PLY-3 Split/Extract, full public-MCP artifact download, GUI reopen and history on the integration build; forced Chrome page garbage collection immediately after artifact deletion",
+  "baseCommit": "755b44b",
+  "diagnostic": "Compared Chrome DevTools page heap immediately before and after explicitly requesting collection. This is not normal application behavior or a controlled proof of causation.",
+  "before": { "usedSize": 475813976, "backingStorageSize": 240571020 },
+  "after": { "usedSize": 471616188, "backingStorageSize": 227157741 },
+  "result": "Full download, GUI reopen, geometry and GUI undo/redo completed with no page or console errors. The guarded run failed because its reported peak exceeded 4 GiB, despite forced collection; no claim is made about which allocation caused the peak.",
+  "peakJobBytes": 4308942848,
+  "limitBytes": 4294967296,
+  "overLimitBytes": 13975552,
+  "peakLastIncreaseElapsedSeconds": 224.604,
+  "cleanupConfirmed": true,
+  "downloadBytes": 475563378,
+  "downloadSha256": "b1a481ae76cc96e9e2b9a2126e11666c36cb0cff0f4e0a7a5ca7381732f03853",
+  "downloadCleanup": "Driver deleted the temporary download after independently matching its hash.",
+  "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/gc-attribution-ply3-20261106.json",
+  "receiptSha256": "56454f37d25575c82fa129329bc0eed56495229495a99900e6fa4dd3aa9871cf",
+  "log": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/gc-attribution-ply3-20261106.log",
+  "logSha256": "cc9867655f6d3b09e37cccf0bc96465110a07801dfb76515bc4fa7101667b002",
+  "diagnosticScript": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-gc-attribution-ply3-20261106.mjs",
+  "diagnosticScriptSha256": "4e6c1c0eb47a102733d4e568f9ca2599dd4ad3936305414590570e00243e384e",
+  "limitations": "The measured page heap excludes other Chrome processes and GPU memory. One forced-GC run cannot rule out retained allocations elsewhere or establish a repeatable resource fix. The standard no-forced-GC gate and complete M2 remain open."
+}

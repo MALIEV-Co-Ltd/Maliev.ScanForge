@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-25",
+  "milestone": "M2",
+  "status": "in_progress",
+  "baseCommit": "e367262fc46b2fee8588c7b3c84ccd41fa7424fa",
+  "uncommittedCandidate": true,
+  "build": {
+    "command": "npm run build",
+    "buildId": "scanforge-9b734d59e008f36a",
+    "enumeratedInputs": 2008,
+    "inputManifestSha256": "6a9bfb2815221bb35356cb1e00e222db7b3d29c9d95dde6d712f5a064884d845",
+    "runtimeInputsUnchangedAtEvidence": true,
+    "outputFiles": 273,
+    "outputManifestSha256": "6a1aacb3e5ab12c8fca71b01991ea36f62709ca5f5d0b73c20ada653af0ac5a5",
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 2578227200,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    }
+  },
+  "focused": {
+    "command": "vitest run --maxWorkers=1 --exclude **/.resources/** [79 explicit canonical test files]",
+    "passed": 2317,
+    "failed": 0,
+    "skipped": 0,
+    "canonicalFiles": 79,
+    "files": [
+      "tests/hole-fill-progress.test.tsx",
+      "tests/hole-progress-transport.test.ts",
+      "tests/mesh-processing.test.ts",
+      "tests/noise-comparison-legend.test.tsx",
+      "tests/noise-comparison-overlay.test.ts",
+      "tests/persistent-topology.test.ts",
+      "tests/reduction-mode-select.test.tsx",
+      "tests/reduction-report.test.tsx",
+      "tests/reduction-scale.test.tsx",
+      "tests/scan-boundary-edges.test.ts",
+      "tests/scan-boundary-simplify.test.ts",
+      "tests/scan-boundary-sketch.test.ts",
+      "tests/scan-defeature-curvature.test.ts",
+      "tests/scan-defeature-native.test.ts",
+      "tests/scan-defeature-repatch.test.ts",
+      "tests/scan-edit-general-split.test.ts",
+      "tests/scan-edit.test.ts",
+      "tests/scan-flip-topology.test.ts",
+      "tests/scan-hole-batch.test.ts",
+      "tests/scan-hole-continuation.test.ts",
+      "tests/scan-hole-long-rim.test.ts",
+      "tests/scan-hole-order.test.ts",
+      "tests/scan-hole-pit.test.ts",
+      "tests/scan-hole-quality.test.ts",
+      "tests/scan-hole-triangulation.test.ts",
+      "tests/scan-hole-uneven-rim.test.ts",
+      "tests/scan-mirror-preview.test.ts",
+      "tests/scan-native-mirror.test.ts",
+      "tests/scan-native-noise.test.ts",
+      "tests/scan-native-reduction.test.ts",
+      "tests/scan-native-scale-geometry.test.ts",
+      "tests/scan-native-scale.test.ts",
+      "tests/scan-noise-angles.test.ts",
+      "tests/scan-noise-color.test.ts",
+      "tests/scan-noise-deviation.test.ts",
+      "tests/scan-noise-dispatch.test.ts",
+      "tests/scan-noise-indexed-octree.test.ts",
+      "tests/scan-noise-large-comparison.test.ts",
+      "tests/scan-noise-large.test.ts",
+      "tests/scan-noise-normals.test.ts",
+      "tests/scan-noise-octree-bounds.test.ts",
+      "tests/scan-noise-octree-query.test.ts",
+      "tests/scan-noise-octree.test.ts",
+      "tests/scan-noise-overlap.test.ts",
+      "tests/scan-noise-parallel.test.ts",
+      "tests/scan-noise-partition.test.ts",
+      "tests/scan-noise-preview-native.test.ts",
+      "tests/scan-noise-threads.test.mjs",
+      "tests/scan-noise-tree-threads.test.mjs",
+      "tests/scan-noise-weights.test.ts",
+      "tests/scan-reduction-adapter.test.ts",
+      "tests/scan-reduction-candidate.test.ts",
+      "tests/scan-reduction-comparison.test.ts",
+      "tests/scan-reduction-dispatch.test.ts",
+      "tests/scan-reduction-final.test.ts",
+      "tests/scan-reduction-large-surface.test.ts",
+      "tests/scan-reduction-partitions.test.ts",
+      "tests/scan-reduction-preparation.test.ts",
+      "tests/scan-reduction-surface.test.ts",
+      "tests/scan-reduction-target.test.ts",
+      "tests/scan-reduction-update.test.ts",
+      "tests/scan-reduction-validity.test.ts",
+      "tests/scan-scale-preview.test.ts",
+      "tests/scan-scaled-copy.test.ts",
+      "tests/scan-selected-smooth.test.ts",
+      "tests/scan-smoothing-defaults.test.ts",
+      "tests/scan-smoothing-parallel.test.ts",
+      "tests/scan-smoothing-threads.test.mjs",
+      "tests/scan-tools-panel.test.tsx",
+      "tests/scan-tools-reduction.test.ts",
+      "tests/scan-tools-reference.test.ts",
+      "tests/scan-tools-remesh.test.ts",
+      "tests/scan-tools-transforms.test.ts",
+      "tests/scan-topology-panels.test.tsx",
+      "tests/selection-boundary-highlight.test.ts",
+      "tests/stored-normal-processing.test.ts",
+      "tests/topology-cache-codec.test.ts",
+      "tests/topology-cache-store.test.ts",
+      "tests/workflow-operations.test.ts"
+    ],
+    "inputsStableDuringRun": true,
+    "resultSha256": "bbd72a1832bb953657f3d0fc199b4a72cdbad641185647db385b59c52ed80783",
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 980000768,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    }
+  },
+  "integration": {
+    "defeature-browser": {
+      "command": "node tests/defeature-curvature-browser.mjs",
+      "driver": "Playwright; Browser plugin not available",
+      "buildId": "scanforge-9b734d59e008f36a",
+      "result": {
+        "defeatureCanvasOnlyStatus": true,
+        "guiMcpEqual": true,
+        "undoRedo": true,
+        "sourcePreserved": true,
+        "cancellationRollback": true,
+        "failureRollback": true,
+        "saveReopen": true,
+        "beforeViewport": {
+          "projection": "orthographic",
+          "position": [0, 0, 45],
+          "target": [0, 0, 0],
+          "up": [0, 1, 0],
+          "zoom": 1,
+          "near": -10000,
+          "far": 10000,
+          "cameraMatrixFormat": "column-major-4x4",
+          "projectionMatrix": [
+            0.04490440398970987, 0, 0, 0, 0, 0.07376227744707385, 0, 0, 0, 0,
+            -0.0001, 0, 0, 0, 0, 1
+          ],
+          "cameraWorldMatrix": [
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 45, 1
+          ],
+          "viewport": {
+            "width": 1140,
+            "height": 694,
+            "coordinates": "normalized top-left x/y in [0,1]"
+          },
+          "bounds": {
+            "min": [-8, -8, 0.16099999845027924],
+            "max": [8, 8, 4.159999847412109]
+          },
+          "pointCloudDisplay": [],
+          "navigation": {
+            "orbitMode": "free",
+            "zoomWindowActive": false
+          },
+          "orbitCenter": {
+            "source": null,
+            "point": null,
+            "markerVisible": false
+          }
+        },
+        "afterViewport": {
+          "projection": "orthographic",
+          "position": [0, 0, 45],
+          "target": [0, 0, 0],
+          "up": [0, 1, 0],
+          "zoom": 1,
+          "near": -10000,
+          "far": 10000,
+          "cameraMatrixFormat": "column-major-4x4",
+          "projectionMatrix": [
+            0.04490440398970987, 0, 0, 0, 0, 0.07376227744707385, 0, 0, 0, 0,
+            -0.0001, 0, 0, 0, 0, 1
+          ],
+          "cameraWorldMatrix": [
+            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 45, 1
+          ],
+          "viewport": {
+            "width": 1140,
+            "height": 694,
+            "coordinates": "normalized top-left x/y in [0,1]"
+          },
+          "bounds": {
+            "min": [-8, -8, -7.130351420414627e-9],
+            "max": [8, 8, 4.159999847412109]
+          },
+          "pointCloudDisplay": [],
+          "navigation": {
+            "orbitMode": "free",
+            "zoomWindowActive": false
+          },
+          "orbitCenter": {
+            "source": null,
+            "point": null,
+            "markerVisible": false
+          }
+        },
+        "worstDeviation": 2.145767219463579e-8,
+        "diagnostics": {
+          "removedTriangles": 72,
+          "prunedTriangles": 0,
+          "filledHoles": 1,
+          "fillAttempts": 1,
+          "insertedVertices": 65,
+          "curvaturePatches": 1,
+          "curvatureFitRms": 2.083817889138158e-8,
+          "curvatureFallback": "",
+          "method": "Curvature-fitted surface reconstruction with retained indexed adjacency",
+          "topologyCache": "persistent-hit",
+          "topologyCacheBytes": 32740
+        },
+        "pageErrors": []
+      },
+      "screenshots": [
+        {
+          "name": "before.png",
+          "sha256": "a7c735e80c6c594c9bc9fa01f047591e3c9192f49b65b660b0507cec2d277efb"
+        },
+        {
+          "name": "after.png",
+          "sha256": "8aa7acbba9faff588646697ffe13c3c665b9cf7f4401d587c69b7be686a75876"
+        }
+      ],
+      "ownedHelpersExited": true,
+      "ownedPortsClosed": true,
+      "receipt": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "cleanupErrors": [],
+        "childPeakJobMemoryBytes": 967634944,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500
+      },
+      "testScriptSha256": "ca56a2d8dfbbdb1782d6dfb6f2c05b6df1d2f9890332ec1e6063e0508e666bab"
+    },
+    "noise-browser": {
+      "command": "node tests/scan-noise-browser.mjs",
+      "driver": "Playwright; Browser plugin not available",
+      "buildId": "scanforge-9b734d59e008f36a",
+      "result": {
+        "passed": true,
+        "inputTriangles": 1013888,
+        "previewMs": 9462.1791,
+        "guiGeometrySha256": "ccaf47650753554435f09ea2d7421227b9b1dcad7f937d213bba58a207d2935d",
+        "mcpGeometrySha256": "ccaf47650753554435f09ea2d7421227b9b1dcad7f937d213bba58a207d2935d",
+        "comparisonBeforePreview": true,
+        "errors": []
+      },
+      "screenshots": [
+        {
+          "name": "preview.png",
+          "sha256": "ef2c26a44fbf7c3ac2f3766ea512376b91069aca2a3c59509925328def1b45ab"
+        }
+      ],
+      "ownedHelpersExited": true,
+      "ownedPortsClosed": true,
+      "receipt": {
+        "exitCode": 0,
+        "rootExited": true,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "cleanupErrors": [],
+        "childPeakJobMemoryBytes": 2382987264,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500
+      },
+      "testScriptSha256": "e61a2e7cc145a91cb4f68ac0a40dc97c89658d2b1fa8eb012df77bba94510a33"
+    }
+  },
+  "staticNative": {
+    "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "procedures": 8,
+    "verifiedInstructionStarts": 1546,
+    "targetExecuted": false,
+    "sourceDossierDigests": [
+      "4b79513bce097cac71aff141920abc56a28d841b52ef62bae8ffd1e06eac83a3",
+      "8deb8cf1f03390b28d33d368d6c716f60f7f81bb6f8a098ff66984fa078313aa"
+    ],
+    "verificationSha256": "8f008ae64c75f69a91f29aa8423abeb3e7dae1398909cc47b2e90fc003acc932",
+    "receipt": {
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "cleanupErrors": [],
+      "childPeakJobMemoryBytes": 84971520,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    }
+  },
+  "limitations": [
+    "No milestone closure or whole-domain native equivalence.",
+    "Manufactured GUI/MCP fixtures are not the original scan acceptance inputs.",
+    "Unroll frame/directional seeds/defaults and seam/repetition integration remain open.",
+    "Average native boundary/rounding/preparation/source-choice/publication integration remains open.",
+    "Production voxel reconstruction differs from the recovered native path; no matched original three-scan native export.",
+    "The original screenshot defeature selection is unavailable.",
+    "M1 dependency belongs to another task."
+  ],
+  "applicationChanges": false,
+  "mcpContractChanged": false,
+  "mcpCoverage": "Actual public MCP mesh_process, selection, history, project save/reopen and cancellation; shared GUI/MCP processing paths.",
+  "userDevServer": "http://127.0.0.1:5173/"
+}

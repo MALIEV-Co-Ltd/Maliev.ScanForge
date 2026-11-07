@@ -1,0 +1,153 @@
+{
+  "scope": "Finite M2 native hole controls and shared GUI/MCP lifecycle; not full M2 closure or universal native equivalence",
+  "build": "scanforge-39813075d443eb00",
+  "candidateAtBuild": {
+    "head": "f96c7e5489de28aee0672dc3301bc1a55acc9829",
+    "files": 2820,
+    "unchanged": true,
+    "manifestSha256": "47a061a8696560acc4df4509ab519a61e9acd016df4a9f6e6543664ca9f2cffd"
+  },
+  "sourceState": "Dirty candidate pinned by complete before/after manifest; later documentation-only additions are outside the compiled runtime change",
+  "focused": {
+    "passed": 82,
+    "failed": 0
+  },
+  "affectedRepair": {
+    "passed": 185,
+    "failed": 0
+  },
+  "sharedTreeRepolygon": {
+    "passed": 9,
+    "failed": 0
+  },
+  "fixtureSha256": {
+    "tests/fixtures/hole-fill-observed-cups.json": "85919f673b737d59caf59f4f339fa39d817f143c312a44118b39a158e23e491d",
+    "tests/fixtures/hole-fill-observed-rectangles.json": "1f3cfd5f3c6a56c2f50700207ec9e8d3ad3180d49ff8886626e72088efe75434",
+    "tests/fixtures/hole-fill-observed-steep-lip.json": "8d54b9e9f6d2c2822b09e65e5b65d40ea842dad78ca5874e544c5f76fe4affa0"
+  },
+  "browser": {
+    "cases": [
+      "native Flat39 original STL",
+      "native Tangent40 original STL",
+      "native Automatic39 original STL",
+      "native batch two rotated rectangles at 9 mm with Flat displayed",
+      "guarded steep-lip surface recovery"
+    ],
+    "guiPublicMcpEqual": true,
+    "sourcePrefixPreserved": true,
+    "undoRedo": true,
+    "noOpHistoryPreserved": true,
+    "failureRollback": true,
+    "binaryReopenAndHistory": true,
+    "pageErrors": []
+  },
+  "nativeBounds": [
+    "Tangent/Automatic39/40 and steep-lip32 production tests compare all ordered Float32 coordinates",
+    "Flat39 and batch rectangles compare complete oriented triangle sets",
+    "Native Curvature39/40/41 failed outputs are retained as failures; successful Curvature, partial/bridge and arbitrary-rim parity remain open"
+  ],
+  "resourcePolicy": {
+    "aggregateJobLimitBytes": 4294967296,
+    "cpuPercent": 25,
+    "serialized": true,
+    "ownedHelpersOnly": true
+  },
+  "validation": [
+    {
+      "label": "m2-hole-contract-green-20261026-r1",
+      "receiptSha256": "188b44b4a80f1bd509382ac41df90cfae775e264f806aba25d6a6c65c7c68538",
+      "exitCode": 0,
+      "peakJobBytes": 413446144,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-contract-affected-20261026-r2",
+      "receiptSha256": "2d0a9afaca4952060ba9c2e730658636ef580a2834e73e5d74b5a8f133550802",
+      "exitCode": 0,
+      "peakJobBytes": 432488448,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-combined-build-20261026-r1",
+      "receiptSha256": "861cb941ff40229d23a41ffef43180f550514462ecafdbf5f9c3eabc1eeac08e",
+      "exitCode": 0,
+      "peakJobBytes": 1608749056,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-shared-tree-repolygon-20261026-r1",
+      "receiptSha256": "51b90ad22908b0384fa9dfa377a2289967d673208fdd1795eb30d5190818bcba",
+      "exitCode": 0,
+      "peakJobBytes": 373878784,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-tangent40-browser-20261026-r1",
+      "receiptSha256": "797eb83eaec2c2fdf692f7002ad194ded03e9d7e0750e1bec6406dee46f6d6b6",
+      "exitCode": 0,
+      "peakJobBytes": 964517888,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-batch-browser-20261026-r1",
+      "receiptSha256": "50737f6fc44124499f039fab191b8e5da471fc274aa021a8815afb71ca8390dd",
+      "exitCode": 0,
+      "peakJobBytes": 900939776,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-automatic39-browser-20261026-r1",
+      "receiptSha256": "54428702d8563cbd8e26c2f8de2d5c42dd5785067b485e47cfa3f8720d6bb7db",
+      "exitCode": 0,
+      "peakJobBytes": 904945664,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-flat39-browser-20261026-r1",
+      "receiptSha256": "ca12a9aea3b335deb8d9f3030ebcb5556eadb0940703fd36cc45f4eb617b62df",
+      "exitCode": 0,
+      "peakJobBytes": 906838016,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    },
+    {
+      "label": "m2-hole-recovery-browser-20261026-r1",
+      "receiptSha256": "02edba3406b5c615b4696b58ed3f14a6e1c2710fde2b1e791fe5ae01ec96e809",
+      "exitCode": 0,
+      "peakJobBytes": 915951616,
+      "rootExited": true,
+      "activeDescendantsAfterCleanup": 0,
+      "cleanupErrors": []
+    }
+  ],
+  "retainedFailures": [
+    "native-hole red batch69 passed/11 expected failures",
+    "affected repair r1:181 passed/3 obsolete contract assumptions; physical, topology and recovery assertions retained and corrected in r2",
+    "earlier Flat-only browser selector and busy-history failures remain outside this checkpoint"
+  ],
+  "fullCandidate": {
+    "passed": 49078,
+    "failed": 0,
+    "fixtureGatedSkipped": 64,
+    "canonicalTestFiles": 700,
+    "compiledRuntimeAndTestFilesUnchanged": 2061,
+    "peakJobBytes": 956387328,
+    "receiptSha256": "2722a5e3cb14849ba8677222daaee27912b210ee768511c58eb02de63699be55",
+    "cleanupErrors": []
+  }
+}

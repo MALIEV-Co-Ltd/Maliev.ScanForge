@@ -1,0 +1,169 @@
+{
+  "scope": "Isolated prefilled-array allocation diagnostic with reuse disabled; no production changes",
+  "candidate": "915765a4",
+  "bundle": "scanforge-aa65eecf68269aa5",
+  "method": "Isolated server removed the numeric reuse callback and prefilled the allocated destination array with 0.5 before copying verified values. Each replacement was required to occur exactly once in each served bundle.",
+  "syntheticControls": [
+    {
+      "mode": "baseline",
+      "length": 16777216,
+      "signedZero": true,
+      "durationMs": 109.5,
+      "peakJobBytes": 715935744
+    },
+    {
+      "mode": "filled",
+      "length": 16777216,
+      "signedZero": true,
+      "durationMs": 70.90000000596046,
+      "peakJobBytes": 666001408
+    },
+    {
+      "mode": "filled",
+      "length": 16777216,
+      "signedZero": true,
+      "durationMs": 69.09999999403954,
+      "peakJobBytes": 661118976
+    },
+    {
+      "mode": "baseline",
+      "length": 16777216,
+      "signedZero": true,
+      "durationMs": 107.59999999403954,
+      "peakJobBytes": 711475200
+    }
+  ],
+  "fullPly3": [
+    {
+      "peakJobBytes": 4223647744,
+      "guardLimitBytes": 4294967296,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        "source-imported",
+        "source-digest",
+        "cutter-imported",
+        "gui-split-started",
+        "gui-split-committed",
+        "gui-output-digest",
+        "component-inventory-opened",
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-undone",
+        "gui-extract-undo-digest-verified",
+        "gui-extract-project-exported",
+        "gui-extract-project-downloaded",
+        "gui-extract-gui-project-imported",
+        "gui-extract-gui-reopen-verified",
+        "gui-extract-reopen-gui-undo-verified",
+        "gui-extract-reopen-gui-redo-verified",
+        "gui-extract-redo-verified"
+      ],
+      "download": {
+        "artifactDownloadSha256": "2f78937cf7722a54807314dc16d77833bd4782d85c9c9b5ff2bcab13837620b5",
+        "fileSha256": "2f78937cf7722a54807314dc16d77833bd4782d85c9c9b5ff2bcab13837620b5",
+        "bytes": 475563378
+      },
+      "cleanupConfirmed": true
+    },
+    {
+      "peakJobBytes": 3954053120,
+      "guardLimitBytes": 4294967296,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        "source-imported",
+        "source-digest",
+        "cutter-imported",
+        "gui-split-started",
+        "gui-split-committed",
+        "gui-output-digest",
+        "component-inventory-opened",
+        "component-inventory-ready",
+        "gui-extract-committed",
+        "gui-extract-undone",
+        "gui-extract-undo-digest-verified",
+        "gui-extract-project-exported",
+        "gui-extract-project-downloaded",
+        "gui-extract-gui-project-imported",
+        "gui-extract-gui-reopen-verified",
+        "gui-extract-reopen-gui-undo-verified",
+        "gui-extract-reopen-gui-redo-verified",
+        "gui-extract-redo-verified"
+      ],
+      "download": {
+        "artifactDownloadSha256": "3d62fcf6c85ffb0b1caba57f800c1be9f0bed38c41995ce28ab60cef67dfc08e",
+        "fileSha256": "3d62fcf6c85ffb0b1caba57f800c1be9f0bed38c41995ce28ab60cef67dfc08e",
+        "bytes": 475563378
+      },
+      "cleanupConfirmed": true
+    }
+  ],
+  "limits": [
+    "Two full-size runs passed with variable headroom; causality and reliable resource compliance are not established.",
+    "The injection is not a production fix and does not independently verify all ownership or cancellation properties.",
+    "The diagnostic browser loop did not measure main-thread responsiveness."
+  ]
+}

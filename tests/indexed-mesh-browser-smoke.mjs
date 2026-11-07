@@ -113,6 +113,7 @@ try {
   await page.goto(origin);
   assert.equal(await page.evaluate(() => crossOriginIsolated), true);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill(`http://127.0.0.1:${bridgePort}`);
@@ -180,6 +181,7 @@ try {
           ],
         );
   };
+  await mutate("settings_set", { patch: { importPlaceAtOrigin: true } });
   await page.locator('input[type="file"][accept*=".asc"]').setInputFiles({
     name: "gui-indexed.ply",
     mimeType: "application/octet-stream",
@@ -216,6 +218,7 @@ try {
   assert.deepEqual(guiGeometry.indexedMesh.normals, scannerNormals);
   assertTopology(guiGeometry);
   assert.deepEqual(guiGeometry.positions, [-1, -1, 0, 1, -1, 0, -1, 1, 0]);
+  await mutate("settings_set", { patch: { importPlaceAtOrigin: false } });
   const uploaded = (
     await call("artifact_put", {
       name: "mcp-indexed.ply",
@@ -295,6 +298,7 @@ try {
   stlCapture.coordinates.forEach((value, i) =>
     stl.writeFloatLE(value, 84 + Math.floor(i / 9) * 50 + 12 + (i % 9) * 4),
   );
+  await mutate("settings_set", { patch: { importPlaceAtOrigin: true } });
   await page.locator('input[type="file"][accept*=".asc"]').setInputFiles({
     name: "gui-native.stl",
     mimeType: "application/octet-stream",
@@ -313,6 +317,7 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   assert(guiStl);
+  await mutate("settings_set", { patch: { importPlaceAtOrigin: false } });
   const uploadStl = (
     await call("artifact_put", {
       name: "mcp-native.stl",
@@ -477,7 +482,7 @@ try {
     ),
   });
   await mutate("ui_set", {
-    workspace: "fineAlign",
+    workspace: "surfaceRefinement",
     mode: "inspect",
     toolPanelOpen: true,
   });
@@ -545,7 +550,7 @@ try {
   await mutate("history_undo", {});
   assert.deepEqual(await geometry(moving.id), beforeMoving);
   await mutate("ui_set", {
-    workspace: "fineAlign",
+    workspace: "surfaceRefinement",
     mode: "inspect",
     toolPanelOpen: true,
   });
@@ -617,22 +622,15 @@ try {
   const locked = (await call("landmark_get")).result;
   assert.equal(locked.preview, true);
   assert.equal(locked.picks.length, 6);
-  assert.equal(
-    await landmarkDialog
-      .getByRole("button", { name: "Remove last point", exact: true })
-      .isDisabled(),
-    true,
-  );
-  assert.equal(
-    (await mutate("landmark_edit", { action: "clear" })).result.picks.length,
-    6,
-  );
+  const removeFixed = page.getByRole("button", {
+    name: "Remove last fixed point",
+    exact: true,
+  });
+  assert.equal(await removeFixed.isDisabled(), false);
   const reset = (await mutate("landmark_edit", { action: "reset" })).result;
   assert.equal(reset.preview, false);
   assert.deepEqual(reset.picks, locked.picks);
-  await landmarkDialog
-    .getByRole("button", { name: "Remove last point", exact: true })
-    .click();
+  await removeFixed.click();
   assert.equal((await call("landmark_get")).result.picks.length, 5);
   assert.deepEqual(await geometry(gui.id), beforeLandmarks);
   assert.deepEqual(await geometry(moving.id), afterSeeded);

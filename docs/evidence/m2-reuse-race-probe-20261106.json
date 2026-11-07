@@ -1,0 +1,155 @@
+{
+  "scope": "Isolated numeric-transport restore race prototype, not an integrated fix",
+  "baseCommit": "1a5779ac3089bb1e59d163c3069b9b514e811be7",
+  "probeWorktree": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-race-probe-20261106",
+  "diagnostic": "A previously selected numeric candidate is mutated while the next asynchronous lookup runs. Before the prototype, the restored first array contains the changed value rather than the saved value.",
+  "prototype": "Keep staging bytes for reused candidates until all asynchronous reconstruction completes, then revalidate without yielding and replace changed candidates before assembling the graph.",
+  "validation": {
+    "before": "Race regression failed: expected 1, received 999; 16 other transport tests passed.",
+    "after": "54 transport, numeric reuse, encoding-client and decoding-client tests passed, including graph alias preservation, unchanged second candidate reuse and protection of shared or graph-aliased staging buffers.",
+    "viteBuild": "Direct Vite build passed after preparing the CAD kernel; a complete production build was not run.",
+    "typecheck": "All 15 batches passed on a 360-second guarded retry before two additional backing-buffer tests were added. The first 180-second lease expired at batch 11 with cleanup confirmed and no reported TypeScript error.",
+    "mcpBrowserSmoke": "Passed the small GUI/public-MCP project import and reopen smoke at a 1664995328-byte Job peak. The initial attempt failed because the direct Vite build lacked the CAD kernel; preparing the kernel and rebuilding resolved that setup failure. This does not reproduce the race.",
+    "realPly3": "Failed on the matching PLY-3 input and bounds: GUI reopen timed out and reported Job peak exceeded 4 GiB by 102400 bytes. Full download completed with matching independent stream and file hashes. Cleanup was confirmed.",
+    "raceReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-red-20261106.json",
+    "focusedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-backing-20261106.json",
+    "typecheckReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-typecheck-r2-20261106.json",
+    "mcpBrowserReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-race-probe-mcp-smoke-r2-20261106.json"
+  },
+  "representativeTransformControl": {
+    "scope": "Shared-operation diagnostic on the integration branch, not GUI or public MCP concurrency",
+    "result": "During a cooperative numeric reuse lookup, Scale, Flip Normals and Mirror each returned independent output and left the 65538-value source unchanged. The unpacked graph reused the original matching source.",
+    "test": "tests/m2-restore-transform-ownership.test.ts",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-transforms-baseline-r2-20261106.json",
+    "typecheck": "Focused test and imported source passed; an earlier external temporary config could not resolve vite/client and was replaced with a config under the checkout.",
+    "limitation": "This manufactured interleaving does not establish immutability for every operation or demonstrate that normal GUI or MCP actions can trigger the low-level mutation race."
+  },
+  "representativeRepairControl20261107": {
+    "scope": "In-process shared-operation ownership controls, not browser concurrency or native validation",
+    "method": "A manually constructed numeric transport uses two open cubes and a short reuse-comparison chunk to invoke each repair on the exact candidate during lookup, then invokes it again after unpack returned. Inventory, component Extract/Keep/Remove/Flip, Flat Fill, Boundary Smooth, selected smoothing, plane Split and a rejected hole selection preserve the candidate values and restored alias in these cases.",
+    "validation": "The ownership, transport and decoder tests passed 33 tests; a focused TypeScript check passed. Both guarded jobs confirmed cleanup.",
+    "testReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-repair-ownership-failure-20261107.json",
+    "testReceiptSha256": "0c593aa5c8b86c53c6ac6e7cbbc9f0f52bfa2f0ae94c129becb28ebe99bf1af2",
+    "typeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-repair-ownership-types-final-20261107.json",
+    "typeReceiptSha256": "3cee9ebad6f67385f9ff8ed283b75367c2d146a31c440b4ec9a846d51f185869",
+    "limitations": "The transport packet and interleaving are constructed for the test, and its short buffer does not exercise the production packing threshold. These controls do not cover every operation, concurrent GUI or public MCP scheduling, malicious mutation, or the reproduced low-level race."
+  },
+  "checkedInOwnershipRegressions20261107": {
+    "scope": "Explicit expected-failure controls for injected mutation outside the existing immutable-geometry contract",
+    "result": "Two transport tests independently failed with restored value 999 instead of saved value 1: one mutation occurs during a later candidate lookup and one after unpack returns. Both are retained as expected failures; a passing suite does not mean the ownership gap is fixed.",
+    "discovery": "The shared catalog, agent guide and architecture now qualify fallback as applying when stale data is detected at comparison, and state the immutable-geometry assumption during and after restore. The official MCP SDK catalog test checks that both project_import and backup_restore expose that qualification.",
+    "validation": "48 tests passed with two expected failures across transport, MCP SDK and repair-ownership files. Focused TypeScript passed on retry; the first temporary config omitted Node types and failed before being corrected. A direct Vite build produced scanforge-0606cf551b50712e; the built application and official SDK browser smoke passed. This was not a new full typecheck or full suite.",
+    "receipts": {
+      "directory": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/",
+      "m2-restore-race-checkedin-red-20261107.json": "985480c85f7fc952f5214e0a4f317ed09e64e723dc28a7516b76dc2fe9ee92ac",
+      "m2-restore-post-unpack-red-20261107.json": "61d1dc1f3f0cb0f14bc76207b2a6fcc35555870cd533b7d5ca1397de4d14c1bc",
+      "m2-reuse-contract-20261107.json": "d87fb4006fd57f416cd4ab83ac046b0145de9d1d83a225848831785c71d28449",
+      "m2-reuse-contract-browser-20261107.json": "389a9b8711bfd5b1b7109fea6203543ab8e790e5eb0404a78494c884b8c55f4d",
+      "m2-reuse-contract-types-r2-20261107.json": "116b2108e222e9b6cdb7ea43477be87cacff3663faa6752554f47a92edb62c75"
+    },
+    "limitations": "No normal GUI or MCP operation is shown to mutate a published candidate. No safe independent restore under the large-project resource cap has been established, and no source-buffer ownership or milestone closure claim follows."
+  },
+  "browserWorkerRaceDiagnostic": {
+    "scope": "Real browser decoding worker with an injected mutation in the reuse callback; not a normal GUI or MCP trigger",
+    "method": "Two 73728-value mesh arrays are encoded, registered as reusable candidates and decoded by the browser worker. The diagnostic mutates the first source during the second reuse lookup and verifies the first decoded value.",
+    "baseline": "Failed: the restored first candidate contained the injected mutation.",
+    "prototype": "Passed the same interleaving, checked decoded aliases and display cache, and confirmed normal and cancelled decoder worker termination. Peak Job memory was 890982400 bytes.",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-worker-race-diagnostic-20261106.mjs",
+    "driverSha256": "7cb80d667f272d93d64c8b069170e9681d9c2bcb3735020cb0462ba287fefd68",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-worker-race-baseline-20261106.json",
+    "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-worker-race-probe-20261106.json",
+    "limitation": "The prototype still does not address mutation after unpack returns, and the large-resource gate remains untested."
+  },
+  "stagingLifetimeDiagnostic": {
+    "scope": "Synthetic Node transport run using the four Float64 staging sizes observed in PLY-3; not a real browser or end-to-end resource result",
+    "stagingBytes": [266108040, 44896128, 127929168, 21541272],
+    "baselineArrayBufferBytesAtLookups": [
+      460493900, 194385860, 149489732, 21560564
+    ],
+    "prototypeArrayBufferBytesAtLookups": [
+      460493907, 460493907, 460493907, 460493907
+    ],
+    "interpretation": "The prototype retains about 439 MB more ArrayBuffer storage at the fourth lookup. Both runs start with all staging buffers allocated, so the comparison does not by itself determine the real Job peak or prove failure.",
+    "driver": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-memory-diagnostic-20261106.test.ts",
+    "driverSha256": "f1d3ed3765736edddb7e103386ffd6d24340769c4197d9c38fa433134c822684",
+    "baselineReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-baseline-20261106.json",
+    "prototypeReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-memory-prototype-20261106.json"
+  },
+  "ply3Replay": {
+    "bundle": "scanforge-3e097613751de8b3",
+    "prototypeSourceSha256": "b3d36c0ae7d2c81899d8ebce2f3a04c6bb7350fb851aa6af19cc45c3eb5182fb",
+    "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+    "inputAndBounds": "C:/repo/alignment-example-files/ply-3.ply and C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-ply3-bounds-20261028.json",
+    "downloadBytes": 475563378,
+    "streamAndFileSha256": "43436804f73d0ef0fb5c16556baf621e9310119c5c3defcc024ceef8f061fcb2",
+    "result": "GUI Split, Extract, export and full artifact download completed. GUI reopen did not reach ready within 120 seconds; a subsequent page probe timed out. Reported peak was 4295069696 bytes against the 4294967296-byte Job limit. In nearby two-second samples the large renderer rose from about 1942 MiB at 137.1 seconds to 2361 MiB at 139.2 seconds and was absent from the 143.3-second sample. These samples do not identify the allocation or cause of exit. Cleanup confirmed zero active processes. The temporary downloaded file was removed after verifying its hash.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-r2-20261106.json",
+    "receiptSha256": "127ab2275e359a1baf2f3477dd32b2858e2dc1f1faf28a6a5a96dbfd83cc7e42",
+    "logSha256": "0d95eae5e43860b258f7d2f2834f0de29134bfa8b17ab5b81777dbfd6d6ca0da",
+    "earlierDiagnostic": "An initial run used another scan's bounds for the cutter and omitted the offline manifest. It reached reopen and history verification but failed the browser-error check with a service-worker 404; its 3611701248-byte peak is not comparable acceptance evidence.",
+    "earlierReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-reopen-20261106.json"
+  },
+  "ply3LocalFileSelectionDiagnostic": {
+    "scope": "Same PLY-3 and prototype using the driver's local CDP file-selection path; not a native file chooser",
+    "downloadBytes": 475563378,
+    "streamAndFileSha256": "c12f26735ac2107676e607a7ac3e59333bc8f5e9a8abaf040d2d66f084ff8fe7",
+    "result": "The driver completed GUI reopen, geometry checks and post-reopen Undo/Redo without reported browser errors. The guard failed despite child exit zero because reported peak was 4295217152 bytes, 249856 bytes above 4 GiB. Cleanup confirmed zero active processes; the temporary download was removed by the driver.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/reuse-race-ply3-cdp-20261106.json",
+    "receiptSha256": "170115ce7de31218e04287538fc65ee4368b7fcf4a685dd2a1461def8a36b0b7e",
+    "logSha256": "821f04a96590f8fc301863df1bb62bdf881857616fadd4349dd8d20bab4dfd56",
+    "limitation": "This completion does not pass the resource gate or establish the exact allocation responsible. The earlier ordinary file-selection run timed out, and the prototype still has the separate post-decode ownership limitation."
+  },
+  "fingerprintExperiment": {
+    "scope": "Separate low-level Node experiment; not wired to the application",
+    "method": "Hash validated staging bytes, release them as before, then synchronously fingerprint each reused array and reject if it changed. This fails closed but does not retry the restore.",
+    "smallTests": "Two passed: changed first candidate rejected and unchanged signed-zero alias retained.",
+    "sizedDiagnostic": "At PLY-3 staging sizes, ArrayBuffer measurements at the four lookups were 460495699, 194387723, 149491595 and 21562427 bytes. The test run took about 5.47 seconds versus about 0.85 seconds for the current transport control. The first run exceeded the default 5-second test timeout; an explicit 30-second retry completed.",
+    "prototypeSha256": "818e938026b57d900946600e67ccac3d7dd530987a90b26ae2ce2d9e7ca953a1",
+    "prototypePath": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-race-probe-20261106/src/project-transport-hash-probe.ts",
+    "smallReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-small-20261106.json",
+    "sizedReceipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-hash-probe-memory-r2-20261106.json",
+    "limitations": "The synchronous hash is a potential long main-thread task; timings are Node synthetic measurements, not browser responsiveness. There is no retry, no protection after unpack returns, and no GUI/MCP or real PLY-3 validation. It is not an integrated solution."
+  },
+  "noOrdinaryNumericReuseExperiment": {
+    "scope": "Isolated browser-decoder variant with ordinary numeric-array reuse disabled; shared-chunk validation remains enabled. Not integrated.",
+    "method": "Removed the numeric reuse callback from the decoder client in the probe worktree. The existing transport prototype remained present but received no numeric reuse callback.",
+    "sourceSha256": "7d770246eae19b85c896d2936c1b7d5bcd7950680727bc8d5f468dffc072576e",
+    "sourceCopy": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-no-reuse-decoding-client-20261106.ts",
+    "bundle": "scanforge-1895c02cedffb4db",
+    "focused": "38 decoding, transport and reuse tests passed. A real decoder-worker diagnostic confirmed no reuse lookup, independent restored numeric backing, history alias preservation and worker cleanup.",
+    "ply3": "Matching input and bounds, full 475563378-byte artifact download and GUI reopen completed via local CDP file selection; stream and independently read file hashes both were 302c7a32304602cf22665ac05027bfaec4d6721ac60fa5c80f0bc1cff4b3d03d. The first post-reopen public-MCP geometry digest timed out with BRIDGE_UNAVAILABLE; Undo/Redo was not reached. Reported peak was 4295892992 bytes, 925696 above 4 GiB. Job cleanup confirmed zero active processes. The temporary download was removed after hash verification.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-job-process-profile-20261106/no-reuse-ply3-cdp-20261106.json",
+    "receiptSha256": "d2456628d5b6f93119270e3b54d21cde2d8040d43a570ddaaf101e5ff9092536",
+    "logSha256": "3f66bf1413f8cb5d4333167067d39a74daf2507e310154be1d28e9e2886e979a",
+    "limitation": "A failed run does not identify the allocation responsible or prove universal infeasibility. The resource and GUI/public-MCP lifecycle gates remain open; no-reuse behavior was not adopted."
+  },
+  "ownedArtifactCleanup": {
+    "reason": "User requested cleanup of task-generated work to restore disk headroom.",
+    "removedDuplicateProjectCopies": [
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T070318600903Z-browser/mcp-full-history-roundtrip.scanforge",
+      "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T064532395194Z-browser/mcp-full-history-roundtrip.scanforge"
+    ],
+    "eachBytes": 736091936,
+    "eachSha256": "cea96674341c61576523076bed0d6347b554e277127cbeba6c59cf6c40f67dea",
+    "retainedIdenticalCopy": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/global-after-coarse-three-stl-evidence-20261024T075000065189Z-browser/mcp-full-history-roundtrip.scanforge",
+    "additionalDuplicateCleanup": {
+      "files": [
+        "global-after-coarse-three-stl-evidence-20261024T045353763851Z-browser/global-after-coarse-three-stl.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T061436595784Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T062423052194Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T063314116586Z-browser/mcp-full-history-roundtrip.scanforge",
+        "global-after-coarse-three-stl-evidence-20261024T065015903040Z-browser/mcp-full-history-roundtrip.scanforge"
+      ],
+      "base": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/",
+      "method": "Each file and the retained copy matched eachSha256 immediately before the five task-generated duplicates were deleted; evidence logs and the retained copy were preserved.",
+      "bytesFreed": 3680459680
+    },
+    "otherCleanup": "Removed one regenerated probe public-kernel WASM copy after verifying the built copy matched; the built kernel remains. Removed the failed rerun's verified temporary download after preserving hashes and receipts. Evidence logs and other user work were retained."
+  },
+  "limitations": [
+    "The reproducer uses a low-level callback; a normal GUI or MCP mutation has not been demonstrated.",
+    "The matching PLY-3 replay failed under the 4 GiB resource budget; a single failure does not identify the responsible allocation.",
+    "GUI open and MCP import can perform asynchronous CAD restoration after decoding, before publication. A separate low-level diagnostic mutated the reused source after unpack returned and observed the changed value in the decoded result; it does not establish that normal GUI or MCP actions mutate the array. The diagnostic is retained at C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-reuse-post-decode-diagnostic-20261106.test.ts with receipt C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-native-ui-tools/reuse-post-decode-probe-20261106.json. Ownership safety during that interval and after publication remains open.",
+    "The small smoke is not large-project resource or full lifecycle acceptance."
+  ]
+}

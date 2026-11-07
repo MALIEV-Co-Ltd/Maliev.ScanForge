@@ -1,0 +1,143 @@
+{
+  "scope": "Observed 64-edge smooth-annulus entire-hole Curvature; not complete M2 acceptance",
+  "units": "mm",
+  "source": {
+    "binaryStlSha256": "d5552bbeead8824441ad7020b9059804702509b0edab2b435cee7d9c9672dcdf",
+    "facets": 512,
+    "vertices": 320
+  },
+  "native": {
+    "binaryStlSha256": "40b7399e1c31259935ec756ef87d6410365919d322344ed8411a91aad996c298",
+    "facets": 1702,
+    "vertices": 884,
+    "remainingHoles": 1
+  },
+  "fixtureSha256": "0d910a60102aa35e12153b75462ed98203dfdc111781f07828618c311fe48395",
+  "implementation": {
+    "endpointPolicy": "Nine-point Bernstein fits on original parameters; both endpoint derivatives retain the kernel polynomial evaluation order",
+    "surface": "Fixed 23 by 23 local cubic surface; natural face tolerance zero, rigid CAD placement, actual pinned application kernel",
+    "collar": "General UV trim, original-rim stitching, 17 eligible seam collapses, four selection-growth passes and two smoothing iterations",
+    "ownership": "Original source vertex identities retained; unreferenced new cap records removed"
+  },
+  "sharedAsyncKernel": {
+    "strictOrientedCoordinateDigestMatches": true,
+    "maximumVertexDifferenceMm": 0,
+    "missingOrExtraOrientedFacets": 0,
+    "sourceUnchanged": true,
+    "ownedWorkerTerminated": true,
+    "remainingCadHandles": 0
+  },
+  "build": {
+    "buildId": "scanforge-5ac679fa9d720305",
+    "sourceIdentity": {
+      "head": "e0581fc1f8c7bec7a45762aef9d42c3f3aaafa55",
+      "files": 2845,
+      "unchanged": true,
+      "manifestSha256": "e8997d0307207658052f91bc1d58b35dd7fffb8137640364c885c614e4b949a5"
+    },
+    "receipt": {
+      "label": "m2-curvature-integration-build-20261026-r2",
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 148.28491549997125,
+      "childPeakJobMemoryBytes": 1657257984,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    },
+    "laterChanges": "Documentation, discovery description and async test-adapter changes; fresh exact-head CI remains required."
+  },
+  "browser": {
+    "scope": "Frozen production assets, actual GUI and public SDK/MCP bridge",
+    "strictNativeGeometry": true,
+    "guiMcpGeometryIdentical": true,
+    "undoRedo": true,
+    "emptyFillHistoryUnchanged": true,
+    "invalidSelectionRollback": true,
+    "binaryReopen": true,
+    "reopenedUndoRedo": true,
+    "cancelObservedNestedCadWorkers": 1,
+    "cancelRemainingNestedCadWorkers": 0,
+    "cancelSourceAndHistoryUnchanged": true,
+    "pageErrors": [],
+    "receipt": {
+      "label": "m2-curvature-browser-cancel-20261026-r1",
+      "exitCode": 0,
+      "rootExited": true,
+      "childJobFinalActive": 0,
+      "cleanupErrors": [],
+      "elapsedSeconds": 9.25481710000895,
+      "childPeakJobMemoryBytes": 1548386304,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500
+    }
+  },
+  "regression": {
+    "affectedRepair": {
+      "passed": 202,
+      "failed": 0
+    },
+    "initialFull": {
+      "passed": 49133,
+      "failed": 3,
+      "skipped": 64,
+      "failure": "Three direct worker tests read replies before awaiting the new async driver",
+      "receipt": {
+        "label": "m2-curvature-integration-full-20261026-r1",
+        "exitCode": 1,
+        "rootExited": true,
+        "childJobFinalActive": 0,
+        "cleanupErrors": [],
+        "elapsedSeconds": 289.9658724999754,
+        "childPeakJobMemoryBytes": 1060077568,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500
+      }
+    },
+    "followup": {
+      "focusedWorkerAndNative": {
+        "passed": 80,
+        "failed": 0
+      },
+      "actualKernelProtocol": {
+        "checks": 11,
+        "strictWholeNativeGeometry": true,
+        "remainingHandles": 0
+      },
+      "exactHeadFullCI": {
+        "head": "5ada756b6439eb1705a6842f84884a0e9765308e",
+        "runId": 40265236808,
+        "url": "https://github.com/MALIEV-Co-Ltd/Maliev.ScanForge/actions/runs/40265236808",
+        "passed": 49136,
+        "skipped": 64,
+        "failed": 0,
+        "buildAndAll13TypeBatches": true,
+        "cadProtocolAndStrictNativeCurvature": true,
+        "formatting": true
+      }
+    }
+  },
+  "retainedFailures": [
+    "Endpoint-policy RED",
+    "Old ideal-linear-UV expectation",
+    "Unused temporary cap ownership RED",
+    "Current control-net 1.24e-10 difference and adaptive mesh mismatch",
+    "Forced Jacobi fallback RED and initial production type failure",
+    "Initial browser output-URI setup failure before launch",
+    "Initial full-suite async test-adapter failures"
+  ],
+  "limits": {
+    "aggregateJobBytes": 4294967296,
+    "cpuPercent": 25,
+    "cadWorkerTimeoutSeconds": 90,
+    "privateRecordLimit": 1000000,
+    "publicSurfaceControlLimitUnchanged": 16
+  },
+  "remaining": [
+    "Other M2 native/input/mode gates",
+    "Unroll auxiliary sketch/frame ownership",
+    "Broader Average preparation controls",
+    "Fresh whole-branch review and final CI/merge/issue closure"
+  ]
+}

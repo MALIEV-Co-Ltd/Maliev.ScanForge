@@ -1,0 +1,293 @@
+{
+  "scope": "Original scan 25 percent reduction: native preview count and GUI/public MCP lifecycle",
+  "candidate": "3e16059873f06250896cf363562eb57da17d8d21",
+  "source": "C:/repo/alignment-example-files/scan-1.stl",
+  "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+  "sourceTriangles": 273139,
+  "native": {
+    "application": "QuickSurface Pro 8.0.123",
+    "activeObject": "scan-1(1)",
+    "percentageRemaining": 25,
+    "requestedTriangles": 68284,
+    "previewTriangles": 68283,
+    "displayedWithinTolerancePercent": 99.254,
+    "previewCancelled": true,
+    "sourceTriangleCountAfterCancel": 273139,
+    "sceneMeshCountBeforeAndAfter": 17,
+    "explicitDeviationComparison": {
+      "0.01 mm": 99.254,
+      "0.05 mm": 100.0,
+      "method": "Enabled deviation, explicitly entered each tolerance and applied it to the native preview."
+    }
+  },
+  "application": {
+    "passed": true,
+    "inputTriangles": 273139,
+    "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+    "logicalProcessors": 24,
+    "systemBytes": 34110816256,
+    "renderer": "isolated headless browser, software GPU",
+    "outputTriangles": 68283,
+    "mcpTriangles": 61453,
+    "previewMs": 2905.7064999999993,
+    "mcpMs": 2607.3043000000034,
+    "guiPreviewAndAccept": true,
+    "guiNativeComparison": null,
+    "comparisonRequired": true,
+    "previewPreservesSource": true,
+    "mcpDirectComparison": true,
+    "sameInputGeometryParity": true,
+    "directCountMatchesGuiPercentage": true,
+    "globalSequenceObserved": true,
+    "sourceFile": "C:\\repo\\alignment-example-files\\scan-1.stl",
+    "rawSourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+    "frozenGlobalControl": false,
+    "guiCancelBeforeAccept": true,
+    "publicPreviewDiscard": true,
+    "cancelledWorkerResultRollback": true,
+    "undoRedo": true,
+    "binarySaveReopen": true,
+    "finalGeometrySha256": "3d8672aa413805498e865a88a3a8651e6dc8cbbaa49457d58d70753e6e7dd7a5",
+    "guiGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "mcpGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "errors": []
+  },
+  "guard": {
+    "command": ["node", "tests/large-reduction-browser.mjs"],
+    "jobLimitBytes": 34110816256,
+    "leaseSeconds": 900,
+    "exitCode": 0,
+    "peakJobBytes": 1391300608,
+    "totalProcesses": 20,
+    "activeAfter": 0,
+    "passed": true,
+    "elapsedSeconds": 26.166468199997325
+  },
+  "limitations": [
+    "The QuickSurface 25 percent preview was not exported; matching triangle counts does not prove matching native geometry, normals, deviation values, or publication behavior.",
+    "Native source equivalence to the original scan relies on the earlier source control for scan-1(1).",
+    "This is one input and setting and is not general native or resource acceptance.",
+    "The two tolerance comparisons match displayed percentages rounded to two decimals; individual deviations, native preview coordinates and native object publication were not compared."
+  ],
+  "applicationComparison": {
+    "0.01 mm": "99.25%",
+    "0.05 mm": "100.00%",
+    "guiAndPublicMcpPassed": true,
+    "guiGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "mcpGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "guard": {
+      "command": ["node", "tests/large-reduction-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1571020800,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 27.927465899992967
+    }
+  },
+  "driverRegression50Percent": {
+    "guiAndPublicMcpPassed": true,
+    "0.001 mm": "70.25%",
+    "0.01 mm": "100.00%",
+    "guard": {
+      "command": ["node", "tests/large-reduction-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1550266368,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 27.474394299992127
+    }
+  },
+  "nativeReadOnlyCoordinateProbe": {
+    "method": "A real browser run captured the first vertex from the GUI 25 percent STL output. REA/Frida searched writable QuickSurface memory ranges no larger than 128 MiB while the native 25 percent preview was visible, then read those matching addresses after Cancel.",
+    "guiFirstVertex": [
+      -2.3498282432556152, -35.77924728393555, -314.6499328613281
+    ],
+    "scannedBytes": 1122766848,
+    "matchingAddressesDuringPreview": 10,
+    "sameAddressesStillMatchingAfterCancel": 0,
+    "searchEvidence": "ev_58cee6fc763c3decd068d4f2a7487282fc826a278b98c8e339244dc3815ae4b9",
+    "afterCancelEvidence": "ev_5b184d44cde639505a531b843f87df17063ff559304ee08fc62cf90aa153f0c2",
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1401090048,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.002016499987803
+    },
+    "limitations": [
+      "This is one coordinate, not a face or whole-mesh comparison; matching byte sequences cannot establish ownership by the active native preview.",
+      "All ten prior addresses had changed or were unreadable after Cancel, consistent with preview-related storage, but memory reuse and unrelated copies remain possible.",
+      "The scan excluded ranges larger than 128 MiB and capped reported matches at 50.",
+      "A second broader scan timed out and produced no usable evidence.",
+      "Native source triangle count returned to 273139 after Cancel; its complete post-cancel geometry was not re-exported."
+    ]
+  },
+  "nativeReadOnlyPrefixProbe": {
+    "method": "During the native 25 percent preview, REA scanned writable memory for the first GUI output vertex, searched nearby for the other two first-face vertices, and sampled coordinate fields at a 24-byte stride. An isolated GUI/MCP browser replay captured its ordered STL coordinates independently.",
+    "candidateFaceStrideBytes": 72,
+    "matchingPrefixFaces": 3740,
+    "matchingPrefixFloatComponents": 33660,
+    "matchingPrefixSha256": "76188d845b0e32f5a14c5851ff5677540e02b362132a7edb3047f9e7150b6e82",
+    "firstUnmatchedMemoryFace": "nine zero float components",
+    "guiFullCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "nativeFullSampleSha256": "a5a502f7960f06da483dcb7dbe4412cf49a0aa45b006413180e902b1891862a4",
+    "sourceMemoryAfterCancel": "The previously sampled address no longer contained the matched first vertex.",
+    "rangeSearchEvidence": "ev_8d5e743c1bc6b0019b6e564f8b57edad38914eb18e2ee99b8b12163ff59aee67",
+    "firstFourFacesEvidence": "ev_18d2fa93225726d6c80c488166261bdf5c47359ba767be05d38a951dbe9cd110",
+    "memoryCaptureEvidence": "ev_1896ff00fa257ea78bae6112b260856970e386e6018f89c5c0b22672b59c2b01",
+    "afterCancelEvidence": "ev_d860845d8ea9f3b62d66a88d58556cb901508bf8c59ea9afc2e068faacc39b1b",
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1367203840,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.300419100007275
+    },
+    "limitations": [
+      "The sampled buffer is not independently bound to the active scene object or native exporter; the address changed after Cancel, consistent with preview-related storage but not proof of ownership.",
+      "The first 3740 faces match bit-for-bit; the sampled area is zero-filled at the next face. Remaining memory is not established as the continuation, so its divergent full digest is not evidence of a native geometry mismatch.",
+      "No native output file was exported; this does not prove all 68283 native faces, normals, publication, or general equivalence."
+    ]
+  },
+  "nativeReadOnlySegmentProbe": {
+    "scope": "Three ordered coordinate sequences sampled from writable QuickSurface process memory while the 25 percent preview displayed 68283 faces.",
+    "selection": "Each candidate was searched using known GUI output coordinates at its proposed starting index. Candidates were not independently linked by native object pointers or a writer trace.",
+    "segments": [
+      {
+        "firstFace": 0,
+        "faceCount": 39260,
+        "sha256": "9e4223a0412bfd792089f318c041a3fa00d9d5310b40c4542dad288ee05d5127"
+      },
+      {
+        "firstFace": 39260,
+        "faceCount": 29020,
+        "sha256": "2a0d3ab2f52b6e9958c7eb082c53afd710a1360f538eebb9b61fcad608618201"
+      },
+      {
+        "firstFace": 68280,
+        "faceCount": 3,
+        "sha256": "d8394d6b036ac2f224a633ca015fbb74897df58f55d746838b988568c66de2a6"
+      }
+    ],
+    "assembledCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "guiAndMcpCoordinateSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "allCoordinateBytesMatchGui": true,
+    "afterCancel": "The first coordinate at each of the first two sampled addresses changed; the third still matched. This does not prove whether any allocation belonged to the active preview.",
+    "evidenceIds": [
+      "ev_d25845a77eb22aaeeed8688d21e168722b08047f21d311228f973af5b1872644",
+      "ev_ceff6d14cb059c20dceba14d1a41f2fc14d928a36b369f00bb1f3b6eea70cc20",
+      "ev_315f4c27d2ce60a1ac611d3078d04a84660247ade7425bedce58bab498e83222",
+      "ev_5c1117f67d35559c49565db82a2495f2626b90ab57d51f75ce80b15a6db8aa71",
+      "ev_30f4042edde78ee5a4d2714c22b58303f9a43b1fffbb1228943a5da5e975294e",
+      "ev_8d1184b380a4455291407ae2963305722c65e0736a0306ad2f9253d5fa5583e5",
+      "ev_b74614e12919b554b75c050142ca79e2105f2b4f9096d08887b4faa7cbe0a0e7"
+    ],
+    "browserGuard": {
+      "command": ["node", "tests/m2-reduction-native-probe-temp.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1415532544,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 26.305653799994616
+    },
+    "limitations": [
+      "Segments were selected by matching GUI data and assembled in GUI order; they are not an independently reconstructed native mesh or native export.",
+      "The process contained multiple copies of the last three faces, and the third sampled address still matched after cancellation. Memory ownership, segment linkage, normals and publication are unverified.",
+      "Only this input and setting were investigated; this does not establish general native or resource parity."
+    ]
+  },
+  "subsequentNativeExport": {
+    "application": "QuickSurface Pro 8.0.123",
+    "source": "scan-1(1), 273139 triangles, same source control as earlier preview",
+    "settings": {
+      "percentageRemaining": 25,
+      "requestedTriangles": 68284,
+      "keepOriginalMesh": true
+    },
+    "previewTriangles": 68283,
+    "resultObject": "scan-1(1) - 25 %",
+    "export": "binary STL, isolated visible result",
+    "triangles": 68283,
+    "bytes": 3414234,
+    "stlSha256": "77772e9b492e8e5f8cf7a824348f8b17af212defcacdff2df68babc20470156f",
+    "orderedCoordinatesSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "comparison": "Matches the previously recorded GUI and public MCP ordered coordinates byte-for-byte.",
+    "limitations": [
+      "The initial GUI/MCP comparison used an earlier candidate; see currentBuildReplay for a fresh replay.",
+      "Native STL normals, native save/reopen, and general reduction equivalence were not compared.",
+      "Source visibility and selection were restored; the created native result remains hidden in the unsaved scene."
+    ]
+  },
+  "currentBuildReplay": {
+    "candidate": "05bb95ea",
+    "build": "scanforge-ceb2bde7167c5287",
+    "result": {
+      "passed": true,
+      "inputTriangles": 273139,
+      "inputSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700K",
+      "logicalProcessors": 24,
+      "systemBytes": 34110816256,
+      "renderer": "isolated headless browser, software GPU",
+      "outputTriangles": 68283,
+      "mcpTriangles": 61453,
+      "previewMs": 2901.8008,
+      "mcpMs": 2609.6075999999994,
+      "guiPreviewAndAccept": true,
+      "guiNativeComparison": "Deviation results\n\n273,139 â†’ 68,283 triangles\n75.0% fewer triangles\n\nMinimum\nâˆ’0.021 mm\nMaximum\n+0.021 mm\nRMS\n0.003 mm\nWithin tolerance\n99.25%",
+      "comparisonRequired": true,
+      "previewPreservesSource": true,
+      "mcpDirectComparison": true,
+      "sameInputGeometryParity": true,
+      "directCountMatchesGuiPercentage": true,
+      "globalSequenceObserved": true,
+      "sourceFile": "C:\\repo\\alignment-example-files\\scan-1.stl",
+      "rawSourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+      "sourceGeometrySha256": "e78677c506a4a8e98711e68a91ab5f856eedfae7b153db0c57d7f3bf77659612",
+      "frozenGlobalControl": false,
+      "guiCancelBeforeAccept": true,
+      "publicPreviewDiscard": true,
+      "cancelledWorkerResultRollback": true,
+      "undoRedo": true,
+      "binarySaveReopen": true,
+      "finalGeometrySha256": "3d8672aa413805498e865a88a3a8651e6dc8cbbaa49457d58d70753e6e7dd7a5",
+      "guiGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+      "mcpGeometrySha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+      "errors": []
+    },
+    "guard": {
+      "command": ["node", "tests/large-reduction-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1563684864,
+      "totalProcesses": 20,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 27.789332899992587
+    },
+    "nativeCoordinateMatch": true,
+    "limitations": [
+      "One original scan at 25 percent remaining; native STL normals, native save/reopen and general reduction equivalence were not compared."
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "scope": "Coordinate-alignment panel in the compiled desktop-size browser and public MCP smoke test",
+  "before": "The open alignment panel was covered by the surrounding Properties sections. A normal checkbox click timed out; hit testing identified the Alignment references panel at the checkbox location.",
+  "after": "While coordinate alignment is open, only its panel occupies the Properties content area. The companion checkbox receives a normal click, and the Display section returns after Apply.",
+  "beforeScreenshotSha256": "f92b8bb98429882275bd2d39fdf991f31ae0f87eff2f82c8b80c9467018c81e2",
+  "afterScreenshotSha256": "1a6f27d3892a23b78e8744367474977d0ae787951164e4982a7881ff2703909d",
+  "browser": {
+    "build": "scanforge-526b3f920644a76e",
+    "viewport": [1440, 1000],
+    "checks": [
+      "rendered panel inspected",
+      "companion checkbox clicked",
+      "GUI preview and apply",
+      "public MCP references and shared result",
+      "display panel restored",
+      "GUI undo and MCP redo",
+      "independent project chunks reopened through GUI and MCP"
+    ],
+    "peakJobBytes": 1778520064,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "The screenshot covers one desktop viewport; it is not a general responsive-layout audit.",
+    "The correction changes presentation only and does not establish additional native-alignment equivalence."
+  ]
+}

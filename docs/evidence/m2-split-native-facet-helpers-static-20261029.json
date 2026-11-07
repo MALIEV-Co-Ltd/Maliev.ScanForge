@@ -1,0 +1,30 @@
+{
+  "scope": "Bounded static analysis of four candidate helper entries reachable from a previously recorded Split-related per-face candidate. No native Split operation or runtime execution was observed in this analysis.",
+  "image": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/native-capture-42612/runtime-analysis-only.exe",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "method": "Ghidra 12.1.4 read-only import with automatic analysis disabled; explicitly disassembled and decompiled four prior caller-selected addresses. Function bodies and inferred types require independent verification.",
+  "result": {
+    "candidateBodies": [
+      "14032c100..14032c3f3",
+      "14032c400..14032c9e7",
+      "14032d360..14032d910",
+      "14032d920..14032dad9"
+    ],
+    "allDecompilationsCompleted": true,
+    "observation": "Candidate 0x14032c400 calls 0x14032e330 at 0x14032c5a9, then calls 0x14032edf0 at 0x14032c5e9 and 0x14032c609 on two values from returned records. A conditional path calls 0x14032dae0 at 0x14032c656. The decompilation is consistent with pair enumeration and classification but record meanings and geometry roles are inferred.",
+    "evidence": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-helpers-static-20261029-r1/evidence.json",
+    "evidenceSha256": "bf54c0846512eba84c38c373d17a864e4610a47c8720e92f178da61a8363536b"
+  },
+  "guard": {
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-split-native-facet-helpers-guard-20261029-r1.json",
+    "receiptSha256": "dd40e31e3632fe36f32d0e8989546a90e887bc41f41c4f87833c12daa5e59245",
+    "peakJobBytes": 676028416,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true
+  },
+  "limitations": [
+    "No live call-site binding establishes this path as the observed native Split command.",
+    "Neither candidate function labels nor unknown record types prove triangulation, algorithm ordering or result ownership.",
+    "The three native triangle mismatches remain unresolved and M2 remains open."
+  ]
+}

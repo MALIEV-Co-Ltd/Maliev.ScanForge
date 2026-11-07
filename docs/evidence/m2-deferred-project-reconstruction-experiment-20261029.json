@@ -1,0 +1,38 @@
+{
+  "scope": "Isolated original PLY-3 project decoding investigation and prototype; not an integrated fix",
+  "reconstructionTrace": {
+    "build": "scanforge-1d2dfa08e72a5830",
+    "method": "After the full artifact-read workload, explicitly collect the page heap for diagnosis, then trace project-value reconstruction in the decoder worker.",
+    "result": "After chunk validation, the worker allocated and filled Float64-backed ordinary arrays of 33263505 and 5612016 values. It allocated a third array of 15991146 values but did not report completing its fill before the GUI and page probe timed out. The guarded run failed and cleaned up; this localizes the last logged stage without proving the exact allocation that stalled.",
+    "peakJobBytes": 4367142912,
+    "logSha256": "19d3eee58070c3a2451627b179fdd1c9b056b8924d76d413b2b7a6fd78ced58b",
+    "guardSha256": "0c270e10e629cf6ce8113c2222505939171201c599c2dd7a04b87dc087385ff2",
+    "codecSha256": "d84285bfb53c7a807e58c39b9e9f063d9aeabb4e5bc18ceedc30f7d449417251",
+    "workerSha256": "33bd06bd12e625c38d2907106a64493c87d5d8a5d82ee91934e650ce5d49ccaf"
+  },
+  "prototype": {
+    "build": "scanforge-0589d706a4690a57",
+    "method": "In the disposable decode worker, keep privately owned Float64 mesh-coordinate chunks as trusted typed views through validation and pack them as numeric transport entries. Reconstruct ordinary arrays on the main side. Chunks used in other roles remain ordinary arrays.",
+    "focusedTests": "42 tests passed across six project transport, decoding, encoding and display-preparation files, including ordinary-array output, signed zero, history/indexed aliases and a shared metadata role. The initial new worker-representation assertion failed on the baseline before the prototype.",
+    "focusedGuardSha256": "c8043d5a84e48d1ed356acf48b78373da6ba9eb62fdb8d6cf7f748852147e293",
+    "normalReplay": "Without forced garbage collection, the full artifact-read and GUI-reopen run timed out without a decoder result. Peak job bytes 4302073856; cleanup confirmed.",
+    "normalLogSha256": "20f40c6f5bdc94092ac353d7e36982104fa29f902e1ede7989ae5416b4a46439",
+    "normalGuardSha256": "97d114b154b59e7d6e1ed4c38de40907c5b0547675c16a98662f3b13644a79f7",
+    "diagnosticGcReplay": "With an explicit collection after artifact deletion, GUI reopen completed and all source, cutter and extracted-part core geometry digests matched. The guard reported peak job bytes 4299214848, above the 4294967296 limit, so this is not resource acceptance.",
+    "gcLogSha256": "80ef4abb0be9db74d47d767099a518cd64277919f3a0b8867c8514db6edaafcc",
+    "gcGuardSha256": "b5437e5d961824a58bcddfd65581afd34a8866cac8907fef3c9e7f8f0e167273",
+    "worktree": "C:/Users/Shoung/.codex/worktrees/m2-deferred-reconstruct/Maliev.ScanForge",
+    "sourceSha256": {
+      "src/project-file-codec.ts": "cd396c0df29f7b2907dfd0be1a53a4b0e99d607e2a4d181af4d162a5d17ddb6b",
+      "src/project-decoding-worker.ts": "7179d6e719b7d2488f22eb2c2cff8f39c7140e9279b1f9fdd64017f2cdee5f42",
+      "src/project-transport.ts": "df7634df24f059b0a75de8129963c4ace06c71a09026f331ffbf161f3e4cb5de",
+      "src/project-encoding-numeric.ts": "fc265cea6867e6edaed60add1d4b6ee09ae7e145d7f6ab8664924be890fca63e",
+      "tests/m2-deferred-reconstruct-experiment.test.ts": "7a54170ff834cf5182b46003a25c9bb5e4f367924d851833693b1aa3fa189e19"
+    }
+  },
+  "limitations": [
+    "The prototype has not passed the unassisted resource gate, production typecheck or full suite, public-MCP reopen after download, concurrency, corruption and cancellation validation, or review.",
+    "Explicit garbage collection is diagnostic only; no production behavior may depend on it.",
+    "Source-role discovery and worker-only trusted views need further safety and alias review. No application change or milestone completion is claimed."
+  ]
+}

@@ -234,7 +234,7 @@ export async function runSharedGlobalController(
           "runId",
           "requestId",
           "action",
-          ...(data.action === "pass"
+          ...(data.action === "pass" || data.action === "pose"
             ? ["pass", "ordered"]
             : data.action === "progress"
               ? ["fraction", "stage"]
@@ -266,6 +266,7 @@ export async function runSharedGlobalController(
                 options.clock ?? (() => Math.trunc(performance.now()) | 0)
               )();
               break;
+            case "pose":
             case "pass":
               if (
                 !Number.isInteger(data.pass) ||
@@ -274,7 +275,9 @@ export async function runSharedGlobalController(
               )
                 throw Error("Invalid controller pass.");
               assertControllerStates(data.ordered, ids);
-              options.onPass?.(data.pass!, data.ordered!);
+              if (data.action === "pose")
+                options.onPose?.(data.pass!, data.ordered!);
+              else options.onPass?.(data.pass!, data.ordered!);
               break;
             case "progress":
               if (

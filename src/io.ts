@@ -1,6 +1,19 @@
-import { validateMeshFacetNormals } from "./mesh-geometry-normals";
+import { validateSpatialCurves } from "./spatial-sketch";
+import { isEncodingNumeric } from "./project-encoding-numeric";
+import {
+  meshGeometryNormals,
+  validateMeshFacetNormals,
+} from "./mesh-geometry-normals";
 import { validateInspectionDefinitions } from "./inspection-definition";
+import { validateSavedSketchDisplay } from "./saved-sketch-display";
+import {
+  encodeReferenceFrame,
+  decodeReferenceFrame,
+  validateReferenceFrameEntity,
+} from "./reference-frame";
+import { validateRollMappingEntity } from "./scan-unroll-auxiliary";
 import * as THREE from "three";
+import { finiteArrayValues, finiteTypedValues } from "./finite-typed-values";
 import {
   validatePointCloudDisplay,
   DEFAULT_POINT_CLOUD_COLOR,
@@ -15,7 +28,13 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { parsePlyTopology, expandPlyTopology } from "./ply-topology";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
-import type { Entity, Project, Positions, MeshSelectionState } from "./types";
+import type {
+  Entity,
+  Project,
+  Positions,
+  MeshSelectionState,
+  SavedSketch,
+} from "./types";
 import { validatePatch } from "./surfaces";
 import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
@@ -113,10 +132,14 @@ export function validatePositions(
   pointCloud = false,
 ): asserts value is Positions {
   if (
-    (!Array.isArray(value) && !(value instanceof Float32Array)) ||
+    (!Array.isArray(value) &&
+      !(value instanceof Float32Array) &&
+      !isEncodingNumeric(value)) ||
     !value.length ||
     value.length % (pointCloud ? 3 : 9) !== 0 ||
-    !value.every((x) => typeof x === "number" && Number.isFinite(x))
+    !(Array.isArray(value)
+      ? finiteArrayValues(value)
+      : finiteTypedValues(value))
   ) {
     throw new Error(
       pointCloud
@@ -124,6 +147,37 @@ export function validatePositions(
         : "Invalid triangle geometry: coordinates must be finite complete triangles.",
     );
   }
+}
+
+export function validateEmptyComponentSource(entity: Entity): boolean {
+  if (entity.emptyComponentSource === undefined) return false;
+  if (
+    entity.emptyComponentSource !== true ||
+    entity.kind !== "mesh" ||
+    !(
+      Array.isArray(entity.positions) ||
+      entity.positions instanceof Float32Array ||
+      isEncodingNumeric(entity.positions)
+    ) ||
+    entity.positions.length !== 0 ||
+    entity.indexedMesh !== undefined ||
+    entity.normals !== undefined ||
+    entity.edgePositions !== undefined ||
+    entity.meshSelection !== undefined ||
+    entity.scanSource !== undefined ||
+    entity.kernelId !== undefined ||
+    entity.brep !== undefined ||
+    entity.fit !== undefined ||
+    entity.parametric !== undefined ||
+    entity.surfacePatch !== undefined ||
+    entity.surfaceScanId !== undefined ||
+    entity.planeFrame !== undefined ||
+    entity.reference !== undefined ||
+    entity.coordinateFrame !== undefined ||
+    entity.rollMapping !== undefined
+  )
+    throw new Error("Invalid empty component source.");
+  return true;
 }
 export function geometryPositions(
   geometry: THREE.BufferGeometry,
@@ -198,11 +252,19 @@ export function parseProject(text: string): Project {
   const input = JSON.parse(text);
   if (Array.isArray(input?.entities))
     input.entities = input.entities.map((entity: Entity) => {
+      if (entity?.emptyComponentSource !== undefined && input.version !== 6)
+        throw Error("Empty component sources require project JSON version 6.");
+      if (
+        entity?.rollMapping !== undefined &&
+        ![4, 5, 6].includes(input.version)
+      )
+        throw Error("Unroll mapping requires project JSON version 4.");
       if (
         entity?.reference !== undefined ||
+        entity?.coordinateFrame !== undefined ||
         entity?.constructionOrderKey !== undefined
       ) {
-        if (input.version !== 3)
+        if (![3, 4, 5, 6].includes(input.version))
           throw new Error(
             "Construction metadata requires project JSON version 3.",
           );
@@ -211,10 +273,27 @@ export function parseProject(text: string): Project {
           ...(entity.reference !== undefined
             ? { reference: decodeReferenceEntityData(entity.reference) }
             : {}),
+          ...(entity.coordinateFrame !== undefined
+            ? { coordinateFrame: decodeReferenceFrame(entity.coordinateFrame) }
+            : {}),
         };
       }
       return entity;
     });
+  if (
+    input.authoring?.sketches?.some(
+      (row: SavedSketch) => row.visible !== undefined,
+    ) &&
+    ![4, 5, 6].includes(input.version)
+  )
+    throw Error("Saved sketch visibility requires project JSON version 4.");
+  if (
+    input.authoring?.sketches?.some(
+      (row: SavedSketch) => row.kind === "spatial",
+    ) &&
+    ![5, 6].includes(input.version)
+  )
+    throw Error("Spatial sketches require project JSON version 5.");
   return validateProject(input);
 }
 /** Validate decoded project data without expanding binary geometry into JSON. */
@@ -224,7 +303,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    ![1, 2, 3].includes(input.version as number) ||
+    ![1, 2, 3, 4, 5, 6].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -236,7 +315,13 @@ export function validateProject(value: unknown): Project {
   validateConstructionOrderKeys(input.entities);
   const entities: Entity[] = input.entities.map((entity) => {
     const reference = validateReferenceEntity(entity);
-    if (!isReferenceEntity(entity))
+    const coordinateFrame = validateReferenceFrameEntity(entity);
+    const rollMapping = validateRollMappingEntity(entity);
+    if (
+      !validateEmptyComponentSource(entity) &&
+      !isReferenceEntity(entity) &&
+      entity.kind !== "referenceFrame"
+    )
       validatePositions(entity.positions, entity.kind === "pointcloud");
     const pointColors = validatePointCloudAttributes(entity);
     if (
@@ -261,6 +346,7 @@ export function validateProject(value: unknown): Project {
         "box",
         "referencePoint",
         "referenceLine",
+        "referenceFrame",
       ].includes(entity.kind) ||
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
@@ -356,10 +442,13 @@ export function validateProject(value: unknown): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      ...(entity.emptyComponentSource ? { emptyComponentSource: true } : {}),
       ...(entity.constructionOrderKey !== undefined
         ? { constructionOrderKey: entity.constructionOrderKey }
         : {}),
       ...(reference !== undefined ? { reference } : {}),
+      ...(coordinateFrame !== undefined ? { coordinateFrame } : {}),
+      ...(rollMapping !== undefined ? { rollMapping } : {}),
       indexedMesh: entity.indexedMesh,
       normals: entity.normals,
       ...(pointColors !== undefined ? { pointColors } : {}),
@@ -504,17 +593,30 @@ export function validateProject(value: unknown): Project {
         !item.id ||
         sketchIds.has(item.id) ||
         typeof item.name !== "string" ||
+        (item.visible !== undefined && typeof item.visible !== "boolean") ||
         item.name.length > 200
       )
         throw new Error("Invalid saved sketch identity.");
       sketchIds.add(item.id);
-      validateSketch(item.sketch);
+      if (item.kind === "spatial") {
+        if ("sketch" in item)
+          throw Error("Spatial sketch cannot contain planar data.");
+        validateSpatialCurves(item.curves);
+      } else {
+        if (
+          (item.kind !== undefined && item.kind !== "planar") ||
+          "curves" in item
+        )
+          throw Error("Invalid planar sketch variant.");
+        validateSketch(item.sketch);
+      }
+      if (item.visible) validateSavedSketchDisplay(item);
     }
   }
   if (
     input.authoring?.activeSketchId !== undefined &&
     !input.authoring.sketches?.some(
-      (s) => s.id === input.authoring!.activeSketchId,
+      (s) => s.id === input.authoring!.activeSketchId && s.kind !== "spatial",
     )
   )
     throw new Error("Active saved sketch is missing.");
@@ -543,9 +645,12 @@ export function serializeProject(
   authoring?: Project["authoring"],
 ): string {
   validateConstructionOrderKeys(entities);
-  for (const entity of entities) validateReferenceEntity(entity);
-  for (const entity of entities)
+  for (const entity of entities) {
+    validateEmptyComponentSource(entity);
+    validateReferenceEntity(entity);
     if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
+    validateRollMappingEntity(entity);
+  }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   for (const entity of entities)
@@ -559,15 +664,27 @@ export function serializeProject(
       );
   return JSON.stringify({
     format: "maliev-scanforge",
-    version: entities.some(
-      (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
-    )
-      ? 3
-      : entities.some(
-            (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
-          )
-        ? 2
-        : 1,
+    version: entities.some((e) => e.emptyComponentSource)
+      ? 6
+      : authoring?.sketches?.some((row) => row.kind === "spatial")
+        ? 5
+        : entities.some((e) => e.rollMapping !== undefined) ||
+            authoring?.sketches?.some((row) => row.visible !== undefined)
+          ? 4
+          : entities.some(
+                (e) =>
+                  e.reference !== undefined ||
+                  e.coordinateFrame !== undefined ||
+                  e.constructionOrderKey !== undefined,
+              )
+            ? 3
+            : entities.some(
+                  (e) =>
+                    e.pointColors !== undefined ||
+                    e.ascAttributes !== undefined,
+                )
+              ? 2
+              : 1,
     name,
     units: "mm",
     authoring,
@@ -575,6 +692,9 @@ export function serializeProject(
       ...entity,
       ...(entity.reference !== undefined
         ? { reference: encodeReferenceEntityData(entity.reference) }
+        : {}),
+      ...(entity.coordinateFrame !== undefined
+        ? { coordinateFrame: encodeReferenceFrame(entity.coordinateFrame) }
         : {}),
       positions: Array.from(entity.positions),
       ...(entity.pointColors !== undefined
@@ -613,20 +733,34 @@ export async function serializeProjectBlob(
   authoring?: Project["authoring"],
 ): Promise<Blob> {
   validateConstructionOrderKeys(entities);
-  for (const entity of entities) validateReferenceEntity(entity);
-  for (const entity of entities)
+  for (const entity of entities) {
+    validateEmptyComponentSource(entity);
+    validateReferenceEntity(entity);
     if (entity.indexedMesh) validateMeshFacetNormals(entity.indexedMesh);
+    validateRollMappingEntity(entity);
+  }
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
-  const version = entities.some(
-    (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
-  )
-    ? 3
-    : entities.some(
-          (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
-        )
-      ? 2
-      : 1;
+  const version = entities.some((e) => e.emptyComponentSource)
+    ? 6
+    : authoring?.sketches?.some((row) => row.kind === "spatial")
+      ? 5
+      : entities.some((e) => e.rollMapping !== undefined) ||
+          authoring?.sketches?.some((row) => row.visible !== undefined)
+        ? 4
+        : entities.some(
+              (e) =>
+                e.reference !== undefined ||
+                e.coordinateFrame !== undefined ||
+                e.constructionOrderKey !== undefined,
+            )
+          ? 3
+          : entities.some(
+                (e) =>
+                  e.pointColors !== undefined || e.ascAttributes !== undefined,
+              )
+            ? 2
+            : 1;
   const parts: BlobPart[] = [
     `{"format":"maliev-scanforge","version":${version},"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
@@ -641,7 +775,11 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
-    if (!isReferenceEntity(metadata))
+    if (
+      !validateEmptyComponentSource(entities[index]) &&
+      !isReferenceEntity(metadata) &&
+      metadata.kind !== "referenceFrame"
+    )
       validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
@@ -656,6 +794,9 @@ export async function serializeProjectBlob(
         ...metadata,
         ...(metadata.reference !== undefined
           ? { reference: encodeReferenceEntityData(metadata.reference) }
+          : {}),
+        ...(metadata.coordinateFrame !== undefined
+          ? { coordinateFrame: encodeReferenceFrame(metadata.coordinateFrame) }
           : {}),
         pointCloudPlacement: cloudPlacementJson(entities[index]),
       }).slice(0, -1),
@@ -741,7 +882,8 @@ export async function serializeProjectBlob(
 export function exportStl(entities: Entity[]): DataView {
   const group = new THREE.Group();
   for (const entity of entities) {
-    if (entity.kind === "pointcloud") continue;
+    if (entity.kind === "pointcloud" || entity.kind === "referenceFrame")
+      continue;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute(
       "position",
@@ -750,7 +892,36 @@ export function exportStl(entities: Entity[]): DataView {
     group.add(new THREE.Mesh(geometry));
   }
   try {
-    return new STLExporter().parse(group, { binary: true });
+    const output = new STLExporter().parse(group, { binary: true });
+    let offset = 84;
+    for (const entity of entities) {
+      if (entity.kind === "pointcloud" || entity.kind === "referenceFrame")
+        continue;
+      const indexed = entity.indexedMesh;
+      if (indexedMeshMatches(indexed, entity.positions)) {
+        const normals = meshGeometryNormals(indexed);
+        const f = Math.fround;
+        for (let slot = 0; slot < indexed.triangles.length; slot += 3) {
+          const a = indexed.triangles[slot] * 3;
+          const b = indexed.triangles[slot + 1] * 3;
+          const c = indexed.triangles[slot + 2] * 3;
+          for (let axis = 0; axis < 3; axis++)
+            output.setFloat32(
+              offset + axis * 4,
+              f(
+                f(
+                  f(normals[a + axis] + normals[b + axis]) + normals[c + axis],
+                ) / 3,
+              ),
+              true,
+            );
+          offset += 50;
+        }
+      } else {
+        offset += (entity.positions.length / 9) * 50;
+      }
+    }
+    return output;
   } finally {
     group.traverse((child) => {
       if (child instanceof THREE.Mesh) {

@@ -1,0 +1,200 @@
+{
+  "scope": "Two current-build isolated independent numeric restore diagnostics after selection-session reset, not production behavior",
+  "candidate": "bb1a882d",
+  "bundle": "scanforge-e9b6ee80c0577089",
+  "method": "Each isolated server removed the numeric reuse callback and seeded each ordinary destination array before the existing chunked copy; exact bundle replacements were required once per load. Both guarded runs imported original PLY-3, used GUI Split and Extract, streamed a complete public-MCP project artifact to disk with matching hashes, reopened it through the GUI and checked geometry and undo/redo.",
+  "driverSha256": "a0e5cdddf9b2c20fc68f55304cc6b9cfa997a25f4063fc2df6d2e7ce59c8dd3f",
+  "runs": [
+    {
+      "passed": true,
+      "peakJobBytes": 4035375104,
+      "headroomBytes": 259592192,
+      "processCleanupConfirmed": true,
+      "ledgerPassed": true,
+      "streamAndDownloadedSha256": "aa566da3ce9e972271a7cc553f35ef2c04d1bbbf2a497e345c9352b7b9b97e6f",
+      "bytes": 475563378,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        {
+          "name": "gui-extract-project-downloaded",
+          "at": "2026-11-07T02:53:15.061Z",
+          "harness": {
+            "rss": 179335168,
+            "heapTotal": 91508736,
+            "heapUsed": 52833096,
+            "external": 15082543,
+            "arrayBuffers": 11144645
+          },
+          "browserHeap": {
+            "used": 752932412,
+            "total": 755636408,
+            "limit": 3321888768
+          }
+        },
+        {
+          "name": "gui-extract-gui-project-imported",
+          "at": "2026-11-07T02:53:29.903Z",
+          "harness": {
+            "rss": 179597312,
+            "heapTotal": 91508736,
+            "heapUsed": 58727680,
+            "external": 15238623,
+            "arrayBuffers": 11300725
+          },
+          "browserHeap": {
+            "used": 1098128252,
+            "total": 1103122476,
+            "limit": 3321888768
+          }
+        },
+        {
+          "name": "gui-extract-gui-reopen-verified",
+          "at": "2026-11-07T02:53:39.092Z",
+          "harness": {
+            "rss": 180199424,
+            "heapTotal": 59002880,
+            "heapUsed": 54519384,
+            "external": 13268948,
+            "arrayBuffers": 9331050
+          },
+          "browserHeap": {
+            "used": 589201841,
+            "total": 593656717,
+            "limit": 3321888768
+          }
+        }
+      ]
+    },
+    {
+      "passed": true,
+      "peakJobBytes": 3997769728,
+      "headroomBytes": 297197568,
+      "processCleanupConfirmed": true,
+      "ledgerPassed": true,
+      "streamAndDownloadedSha256": "0e33a804a9326904db840f9ae76280d43e192492603a7213055202b00826a7a3",
+      "bytes": 475563378,
+      "result": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "guiOutputDigest": [
+          {
+            "path": "positions",
+            "encoding": "f64",
+            "elements": 15991146,
+            "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+          },
+          {
+            "path": "indexedMesh.vertices",
+            "encoding": "f64",
+            "elements": 2692659,
+            "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+          },
+          {
+            "path": "indexedMesh.triangles",
+            "encoding": "u32",
+            "elements": 5330382,
+            "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+          }
+        ],
+        "indexedResult": true,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      },
+      "stages": [
+        {
+          "name": "gui-extract-project-downloaded",
+          "at": "2026-11-07T02:55:48.490Z",
+          "harness": {
+            "rss": 185507840,
+            "heapTotal": 91770880,
+            "heapUsed": 52954080,
+            "external": 16321734,
+            "arrayBuffers": 12383836
+          },
+          "browserHeap": {
+            "used": 773431935,
+            "total": 776465443,
+            "limit": 3321888768
+          }
+        },
+        {
+          "name": "gui-extract-gui-project-imported",
+          "at": "2026-11-07T02:56:02.857Z",
+          "harness": {
+            "rss": 148959232,
+            "heapTotal": 91770880,
+            "heapUsed": 58258856,
+            "external": 9459125,
+            "arrayBuffers": 5521227
+          },
+          "browserHeap": {
+            "used": 1098154628,
+            "total": 1103122476,
+            "limit": 3321888768
+          }
+        },
+        {
+          "name": "gui-extract-gui-reopen-verified",
+          "at": "2026-11-07T02:56:11.963Z",
+          "harness": {
+            "rss": 150704128,
+            "heapTotal": 60313600,
+            "heapUsed": 54787344,
+            "external": 10028034,
+            "arrayBuffers": 6090136
+          },
+          "browserHeap": {
+            "used": 589025539,
+            "total": 594442675,
+            "limit": 3321888768
+          }
+        }
+      ]
+    }
+  ],
+  "interpretation": "Two runs fit under 4 GiB, but previous independent-copy diagnostics exceeded the limit and these runs cannot attribute any difference to selection-session reset.",
+  "limitations": [
+    "Diagnostic bundle injection, not an integrated ownership fix.",
+    "One original scan and cutter; no direct MCP Split comparison or native test.",
+    "Two trials do not establish resource reliability or safe publication in all paths.",
+    "Numeric ownership, Float64 migration, native acceptance, merge and closure remain open."
+  ]
+}

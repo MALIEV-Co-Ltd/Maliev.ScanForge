@@ -23,6 +23,13 @@
   gap: 4px;
   font-size: 12px;
 }
+.scan-topology-panel .scan-topology-progress {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 4px 0;
+  padding: 0 10px;
+}
 .scan-topology-summary {
   color: var(--muted);
   font-size: 11px;

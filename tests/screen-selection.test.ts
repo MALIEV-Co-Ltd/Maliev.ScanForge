@@ -14,6 +14,44 @@ const full = {
   end: [200, 200] as [number, number],
 };
 describe("screen-space mesh selection", () => {
+  it("retains large-coordinate binary64 triangles for visibility and clipping", () => {
+    const x = 100000000;
+    const front = [x, 0, 0, x + 4, 0, 0, x + 4, 4, 0];
+    const back = [x, 0, -1, x + 4, 0, -1, x + 4, 4, -1];
+    const viewCamera = new THREE.OrthographicCamera(-4, 4, 4, -4, 0.1, 100);
+    viewCamera.position.set(x + 2, 2, 10);
+    viewCamera.lookAt(x + 2, 2, 0);
+    viewCamera.updateMatrixWorld();
+    viewCamera.updateProjectionMatrix();
+    const index = new ScreenSelectionIndex([...front, ...back]);
+    try {
+      const view = { width: 200, height: 200, through: false };
+      expect([...index.select(viewCamera, full, view)]).toEqual([1, 0]);
+      expect([
+        ...index.select(viewCamera, full, { ...view, through: true }),
+      ]).toEqual([1, 1]);
+      expect([
+        ...index.select(viewCamera, full, {
+          ...view,
+          clippingPlanes: [[0, 0, -1, -0.5]],
+        }),
+      ]).toEqual([0, 1]);
+      const brush = {
+        kind: "brush" as const,
+        points: [[116.67, 116.67]] as [number, number][],
+        radius: 4,
+      };
+      expect([...index.select(viewCamera, brush, view)]).toEqual([1, 0]);
+      expect([
+        ...index.select(viewCamera, full, view, { start: 0, end: 1 }),
+      ]).toEqual([1]);
+      expect([
+        ...index.select(viewCamera, full, view, { start: 1, end: 2 }),
+      ]).toEqual([0]);
+    } finally {
+      index.dispose();
+    }
+  });
   it("partitioned visibility retains occlusion from triangles in other partitions", () => {
     const index = new ScreenSelectionIndex(
       new Float32Array([...front, ...back]),

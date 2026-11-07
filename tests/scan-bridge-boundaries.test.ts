@@ -123,7 +123,7 @@ it("bridges two independent scan boundaries without capping either scan", () => 
   const { positions, request } = separatedSquares();
   const result = runScanEdit(request);
   expect(result.diagnostics).toMatchObject({
-    addedTriangles: 2,
+    addedTriangles: 4,
     filledHoles: 1,
     method: "flat",
   });
@@ -149,7 +149,7 @@ it("accepts exposed edges in open inventory chains and does not wrap the final v
   ]);
   topology.boundaryLoops = [];
   const result = runHoleFill(request, topology, {});
-  expect(result.diagnostics.addedTriangles).toBe(2);
+  expect(result.diagnostics.addedTriangles).toBe(4);
   expect(() =>
     runHoleFill(
       { ...request, end: topology.boundaryChains[1].length - 1 },
@@ -190,7 +190,7 @@ it("bridges real fragmented scan chains without an unrelated nonmanifold-edge de
     endBoundary: end.boundary,
     end: end.edge,
   });
-  expect(result.diagnostics.addedTriangles).toBe(2);
+  expect(result.diagnostics.addedTriangles).toBe(4);
   const after = analyzeMesh(result.positions!);
   expect(after.nonManifoldEdges).toBe(before.nonManifoldEdges);
   expect(after.inconsistentEdges).toBe(before.inconsistentEdges);
@@ -259,7 +259,7 @@ it("bridges a concave outer scan boundary across its open notch rather than requ
     start: edgeAt(1),
     end: edgeAt(3),
   });
-  expect(result.diagnostics.addedTriangles).toBe(2);
+  expect(result.diagnostics.addedTriangles).toBe(4);
   const after = analyzeMesh(result.positions!);
   expect(after.boundaryLoops).toHaveLength(2);
   expect(

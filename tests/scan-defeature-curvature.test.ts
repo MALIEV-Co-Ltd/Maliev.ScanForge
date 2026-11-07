@@ -1,6 +1,10 @@
 import { expect, it } from "vitest";
 import { runScanEdit } from "../src/scan-edit";
-import { analyzeMesh } from "../src/mesh-processing";
+import {
+  analyzeMesh,
+  type MeshProcessingOptions,
+  type MeshTopology,
+} from "../src/mesh-processing";
 import { repatchCurvatureSurface } from "../src/scan-defeature-surface";
 
 /** A badge over a known doubly curved panel, with a clean retained collar. */
@@ -136,6 +140,79 @@ for (const [name, rotated, flat] of [
       }
   });
 }
+
+it("preserves unselected source corners even when diagnostics weld nearby representatives", () => {
+  const fixture = panelFixture();
+  const positions = new Float32Array([
+    ...fixture.positions,
+    30,
+    30,
+    0,
+    31,
+    30,
+    0,
+    31,
+    31,
+    0,
+    30.0002,
+    30,
+    0,
+    31,
+    31,
+    0,
+    30,
+    31,
+    0,
+  ]);
+  const selection = new Uint8Array(positions.length / 9);
+  selection.set(fixture.selection);
+  const before = positions.slice();
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "defeature",
+    positions,
+    selection,
+    tolerance: 0.001,
+  });
+  const retained = positions.filter((_, i) => !selection[Math.floor(i / 9)]);
+  expect(result.positions!.subarray(0, retained.length)).toEqual(retained);
+  expect(positions).toEqual(before);
+});
+
+it("rebuilds successor adjacency when retained corners replace a removed weld representative", () => {
+  const fixture = panelFixture();
+  const selected = fixture.positions.filter(
+    (_, i) => fixture.selection[Math.floor(i / 9)],
+  );
+  const retained = fixture.positions.filter(
+    (_, i) => !fixture.selection[Math.floor(i / 9)],
+  );
+  selected[0] += 0.0002;
+  const positions = new Float32Array([...selected, ...retained]);
+  const selection = new Uint8Array(positions.length / 9);
+  selection.fill(1, 0, selected.length / 9);
+  const cache: NonNullable<MeshProcessingOptions["topologyCache"]> = {};
+  const result = runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "defeature",
+      positions,
+      selection,
+      tolerance: 0.001,
+    },
+    { topologyCache: cache },
+  );
+  const warm = analyzeMesh(result.positions!, {
+    topologyCache: cache,
+    tolerance: 0.001,
+  });
+  const cold = analyzeMesh(result.positions!, { tolerance: 0.001 });
+  const corners = (topology: MeshTopology) =>
+    Array.from(topology.triangles).flatMap((id) =>
+      Array.from(topology.vertices.subarray(id * 3, id * 3 + 3)),
+    );
+  expect(corners(warm)).toEqual(corners(cold));
+});
 
 it("rejects an unreliable curved collar and reports the shared spatial fallback", () => {
   const fixture = panelFixture();

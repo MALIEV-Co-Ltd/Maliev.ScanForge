@@ -1,3 +1,4 @@
+import { noiseNormals } from "./scan-native-noise";
 import type { MeshTopology } from "./mesh-processing";
 import type { Vec3 } from "./types";
 
@@ -18,7 +19,11 @@ export interface SpatialRepatchOptions {
   signal?: AbortSignal;
   onProgress?: (iteration: number, remaining: number) => void;
 }
-const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const sub = (a: Vec3, b: Vec3): Vec3 => [
+  Math.fround(a[0] - b[0]),
+  Math.fround(a[1] - b[1]),
+  Math.fround(a[2] - b[2]),
+];
 const add = (a: Vec3, b: Vec3): Vec3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const scale = (a: Vec3, s: number): Vec3 => [a[0] * s, a[1] * s, a[2] * s];
 const dot = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
@@ -28,43 +33,25 @@ const cross = (a: Vec3, b: Vec3): Vec3 => [
   a[0] * b[1] - a[1] * b[0],
 ];
 const unit = (v: Vec3): Vec3 => {
-  const l = Math.hypot(...v);
-  return l > 1e-15 ? scale(v, 1 / l) : [0, 0, 0];
+  const l = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  return l >= Number.EPSILON ? scale(v, 1 / l) : v;
 };
+const f32 = Math.fround;
+const floatUnit = (v: Vec3): Vec3 => {
+  const l = f32(
+    Math.sqrt(f32(f32(f32(v[0] * v[0]) + f32(v[1] * v[1])) + f32(v[2] * v[2]))),
+  );
+  return l >= Number.EPSILON ? (v.map((x) => f32(x * (1 / l))) as Vec3) : v;
+};
+const wedgeDot = (a: Vec3, b: Vec3) => a[2] * b[2] + a[0] * b[0] + a[1] * b[1];
 const key = (a: number, b: number) => (a < b ? `${a}:${b}` : `${b}:${a}`);
-const angle = (a: Vec3, b: Vec3) =>
-  Math.acos(Math.max(-1, Math.min(1, dot(a, b))));
+const angle = (a: Vec3, b: Vec3) => Math.acos(dot(a, b));
 
-/** Angle-weighted vertex normals, computed before deleting a selected patch. */
+/** Preserve the native Float32 normal accumulation before facet deletion. */
 export function computeAngleWeightedNormals(
   topology: MeshTopology,
-): Float64Array {
-  const output = new Float64Array(topology.vertices.length);
-  const point = (id: number): Vec3 => [
-    topology.vertices[id * 3],
-    topology.vertices[id * 3 + 1],
-    topology.vertices[id * 3 + 2],
-  ];
-  for (let f = 0; f < topology.triangles.length; f += 3) {
-    const tri = [
-      topology.triangles[f],
-      topology.triangles[f + 1],
-      topology.triangles[f + 2],
-    ];
-    const p = tri.map(point);
-    const n = unit(cross(sub(p[1], p[0]), sub(p[2], p[0])));
-    for (let k = 0; k < 3; k++) {
-      const w = angle(
-        unit(sub(p[(k + 1) % 3], p[k])),
-        unit(sub(p[(k + 2) % 3], p[k])),
-      );
-      for (let axis = 0; axis < 3; axis++)
-        output[tri[k] * 3 + axis] += n[axis] * w;
-    }
-  }
-  for (let i = 0; i < output.length; i += 3)
-    output.set(unit([output[i], output[i + 1], output[i + 2]]), i);
-  return output;
+): Float32Array {
+  return noiseNormals(topology);
 }
 
 /** Spatial advancing-corner filling reconstructed from the native mode-2 path.
@@ -84,9 +71,9 @@ export function repatchSpatialBoundary(
   const point = (id: number): Vec3 =>
     id < count
       ? [
-          topology.vertices[id * 3],
-          topology.vertices[id * 3 + 1],
-          topology.vertices[id * 3 + 2],
+          Math.fround(topology.vertices[id * 3]),
+          Math.fround(topology.vertices[id * 3 + 1]),
+          Math.fround(topology.vertices[id * 3 + 2]),
         ]
       : [
           inserted[(id - count) * 3],
@@ -128,40 +115,17 @@ export function repatchSpatialBoundary(
     if (uses?.length !== 1) return result(false, 0, "invalid-loop");
     rimFaces.set(key(a, b), uses[0].face);
   }
-  if (!options.vertexNormals) {
-    const wanted = new Set(loop);
-    for (let f = 0; f < topology.triangles.length; f += 3) {
-      const tri = Array.from(topology.triangles.subarray(f, f + 3));
-      if (!tri.some((id) => wanted.has(id))) continue;
-      const p = tri.map(point);
-      const n = unit(cross(sub(p[1], p[0]), sub(p[2], p[0])));
-      for (let k = 0; k < 3; k++)
-        if (wanted.has(tri[k])) {
-          const w = angle(
-            unit(sub(p[(k + 1) % 3], p[k])),
-            unit(sub(p[(k + 2) % 3], p[k])),
-          );
-          normals.set(
-            tri[k],
-            add(normals.get(tri[k]) ?? [0, 0, 0], scale(n, w)),
-          );
-        }
-    }
-    for (const [id, n] of normals) normals.set(id, unit(n));
-  }
-  if (options.vertexNormals) {
-    if (options.vertexNormals.length !== topology.vertices.length)
-      throw new Error("Pre-edit vertex normals must match indexed vertices.");
-    for (const id of loop) {
-      const n: Vec3 = [
-        options.vertexNormals[id * 3],
-        options.vertexNormals[id * 3 + 1],
-        options.vertexNormals[id * 3 + 2],
-      ];
-      if (!n.every(Number.isFinite))
-        throw new Error("Pre-edit vertex normals must be finite.");
-      normals.set(id, unit(n));
-    }
+  const vertexNormals =
+    options.vertexNormals ?? computeAngleWeightedNormals(topology);
+  if (vertexNormals.length !== topology.vertices.length)
+    throw new Error("Pre-edit vertex normals must match indexed vertices.");
+  for (const id of loop) {
+    const normal = [0, 1, 2].map((a) =>
+      Math.fround(vertexNormals[id * 3 + a]),
+    ) as Vec3;
+    if (!normal.every(Number.isFinite))
+      throw new Error("Pre-edit vertex normals must be finite.");
+    normals.set(id, normal);
   }
   const chordLimit =
     (loop.reduce(
@@ -208,7 +172,7 @@ export function repatchSpatialBoundary(
       back = unit(sub(c, n));
     if (
       dot(diagonal, after) > dot(back, diagonal) &&
-      dot(cross(back, diagonal), cross(diagonal, after)) < 0
+      wedgeDot(cross(back, diagonal), cross(diagonal, after)) < 0
     )
       return Infinity;
     const before = unit(sub(point(loop[(i + m - 2) % m]), p)),
@@ -216,7 +180,7 @@ export function repatchSpatialBoundary(
       toCurrent = unit(sub(c, p));
     if (
       dot(forward, before) > dot(toCurrent, forward) &&
-      dot(cross(toCurrent, forward), cross(forward, before)) < 0
+      wedgeDot(cross(toCurrent, forward), cross(forward, before)) < 0
     )
       return Infinity;
     return value;
@@ -250,7 +214,8 @@ export function repatchSpatialBoundary(
       b = unit(sub(n, c));
     if (
       dot(a, b) >= Math.cos((75 * Math.PI) / 180) ||
-      Math.hypot(...sub(p, n)) <= chordLimit
+      Math.sqrt(sub(p, n).reduce((sum, x, k) => sum + x * (p[k] - n[k]), 0)) <=
+        chordLimit
     ) {
       if (!validTriangle(current, previous, next))
         return result(false, iteration, "no-valid-corner");
@@ -258,27 +223,40 @@ export function repatchSpatialBoundary(
       rimFaces.set(key(previous, next), f);
       loop.splice(selected, 1);
     } else {
-      const chord = sub(n, p),
-        length = Math.hypot(...chord);
-      const tangent = (normal: Vec3) =>
-        scale(unit(cross(cross(normal, chord), normal)), length);
+      const chord = n.map((x, k) => x - p[k]) as Vec3,
+        length = Math.sqrt(
+          chord[1] * chord[1] + chord[0] * chord[0] + chord[2] * chord[2],
+        );
+      const tangent = (normal: Vec3) => {
+        const plane = floatUnit(cross(normal, chord).map(f32) as Vec3);
+        return scale(
+          floatUnit(cross(plane, normal).map(f32) as Vec3),
+          length,
+        ).map(f32) as Vec3;
+      };
       // At t=1/2 the extracted cubic Hermite basis gives midpoint +
       // (start tangent - end tangent)/8. The native step blends this curve
       // point equally with the linear midpoint before normalizing direction.
-      const midpoint = scale(add(p, n), 0.5);
-      const curve = add(
-        midpoint,
-        scale(
-          sub(
-            tangent(normals.get(previous) ?? [0, 0, 0]),
-            tangent(normals.get(next) ?? [0, 0, 0]),
-          ),
-          0.125,
-        ),
+      const startTangent = tangent(normals.get(previous) ?? [0, 0, 0]);
+      const endTangent = tangent(normals.get(next) ?? [0, 0, 0]);
+      const curve = p.map(
+        (x, k) =>
+          x * 0.5 +
+          n[k] * 0.5 +
+          startTangent[k] * 0.125 -
+          endTangent[k] * 0.125,
+      ) as Vec3;
+      const linearMidpoint = p.map((x, k) => f32(f32(x + n[k]) * 0.5)) as Vec3;
+      const roundedCurve = curve.map(f32) as Vec3;
+      const direction = floatUnit(
+        sub(scale(add(linearMidpoint, roundedCurve), 0.5), c),
       );
-      const direction = unit(sub(scale(add(midpoint, curve), 0.5), c));
-      const step = (Math.hypot(...sub(p, c)) + Math.hypot(...sub(n, c))) * 0.5;
-      const q = add(c, scale(direction, step));
+      const size = (v: Vec3) =>
+        Math.sqrt(v[1] * v[1] + v[0] * v[0] + v[2] * v[2]);
+      const step = (size(sub(p, c)) + size(sub(n, c))) * 0.5;
+      const q = add(c, scale(direction, step).map(f32) as Vec3).map(
+        f32,
+      ) as Vec3;
       if (!q.every(Number.isFinite) || Math.hypot(...direction) < 1e-7)
         return result(false, iteration, "no-valid-corner");
       const id = count + inserted.length / 3;
@@ -290,15 +268,9 @@ export function repatchSpatialBoundary(
         return result(false, iteration, "no-valid-corner");
       const f1 = emit(current, previous, id),
         f2 = emit(current, id, next);
-      normals.set(
-        id,
-        unit(
-          add(
-            unit(cross(sub(p, c), sub(q, c))),
-            unit(cross(sub(q, c), sub(n, c))),
-          ),
-        ),
-      );
+      const f1Normal = floatUnit(cross(sub(p, c), sub(q, c)).map(f32) as Vec3);
+      const f2Normal = floatUnit(cross(sub(q, c), sub(n, c)).map(f32) as Vec3);
+      normals.set(id, floatUnit(add(f1Normal, f2Normal).map(f32) as Vec3));
       rimFaces.set(key(previous, id), f1);
       rimFaces.set(key(id, next), f2);
       loop[selected] = id;
@@ -309,6 +281,6 @@ export function repatchSpatialBoundary(
   if (loop.length !== 3) return result(false, iteration, "iteration-limit");
   if (!validTriangle(loop[0], loop[2], loop[1]))
     return result(false, iteration, "no-valid-corner");
-  emit(loop[0], loop[2], loop[1]);
+  emit(loop[2], loop[1], loop[0]);
   return result(true, iteration);
 }

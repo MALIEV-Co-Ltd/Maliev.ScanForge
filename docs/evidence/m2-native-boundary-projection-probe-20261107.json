@@ -1,0 +1,91 @@
+{
+  "scope": "Locate and probe native planar boundary projection on the retained two-triangle imported STL; no output geometry comparison",
+  "nativeApplication": "QuickSurface Pro 8.0.123",
+  "sourceFixture": "tests/fixtures/m2-small-adjacent-native-20261107/source.stl",
+  "sourceSha256": "29f3e48716eb2d27f0e14ef49cf9a58a3d3d9819003bbb13439f06cdc36e5530",
+  "nativeImportedObject": "m2-small-adjacent-native-20261107",
+  "observations": [
+    "Edit Scan reported one individual mesh and one hole; Edit boundaries reported one boundary.",
+    "In Edit Scan, the third Additional tools icon showed the tooltip Project the mesh boundaries on OXY plane.",
+    "Activating that icon with no explicit boundary or triangle selection returned to the same edit dialog; after closing it, inspection of the object list did not show a new sketch.",
+    "The original scan was restored as the visible selected object and the fixture was hidden."
+  ],
+  "limitations": [
+    "No geometry or exported sketch was captured; the action may require a selection or another context.",
+    "The visible object list is not proof that no transient internal output was created.",
+    "The exact selection and publication semantics and GUI/MCP/native equivalence remain unverified."
+  ],
+  "nextProbe": "Establish any required selection or active sketch context before comparing native projected curves and publication with GUI and public MCP.",
+  "selectionAndTraceFollowup": {
+    "selectionControl": "The tooltip on the red circle identified Select all triangles. It was clicked before the projection icon; the tiny fixture did not expose an independently readable selection count.",
+    "selectionOutcome": "The editor remained open and showed no new visible sketch. This does not establish that the two triangles were selected or that no internal result existed.",
+    "runtimeTrace": {
+      "method": "Read-only REA Frida hooks on DispatchMessageW and SendMessageW while clicking the projection icon after reopening the editor; no explicit triangle selection was made for this traced click.",
+      "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+      "observedMessages": [
+        {
+          "command": 4534,
+          "role": "dialog WM_COMMAND"
+        },
+        {
+          "command": 40013,
+          "role": "main-window WM_COMMAND, observed twice",
+          "applicationReturnAddress": "0x14034ad7f"
+        }
+      ],
+      "evidenceId": "ev_935c74bb576eca6d1ede50e78b6a7bee0c86bfcac594d1b5d11f7bc4607c2c60",
+      "limitations": [
+        "Correlated action-time message events do not identify the projection algorithm or prove handler completion.",
+        "The captured trace does not establish triangle selection, sketch publication, or geometry.",
+        "Frida session was detached; the native source visibility and selection were restored."
+      ]
+    }
+  },
+  "boundedDispatchCallTrace": {
+    "method": "REA Frida Stalker followed the UI thread around synchronous SendMessageW WM_COMMAND 40013 on the same retained two-triangle fixture.",
+    "evidenceId": "ev_96456920d836a141acd5213be24bc1018d28dec0c14e37f858efb73bcad6dc7a",
+    "result": "The call summaries returned no application-module calls; this technique did not resolve the handler.",
+    "limitations": [
+      "An empty capture does not establish that the handler made no calls or that projection was a no-op.",
+      "The method followed inside the interception callback and did not trace the handler independently."
+    ],
+    "cleanup": "Frida scripts unloaded and the session detached. Original native scene visibility restored."
+  },
+  "savedFixtureSelectionFollowup": {
+    "fixture": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/coplanar-shared-edge-native.qsf",
+    "fixtureSha256After": "af5ebaaa346b469c5c8c6d3417bf50abbe6f0f23c9de5c8a994facbe38ab84fd",
+    "observation": "Opened the saved four-face source and one-face cutter, hid the cutter, entered Edit Scan and clicked the visible source. Its visible connected triangles turned red. Activating the projection icon left the editor open, with no new visible object or history entry. Closing and reopening Edit Scan before the selection also showed no new visible object.",
+    "boundarySelection": "Edit boundaries reported two boundaries. Clicking a visible boundary turned its edge red; returning with Back removed the visible red highlight before reaching the projection icon. Activating projection then left the editor open without a new visible object or history entry. It is unknown whether any internal boundary selection persisted.",
+    "singleActionControl": "Reopened the saved QSF without saving our edits, hid the cutter, selected the source object, opened Edit Scan, and clicked projection once without selecting triangles or boundaries. The vertical face visibly flattened. Exporting the source gave the same SHA-256 as the earlier multi-action result. The source STL retains four face records; the first three face vertex triples match the baseline, and the fourth changes its first vertex from (0,0,1) to (0,0,0), making that face degenerate. The second export was removed after its hash matched the retained evidence.",
+    "outputFixture": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/native-after-boundary-projection.stl",
+    "outputSha256": "d09992b1cf2596a3147a5a9dd427060949ffc51d6e10f36f78835b4dcecbc1b7",
+    "limitations": "The visible red selection does not establish every selected face or boundary, nor does the object list prove no transient internal output. This single fixture demonstrates an in-place mesh change, including a degenerate output face; it does not establish the general native algorithm, selected-boundary semantics, or GUI/MCP parity. The saved fixture was not overwritten.",
+    "staticFollowup": "REA Ghidra 12.1.4 reported no containing procedure and no decoded instruction at previously observed runtime return address 0x14034ad7f in the shipped executable. A 48-byte read at 0x14034ad60 returned initialized bytes, but these results do not identify the runtime handler or establish the reason for the mismatch. Evidence: ev_8d107da9314b70f6fdc9a4b6f38ee1e1e96134a0d66548aec3ac442797bc74f3, ev_30d951db13f3ba018385e760a18d5503b2422f04638bb780a7617759152ccd97, ev_e35f7cf677319241f95a9f29aa6df189d5c015212f5afa9c529f8c7e308a69f2. The ephemeral analysis was closed.",
+    "interiorVertexControl": {
+      "input": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/projection-interior-control.stl",
+      "inputSha256": "01557778e9cd095a62c89bd570b11f5ccffaa146af835a9c3a850af8426d70b7",
+      "output": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/projection-interior-native.stl",
+      "outputSha256": "46079db65546aa2a08c4981a166d24fb948633178b809330335f5e9bbee5231a",
+      "observed": "The four input faces form one connected square boundary at Z=1 around an interior vertex at Z=2. After millimetre import, Edit Scan showed one individual mesh and one hole. One projection click without triangle or boundary selection produced an exported four-face mesh preserving XY coordinates and face vertex order, with all boundary vertices at Z=0 and the interior vertex still at Z=2.",
+      "triangleSelectionControl": "After reopening the same STL in millimetres, Select all connected triangles was unchecked and a single visible face was painted red. One projection click followed by scan export produced the same full-file SHA-256 as the no-selection output. The red triangle selection remained visible after the click. The duplicate export was removed after hash comparison.",
+      "limitations": "The screenshot does not establish an independent numeric selection count. This does not establish behavior for object transforms, nonmanifold topology, selected boundaries, other triangle selections, or other orientations; GUI and MCP equivalence remain untested."
+    }
+  },
+  "applicationCandidate": {
+    "sourceSha256": "34fb060f21e7831cd050b37588f35631997e1859d34174dcff15d01dfd862bd0",
+    "automationSha256": "5dc64704ea889adddbf40db891a104b2e0ee30baa14f846a56f339ba79bc1efb",
+    "applicationSha256": "8f98187e2616bd49f6f765bac79581cdb97427b9e08c60e066ebe8959e82cc9e",
+    "browserDriverSha256": "0e58642a88ef63c505fbe55cf00b97f31602db478d0ea508230d861a8aa82e98",
+    "build": "scanforge-d2ddb2b68ec96303",
+    "observed": "The complete suite passed 50961 tests, with one expected failure and 80 skips. All 15 typecheck batches and the production build passed. Four focused test files passed 65 tests, including native fixture coordinates and raw-corner collapse rejection. A compiled isolated browser/public MCP replay with SCANFORGE_M2_BOUNDARY_MESH=1 compared the same native fixture against GUI and MCP results, verified undo and one triangle selection after each path, and found a changed canvas after GUI projection. Public MCP rejected a valid triangle that would collapse after projection without changing source geometry or history, preserved a near-welded raw corner's XY position while projecting it, and rejected the raw-corner collapse found in review. Existing sketch-projection checks in that replay also passed with no page errors. The browser Windows Job limit was 34110816256 bytes, peak was 930189312, 17 processes were observed, and activeAfter was zero; browser and bridge processes exited and ports closed. Temporary validation files were removed.",
+    "limitations": "The browser comparison covers one nondegenerate identity-positioned fixture. It does not establish native parity for transformed geometry, nonmanifold topology or all selection patterns. The current checks reject indexed degenerate, duplicate and nonmanifold topology, but do not establish absence of geometric self-intersections. Full M2 validation and final integration remain open."
+  },
+  "uiThreadTraceFailure": {
+    "method": "REA Frida Stalker followed the QuickSurface UI thread before a projection-button click.",
+    "evidenceId": "ev_7b349d7f0079574907d6508aae0073845c4e3c89a35b0822e1a5d96a8b5270c2",
+    "observed": "The application process exited during the attempted click; the Frida session detached before yielding a call summary. The causal mechanism was not established.",
+    "impact": "The native scan-1 scene was unsaved; on reopening, QuickSurface showed an empty scene and no recovery prompt. The previously retained input and fixture files were not modified.",
+    "recoveryCheck": "No recovery project was found in the scan folder, the user QuickSurface application-data folder, or as a top-level QSF in the temporary folder. This is a bounded search, not proof no backup exists.",
+    "prevention": "Do not trace the live UI thread on an unsaved native scene. Use a separately saved disposable scene and verify recovery before future intrusive tracing."
+  }
+}

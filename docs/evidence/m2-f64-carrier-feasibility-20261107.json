@@ -1,0 +1,26 @@
+{
+  "scope": "Read-only Float64 geometry-carrier feasibility check for independent restore",
+  "candidate": "a62b050a",
+  "typeProbe": {
+    "method": "In-memory TypeScript compiler host replaced the Positions alias with number[] | Float32Array | Float64Array; no project source was written.",
+    "sourceRoots": 649,
+    "injectionVisible": true,
+    "diagnostics": 0,
+    "peakJobBytes": 650858496,
+    "cleanupConfirmed": true
+  },
+  "runtimeProbe": {
+    "fixture": "One Float64 triangle containing 0.1; explicit cast for the unsupported carrier.",
+    "projectValidation": "validatePositions rejects the carrier",
+    "indexedValidation": "indexedMeshMatches rejects the carrier",
+    "finiteSplitPartition": "partitionFiniteIndexedParts allocates Float32 output and changes 0.1 to its Float32 approximation",
+    "testsPassed": 1,
+    "peakJobBytes": 303894528,
+    "cleanupConfirmed": true
+  },
+  "interpretation": "The decoder's private Float64 backing is independent and avoids an ordinary-array rebuild, but exposing it directly would currently reject saved geometry or silently lose precision in a finite Split path. TypeScript structural compatibility does not detect these runtime branches. A complete carrier migration must audit validation, all geometry/worker paths, serialization, rendering, history and GUI/MCP parity before use.",
+  "limitations": [
+    "The runtime test covers three selected paths only; 67 source files contain Float32Array checks and require contextual review, not blanket replacement.",
+    "No application code or restore behavior changed, and no full PLY-3 or native acceptance was performed in this probe."
+  ]
+}
