@@ -1,0 +1,197 @@
+{
+  "scope": "Seeded independent restore of original PLY-3; guarded high-water timing and numeric staging-buffer diagnostic, not production code",
+  "candidate": "cfcfe2e7",
+  "bundle": "scanforge-914672edba381122",
+  "method": "In an isolated local server, remove ordinary-array reuse and seed destination arrays. In two later runs add console timing around each numeric copy and then buffer detachment. A temporary copy of the same Job guard sampled its cumulative peak every 500 ms while retaining its 4 GiB and 25 percent CPU limits, process admission and cleanup behavior. Stage timestamps and high-water observations are correlated by UTC.",
+  "runs": [
+    {
+      "name": "baseline_timeline",
+      "guardPassed": true,
+      "peakJobBytes": 4006240256,
+      "cleanupConfirmed": true,
+      "lastHighWaterSample": {
+        "at": "2026-11-07T02:08:43.176285+00:00",
+        "peakJobBytes": 4006240256
+      },
+      "stages": [
+        {
+          "name": "gui-extract-undo-digest-verified",
+          "at": "2026-11-07T02:07:37.139Z",
+          "lastSampledJobHighWaterBytes": 3558043648
+        },
+        {
+          "name": "gui-extract-project-exported",
+          "at": "2026-11-07T02:08:15.996Z",
+          "lastSampledJobHighWaterBytes": 3558043648
+        },
+        {
+          "name": "gui-extract-project-downloaded",
+          "at": "2026-11-07T02:08:29.052Z",
+          "lastSampledJobHighWaterBytes": 3558043648
+        },
+        {
+          "name": "gui-extract-gui-project-imported",
+          "at": "2026-11-07T02:08:44.746Z",
+          "lastSampledJobHighWaterBytes": 4006240256
+        },
+        {
+          "name": "gui-extract-gui-reopen-verified",
+          "at": "2026-11-07T02:08:53.933Z",
+          "lastSampledJobHighWaterBytes": 4006240256
+        }
+      ],
+      "numericMarkers": [],
+      "functional": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "name": "numeric_markers",
+      "guardPassed": true,
+      "peakJobBytes": 4005625856,
+      "cleanupConfirmed": true,
+      "lastHighWaterSample": {
+        "at": "2026-11-07T02:12:01.121995+00:00",
+        "peakJobBytes": 4005625856
+      },
+      "stages": [
+        {
+          "name": "gui-extract-undo-digest-verified",
+          "at": "2026-11-07T02:10:51.977Z",
+          "lastSampledJobHighWaterBytes": 3251978240
+        },
+        {
+          "name": "gui-extract-project-exported",
+          "at": "2026-11-07T02:11:31.289Z",
+          "lastSampledJobHighWaterBytes": 3448496128
+        },
+        {
+          "name": "gui-extract-project-downloaded",
+          "at": "2026-11-07T02:11:44.630Z",
+          "lastSampledJobHighWaterBytes": 3448496128
+        },
+        {
+          "name": "gui-extract-gui-project-imported",
+          "at": "2026-11-07T02:12:00.444Z",
+          "lastSampledJobHighWaterBytes": 3830251520
+        },
+        {
+          "name": "gui-extract-gui-reopen-verified",
+          "at": "2026-11-07T02:12:09.676Z",
+          "lastSampledJobHighWaterBytes": 4005625856
+        }
+      ],
+      "numericMarkers": [
+        "M2_NUM_START 33263505 1794017518248",
+        "M2_NUM_DONE 33263505 1794017518355",
+        "M2_NUM_START 5612016 1794017518355",
+        "M2_NUM_DONE 5612016 1794017518373",
+        "M2_NUM_START 15991146 1794017518373",
+        "M2_NUM_DONE 15991146 1794017518424",
+        "M2_NUM_START 2692659 1794017518424",
+        "M2_NUM_DONE 2692659 1794017518432"
+      ],
+      "functional": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    },
+    {
+      "name": "release_markers",
+      "guardPassed": true,
+      "peakJobBytes": 3953061888,
+      "cleanupConfirmed": true,
+      "lastHighWaterSample": {
+        "at": "2026-11-07T02:15:11.104009+00:00",
+        "peakJobBytes": 3953061888
+      },
+      "stages": [
+        {
+          "name": "gui-extract-undo-digest-verified",
+          "at": "2026-11-07T02:14:03.183Z",
+          "lastSampledJobHighWaterBytes": 3464744960
+        },
+        {
+          "name": "gui-extract-project-exported",
+          "at": "2026-11-07T02:14:42.067Z",
+          "lastSampledJobHighWaterBytes": 3464744960
+        },
+        {
+          "name": "gui-extract-project-downloaded",
+          "at": "2026-11-07T02:14:54.447Z",
+          "lastSampledJobHighWaterBytes": 3464744960
+        },
+        {
+          "name": "gui-extract-gui-project-imported",
+          "at": "2026-11-07T02:15:10.100Z",
+          "lastSampledJobHighWaterBytes": 3740082176
+        },
+        {
+          "name": "gui-extract-gui-reopen-verified",
+          "at": "2026-11-07T02:15:19.274Z",
+          "lastSampledJobHighWaterBytes": 3953061888
+        }
+      ],
+      "numericMarkers": [
+        "M2_NUM_START 33263505 1794017707967",
+        "M2_NUM_DONE 33263505 1794017708073",
+        "M2_NUM_RELEASE 33263505 true true 1 false 266108040 1794017708073",
+        "M2_NUM_RELEASED 0 1794017708073",
+        "M2_NUM_START 5612016 1794017708073",
+        "M2_NUM_DONE 5612016 1794017708091",
+        "M2_NUM_RELEASE 5612016 true true 1 false 44896128 1794017708091",
+        "M2_NUM_RELEASED 0 1794017708091",
+        "M2_NUM_START 15991146 1794017708091",
+        "M2_NUM_DONE 15991146 1794017708141",
+        "M2_NUM_RELEASE 15991146 true true 1 false 127929168 1794017708141",
+        "M2_NUM_RELEASED 0 1794017708141",
+        "M2_NUM_START 2692659 1794017708141",
+        "M2_NUM_DONE 2692659 1794017708149",
+        "M2_NUM_RELEASE 2692659 true true 1 false 21541272 1794017708149",
+        "M2_NUM_RELEASED 0 1794017708149"
+      ],
+      "functional": {
+        "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+        "inputFaces": 3691133,
+        "splitFaces": 3695945,
+        "extractedFaces": 1776794,
+        "sourcePreserved": true,
+        "cutterPreserved": true,
+        "guiUndoRedo": true,
+        "binaryReopen": true,
+        "pageErrors": [],
+        "consoleErrors": []
+      }
+    }
+  ],
+  "observedNumericElements": [
+    33263505,
+    5612016,
+    15991146,
+    2692659
+  ],
+  "observedNumericTotalBytes": 460474608,
+  "interpretation": "The first run reached its final high-water after project download and before GUI import completion. In the later marked runs, all four ordinary arrays were reconstructed before import completion; in the release-marker run each temporary ArrayBuffer reported byteLength zero after transfer. The later final high-water samples occurred after the import stage. The trace rules out failure to detach these four staging buffers in that run, but does not prove immediate physical reclamation or identify the entire remaining peak.",
+  "limitations": [
+    "These are three isolated injected runs, not an integrated fix or a guarantee of 4 GiB reliability; prior independent-copy runs exceeded the limit.",
+    "Job peak is cumulative and sampled every 500 ms; the exact allocation time and cause within the sample interval are unknown.",
+    "Console and telemetry can affect timing and memory; this is not native acceptance."
+  ]
+}
