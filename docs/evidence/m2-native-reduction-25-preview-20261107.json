@@ -214,5 +214,27 @@
       "The process contained multiple copies of the last three faces, and the third sampled address still matched after cancellation. Memory ownership, segment linkage, normals and publication are unverified.",
       "Only this input and setting were investigated; this does not establish general native or resource parity."
     ]
+  },
+  "subsequentNativeExport": {
+    "application": "QuickSurface Pro 8.0.123",
+    "source": "scan-1(1), 273139 triangles, same source control as earlier preview",
+    "settings": {
+      "percentageRemaining": 25,
+      "requestedTriangles": 68284,
+      "keepOriginalMesh": true
+    },
+    "previewTriangles": 68283,
+    "resultObject": "scan-1(1) - 25 %",
+    "export": "binary STL, isolated visible result",
+    "triangles": 68283,
+    "bytes": 3414234,
+    "stlSha256": "77772e9b492e8e5f8cf7a824348f8b17af212defcacdff2df68babc20470156f",
+    "orderedCoordinatesSha256": "d819bd329749eabe0e1a6dac3f27c849b9dc82f19657039ac9ff03e0c82c1a83",
+    "comparison": "Matches the previously recorded GUI and public MCP ordered coordinates byte-for-byte.",
+    "limitations": [
+      "GUI and MCP data are from the previously recorded candidate, not a fresh replay of the current commit.",
+      "Native STL normals, native save/reopen, and general reduction equivalence were not compared.",
+      "Source visibility and selection were restored; the created native result remains hidden in the unsaved scene."
+    ]
   }
 }
