@@ -30,6 +30,7 @@ if not kernel.GlobalMemoryStatusEx(c.byref(status)):
     raise c.WinError(c.get_last_error())
 os.environ["SCANFORGE_JOB_MEMORY_BYTES"] = str(status.total_physical)
 heap_mebibytes = status.total_physical // (1024 * 1024)
+os.environ["SCANFORGE_TYPECHECK_HEAP_MIB"] = str(heap_mebibytes)
 existing_options = os.environ.get("NODE_OPTIONS", "").strip()
 os.environ["NODE_OPTIONS"] = (
     f"{existing_options} --max-old-space-size={heap_mebibytes}".strip()
