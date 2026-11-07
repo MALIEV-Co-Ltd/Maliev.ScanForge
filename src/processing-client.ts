@@ -342,14 +342,16 @@ export function processMesh(
     request.kind === "scanEdit" &&
     request.action === "componentExtract" &&
     !!request.sourceIndexed &&
-    Array.isArray(request.positions) &&
+    (Array.isArray(request.positions) ||
+      isPrivateDecodingView(request.positions)) &&
     request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD;
   const tryIndexedInventory =
     request.kind === "scanEdit" &&
     request.action === "inventory" &&
     request.inventoryScope === "components" &&
     !!request.sourceIndexed &&
-    Array.isArray(request.positions) &&
+    (Array.isArray(request.positions) ||
+      isPrivateDecodingView(request.positions)) &&
     request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD;
   const runIndexed = async () => {
     const release = beginPriorityScanPreparation();

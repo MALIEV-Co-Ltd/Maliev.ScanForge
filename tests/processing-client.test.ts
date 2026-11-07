@@ -1343,6 +1343,98 @@ describe("processing worker resource ownership", () => {
       await pending;
     },
   );
+  it.each(["componentExtract", "inventory"] as const)(
+    "uses compact %s for exact marked private doubles only",
+    async (action) => {
+      const vertices = markPrivateDecodingView(
+        new Float64Array([0.1, -0, 0, 1.1, 0, 0, 0.1, 1, 0]),
+      );
+      const positions = markPrivateDecodingView(new Float64Array(65536 * 9));
+      const triangles = new Uint32Array(65536 * 3);
+      for (let face = 0; face < 65536; face++) {
+        positions.set(vertices, face * 9);
+        triangles.set([0, 1, 2], face * 3);
+      }
+      const start = (source: Float64Array) =>
+        processMesh({
+          kind: "scanEdit",
+          action,
+          ...(action === "inventory"
+            ? { inventoryScope: "components" as const }
+            : { indices: [0] }),
+          positions: source as unknown as number[],
+          sourceIndexed: {
+            vertices: vertices as unknown as number[],
+            triangles,
+          },
+        });
+      const pending = start(positions);
+      await vi.advanceTimersByTimeAsync(100);
+      let worker = ProcessingWorkerDouble.latest;
+      let sent = worker.sent as ProcessingRequest & {
+        packedScanEditSource?: {
+          indexedExtract?: boolean;
+          indexedInventory?: boolean;
+        };
+      };
+      expect(
+        sent.packedScanEditSource?.[
+          action === "inventory" ? "indexedInventory" : "indexedExtract"
+        ],
+      ).toBe(true);
+      expect(sent.positions).toHaveLength(0);
+      expect(worker.transfers).not.toContain(positions.buffer);
+      expect(worker.transfers).not.toContain(vertices.buffer);
+      worker.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+        },
+      });
+      await pending;
+      positions[1] = 0;
+      const mismatch = start(positions);
+      await vi.advanceTimersByTimeAsync(100);
+      worker = ProcessingWorkerDouble.latest;
+      sent = worker.sent as typeof sent;
+      expect(
+        sent.packedScanEditSource?.[
+          action === "inventory" ? "indexedInventory" : "indexedExtract"
+        ],
+      ).not.toBe(true);
+      expect(sent.positions).toHaveLength(positions.length);
+      worker.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+        },
+      });
+      await mismatch;
+      positions[1] = -0;
+      const unmarked = new Float64Array(positions);
+      const untrusted = start(unmarked);
+      await vi.advanceTimersByTimeAsync(100);
+      worker = ProcessingWorkerDouble.latest;
+      sent = worker.sent as typeof sent;
+      expect(
+        sent.packedScanEditSource?.[
+          action === "inventory" ? "indexedInventory" : "indexedExtract"
+        ],
+      ).not.toBe(true);
+      expect(sent.positions).toHaveLength(unmarked.length);
+      worker.reply({
+        result: {
+          kind: "scanEdit",
+          diagnostics: {},
+          scanEdit: { diagnostics: {} },
+        },
+      });
+      await untrusted;
+      expect(positions.byteLength).toBe(65536 * 9 * 8);
+    },
+  );
   it("packs indexed precise Extract input without detaching the source", async () => {
     const source = Array.from({ length: 65538 }, (_, i) => i / 8);
     const sourceIndexed = {
