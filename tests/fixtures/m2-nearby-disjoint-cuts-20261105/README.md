@@ -22,9 +22,9 @@ unordered triangle vertices.
 | `native-cutter-roundtrip.stl` | `aa2c14e5cb874f3b2d6bb3cc4498a984523024356d51ae38803d2962c12cd740` |
 
 Native output includes the boundary endpoint but omits the nearby interior
-endpoint, joining the cuts in the exported triangle mesh. Current shared
-Split differs from its unordered Float32 facets; the pinned comparison is an
-expected failure. The isolated distance-association prototype matched native
+endpoint, joining the cuts in the exported triangle mesh. The current shared
+Split matches its unordered Float32 facets in `m2-nearby-disjoint-native.test.ts`.
+The earlier isolated distance-association prototype also matched native
 facets on this control. This one fixture has cutter edges on the source plane;
 it does not establish native behavior for all disjoint cuts, exact tolerance,
 winding, output vertex topology, or general safety of welding contacts.

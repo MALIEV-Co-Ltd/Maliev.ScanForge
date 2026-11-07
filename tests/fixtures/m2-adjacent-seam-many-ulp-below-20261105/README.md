@@ -17,8 +17,8 @@ cutter retained all input coordinates.
 | `native-cutter-roundtrip.stl` | `69b475ffbd6c327b4afac8670ba843edd5bc09f76282a3a7529851e562e0e4a1` |
 
 Native retains the boundary contact, omits the cutter-seam contact and has
-area 0.5 square mm. Shared Split currently retains both points in five
-triangles and two parts; native facet parity is an expected failure. This
+area 0.5 square mm. The current shared Split matches the three retained native
+unordered facets and reports two parts in `m2-adjacent-seam-many-ulp-native.test.ts`. This
 control shows that a one-Float32-step-only association cannot reproduce this
 native behavior. It does not establish the exact threshold, general matching
 rule, winding, or safety for arbitrary meshes.

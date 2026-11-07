@@ -22,8 +22,8 @@ the untouched cutter exported separately retained the input coordinates.
 | `native-cutter-roundtrip.stl` | `c4c86317c5f76c1826378f858dcf16550026c2fc4891ac5ad0113603d1f05ced` |
 
 Native output omits both short-edge endpoints and has triangle area sum 0.5.
-Current shared Split differs from native's unordered Float32 facets; parity is
-an expected failure. The initial isolated prototype omitted those endpoints but emitted six facets.
+The current shared operation matches the retained unordered Float32 facets in
+`m2-nearby-short-disjoint-native.test.ts`. The initial isolated prototype omitted those endpoints but emitted six facets.
 A revised low-level candidate matches the four unordered facets at its default
 0.000001 mm tolerance. The earlier application default of 0.001 mm rejected the cutter without
 changing geometry or history. A revised candidate using 0.000001 mm by default
@@ -33,4 +33,4 @@ and rendered redo. This is evidence for this fixture, not general native parity.
 indexed connectivity or winding; this is one on-plane cutter control, not a
 general rule for short unrelated cuts.
 
-The pinned native QSF source block also shows that the boundary-to-interior edge has the same vertex IDs on both incident faces. Its expanded facets match the exported STL. The indexed-edge comparison remains an expected failure in ScanForge despite the passing facet comparison.
+The pinned native QSF source block also shows that the boundary-to-interior edge has the same vertex IDs on both incident faces. Its expanded facets match the exported STL. The current shared operation also retains that shared indexed edge in the fixture test.

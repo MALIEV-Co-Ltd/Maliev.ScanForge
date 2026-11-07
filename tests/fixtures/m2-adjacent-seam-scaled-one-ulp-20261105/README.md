@@ -18,9 +18,9 @@ all its input coordinates.
 | `native-cutter-roundtrip.stl` | `f91de66e509cfd4a8a458e402bb8ec5e6e550d7e3a6995f29aec1d6fb946deba` |
 
 The native export contains `[500, 1000, 0]`, omits the distinct cutter-seam
-contact and has area 500000 square mm. The shared application operation has
-five triangles and two parts and retains the distinct point. Its unordered
-facet comparison with native is an expected failing parity test. In the
+contact and has area 500000 square mm. The current shared operation matches
+the three retained native unordered facets and reports two parts in
+`m2-adjacent-seam-scaled-one-ulp-native.test.ts`. In the
 otherwise identical two-step control, native retained both contacts and its
 unordered facets matched the application. The gap sizes are approximately
 0.0000610 and 0.0001221 mm; these two samples bound an observed change for

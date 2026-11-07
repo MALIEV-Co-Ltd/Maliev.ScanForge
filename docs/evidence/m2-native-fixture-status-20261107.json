@@ -1,0 +1,32 @@
+{
+  "scope": "Current shared-operation checks against six retained native Split fixtures; not fresh native or GUI/MCP acceptance",
+  "candidate": "dc704a86",
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/m2-subdivided-boundary-native.test.ts",
+    "tests/m2-nearby-short-disjoint-native.test.ts",
+    "tests/m2-short-near-corner-native.test.ts",
+    "tests/m2-nearby-disjoint-native.test.ts",
+    "tests/m2-adjacent-seam-many-ulp-native.test.ts",
+    "tests/m2-adjacent-seam-scaled-one-ulp-native.test.ts",
+    "--maxWorkers=1"
+  ],
+  "testsPassed": 15,
+  "guardPeakJobBytes": 343146496,
+  "guardLimitBytes": 4294967296,
+  "cleanupConfirmed": true,
+  "coverage": [
+    "Subdivided boundary shared indexed segments",
+    "Nearby short disjoint retained facets and shared edge",
+    "Short near-corner unchanged source",
+    "Nearby disjoint retained unordered facets",
+    "Many-step adjacent seam retained unordered facets",
+    "Scaled one-step adjacent seam retained unordered facets"
+  ],
+  "limits": [
+    "Facet comparisons ignore winding unless explicitly checked by the fixture.",
+    "These finite examples do not establish general native parity or relax coverage and separation safety checks."
+  ]
+}
