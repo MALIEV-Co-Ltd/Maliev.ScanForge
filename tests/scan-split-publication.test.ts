@@ -541,6 +541,72 @@ it("preserves an empty source when MCP extracts the last component", async () =>
   ).toEqual(new Float32Array(triangle));
   expect(h.host.commit).toHaveBeenCalledTimes(1);
 });
+it.each(["plane", "cad"] as const)(
+  "exposes extraction of a sampled %s through MCP",
+  async (kind) => {
+    const h = harness([
+      entity({ kind, positions: new Float32Array(triangle) }),
+    ]);
+    const result = (await h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [0],
+        },
+      },
+      h.context,
+    )) as { entityIds: string[] };
+    expect(h.state.entities.find((e) => e.id === "mesh")).toMatchObject({
+      kind: "mesh",
+      emptyComponentSource: true,
+    });
+    expect(
+      h.state.entities.find((e) => e.id === result.entityIds[0]),
+    ).toMatchObject({ kind: "mesh" });
+    const file = await encodeProjectFileLocally({
+      project: {
+        format: "maliev-scanforge",
+        version: 1,
+        units: "mm",
+        name: "extraction",
+        entities: h.state.entities,
+      },
+      history: [],
+      future: [],
+    });
+    expect((await decodeProjectFile(file)).project.entities).toHaveLength(2);
+  },
+);
+it.each(["plane", "cad"] as const)(
+  "keeps the unselected component when MCP extracts from a sampled %s",
+  async (kind) => {
+    const positions = new Float32Array([
+      ...triangle,
+      ...triangle.map((value, index) => (index % 3 === 0 ? value + 3 : value)),
+    ]);
+    const h = harness([entity({ kind, positions })]);
+    const result = (await h.ops.mesh_process(
+      {
+        entityId: "mesh",
+        operation: {
+          kind: "scanEdit",
+          action: "componentExtract",
+          indices: [1],
+        },
+      },
+      h.context,
+    )) as { entityIds: string[] };
+    const remainder = h.state.entities.find((e) => e.id === "mesh")!;
+    expect(remainder.kind).toBe("mesh");
+    expect(remainder.emptyComponentSource).toBeUndefined();
+    expect(remainder.positions).toEqual(positions.slice(0, 9));
+    expect(
+      h.state.entities.find((e) => e.id === result.entityIds[0])!.positions,
+    ).toEqual(positions.slice(9));
+  },
+);
 it("preserves independent per-corner normals through MCP component extraction", async () => {
   const positions = new Float32Array([
     ...triangle,

@@ -72,6 +72,27 @@ it("retains an empty source after extracting its final component", () => {
   expect(result.entities[0].positions).toHaveLength(0);
   expect(result.created).toHaveLength(1);
 });
+it.each(["plane", "cad"] as const)(
+  "publishes extraction from a sampled %s as editable meshes",
+  (kind) => {
+    const before = { ...source, kind, kernelId: undefined, brep: undefined };
+    const result = componentExtractionPublication(
+      [before],
+      before.id,
+      { positions: new Float32Array() },
+      [triangle],
+      () => "part",
+    );
+    expect(result.entities[0]).toMatchObject({
+      kind: "mesh",
+      emptyComponentSource: true,
+    });
+    expect(result.created[0]).toMatchObject({
+      kind: "mesh",
+      positions: triangle,
+    });
+  },
+);
 it("rejects incomplete and locked component transactions without changing the source", () => {
   const before = { ...source, kernelId: undefined, brep: undefined };
   expect(() =>

@@ -1,0 +1,28 @@
+{
+  "scope": "Restore GUI and MCP component extraction for editable sampled plane and CAD-kind triangle objects",
+  "base": "9e987b5eb31e5a8929ca5bdfbf6e30a9796b8dd9",
+  "change": "Shared publication accepts editable sampled triangle objects and changes their extracted source to a mesh, including an empty source when its last component is extracted.",
+  "red": "Four focused regression cases failed before the correction: shared publication and MCP for each sampled kind.",
+  "focused": {
+    "files": 4,
+    "passed": 48,
+    "partialExtractionMcp": true,
+    "peakJobBytes": 488382464,
+    "activeProcessesAfter": 0
+  },
+  "browser": {
+    "driver": "tests/scan-components-browser.mjs",
+    "environment": "SCANFORGE_COMPONENT_SAMPLED_KIND=1",
+    "guiAndMcpKinds": ["plane", "cad"],
+    "geometryUndoAndBinaryReopen": true,
+    "existingComponentControlsPassed": true,
+    "peakJobBytes": 832897024,
+    "activeProcessesAfter": 0
+  },
+  "build": "Vite production bundle passed after the change; full production build and final suite remain required for the new candidate.",
+  "jobLimitBytes": 34110816256,
+  "limitations": [
+    "These are editable sampled triangle objects without protected exact CAD geometry, not native QuickSurface comparisons.",
+    "Protected exact geometry continues to require a mesh copy through the existing operation admission checks."
+  ]
+}

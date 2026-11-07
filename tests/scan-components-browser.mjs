@@ -267,6 +267,118 @@ try {
     preciseComponents
       ? assert.deepEqual(actual, expected, message)
       : assert.equal(digest(actual), digest(expected), message);
+  if (process.env.SCANFORGE_COMPONENT_SAMPLED_KIND === "1") {
+    for (const kind of ["plane", "cad"]) {
+      const positions = [0, 0, 0, 1, 0, 0, 0, 1, 0];
+      const project = {
+        format: "maliev-scanforge",
+        version: 1,
+        units: "mm",
+        name: "Sampled source",
+        entities: [
+          {
+            id: "sampled",
+            name: `Sampled ${kind}`,
+            kind,
+            positions,
+            visible: true,
+            color: "#ffffff",
+            opacity: 1,
+          },
+        ],
+      };
+      const artifact = (
+        await call("artifact_put", {
+          name: "sampled.json",
+          offset: 0,
+          base64: Buffer.from(JSON.stringify(project)).toString("base64"),
+        })
+      ).result;
+      await job(
+        await mutate("project_import", {
+          artifactId: artifact.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: artifact.artifactId });
+      await mutate("object_select", { entityId: "sampled" });
+      await mutate("command_run", { name: "ribbon:editScan" });
+      await page
+        .getByRole("button", { name: "Edit individual meshes", exact: true })
+        .click();
+      const panel = page.getByRole("region", {
+        name: "Individual meshes",
+        exact: true,
+      });
+      await panel.getByRole("button", { name: /· 1 triangles ·/ }).waitFor();
+      const baseline = (await call("project_get")).result.undo;
+      await panel
+        .getByRole("button", { name: "Create new object", exact: true })
+        .click();
+      for (let i = 0; i < 120; i++) {
+        if ((await call("project_get")).result.undo === baseline + 1) break;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      await idle();
+      const gui = (await call("project_get")).result;
+      const guiSource = gui.objects.find((object) => object.id === "sampled");
+      const guiPart = gui.objects.find((object) => object.id !== "sampled");
+      assert.equal(guiSource.kind, "mesh");
+      assert.equal(guiSource.emptyComponentSource, true);
+      assert(guiPart);
+      rawEqual(
+        await geometry(guiPart.id),
+        positions,
+        "GUI sampled extraction changed geometry",
+      );
+      await mutate("history_undo", {});
+      assert.equal(
+        (await call("project_get")).result.objects.find(
+          (object) => object.id === "sampled",
+        ).kind,
+        kind,
+      );
+      await job(
+        await mutate("mesh_process", {
+          entityId: "sampled",
+          operation: {
+            kind: "scanEdit",
+            action: "componentExtract",
+            indices: [0],
+          },
+        }),
+      );
+      const mcp = (await call("project_get")).result;
+      assert.equal(
+        mcp.objects.find((object) => object.id === "sampled").kind,
+        "mesh",
+      );
+      const mcpPart = mcp.objects.find((object) => object.id !== "sampled");
+      assert(mcpPart);
+      rawEqual(
+        await geometry(mcpPart.id),
+        positions,
+        "MCP sampled extraction changed geometry",
+      );
+      const saved = await job(
+        await call("project_export", { format: "project" }),
+      );
+      await job(
+        await mutate("project_import", {
+          artifactId: saved.result.artifactId,
+          replace: true,
+        }),
+      );
+      await call("artifact_delete", { artifactId: saved.result.artifactId });
+      assert.equal(
+        (await call("project_get")).result.objects.find(
+          (object) => object.id === "sampled",
+        ).emptyComponentSource,
+        true,
+      );
+      await mutate("project_new", { discard: true });
+    }
+  }
   await page
     .locator('input[type=file][accept*=".stl"]')
     .setInputFiles(

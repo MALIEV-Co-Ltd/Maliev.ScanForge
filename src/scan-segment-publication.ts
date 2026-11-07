@@ -5,6 +5,7 @@ import type { ModelCommitPolicy } from "./object-operations";
 import { DEFAULT_PART_COLOR } from "./appearance";
 import { validatePositions } from "./io";
 import { indexedMeshMatches, indexedRenderNormals } from "./indexed-mesh";
+import { assertSampledGeometry } from "./reference-entity";
 
 /** Atomically move connected components into new mesh owners. */
 export function componentExtractionPublication(
@@ -21,8 +22,9 @@ export function componentExtractionPublication(
   segmentNormals?: readonly Entity["positions"][],
 ): { entities: Entity[]; created: Entity[]; policy: ModelCommitPolicy } {
   const source = entities.find((entity) => entity.id === sourceId);
-  if (!source || source.kind !== "mesh")
+  if (!source || source.kind === "pointcloud")
     throw Error("Choose the source mesh before extracting components.");
+  assertSampledGeometry(source);
   if (source.locked) throw Error("Object is locked.");
   if (
     source.normals &&
@@ -76,6 +78,7 @@ export function componentExtractionPublication(
   );
   const updated: Entity = {
     ...source,
+    kind: "mesh",
     positions: remainder.positions,
     indexedMesh: remainder.indexedMesh,
     normals: remainder.normals ?? indexedRenderNormals(remainder.indexedMesh),
