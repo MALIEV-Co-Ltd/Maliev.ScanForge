@@ -64,6 +64,39 @@ async function terminal(api: ApplicationApi, jobId: string) {
   }
   throw Error("Digest job did not settle");
 }
+it("returns canonical Float64 geometry bytes through the agent digest job", async () => {
+  const { api, entity } = fixture();
+  const values = new Float64Array([0.1, -0, 2.5]);
+  entity.positions = values as unknown as Entity["positions"];
+  try {
+    const receipt = await api.invoke("object_geometry_digest", {
+      entityId: "scan",
+    });
+    expect(receipt.ok).toBe(true);
+    if (!receipt.ok) return;
+    const job = await terminal(
+      api,
+      (receipt.result as { jobId: string }).jobId,
+    );
+    expect(job.status).toBe("succeeded");
+    const bytes = Buffer.alloc(24);
+    [0.1, -0, 2.5].forEach((value, index) =>
+      bytes.writeDoubleLE(value, index * 8),
+    );
+    expect(job.result).toMatchObject({
+      buffers: [
+        {
+          path: "positions",
+          encoding: "f64",
+          rawBytes: 24,
+          sha256: createHash("sha256").update(bytes).digest("hex"),
+        },
+      ],
+    });
+  } finally {
+    api.dispose();
+  }
+});
 it("discovers bounded read-only geometry digest as a cancellable job and preserves project state", async () => {
   const { api, state, host, entity } = fixture();
   try {

@@ -57,18 +57,19 @@ async function digestEntityGeometryWithLease(
   check();
   const fields: {
     path: string;
-    value: Positions | Uint32Array | Uint8Array;
+    value: Positions | Float64Array | Uint32Array | Uint8Array;
     encoding: GeometryDigestBuffer["encoding"];
   }[] = [];
   const add = (
     path: string,
-    value: Positions | Uint32Array | undefined,
+    value: Positions | Float64Array | Uint32Array | undefined,
     integer = false,
   ) => {
     if (value === undefined && path !== "positions") return;
     if (!(
       Array.isArray(value) ||
       value instanceof Float32Array ||
+      (!integer && value instanceof Float64Array) ||
       (integer && value instanceof Uint32Array)
     ))
       throw new Error(`Unsupported numeric geometry carrier: ${path}.`);

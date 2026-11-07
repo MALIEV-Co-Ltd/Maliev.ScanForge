@@ -2,7 +2,8 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import type { Positions } from "./types";
 import { finiteTypedValues } from "./finite-typed-values";
 
-export type ProjectValue = Positions | Uint32Array | Uint8Array | string;
+export type ProjectValue =
+  Positions | Float64Array | Uint32Array | Uint8Array | string;
 export type ProjectValueType = "f32" | "f64" | "u32" | "u8" | "text";
 const STAGING_BYTES = 1024 * 1024;
 const LITTLE_ENDIAN = new Uint8Array(new Uint32Array([1]).buffer)[0] === 1;
@@ -39,6 +40,10 @@ export function* projectValueBytes(
     ((type === "f32" &&
       value instanceof Float32Array &&
       finiteTypedValues(value)) ||
+      (type === "f64" &&
+        value instanceof Float64Array &&
+        value.buffer instanceof ArrayBuffer &&
+        finiteTypedValues(value)) ||
       (type === "u32" && value instanceof Uint32Array) ||
       (type === "u8" && value instanceof Uint8Array))
   ) {

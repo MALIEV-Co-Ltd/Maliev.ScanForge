@@ -24,6 +24,24 @@ function hash(values: number[], type: "f32" | "f64" | "u32") {
   return createHash("sha256").update(b).digest("hex");
 }
 describe("canonical entity geometry digest", () => {
+  it("hashes a Float64 geometry view with canonical bytes and backing metadata", async () => {
+    const backing = new ArrayBuffer(40);
+    const values = new Float64Array(backing, 8, 3);
+    values.set([0.1, -0, 2.5]);
+    const result = await digestEntityGeometry(
+      entity(values as unknown as Entity["positions"]),
+    );
+    expect(result.buffers[0]).toMatchObject({
+      encoding: "f64",
+      elements: 3,
+      rawBytes: 24,
+      sha256: hash([0.1, -0, 2.5], "f64"),
+      storage: "array-buffer",
+      byteOffset: 8,
+      backingBytes: 40,
+      shared: false,
+    });
+  });
   it("holds a foreground preparation lease during hashing and releases it on cancellation", async () => {
     const baseline = priorityScanPreparationCount();
     const controller = new AbortController();
