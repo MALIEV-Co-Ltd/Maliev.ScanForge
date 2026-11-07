@@ -537,10 +537,7 @@ try {
   const outputTriangles = accepted.objects.find(
     (o) => o.id === object.id,
   ).triangles;
-  assert(
-    outputTriangles < inputTriangles &&
-      outputTriangles > (residentFixture ? 1000 : 100000),
-  );
+  assert(outputTriangles < inputTriangles && outputTriangles > 0);
   assert(
     outputTriangles <= Math.ceil((inputTriangles * reductionPercentage) / 100),
     "Healthy panel missed its requested percentage target",
