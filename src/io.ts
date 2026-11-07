@@ -1,6 +1,9 @@
 import { validateSpatialCurves } from "./spatial-sketch";
 import { isEncodingNumeric } from "./project-encoding-numeric";
-import { validateMeshFacetNormals } from "./mesh-geometry-normals";
+import {
+  meshGeometryNormals,
+  validateMeshFacetNormals,
+} from "./mesh-geometry-normals";
 import { validateInspectionDefinitions } from "./inspection-definition";
 import { validateSavedSketchDisplay } from "./saved-sketch-display";
 import {
@@ -889,7 +892,36 @@ export function exportStl(entities: Entity[]): DataView {
     group.add(new THREE.Mesh(geometry));
   }
   try {
-    return new STLExporter().parse(group, { binary: true });
+    const output = new STLExporter().parse(group, { binary: true });
+    let offset = 84;
+    for (const entity of entities) {
+      if (entity.kind === "pointcloud" || entity.kind === "referenceFrame")
+        continue;
+      const indexed = entity.indexedMesh;
+      if (indexedMeshMatches(indexed, entity.positions)) {
+        const normals = meshGeometryNormals(indexed);
+        const f = Math.fround;
+        for (let slot = 0; slot < indexed.triangles.length; slot += 3) {
+          const a = indexed.triangles[slot] * 3;
+          const b = indexed.triangles[slot + 1] * 3;
+          const c = indexed.triangles[slot + 2] * 3;
+          for (let axis = 0; axis < 3; axis++)
+            output.setFloat32(
+              offset + axis * 4,
+              f(
+                f(
+                  f(normals[a + axis] + normals[b + axis]) + normals[c + axis],
+                ) / 3,
+              ),
+              true,
+            );
+          offset += 50;
+        }
+      } else {
+        offset += (entity.positions.length / 9) * 50;
+      }
+    }
+    return output;
   } finally {
     group.traverse((child) => {
       if (child instanceof THREE.Mesh) {

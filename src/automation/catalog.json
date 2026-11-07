@@ -4094,7 +4094,7 @@
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STL uses the Float32 mean of computed vertex normals for valid indexed topology; missing or stale topology uses geometric facet normals, as in GUI export. STEP defaults to requiring exact CAD for every selected object. cadOnly:true exports only exact CAD in the visibility scope and reports excludedEntityIds, matching the GUI STEP exporter. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {

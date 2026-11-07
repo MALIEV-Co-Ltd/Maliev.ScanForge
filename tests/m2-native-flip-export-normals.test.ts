@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { expect, it } from "vitest";
-import { parseMesh } from "../src/io";
+import { exportStl, parseMesh } from "../src/io";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { flipScanNormals } from "../src/scan-tools-transforms";
 
@@ -67,6 +67,27 @@ it.skipIf(!sourcePath)(
     }
     expect(derived.length).toBe(819417);
     expect(hash(new Uint8Array(derived.buffer))).toBe(
+      "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
+    );
+    const exported = exportStl([
+      {
+        id: "native-flip",
+        name: "native-flip",
+        kind: "mesh",
+        positions: result.positions,
+        indexedMesh: mesh,
+        visible: true,
+        color: "#ffffff",
+        opacity: 1,
+      },
+    ]);
+    const exportedNormals = new Float32Array(mesh.triangles.length);
+    for (let i = 0; i < exportedNormals.length; i++)
+      exportedNormals[i] = exported.getFloat32(
+        84 + Math.floor(i / 3) * 50 + (i % 3) * 4,
+        true,
+      );
+    expect(hash(new Uint8Array(exportedNormals.buffer))).toBe(
       "0f562055b81f54e5bdfb3b9169df8e22d291844e21b4176e7e1586b34bacb984",
     );
     if (native) {

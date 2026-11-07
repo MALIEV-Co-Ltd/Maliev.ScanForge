@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
-import { parseMesh } from "../src/io";
+import { exportStl, parseMesh } from "../src/io";
 import { meshGeometryNormals } from "../src/mesh-geometry-normals";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 
@@ -25,6 +25,18 @@ it.each(fixtures)(
     );
     const mesh = nativeStlTopology(positions);
     const normals = meshGeometryNormals(mesh);
+    const exported = exportStl([
+      {
+        id: "native-control",
+        name: "native-control",
+        kind: "mesh",
+        positions,
+        indexedMesh: mesh,
+        color: "#ffffff",
+        visible: true,
+        opacity: 1,
+      },
+    ]);
     const f = Math.fround;
     for (let i = 0; i < mesh.triangles.length; i += 3) {
       for (let k = 0; k < 3; k++) {
@@ -37,6 +49,9 @@ it.each(fixtures)(
           ) / 3,
         );
         expect(average).toBe(file.readFloatLE(84 + (i / 3) * 50 + k * 4));
+        expect(exported.getFloat32(84 + (i / 3) * 50 + k * 4, true)).toBe(
+          file.readFloatLE(84 + (i / 3) * 50 + k * 4),
+        );
       }
     }
   },

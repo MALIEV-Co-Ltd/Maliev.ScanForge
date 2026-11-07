@@ -1041,6 +1041,8 @@ The command is `mesh_process`. Inspect the terminal job result and new object's 
 
 Call `project_export` with `{"format":"step"}` (or `project`/`stl`). Poll its job. The result contains `{artifactId,name,mime,bytes}`. `visible` defaults to true for geometry exports; project exports retain the whole project and its saved timeline.
 
+STL exports use the Float32 mean of the three computed vertex normals when valid indexed topology is available, matching the measured native scan controls. They retain geometric facet normals when indexed topology is missing or stale. GUI and MCP use the same encoder; scanner-provided normals remain distinct from computed geometry normals. This does not establish native behavior for unindexed or every other mesh input.
+
 For STEP, every included object must be exact CAD by default. Hide scan/reference
 objects before exporting, or pass `cadOnly:true` to export only exact CAD within
 the visibility scope. This explicit option returns `excludedEntityIds` alongside
