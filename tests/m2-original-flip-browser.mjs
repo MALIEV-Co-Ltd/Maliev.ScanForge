@@ -2,7 +2,7 @@ import { m2BrowserHeapFlag } from "./m2-memory.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import http from "node:http";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, unlink } from "node:fs/promises";
 import { randomUUID, randomBytes, createHash } from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -251,6 +251,52 @@ try {
   const mcp = await digest();
   assert.deepEqual(mcp, gui);
   assert.equal(await history(), cursor + 1);
+  let guiMcpStl;
+  if (process.env.SCANFORGE_M2_FLIP_EXPORT_PARITY === "1") {
+    const exported = (
+      await job(await call("project_export", { format: "stl" }))
+    ).result;
+    const parts = [];
+    for (let offset = 0; offset < exported.bytes;) {
+      const part = (
+        await call("artifact_read", {
+          artifactId: exported.artifactId,
+          offset,
+          length: 262144,
+        })
+      ).result;
+      const bytes = Buffer.from(part.base64, "base64");
+      assert(bytes.length > 0);
+      parts.push(bytes);
+      offset += bytes.length;
+    }
+    const mcpStl = Buffer.concat(parts);
+    const pending = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export visible", exact: true })
+      .click();
+    const download = await pending;
+    const guiPath = fileURLToPath(new URL("gui-export.stl", out));
+    let guiStl;
+    try {
+      await download.saveAs(guiPath);
+      guiStl = await readFile(guiPath);
+    } finally {
+      await download.delete();
+      await unlink(guiPath).catch((error) => {
+        if (error.code !== "ENOENT") throw error;
+      });
+    }
+    assert.equal(download.suggestedFilename(), "scanforge.stl");
+    assert(mcpStl.equals(guiStl), "GUI and MCP STL exports differ");
+    assert.equal(guiStl.readUInt32LE(80), 273139);
+    await call("artifact_delete", { artifactId: exported.artifactId });
+    guiMcpStl = {
+      bytes: guiStl.length,
+      sha256: createHash("sha256").update(guiStl).digest("hex"),
+      identical: true,
+    };
+  }
   let stlComparison;
   if (process.env.SCANFORGE_M2_FLIP_NATIVE_STL) {
     const native = await readFile(process.env.SCANFORGE_M2_FLIP_NATIVE_STL);
@@ -342,6 +388,7 @@ try {
     triangles: 273139,
     guiDigest: gui,
     mcpDigest: mcp,
+    ...(guiMcpStl ? { guiMcpStl } : {}),
     ...(stlComparison ? { stlComparison } : {}),
     binaryReopen: true,
     undoRedo: true,
