@@ -57,12 +57,19 @@ export function createInspectionOperations(
       const authoring = host.snapshot().authoring;
       let inspections = authoring.inspections ?? [];
       const id = a.action === "save" ? crypto.randomUUID() : a.inspectionId;
-      if (a.action === "save")
+      if (a.action === "save") {
+        const definition = a.definition;
+        const normalized =
+          definition?.kind === "deviation" &&
+          definition.fit &&
+          definition.scope === undefined
+            ? { ...definition, scope: "all" }
+            : definition;
         inspections = validateInspectionDefinitions([
           ...inspections,
-          { id, name: a.name, definition: a.definition },
+          { id, name: a.name, definition: normalized },
         ]);
-      else {
+      } else {
         if (!inspections.some((item) => item.id === id))
           throw new Error("Saved inspection not found.");
         inspections = inspections.filter((item) => item.id !== id);
@@ -80,7 +87,12 @@ export function createInspectionOperations(
       if (definition.kind === "measurement")
         return measureGeometry(definition.measurement);
       const { kind: _kind, ...parameters } = definition;
-      return operations.analysis_deviation(parameters, c);
+      return operations.analysis_deviation(
+        "fit" in parameters
+          ? { ...parameters, scope: parameters.scope ?? "visible" }
+          : parameters,
+        c,
+      );
     },
     analysis_deviation: async (a, c) => {
       c.check();
@@ -95,7 +107,10 @@ export function createInspectionOperations(
             a as unknown as import("../inspection-reference").ReferenceDeviationOptions,
             options,
           )
-        : await inspectDeviationAsync(source, a.fit, a.tolerance, options);
+        : await inspectDeviationAsync(source, a.fit, a.tolerance, {
+            ...options,
+            scope: a.scope,
+          });
       c.check();
       const distances = artifact(c, report.distances, "deviations.json"),
         file = artifact(c, report, "deviation-report.json");

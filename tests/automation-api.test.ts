@@ -837,10 +837,24 @@ describe("M6 inspection API", () => {
         rms: 0,
         maxError: 0,
       };
+      expect(
+        await api.invoke("analysis_deviation", {
+          entityId: "scan",
+          fit,
+          scope: "invalid",
+        }),
+      ).toMatchObject({ ok: false });
+      const all = await job("analysis_deviation", {
+        entityId: "scan",
+        fit,
+        tolerance: 1,
+      });
+      expect(all).toMatchObject({ samples: 6, excluded: 0, scope: "all" });
       const result = await job("analysis_deviation", {
         entityId: "scan",
         fit,
         tolerance: 1,
+        scope: "visible",
       });
       expect(result).toMatchObject({
         rms: 2,
@@ -1054,6 +1068,87 @@ it("saves and replays project-persistent inspection definitions with guarded edi
     api.dispose();
   }
 });
+it("preserves old visible-only saved inspections and saves new analytic scope explicitly", async () => {
+  const { api, host, state } = setup();
+  host.setAuthoring = (authoring) => {
+    state.authoring = authoring;
+  };
+  state.entities = [
+    {
+      id: "scope-scan",
+      kind: "mesh",
+      name: "scope",
+      color: "#fff",
+      visible: true,
+      opacity: 1,
+      positions: new Float32Array([
+        0, 0, -5, 1, 0, -5, 0, 1, -5, 0, 0, 2, 1, 0, 2, 0, 1, 2,
+      ]),
+      meshSelection: { hidden: [0], saved: [] },
+    },
+  ];
+  const fit = {
+    kind: "plane",
+    center: [0, 0, 0],
+    axis: [0, 0, 1],
+    rms: 0,
+    maxError: 0,
+  };
+  state.authoring = {
+    ...state.authoring,
+    inspections: [
+      {
+        id: "old",
+        name: "old",
+        definition: { kind: "deviation", entityId: "scope-scan", fit },
+      },
+    ],
+  } as any;
+  const run = async (id: string) => {
+    const receipt = (await api.invoke("inspection_run", {
+      inspectionId: id,
+    })) as any;
+    expect(receipt.ok).toBe(true);
+    for (let i = 0; i < 100; i++) {
+      const result = (await api.invoke("job_get", {
+        jobId: receipt.result.jobId,
+      })) as any;
+      if (result.result.status === "succeeded") return result.result.result;
+      if (result.result.status !== "running")
+        throw Error(JSON.stringify(result));
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    }
+    throw Error("inspection job did not settle");
+  };
+  try {
+    expect(await run("old")).toMatchObject({
+      scope: "visible",
+      samples: 3,
+      rms: 2,
+    });
+    const saved = (await api.invoke("inspection_manage", {
+      action: "save",
+      name: "all",
+      definition: { kind: "deviation", entityId: "scope-scan", fit },
+      ...mutation(api, "scope-save"),
+    })) as any;
+    expect(saved.ok).toBe(true);
+    expect(
+      state.authoring.inspections!.find(
+        (item) => item.id === saved.result.inspectionId,
+      )!.definition,
+    ).toMatchObject({ scope: "all" });
+    expect(await run(saved.result.inspectionId)).toMatchObject({
+      scope: "all",
+      samples: 6,
+      rms: Math.sqrt(14.5),
+    });
+    expect(state.history).toEqual([]);
+  } finally {
+    api.dispose();
+  }
+});
+
 it("publishes only top-level object schemas accepted by the official MCP SDK", () => {
   for (const command of catalog)
     expect(command.inputSchema.type, command.name).toBe("object");

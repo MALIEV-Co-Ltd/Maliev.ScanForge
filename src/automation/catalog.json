@@ -1673,7 +1673,7 @@
   },
   {
     "name": "analysis_deviation",
-    "description": "Compare visible source points/triangle corners in world mm against either an infinite analytic fit or a distinct visible reference triangle surface (referenceId + required maxDistance). Optional signed:true uses local reference winding; default reference distances are unsigned. Returns statistics, coverage, retained parameters, legacy distance artifact and reproducible JSON report. Hidden/unmatched samples are null in source order. CAD reference uses Float32 display tessellation, not exact BREP distance; neither mode certifies continuous bounds or solid containment. Limit 2250000 coordinates per object.",
+    "description": "Compare source points/triangle corners in world mm against either an infinite analytic fit (all samples by default, or scope visible) or a distinct visible reference triangle surface (referenceId + required maxDistance). Optional signed:true uses local reference winding; default reference distances are unsigned. Returns statistics, coverage, retained parameters, legacy distance artifact and reproducible JSON report. Excluded hidden or unmatched samples are null in source order. CAD reference uses Float32 display tessellation, not exact BREP distance; neither mode certifies continuous bounds or solid containment. Limit 2250000 coordinates per object.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -1690,6 +1690,11 @@
             "fit": {
               "type": "object",
               "description": "FitResult from analysis_fit"
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["all", "visible"],
+              "description": "Analytic source samples; default all. Visible excludes hidden points or triangles."
             },
             "tolerance": {
               "type": "number",
@@ -7566,6 +7571,11 @@
                     "fit": {
                       "type": "object",
                       "description": "FitResult from analysis_fit"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "enum": ["all", "visible"],
+                      "description": "Analytic source samples; default all. Visible excludes hidden points or triangles."
                     },
                     "tolerance": {
                       "type": "number",

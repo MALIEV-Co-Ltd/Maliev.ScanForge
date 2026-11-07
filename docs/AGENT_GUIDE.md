@@ -2363,14 +2363,19 @@ center, radius and diameter. All responses retain `kind`, `value`, `units` and
 ordered `points`; distance/angle also retain their named scalar. Invalid picks
 fail without geometry/history changes. GUI exports the same JSON value.
 
-`analysis_deviation` accepts an analytic `fit` and optional positive finite
-`tolerance` in mm (default 0.1). GUI and MCP use one report builder. Results expose
+`analysis_deviation` accepts an analytic `fit`, optional positive finite
+`tolerance` in mm (default 0.1), and `scope:"all"` or `scope:"visible"`.
+The default is `all`, preserving the original GUI and MCP behavior. Select
+**All samples** or **Visible samples** in the analytic fitting panel; GUI and
+MCP use the same report builder. Results expose
 `samples`, `excluded`, `coverage`, signed minimum/maximum/mean, RMS, maximum absolute
 error and `withinTolerance`. `artifact` retains the distance array for existing
 callers; `report` is a reproducible JSON report including the fit, tolerance,
-statistics, sample order, units and limits. Hidden samples are `null` in the full
-original source order: point indices for clouds, triangle corners for surfaces.
-Coverage is the fraction of visible source samples, not spatial/area coverage.
+statistics, scope, sample order, units and limits. In `visible` scope hidden
+samples are `null` in original source order: point indices for clouds, triangle
+corners for surfaces. Coverage is the fraction of included source samples, not
+spatial/area coverage. Newly saved analytic inspections record their scope;
+previously saved definitions without scope retain their visible-only behavior.
 Distances describe oriented infinite analytic surfaces, including open planes;
 positive means along the plane normal or outside radial surfaces. They do not
 certify watertight inside/outside, finite cap distances, general scan-to-CAD

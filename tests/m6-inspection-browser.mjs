@@ -627,6 +627,7 @@ try {
         entityId: indexedId,
         fit,
         tolerance: 2,
+        scope: "visible",
       }),
     );
     const data = (
@@ -667,6 +668,16 @@ try {
   const stale =
     staleRaw.structuredContent ?? JSON.parse(staleRaw.content[0].text);
   assert.equal(stale.ok, false, "hidden faces accepted a stale heatmap");
+  const allHidden = await job(
+    await call("analysis_deviation", {
+      entityId: indexedId,
+      fit,
+      tolerance: 2,
+    }),
+  );
+  assert.equal(allHidden.scope, "all");
+  assert.equal(allHidden.samples, 6);
+  assert.equal(allHidden.excluded, 0);
   const hidden = await indexedReport([0, 0, 1, null, null, null]);
   assert.equal(hidden.samples, 3);
   assert.equal(hidden.excluded, 3);
@@ -678,6 +689,69 @@ try {
     hiddenPixel[1] > hiddenPixel[0] + 10,
     "orientation shading obscured the indexed inspection heatmap",
   );
+
+  // Compare the rendered analytic scope control to the same public MCP operation.
+  const historyBeforeScope = (await call("history_get")).result;
+  await mutate("ui_set", {
+    workspace: "fit",
+    mode: "inspect",
+    toolPanelOpen: true,
+  });
+  await page.locator("body").evaluate((body) => body.focus());
+  await page.keyboard.press("p");
+  const scopeControl = page.getByLabel("Deviation sample scope", {
+    exact: true,
+  });
+  await scopeControl.waitFor();
+  assert.equal(await scopeControl.inputValue(), "all");
+  async function exportedAnalytic() {
+    const pending = page.waitForEvent("download");
+    await page
+      .getByRole("button", { name: "Export deviation JSON", exact: true })
+      .click();
+    return readDownload(await pending);
+  }
+  const guiAll = await exportedAnalytic();
+  assert.equal(guiAll.scope, "all");
+  assert.equal(guiAll.samples, 6);
+  for (const scope of ["all", "visible"]) {
+    await scopeControl.selectOption(scope);
+    if (scope === "visible")
+      await page.screenshot({
+        path: fileURLToPath(new URL("analytic-scope.png", artifactDir)),
+      });
+    const gui = await exportedAnalytic();
+    const remote = await job(
+      await call("analysis_deviation", {
+        entityId: indexedId,
+        fit: gui.fit,
+        tolerance: gui.tolerance,
+        scope,
+      }),
+    );
+    assert.equal(gui.scope, scope);
+    assert.equal(gui.samples, scope === "all" ? 6 : 3);
+    assert.equal(remote.rms, gui.rms);
+    assert.equal(remote.samples, gui.samples);
+    assert.equal(remote.excluded, gui.excluded);
+    const artifact = (
+      await call("artifact_read", {
+        artifactId: remote.artifact.artifactId,
+        offset: 0,
+      })
+    ).result;
+    assert.deepEqual(
+      JSON.parse(Buffer.from(artifact.base64, "base64").toString()),
+      gui.distances,
+    );
+  }
+  assert.deepEqual((await call("history_get")).result, historyBeforeScope);
+  ledger.analyticScope = {
+    guiMcpEqual: true,
+    default: "all",
+    explicit: "visible",
+    historyUnchanged: true,
+  };
 
   await mutate("scan_selection_control", {
     entityId: indexedId,

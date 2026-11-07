@@ -94,7 +94,7 @@ describe("shared inspection", () => {
       [3],
     );
     const before = cloud.positions.slice();
-    const report = inspectDeviation(cloud, plane, 1);
+    const report = inspectDeviation(cloud, plane, 1, "visible");
     expect(report.distances.slice(0, 3)).toEqual([-2, 0, 2]);
     expect(report.distances[3]).toBeNull();
     expect(report).toMatchObject({
@@ -114,7 +114,7 @@ describe("shared inspection", () => {
   });
   // Main's previous GUI and analysis_deviation consumed every source corner.
   // The integrated visible-only report changes its artifact and statistics.
-  it.fails("preserves legacy all-corner deviation when triangles are hidden", () => {
+  it("preserves legacy all-corner deviation when triangles are hidden", () => {
     const mesh = entity(
       "mesh",
       [0, 0, -5, 4, 0, -5, 0, 3, -5, 0, 0, 2, 4, 0, 2, 0, 3, 2],
@@ -131,7 +131,7 @@ describe("shared inspection", () => {
       [0, 0, 0, 4, 0, 0, 0, 3, 0, 0, 0, 2, 4, 0, 2, 0, 3, 2],
       [0],
     );
-    expect(inspectDeviation(mesh, plane, 1)).toMatchObject({
+    expect(inspectDeviation(mesh, plane, 1, "visible")).toMatchObject({
       distances: [null, null, null, 2, 2, 2],
       samples: 3,
       excluded: 3,
@@ -158,6 +158,7 @@ describe("shared inspection", () => {
         { ...cloud, meshSelection: { hidden: [0], saved: [] } },
         plane,
         1,
+        "visible",
       ),
     ).toThrow(/visible/i);
   });

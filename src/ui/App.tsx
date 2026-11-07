@@ -714,6 +714,9 @@ export function App() {
   useEffect(() => () => inspectionAbort.current?.abort(), []);
 
   const [showDeviation, setShowDeviation] = useState(false);
+  const [deviationScope, setDeviationScope] = useState<"all" | "visible">(
+    "all",
+  );
   const [tolerance, setTolerance] = useState(1);
   const [translation, setTranslation] = useState<Vec3>([0, 0, 0]);
   const [rotation, setRotation] = useState<Vec3>([0, 0, 0]);
@@ -1494,11 +1497,14 @@ export function App() {
   const deviationState = useMemo(() => {
     if (!selected || !showDeviation || !fit) return { report: null, error: "" };
     try {
-      return { report: inspectDeviation(selected, fit, tolerance), error: "" };
+      return {
+        report: inspectDeviation(selected, fit, tolerance, deviationScope),
+        error: "",
+      };
     } catch (error) {
       return { report: null, error: errorText(error) };
     }
-  }, [selected, showDeviation, fit, tolerance]);
+  }, [selected, showDeviation, fit, tolerance, deviationScope]);
   const retainedInspectionReport =
     referenceInspection &&
     selected === referenceInspection.source &&
@@ -7060,6 +7066,23 @@ export function App() {
                                   setTolerance(Math.max(0.001, n))
                                 }
                               />
+                              <label>
+                                Samples
+                                <select
+                                  aria-label="Deviation sample scope"
+                                  value={deviationScope}
+                                  onChange={(e) =>
+                                    setDeviationScope(
+                                      e.target.value as "all" | "visible",
+                                    )
+                                  }
+                                >
+                                  <option value="all">All samples</option>
+                                  <option value="visible">
+                                    Visible samples
+                                  </option>
+                                </select>
+                              </label>
                               <label className="check">
                                 <input
                                   type="checkbox"
@@ -7114,6 +7137,7 @@ export function App() {
                                         entityId:
                                           deviationState.report!.entityId,
                                         fit: deviationState.report!.fit,
+                                        scope: deviationState.report!.scope,
                                         tolerance:
                                           deviationState.report!.tolerance,
                                       })
@@ -7126,7 +7150,7 @@ export function App() {
                               <p className="muted">
                                 Analytical surface distances; cylinder fitting
                                 requires a sampled side surface. Color map
-                                covers visible source samples against an
+                                measures the selected sample scope against an
                                 infinite analytic surface; it is not a
                                 continuous error bound or watertight
                                 inside/outside test.
