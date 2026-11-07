@@ -60,7 +60,15 @@
     "outputFixture": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/native-after-boundary-projection.stl",
     "outputSha256": "d09992b1cf2596a3147a5a9dd427060949ffc51d6e10f36f78835b4dcecbc1b7",
     "limitations": "The visible red selection does not establish every selected face or boundary, nor does the object list prove no transient internal output. This single fixture demonstrates an in-place mesh change, including a degenerate output face; it does not establish the general native algorithm, selected-boundary semantics, or GUI/MCP parity. The saved fixture was not overwritten.",
-    "staticFollowup": "REA Ghidra 12.1.4 reported no containing procedure and no decoded instruction at previously observed runtime return address 0x14034ad7f in the shipped executable. A 48-byte read at 0x14034ad60 returned initialized bytes, but these results do not identify the runtime handler or establish the reason for the mismatch. Evidence: ev_8d107da9314b70f6fdc9a4b6f38ee1e1e96134a0d66548aec3ac442797bc74f3, ev_30d951db13f3ba018385e760a18d5503b2422f04638bb780a7617759152ccd97, ev_e35f7cf677319241f95a9f29aa6df189d5c015212f5afa9c529f8c7e308a69f2. The ephemeral analysis was closed."
+    "staticFollowup": "REA Ghidra 12.1.4 reported no containing procedure and no decoded instruction at previously observed runtime return address 0x14034ad7f in the shipped executable. A 48-byte read at 0x14034ad60 returned initialized bytes, but these results do not identify the runtime handler or establish the reason for the mismatch. Evidence: ev_8d107da9314b70f6fdc9a4b6f38ee1e1e96134a0d66548aec3ac442797bc74f3, ev_30d951db13f3ba018385e760a18d5503b2422f04638bb780a7617759152ccd97, ev_e35f7cf677319241f95a9f29aa6df189d5c015212f5afa9c529f8c7e308a69f2. The ephemeral analysis was closed.",
+    "interiorVertexControl": {
+      "input": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/projection-interior-control.stl",
+      "inputSha256": "01557778e9cd095a62c89bd570b11f5ccffaa146af835a9c3a850af8426d70b7",
+      "output": "tests/fixtures/m2-coplanar-shared-edge-native-pending-20261106/projection-interior-native.stl",
+      "outputSha256": "46079db65546aa2a08c4981a166d24fb948633178b809330335f5e9bbee5231a",
+      "observed": "The four input faces form one connected square boundary at Z=1 around an interior vertex at Z=2. After millimetre import, Edit Scan showed one individual mesh and one hole. One projection click without triangle or boundary selection produced an exported four-face mesh preserving XY coordinates and face vertex order, with all boundary vertices at Z=0 and the interior vertex still at Z=2.",
+      "limitations": "This does not establish behavior for object transforms, nonmanifold topology, selected boundaries, or other orientations; GUI and MCP equivalence remain untested."
+    }
   },
   "uiThreadTraceFailure": {
     "method": "REA Frida Stalker followed the QuickSurface UI thread before a projection-button click.",
