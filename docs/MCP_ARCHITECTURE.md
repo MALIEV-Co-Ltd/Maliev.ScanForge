@@ -1541,3 +1541,7 @@ control reachable while the workspace is busy. Late cancelled results publish no
 artifact and do not edit history.
 If cancellation interrupts GUI delivery after the owned job succeeds, the GUI
 also retires that completed artifact through the shared job observer's cleanup.
+
+## Shared STL encoding
+
+GUI and MCP STL export use the same disposable encoding worker and normal-selection logic. The worker receives cloned ordinary geometry or shared immutable buffers without transferring workspace ownership, and is terminated on cancellation, page exit, failure or completion. Point clouds and reference frames are excluded before transport. GUI export downloads the returned bytes directly and exposes its cancel control while busy; MCP publishes the result through the existing `project_export` artifact quota and exposes `job_cancel`. The synchronous structured-clone handoff occurs before worker execution and is not itself interruptible.

@@ -254,12 +254,8 @@ import {
   fitPlane,
   fitSphere,
 } from "../geometry";
-import {
-  download,
-  exportStl,
-  geometryPositions,
-  validatePositions,
-} from "../io";
+import { download, geometryPositions, validatePositions } from "../io";
+import { exportStlInBackground } from "../stl-export-client";
 import {
   retainIndexedMesh,
   transformIndexedMesh,
@@ -789,6 +785,9 @@ export function App() {
   const stepExportAbort = useRef<AbortController | null>(null);
   const [stepExportBusy, setStepExportBusy] = useState(false);
   useEffect(() => () => stepExportAbort.current?.abort(), []);
+  const stlExportAbort = useRef<AbortController | null>(null);
+  const [stlExportBusy, setStlExportBusy] = useState(false);
+  useEffect(() => () => stlExportAbort.current?.abort(), []);
   const fileInput = useRef<HTMLInputElement>(null);
   const modeRef = useRef(mode);
   modeRef.current = mode;
@@ -3427,13 +3426,42 @@ export function App() {
     );
   }
   function exportMesh() {
-    void action("Exporting mesh…", () => {
-      download(
-        exportStl(entities.filter((entity) => entity.visible)) as BlobPart,
-        "scanforge.stl",
-      );
-      setMessage("Visible objects exported to STL");
-    });
+    if (busy || stlExportAbort.current || stepExportAbort.current) return;
+    if (interactiveStore.getSnapshot()) {
+      setError("Apply or cancel Interactive alignment first.");
+      return;
+    }
+    const controller = new AbortController();
+    stlExportAbort.current = controller;
+    setStlExportBusy(true);
+    setBusy(true);
+    setError("");
+    setMessage("Exporting mesh…");
+    operationLabel.current = "Exporting mesh…";
+    void exportStlInBackground(
+      entities.filter((entity) => entity.visible),
+      controller.signal,
+    )
+      .then((result) => {
+        controller.signal.throwIfAborted();
+        download(result as BlobPart, "scanforge.stl");
+        setMessage("Visible objects exported to STL");
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) setMessage("STL export cancelled");
+        else {
+          setError(errorText(error));
+          setMessage("Operation failed");
+        }
+      })
+      .finally(() => {
+        if (stlExportAbort.current === controller) {
+          stlExportAbort.current = null;
+          setStlExportBusy(false);
+          setBusy(false);
+          operationLabel.current = null;
+        }
+      });
   }
   async function action(label: string, run: () => Promise<void> | void) {
     if (busy) return;
@@ -5232,6 +5260,12 @@ export function App() {
         <CadJobCancel
           label="Cancel STEP export"
           onCancel={() => stepExportAbort.current?.abort()}
+        />
+      )}
+      {stlExportBusy && (
+        <CadJobCancel
+          label="Cancel STL export"
+          onCancel={() => stlExportAbort.current?.abort()}
         />
       )}
       <Ribbon

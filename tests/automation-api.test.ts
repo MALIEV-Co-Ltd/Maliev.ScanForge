@@ -74,6 +74,61 @@ const mutation = (api: ApplicationApi, requestId = "request-1") => ({
   requestId,
 });
 describe("shared application API", () => {
+  it("reports STL encoding and cleans up a cancelled export job", async () => {
+    let worker: { terminated: boolean } | undefined;
+    class HeldWorker {
+      terminated = false;
+      onmessage?: unknown;
+      onerror?: unknown;
+      onmessageerror?: unknown;
+      constructor() {
+        worker = this;
+      }
+      postMessage() {}
+      terminate() {
+        this.terminated = true;
+      }
+    }
+    vi.stubGlobal("Worker", HeldWorker);
+    const { api, state } = setup();
+    try {
+      state.entities = [
+        {
+          id: "mesh",
+          name: "mesh",
+          kind: "mesh",
+          positions: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+          color: "#ffffff",
+          visible: true,
+          opacity: 1,
+        },
+      ];
+      const receipt = await api.invoke("project_export", { format: "stl" });
+      expect(receipt.ok).toBe(true);
+      if (!receipt.ok) throw Error("Export did not start");
+      const jobId = (receipt.result as { jobId: string }).jobId;
+      expect(await api.invoke("job_get", { jobId })).toMatchObject({
+        ok: true,
+        result: { status: "running", stage: "Encoding STL" },
+      });
+      expect((await api.invoke("job_cancel", { jobId })).ok).toBe(true);
+      await vi.waitFor(async () => {
+        expect(await api.invoke("job_get", { jobId })).toMatchObject({
+          ok: true,
+          result: { status: "cancelled" },
+        });
+      });
+      expect(worker?.terminated).toBe(true);
+      expect(await api.invoke("session_get")).toMatchObject({
+        ok: true,
+        result: { artifacts: [] },
+      });
+      expect(state.entities[0].positions).toEqual([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+    } finally {
+      api.dispose();
+      vi.unstubAllGlobals();
+    }
+  });
   it("exposes landmark session edits with revision and retry protection and read-only observation", async () => {
     const { api, host } = setup();
     host.inspectLandmarks = () => ({ active: true, preview: false });

@@ -141,6 +141,33 @@ try {
     }),
     errors = [];
   currentPage = page;
+  if (process.env.SCANFORGE_M2_STL_CANCEL === "1")
+    await page.addInitScript(() => {
+      window.__m2StlWorkers = {
+        created: 0,
+        started: 0,
+        finished: 0,
+        terminated: 0,
+      };
+      const NativeWorker = window.Worker;
+      window.Worker = class extends NativeWorker {
+        constructor(url, options) {
+          super(url, options);
+          this.__m2Stl = String(url).includes("stl-export-worker");
+          if (this.__m2Stl) {
+            window.__m2StlWorkers.created++;
+            this.addEventListener("message", (event) => {
+              if (event.data?.started === true) window.__m2StlWorkers.started++;
+              else window.__m2StlWorkers.finished++;
+            });
+          }
+        }
+        terminate() {
+          if (this.__m2Stl) window.__m2StlWorkers.terminated++;
+          return super.terminate();
+        }
+      };
+    });
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
     if (["warning", "error"].includes(message.type()))
@@ -209,6 +236,89 @@ try {
     assert.equal(before.result.objects[0].triangles, 3691133);
     assert.equal(before.result.objects[0].indexedTopology?.triangles, 3691133);
     const cursor = await history();
+    let cancellation;
+    if (process.env.SCANFORGE_M2_STL_CANCEL === "1") {
+      const sourceDigest = async () =>
+        (
+          await job(
+            await call("object_geometry_digest", {
+              entityId: before.result.objects[0].id,
+            }),
+          )
+        ).result.buffers;
+      const sourceBefore = await sourceDigest();
+      const originalArtifacts = (await call("session_get")).result.artifacts
+        .map((item) => item.artifactId)
+        .sort();
+      await page.getByRole("tab", { name: "Scan Data", exact: true }).click();
+      await page
+        .getByRole("button", { name: "Export visible", exact: true })
+        .click();
+      await page
+        .getByRole("button", { name: "Cancel STL export", exact: true })
+        .waitFor();
+      await page.waitForFunction(() => window.__m2StlWorkers.started === 1);
+      const guiBefore = await page.evaluate(() => ({
+        ...window.__m2StlWorkers,
+      }));
+      assert.equal(guiBefore.created, 1);
+      assert.equal(
+        guiBefore.finished,
+        0,
+        "GUI worker completed before cancellation",
+      );
+      await page
+        .getByRole("button", { name: "Cancel STL export", exact: true })
+        .click();
+      await page.getByText("STL export cancelled", { exact: true }).waitFor();
+      const guiAfter = await page.evaluate(() => ({
+        ...window.__m2StlWorkers,
+      }));
+      assert.equal(guiAfter.terminated, 1);
+      assert.equal(guiAfter.finished, 0);
+
+      const pending = await call("project_export", { format: "stl" });
+      await page.waitForFunction(() => window.__m2StlWorkers.started === 2);
+      const agentBefore = await page.evaluate(() => ({
+        ...window.__m2StlWorkers,
+      }));
+      const agentRunning = (
+        await call("job_get", { jobId: pending.result.jobId })
+      ).result;
+      assert.equal(agentRunning.status, "running");
+      assert.equal(agentRunning.stage, "Encoding STL");
+      assert.equal(
+        agentBefore.finished,
+        0,
+        "MCP worker completed before cancellation",
+      );
+      await call("job_cancel", { jobId: pending.result.jobId });
+      await job(pending, "cancelled");
+      const agentAfter = await page.evaluate(() => ({
+        ...window.__m2StlWorkers,
+      }));
+      assert.equal(agentAfter.terminated, 2);
+      assert.equal(agentAfter.finished, 0);
+      assert.deepEqual(
+        (await call("session_get")).result.artifacts
+          .map((item) => item.artifactId)
+          .sort(),
+        originalArtifacts,
+      );
+      assert.equal((await call("project_get")).revision, before.revision);
+      assert.equal(await history(), cursor);
+      assert.deepEqual(await sourceDigest(), sourceBefore);
+      cancellation = {
+        guiBefore,
+        guiAfter,
+        agentBefore,
+        agentAfter,
+        agentStage: agentRunning.stage,
+        sourceRevisionAndHistoryUnchanged: true,
+        sourceGeometryUnchanged: true,
+        artifactsUnchanged: true,
+      };
+    }
     await page.evaluate(() => {
       let last = performance.now();
       window.__m2ExportTiming = { maximumGapMs: 0, ticks: 0 };
@@ -309,6 +419,7 @@ try {
         bytes: exported.bytes,
         guiMcpSha256: guiDigest,
         nonGeometricNormal,
+        ...(cancellation ? { cancellation } : {}),
         timing,
         pageErrors: errors,
       };

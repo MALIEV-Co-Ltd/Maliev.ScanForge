@@ -1043,6 +1043,8 @@ Call `project_export` with `{"format":"step"}` (or `project`/`stl`). Poll its jo
 
 STL exports use the Float32 mean of the three computed vertex normals when valid indexed topology is available, matching the measured native scan controls. They retain geometric facet normals when indexed topology is missing or stale. GUI and MCP use the same encoder; scanner-provided normals remain distinct from computed geometry normals. This does not establish native behavior for unindexed or every other mesh input.
 
+STL encoding runs in a disposable browser worker without transferring workspace-owned input buffers. The GUI offers **Cancel STL export** while it runs; agents can cancel the `project_export` job with `job_cancel` and observe its `Encoding STL` stage. The worker has a 15-minute lease and is terminated on cancellation, failure, page exit or completion. Point clouds and reference frames are excluded before worker transport. The MCP artifact quota remains separate from the GUI download and still applies to MCP exports. The structured-clone handoff is synchronous and cannot itself be interrupted.
+
 For STEP, every included object must be exact CAD by default. Hide scan/reference
 objects before exporting, or pass `cadOnly:true` to export only exact CAD within
 the visibility scope. This explicit option returns `excludedEntityIds` alongside

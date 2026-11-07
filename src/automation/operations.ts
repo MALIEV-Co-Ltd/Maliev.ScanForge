@@ -104,7 +104,8 @@ import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
 import { fineAlignmentInput } from "../fine-alignment-input";
 import { prepareLandmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
-import { exportStl, validatePositions, validateProject } from "../io";
+import { validatePositions, validateProject } from "../io";
+import { exportStlInBackground } from "../stl-export-client";
 import { encodeProjectFile, decodeProjectFile } from "../project-file";
 import { exportSectionDxf } from "../section-dxf";
 import type {
@@ -2095,7 +2096,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.step`;
         mime = "application/step";
       } else {
-        const stl = exportStl(entities);
+        c.progress(0, "Encoding STL");
+        const stl = await exportStlInBackground(entities, c.signal);
         data = new Uint8Array(stl.buffer, stl.byteOffset, stl.byteLength);
         name = `${s.name}.stl`;
         mime = "model/stl";
