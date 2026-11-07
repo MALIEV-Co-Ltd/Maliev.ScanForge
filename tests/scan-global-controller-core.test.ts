@@ -52,6 +52,27 @@ const input = () => ({
     geometry: { points: new Float32Array(9), normals: new Float32Array(9) },
   })),
 });
+it("reports intermediate source poses before and after each local refinement", async () => {
+  const source = input();
+  const poses: { pass: number; ids: string[] }[] = [];
+  await runGlobalScanController(
+    source,
+    source,
+    {
+      clock: () => 1,
+      onPose: (pass, ordered) =>
+        poses.push({ pass, ids: ordered.map((s) => s.id) }),
+    },
+    "target-average",
+    5,
+  );
+  expect(poses.length).toBeGreaterThan(0);
+  expect(
+    poses.every(
+      ({ ids }) => ids.length === 2 && ids.includes("a") && ids.includes("b"),
+    ),
+  ).toBe(true);
+});
 it("preserves the full check/clock/pass/progress/query/close trace, with no extra clock check", async () => {
   const source = input();
   const parent = {

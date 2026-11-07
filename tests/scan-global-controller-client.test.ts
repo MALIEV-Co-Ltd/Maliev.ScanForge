@@ -154,7 +154,7 @@ class ControllerWorker {
     }));
     const rpc = (
       request: Partial<Extract<WorkerReply, { kind: "rpc" }>> & {
-        action: "check" | "clock" | "pass" | "progress";
+        action: "check" | "clock" | "pass" | "pose" | "progress";
       },
     ) => {
       const id = ++sequence;
@@ -193,6 +193,11 @@ class ControllerWorker {
       });
       return;
     }
+    if (
+      ControllerWorker.behavior === "pose" &&
+      !rpc({ action: "pose", pass: 0, ordered: states })
+    )
+      return;
     if (
       !rpc({ action: "check" }) ||
       !rpc({ action: "pass", pass: 0, ordered: states }) ||
@@ -267,6 +272,26 @@ beforeEach(() => {
   vi.stubGlobal("crossOriginIsolated", true);
   vi.stubGlobal("navigator", { hardwareConcurrency: 2 });
   vi.stubGlobal("Worker", ControllerWorker);
+});
+
+it("forwards validated intermediate poses from the controller worker", async () => {
+  ControllerWorker.behavior = "pose";
+  const source = sceneInput();
+  const onPose = vi.fn();
+  await runSharedGlobalController(
+    source,
+    source,
+    { clock: () => 1, onPose },
+    "target-average",
+    5,
+  );
+  expect(onPose).toHaveBeenCalledOnce();
+  expect(onPose.mock.calls[0][0]).toBe(0);
+  expect(onPose.mock.calls[0][1].map((s: { id: string }) => s.id)).toEqual([
+    "a",
+    "b",
+  ]);
+  expect(trace).toContain("ack:pose");
 });
 afterEach(() => {
   ControllerWorker.behavior = "normal";

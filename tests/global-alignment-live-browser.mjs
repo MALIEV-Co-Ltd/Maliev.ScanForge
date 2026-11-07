@@ -77,6 +77,16 @@ try {
   const page = await browser.newPage({
     viewport: { width: 1500, height: 1000 },
   });
+  await page.addInitScript(() => {
+    window.__alignmentWorkers = [];
+    const OriginalWorker = window.Worker;
+    window.Worker = class extends OriginalWorker {
+      constructor(url, options) {
+        window.__alignmentWorkers.push(options?.name ?? "");
+        super(url, options);
+      }
+    };
+  });
   const errors = [];
   page.on("pageerror", (e) => {
     errors.push(e.message);
@@ -318,7 +328,21 @@ try {
     await new Promise((r) => setTimeout(r, 100));
   }
   assert(ready, "missing completed preview");
+  assert(
+    await page.evaluate(() => crossOriginIsolated),
+    "expected isolated worker context",
+  );
+  assert(
+    await page.evaluate(() =>
+      window.__alignmentWorkers.includes("global-alignment-controller"),
+    ),
+    "isolated controller worker did not start",
+  );
   assert(frames.length, "no provisional matrices exposed");
+  assert(
+    frames.some((frame) => frame.phase === "refining"),
+    "no refinement poses exposed through MCP",
+  );
   assert(
     new Set(canvasFrames).size > 1,
     "Live solver poses did not change rendered canvas pixels",

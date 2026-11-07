@@ -116,7 +116,7 @@ if (
           ]),
         );
         const rpc = createControllerBridge(data.control, runId, (request) => {
-          if (request.action === "pass")
+          if (request.action === "pass" || request.action === "pose")
             assertControllerStates(request.ordered, ids);
           scope.postMessage(request);
         });
@@ -132,6 +132,9 @@ if (
               rpc({ action: "check" });
             },
             clock: () => rpc({ action: "clock" }),
+            onPose: (pass, ordered) => {
+              rpc({ action: "pose", pass, ordered });
+            },
             onPass: (pass, ordered) => {
               rpc({ action: "pass", pass, ordered });
             },

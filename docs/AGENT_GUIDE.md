@@ -1828,6 +1828,9 @@ Preview returns a job receipt; poll `job_get` until it settles. Read
 `previewId`, participating IDs, normalized settings, input summary, diagnostics
 and expiry. Per-scan outer diagnostics expose mean distance, coverage percentage,
 stability and convergence; nonfinite metric values are returned as `null`.
+During preview, `progress` can expose provisional `phase`, `sequence`, `pass`
+and per-scan matrices, including intermediate refinement poses. These are
+transient display state, not committed geometry; polling may miss updates.
 Nonconvergence is a structured result, not proof of successful alignment. The
 native pass and the subsequent surface fit have separate diagnostics; inspect
 both and the staged geometry before accepting it. `coordinateStages` records
