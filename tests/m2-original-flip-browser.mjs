@@ -253,6 +253,75 @@ try {
   const mcp = await digest();
   assert.deepEqual(mcp, gui);
   assert.equal(await history(), cursor + 1);
+  let stlComparison;
+  if (process.env.SCANFORGE_M2_FLIP_NATIVE_STL) {
+    const native = await readFile(process.env.SCANFORGE_M2_FLIP_NATIVE_STL);
+    assert.equal(
+      createHash("sha256").update(native).digest("hex"),
+      "bb998c42328bdcc30d1ebd317d0af603213a0f9236e8307f8e6279a858a4133d",
+    );
+    const exported = (
+      await job(await call("project_export", { format: "stl" }))
+    ).result;
+    const parts = [];
+    for (let offset = 0; offset < exported.bytes;) {
+      const part = (
+        await call("artifact_read", {
+          artifactId: exported.artifactId,
+          offset,
+          length: 262144,
+        })
+      ).result;
+      const bytes = Buffer.from(part.base64, "base64");
+      assert(bytes.length > 0);
+      parts.push(bytes);
+      offset += bytes.length;
+    }
+    const output = Buffer.concat(parts);
+    assert.equal(output.length, native.length);
+    const count = output.readUInt32LE(80);
+    assert.equal(count, 273139);
+    assert.equal(native.readUInt32LE(80), count);
+    let exactNormals = 0,
+      maxComponentDifference = 0,
+      sumSquaredDifference = 0;
+    const nativeNormals = createHash("sha256"),
+      appNormals = createHash("sha256");
+    for (let i = 0; i < count; i++) {
+      const at = 84 + i * 50;
+      assert(
+        output
+          .subarray(at + 12, at + 48)
+          .equals(native.subarray(at + 12, at + 48)),
+        `Coordinate mismatch at facet ${i}`,
+      );
+      const n = native.subarray(at, at + 12),
+        a = output.subarray(at, at + 12);
+      nativeNormals.update(n);
+      appNormals.update(a);
+      if (n.equals(a)) exactNormals++;
+      for (let j = 0; j < 3; j++) {
+        const delta = n.readFloatLE(j * 4) - a.readFloatLE(j * 4);
+        assert(Number.isFinite(delta));
+        maxComponentDifference = Math.max(
+          maxComponentDifference,
+          Math.abs(delta),
+        );
+        sumSquaredDifference += delta * delta;
+      }
+    }
+    stlComparison = {
+      facets: count,
+      orderedCoordinatesIdentical: true,
+      exactNormalRecords: exactNormals,
+      maxComponentDifference,
+      rmsComponentDifference: Math.sqrt(sumSquaredDifference / (count * 3)),
+      nativeNormalSha256: nativeNormals.digest("hex"),
+      appNormalSha256: appNormals.digest("hex"),
+      appStlSha256: createHash("sha256").update(output).digest("hex"),
+    };
+    console.log(JSON.stringify({ stlComparison }));
+  }
   const saved = await job(await call("project_export", { format: "project" }));
   await job(
     await mutate("project_import", {
@@ -275,6 +344,7 @@ try {
     triangles: 273139,
     guiDigest: gui,
     mcpDigest: mcp,
+    ...(stlComparison ? { stlComparison } : {}),
     binaryReopen: true,
     undoRedo: true,
     pageErrors: errors,
