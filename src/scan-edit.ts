@@ -281,7 +281,8 @@ export function publishSmoothedVertices(
   sourceCorners?: Uint32Array,
 ): Positions {
   const precise =
-    Array.isArray(r.positions) &&
+    (Array.isArray(r.positions) ||
+      (r.positions as unknown) instanceof Float64Array) &&
     r.positions.some((value) => !Object.is(value, Math.fround(value)));
   const expanded: Positions = precise
     ? new Array<number>(triangles.length * 3)
