@@ -2074,8 +2074,211 @@ try {
       progress: largeComponentProgress,
     };
   }
+  let largeUnindexedCancellation;
+  if (process.env.SCANFORGE_COMPONENT_LARGE_UNINDEXED === "1") {
+    const source = await readFile("C:/repo/alignment-example-files/scan-1.stl");
+    assert.equal(
+      createHash("sha256").update(source).digest("hex"),
+      "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    );
+    const faces = source.readUInt32LE(80);
+    assert.equal(faces, 273139);
+    assert.equal(source.length, 84 + faces * 50);
+    const expanded = new Float32Array(faces * 9 * 4);
+    for (let copy = 0; copy < 4; copy++) {
+      for (let face = 0; face < faces; face++) {
+        for (let corner = 0; corner < 3; corner++) {
+          for (let axis = 0; axis < 3; axis++) {
+            const value = source.readFloatLE(
+              84 + face * 50 + 12 + corner * 12 + axis * 4,
+            );
+            expanded[copy * faces * 9 + face * 9 + corner * 3 + axis] =
+              axis === 0 ? value + copy * 200 : value;
+          }
+        }
+      }
+    }
+    const largeProject = {
+      format: "maliev-scanforge",
+      version: 1,
+      name: "Unindexed repeated scan",
+      units: "mm",
+      entities: [
+        {
+          id: "scan",
+          name: "Repeated scan",
+          kind: "mesh",
+          positions: Array.from(expanded),
+          visible: true,
+          color: "#b4bec4",
+          opacity: 1,
+        },
+      ],
+    };
+    const bytes = Buffer.from(JSON.stringify(largeProject));
+    assert(bytes.length < 700 * 1024 * 1024);
+    let artifactId;
+    for (let offset = 0; offset < bytes.length; offset += 262144) {
+      const part = (
+        await call("artifact_put", {
+          name: "large-unindexed-repeated-scan.json",
+          ...(artifactId ? { artifactId } : {}),
+          offset,
+          base64: bytes.subarray(offset, offset + 262144).toString("base64"),
+        })
+      ).result;
+      artifactId = part.artifactId;
+    }
+    await job(await mutate("project_import", { artifactId, replace: true }));
+    await call("artifact_delete", { artifactId });
+    await mutate("object_select", { entityId: "scan" });
+    const digestSource = async () =>
+      (
+        await job(await call("object_geometry_digest", { entityId: "scan" }))
+      ).result.buffers.map(({ path, encoding, elements, sha256 }) => ({
+        path,
+        encoding,
+        elements,
+        sha256,
+      }));
+    const sourceDigest = await digestSource();
+    const baselineProject = (await call("project_get")).result;
+    const initialRevision = (await call("project_get")).revision;
+    const initialTrace = await page.evaluate(
+      () => window.__componentProgressTrace.length,
+    );
+    const receipt = await mutate("mesh_process", {
+      entityId: "scan",
+      operation: {
+        kind: "scanEdit",
+        action: "componentExtract",
+        indices: [0],
+        tolerance: 0.001,
+      },
+    });
+    await page.waitForFunction(
+      (start) =>
+        window.__componentProgressTrace
+          .slice(start)
+          .some(
+            (event) =>
+              event.action === "componentExtract" &&
+              event.stage === "Grouping collapsed components",
+          ),
+      initialTrace,
+      { timeout: 180000 },
+    );
+    const mcpGroupingProgress = await page.evaluate(
+      (start) =>
+        window.__componentProgressTrace
+          .slice(start)
+          .find(
+            (event) =>
+              event.action === "componentExtract" &&
+              event.stage === "Grouping collapsed components",
+          ).progress,
+      initialTrace,
+    );
+    assert(mcpGroupingProgress >= 0 && mcpGroupingProgress < 1);
+    const running = (await call("job_get", { jobId: receipt.result.jobId }))
+      .result;
+    assert.equal(
+      running.status,
+      "running",
+      "MCP edit finished before active cancellation",
+    );
+    await call("job_cancel", { jobId: receipt.result.jobId });
+    await job(receipt, "cancelled");
+    const afterMcp = await call("project_get");
+    assert.equal(afterMcp.revision, initialRevision);
+    assert.equal(afterMcp.result.undo, baselineProject.undo);
+    assert.deepEqual(
+      afterMcp.result.objects.map((object) => object.id),
+      baselineProject.objects.map((object) => object.id),
+    );
+    assert.deepEqual(await digestSource(), sourceDigest);
+    await mutate("command_run", { name: "ribbon:editScan" });
+    await page
+      .getByRole("button", { name: "Edit individual meshes", exact: true })
+      .click();
+    const largeControls = page.getByRole("region", {
+      name: "Individual meshes",
+      exact: true,
+    });
+    await largeControls
+      .getByRole("button", { name: /triangles/ })
+      .first()
+      .waitFor({ timeout: 180000 });
+    const beforeGui = await call("project_get");
+    assert.equal(beforeGui.result.undo, baselineProject.undo);
+    assert.deepEqual(
+      beforeGui.result.objects.map((object) => object.id),
+      baselineProject.objects.map((object) => object.id),
+    );
+    const guiTrace = await page.evaluate(
+      () => window.__componentProgressTrace.length,
+    );
+    await largeControls
+      .getByRole("button", { name: "Create new object", exact: true })
+      .click();
+    await page.waitForFunction(
+      (start) =>
+        window.__componentProgressTrace
+          .slice(start)
+          .some(
+            (event) =>
+              event.action === "componentExtract" &&
+              event.stage === "Grouping collapsed components",
+          ),
+      guiTrace,
+      { timeout: 180000 },
+    );
+    const guiGroupingProgress = await page.evaluate(
+      (start) =>
+        window.__componentProgressTrace
+          .slice(start)
+          .find(
+            (event) =>
+              event.action === "componentExtract" &&
+              event.stage === "Grouping collapsed components",
+          ).progress,
+      guiTrace,
+    );
+    assert(guiGroupingProgress >= 0 && guiGroupingProgress < 1);
+    await largeControls
+      .getByRole("button", { name: "Cancel and back", exact: true })
+      .click();
+    await idle();
+    const afterGui = await call("project_get");
+    assert.equal(afterGui.revision, beforeGui.revision);
+    assert.equal(afterGui.result.undo, beforeGui.result.undo);
+    assert.deepEqual(
+      afterGui.result.objects.map((object) => object.id),
+      baselineProject.objects.map((object) => object.id),
+    );
+    assert.deepEqual(await digestSource(), sourceDigest);
+    largeUnindexedCancellation = {
+      sourceSha256:
+        "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+      copies: 4,
+      triangles: faces * 4,
+      offsetMm: 200,
+      inputJsonBytes: bytes.length,
+      sourceDigest,
+      groupingStageObserved: true,
+      mcpGroupingProgress,
+      guiGroupingProgress,
+      mcpRunningAtCancel: true,
+      mcpCancelled: true,
+      guiCancelAfterGrouping: true,
+      mcpCancellationPreservedRevisionHistoryObjectsAndSource: true,
+      guiCancellationPreservedRevisionHistoryObjectsAndSource: true,
+      guiBaselineTakenAfterOpeningEditor: true,
+    };
+  }
   assert.deepEqual(errors, []);
   ledger.result = {
+    largeUnindexedCancellation,
     nativeStlKeyBoundary: {
       low: { vertices: 4, components: 1 },
       high: { vertices: 6, components: 2 },

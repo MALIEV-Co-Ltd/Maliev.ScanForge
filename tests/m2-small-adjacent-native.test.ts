@@ -112,3 +112,31 @@ it("uses the same component for scoped inventory and extraction after welding", 
   });
   expect(extracted.segments!.map((segment) => segment.length / 9)).toEqual([2]);
 });
+
+it("reports collapsed-face grouping while a component edit is running", () => {
+  const events: { fraction: number; stage: string }[] = [];
+  runScanEdit(
+    {
+      kind: "scanEdit",
+      action: "componentExtract",
+      positions,
+      tolerance: 0.001,
+      indices: [0],
+    },
+    { onProgress: (fraction, stage) => events.push({ fraction, stage }) },
+  );
+  const group = events.find(
+    (event) => event.stage === "Grouping collapsed components",
+  );
+  expect(group).toBeDefined();
+  expect(group!.fraction).toBeLessThan(1);
+  expect(
+    events.findIndex(
+      (event) => event.stage === "Grouping collapsed components",
+    ),
+  ).toBeLessThan(
+    events.findIndex(
+      (event) => event.stage === "Preparing component coordinates",
+    ),
+  );
+});

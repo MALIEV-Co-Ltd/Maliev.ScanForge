@@ -972,6 +972,8 @@ function scanEdit(
     : cachedMatches
       ? { vertices: t.vertices, triangles: t.triangles }
       : undefined;
+  if (t.degenerateTriangles)
+    checkProgress(o, 0.9, "Grouping collapsed components");
   const components = t.degenerateTriangles
     ? runIndexedComponentInventory(
         { vertices: t.vertices, triangles: t.triangles },

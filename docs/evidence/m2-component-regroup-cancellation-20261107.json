@@ -1,0 +1,229 @@
+{
+  "scope": "GUI and public MCP cancellation after the unindexed collapsed-face grouping stage was observed; not proof of the exact worker instruction at cancellation.",
+  "baseCommit": "ecea8c6a",
+  "build": "scanforge-f212e9685ded1c02",
+  "input": "Four translated copies of the original scan-1 STL, materialized as unindexed project coordinates.",
+  "result": {
+    "sourceSha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "copies": 4,
+    "triangles": 1092556,
+    "offsetMm": 200,
+    "inputJsonBytes": 183312467,
+    "sourceDigest": [
+      {
+        "path": "positions",
+        "encoding": "f64",
+        "elements": 9833004,
+        "sha256": "fcf84245af2eb29e3c5dc434108072bedeedbe053881ba062df4626beed6b2ba"
+      }
+    ],
+    "groupingStageObserved": true,
+    "mcpGroupingProgress": 0.8400000000000001,
+    "guiGroupingProgress": 0.8400000000000001,
+    "mcpRunningAtCancel": true,
+    "mcpCancelled": true,
+    "guiCancelAfterGrouping": true,
+    "mcpCancellationPreservedRevisionHistoryObjectsAndSource": true,
+    "guiCancellationPreservedRevisionHistoryObjectsAndSource": true,
+    "guiBaselineTakenAfterOpeningEditor": true
+  },
+  "browserHeapLimitBytes": 4395630592,
+  "browserCleanup": [
+    {
+      "port": 53691,
+      "closed": true
+    },
+    {
+      "pid": 38836,
+      "exited": true
+    },
+    {
+      "port": 53692,
+      "closed": true
+    },
+    {
+      "pid": 42800,
+      "exited": true
+    }
+  ],
+  "fullSuite": {
+    "passed": 50955,
+    "expectedFailures": 1,
+    "skipped": 77,
+    "filesPassed": 848,
+    "filesSkipped": 30,
+    "excluded": "**/.resources/**"
+  },
+  "receipts": {
+    "m2-regroup-progress-red-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 320913408,
+      "totalProcesses": 8,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 1.287126499999431
+    },
+    "m2-regroup-progress-green-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/scan-component-groups.test.ts",
+        "tests/scan-component-progress-worker.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 365842432,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 2.5294807000027504
+    },
+    "m2-regroup-progress-green2-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/scan-component-groups.test.ts",
+        "tests/scan-component-progress-worker.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 360402944,
+      "totalProcesses": 10,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 2.5413074000098277
+    },
+    "m2-regroup-affected-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/m2-small-adjacent-native.test.ts",
+        "tests/m2-near-edge-native.test.ts",
+        "tests/scan-component-groups.test.ts",
+        "tests/scan-component-progress-worker.test.ts",
+        "tests/scan-indexed-segment-worker.test.ts",
+        "tests/scan-diagnostics.test.ts",
+        "tests/processing-client.test.ts",
+        "tests/automation-api.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 596213760,
+      "totalProcesses": 15,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 6.938889299999573
+    },
+    "m2-regroup-vite-20261107": {
+      "command": ["node", "node_modules/vite/bin/vite.js", "build"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1967013888,
+      "totalProcesses": 7,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 7.9434110000001965
+    },
+    "m2-regroup-manifest-20261107": {
+      "command": ["node", "scripts/offline-manifest.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 121868288,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 0.3247276000038255
+    },
+    "m2-regroup-typecheck-20261107": {
+      "command": ["node", "scripts/typecheck.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1212518400,
+      "totalProcesses": 17,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 151.72342760000902
+    },
+    "m2-regroup-suite-20261107": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1366306816,
+      "totalProcesses": 1006,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 389.73192970000673
+    },
+    "m2-regroup-large-browser-guard-20261107": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 1,
+      "peakJobBytes": 3567824896,
+      "totalProcesses": 22,
+      "activeAfter": 0,
+      "passed": false,
+      "elapsedSeconds": 39.45827480001026
+    },
+    "m2-regroup-large-browser5-guard-20261107": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 3458768896,
+      "totalProcesses": 22,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 40.82356119999895
+    }
+  },
+  "review": "Independent review found no concrete rollback defect and noted that a stage event followed by cancellation cannot pinpoint the executing instruction.",
+  "notes": [
+    "The first browser attempt compared the GUI result against a revision captured before opening the editor and failed by one revision. The successful test captures the GUI baseline after opening the editor.",
+    "An intermediate unit-test expectation incorrectly required a completion message for extraction and was corrected before the final passing focused run.",
+    "The imported project coordinates were reported as f64 by the geometry digest.",
+    "Both paths observed grouping at less than 100 percent. MCP job_get reported running when job_cancel was requested.",
+    "Source digest, object IDs and history were checked after both cancellations; revision was compared to each path-specific pre-operation baseline."
+  ],
+  "limitations": [
+    "The stage notification precedes the grouping call, and does not prove the exact worker instruction at the moment cancellation arrived.",
+    "The 1,092,556-triangle input repeats one scan; it does not establish arbitrary large-mesh resource bounds.",
+    "The native near-edge unindexed discrepancy, broader native acceptance, integration and milestone closure remain open."
+  ]
+}
