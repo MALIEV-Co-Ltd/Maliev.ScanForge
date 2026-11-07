@@ -6,6 +6,7 @@ import {
   inspectDeviationAsync,
 } from "../src/inspection";
 import type { Entity, FitResult } from "../src/types";
+import { deviations } from "../src/geometry";
 const plane: FitResult = {
   kind: "plane",
   center: [0, 0, 0],
@@ -110,6 +111,19 @@ describe("shared inspection", () => {
     });
     expect(report.rms).toBeCloseTo(Math.sqrt(8 / 3));
     expect(cloud.positions).toEqual(before);
+  });
+  // Main's previous GUI and analysis_deviation consumed every source corner.
+  // The integrated visible-only report changes its artifact and statistics.
+  it.fails("preserves legacy all-corner deviation when triangles are hidden", () => {
+    const mesh = entity(
+      "mesh",
+      [0, 0, -5, 4, 0, -5, 0, 3, -5, 0, 0, 2, 4, 0, 2, 0, 3, 2],
+      [0],
+    );
+    const legacy = Array.from(deviations(mesh.positions, plane));
+    const report = inspectDeviation(mesh, plane, 1);
+    expect(report.distances).toEqual(legacy);
+    expect(report.rms).toBeCloseTo(Math.sqrt(14.5));
   });
   it("excludes complete hidden triangles and preserves original corner indices", () => {
     const mesh = entity(
