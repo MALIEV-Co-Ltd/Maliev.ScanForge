@@ -15,5 +15,30 @@
     "The visible object list is not proof that no transient internal output was created.",
     "The exact selection and publication semantics and GUI/MCP/native equivalence remain unverified."
   ],
-  "nextProbe": "Establish any required selection or active sketch context before comparing native projected curves and publication with GUI and public MCP."
+  "nextProbe": "Establish any required selection or active sketch context before comparing native projected curves and publication with GUI and public MCP.",
+  "selectionAndTraceFollowup": {
+    "selectionControl": "The tooltip on the red circle identified Select all triangles. It was clicked before the projection icon; the tiny fixture did not expose an independently readable selection count.",
+    "selectionOutcome": "The editor remained open and showed no new visible sketch. This does not establish that the two triangles were selected or that no internal result existed.",
+    "runtimeTrace": {
+      "method": "Read-only REA Frida hooks on DispatchMessageW and SendMessageW while clicking the projection icon after reopening the editor; no explicit triangle selection was made for this traced click.",
+      "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+      "observedMessages": [
+        {
+          "command": 4534,
+          "role": "dialog WM_COMMAND"
+        },
+        {
+          "command": 40013,
+          "role": "main-window WM_COMMAND, observed twice",
+          "applicationReturnAddress": "0x14034ad7f"
+        }
+      ],
+      "evidenceId": "ev_935c74bb576eca6d1ede50e78b6a7bee0c86bfcac594d1b5d11f7bc4607c2c60",
+      "limitations": [
+        "Correlated action-time message events do not identify the projection algorithm or prove handler completion.",
+        "The captured trace does not establish triangle selection, sketch publication, or geometry.",
+        "Frida session was detached; the native source visibility and selection were restored."
+      ]
+    }
+  }
 }
