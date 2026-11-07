@@ -1,0 +1,26 @@
+{
+  "scope": "QuickSurface 8.0.123 interactive observation on one original STL; no native output geometry export or ScanForge comparison",
+  "source": {
+    "path": "C:\\repo\\alignment-example-files\\scan-1.stl",
+    "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9",
+    "initialTriangles": 273139,
+    "nativeIndividualMeshes": 2,
+    "nativeHoles": 13
+  },
+  "action": "In Edit Scan > Individual meshes, select the first component and activate Create new object.",
+  "observed": {
+    "sourceTrianglesAfter": 272857,
+    "createdObjectTriangles": 282,
+    "sourceIndividualMeshesAfter": 1,
+    "sourceHolesAfter": 12,
+    "createdObjectIndividualMeshes": 1,
+    "createdObjectHoles": 1,
+    "undoAttempt": "Ctrl+Z did not restore the source in this interactive session."
+  },
+  "sceneRecovery": "The source file was not overwritten. It was imported again as an intact 273139-triangle object; the modified original and the extracted object were hidden. The native scene remains unsaved.",
+  "limitations": [
+    "Triangle counts do not establish coordinate or topology equality.",
+    "This observation does not identify the vendor algorithm or establish behavior on other inputs.",
+    "ScanForge currently publishes extracted components while retaining the hidden source; the GUI and MCP native comparison and lifecycle decision remain open."
+  ]
+}
