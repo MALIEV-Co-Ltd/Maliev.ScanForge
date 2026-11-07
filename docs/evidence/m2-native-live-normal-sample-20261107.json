@@ -19,5 +19,15 @@
     "The contiguous 64 records are a sample, not all scan vertices or seam configurations.",
     "No user interface action, native export, or mutation of target memory was performed. Native process memory changed by the application independently during inspection remains outside this observation.",
     "The capture is of the earlier running process and may not be valid as an address after restart."
-  ]
+  ],
+  "pointerSearchFollowup": {
+    "scope": "Read-only exact 64-bit little-endian pointer searches for two sampled first-vertex record addresses across writable process ranges.",
+    "firstEvidence": "ev_d0a8a037f9ad04227b2625ca5bb2047199dd040390ed89efdd92dd58ec36fe82",
+    "secondEvidence": "ev_15b1afbcf6d6f3b458b2aa5107c1d7bc5ecbdb89917df75a1cebc7058147b3b0",
+    "result": "No exact pointer bytes were found for either allocation in the writable ranges scanned at those times.",
+    "limitations": [
+      "This is a raw-byte search only; it does not cover read-only mappings, indirect representations, register values, or memory that changed during scanning.",
+      "The result does not prove these records are stale, and it does not connect either allocation to a scene object or writer invocation."
+    ]
+  }
 }
