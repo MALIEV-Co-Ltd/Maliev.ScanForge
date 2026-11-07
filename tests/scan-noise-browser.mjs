@@ -650,6 +650,12 @@ try {
   );
   await call("artifact_delete", { artifactId: saved.result.artifactId });
   assert.deepEqual(errors, []);
+  if (process.env.SCANFORGE_NOISE_NATIVE_COORDINATE_SHA256)
+    assert.equal(
+      guiGeometrySha256,
+      process.env.SCANFORGE_NOISE_NATIVE_COORDINATE_SHA256,
+      "GUI result differs from the pinned native coordinate stream",
+    );
   ledger.result = {
     passed: true,
     inputTriangles,
