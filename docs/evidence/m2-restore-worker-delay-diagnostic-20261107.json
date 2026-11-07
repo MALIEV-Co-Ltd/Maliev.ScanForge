@@ -1,0 +1,70 @@
+{
+  "scope": "Isolated seeded independent numeric restore with 500 ms delay after decoder worker termination; diagnostic only",
+  "candidate": "1665583d",
+  "bundle": "scanforge-bdc991ade61f74bb",
+  "method": "Served production bundle modified in an isolated server: disabled numeric-array reuse, seeded destination arrays, then inserted a 500 ms delay after worker termination before transport unpack. Each injection required an exact single match. No production source changed.",
+  "run": {
+    "guardPassed": true,
+    "peakJobBytes": 4075237376,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "result": {
+      "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+      "inputFaces": 3691133,
+      "splitFaces": 3695945,
+      "extractedFaces": 1776794,
+      "guiOutputDigest": [
+        {
+          "path": "positions",
+          "encoding": "f64",
+          "elements": 15991146,
+          "sha256": "9462366a25b546e2e1ea0e0fa8f956effce33cb0d9722018edd8a151d67ce9ad"
+        },
+        {
+          "path": "indexedMesh.vertices",
+          "encoding": "f64",
+          "elements": 2692659,
+          "sha256": "260d35f68488e1565961b40f757d2abda8c7d1124b5e06a6718abcaae7368375"
+        },
+        {
+          "path": "indexedMesh.triangles",
+          "encoding": "u32",
+          "elements": 5330382,
+          "sha256": "ea705a8e4760e3894606d898aeefd8dfeedbd3dcc9068f623243c5097cb6393c"
+        }
+      ],
+      "indexedResult": true,
+      "sourcePreserved": true,
+      "cutterPreserved": true,
+      "guiUndoRedo": true,
+      "binaryReopen": true,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    "stages": [
+      "source-imported",
+      "source-digest",
+      "cutter-imported",
+      "gui-split-started",
+      "gui-split-committed",
+      "gui-output-digest",
+      "component-inventory-opened",
+      "component-inventory-ready",
+      "gui-extract-committed",
+      "gui-extract-undone",
+      "gui-extract-undo-digest-verified",
+      "gui-extract-project-exported",
+      "gui-extract-project-downloaded",
+      "gui-extract-gui-project-imported",
+      "gui-extract-gui-reopen-verified",
+      "gui-extract-reopen-gui-undo-verified",
+      "gui-extract-reopen-gui-redo-verified",
+      "gui-extract-redo-verified"
+    ]
+  },
+  "limitations": [
+    "A single passing result is within the range of previous no-delay runs; this does not establish a causal memory reduction or reliable compliance.",
+    "The injected delay has no worker-memory-release guarantee and is not a proposed production fix.",
+    "This run is not native geometry acceptance."
+  ]
+}
