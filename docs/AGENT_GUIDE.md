@@ -69,7 +69,10 @@ be combined with other actions. These change selection/display state, not model
 geometry history; clip/tool/through state is also readable under
 `project_get.settings.scanSelection` and participates in revision checks.
 `revealSelected` matches **Show last hidden**: reveal and reselect only the most
-recently hidden batch, retaining earlier hidden elements.
+recently hidden batch, retaining earlier hidden elements. Successful project
+replacement clears the temporary last-hidden batch and current selection; saved
+hidden elements are restored from the project. A subsequent `revealSelected`
+does not reveal a batch from the previous project.
 Configuration also accepts `angleDegrees` (0–90), `brushRadiusPx` (2–500 CSS
 pixels), and `allConnected`. These use the editor's sensitivity and brush limits.
 Boundary highlighting does not replace the facet selection: read

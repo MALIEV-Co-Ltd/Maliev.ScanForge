@@ -4585,7 +4585,7 @@
   },
   {
     "name": "scan_selection_control",
-    "description": "Configure the shared Edit scan tool, see-through state or clipping box (world mm, null disables); hide/isolate/reveal elements or undo/redo selection history independently of geometry history. Requires an unlocked visible selected scan. Clipping is active while Edit scan is open. Does not commit model geometry. Read scan_selection_get after changes. revealSelected matches Show last hidden: reveal and reselect only the last hidden source slots, retaining earlier hidden batches.",
+    "description": "Configure the shared Edit scan tool, see-through state or clipping box (world mm, null disables); hide/isolate/reveal elements or undo/redo selection history independently of geometry history. Requires an unlocked visible selected scan. Clipping is active while Edit scan is open. Does not commit model geometry. Read scan_selection_get after changes. revealSelected matches Show last hidden: reveal and reselect only the last hidden source slots, retaining earlier hidden batches. Successful project replacement clears that temporary batch while preserving saved hidden slots.",
     "readOnly": false,
     "job": false,
     "inputSchema": {

@@ -1601,6 +1601,14 @@ export function App() {
     }
     return record.session;
   }
+  function resetProjectSelection() {
+    wandRegion.current = null;
+    wandRefreshAbort.current?.abort();
+    lastHiddenSelection.current = [];
+    selectionSessions.current.clear();
+    setTriangleMask(null);
+    setSelectionVersion((value) => value + 1);
+  }
   function applySelectionState(entity: Entity, state: SelectionState) {
     assertSampledGeometry(entity);
     setTriangleMask(new Uint8Array(state.mask));
@@ -3647,9 +3655,7 @@ export function App() {
         cad.current = restoredCad;
         knownKernelIds.current = new Set();
         pendingImportFit.current = null;
-        selectionSessions.current.clear();
-        setTriangleMask(null);
-        setSelectionVersion((value) => value + 1);
+        resetProjectSelection();
         setEntities(restored);
         setSelectedId(
           project.authoring?.activeSketchId ? null : (restored[0]?.id ?? null),
@@ -5003,12 +5009,11 @@ export function App() {
         cad.current = restoredCad;
         knownKernelIds.current.clear();
       }
-      selectionSessions.current.clear();
+      resetProjectSelection();
       sketchUndoSessions.current.clear();
       setEntities(project.entities);
       setName(project.name);
       setSelectedId(project.entities[0]?.id ?? null);
-      setTriangleMask(null);
       setSavedSketches(project.authoring?.sketches ?? []);
       setSavedInspections(project.authoring?.inspections ?? []);
       setActiveSketchId(project.authoring?.activeSketchId ?? null);

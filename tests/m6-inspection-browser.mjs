@@ -986,6 +986,16 @@ try {
       replace: true,
     }),
   );
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "configure",
+    tool: "brush",
+  });
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "hide",
+  });
   const reopenSaved = await job(
     await call("project_export", { format: "project" }),
   );
@@ -1000,7 +1010,7 @@ try {
     true,
     "reopen fixture must fit in one artifact chunk",
   );
-  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [1] });
   assert.equal(
     (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
     1,
@@ -1016,7 +1026,21 @@ try {
     0,
     "GUI project reopen retained the previous selection",
   );
-  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [0] });
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "revealSelected",
+  });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "GUI project reopen retained the previous last-hidden selection",
+  );
+  assert.equal((await call("scan_selection_get")).result.hiddenCount, 1);
+  await mutate("selection_set", { entityId: "reopen-mesh", triangles: [1] });
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "hide",
+  });
   await job(
     await mutate("project_import", {
       artifactId: reopenSaved.artifactId,
@@ -1028,6 +1052,16 @@ try {
     0,
     "MCP project replacement retained the previous selection",
   );
+  await mutate("scan_selection_control", {
+    entityId: "reopen-mesh",
+    action: "revealSelected",
+  });
+  assert.equal(
+    (await call("selection_get", { entityId: "reopen-mesh" })).result.count,
+    0,
+    "MCP project replacement retained the previous last-hidden selection",
+  );
+  assert.equal((await call("scan_selection_get")).result.hiddenCount, 1);
   ledger.selectionReopen = { gui: "cleared", mcp: "cleared", triangles: 7282 };
   assert.equal(errors.length, 0, errors.join("\n"));
   assert.equal(stderr, "", stderr);

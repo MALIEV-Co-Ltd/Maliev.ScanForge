@@ -1,0 +1,40 @@
+{
+  "scope": "Temporary last-hidden selection on successful project replacement",
+  "baseline": {
+    "guiRetainedPreviousLastHiddenSelection": true,
+    "observedSelectedCount": 1,
+    "expected": 0
+  },
+  "fixture": {
+    "triangles": 7282,
+    "savedHiddenCount": 1
+  },
+  "after": {
+    "guiLastHiddenSelectionCount": 0,
+    "mcpLastHiddenSelectionCount": 0,
+    "guiSavedHiddenCount": 1,
+    "mcpSavedHiddenCount": 1
+  },
+  "checks": {
+    "build": {
+      "passed": true,
+      "peakJobBytes": 1985519616,
+      "manifest": "scanforge-642421e155202a85"
+    },
+    "browser": {
+      "passed": true,
+      "peakJobBytes": 1633296384,
+      "processCleanupConfirmed": true
+    },
+    "focused": {
+      "files": 5,
+      "passed": 56,
+      "expectedFailures": 2,
+      "peakJobBytes": 348786688
+    }
+  },
+  "limitations": [
+    "Wand cancellation is implemented but was not forced during an in-flight refresh in this browser check.",
+    "Numeric-array ownership, resource reliability, native M2 acceptance, merge and closure remain open."
+  ]
+}
