@@ -282,8 +282,17 @@ try {
         ),
       ).flat();
     };
-    const input = await fixture("projection-interior-control.stl");
-    const expected = await fixture("projection-interior-native.stl");
+    const translated = process.env.SCANFORGE_M2_TRANSLATED_BOUNDARY === "1";
+    const input = await fixture(
+      translated
+        ? "projection-translated-before.stl"
+        : "projection-interior-control.stl",
+    );
+    const expected = await fixture(
+      translated
+        ? "projection-translated-after.stl"
+        : "projection-interior-native.stl",
+    );
     const temporaryProject = {
       format: "maliev-scanforge",
       version: 1,

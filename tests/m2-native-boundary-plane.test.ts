@@ -34,6 +34,20 @@ it("matches native boundary projection while retaining the interior vertex", () 
   expect(result.diagnostics.changed).toBe(true);
 });
 
+it("matches native projection after moving the mesh along Z", () => {
+  const positions = mesh("projection-translated-before.stl");
+  const before = positions.slice();
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action,
+    positions,
+    sourceIndexed: nativeStlTopology(positions),
+  });
+  expect(result.positions).toEqual(mesh("projection-translated-after.stl"));
+  expect(indexedMeshMatches(result.indexedMesh, result.positions!)).toBe(true);
+  expect(positions).toEqual(before);
+});
+
 it("rejects the nonmanifold native split fixture without changing the source", () => {
   const positions = mesh("native-source-split.stl");
   const before = positions.slice();
