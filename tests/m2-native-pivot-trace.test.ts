@@ -108,3 +108,31 @@ it("binds both native recovery calls to the two crossing segments", () => {
       for (let k = 0; k < 2; k++)
         expect(points[i][j][k]).toBeCloseTo(expected[i][j][k], 7);
 });
+
+it("records the second native recovery replacing the first crossing edge", () => {
+  const trace = JSON.parse(
+    readFileSync(
+      new URL(
+        "../docs/evidence/m2-split-native-face-transitions-20261107.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  );
+  expect(trace.normalized_result.messages_truncated).toBe(false);
+  const calls = trace.normalized_result.messages
+    .map((m: { payload: any }) => m.payload)
+    .filter((p: { event: string }) => p.event === "recovery");
+  expect(calls).toHaveLength(2);
+  expect(calls.map((c: { pair: string }) => c.pair)).toEqual([
+    "0x400000003",
+    "0x600000005",
+  ]);
+  const hasEdge = (faces: number[][], a: number, b: number) =>
+    faces.some((t) => t.includes(a) && t.includes(b));
+  expect(hasEdge(calls[0].before, 3, 4)).toBe(false);
+  expect(hasEdge(calls[0].after, 3, 4)).toBe(true);
+  expect(calls[1].before).toEqual(calls[0].after);
+  expect(hasEdge(calls[1].after, 3, 4)).toBe(false);
+  expect(hasEdge(calls[1].after, 5, 6)).toBe(true);
+});

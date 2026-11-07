@@ -29,8 +29,12 @@ and `[5,6]`; a repeat captured the point-record prefixes for both endpoints.
 The first pair decodes to the segment absent from the exported native mesh, and
 the second to the retained segment. Both segments therefore reach and return
 from this candidate in this run. The later step that removes or fails to retain
-the first segment has not been identified. These records and the original call
-trace are observations of a small fixture, not complete algorithm extraction.
+the first segment was subsequently located with a third trace: the face list
+after recovery of `[3,4]` contains edge `[3,4]`, and the face list immediately
+after recovery of `[5,6]` no longer contains it. The latter list contains edge
+`[5,6]`. The face list was read at the offset used by the previously decompiled
+publication routine. These records and the original call trace are observations
+of a small fixture, not complete algorithm extraction.
 
 A guarded REA CLI/Ghidra function analysis of the earlier runtime-derived image
 timed out during full auto-analysis after 177 seconds, with a 2,847,506,432-byte
