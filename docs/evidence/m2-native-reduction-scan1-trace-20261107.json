@@ -1,0 +1,103 @@
+{
+  "evidence_id": "ev_84959f38dd5918ae643ddb8db3fbebe3567040fe7d60e74845f655112fca310c",
+  "subject": null,
+  "provider": {
+    "id": "frida",
+    "name": "Frida",
+    "version": null
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.frida.instrumentation-observation",
+  "operation": "frida_session_status",
+  "parameters": {
+    "session_id": "4ee48e28-53cf-4854-b657-41653c9dd7c1"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "session_id": "4ee48e28-53cf-4854-b657-41653c9dd7c1",
+    "device_id": "local",
+    "state": "running",
+    "target": "QuickSurface.exe (pid 20364)",
+    "pid": 20364,
+    "mode": "attach",
+    "scripts": [
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "name": "rea-b582f3c3-5329-418e-a8a7-7c0ebe67a288"
+      }
+    ],
+    "messages": [
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "type": "send",
+        "payload": {
+          "event": "ready",
+          "base": "0x140000000"
+        }
+      },
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "type": "send",
+        "payload": {
+          "event": "preview",
+          "count": 1,
+          "thread": 36336,
+          "arg0": "0x63ab82f0",
+          "arg1": "0x452",
+          "arg2": "0x0",
+          "arg3": "0x0"
+        }
+      },
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "type": "send",
+        "payload": {
+          "event": "wrapper",
+          "count": 1,
+          "thread": 36336,
+          "arg0": "0x15eee8",
+          "arg1": "0x5cefacf0",
+          "arg2": "0x2f41770",
+          "arg3": "0x21579"
+        }
+      },
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "type": "send",
+        "payload": {
+          "event": "reduce",
+          "count": 1,
+          "thread": 36336,
+          "arg0": "0x15eda0",
+          "arg1": "0x5cefacf0",
+          "arg2": "0x2f41770",
+          "arg3": "0x21579"
+        }
+      },
+      {
+        "script_id": "b582f3c3-5329-418e-a8a7-7c0ebe67a288",
+        "type": "send",
+        "payload": {
+          "event": "collapse",
+          "count": 1,
+          "thread": 36336,
+          "arg0": "0x15eda0",
+          "arg1": "0x21579",
+          "arg2": "0x7ffffffffffffffc",
+          "arg3": "0xfeeefeeefeeefeee"
+        }
+      }
+    ],
+    "messages_truncated": false
+  },
+  "confidence": "observed",
+  "authority": "external-service",
+  "environment": null,
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "The target operating system and architecture were not reported by this observation."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

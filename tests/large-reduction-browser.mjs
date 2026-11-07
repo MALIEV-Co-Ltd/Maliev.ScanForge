@@ -481,6 +481,12 @@ try {
     `GUI accepted ${outputTriangles} triangles; preview + comparison ${Math.round(previewMs)} ms`,
   );
   const guiGeometrySha256 = await geometryHash();
+  if (process.env.SCANFORGE_REDUCTION_NATIVE_COORDINATE_SHA256)
+    assert.equal(
+      guiGeometrySha256,
+      process.env.SCANFORGE_REDUCTION_NATIVE_COORDINATE_SHA256,
+      "GUI reduction differs from the pinned native coordinate stream",
+    );
   if (globalControl)
     assert.equal(
       guiGeometrySha256,
