@@ -6311,6 +6311,7 @@ export function App() {
                 key={selected.id}
                 name={selected.name}
                 positions={selected.positions}
+                sourceIndexed={selected.indexedMesh}
                 pointCloud={selected.kind === "pointcloud"}
                 pointTools={
                   selected.kind === "pointcloud" ? (

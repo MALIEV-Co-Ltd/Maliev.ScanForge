@@ -995,14 +995,8 @@ function runProcessingRequest(
           copied.kind === "scanEdit" &&
           session?.indexedSource === mesh &&
           session.indexedTolerance === (copied.tolerance ?? 1e-6) &&
-          !(
-            copied.action === "inventory" &&
-            copied.inventoryScope === "components"
-          ) &&
-          !(
-            copied.action.startsWith("component") &&
-            request.positions.length / 9 >= COMPACT_COMPONENT_FACE_THRESHOLD
-          )
+          copied.action !== "inventory" &&
+          !copied.action.startsWith("component")
         )
           delete copied.sourceIndexed;
         else {

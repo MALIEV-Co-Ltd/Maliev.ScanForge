@@ -17,10 +17,7 @@ import { splitByPlane } from "./scan-edit-split";
 import { runFiniteSplitCandidate } from "./scan-split-finite-candidate";
 import { indexedMeshMatches } from "./indexed-mesh";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
-import {
-  compactComponentGroups,
-  COMPACT_COMPONENT_FACE_THRESHOLD,
-} from "./scan-component-groups";
+import { compactComponentGroups } from "./scan-component-groups";
 import { simplifyBoundaryCurve } from "./scan-boundary-simplify";
 import {
   runBoundarySmooth,
@@ -682,11 +679,7 @@ function scanEdit(
       throw new Error("Scan edit indices do not match the source geometry.");
     return runIndexedComponentInventory(r.sourceIndexed, o);
   }
-  if (
-    r.sourceIndexed &&
-    r.action.startsWith("component") &&
-    count >= COMPACT_COMPONENT_FACE_THRESHOLD
-  ) {
+  if (r.sourceIndexed && r.action.startsWith("component")) {
     if (!indexedMeshMatches(r.sourceIndexed, r.positions))
       throw new Error("Scan edit indices do not match the source geometry.");
     checkProgress(o, 0, "Grouping indexed components");
@@ -748,6 +741,11 @@ function scanEdit(
   checkProgress(o, 0, "Preparing scan edit");
   if (r.action === "inventory") {
     const inventory = inventoryOf(t, o.signal);
+    if (r.sourceIndexed)
+      inventory.components = runIndexedComponentInventory(
+        r.sourceIndexed,
+        o,
+      ).inventory!.components;
     if (r.inventoryScope === "components")
       return {
         inventory: {

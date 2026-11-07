@@ -266,6 +266,120 @@ try {
     preciseComponents
       ? assert.deepEqual(actual, expected, message)
       : assert.equal(digest(actual), digest(expected), message);
+  await page
+    .locator('input[type=file][accept*=".stl"]')
+    .setInputFiles(
+      fileURLToPath(
+        new URL(
+          "tests/fixtures/m2-small-adjacent-native-20261107/source.stl",
+          root,
+        ),
+      ),
+    );
+  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await page
+    .locator('.status-message[title^="Opened · 1/1 files"]')
+    .waitFor({ timeout: 60000 });
+  const nativeSource = (await call("project_get")).result.objects[0].id;
+  await mutate("object_select", { entityId: nativeSource });
+  await mutate("command_run", { name: "ribbon:editScan" });
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('output[aria-label="Individual meshes count"]')
+        ?.textContent?.trim() === "1",
+    null,
+    { timeout: 60000 },
+  );
+  const nativeInventory = await artifactJson(
+    (
+      await job(
+        await mutate("mesh_process", {
+          entityId: nativeSource,
+          operation: {
+            kind: "scanEdit",
+            action: "inventory",
+            inventoryScope: "components",
+          },
+        }),
+      )
+    ).result.artifact,
+  );
+  assert.deepEqual(
+    nativeInventory.inventory.components.map(
+      (component) => component.triangles.length,
+    ),
+    [2],
+  );
+  for (let repeat = 0; repeat < 2; repeat++) {
+    const full = await artifactJson(
+      (
+        await job(
+          await mutate("mesh_process", {
+            entityId: nativeSource,
+            operation: { kind: "scanEdit", action: "inventory" },
+          }),
+        )
+      ).result.artifact,
+    );
+    assert.deepEqual(
+      full.inventory.components.map((c) => c.triangles.length),
+      [2],
+    );
+  }
+  await page
+    .getByRole("button", { name: "Edit individual meshes", exact: true })
+    .click();
+  const nativeControls = page.getByRole("region", {
+    name: "Individual meshes",
+    exact: true,
+  });
+  await nativeControls
+    .getByRole("button", { name: /· 2 triangles ·/ })
+    .waitFor();
+  const nativeBaseline = (await call("project_get")).result.undo;
+  await nativeControls
+    .getByRole("button", { name: "Create new object", exact: true })
+    .click();
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if ((await call("project_get")).result.undo === nativeBaseline + 1) break;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  await idle();
+  const nativeGuiProject = (await call("project_get")).result;
+  assert.equal(nativeGuiProject.objects.length, 2);
+  const nativeGuiPart = nativeGuiProject.objects.find(
+    (object) => object.id !== nativeSource,
+  );
+  assert.equal(
+    nativeGuiProject.objects.find((object) => object.id === nativeSource)
+      .visible,
+    false,
+  );
+  const nativeGuiGeometry = await geometry(nativeGuiPart.id);
+  assert.equal(nativeGuiGeometry.length, 18);
+  await mutate("history_undo", {});
+  await job(
+    await mutate("mesh_process", {
+      entityId: nativeSource,
+      operation: { kind: "scanEdit", action: "componentExtract", indices: [0] },
+    }),
+  );
+  const nativeMcpProject = (await call("project_get")).result;
+  assert.equal(nativeMcpProject.objects.length, 2);
+  const nativeMcpPart = nativeMcpProject.objects.find(
+    (object) => object.id !== nativeSource,
+  );
+  rawEqual(
+    await geometry(nativeMcpPart.id),
+    nativeGuiGeometry,
+    "GUI/MCP native-fixture extraction mismatch",
+  );
+  await mutate("history_undo", {});
+  if (await nativeControls.isVisible())
+    await nativeControls
+      .getByRole("button", { name: "Back", exact: true })
+      .click();
   const positions = [],
     groups = [];
   for (let n = 1; n <= 3; n++) {
@@ -815,6 +929,12 @@ try {
   }
   assert.deepEqual(errors, []);
   ledger.result = {
+    nativeFixture: {
+      triangles: 2,
+      guiComponents: 1,
+      mcpComponents: 1,
+      guiMcpExtraction: true,
+    },
     inputCoordinateSha256: digest(positions),
     componentTriangles: [2, 8, 18],
     componentAreas: report.inventory.components.map((c) => c.area),

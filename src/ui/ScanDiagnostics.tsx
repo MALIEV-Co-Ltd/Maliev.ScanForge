@@ -1,8 +1,9 @@
 import { ScanToolIcon } from "./ScanToolIcon";
-import type { Positions } from "../types";
+import type { IndexedMesh, Positions } from "../types";
 import { useEffect, useState } from "react";
 import { cachedTopologySummary } from "../scan-topology-summary";
 import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
+import { processMesh } from "../processing-client";
 import {
   observeScanDiagnostics,
   watchScanDiagnostics,
@@ -11,9 +12,11 @@ import {
 
 export function ScanDiagnostics({
   positions,
+  sourceIndexed,
   onEdit,
 }: {
   positions: Positions;
+  sourceIndexed?: IndexedMesh;
   onEdit?: (section: "components" | "holes" | "boundaries") => void;
 }) {
   const [result, setResult] = useState<{
@@ -21,6 +24,43 @@ export function ScanDiagnostics({
     state: DiagnosticState;
   }>();
   const [requested, setRequested] = useState<{ positions: Positions }>();
+  const [componentCount, setComponentCount] = useState<{
+    positions: Positions;
+    sourceIndexed: IndexedMesh;
+    count?: number;
+    error?: boolean;
+  }>();
+  useEffect(() => {
+    if (!sourceIndexed || positions.length < 9) return;
+    const controller = new AbortController();
+    setComponentCount({ positions, sourceIndexed });
+    void processMesh(
+      {
+        kind: "scanEdit",
+        action: "inventory",
+        inventoryScope: "components",
+        positions,
+        sourceIndexed,
+        tolerance: SCAN_TOPOLOGY_TOLERANCE,
+      },
+      { signal: controller.signal, reuseTopology: true },
+    ).then(
+      (result) => {
+        if (!controller.signal.aborted)
+          setComponentCount({
+            positions,
+            sourceIndexed,
+            count: result.scanEdit?.inventory?.components.length,
+            error: !result.scanEdit?.inventory,
+          });
+      },
+      () => {
+        if (!controller.signal.aborted)
+          setComponentCount({ positions, sourceIndexed, error: true });
+      },
+    );
+    return () => controller.abort();
+  }, [positions, sourceIndexed]);
   useEffect(
     () =>
       watchScanDiagnostics(positions, (state) =>
@@ -43,18 +83,29 @@ export function ScanDiagnostics({
     state?.phase === "ready"
       ? state.topology
       : cachedTopologySummary(positions, SCAN_TOPOLOGY_TOLERANCE);
+  const indexedCount =
+    componentCount?.positions === positions &&
+    componentCount.sourceIndexed === sourceIndexed
+      ? componentCount
+      : undefined;
   return (
     <div
       className="scan-diagnostics"
       role="group"
       aria-label="Mesh editing"
-      aria-busy={state?.phase === "pending"}
+      aria-busy={
+        state?.phase === "pending" ||
+        (!!sourceIndexed &&
+          positions.length >= 9 &&
+          indexedCount?.count === undefined &&
+          !indexedCount?.error)
+      }
     >
       {[
         {
           label: "Individual meshes",
           section: "components" as const,
-          value: topology?.components,
+          value: sourceIndexed ? indexedCount?.count : topology?.components,
           help: "Connected components of the current mesh.",
         },
         {
@@ -79,9 +130,13 @@ export function ScanDiagnostics({
           </span>
           <output aria-label={`${label} count`} title={help}>
             {value?.toLocaleString() ??
-              (state?.phase === "error"
+              ((section === "components" &&
+                sourceIndexed &&
+                indexedCount?.error) ||
+              state?.phase === "error"
                 ? "Unavailable"
-                : state?.phase === "pending"
+                : (section === "components" && sourceIndexed) ||
+                    state?.phase === "pending"
                   ? "Calculating…"
                   : "Not calculated")}
           </output>

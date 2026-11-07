@@ -53,23 +53,8 @@ export function compactComponentGroups(
       c * 3 + 2 >= vertices.length
     )
       throw new Error("Indexed component vertex is out of range.");
-    const ax = vertices[a * 3],
-      ay = vertices[a * 3 + 1],
-      az = vertices[a * 3 + 2];
-    const ux = vertices[b * 3] - ax,
-      uy = vertices[b * 3 + 1] - ay,
-      uz = vertices[b * 3 + 2] - az;
-    const vx = vertices[c * 3] - ax,
-      vy = vertices[c * 3 + 1] - ay,
-      vz = vertices[c * 3 + 2] - az;
-    if (
-      a === b ||
-      b === c ||
-      c === a ||
-      Math.hypot(uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx) <=
-        tolerance * tolerance
-    )
-      continue;
+    // Native component traversal follows stored edges even for zero-area faces.
+    if (a === b || b === c || c === a) continue;
     for (let local = 0; local < 3; local++) {
       const corner = face * 3 + local;
       const from = triangles[corner],

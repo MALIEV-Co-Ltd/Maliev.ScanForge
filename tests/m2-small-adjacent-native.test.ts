@@ -14,7 +14,7 @@ const positions = new STLLoader()
   .parse(
     bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
   )
-  .getAttribute("position").array;
+  .getAttribute("position").array as Float32Array;
 const componentCounts = (tolerance: number) =>
   runScanEdit({
     kind: "scanEdit",
@@ -40,22 +40,39 @@ it("retains four distinct native-reader vertices and two facets on import", () =
   expect(indexed.triangles.length / 3).toBe(2);
 });
 
-it.fails(
-  "matches native connectivity after the actual indexed STL import",
-  () => {
-    const sourceIndexed = nativeStlTopology(Float32Array.from(positions));
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "inventory",
-      positions,
-      sourceIndexed,
-      tolerance: 0.001,
-    });
-    expect(result.inventory!.components.map((c) => c.triangles.length)).toEqual(
-      [2],
-    );
-  },
-);
+it("matches native connectivity after the actual indexed STL import", () => {
+  const sourceIndexed = nativeStlTopology(Float32Array.from(positions));
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "inventory",
+    positions,
+    sourceIndexed,
+    tolerance: 0.001,
+  });
+  expect(result.inventory!.components.map((c) => c.triangles.length)).toEqual([
+    2,
+  ]);
+  const scoped = runScanEdit({
+    kind: "scanEdit",
+    action: "inventory",
+    inventoryScope: "components",
+    positions,
+    sourceIndexed,
+    tolerance: 0.001,
+  });
+  expect(scoped.inventory!.components.map((c) => c.triangles.length)).toEqual([
+    2,
+  ]);
+  const extracted = runScanEdit({
+    kind: "scanEdit",
+    action: "componentExtract",
+    positions,
+    sourceIndexed,
+    indices: [0],
+    tolerance: 0.001,
+  });
+  expect(extracted.segments!.map((segment) => segment.length / 9)).toEqual([2]);
+});
 
 const collinearCorners = Float32Array.from([
   0, 0, 0, 1, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0,
@@ -67,19 +84,16 @@ it("retains the native collinear control's four points and two facets", () => {
   expect(sourceIndexed.triangles.length / 3).toBe(2);
 });
 
-it.fails(
-  "connects the native collinear-face control across its shared edge",
-  () => {
-    const sourceIndexed = nativeStlTopology(collinearCorners);
-    const result = runScanEdit({
-      kind: "scanEdit",
-      action: "inventory",
-      positions: collinearCorners,
-      sourceIndexed,
-      tolerance: 0.001,
-    });
-    expect(result.inventory!.components.map((c) => c.triangles.length)).toEqual(
-      [2],
-    );
-  },
-);
+it("connects the native collinear-face control across its shared edge", () => {
+  const sourceIndexed = nativeStlTopology(collinearCorners);
+  const result = runScanEdit({
+    kind: "scanEdit",
+    action: "inventory",
+    positions: collinearCorners,
+    sourceIndexed,
+    tolerance: 0.001,
+  });
+  expect(result.inventory!.components.map((c) => c.triangles.length)).toEqual([
+    2,
+  ]);
+});

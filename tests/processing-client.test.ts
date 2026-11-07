@@ -996,7 +996,7 @@ describe("processing worker resource ownership", () => {
     await pending;
     expect(worker.sent).toMatchObject({ tolerance: 0.001 });
   });
-  it("copies trusted scan indices once per retained source and never transfers authored buffers", async () => {
+  it("retains scan indices for inventory and component edits without transferring authored buffers", async () => {
     const sourceIndexed = nativeStlTopology(positions);
     const input = {
       kind: "scanEdit",
@@ -1030,7 +1030,7 @@ describe("processing worker resource ownership", () => {
     await first;
     const next = processMesh(input, { reuseTopology: true });
     expect(ProcessingWorkerDouble.latest).toBe(worker);
-    expect(worker.sent).not.toHaveProperty("sourceIndexed");
+    expect(worker.sent).toHaveProperty("sourceIndexed");
     worker.reply({
       result: {
         kind: "scanEdit",
@@ -1039,6 +1039,33 @@ describe("processing worker resource ownership", () => {
       },
     });
     await next;
+    const other = processMesh(
+      { ...input, action: "fillHoles", indices: [] },
+      { reuseTopology: true },
+    );
+    expect(worker.sent).not.toHaveProperty("sourceIndexed");
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await other;
+    const component = processMesh(
+      { ...input, action: "componentExtract", indices: [0] },
+      { reuseTopology: true },
+    );
+    expect(ProcessingWorkerDouble.latest).toBe(worker);
+    expect(worker.sent).toHaveProperty("sourceIndexed");
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await component;
     expect(sourceIndexed.vertices.length).toBe(9);
     expect(sourceIndexed.triangles.length).toBe(3);
   });

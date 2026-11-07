@@ -1215,7 +1215,7 @@
                 "inventoryScope": {
                   "type": "string",
                   "enum": ["components"],
-                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. The inventory scope identifies this partial result; omit for the full inventory."
+                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. Indexed component connectivity includes zero-area faces with three distinct vertex identities; boundary diagnostics use separate degenerate-face checks. Omit for the full inventory."
                 },
                 "createSketches": {
                   "type": "boolean",

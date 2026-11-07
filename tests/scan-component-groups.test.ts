@@ -73,7 +73,7 @@ describe("compact indexed components", () => {
     ).toThrow(/cancel/i);
   });
 
-  it("matches full topology on deterministic mixed meshes", () => {
+  it("matches edge connectivity on deterministic mixed meshes", () => {
     const vertices = new Float64Array([
       0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1,
       1e-9, 0, 0,
@@ -85,16 +85,36 @@ describe("compact indexed components", () => {
         seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
         triangles[i] = seed % 9;
       }
-      const full = analyzeIndexedMesh(vertices, triangles);
-      const expected = new Uint32Array(triangles.length / 3);
-      full.components.forEach((faces, group) =>
-        faces.forEach((face) => {
-          expected[face] = group;
-        }),
+      const faces = Array.from({ length: triangles.length / 3 }, (_, face) =>
+        Array.from(triangles.subarray(face * 3, face * 3 + 3)),
       );
+      const expected = new Uint32Array(faces.length).fill(0xffffffff);
+      let group = 0;
+      for (let start = 0; start < faces.length; start++) {
+        if (expected[start] !== 0xffffffff) continue;
+        expected[start] = group;
+        const pending = [start];
+        for (const face of pending) {
+          if (new Set(faces[face]).size !== 3) continue;
+          for (let next = 0; next < faces.length; next++) {
+            if (
+              expected[next] !== 0xffffffff ||
+              new Set(faces[next]).size !== 3
+            )
+              continue;
+            if (
+              faces[next].filter((id) => faces[face].includes(id)).length >= 2
+            ) {
+              expected[next] = group;
+              pending.push(next);
+            }
+          }
+        }
+        group++;
+      }
       const actual = compactComponentGroups(vertices, triangles);
       expect(actual.groups).toEqual(expected);
-      expect(actual.count).toBe(full.components.length);
+      expect(actual.count).toBe(group);
     }
   });
 
