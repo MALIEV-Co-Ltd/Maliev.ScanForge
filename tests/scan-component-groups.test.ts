@@ -4,6 +4,33 @@ import { compactComponentGroups } from "../src/scan-component-groups";
 import { runIndexedComponentExtract, runScanEdit } from "../src/scan-edit";
 
 describe("compact indexed components", () => {
+  it("does not report coordinate or index preparation as complete", () => {
+    const positions = new Float32Array([
+      0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,
+    ]);
+    const events: { fraction: number; stage: string }[] = [];
+    runScanEdit(
+      {
+        kind: "scanEdit",
+        action: "componentKeep",
+        positions,
+        sourceIndexed: {
+          vertices: positions,
+          triangles: new Uint32Array([0, 1, 2, 3, 4, 5]),
+        },
+        indices: [0],
+      },
+      { onProgress: (fraction, stage) => events.push({ fraction, stage }) },
+    );
+    const working = events.filter(
+      ({ stage }) =>
+        stage === "Preparing component coordinates" ||
+        stage === "Compacting component indices",
+    );
+    expect(working.length).toBeGreaterThan(0);
+    expect(working.every(({ fraction }) => fraction < 1)).toBe(true);
+    expect(events.at(-1)).toEqual({ fraction: 1, stage: "Scan edit complete" });
+  });
   it("splits per-corner normals with their original faces", () => {
     const positions = new Float32Array([
       0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0, 0, 5, 0, 0, 4, 1, 0,

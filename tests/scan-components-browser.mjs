@@ -151,16 +151,32 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.addInitScript(() => {
     const Original = window.Worker;
+    window.__componentProgressTrace = [];
     window.Worker = class extends Original {
       constructor(url, options) {
         super(url, options);
         if (String(url).includes("processing-worker"))
           this.addEventListener("message", (e) => {
+            if (this.__componentAction && typeof e.data.progress === "number")
+              window.__componentProgressTrace.push({
+                action: this.__componentAction,
+                progress: e.data.progress,
+                stage: e.data.stage,
+              });
+            if (e.data.result || e.data.error)
+              this.__componentAction = undefined;
             if (window.__holdComponentResult && e.data.result) {
               e.stopImmediatePropagation();
               window.__pendingComponentResult = true;
             }
           });
+      }
+      postMessage(message, ...rest) {
+        if (message?.kind === "scanEdit")
+          this.__componentAction = message.action?.startsWith("component")
+            ? message.action
+            : undefined;
+        return super.postMessage(message, ...rest);
       }
     };
   });
@@ -687,6 +703,9 @@ try {
     .getByRole("button", { name: /· 2 triangles ·/ })
     .click();
   const lifecycleBaseline = (await call("project_get")).result.undo;
+  const guiProgressStart = await page.evaluate(
+    () => window.__componentProgressTrace.length,
+  );
   await lifecycleControls
     .getByRole("button", { name: "Create new object", exact: true })
     .click();
@@ -696,6 +715,28 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
   await idle();
+  const guiComponentProgress = await page.evaluate(
+    (start) =>
+      window.__componentProgressTrace
+        .slice(start)
+        .filter((entry) => entry.action === "componentExtract"),
+    guiProgressStart,
+  );
+  assert(
+    guiComponentProgress.length > 0,
+    "GUI component progress was not observed",
+  );
+  assert(
+    guiComponentProgress.every((entry) => entry.progress < 1),
+    "GUI component progress reported completion before the result",
+  );
+  assert.deepEqual(
+    guiComponentProgress.map((entry) => entry.progress),
+    [...guiComponentProgress.map((entry) => entry.progress)].sort(
+      (a, b) => a - b,
+    ),
+    "GUI component progress moved backwards",
+  );
   const lifecycleGuiProject = (await call("project_get")).result;
   const lifecycleGuiPart = lifecycleGuiProject.objects.find(
     (o) => o.id !== lifecycleSource && !beforeNativeImport.has(o.id),
@@ -757,6 +798,9 @@ try {
     (c) => c.triangles.length === 2,
   );
   assert(lifecycleIndex >= 0);
+  const mcpProgressStart = await page.evaluate(
+    () => window.__componentProgressTrace.length,
+  );
   await job(
     await mutate("mesh_process", {
       entityId: lifecycleSource,
@@ -766,6 +810,28 @@ try {
         indices: [lifecycleIndex],
       },
     }),
+  );
+  const mcpComponentProgress = await page.evaluate(
+    (start) =>
+      window.__componentProgressTrace
+        .slice(start)
+        .filter((entry) => entry.action === "componentExtract"),
+    mcpProgressStart,
+  );
+  assert(
+    mcpComponentProgress.length > 0,
+    "MCP component progress was not observed",
+  );
+  assert(
+    mcpComponentProgress.every((entry) => entry.progress < 1),
+    "MCP component progress reported completion before the result",
+  );
+  assert.deepEqual(
+    mcpComponentProgress.map((entry) => entry.progress),
+    [...mcpComponentProgress.map((entry) => entry.progress)].sort(
+      (a, b) => a - b,
+    ),
+    "MCP component progress moved backwards",
   );
   const lifecycleMcpPart = (await call("project_get")).result.objects.find(
     (o) => o.id !== lifecycleSource && !beforeNativeImport.has(o.id),
@@ -1473,6 +1539,14 @@ try {
     },
   });
   await page.waitForFunction(() => window.__pendingComponentResult);
+  const heldMcpProgress = (
+    await call("job_get", { jobId: cancelled.result.jobId })
+  ).result;
+  assert.equal(heldMcpProgress.status, "running");
+  assert(
+    heldMcpProgress.progress >= 0 && heldMcpProgress.progress < 1,
+    "MCP job reported completion before result delivery",
+  );
   await call("job_cancel", { jobId: cancelled.result.jobId });
   await job(cancelled, "cancelled");
   await page.evaluate(() => {
@@ -1493,6 +1567,61 @@ try {
     .getByRole("button", { name: "Leave selected only", exact: true })
     .click();
   await page.waitForFunction(() => window.__pendingComponentResult);
+  const heldGuiProgress = (await call("application_inspect")).result.progress
+    .scan;
+  await page.setViewportSize({ width: 1400, height: 600 });
+  await controls.locator(".tool-panel-content").evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  const guiStatus = controls.getByRole("status");
+  await guiStatus.waitFor({ state: "visible" });
+  const progressLayout = await guiStatus.evaluate((element) => {
+    const panel = element.closest("section");
+    const fieldset = panel?.querySelector("fieldset");
+    const box = element.getBoundingClientRect();
+    const panelBox = panel?.getBoundingClientRect();
+    const footerBox = panel?.querySelector("footer")?.getBoundingClientRect();
+    return {
+      outsideScroller: !element.closest(".tool-panel-content"),
+      panelBusy: panel?.getAttribute("aria-busy"),
+      controlsBusy: fieldset?.getAttribute("aria-busy"),
+      top: box.top,
+      bottom: box.bottom,
+      left: box.left,
+      textInset: parseFloat(getComputedStyle(element).paddingLeft),
+      panelLeft: panelBox?.left,
+      panelTop: panelBox?.top,
+      footerTop: footerBox?.top,
+      viewportHeight: innerHeight,
+    };
+  });
+  assert(
+    progressLayout.outsideScroller &&
+      progressLayout.panelBusy !== "true" &&
+      progressLayout.controlsBusy === "true",
+    "GUI status is inside the busy or scrolling controls",
+  );
+  assert(
+    progressLayout.left + progressLayout.textInset >=
+      progressLayout.panelLeft + 8,
+    "GUI status text is not aligned inside the panel",
+  );
+  assert(
+    progressLayout.top >= Math.max(0, progressLayout.panelTop) &&
+      progressLayout.bottom <=
+        Math.min(progressLayout.viewportHeight, progressLayout.footerTop),
+    "GUI status is outside the visible panel area",
+  );
+  await page.screenshot({
+    path: fileURLToPath(new URL("component-progress-status.png", out)),
+  });
+  const heldGuiStatus = await guiStatus.innerText();
+  await page.setViewportSize({ width: 1400, height: 900 });
+  const displayedPercent = /·\s*(\d+)%/.exec(heldGuiStatus);
+  assert(
+    displayedPercent && Number(displayedPercent[1]) < 100,
+    `GUI reported premature completion: ${heldGuiStatus}`,
+  );
   if (process.env.SCANFORGE_COMPONENT_RIPPLE_CAPTURE === "1")
     await page
       .locator("canvas")
@@ -1653,7 +1782,34 @@ try {
     assert.equal(new Set(component.triangles).size, width * height * 2);
     assert.equal(component.area, width * height);
     assert.equal((await geometry()).length, expanded.length);
+    const largeProgressStart = await page.evaluate(
+      () => window.__componentProgressTrace.length,
+    );
     await runEdit({ action: "componentExtract", indices: [0] });
+    const largeComponentProgress = await page.evaluate(
+      (start) =>
+        window.__componentProgressTrace
+          .slice(start)
+          .filter((entry) => entry.action === "componentExtract"),
+      largeProgressStart,
+    );
+    assert(
+      largeComponentProgress.some(
+        (entry) => entry.stage === "Packing precise scan segments",
+      ),
+      "Indexed extraction packing progress was not observed",
+    );
+    assert(
+      largeComponentProgress.every((entry) => entry.progress < 1),
+      "Indexed extraction reported completion before result delivery",
+    );
+    assert.deepEqual(
+      largeComponentProgress.map((entry) => entry.progress),
+      [...largeComponentProgress.map((entry) => entry.progress)].sort(
+        (a, b) => a - b,
+      ),
+      "Indexed extraction progress moved backwards",
+    );
     const extractedProject = (await call("project_get")).result;
     const extracted = extractedProject.objects.find(
       (object) => object.id !== "scan",
@@ -1723,6 +1879,7 @@ try {
       jsonArray: true,
       publicMcpExtractUndoRedo: true,
       smallComponentLargeRemainder: true,
+      progress: largeComponentProgress,
     };
   }
   assert.deepEqual(errors, []);
@@ -1744,6 +1901,8 @@ try {
         "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
       guiMcpOrderedCoordinatesMatch: true,
       guiMcpFacetNormalsMatch: true,
+      guiComponentProgress,
+      mcpComponentProgress,
       sourceRemainder: true,
       guiMcpUndoRedo: true,
       binaryReopen: true,
@@ -1761,7 +1920,15 @@ try {
     renderedCountsAreasAndNavigation: true,
     cases: results,
     mcpHeldResultCancellation: true,
+    heldMcpProgress: {
+      status: heldMcpProgress.status,
+      progress: heldMcpProgress.progress,
+      stage: heldMcpProgress.stage,
+    },
     guiCancelAndBack: true,
+    heldGuiProgress,
+    heldGuiStatus,
+    progressLayout,
     independentCornerNormalsGuiMcp: true,
     pageErrors: errors,
     largeIndexedInventory,

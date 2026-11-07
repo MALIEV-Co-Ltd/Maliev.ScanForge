@@ -2532,6 +2532,8 @@ Use `componentKeep`, `componentRemove`, `componentFlip` or `componentExtract` wi
 
 Component extraction retains available per-corner scanner normals and indexed normal records with their corresponding faces. Editable sampled triangle objects, including sampled CAD or primitive objects without protected exact geometry, are converted to meshes when their components are extracted. Projects can also contain an empty source left by component extraction. `project_get` and `object_get` identify it with `emptyComponentSource:true` and `triangles:0`; `mesh_analyze` rejects it because it has no faces. Such objects have no geometric bounds. JSON projects containing them use version 6, and binary projects containing them in the current state or history use manifest version 8. Ordinary empty mesh imports remain invalid.
 
+The component panel displays the current processing stage and progress while busy. Component-edit worker progress is nondecreasing and remains below 100% until the result is returned; use the terminal `job_get` status to confirm completion.
+
 Keep the existing `expectedRevision`, unique `requestId`, lock/job/cancellation checks and history/persistence workflow. The manufactured component browser control exercises GUI/public-MCP equality, retained corners, extraction ownership, cancellation, Undo/Redo and binary reopen; it does not establish installed-native comparison acceptance.
 
 `scanEdit/boundarySmooth` is a geometry edit. Locked objects and exact CAD/parametric bodies are rejected before processing starts; unlock a raw mesh or create an independent mesh copy first. Read-only `scanEdit/inventory` and boundary-curve reports remain available on protected sampled geometry. Rejection preserves geometry and history.

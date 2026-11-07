@@ -104,6 +104,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
   const [inventory, setInventory] = useState<ScanInventory>(empty);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
+  const [componentEditing, setComponentEditing] = useState(false);
   const [bridgeStatus, setBridgeStatus] = useState("");
   const bridgeOwner = useRef<BridgePreviewController | null>(null);
   const owner = useRef<AbortController | null>(null);
@@ -129,6 +130,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
     setBusy(true);
     props.onBusyChange?.(true);
     setProgress(`${label}…`);
+    setComponentEditing(operation.action.startsWith("component"));
     try {
       const request = {
         kind: "scanEdit",
@@ -225,6 +227,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
         owner.current = null;
         setBusy(false);
         setProgress("");
+        setComponentEditing(false);
         callbacks.current.onBusyChange?.(false);
       }
     }
@@ -291,7 +294,7 @@ export function ScanTopologyPanels(props: ScanTopologyPanelsProps) {
       {...props}
       inventory={inventory}
       busy={busy}
-      progress={progress}
+      progress={componentEditing ? progress : ""}
       bridgeStatus={bridgeStatus}
       onBridgePreview={(operation, accept) =>
         bridgeOwner.current?.request(operation, accept)
@@ -529,11 +532,7 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
         : "Fill selected hole",
     );
   return (
-    <section
-      className="scan-topology-panel tool-panel"
-      aria-label={title}
-      aria-busy={props.busy}
-    >
+    <section className="scan-topology-panel tool-panel" aria-label={title}>
       <h3>
         {title}
         <span>
@@ -549,13 +548,18 @@ export function ScanTopologyControls(props: ScanTopologyControlsProps) {
           ×
         </button>
       </h3>
+      {props.busy && props.progress && (
+        <p className="scan-topology-progress" role="status">
+          {props.progress}
+        </p>
+      )}
       <div className="tool-panel-content">
         <p className="scan-topology-summary">
           {inventory.scope === "components"
             ? `${inventory.components.length} meshes · holes and boundaries not calculated`
             : `${inventory.components.length} meshes · ${inventory.boundaries.filter((item) => item.closed).length} holes · ${inventory.boundaries.length} boundaries`}
         </p>
-        <fieldset disabled={blocked}>
+        <fieldset disabled={blocked} aria-busy={props.busy}>
           {!(section === "holes" && mode === "bridge") && (
             <>
               <div className="scan-topology-cycle">

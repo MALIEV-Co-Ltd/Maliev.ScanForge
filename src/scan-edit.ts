@@ -167,7 +167,7 @@ function componentIndex(
   preserveNormals = false,
 ): import("./types").IndexedMesh | undefined {
   if (!faces.length) return undefined;
-  checkProgress(options, 1, "Compacting component indices");
+  checkProgress(options, 0.9, "Compacting component indices");
   const ids = new Uint32Array(source.vertices.length / 3);
   const triangles = new Uint32Array(
     allocateImportedReadonlyBuffer(faces.length * 3 * 4, true),
@@ -420,7 +420,7 @@ function componentEdit(
     (Array.isArray(r.positions) &&
       r.positions.some((value) => !Object.is(value, Math.fround(value))));
   const output = (faces: ArrayLike<number>, flip?: Uint8Array): Positions => {
-    checkProgress(o, 1, "Preparing component coordinates");
+    checkProgress(o, 0.9, "Preparing component coordinates");
     const positions: Positions =
       privatePrecise && faces.length
         ? (new Float64Array(faces.length * 9) as unknown as Positions)

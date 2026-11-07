@@ -186,6 +186,33 @@ it("requests a spatial sketch for the selected closed boundary", () => {
     "Create 3D sketch from selected boundary",
   );
 });
+it("shows the current processing status while the component panel is busy", () => {
+  const html = renderToStaticMarkup(
+    ScanTopologyControls({
+      ...defaults(),
+      busy: true,
+      progress: "Preparing component coordinates · 84%",
+    }),
+  );
+  expect(html).toContain('role="status"');
+  expect(html).toContain("Preparing component coordinates · 84%");
+  const tree = ScanTopologyControls({
+    ...defaults(),
+    busy: true,
+    progress: "Preparing component coordinates · 84%",
+  });
+  expect(tree.props["aria-busy"]).not.toBe(true);
+  const status = elements(tree).find(
+    (element) => element.props.role === "status",
+  );
+  expect((tree.props.children as ReactNode[]).includes(status)).toBe(true);
+  expect(
+    elements(tree).find((element) => element.type === "fieldset")?.props[
+      "aria-busy"
+    ],
+  ).toBe(true);
+});
+
 it("blocks geometry operations for empty input and during processing while preserving cancellation", () => {
   const props = {
     ...defaults(),
@@ -195,7 +222,7 @@ it("blocks geometry operations for empty input and during processing while prese
   };
   const tree = ScanTopologyControls(props),
     html = renderToStaticMarkup(tree);
-  expect(html).toContain('<fieldset disabled="">');
+  expect(html).toContain('<fieldset disabled="" aria-busy="true">');
   expect(html).toContain("No items");
   click(tree, "Cancel and back");
   expect(props.onBack).toHaveBeenCalledOnce();

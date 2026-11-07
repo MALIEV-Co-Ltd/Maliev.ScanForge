@@ -232,6 +232,7 @@ it("prepares equivalent indexed display normals for a precise Extract worker res
       .filter((reply) => "progress" in reply)
       .map((reply) => (reply as { progress: number }).progress);
     expect(progress).toEqual([...progress].sort((a, b) => a - b));
+    expect(progress.every((fraction) => fraction < 1)).toBe(true);
   } finally {
     vi.unstubAllGlobals();
     vi.resetModules();

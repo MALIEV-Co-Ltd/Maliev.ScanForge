@@ -1,0 +1,373 @@
+{
+  "baseCommit": "1e524ff0",
+  "build": "scanforge-ceb2bde7167c5287",
+  "scope": "Component progress and one original PLY-3 Split/Extract lifecycle; this is not general M2 or native equivalence acceptance.",
+  "suite": {
+    "passed": 50952,
+    "expectedFailures": 2,
+    "skipped": 77,
+    "testFilesPassed": 848,
+    "testFilesSkipped": 30,
+    "note": "Suite and full build preceded the final CSS padding-only adjustment; Vite and manifest were rebuilt and browser validation ran after it."
+  },
+  "focusedTestsPassed": 83,
+  "browserHeapLimitBytes": 4395630592,
+  "componentBrowser": {
+    "nativeStlKeyBoundary": {
+      "low": {
+        "vertices": 4,
+        "components": 1
+      },
+      "high": {
+        "vertices": 6,
+        "components": 2
+      },
+      "guiMcp": true
+    },
+    "nearEdgeNativeControl": {
+      "nativeComponents": 2,
+      "indexedGuiMcp": 2,
+      "unindexedGuiMcp": 1,
+      "toleranceMm": 0.001
+    },
+    "browserHeapLimitBytes": 4395630592,
+    "nativeLifecycleExport": {
+      "nativeOutputSha256": "c7f98fe653e3b228756dbe675673c86e72e6b26e402ee3fea3763d2f9e413e97",
+      "guiMcpOrderedCoordinatesMatch": true,
+      "guiMcpFacetNormalsMatch": true,
+      "guiComponentProgress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.135,
+          "stage": "Building topology"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.22499999999999998,
+          "stage": "Finding connected components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.285,
+          "stage": "Checking vertex surface fans"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Topology complete"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Compacting component indices"
+        }
+      ],
+      "mcpComponentProgress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.135,
+          "stage": "Building topology"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.22499999999999998,
+          "stage": "Finding connected components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.285,
+          "stage": "Checking vertex surface fans"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Topology complete"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.8400000000000001,
+          "stage": "Compacting component indices"
+        }
+      ],
+      "sourceRemainder": true,
+      "guiMcpUndoRedo": true,
+      "binaryReopen": true
+    },
+    "nativeFixture": {
+      "triangles": 2,
+      "guiComponents": 1,
+      "mcpComponents": 1,
+      "guiMcpExtraction": true
+    },
+    "inputCoordinateSha256": "20e489954b93554e5be6a130b0846cd9b6948f36bf06ef9880defcd72d38d9e8",
+    "componentTriangles": [2, 8, 18],
+    "componentAreas": [1, 4, 9.00000000000002],
+    "inventoryHistoryIsolation": true,
+    "renderedCountsAreasAndNavigation": true,
+    "cases": [
+      {
+        "name": "keep",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "flip",
+        "triangles": 28,
+        "geometrySha256": "1782738d146a4fe70c8a3b60579304ddb2cc9411dd0f6259d27c92ad510e155c",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "extract",
+        "triangles": 8,
+        "geometrySha256": "99235dcbe6d202a91eff515224693d087e10609aa94698564bd5b8334431cd11",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": true
+      },
+      {
+        "name": "triangle-threshold-inclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      },
+      {
+        "name": "area-threshold-exclusive",
+        "triangles": 26,
+        "geometrySha256": "2994c1a9f9db280ceb24ebc911219dc9a52999c0ed75685345f1aa34287a17e1",
+        "guiMcpParity": true,
+        "rawCornerOracle": true,
+        "undoRedo": true,
+        "binarySaveReopen": true,
+        "sourceVisibilityAndSelection": null
+      }
+    ],
+    "mcpHeldResultCancellation": true,
+    "heldMcpProgress": {
+      "status": "running",
+      "progress": 0.8999999999999999,
+      "stage": "Scan edit complete"
+    },
+    "guiCancelAndBack": true,
+    "heldGuiProgress": {
+      "stage": ""
+    },
+    "heldGuiStatus": "Scan edit complete \u00b7 90%",
+    "progressLayout": {
+      "outsideScroller": true,
+      "panelBusy": null,
+      "controlsBusy": "true",
+      "top": 196,
+      "bottom": 211.390625,
+      "left": 277,
+      "textInset": 10,
+      "panelLeft": 277,
+      "panelTop": 156,
+      "footerTop": 474,
+      "viewportHeight": 600
+    },
+    "independentCornerNormalsGuiMcp": true,
+    "pageErrors": [],
+    "largeIndexedInventory": {
+      "triangles": 66048,
+      "area": 33024,
+      "jsonArray": true,
+      "publicMcpExtractUndoRedo": true,
+      "smallComponentLargeRemainder": true,
+      "progress": [
+        {
+          "action": "componentExtract",
+          "progress": 0.3,
+          "stage": "Grouping indexed components"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.813,
+          "stage": "Preparing component coordinates"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.813,
+          "stage": "Compacting component indices"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.95,
+          "stage": "Preparing component display"
+        },
+        {
+          "action": "componentExtract",
+          "progress": 0.95,
+          "stage": "Packing precise scan segments"
+        }
+      ]
+    }
+  },
+  "originalPly3": {
+    "inputFaces": 3691133,
+    "crossOriginIsolated": true,
+    "outputFaces": 3695945,
+    "exportedBytes": 558745713,
+    "reopenedGeometryEqual": true,
+    "cutterPreserved": true,
+    "reopenedUndo": true,
+    "reopenedRedoGeometry": true,
+    "initializedComputedNormals": [
+      {
+        "path": "indexedMesh.geometryNormals",
+        "encoding": "f32",
+        "elements": 5612016,
+        "sha256": "eec667db9a44bda177be4adb84b247ccfcd185548fd8e6f369763da7119510f4"
+      },
+      {
+        "path": "indexedMesh.facetNormals",
+        "encoding": "f32",
+        "elements": 11087835,
+        "sha256": "1014207222d90d21bc369cca0c0189654e49274ba3f82b7657905141a8e3384c"
+      }
+    ],
+    "pageErrors": [],
+    "consoleErrors": []
+  },
+  "guardReceipts": {
+    "accessibility-build": {
+      "command": [
+        "node",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2232807424,
+      "totalProcesses": 36,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 151.0472424000036
+    },
+    "accessibility-final-focused": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/scan-topology-panels.test.tsx",
+        "tests/scan-component-groups.test.ts",
+        "tests/scan-component-progress-worker.test.ts",
+        "tests/scan-indexed-segment-worker.test.ts",
+        "tests/automation-api.test.ts",
+        "--maxWorkers=1",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 473497600,
+      "totalProcesses": 12,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 4.759381299998495
+    },
+    "accessibility-suite": {
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--exclude",
+        "**/.resources/**",
+        "--reporter=dot"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1363210240,
+      "totalProcesses": 1006,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 382.40904080000473
+    },
+    "status-css-vite-guard": {
+      "command": ["node", "node_modules/vite/bin/vite.js", "build"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 2060816384,
+      "totalProcesses": 7,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 8.432809799996903
+    },
+    "status-css-manifest-guard": {
+      "command": ["node", "scripts/offline-manifest.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 121597952,
+      "totalProcesses": 2,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 0.3235382999991998
+    },
+    "status-css-browser-guard": {
+      "command": ["node", "tests/scan-components-browser.mjs"],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 1394692096,
+      "totalProcesses": 17,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 25.606502599999658
+    },
+    "status-ply3-final-guard": {
+      "command": [
+        "node",
+        "tests/m2-original-split-persistence-browser-local.mjs"
+      ],
+      "jobLimitBytes": 34110816256,
+      "leaseSeconds": 900,
+      "exitCode": 0,
+      "peakJobBytes": 5711896576,
+      "totalProcesses": 23,
+      "activeAfter": 0,
+      "passed": true,
+      "elapsedSeconds": 203.57274059999327
+    }
+  },
+  "review": "Independent component ownership review found no further concrete issue after moving the live status outside the busy controls; no real screen-reader test was performed."
+}

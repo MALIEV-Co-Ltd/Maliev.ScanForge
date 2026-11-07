@@ -295,6 +295,8 @@ scope.onmessage = async ({ data: incoming }) => {
     { positions: ProcessingRequest["positions"] | undefined } | undefined;
   let lastProgress = -Infinity;
   let lastStage = "";
+  let componentPhase: "preparing" | "editing" | "packing" = "preparing";
+  let componentProgress = 0;
   const reportHoles = createHoleFillReporter((fraction, stage, details) =>
     scope.postMessage({
       progress: fraction,
@@ -319,7 +321,23 @@ scope.onmessage = async ({ data: incoming }) => {
     if (now - lastProgress > 100 || fraction === 1 || stage !== lastStage) {
       lastProgress = now;
       lastStage = stage;
-      scope.postMessage({ progress: fraction, stage });
+      let reported = fraction;
+      if (
+        request.kind === "scanEdit" &&
+        request.action.startsWith("component")
+      ) {
+        // Separate preparation from editing; delivery owns the final completion.
+        const bounded = Math.max(0, Math.min(1, fraction));
+        const phase =
+          componentPhase === "preparing"
+            ? bounded * 0.3
+            : componentPhase === "editing"
+              ? 0.3 + bounded * 0.6
+              : 0.95;
+        componentProgress = Math.max(componentProgress, phase);
+        reported = componentProgress;
+      }
+      scope.postMessage({ progress: reported, stage });
     }
   }
   try {
@@ -487,6 +505,7 @@ scope.onmessage = async ({ data: incoming }) => {
           ? () => selectedVertices!
           : undefined,
       };
+      componentPhase = "editing";
       if (indexedExtract) {
         progress(0, "Grouping indexed components");
         result.scanEdit = runIndexedComponentExtract(
@@ -508,6 +527,7 @@ scope.onmessage = async ({ data: incoming }) => {
           true,
         );
       } else result.scanEdit = await runScanEditAsync(request, editOptions);
+      componentPhase = "packing";
       result.diagnostics = result.scanEdit.diagnostics;
       if (result.scanEdit.indexedMesh) {
         if (
