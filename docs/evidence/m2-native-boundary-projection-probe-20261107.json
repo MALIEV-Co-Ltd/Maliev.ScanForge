@@ -50,5 +50,13 @@
       "The method followed inside the interception callback and did not trace the handler independently."
     ],
     "cleanup": "Frida scripts unloaded and the session detached. Original native scene visibility restored."
+  },
+  "uiThreadTraceFailure": {
+    "method": "REA Frida Stalker followed the QuickSurface UI thread before a projection-button click.",
+    "evidenceId": "ev_7b349d7f0079574907d6508aae0073845c4e3c89a35b0822e1a5d96a8b5270c2",
+    "observed": "The application process exited during the attempted click; the Frida session detached before yielding a call summary. The causal mechanism was not established.",
+    "impact": "The native scan-1 scene was unsaved; on reopening, QuickSurface showed an empty scene and no recovery prompt. The previously retained input and fixture files were not modified.",
+    "recoveryCheck": "No recovery project was found in the scan folder, the user QuickSurface application-data folder, or as a top-level QSF in the temporary folder. This is a bounded search, not proof no backup exists.",
+    "prevention": "Do not trace the live UI thread on an unsaved native scene. Use a separately saved disposable scene and verify recovery before future intrusive tracing."
   }
 }
