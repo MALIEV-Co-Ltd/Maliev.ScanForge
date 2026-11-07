@@ -57,6 +57,7 @@ import {
   prepareSplitRenderData,
 } from "./scan-render-data";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
+import { markPrivateDecodingView } from "./project-private-decoding-views";
 import type {
   ProcessingRequest,
   ProcessingResult,
@@ -207,6 +208,27 @@ scope.onmessage = async ({ data: incoming }) => {
       });
       return;
     }
+  }
+  const privateVertices = (
+    incoming as ProcessingRequest & { privateScanEditVertices?: unknown }
+  ).privateScanEditVertices;
+  if (privateVertices !== undefined) {
+    const vertices =
+      incoming.kind === "scanEdit"
+        ? incoming.sourceIndexed?.vertices
+        : undefined;
+    if (
+      privateVertices !== true ||
+      !(vertices instanceof Float64Array) ||
+      !(vertices.buffer instanceof ArrayBuffer)
+    ) {
+      scope.postMessage({ error: "Invalid private scan edit vertices." });
+      return;
+    }
+    markPrivateDecodingView(vertices);
+    delete (
+      incoming as ProcessingRequest & { privateScanEditVertices?: unknown }
+    ).privateScanEditVertices;
   }
   let request = incoming;
   const key = (incoming as ProcessingRequest & { geometryKey?: number })

@@ -21,6 +21,7 @@ import { SCAN_DEFAULT_BUDGET_BYTES } from "../src/scan-geometry-source";
 import nativeHoleCups from "./fixtures/hole-fill-observed-cups.json";
 import { nativeStlTopology } from "../src/scan-native-stl-topology";
 import { scanDisplayBuffers } from "../src/scan-display-buffers";
+import { markPrivateDecodingView } from "../src/project-private-decoding-views";
 
 class ProcessingWorkerDouble {
   static latest: ProcessingWorkerDouble;
@@ -1040,6 +1041,65 @@ describe("processing worker resource ownership", () => {
     await next;
     expect(sourceIndexed.vertices.length).toBe(9);
     expect(sourceIndexed.triangles.length).toBe(3);
+  });
+  it("sends marked private indexed coordinates without transferring the authored buffers", async () => {
+    const source = markPrivateDecodingView(
+      new Float64Array([0.1, 0, 0, 1.1, 0, 0, 0.1, 1, 0]),
+    );
+    const vertices = markPrivateDecodingView(source.slice());
+    const triangles = new Uint32Array([0, 1, 2]);
+    const pending = processMesh({
+      kind: "scanEdit",
+      action: "inventory",
+      inventoryScope: "components",
+      positions: source as unknown as number[],
+      sourceIndexed: { vertices: vertices as unknown as number[], triangles },
+    });
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent).toMatchObject({ privateScanEditVertices: true });
+    if (worker.sent?.kind !== "scanEdit") throw new Error("Expected scan edit");
+    expect(worker.sent.sourceIndexed?.vertices).toBeInstanceOf(Float64Array);
+    expect(worker.transfers).not.toContain(source.buffer);
+    expect(worker.transfers).not.toContain(vertices.buffer);
+    const copied = structuredClone(worker.sent, { transfer: worker.transfers });
+    expect(source.byteLength).toBe(72);
+    expect(vertices.byteLength).toBe(72);
+    expect(Array.from(copied.sourceIndexed!.vertices)).toEqual(
+      Array.from(vertices),
+    );
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
+  });
+  it("does not forward a caller-supplied private indexed marker", async () => {
+    const vertices = new Float64Array([0.1, 0, 0, 1.1, 0, 0, 0.1, 1, 0]);
+    const input = {
+      kind: "scanEdit",
+      action: "inventory",
+      inventoryScope: "components",
+      positions: vertices as unknown as number[],
+      sourceIndexed: {
+        vertices: vertices as unknown as number[],
+        triangles: new Uint32Array([0, 1, 2]),
+      },
+      privateScanEditVertices: true,
+    } as const;
+    const pending = processMesh(input);
+    const worker = ProcessingWorkerDouble.latest;
+    expect(worker.sent).not.toHaveProperty("privateScanEditVertices");
+    worker.reply({
+      result: {
+        kind: "scanEdit",
+        diagnostics: {},
+        scanEdit: { diagnostics: {} },
+      },
+    });
+    await pending;
   });
   it("packs large precise component inputs without cloning scene arrays", async () => {
     const source = Array.from({ length: 65538 }, (_, i) =>

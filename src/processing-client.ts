@@ -30,6 +30,7 @@ import { yieldSpeculativePreparation } from "./speculative-mesh-preparation";
 import { cacheTopologySummary } from "./scan-topology-summary";
 import { SCAN_TOPOLOGY_TOLERANCE } from "./scan-topology-tolerance";
 import { COMPACT_COMPONENT_FACE_THRESHOLD } from "./scan-component-groups";
+import { isPrivateDecodingView } from "./project-private-decoding-views";
 import { indexedExactAdmission } from "./indexed-exact-admission";
 import { markRestoredCoordinates } from "./finite-typed-values";
 import { beginPriorityScanPreparation } from "./scan-background-preparation";
@@ -843,6 +844,12 @@ function runProcessingRequest(
           return positions;
         const copy = positions.slice();
         if (copy instanceof Float32Array) transfers.push(copy.buffer);
+        else if (
+          isPrivateDecodingView(positions) &&
+          copy instanceof Float64Array &&
+          copy.buffer instanceof ArrayBuffer
+        )
+          transfers.push(copy.buffer);
         return copy;
       }
       // A retained worker owns the canonical source and adopts edit successors.
@@ -1140,11 +1147,20 @@ function runProcessingRequest(
         copied.sourceSeedVertices = new Uint32Array(copied.sourceSeedVertices);
         transfers.push(copied.sourceSeedVertices.buffer);
       }
+      delete (
+        copied as ProcessingRequest & { privateScanEditVertices?: unknown }
+      ).privateScanEditVertices;
       worker.postMessage(
         {
           ...copied,
           ...(session ? { geometryKey: session.key } : {}),
           ...(borrowedReportSource ? { borrowedReportSource: true } : {}),
+          ...(copied.kind === "scanEdit" &&
+          copied.sourceIndexed &&
+          request.kind === "scanEdit" &&
+          isPrivateDecodingView(request.sourceIndexed?.vertices)
+            ? { privateScanEditVertices: true }
+            : {}),
           ...(packedScanEditSource.positions ||
           packedScanEditSource.vertices ||
           packedScanEditSource.indexedExtract ||
