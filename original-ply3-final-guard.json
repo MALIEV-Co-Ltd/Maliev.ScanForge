@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/scan-split-finite-candidate-original-local.test.ts"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 360,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": true,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 2116431872,
+  "totalProcesses": 8,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 18536984576,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 5792,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 21.995340100009344,
+  "outerLeaseExceeded": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-05T07:00:44.586713+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

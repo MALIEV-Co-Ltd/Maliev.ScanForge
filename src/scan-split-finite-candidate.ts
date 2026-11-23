@@ -144,6 +144,7 @@ export function runFiniteSplitCandidate(
   vertices.set(refined.sourceVertices);
   vertices.set(refined.addedVertices, refined.sourceVertices.length);
   const seamOptions = {
+    retainIsolatedInterior: true,
     signal: options.signal,
     maxTypedBytes: options.maxTypedBytesPerStage,
     check,

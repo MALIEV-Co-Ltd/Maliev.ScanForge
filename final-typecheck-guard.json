@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "scripts/typecheck.mjs"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 300,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": true,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 1218035712,
+  "totalProcesses": 16,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 18843189248,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 23956,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 142.2053154000023,
+  "outerLeaseExceeded": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-05T06:44:41.496019+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

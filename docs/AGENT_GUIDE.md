@@ -259,7 +259,8 @@ Edit Scan observes this preparation without starting duplicate work.
 `object_get.meshPreparation` exposes `scheduled`, `pending` (with progress),
 `ready` (with counts), `error`, or `inactive` for raw meshes. Use GUI tolerance
 `0.001` for MCP selected-facet edits to reuse the prepared index; this is also
-the default when the request omits tolerance. Defeature retains the exact
+the default when the request omits tolerance, except for finite mesh-to-mesh
+Split as described below. Defeature retains the exact
 Float32 corner coordinates of unselected, unpruned source facets even when
 tolerant adjacency groups nearby source vertices for diagnostics and patching.
 
@@ -1126,9 +1127,15 @@ The browser test uses installed Chrome, a disposable profile, an isolated static
 
 ### Dedicated Split mesh command
 
+Finite mesh-to-mesh Split defaults to a 0.000001 mm topology weld tolerance
+in the GUI and MCP, so small valid cutter facets are not collapsed by the
+coarser default used for other edits. MCP can override it with `tolerance`;
+plane and sampled non-mesh Split retain the 0.001 mm default. A different
+weld tolerance does not reuse a cached topology prepared at 0.001 mm.
+
 Finite mesh-to-mesh Split preserves wider coordinates where Float32 would lose seam precision. It rejects a refined face when its projected source-area change exceeds a relative 1e-9 allowance and an exact binary-coordinate coverage check still differs. It also rejects seam-midpoint area-vector changes beyond a relative 1e-9 allowance in the precise path; the internal Float32 helper allows 1e-3 for rounding. Rejection occurs before publication, leaving source geometry and history unchanged. Plane and sampled non-mesh cutter paths use Float32 output and reject facets that collapse or reverse at that precision.
 
-Finite Split uses existing junction vertices when opening a multi-edge seam. An isolated cut edge receives a midpoint so its tips remain connected. This applies equally to `mesh_process` and the GUI; the resulting facet count and geometry digest can differ from earlier releases.
+Finite Split uses existing junction vertices when opening a multi-edge seam. An isolated cut edge with two incident faces and connected interior fans at both endpoints remains a shared indexed edge, as observed in the tested native interior cuts; it does not create an open slit. Other isolated edges normally receive a midpoint so their tips remain connected; when the edge has two incident faces and at least one endpoint lies on a connected boundary fan, the existing endpoints suffice. For precise mesh cuts, an unbound intersection endpoint is associated with a unique boundary contact when their Float32-rounded coordinates are less than the Float32 representation of 0.0001 mm apart. If multiple contacts qualify, the endpoint remains unbound. These operations apply equally to `mesh_process` and the GUI, and can change facet counts, geometry digests and the distinction between nearby cut endpoints. The per-face contact lookup permits up to 1,048,576 estimated lookup entries; isolated-seam boundary lookup has a separate 256 MiB estimated JavaScript-entry ceiling, also constrained by the stage allowance. If either is exceeded the operation rejects without publishing and the user can reduce cutter complexity. These estimates are not total process-memory limits. Existing coverage, cancellation and work-budget checks still apply.
 
 Finite mesh Split bounds its temporary cutter ordering and intersection data using separate estimates based on a 1 GiB budget: up to 33,554,432 accumulated tree references, 1,048,576 collected intersections, and 4,194,304 distinct ordering points. These are estimates, not a combined heap limit. If one is exceeded, the operation rejects before publication; reduce cutter complexity or split the work and retry. The GUI and `mesh_process` use the same limits and error behavior.
 

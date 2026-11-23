@@ -1,0 +1,44 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "--maxWorkers=1",
+    "--exclude",
+    "**/.resources/**",
+    "--reporter=json",
+    "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-distance-prototype-20261105\\updated-full-suite-results.json"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 600,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": true,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 1370365952,
+  "totalProcesses": 945,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 17716318208,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 35872,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 338.65257950000523,
+  "outerLeaseExceeded": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-05T06:09:56.384532+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

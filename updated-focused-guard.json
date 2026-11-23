@@ -1,0 +1,53 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/scan-split-finite-seams.test.ts",
+    "tests/scan-split-finite-face-input.test.ts",
+    "tests/scan-split-finite-pipeline.test.ts",
+    "tests/scan-split-finite-candidate.test.ts",
+    "tests/scan-split-finite-candidate-matrix.test.ts",
+    "tests/m2-seam-branching.test.ts",
+    "tests/m2-seam-coverage-shared.test.ts",
+    "tests/scan-split-rotated-recovery.test.ts",
+    "tests/m2-adjacent-seam-native-input.test.ts",
+    "tests/m2-adjacent-seam-scaled-native.test.ts",
+    "tests/m2-adjacent-seam-scaled-one-ulp-native.test.ts",
+    "tests/m2-adjacent-seam-many-ulp-native.test.ts",
+    "tests/m2-nearby-disjoint-native.test.ts",
+    "tests/m2-native-radius-facets.test.ts"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 120,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": true,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 1052913664,
+  "totalProcesses": 21,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 17282772992,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 35016,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 1.7971439000102691,
+  "outerLeaseExceeded": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-05T06:07:00.836397+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

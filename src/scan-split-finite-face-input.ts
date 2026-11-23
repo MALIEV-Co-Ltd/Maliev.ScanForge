@@ -41,6 +41,7 @@ export function buildFiniteFaceInput(
   options: {
     signal?: AbortSignal;
     maxWork?: number;
+    maxLookupEntries?: number;
     check?: () => void;
     preciseCoordinates?: boolean;
   } = {},
@@ -90,6 +91,233 @@ export function buildFiniteFaceInput(
       tick();
       return boundaryContacts[a].t - boundaryContacts[b].t;
     });
+  const associationRadius = Math.fround(0.0001);
+  const lookupLimit = options.maxLookupEntries ?? 1_048_576;
+  if (!Number.isSafeInteger(lookupLimit) || lookupLimit < 0)
+    throw new Error("Finite contact lookup memory budget is invalid.");
+  let lookupEntries = 0;
+  const reserveLookup = () => {
+    if (++lookupEntries > lookupLimit)
+      throw new Error("Finite contact lookup memory budget exceeded.");
+  };
+  type Bucket = {
+    indices: number[];
+    min: number[];
+    max: number[];
+    a?: number[];
+    b?: number[];
+    deviation?: number;
+    margin?: number;
+    unit?: number[];
+    sorted?: { index: number; projection: number }[];
+  };
+  const distanceToSegment = (p: number[], a: number[], b: number[]) => {
+    const u = b.map((v, i) => v - a[i]);
+    const length2 = u.reduce((sum, v) => sum + v * v, 0);
+    const t =
+      length2 === 0
+        ? 0
+        : Math.max(
+            0,
+            Math.min(
+              1,
+              u.reduce((sum, v, i) => sum + v * (p[i] - a[i]), 0) / length2,
+            ),
+          );
+    return Math.hypot(...p.map((v, i) => v - (a[i] + t * u[i])));
+  };
+  let contactBuckets: Map<string, Bucket> | undefined;
+  const lookupCache = new Map<string, number | null>();
+  const roundedCell = (p: number[]) =>
+    p.map((v) => Math.floor(v / associationRadius));
+  const cellKey = (x: number, y: number, z: number) => `${x}:${y}:${z}`;
+  const uniqueNearby = (p: Vec3): number | undefined => {
+    if (boundaryContacts.length === 0) return undefined;
+    const rounded = p.map(Math.fround);
+    if (!rounded.every(Number.isFinite)) return undefined;
+    const cacheKey = rounded.join(":");
+    const cached = lookupCache.get(cacheKey);
+    if (cached !== undefined) return cached === null ? undefined : cached;
+    if (!contactBuckets) {
+      contactBuckets = new Map();
+      for (let i = 0; i < boundaryContacts.length; i++) {
+        tick();
+        const coords = boundaryContacts[i].point.map(Math.fround);
+        const cell = roundedCell(coords);
+        if (!cell.every(Number.isFinite)) continue;
+        const key = `${cellKey(cell[0], cell[1], cell[2])}:${boundaryContacts[i].edge}`;
+        let bucket = contactBuckets.get(key);
+        if (!bucket) {
+          reserveLookup();
+          bucket = { indices: [], min: [...coords], max: [...coords] };
+          contactBuckets.set(key, bucket);
+        }
+        reserveLookup();
+        bucket.indices.push(i);
+        for (let axis = 0; axis < 3; axis++) {
+          bucket.min[axis] = Math.min(bucket.min[axis], coords[axis]);
+          bucket.max[axis] = Math.max(bucket.max[axis], coords[axis]);
+        }
+      }
+      for (const bucket of contactBuckets.values()) {
+        tick();
+        const axis = [0, 1, 2].reduce(
+          (best, k) =>
+            bucket.max[k] - bucket.min[k] > bucket.max[best] - bucket.min[best]
+              ? k
+              : best,
+          0,
+        );
+        let low = bucket.indices[0],
+          high = low;
+        for (const i of bucket.indices) {
+          tick();
+          if (
+            Math.fround(boundaryContacts[i].point[axis]) <
+            Math.fround(boundaryContacts[low].point[axis])
+          )
+            low = i;
+          if (
+            Math.fround(boundaryContacts[i].point[axis]) >
+            Math.fround(boundaryContacts[high].point[axis])
+          )
+            high = i;
+        }
+        bucket.a = boundaryContacts[low].point.map(Math.fround);
+        bucket.b = boundaryContacts[high].point.map(Math.fround);
+        bucket.deviation = 0;
+        for (const i of bucket.indices) {
+          tick();
+          bucket.deviation = Math.max(
+            bucket.deviation,
+            distanceToSegment(
+              boundaryContacts[i].point.map(Math.fround),
+              bucket.a,
+              bucket.b,
+            ),
+          );
+        }
+        bucket.margin =
+          64 *
+          Number.EPSILON *
+          Math.max(1, ...bucket.min.map(Math.abs), ...bucket.max.map(Math.abs));
+        const vector = bucket.b.map((v, k) => v - bucket.a![k]);
+        const length = Math.hypot(...vector);
+        if (length > 0) {
+          bucket.unit = vector.map((v) => v / length);
+          bucket.sorted = bucket.indices.map((index) => {
+            tick();
+            reserveLookup();
+            const point = boundaryContacts[index].point;
+            return {
+              index,
+              projection: point.reduce(
+                (sum, v, k) =>
+                  sum + (Math.fround(v) - bucket.a![k]) * bucket.unit![k],
+                0,
+              ),
+            };
+          });
+          bucket.sorted.sort((a, b) => {
+            tick();
+            return a.projection - b.projection;
+          });
+        }
+      }
+    }
+    const center = roundedCell(rounded);
+    const keys = new Set<string>();
+    for (let dx = -1; dx <= 1; dx++)
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dz = -1; dz <= 1; dz++)
+          for (let edge = 0; edge < 3; edge++)
+            keys.add(
+              `${cellKey(center[0] + dx, center[1] + dy, center[2] + dz)}:${edge}`,
+            );
+    let candidate: number | undefined;
+    let ambiguous = false;
+    for (const key of keys) {
+      const bucket = contactBuckets.get(key);
+      if (!bucket) continue;
+      const minDistance = Math.hypot(
+        ...rounded.map((v, axis) =>
+          Math.max(bucket.min[axis] - v, 0, v - bucket.max[axis]),
+        ),
+      );
+      if (minDistance - bucket.margin! >= associationRadius) continue;
+      const lineDistance = distanceToSegment(rounded, bucket.a!, bucket.b!);
+      if (
+        lineDistance - bucket.deviation! - bucket.margin! >=
+        associationRadius
+      )
+        continue;
+      let candidates: Iterable<number> = bucket.indices;
+      if (bucket.unit && bucket.sorted) {
+        const projection = rounded.reduce(
+          (sum, v, k) => sum + (v - bucket.a![k]) * bucket.unit![k],
+          0,
+        );
+        const perpendicular = Math.hypot(
+          ...rounded.map(
+            (v, k) => v - (bucket.a![k] + projection * bucket.unit![k]),
+          ),
+        );
+        const minPerpendicular = Math.max(
+          0,
+          perpendicular - bucket.deviation! - bucket.margin!,
+        );
+        const paddedRadius = associationRadius + bucket.margin!;
+        if (minPerpendicular >= paddedRadius) continue;
+        const span =
+          Math.sqrt(
+            Math.max(
+              0,
+              paddedRadius * paddedRadius - minPerpendicular * minPerpendicular,
+            ),
+          ) +
+          2 * bucket.margin!;
+        let lo = 0,
+          hi = bucket.sorted.length;
+        while (lo < hi) {
+          tick();
+          const mid = Math.floor((lo + hi) / 2);
+          if (bucket.sorted[mid].projection < projection - span) lo = mid + 1;
+          else hi = mid;
+        }
+        const sorted = bucket.sorted;
+        candidates = (function* () {
+          for (
+            let i = lo;
+            i < sorted.length && sorted[i].projection <= projection + span;
+            i++
+          ) {
+            tick();
+            yield sorted[i].index;
+          }
+        })();
+      }
+      for (const i of candidates) {
+        tick();
+        const point = boundaryContacts[i].point;
+        const distance = Math.hypot(
+          ...point.map((v, axis) => Math.fround(v) - rounded[axis]),
+        );
+        if (distance < associationRadius) {
+          if (candidate !== undefined) {
+            ambiguous = true;
+            break;
+          }
+          candidate = i;
+        }
+      }
+      if (ambiguous) break;
+    }
+    if (lookupEntries < lookupLimit) {
+      reserveLookup();
+      lookupCache.set(cacheKey, ambiguous ? null : (candidate ?? null));
+    }
+    return ambiguous ? undefined : candidate;
+  };
   const segments: [Vec3, Vec3][] = [];
   const endpointBindings: {
     segment: number;
@@ -181,8 +409,24 @@ export function buildFiniteFaceInput(
           );
         binding = match;
       }
+      if (binding === undefined && options.preciseCoordinates) {
+        const candidate = uniqueNearby(hit.points[endpoint]);
+        if (candidate !== undefined) {
+          binding = candidate;
+          segments[segment][endpoint] = [...boundaryContacts[candidate].point];
+        }
+      }
       if (binding !== undefined)
         endpointBindings.push({ segment, endpoint, contact: binding });
+    }
+    if (
+      segments[segment][0].every(
+        (value, axis) => value === segments[segment][1][axis],
+      )
+    ) {
+      segments.pop();
+      while (endpointBindings.at(-1)?.segment === segment)
+        endpointBindings.pop();
     }
   }
   return { segments, boundaryContacts, endpointBindings };

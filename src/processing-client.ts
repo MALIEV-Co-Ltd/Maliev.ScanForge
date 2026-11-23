@@ -199,7 +199,16 @@ export function processMesh(
   options: ProcessingOptions = {},
 ): Promise<ProcessingResult> {
   if (request.kind === "scanEdit" && request.tolerance === undefined)
-    request = { ...request, tolerance: SCAN_TOPOLOGY_TOLERANCE };
+    request = {
+      ...request,
+      tolerance:
+        request.action === "split" &&
+        request.target &&
+        !request.plane &&
+        !request.targetIsNonMesh
+          ? 1e-6
+          : SCAN_TOPOLOGY_TOLERANCE,
+    };
   if (
     request.kind === "scanTools" &&
     request.operation.kind === "averageMesh"

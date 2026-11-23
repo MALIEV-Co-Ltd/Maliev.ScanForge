@@ -167,7 +167,6 @@ import type { ScanEditRequest } from "../scan-edit";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
 import { spatialBoundarySketch } from "../scan-boundary-spatial-publication";
 import type { SpatialBoundaryCurve } from "../scan-boundary-spatial";
-import { SCAN_TOPOLOGY_TOLERANCE } from "../scan-topology-tolerance";
 import { ScanTopologyPanels } from "./ScanTopologyPanels";
 import type { ScanBridgeSession } from "../scan-bridge-gesture";
 import {
@@ -1880,7 +1879,6 @@ export function App() {
         {
           kind: "scanEdit",
           positions: selected.positions,
-          tolerance: SCAN_TOPOLOGY_TOLERANCE,
           ...operation,
           ...(indexedMeshMatches(selected.indexedMesh, selected.positions)
             ? { sourceIndexed: selected.indexedMesh }

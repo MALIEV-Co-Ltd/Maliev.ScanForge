@@ -51,10 +51,10 @@ it("pins the one-step cutter round trip and native Split observation", () => {
   const result = split(source, cutter);
   expect(result.diagnostics.parts).toBe(2);
   expect(native.length / 9).toBe(3);
-  expect(result.positions!.length / 9).toBe(5);
+  expect(result.positions!.length / 9).toBe(3);
 });
 
-it.fails("matches the one-step retained native Split facets", () => {
+it("matches the one-step retained native Split facets", () => {
   const { source, cutter, native } = inputs();
   expect(facets(split(source, cutter).positions!)).toEqual(facets(native));
 });

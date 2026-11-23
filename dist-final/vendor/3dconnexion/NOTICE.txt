@@ -1,0 +1,9 @@
+Optional 3DconnexionJS 0.8.1 for ScanForge, used only with 3Dconnexion products.
+3D input device development tools and related technology are provided under license from 3Dconnexion. © 3Dconnexion 1992 - 2025. All rights reserved.
+The SDK agreement and bundled MIT notices are in LICENSE.txt. The application About/Help also needs the attribution above.
+Official archive: 3DxWare_SDK_v4-0-6_r22071.zip; SHA256 27dda82c5abdeb579c5aae2bc46099ee666f6cc8b86c5173e3c69d5efb2f7ec5.
+Official packaged input: web/3DconnexionJS/build/3dconnexion.module.min.js, 44277 bytes; SHA256 9a0c5f1a3e4971ce6e39782bf8c1a67cdf1ecfbb025568a7fcdb8dc05a4847b9.
+ScanForge modifications: retain and abort discovery XHR; 8s discovery timeout; retain/cancel the exact Autobahn peer/session; cancel owned retry timers; 10s pending WebSocket/WAMP readiness deadline; allow close during pending handshake; ignore late creation after close. No navigation, matrix, control, service address, or protocol behavior was rewritten. These are SDK-local changes; browser globals XMLHttpRequest and WebSocket are not replaced.
+Modified packaged output SHA256 0073d5102865e447f09870f7dc63a3faae9685e3b4ee3d19c3a2cbde14eef6ff.
+This optional module includes AutobahnJS/when/console-normalizer/CryptoJS; no separate global dependency script is required. Raw SDK source and documentation are intentionally not distributed here.
+Transport close is a request to the browser. Actual device, driver, browser and socket teardown behavior still needs runtime validation; source/fake transport tests do not establish physical device acceptance.

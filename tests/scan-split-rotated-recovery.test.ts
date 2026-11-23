@@ -53,10 +53,10 @@ it("retains the native rotated boundary fan when inserting collinear contacts", 
     if (index >= 0) remaining.splice(index, 1);
     else extra++;
   }
-  // Native uses one vertex where this operation preserves two close contacts.
-  expect(remaining).toHaveLength(1);
-  expect(extra).toBe(3);
-  expect(actual).toHaveLength(38);
+  // The output now matches all retained native unordered facets.
+  expect(remaining).toHaveLength(0);
+  expect(extra).toBe(0);
+  expect(actual).toHaveLength(36);
   expect(new Set(actual).size).toBe(actual.length);
   const area = (values: ArrayLike<number>) => {
     let sum = 0;

@@ -1,0 +1,35 @@
+{
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "sourceHashes": [
+    "76aef9a8b4704629d9d5f7530942d1e9d2074cad28917249f4996e922178e10a",
+    "6fad07f34badabf9a85fea0f68061ba476d4d5602fe26192820999254aea6558",
+    "a83b2fc19704db362a2a144f4db17a67ee73dd653519457f722c75babdeaac99",
+    "2882782f20998f72050b07b9045dea83ee930599cc1f0f4c2b43fe7aa30dd5cc"
+  ],
+  "sourceFaces": 3691133,
+  "partFaces": [
+    1776963,
+    1918982
+  ],
+  "cutterX": 19.332477569580078,
+  "partX": [
+    {
+      "min": -33.20513153076172,
+      "max": 19.332477569580078
+    },
+    {
+      "min": 19.332477569580078,
+      "max": 71.87008666992188
+    }
+  ],
+  "inputArea": 7083.997795891035,
+  "outputArea": 7083.997795890635,
+  "precise": true,
+  "diagnostics": {
+    "affectedFaces": 2406,
+    "sourceFaces": 3691133,
+    "parts": 2,
+    "cutEdges": 2406,
+    "sourceIdentity": "retained-indexed"
+  }
+}

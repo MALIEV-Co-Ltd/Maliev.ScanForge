@@ -1,0 +1,55 @@
+[
+  {
+    "sha256": "04580a884ea6cea294402649ff7b5cbb167d47462d1340a4ed33e550db10a81b",
+    "url": "https://raw.githubusercontent.com/Open-Cascade-SAS/OCCT/33d9a6fa21ca4fa711da7066655aa2ba854545ee/OCCT_LGPL_EXCEPTION.txt",
+    "name": "OCCT_LGPL_EXCEPTION.txt"
+  },
+  {
+    "sha256": "08c135755dd589039470f1fdbb400daaabaaa50d0b366d19cebff4d22986baa1",
+    "url": "https://raw.githubusercontent.com/freetype/freetype/VER-2-10-1/docs/FTL.TXT",
+    "name": "FREETYPE_FTL.txt"
+  },
+  {
+    "sha256": "fd056de4196903a676208ef58cfddafc7d583d1f28fa2e44c309cf84a59e62fb",
+    "url": "https://raw.githubusercontent.com/freetype/freetype/VER-2-10-1/docs/LICENSE.TXT",
+    "name": "FREETYPE_LICENSE.txt"
+  },
+  {
+    "sha256": "fa4cd9ab005185e10cd8f7504518856c7dd36c01e766c2bac87f4fc638e9f886",
+    "url": "https://raw.githubusercontent.com/fontconfig/fontconfig/2.13.92/COPYING",
+    "name": "FONTCONFIG_COPYING.txt"
+  },
+  {
+    "sha256": "40c3cb9dd8bfded77fb5029e274bfa964e19bbee9c8a89650fdfc8296f999760",
+    "url": "https://chromium.googlesource.com/external/p3/regal/+/184c62b7d7761481609ef1c1484ada659ae181b9/include/GL/Regal.h?format=TEXT",
+    "name": "REGAL_HEADER_LICENSE.txt",
+    "path": "include/GL/Regal.h"
+  },
+  {
+    "sha256": "f3857759226191860119a14e6cc0420df506c10a5c1b6b2ff8abc8f8d31920fb",
+    "url": "https://chromium.googlesource.com/external/p3/regal/+/184c62b7d7761481609ef1c1484ada659ae181b9/src/apitrace/thirdparty/khronos/GLES2/gl2.h?format=TEXT",
+    "name": "REGAL_KHRONOS_HEADER_LICENSE.txt",
+    "path": "src/apitrace/thirdparty/khronos/GLES2/gl2.h"
+  },
+  {
+    "sha256": "c26f6bdc52708c4b1151f7a68b7315b0a5d4b57fc014b30f9d601d84896f4dcc",
+    "url": "https://chromium.googlesource.com/external/p3/regal/+/184c62b7d7761481609ef1c1484ada659ae181b9/README.rst?format=TEXT",
+    "name": "REGAL_README.rst",
+    "path": "README.rst"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/freetype/freetype/VER-2-10-1/src/bdf/README",
+    "name": "FREETYPE_BDF_README.txt",
+    "sha256": "46a6b868ce86a88b7485a0ac88408c1111996ee93172bc7c11219c1af17084fe"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/freetype/freetype/VER-2-10-1/src/pcf/README",
+    "name": "FREETYPE_PCF_README.txt",
+    "sha256": "18d9782898d9eac04476e2f744678137b2a889689ed3e923e052fc396a86f86b"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/freetype/freetype/VER-2-10-1/src/gzip/zlib.h",
+    "name": "FREETYPE_ZLIB_LICENSE.txt",
+    "sha256": "240087b0c282695563bd238d47d0d2edb319f9157e55c0b0cddbaf794ddc9353"
+  }
+]

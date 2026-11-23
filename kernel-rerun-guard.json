@@ -1,0 +1,46 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/automation-operations.test.ts",
+    "tests/scan-boundary-cleanup.test.ts",
+    "tests/scan-boundary-kernel-projection.test.ts",
+    "tests/scan-boundary-native-smooth.test.ts",
+    "tests/scan-hole-native-curvature.test.ts",
+    "--reporter=json",
+    "--outputFile=C:\\Users\\Shoung\\Documents\\Codex\\2026-10-22\\clo\\work\\m2-distance-prototype-20261105\\kernel-rerun-results.json"
+  ],
+  "jobLimitBytes": 4294967296,
+  "leaseSeconds": 180,
+  "cleanupReserveSeconds": 3.0,
+  "leaseIncludesAdmission": true,
+  "passed": true,
+  "cleanupConfirmed": true,
+  "cleanupErrors": [],
+  "activeAfter": 0,
+  "jobActiveAfter": 0,
+  "peakJobBytes": 2193272832,
+  "totalProcesses": 12,
+  "noChildStarted": false,
+  "memoryAdmission": {
+    "method": "GlobalMemoryStatusEx",
+    "availablePhysicalBytes": 17703034880,
+    "requiredBytes": 4294967296,
+    "childProcessCreated": false
+  },
+  "ownedPid": 24432,
+  "exitCode": 0,
+  "ownedRootExited": true,
+  "threadHandleClosed": true,
+  "processHandleClosed": true,
+  "JobHandleClosed": true,
+  "elapsedSeconds": 8.311153600006946,
+  "outerLeaseExceeded": false,
+  "validationLane": {
+    "name": "Local\\ScanForge.BoundedValidation",
+    "acquiredUtc": "2026-11-05T06:06:02.909880+00:00",
+    "releasedAfterCleanup": true,
+    "zeroWait": true
+  }
+}

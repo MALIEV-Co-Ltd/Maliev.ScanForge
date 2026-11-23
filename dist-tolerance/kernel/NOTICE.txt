@@ -1,0 +1,8 @@
+OpenCascade.js 1.1.1: LGPL-2.1-only.
+Source: https://github.com/donalffons/opencascade.js/tree/v1.1.1
+This application uses Open CASCADE Technology facilities.
+Generated JavaScript changes: ES module export removed for classic-worker loading; WASM binary unchanged.
+Open CASCADE Technology V7_4_0p1: LGPL2.1 with Open CASCADE exception.
+Source: https://github.com/Open-Cascade-SAS/OCCT/tree/33d9a6fa21ca4fa711da7066655aa2ba854545ee
+The upstream build also references FreeType2.10.1, Fontconfig2.13.92 and Regal. See SOURCE_BUILD.md and the application third-party notices.
+Replace these local JavaScript/WASM assets to use a compatible modified kernel.

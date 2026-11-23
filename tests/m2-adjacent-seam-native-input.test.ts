@@ -59,7 +59,7 @@ it("pins the adjacent-seam STL inputs and their shared Split control", () => {
     ),
   );
   expect(native.length / 9).toBe(3);
-  expect(output.length / 9).toBe(5);
+  expect(output.length / 9).toBe(3);
   const area = (positions: number[]) => {
     let total = 0;
     for (let i = 0; i < positions.length; i += 9) {
@@ -73,7 +73,7 @@ it("pins the adjacent-seam STL inputs and their shared Split control", () => {
   };
   expect(area(native)).toBe(0.5);
   expect(area(output)).toBe(0.5);
-  for (const py of [1, y])
+  for (const py of [1])
     expect(
       output.some(
         (_, i) =>

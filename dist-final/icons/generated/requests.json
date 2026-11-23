@@ -1,0 +1,882 @@
+[
+  {
+    "id": "ribbon-prepareScan",
+    "name": "prepareScan"
+  },
+  {
+    "id": "ribbon-constructTools",
+    "name": "constructTools"
+  },
+  {
+    "id": "ribbon-alignTools",
+    "name": "alignTools"
+  },
+  {
+    "id": "ribbon-surfacingTools",
+    "name": "surfacingTools"
+  },
+  {
+    "id": "ribbon-patternTools",
+    "name": "patternTools"
+  },
+  {
+    "id": "ribbon-edgeTools",
+    "name": "edgeTools"
+  },
+  {
+    "id": "ribbon-plane2dSketch",
+    "name": "plane2dSketch"
+  },
+  {
+    "id": "ribbon-surface2dSketch",
+    "name": "surface2dSketch"
+  },
+  {
+    "id": "ribbon-millimetres",
+    "name": "millimetres"
+  },
+  {
+    "id": "ribbon-inches",
+    "name": "inches"
+  },
+  {
+    "id": "ribbon-metres",
+    "name": "metres"
+  },
+  {
+    "id": "ribbon-language",
+    "name": "language"
+  },
+  {
+    "id": "ribbon-options",
+    "name": "options"
+  },
+  {
+    "id": "ribbon-videoTutorials",
+    "name": "videoTutorials"
+  },
+  {
+    "id": "ribbon-helpPdf",
+    "name": "helpPdf"
+  },
+  {
+    "id": "ribbon-examples",
+    "name": "examples"
+  },
+  {
+    "id": "ribbon-checkUpdates",
+    "name": "checkUpdates"
+  },
+  {
+    "id": "ribbon-systemLog",
+    "name": "systemLog"
+  },
+  {
+    "id": "ribbon-resetLayout",
+    "name": "resetLayout"
+  },
+  {
+    "id": "ribbon-changeLog",
+    "name": "changeLog"
+  },
+  {
+    "id": "ribbon-credits",
+    "name": "credits"
+  },
+  {
+    "id": "ribbon-newDocument",
+    "name": "newDocument"
+  },
+  {
+    "id": "ribbon-open",
+    "name": "open"
+  },
+  {
+    "id": "ribbon-save",
+    "name": "save"
+  },
+  {
+    "id": "ribbon-backup",
+    "name": "backup"
+  },
+  {
+    "id": "ribbon-editScan",
+    "name": "editScan"
+  },
+  {
+    "id": "ribbon-cleanup",
+    "name": "cleanup"
+  },
+  {
+    "id": "ribbon-repairMesh",
+    "name": "repairMesh"
+  },
+  {
+    "id": "ribbon-segmentMesh",
+    "name": "segmentMesh"
+  },
+  {
+    "id": "ribbon-select",
+    "name": "select"
+  },
+  {
+    "id": "ribbon-fitPlane",
+    "name": "fitPlane"
+  },
+  {
+    "id": "ribbon-fitCylinder",
+    "name": "fitCylinder"
+  },
+  {
+    "id": "ribbon-fitCone",
+    "name": "fitCone"
+  },
+  {
+    "id": "ribbon-fitSphere",
+    "name": "fitSphere"
+  },
+  {
+    "id": "ribbon-align",
+    "name": "align"
+  },
+  {
+    "id": "ribbon-section",
+    "name": "section"
+  },
+  {
+    "id": "ribbon-fitSurface",
+    "name": "fitSurface"
+  },
+  {
+    "id": "ribbon-newFreeform",
+    "name": "newFreeform"
+  },
+  {
+    "id": "ribbon-primitive",
+    "name": "primitive"
+  },
+  {
+    "id": "ribbon-extrude",
+    "name": "extrude"
+  },
+  {
+    "id": "ribbon-revolve",
+    "name": "revolve"
+  },
+  {
+    "id": "ribbon-measure",
+    "name": "measure"
+  },
+  {
+    "id": "ribbon-deviation",
+    "name": "deviation"
+  },
+  {
+    "id": "ribbon-exportStep",
+    "name": "exportStep"
+  },
+  {
+    "id": "ribbon-exportStl",
+    "name": "exportStl"
+  },
+  {
+    "id": "ribbon-undo",
+    "name": "undo"
+  },
+  {
+    "id": "ribbon-redo",
+    "name": "redo"
+  },
+  {
+    "id": "ribbon-rebuild",
+    "name": "rebuild"
+  },
+  {
+    "id": "ribbon-delete",
+    "name": "delete"
+  },
+  {
+    "id": "ribbon-fitView",
+    "name": "fitView"
+  },
+  {
+    "id": "ribbon-iso",
+    "name": "iso"
+  },
+  {
+    "id": "ribbon-top",
+    "name": "top"
+  },
+  {
+    "id": "ribbon-bottom",
+    "name": "bottom"
+  },
+  {
+    "id": "ribbon-left",
+    "name": "left"
+  },
+  {
+    "id": "ribbon-right",
+    "name": "right"
+  },
+  {
+    "id": "ribbon-front",
+    "name": "front"
+  },
+  {
+    "id": "ribbon-back",
+    "name": "back"
+  },
+  {
+    "id": "ribbon-coordinateSystem",
+    "name": "coordinateSystem"
+  },
+  {
+    "id": "ribbon-referenceAxis",
+    "name": "referenceAxis"
+  },
+  {
+    "id": "ribbon-sketchFromSection",
+    "name": "sketchFromSection"
+  },
+  {
+    "id": "ribbon-sectionView",
+    "name": "sectionView"
+  },
+  {
+    "id": "ribbon-wireframe",
+    "name": "wireframe"
+  },
+  {
+    "id": "ribbon-linearBackground",
+    "name": "linearBackground"
+  },
+  {
+    "id": "ribbon-studioBackground",
+    "name": "studioBackground"
+  },
+  {
+    "id": "ribbon-deselectAll",
+    "name": "deselectAll"
+  },
+  {
+    "id": "ribbon-showHidden",
+    "name": "showHidden"
+  },
+  {
+    "id": "ribbon-invertHidden",
+    "name": "invertHidden"
+  },
+  {
+    "id": "ribbon-reducePolygons",
+    "name": "reducePolygons"
+  },
+  {
+    "id": "ribbon-reduceNoise",
+    "name": "reduceNoise"
+  },
+  {
+    "id": "ribbon-transform",
+    "name": "transform"
+  },
+  {
+    "id": "ribbon-scaleMesh",
+    "name": "scaleMesh"
+  },
+  {
+    "id": "ribbon-flipNormals",
+    "name": "flipNormals"
+  },
+  {
+    "id": "ribbon-shrinkwrap",
+    "name": "shrinkwrap"
+  },
+  {
+    "id": "ribbon-repolygonize",
+    "name": "repolygonize"
+  },
+  {
+    "id": "ribbon-averageMesh",
+    "name": "averageMesh"
+  },
+  {
+    "id": "ribbon-mirrorMesh",
+    "name": "mirrorMesh"
+  },
+  {
+    "id": "ribbon-unroll",
+    "name": "unroll"
+  },
+  {
+    "id": "ribbon-alignCoordinates",
+    "name": "alignCoordinates"
+  },
+  {
+    "id": "ribbon-alignInteractive",
+    "name": "alignInteractive"
+  },
+  {
+    "id": "ribbon-alignNPoints",
+    "name": "alignNPoints"
+  },
+  {
+    "id": "ribbon-fineAlign",
+    "name": "fineAlign"
+  },
+  {
+    "id": "ribbon-globalFineAlign",
+    "name": "globalFineAlign"
+  },
+  {
+    "id": "ribbon-autoColorize",
+    "name": "autoColorize"
+  },
+  {
+    "id": "ribbon-defaultColor",
+    "name": "defaultColor"
+  },
+  {
+    "id": "ribbon-objectColor",
+    "name": "objectColor"
+  },
+  {
+    "id": "ribbon-extractPrimitives",
+    "name": "extractPrimitives"
+  },
+  {
+    "id": "ribbon-middlePlane",
+    "name": "middlePlane"
+  },
+  {
+    "id": "ribbon-planePath",
+    "name": "planePath"
+  },
+  {
+    "id": "ribbon-planeSketchLine",
+    "name": "planeSketchLine"
+  },
+  {
+    "id": "ribbon-symmetryPlane",
+    "name": "symmetryPlane"
+  },
+  {
+    "id": "ribbon-referenceLine",
+    "name": "referenceLine"
+  },
+  {
+    "id": "ribbon-referencePoint",
+    "name": "referencePoint"
+  },
+  {
+    "id": "ribbon-cadPlane",
+    "name": "cadPlane"
+  },
+  {
+    "id": "ribbon-cadCylinder",
+    "name": "cadCylinder"
+  },
+  {
+    "id": "ribbon-cadCone",
+    "name": "cadCone"
+  },
+  {
+    "id": "ribbon-autoFreeform",
+    "name": "autoFreeform"
+  },
+  {
+    "id": "ribbon-freeformSketch",
+    "name": "freeformSketch"
+  },
+  {
+    "id": "ribbon-quadObj",
+    "name": "quadObj"
+  },
+  {
+    "id": "ribbon-wrap",
+    "name": "wrap"
+  },
+  {
+    "id": "ribbon-freeformThicken",
+    "name": "freeformThicken"
+  },
+  {
+    "id": "ribbon-freeformOffset",
+    "name": "freeformOffset"
+  },
+  {
+    "id": "ribbon-freeformConvert",
+    "name": "freeformConvert"
+  },
+  {
+    "id": "ribbon-nurbsSurface",
+    "name": "nurbsSurface"
+  },
+  {
+    "id": "ribbon-loft",
+    "name": "loft"
+  },
+  {
+    "id": "ribbon-fillSurface",
+    "name": "fillSurface"
+  },
+  {
+    "id": "ribbon-sweep",
+    "name": "sweep"
+  },
+  {
+    "id": "ribbon-pipe",
+    "name": "pipe"
+  },
+  {
+    "id": "ribbon-sketch3d",
+    "name": "sketch3d"
+  },
+  {
+    "id": "ribbon-helix",
+    "name": "helix"
+  },
+  {
+    "id": "ribbon-rollSketch",
+    "name": "rollSketch"
+  },
+  {
+    "id": "ribbon-duplicateFace",
+    "name": "duplicateFace"
+  },
+  {
+    "id": "ribbon-surfaceOffset",
+    "name": "surfaceOffset"
+  },
+  {
+    "id": "ribbon-surfaceThicken",
+    "name": "surfaceThicken"
+  },
+  {
+    "id": "ribbon-extendSurface",
+    "name": "extendSurface"
+  },
+  {
+    "id": "ribbon-sewSurfaces",
+    "name": "sewSurfaces"
+  },
+  {
+    "id": "ribbon-projectSketch",
+    "name": "projectSketch"
+  },
+  {
+    "id": "ribbon-flatten",
+    "name": "flatten"
+  },
+  {
+    "id": "ribbon-sketch2d",
+    "name": "sketch2d"
+  },
+  {
+    "id": "ribbon-multipleSections",
+    "name": "multipleSections"
+  },
+  {
+    "id": "ribbon-trim",
+    "name": "trim"
+  },
+  {
+    "id": "ribbon-boolean",
+    "name": "boolean"
+  },
+  {
+    "id": "ribbon-combine",
+    "name": "combine"
+  },
+  {
+    "id": "ribbon-cut",
+    "name": "cut"
+  },
+  {
+    "id": "ribbon-intersect",
+    "name": "intersect"
+  },
+  {
+    "id": "ribbon-shell",
+    "name": "shell"
+  },
+  {
+    "id": "ribbon-draft",
+    "name": "draft"
+  },
+  {
+    "id": "ribbon-deleteFaces",
+    "name": "deleteFaces"
+  },
+  {
+    "id": "ribbon-moveFace",
+    "name": "moveFace"
+  },
+  {
+    "id": "ribbon-separateBodies",
+    "name": "separateBodies"
+  },
+  {
+    "id": "ribbon-scaleBody",
+    "name": "scaleBody"
+  },
+  {
+    "id": "ribbon-splitMesh",
+    "name": "splitMesh"
+  },
+  {
+    "id": "ribbon-splitSolid",
+    "name": "splitSolid"
+  },
+  {
+    "id": "ribbon-fillet",
+    "name": "fillet"
+  },
+  {
+    "id": "ribbon-chamfer",
+    "name": "chamfer"
+  },
+  {
+    "id": "ribbon-circularPattern",
+    "name": "circularPattern"
+  },
+  {
+    "id": "ribbon-linearPattern",
+    "name": "linearPattern"
+  },
+  {
+    "id": "ribbon-mirrorBody",
+    "name": "mirrorBody"
+  },
+  {
+    "id": "ribbon-area",
+    "name": "area"
+  },
+  {
+    "id": "ribbon-volume",
+    "name": "volume"
+  },
+  {
+    "id": "ribbon-zebra",
+    "name": "zebra"
+  },
+  {
+    "id": "ribbon-environment",
+    "name": "environment"
+  },
+  {
+    "id": "ribbon-draftAnalysis",
+    "name": "draftAnalysis"
+  },
+  {
+    "id": "ribbon-snapshot",
+    "name": "snapshot"
+  },
+  {
+    "id": "ribbon-compareMeshes",
+    "name": "compareMeshes"
+  },
+  {
+    "id": "ribbon-settings",
+    "name": "settings"
+  },
+  {
+    "id": "ribbon-units",
+    "name": "units"
+  },
+  {
+    "id": "ribbon-tessellation",
+    "name": "tessellation"
+  },
+  {
+    "id": "ribbon-helpGuide",
+    "name": "helpGuide"
+  },
+  {
+    "id": "ribbon-shortcuts",
+    "name": "shortcuts"
+  },
+  {
+    "id": "ribbon-about",
+    "name": "about"
+  },
+  {
+    "id": "scan-wand",
+    "name": "mesh selection wand"
+  },
+  {
+    "id": "scan-brush",
+    "name": "mesh selection brush"
+  },
+  {
+    "id": "scan-freehand",
+    "name": "mesh selection freehand"
+  },
+  {
+    "id": "scan-line",
+    "name": "mesh selection line"
+  },
+  {
+    "id": "scan-rectangle",
+    "name": "mesh selection rectangle"
+  },
+  {
+    "id": "scan-circle",
+    "name": "mesh selection circle"
+  },
+  {
+    "id": "scan-through",
+    "name": "mesh selection through"
+  },
+  {
+    "id": "scan-grow",
+    "name": "mesh selection grow"
+  },
+  {
+    "id": "scan-shrink",
+    "name": "mesh selection shrink"
+  },
+  {
+    "id": "scan-boundary",
+    "name": "mesh selection boundary"
+  },
+  {
+    "id": "scan-all",
+    "name": "mesh selection all"
+  },
+  {
+    "id": "scan-isolate",
+    "name": "mesh selection isolate"
+  },
+  {
+    "id": "scan-hide",
+    "name": "mesh selection hide"
+  },
+  {
+    "id": "scan-reveal",
+    "name": "mesh selection reveal"
+  },
+  {
+    "id": "scan-revealSelected",
+    "name": "mesh selection revealSelected"
+  },
+  {
+    "id": "scan-invert",
+    "name": "mesh selection invert"
+  },
+  {
+    "id": "scan-clear",
+    "name": "mesh selection clear"
+  },
+  {
+    "id": "scan-clip",
+    "name": "mesh selection clip"
+  },
+  {
+    "id": "scan-save",
+    "name": "mesh selection save"
+  },
+  {
+    "id": "scan-cut",
+    "name": "mesh selection cut"
+  },
+  {
+    "id": "scan-copy",
+    "name": "mesh selection copy"
+  },
+  {
+    "id": "scan-delete",
+    "name": "mesh selection delete"
+  },
+  {
+    "id": "scan-smooth",
+    "name": "mesh selection smooth"
+  },
+  {
+    "id": "scan-defeature",
+    "name": "mesh selection defeature"
+  },
+  {
+    "id": "scan-split",
+    "name": "mesh selection split"
+  },
+  {
+    "id": "scan-components",
+    "name": "mesh selection components"
+  },
+  {
+    "id": "scan-connected",
+    "name": "mesh selection connected"
+  },
+  {
+    "id": "scan-holes",
+    "name": "mesh selection holes"
+  },
+  {
+    "id": "scan-boundaries",
+    "name": "mesh selection boundaries"
+  },
+  {
+    "id": "viewport-normals",
+    "name": "viewport normals"
+  },
+  {
+    "id": "viewport-flat",
+    "name": "viewport flat"
+  },
+  {
+    "id": "viewport-smooth",
+    "name": "viewport smooth"
+  },
+  {
+    "id": "viewport-grid",
+    "name": "viewport grid"
+  },
+  {
+    "id": "viewport-snap",
+    "name": "viewport snap"
+  },
+  {
+    "id": "viewport-selection",
+    "name": "viewport selection"
+  },
+  {
+    "id": "viewport-all",
+    "name": "viewport all"
+  },
+  {
+    "id": "spacemouse",
+    "name": "SpaceMouse CAD navigation controller, low circular base with short cylindrical control cap"
+  },
+  {
+    "id": "ui-Box",
+    "name": "Box"
+  },
+  {
+    "id": "ui-Check",
+    "name": "Check"
+  },
+  {
+    "id": "ui-ChevronLeft",
+    "name": "ChevronLeft"
+  },
+  {
+    "id": "ui-ChevronRight",
+    "name": "ChevronRight"
+  },
+  {
+    "id": "ui-ChevronsLeft",
+    "name": "ChevronsLeft"
+  },
+  {
+    "id": "ui-ChevronsRight",
+    "name": "ChevronsRight"
+  },
+  {
+    "id": "ui-Circle",
+    "name": "Circle"
+  },
+  {
+    "id": "ui-Crosshair",
+    "name": "Crosshair"
+  },
+  {
+    "id": "ui-Download",
+    "name": "Download"
+  },
+  {
+    "id": "ui-Eye",
+    "name": "Eye"
+  },
+  {
+    "id": "ui-EyeOff",
+    "name": "EyeOff"
+  },
+  {
+    "id": "ui-FileClock",
+    "name": "FileClock"
+  },
+  {
+    "id": "ui-FolderOpen",
+    "name": "FolderOpen"
+  },
+  {
+    "id": "ui-Github",
+    "name": "Github"
+  },
+  {
+    "id": "ui-GripVertical",
+    "name": "GripVertical"
+  },
+  {
+    "id": "ui-Keyboard",
+    "name": "Keyboard"
+  },
+  {
+    "id": "ui-Layers",
+    "name": "Layers"
+  },
+  {
+    "id": "ui-Milestone",
+    "name": "Milestone"
+  },
+  {
+    "id": "ui-MousePointer2",
+    "name": "MousePointer2"
+  },
+  {
+    "id": "ui-Plus",
+    "name": "Plus"
+  },
+  {
+    "id": "ui-Ruler",
+    "name": "Ruler"
+  },
+  {
+    "id": "ui-Save",
+    "name": "Save"
+  },
+  {
+    "id": "ui-ScanLine",
+    "name": "ScanLine"
+  },
+  {
+    "id": "ui-Search",
+    "name": "Search"
+  },
+  {
+    "id": "ui-Settings",
+    "name": "Settings"
+  },
+  {
+    "id": "ui-Trash2",
+    "name": "Trash2"
+  },
+  {
+    "id": "ui-Triangle",
+    "name": "Triangle"
+  },
+  {
+    "id": "ui-Wrench",
+    "name": "Wrench"
+  },
+  {
+    "id": "ui-X",
+    "name": "X"
+  },
+  {
+    "id": "app-scanforge",
+    "name": "ScanForge application icon: steel blue faceted mesh cube transforming into a smooth orange CAD surface, no text or letters"
+  },
+  {
+    "id": "camera-home",
+    "name": "ViewCube Go Home"
+  },
+  {
+    "id": "camera-cw",
+    "name": "ViewCube clockwise rotation"
+  },
+  {
+    "id": "camera-ccw",
+    "name": "ViewCube counterclockwise rotation"
+  }
+]
