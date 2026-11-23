@@ -29,6 +29,8 @@ export async function connectBrowserBridge(
   let timer: ReturnType<typeof setTimeout> | undefined;
   let sessionId = "";
   let closed = false;
+  // Isolated experiment; not a production-ready lifecycle or transport.
+  let diagnosticWorker: Worker | undefined;
   async function request(path: string, body?: unknown) {
     const response = await fetcher(new URL(path, url), {
       method: body === undefined ? "GET" : "POST",
@@ -51,6 +53,8 @@ export async function connectBrowserBridge(
     if (closed) return;
     closed = true;
     clearTimeout(timer);
+    diagnosticWorker?.terminate();
+    diagnosticWorker = undefined;
     api.cancelActive();
     try {
       if (sessionId)
@@ -109,9 +113,22 @@ export async function connectBrowserBridge(
             Array.isArray(item.args)
           )
             throw new Error("Invalid application command envelope.");
+          if (item.command !== "artifact_read") {
+            diagnosticWorker?.terminate();
+            diagnosticWorker = undefined;
+          }
           reply = await api.invoke(item.command, item.args);
-          if (!closed)
-            await request("/result", { sessionId, id: item.id, result: reply });
+          if (!closed) {
+            const body = { sessionId, id: item.id, result: reply };
+            if (item.command === "artifact_read") {
+              diagnosticWorker ??= new Worker(new URL("./m2-response-worker-experiment.ts", import.meta.url), { type: "module" });
+              await new Promise<void>((resolve, reject) => {
+                diagnosticWorker!.onmessage = ({ data }) => data.ok ? resolve() : reject(new Error(data.error));
+                diagnosticWorker!.onerror = (event) => reject(new Error(event.message));
+                diagnosticWorker!.postMessage({ url: new URL("/result", url).href, token, body });
+              });
+            } else await request("/result", body);
+          }
         }
         if (!closed) {
           // A negotiated server waits while idle. Bound a faulty fast-empty
