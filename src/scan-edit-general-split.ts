@@ -344,17 +344,31 @@ function intersection(
   face: CutterFace,
   withProvenance = false,
   preciseCoordinates = false,
+  includePointIdentities = false,
 ): {
   points: Vec3[];
   coplanar: boolean;
   sourceEdges?: { edge: number; t: number; fromEnd?: number }[][];
+  pointIdentities?: (readonly string[] | undefined)[];
 } {
+  let exactSources: Map<Vec3, () => readonly string[] | undefined> | undefined;
   const provenance:
     { point: Vec3; edge: number; t: number; fromEnd?: number }[] | undefined =
     withProvenance ? [] : undefined;
   const finish = (points: Vec3[], coplanar: boolean) => ({
     points,
     coplanar,
+    ...(includePointIdentities && exactSources
+      ? {
+          pointIdentities: points.some((p) =>
+            source.some(
+              (v) => Math.hypot(v[0] - p[0], v[1] - p[1], v[2] - p[2]) < 0.001,
+            ),
+          )
+            ? points.map((p) => exactSources!.get(p)?.())
+            : points.map(() => undefined),
+        }
+      : {}),
     ...(provenance
       ? {
           sourceEdges: points.map((p) =>
@@ -419,7 +433,7 @@ function intersection(
   const sourceTriangle = new Triangle(
     ...(source.map(vec) as [Vector3, Vector3, Vector3]),
   );
-  const exactSources = preciseCoordinates
+  exactSources = preciseCoordinates
     ? new Map<Vec3, () => readonly string[] | undefined>()
     : undefined;
   const sourceCrossings = planeCrossings(
@@ -567,7 +581,7 @@ export function inspectFiniteTriangleContact(
     options.preciseCoordinates,
   );
   return {
-    ...result,
+    coplanar: result.coplanar,
     points: result.points.map((p) => [...p] as Vec3),
     sourceEdges: result.sourceEdges!,
   };
@@ -585,9 +599,11 @@ export function collectFiniteCutterHits(
     maxWork?: number;
     maxNativeTreeReferences?: number;
     maxCollectedHits?: number;
+    maxEstimatedHitAndAssociationBytes?: number;
     check?: () => void;
     onProgress?: (fraction: number, stage: string) => void;
     preciseCoordinates?: boolean;
+    associateCoplanarCorners?: boolean;
   } = {},
 ) {
   if (
@@ -618,6 +634,27 @@ export function collectFiniteCutterHits(
   if (!Number.isSafeInteger(maxCollectedHits) || maxCollectedHits < 0)
     throw new Error("Finite cutter hit budget is invalid.");
   let collectedHits = 0;
+  const maxHitBytes =
+    options.maxEstimatedHitAndAssociationBytes ?? Number.MAX_SAFE_INTEGER;
+  if (!Number.isSafeInteger(maxHitBytes) || maxHitBytes < 0)
+    throw new Error("Finite cutter temporary memory budget is invalid.");
+  let associationBytes = 0;
+  const checkHitBudget = () => {
+    // An estimate for hit storage and junction maps, not a process-heap limit.
+    if (collectedHits > Math.floor((maxHitBytes - associationBytes) / 1024))
+      throw new Error("Finite cutter temporary memory budget exceeded.");
+  };
+  const reserveAssociationBytes = (bytes: number) => {
+    if (bytes > maxHitBytes - associationBytes)
+      throw new Error("Finite cutter temporary memory budget exceeded.");
+    associationBytes += bytes;
+    checkHitBudget();
+  };
+  const reserveAssociation = (identity: readonly string[]) => {
+    reserveAssociationBytes(
+      2048 + identity.reduce((sum, part) => sum + part.length * 2, 0),
+    );
+  };
   const tick = () => {
     if (options.signal?.aborted)
       throw new DOMException("Aborted", "AbortError");
@@ -702,6 +739,42 @@ export function collectFiniteCutterHits(
     exactCutter?: [Vec3, Vec3, Vec3];
     exactWitness?: ExactEdgeWitness;
   }[] = [];
+  type Contact = (typeof contacts)[number];
+  type EdgeOccurrence = {
+    f: number;
+    ids: number[];
+    source: Vec3[];
+    record: {
+      cutterFace: number;
+      points: Vec3[];
+      coplanar: boolean;
+      sourceEdges: { edge: number; t: number; fromEnd?: number }[][];
+    };
+    endpoint: number;
+    cornerId: number | undefined;
+    cutterVertex: boolean;
+    otherCutterVertex: boolean;
+    ownedContacts: Contact[];
+  };
+  const edgeGroups = new Map<string, EdgeOccurrence[]>();
+  const edgeIds = (a: number, b: number) => (a < b ? `${a}:${b}` : `${b}:${a}`);
+  const pendingAssociations: {
+    f: number;
+    ids: number[];
+    source: Vec3[];
+    sawCoplanarHit: boolean;
+    proposals: Map<
+      string,
+      {
+        point: Vec3[];
+        endpoint: number;
+        corner: number | undefined;
+        blocked: boolean;
+        face: CutterFace;
+        identity: readonly string[];
+      }[]
+    >;
+  }[] = [];
   for (let f = 0; f < faceCount; f++) {
     tick();
     if (f % 4096 === 0)
@@ -746,18 +819,132 @@ export function collectFiniteCutterHits(
         );
       });
     }
+    let sawCoplanarHit = false;
+    const proposals = new Map<
+      string,
+      {
+        point: Vec3[];
+        endpoint: number;
+        corner: number | undefined;
+        blocked: boolean;
+        face: CutterFace;
+        identity: readonly string[];
+      }[]
+    >();
     for (const face of nearby) {
       tick();
-      const hit = intersection(source, face, true, options.preciseCoordinates);
+      const hit = intersection(
+        source,
+        face,
+        true,
+        options.preciseCoordinates,
+        options.associateCoplanarCorners,
+      );
       if (!hit.points.length) continue;
+      if (hit.coplanar) sawCoplanarHit = true;
       if (++collectedHits > maxCollectedHits)
         throw new Error("Finite cutter hit budget exceeded.");
+      checkHitBudget();
       const record = {
         cutterFace: face.index,
         points: hit.points,
         coplanar: hit.coplanar,
         sourceEdges: hit.sourceEdges!,
       };
+      const edgeOwners = new Map<number, EdgeOccurrence>();
+      if (
+        options.associateCoplanarCorners &&
+        !options.selection &&
+        !hit.coplanar &&
+        hit.pointIdentities
+      ) {
+        const sameIdentity = (
+          a: readonly string[] | undefined,
+          b: readonly string[] | undefined,
+        ) => !!a && !!b && a.every((v, i) => v === b[i]);
+        const isCutterVertex = (identity: readonly string[] | undefined) =>
+          face.points.some((p) =>
+            sameIdentity(identity, exactVertexPointIdentity(p)),
+          );
+        for (let endpoint = 0; endpoint < record.points.length; endpoint++) {
+          tick();
+          const identity = hit.pointIdentities[endpoint];
+          const provenance = record.sourceEdges[endpoint];
+          if (!identity || provenance.length !== 1) continue;
+          const { edge, t, fromEnd } = provenance[0];
+          if (!((t > 0 && t < 1) || fromEnd !== undefined)) continue;
+          const corners = [edge, (edge + 1) % 3].filter(
+            (corner) =>
+              Math.hypot(
+                ...source[corner].map(
+                  (v, axis) => v - record.points[endpoint][axis],
+                ),
+              ) < 0.001,
+          );
+          if (!corners.length) continue;
+          reserveAssociation(identity);
+          const other = record.points.length === 2 ? 1 - endpoint : -1;
+          const occurrence: EdgeOccurrence = {
+            f,
+            ids,
+            source,
+            record,
+            endpoint,
+            cornerId: corners.length === 1 ? ids[corners[0]] : undefined,
+            cutterVertex: isCutterVertex(identity),
+            otherCutterVertex:
+              other >= 0 &&
+              record.sourceEdges[other].length === 0 &&
+              isCutterVertex(hit.pointIdentities[other]),
+            ownedContacts: [],
+          };
+          const key = `${edgeIds(ids[edge], ids[(edge + 1) % 3])}|${identity.join("|")}`;
+          const group = edgeGroups.get(key) ?? [];
+          group.push(occurrence);
+          edgeGroups.set(key, group);
+          edgeOwners.set(endpoint, occurrence);
+        }
+      }
+      if (
+        options.associateCoplanarCorners &&
+        !hit.coplanar &&
+        hit.pointIdentities
+      ) {
+        for (let endpoint = 0; endpoint < hit.points.length; endpoint++) {
+          tick();
+          const identity = hit.pointIdentities[endpoint];
+          if (!identity) continue;
+          const p = hit.points[endpoint];
+          const candidates: number[] = [];
+          for (let corner = 0; corner < 3; corner++) {
+            tick();
+            const v = source[corner];
+            if (
+              Math.hypot(v[0] - p[0], v[1] - p[1], v[2] - p[2]) < 0.001 &&
+              orient3dSign(
+                face.points[0],
+                face.points[1],
+                face.points[2],
+                v,
+              ) === 0
+            )
+              candidates.push(corner);
+          }
+          const key = identity.join("|");
+          reserveAssociation(identity);
+          const group = proposals.get(key) ?? [];
+          group.push({
+            point: record.points,
+            endpoint,
+            corner: candidates.length === 1 ? candidates[0] : undefined,
+            blocked:
+              candidates.length > 1 || record.sourceEdges[endpoint].length > 0,
+            face,
+            identity,
+          });
+          proposals.set(key, group);
+        }
+      }
       const perFace = faces.get(f) ?? [];
       perFace.push(record);
       faces.set(f, perFace);
@@ -887,7 +1074,7 @@ export function collectFiniteCutterHits(
               if (fromEnd === undefined) delete edgeProvenance.fromEnd;
               else edgeProvenance.fromEnd = fromEnd;
             }
-            contacts.push({
+            const contact: Contact = {
               edge: [ids[edge], ids[(edge + 1) % 3]],
               t,
               ...(fromEnd === undefined ? {} : { fromEnd }),
@@ -896,9 +1083,285 @@ export function collectFiniteCutterHits(
                 ? { exactCutter: face.points as [Vec3, Vec3, Vec3] }
                 : {}),
               ...(exactWitness ? { exactWitness } : {}),
-            });
+            };
+            contacts.push(contact);
+            edgeOwners.get(endpoint)?.ownedContacts.push(contact);
           }
         }
+    }
+    if (proposals.size)
+      pendingAssociations.push({ f, ids, source, sawCoplanarHit, proposals });
+  }
+  // Resolve competing associations only after all selected faces are collected.
+  const candidateVertices = new Set<number>();
+  const candidateFaces = new Set<number>();
+  for (const pending of pendingAssociations)
+    for (const group of pending.proposals.values())
+      for (const entry of group) {
+        tick();
+        if (entry.corner !== undefined)
+          candidateVertices.add(pending.ids[entry.corner]);
+      }
+  for (const entries of edgeGroups.values())
+    for (const entry of entries) {
+      tick();
+      candidateFaces.add(entry.f);
+      if (entry.cornerId !== undefined) candidateVertices.add(entry.cornerId);
+    }
+  const occupiedCorners = new Set<number>();
+  if (pendingAssociations.length)
+    for (const [faceIndex, hits] of faces) {
+      const ids = [
+        triangles[faceIndex * 3],
+        triangles[faceIndex * 3 + 1],
+        triangles[faceIndex * 3 + 2],
+      ];
+      for (const hit of hits)
+        for (const point of hit.points)
+          for (const id of ids) {
+            tick();
+            if (
+              candidateVertices.has(id) &&
+              sameExactPoint(point, pointAt(vertices, id))
+            )
+              occupiedCorners.add(id);
+          }
+    }
+  const proposedGroups = new Map<number, number>();
+  for (const pending of pendingAssociations) {
+    if (pending.sawCoplanarHit) continue;
+    for (const group of pending.proposals.values()) {
+      tick();
+      const corners = new Set(
+        group
+          .map((entry) => entry.corner)
+          .filter((corner): corner is number => corner !== undefined),
+      );
+      if (!group.some((entry) => entry.blocked) && corners.size === 1) {
+        const id = pending.ids[[...corners][0]];
+        proposedGroups.set(id, (proposedGroups.get(id) ?? 0) + 1);
+      }
+    }
+  }
+  // A terminal edge-to-interior segment can be associated without removing
+  // the original contacted-edge incidence check from the registry.
+  const wantedEdges = new Set<string>();
+  for (const entries of edgeGroups.values()) {
+    tick();
+    const entry = entries[0];
+    const edge = entry.record.sourceEdges[entry.endpoint][0].edge;
+    wantedEdges.add(edgeIds(entry.ids[edge], entry.ids[(edge + 1) % 3]));
+  }
+  const contactsByEdge = new Map<string, Contact[]>();
+  if (wantedEdges.size)
+    for (const contact of contacts) {
+      tick();
+      const key = edgeIds(contact.edge[0], contact.edge[1]);
+      if (!wantedEdges.has(key)) continue;
+      reserveAssociationBytes(128);
+      const list = contactsByEdge.get(key) ?? [];
+      list.push(contact);
+      contactsByEdge.set(key, list);
+    }
+  const candidatePoints = new Set<string>();
+  for (const entries of edgeGroups.values()) {
+    tick();
+    candidatePoints.add(
+      JSON.stringify(entries[0].record.points[entries[0].endpoint]),
+    );
+  }
+  const occurrencesByPoint = new Map<string, number>();
+  const faceFacts = new Map<number, { coplanar: boolean; segments: number }>();
+  const coplanarEdges = new Set<string>();
+  if (wantedEdges.size)
+    for (const [faceIndex, hits] of faces) {
+      tick();
+      let coplanar = false,
+        segments = 0;
+      for (const hit of hits) {
+        tick();
+        if (hit.coplanar) coplanar = true;
+        if (hit.points.length >= 2) segments++;
+        for (const point of hit.points) {
+          tick();
+          const key = JSON.stringify(point);
+          if (candidatePoints.has(key))
+            occurrencesByPoint.set(key, (occurrencesByPoint.get(key) ?? 0) + 1);
+        }
+      }
+      if (candidateFaces.has(faceIndex))
+        faceFacts.set(faceIndex, { coplanar, segments });
+      if (!coplanar) continue;
+      for (let edge = 0; edge < 3; edge++) {
+        tick();
+        const key = edgeIds(
+          triangles[3 * faceIndex + edge],
+          triangles[3 * faceIndex + ((edge + 1) % 3)],
+        );
+        if (wantedEdges.has(key)) coplanarEdges.add(key);
+      }
+    }
+  const eligibleEdgeGroups: { vertexId: number; entries: EdgeOccurrence[] }[] =
+    [];
+  for (const entries of edgeGroups.values()) {
+    tick();
+    const candidateIds = new Set<number | undefined>();
+    const owned = new Set<Contact>();
+    let segment: EdgeOccurrence | undefined;
+    let segmentCount = 0,
+      valid = true;
+    for (const entry of entries) {
+      tick();
+      candidateIds.add(entry.cornerId);
+      if (!entry.cutterVertex) valid = false;
+      if (entry.record.points.length === 2) {
+        segment = entry;
+        segmentCount++;
+      }
+      for (const contact of entry.ownedContacts) {
+        tick();
+        owned.add(contact);
+      }
+    }
+    if (
+      !valid ||
+      candidateIds.size !== 1 ||
+      candidateIds.has(undefined) ||
+      segmentCount !== 1 ||
+      !segment
+    )
+      continue;
+    const facts = faceFacts.get(segment.f);
+    if (
+      !segment.otherCutterVertex ||
+      !facts ||
+      facts.coplanar ||
+      facts.segments !== 1
+    )
+      continue;
+    const pointKey = JSON.stringify(segment.record.points[segment.endpoint]);
+    if (occurrencesByPoint.get(pointKey) !== entries.length) continue;
+    const edge = segment.record.sourceEdges[segment.endpoint][0].edge;
+    const edgeKey = edgeIds(segment.ids[edge], segment.ids[(edge + 1) % 3]);
+    if (coplanarEdges.has(edgeKey)) continue;
+    let hasOtherContact = false;
+    for (const contact of contactsByEdge.get(edgeKey) ?? []) {
+      tick();
+      if (!owned.has(contact)) {
+        hasOtherContact = true;
+        break;
+      }
+    }
+    if (hasOtherContact) continue;
+    const vertexId = segment.cornerId!;
+    if (occupiedCorners.has(vertexId)) continue;
+    eligibleEdgeGroups.push({ vertexId, entries });
+    proposedGroups.set(vertexId, (proposedGroups.get(vertexId) ?? 0) + 1);
+  }
+  for (const { vertexId, entries } of eligibleEdgeGroups) {
+    tick();
+    if (proposedGroups.get(vertexId) !== 1) continue;
+    for (const entry of entries) {
+      tick();
+      const corner = entry.ids.indexOf(vertexId);
+      if (corner < 0) throw new SplitPrecisionError();
+      entry.record.points[entry.endpoint] = [...entry.source[corner]] as Vec3;
+      for (const provenance of entry.record.sourceEdges[entry.endpoint]) {
+        provenance.t = entry.ids[provenance.edge] === vertexId ? 0 : 1;
+        delete provenance.fromEnd;
+      }
+      for (const contact of entry.ownedContacts) {
+        contact.t = contact.edge[0] === vertexId ? 0 : 1;
+        delete contact.fromEnd;
+        delete contact.exactCutter;
+        delete contact.exactWitness;
+      }
+    }
+  }
+  for (const {
+    f,
+    ids,
+    source,
+    sawCoplanarHit,
+    proposals,
+  } of pendingAssociations) {
+    for (const group of proposals.values()) {
+      tick();
+      if (sawCoplanarHit) continue;
+      if (group.some((entry) => entry.blocked)) continue;
+      const proposed = new Set(
+        group.map((x) => x.corner).filter((x): x is number => x !== undefined),
+      );
+      if (proposed.size !== 1) continue;
+      const corner = [...proposed][0];
+      const vertexId = ids[corner];
+      if (occupiedCorners.has(vertexId)) continue;
+      if (
+        (proposedGroups.get(vertexId) ?? 0) > 1 &&
+        !(
+          (faces.get(f)?.length ?? 0) === 1 &&
+          proposedGroups.get(vertexId) === 2 &&
+          proposals.size === 2 &&
+          [...proposals.values()].every(
+            (other) =>
+              !other.some((entry) => entry.blocked) &&
+              other.some((entry) => entry.corner === corner) &&
+              other.every(
+                (entry) =>
+                  entry.corner === undefined || entry.corner === corner,
+              ),
+          )
+        )
+      )
+        continue;
+      // Join only through a shared cutter edge whose exact source-plane crossing
+      // is this junction. Index edges so a high-valence fan stays bounded.
+      const parent = group.map((_, i) => i);
+      const find = (i: number): number => {
+        while (parent[i] !== i) {
+          tick();
+          parent[i] = parent[parent[i]];
+          i = parent[i];
+        }
+        return i;
+      };
+      const byEdge = new Map<string, number>();
+      const byFace = new Map<number, number>();
+      for (let i = 0; i < group.length; i++) {
+        tick();
+        const entry = group[i];
+        const previousFace = byFace.get(entry.face.index);
+        if (previousFace === undefined) byFace.set(entry.face.index, i);
+        else parent[find(i)] = find(previousFace);
+        for (let edge = 0; edge < 3; edge++) {
+          tick();
+          const a = entry.face.points[edge],
+            b = entry.face.points[(edge + 1) % 3];
+          const crossing = exactSegmentTriangleCrossing(
+            a,
+            b,
+            source as [Vec3, Vec3, Vec3],
+            { exactPoint: true },
+          );
+          if (
+            !crossing?.inside ||
+            !crossing.exactPoint?.every(
+              (value, axis) => value === entry.identity[axis],
+            )
+          )
+            continue;
+          const endpoints = [a.join(","), b.join(",")].sort();
+          const key = JSON.stringify(endpoints);
+          const previous = byEdge.get(key);
+          if (previous === undefined) byEdge.set(key, i);
+          else parent[find(i)] = find(previous);
+        }
+      }
+      if (group.some((_, i) => find(i) !== find(0))) continue;
+      for (const entry of group) {
+        tick();
+        entry.point[entry.endpoint] = [...source[corner]] as Vec3;
+      }
     }
   }
   options.onProgress?.(1, "Collected finite cutter intersections");

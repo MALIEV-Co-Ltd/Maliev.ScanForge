@@ -202,12 +202,14 @@ export function refineFiniteCutterMesh(
   const collected = collectFiniteCutterHits(vertices, triangles, cutter, {
     selection: options.selection,
     preciseCoordinates: options.preciseCoordinates,
+    associateCoplanarCorners: options.preciseCoordinates,
     tolerance: options.tolerance,
     signal: options.signal,
     maxWork: limit,
     // Conservative per-reference estimate, not an engine heap measurement.
     maxNativeTreeReferences: Math.floor(maxEstimatedTemporaryBytes / 32),
     maxCollectedHits: Math.floor(maxEstimatedTemporaryBytes / 1024),
+    maxEstimatedHitAndAssociationBytes: maxEstimatedTemporaryBytes,
     check,
     onProgress: (fraction, stage) => report(fraction * 0.4, stage),
   });

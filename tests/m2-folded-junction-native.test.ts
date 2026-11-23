@@ -64,7 +64,7 @@ it("pins the native folded-cutter inputs and indexed result", () => {
     0,
   ]);
 });
-it.fails("matches native facets for a shared folded-cutter junction", () => {
+it("matches native facets for a shared folded-cutter junction", () => {
   const result = runScanEdit({
     kind: "scanEdit",
     action: "split",

@@ -72,7 +72,7 @@ it("pins the subdivided cutter round trip and native indexed result", () => {
   ])
     expect(fs.filter((f) => f.includes(a) && f.includes(c))).toHaveLength(2);
 });
-it.fails("matches the native subdivided near-corner result", () => {
+it("matches the native subdivided near-corner result", () => {
   const r = runScanEdit({
     kind: "scanEdit",
     action: "split",

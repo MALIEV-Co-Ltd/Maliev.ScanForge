@@ -857,6 +857,56 @@ try {
     const state = (await call("project_get")).result;
     return verifyState(state, c);
   };
+  for (const [
+    name,
+    directory,
+    requiredPoint,
+    nativeSha,
+    vertexSha,
+    triangleSha,
+  ] of [
+    [
+      "shared-edge-native",
+      "m2-shared-edge-corner-native-20261105",
+      [0.4, 0.3, 0],
+      "46a48121a4206cb90540f3fb20d2b05637914e9e30736f9c684ea81924fa047c",
+      "c4bdd08fd1b4e4f7ed06d7d35f1454817193e56daa144793de6ef6ec93ce49fa",
+      "839109919b9c290c59e285b3005626583b3ccfafa3b790605d96a1561c055824",
+    ],
+    [
+      "ambiguous-corner-native",
+      "m2-ambiguous-corner-native-20261105",
+      [0.3, 0.0002, 0],
+      "568e37bc6b3e8d933aaf75a64cbc6ef072999604588002b6e4a691500b788dfa",
+      "3823e436d004f7197c6e411709839460576cc00ba4bb6472be9d93f17fa216ab",
+      "54d63bf0980d636afdd42c5aa0992a79b53e5693554d401ff46dd11d504e4491",
+    ],
+  ]) {
+    const fixture = new URL(`tests/fixtures/${directory}/`, root);
+    const readFixture = async (name) => {
+      const bytes = await readFile(new URL(name, fixture));
+      const count = bytes.readUInt32LE(80),
+        positions = [];
+      assert.equal(bytes.length, 84 + count * 50);
+      for (let i = 0; i < count; i++)
+        for (let j = 0; j < 9; j++)
+          positions.push(bytes.readFloatLE(84 + i * 50 + 12 + j * 4));
+      return positions;
+    };
+    cases.push({
+      name,
+      source: await readFixture("source.stl"),
+      target: await readFixture("cutter.stl"),
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      requiredPoint,
+      nativeReference: new URL("native-result.stl", fixture),
+      nativeSha,
+      vertexSha,
+      triangleSha,
+    });
+  }
   for (const c of cases) {
     if (radiusDirectory && !c.name.startsWith("point-radius-")) continue;
     if (
@@ -961,15 +1011,39 @@ try {
             sha256,
           }));
       const guiDigest = await geometryDigest(sourceId);
-      const guiPositions = await geometry(sourceId);
-      if (process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE) {
-        const native = await readFile(
-          process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE,
+      if (c.nativeReference)
+        for (const path of [
+          "positions",
+          "indexedMesh.vertices",
+          "indexedMesh.triangles",
+        ])
+          assert(
+            guiDigest.some((entry) => entry.path === path),
+            `Missing ${path}`,
+          );
+      if (c.nativeReference) {
+        assert.equal(
+          guiDigest.find((entry) => entry.path === "indexedMesh.vertices")
+            .sha256,
+          c.vertexSha,
         );
-        if (process.env.SCANFORGE_SPLIT_NATIVE_SHA256)
+        assert.equal(
+          guiDigest.find((entry) => entry.path === "indexedMesh.triangles")
+            .sha256,
+          c.triangleSha,
+        );
+      }
+      const guiPositions = await geometry(sourceId);
+      const nativeReference =
+        c.nativeReference ?? process.env.SCANFORGE_SPLIT_NATIVE_REFERENCE;
+      if (nativeReference) {
+        const native = await readFile(nativeReference);
+        const nativeSha =
+          c.nativeSha ?? process.env.SCANFORGE_SPLIT_NATIVE_SHA256;
+        if (nativeSha)
           assert.equal(
             createHash("sha256").update(native).digest("hex"),
-            process.env.SCANFORGE_SPLIT_NATIVE_SHA256,
+            nativeSha,
           );
         const count = native.readUInt32LE(80),
           expected = [];
@@ -1749,6 +1823,13 @@ try {
     });
   }
   assert.deepEqual(errors, []);
+  if (process.env.SCANFORGE_SPLIT_CASE)
+    assert(
+      results.some(
+        (result) => result.name === process.env.SCANFORGE_SPLIT_CASE,
+      ),
+      "Selected Split case was not executed",
+    );
   ledger.result = { cases: results, pageErrors: errors };
   console.log(JSON.stringify(ledger.result));
 } catch (error) {
