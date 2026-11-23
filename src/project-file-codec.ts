@@ -526,6 +526,7 @@ export async function decodeProjectContents(
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
+  console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'reconstruction-start',chunks:data.length,at:performance.now()})}`);
   const decoded = new Map<string, ProjectValue>();
   function read(ref: Ref, typedIndices = false): ProjectValue {
     if (
@@ -579,6 +580,7 @@ export async function decodeProjectContents(
         return result;
       }
       const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'reconstruction-value-start',chunk:ref.chunk,type:ref.type,bytes:bytes.length,at:performance.now()})}`);
       const values =
         ref.type === "f32"
           ? new Float32Array(
@@ -595,6 +597,7 @@ export async function decodeProjectContents(
                 ),
               )
             : new Array<number>(bytes.length / width);
+      console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'reconstruction-value-allocated',chunk:ref.chunk,type:ref.type,length:values.length,at:performance.now()})}`);
       for (let i = 0; i < values.length; i++)
         values[i] =
           ref.type === "u32"
@@ -602,6 +605,7 @@ export async function decodeProjectContents(
             : width === 4
               ? v.getFloat32(i * width, true)
               : v.getFloat64(i * width, true);
+      console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'reconstruction-value-filled',chunk:ref.chunk,type:ref.type,length:values.length,at:performance.now()})}`);
       result = values;
       if (
         ref.type === "f64" &&
@@ -708,6 +712,7 @@ export async function decodeProjectContents(
     }
     return entity;
   });
+  console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'reconstruction-entities-complete',count:entities.length,at:performance.now()})}`);
   function state(refs: number[]): Entity[] {
     if (
       !Array.isArray(refs) ||

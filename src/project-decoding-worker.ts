@@ -28,6 +28,7 @@ scope.onmessage = async ({ data }) => {
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
       onDecodedFloat64: (values, bytes) => decodedFloat64.set(values, bytes),
     });
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-session-complete',at:performance.now()})}`);
     assertReferenceWorkspaceAdmission(session);
     session = prepareRestoredProjectDisplays(session);
     const seen = new Set();
