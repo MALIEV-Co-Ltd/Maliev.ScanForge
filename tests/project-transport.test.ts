@@ -278,3 +278,66 @@ it("keeps distinct equal geometry arrays independent on restore", async () => {
   expect(restored.first).toBe(first);
   expect(restored.second).toBe(second);
 });
+it("retains the saved first buffer when a later reuse lookup yields", async () => {
+  const first = Array.from({ length: 65536 }, (_, i) => i);
+  const second = Array.from({ length: 65536 }, (_, i) => i + 1);
+  const { packet } = await packProjectTransport({
+    first,
+    alias: first,
+    second,
+  });
+  let lookup = 0;
+  const restored = await unpackProjectTransport<{
+    first: number[];
+    alias: number[];
+    second: number[];
+  }>(packet, {
+    reuseNumericArray: async () => {
+      if (lookup++ === 0) return first;
+      first[1] = 999;
+      return second;
+    },
+    releaseOwnedNumericBuffers: true,
+  });
+  expect(restored.first[1]).toBe(1);
+  expect(restored.first).toBe(restored.alias);
+  expect(restored.first).not.toBe(first);
+  expect(restored.second).toBe(second);
+});
+it("retains graph-aliased backing for a reused candidate", async () => {
+  const source = Array.from({ length: 65538 }, (_, i) => i / 7);
+  const packed = await packProjectTransport({ source });
+  const buffer = packed.packet.numbers[0].values.buffer;
+  (packed.packet.graph as { other?: Uint8Array }).other = new Uint8Array(
+    buffer,
+    0,
+    8,
+  );
+  const out = await unpackProjectTransport<{
+    source: number[];
+    other: Uint8Array;
+  }>(packed.packet, {
+    reuseNumericArray: async () => source,
+    releaseOwnedNumericBuffers: true,
+  });
+  expect(out.source).toBe(source);
+  expect(out.other.buffer).toBe(buffer);
+  expect(buffer.byteLength).toBeGreaterThan(0);
+});
+it("does not detach shared staging for a reused candidate", async () => {
+  const source = Array.from({ length: 65538 }, (_, i) => i / 7);
+  const packed = await packProjectTransport({ source });
+  const shared = new SharedArrayBuffer(
+    packed.packet.numbers[0].values.byteLength,
+  );
+  const values = new Float64Array(shared);
+  values.set(packed.packet.numbers[0].values);
+  packed.packet.numbers[0].values = values;
+  const out = await unpackProjectTransport<{ source: number[] }>(
+    packed.packet,
+    { reuseNumericArray: async () => source, releaseOwnedNumericBuffers: true },
+  );
+  expect(out.source).toBe(source);
+  expect(values.length).toBe(source.length);
+  expect(values[100]).toBe(source[100]);
+});

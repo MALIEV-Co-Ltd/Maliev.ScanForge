@@ -149,6 +149,8 @@ export async function unpackProjectTransport<T = unknown>(
   const memo = new Map<object, unknown>(),
     check = options.check ?? (() => {});
   const usedNumericArrays = new Set<number[]>();
+  const reused: { ref: object; candidate: number[]; bytes: Float64Array }[] =
+    [];
   const protectedBuffers = new Set<ArrayBufferLike>();
   const bufferCounts = new Map<ArrayBufferLike, number>();
   let safeToRelease = options.releaseOwnedNumericBuffers === true;
@@ -223,6 +225,7 @@ export async function unpackProjectTransport<T = unknown>(
           }
         }
     }
+    const isReused = values !== undefined;
     if (!values) {
       values = new Array<number>(entry.values.length);
       for (let first = 0; first < values.length; first += CHUNK) {
@@ -235,6 +238,10 @@ export async function unpackProjectTransport<T = unknown>(
     }
     usedNumericArrays.add(values);
     memo.set(entry.ref, values);
+    if (isReused) {
+      reused.push({ ref: entry.ref, candidate: values, bytes: entry.values });
+      continue;
+    }
     const buffer = entry.values.buffer;
     if (
       safeToRelease &&
@@ -247,6 +254,40 @@ export async function unpackProjectTransport<T = unknown>(
       ).transfer;
       try {
         transfer?.call(buffer, 0);
+      } catch {
+        /* Collection remains the fallback. */
+      }
+    }
+  }
+  // All asynchronous lookups and copies have completed. Recheck every
+  // borrowed array without yielding before assembling the published graph.
+  for (const { ref, candidate, bytes } of reused) {
+    check();
+    let valid = candidate.length === bytes.length;
+    for (let i = 0; i < bytes.length && valid; i++) {
+      if (i % CHUNK === 0) check();
+      valid =
+        Number.isFinite(candidate[i]) && Object.is(candidate[i], bytes[i]);
+    }
+    if (!valid) {
+      const replacement = new Array<number>(bytes.length);
+      for (let i = 0; i < bytes.length; i++) {
+        if (i % CHUNK === 0) check();
+        replacement[i] = bytes[i];
+      }
+      memo.set(ref, replacement);
+    }
+    const buffer = bytes.buffer;
+    if (
+      safeToRelease &&
+      buffer instanceof ArrayBuffer &&
+      bufferCounts.get(buffer) === 1 &&
+      !protectedBuffers.has(buffer)
+    ) {
+      try {
+        (
+          buffer as ArrayBuffer & { transfer?: (size: number) => ArrayBuffer }
+        ).transfer?.(0);
       } catch {
         /* Collection remains the fallback. */
       }
