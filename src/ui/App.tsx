@@ -1,4 +1,6 @@
 import { scanSplitCutter, isScanSplitCutter } from "../scan-split-cutter";
+import { publishRestore } from "../project-restore-publication-probe";
+import { yieldScanTask } from "../scan-task";
 import { scanSegmentPublication } from "../scan-segment-publication";
 import { indexedMeshMatches } from "../indexed-mesh";
 import type { SavedInspection } from "../inspection-definition";
@@ -3525,7 +3527,7 @@ export function App() {
     });
     const extension = file.name.split(".").pop()!.toLowerCase();
     if (extension === "scanforge" || extension === "json") {
-      const session = await decodeProjectFile(file, signal);
+      const session = await decodeProjectFile(file, signal, true);
       signal?.throwIfAborted();
       const project = session.project;
       if (
@@ -3573,7 +3575,9 @@ export function App() {
             ...item,
             entities: await restoreState(item.entities),
           });
+        await yieldScanTask();
         signal?.throwIfAborted();
+        publishRestore(session, () => {
         cad.current?.dispose();
         cad.current = restoredCad;
         knownKernelIds.current = new Set();
@@ -3600,6 +3604,7 @@ export function App() {
         setProjectId(session.projectId ?? crypto.randomUUID());
         setDirty(false);
         setMeasure([]);
+        }, () => signal?.throwIfAborted());
       } catch (e) {
         restoredCad.dispose();
         throw e;

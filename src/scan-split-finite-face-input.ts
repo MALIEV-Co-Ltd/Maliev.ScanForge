@@ -181,8 +181,28 @@ export function buildFiniteFaceInput(
           );
         binding = match;
       }
+      if (binding === undefined && options.preciseCoordinates) {
+        const bits = new DataView(new ArrayBuffer(4));
+        const near = (a: number, b: number) => {
+          a = Math.fround(a); b = Math.fround(b);
+          if (a === b) return true;
+          if ((a < 0) !== (b < 0)) return false;
+          bits.setFloat32(0, a); const left = bits.getUint32(0);
+          bits.setFloat32(0, b); const right = bits.getUint32(0);
+          return Math.abs(left - right) <= 1;
+        };
+        const matches = boundaryContacts.map((item, index) => ({item, index})).filter(({item}) => item.point.every((value, axis) => near(value, hit.points[endpoint][axis])));
+        if (matches.length === 1) {
+          binding = matches[0].index;
+          segments[segment][endpoint] = [...matches[0].item.point];
+        }
+      }
       if (binding !== undefined)
         endpointBindings.push({ segment, endpoint, contact: binding });
+    }
+    if (segments[segment][0].every((value, axis) => value === segments[segment][1][axis])) {
+      segments.pop();
+      while (endpointBindings.at(-1)?.segment === segment) endpointBindings.pop();
     }
   }
   return { segments, boundaryContacts, endpointBindings };

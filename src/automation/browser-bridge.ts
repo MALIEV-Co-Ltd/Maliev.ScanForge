@@ -130,6 +130,7 @@ export async function connectBrowserBridge(
         }
       } catch (error) {
         if (closed) return;
+        console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'bridge-poll-failed',at:Date.now(),message:String(error)})}`);
         await disconnect();
         onStatus({
           connected: false,

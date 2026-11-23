@@ -7,7 +7,9 @@ import {
   validateProjectSharedChunks,
 } from "./project-shared-chunks";
 import type { Positions } from "./types";
-import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
+import type { ScanRenderData } from "./scan-render-data";
+import { publishRestore, stageRestore } from "./project-restore-publication-probe";
+import type { Witness } from "./project-restore-fingerprint-probe";
 import { indexedMeshMatches } from "./indexed-mesh";
 import {
   restoreEncodingSnapshot,
@@ -32,6 +34,7 @@ globalThis.addEventListener?.("pagehide", () => {
 export function decodeProjectInBackground(
   file: Blob,
   signal?: AbortSignal,
+  deferPublication = false,
 ): Promise<ProjectSession> {
   const entered = generation;
   const result = pending.then(
@@ -91,6 +94,7 @@ export function decodeProjectInBackground(
             void (async () => {
               if (!data?.packet)
                 throw new Error("Invalid project decoding response.");
+              let witnesses: Witness[] = [];
               const decoded = await unpackProjectTransport<DecodedProjectData>(
                 data.packet,
                 {
@@ -98,6 +102,7 @@ export function decodeProjectInBackground(
                   releaseOwnedNumericBuffers: true,
                   reuseNumericArray: (values, used) =>
                     projectNumericReuse.match(values, check, undefined, used),
+                  onReusedWitnesses: (values) => { witnesses = values; },
                 },
               );
               check();
@@ -134,12 +139,13 @@ export function decodeProjectInBackground(
                   !r.stats
                 )
                   throw new Error("Invalid decoded mesh display.");
-                cacheScanRenderData(display.positions, r);
               }
               check();
               rememberProjectSharedChunks(
                 validateProjectSharedChunks(decoded.sharedChunks),
               );
+              stageRestore(session, witnesses, decoded.displays);
+              if (!deferPublication) publishRestore(session, () => {}, check);
               finish(undefined, session);
             })().catch((error) =>
               finish(error instanceof Error ? error : new Error(String(error))),

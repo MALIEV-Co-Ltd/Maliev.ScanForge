@@ -1,5 +1,6 @@
 import { yieldScanTask } from "./scan-task";
 import { isPrivateDecodingView } from "./project-private-decoding-views";
+import { fingerprint, type Witness } from "./project-restore-fingerprint-probe";
 const CHUNK = 65536;
 export interface ProjectTransport {
   kind: "scanforge-numeric-transport-v1";
@@ -48,7 +49,7 @@ export async function packProjectTransport(
     if (options.ownedTypedArrays && isPrivateDecodingView(v)) {
       const ref = {};
       memo.set(v, ref);
-      numbers.push({ ref, values: v });
+      numbers.push({ref, values:v});
       if (v.buffer instanceof ArrayBuffer) buffers.add(v.buffer);
       return ref;
     }
@@ -139,6 +140,7 @@ export async function unpackProjectTransport<T = unknown>(
       used: ReadonlySet<number[]>,
     ) => Promise<number[] | undefined>;
     releaseOwnedNumericBuffers?: boolean;
+    onReusedWitnesses?: (values: Witness[]) => void;
   } = {},
 ): Promise<T> {
   if (
@@ -149,6 +151,7 @@ export async function unpackProjectTransport<T = unknown>(
   const memo = new Map<object, unknown>(),
     check = options.check ?? (() => {});
   const usedNumericArrays = new Set<number[]>();
+  const reusedFingerprints: Witness[] = [];
   const protectedBuffers = new Set<ArrayBufferLike>();
   const bufferCounts = new Map<ArrayBufferLike, number>();
   let safeToRelease = options.releaseOwnedNumericBuffers === true;
@@ -223,6 +226,7 @@ export async function unpackProjectTransport<T = unknown>(
           }
         }
     }
+    if (values) reusedFingerprints.push({values,digest:fingerprint(entry.values,check)});
     if (!values) {
       values = new Array<number>(entry.values.length);
       for (let first = 0; first < values.length; first += CHUNK) {
@@ -274,5 +278,13 @@ export async function unpackProjectTransport<T = unknown>(
       });
     return out;
   };
-  return visit(packet.graph) as T;
+  const result = visit(packet.graph) as T;
+  if (reusedFingerprints.length && options.cooperative !== false) await yieldScanTask();
+  for (const entry of reusedFingerprints) {
+    check();
+    if (fingerprint(entry.values,check) !== entry.digest)
+      throw new Error("Project numeric data changed during restore.");
+  }
+  options.onReusedWitnesses?.(reusedFingerprints);
+  return result;
 }

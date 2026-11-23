@@ -26,10 +26,11 @@ export async function encodeProjectFile(
 export async function decodeProjectFile(
   file: Blob,
   signal?: AbortSignal,
+  deferPublication = false,
 ): Promise<ProjectSession> {
   signal?.throwIfAborted();
   if (typeof document !== "undefined") {
-    const session = await decodeProjectInBackground(file, signal);
+    const session = await decodeProjectInBackground(file, signal, deferPublication);
     signal?.throwIfAborted();
     assertReferenceWorkspaceAdmission(session);
     return session;

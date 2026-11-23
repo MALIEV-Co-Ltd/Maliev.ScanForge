@@ -19,6 +19,9 @@ export interface ScanRenderData {
 }
 
 const prepared = new WeakMap<Positions, ScanRenderData>();
+export function clearPreparedScanRenderData(positions: Positions): void {
+  prepared.delete(positions);
+}
 const displayStats = new WeakMap<Positions, MeshStats>();
 
 /** Scene geometry is immutable; selection changes must not rescan every facet. */

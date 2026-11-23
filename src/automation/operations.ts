@@ -1,4 +1,6 @@
 import { flipSourceTopology } from "../scan-flip-request";
+import { publishRestore } from "../project-restore-publication-probe";
+import { yieldScanTask } from "../scan-task";
 import { scanSplitCutter } from "../scan-split-cutter";
 import { scanSegmentPublication } from "../scan-segment-publication";
 import { projectedBoundarySketches } from "../scan-boundary-sketch";
@@ -481,7 +483,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       extension = name.split(".").pop()?.toLowerCase();
     if (extension === "scanforge" || extension === "json") {
       if (!a.replace) throw new Error("Project import requires replace:true.");
-      const session = await decodeProjectFile(blob, c.signal),
+      const session = await decodeProjectFile(blob, c.signal, true),
         project = session.project,
         cad = new CadClient();
       let transferred = false;
@@ -521,8 +523,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ...revision,
             entities: await restore(revision.entities),
           });
+        await yieldScanTask();
         c.check();
-        const publish = () => {
+        const publish = () => publishRestore(session, () => {
           host.replace({ ...project, entities: restored }, cad, {
             history,
             future,
@@ -530,7 +533,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           });
           transferred = true;
           if (fit) host.view("fit");
-        };
+        }, c.check);
         if (c.mutate) c.mutate(publish);
         else publish();
         c.progress(0.98, "Rendering restored project");
