@@ -5,15 +5,18 @@
 `mesh_process` with `operation.kind:"icp"` shares the GUI Fine Align operation.
 `sampleSize` controls source fitting samples (3–100000); the full target is used
 for matching. Legacy `targetSampleSize` is accepted without decimating the target.
-Indexed mesh targets use every referenced canonical vertex, omitting repeated
-triangle corners and unused vertices; clouds retain all point slots.
+Mesh targets match the closest point on visible target triangles; point-cloud
+targets match all target point slots. Available source and target normals are
+used to reject incompatible directions.
 Set `overlapPercent` (greater than zero through 100, default 85) or legacy
 `trimFraction`, never both. `targetRms` is a positive overlap RMS in millimetres
 (default 0.5), separate from the numerical stopping `tolerance`.
 
 Read `overlapSatisfied` and `targetReached` before accepting an accuracy claim.
 `converged` can also mean a plateau above the requested accuracy; inspect
-`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`).
+`terminationReason` (`targetReached`, `stoppedImproving`, `iterationLimit`, or
+`insufficientOverlap`). An insufficient-overlap result has `applied:false` and
+changes no geometry or history.
 `overlapRms`/`overlapPoints` evaluate the closest requested proportion of eligible
 source points within `maxDistance`; `requiredOverlapPoints` prevents a tiny gated
 subset from satisfying the target. `wholeCloudRms` (also legacy `rms`), `maxError`
@@ -21,10 +24,11 @@ and `pairs` evaluate every eligible source point without trimming or rejection.
 `inlierRms`/`inlierPairs` alias overlap metrics. `sampleSize`, `fittingSamples`,
 `overlapPercent`, `overlapFraction`, `rejectedPoints` and `targetRmsBasis:"overlap"`
 make the metric basis explicit.
-`distanceTests` counts direct point-distance evaluations across fitting and
-verification. Exact subtree bounds prune impossible matches without sampling.
-Extra solver workspace is conservatively admitted as 64 bytes per target point,
-8 per source point and 1024 per requested fitting sample, with a 256 MiB limit.
+`distanceTests` counts direct point-distance or triangle-distance evaluations
+across fitting and verification, according to `matching`. Exact subtree bounds
+prune point queries without sampling. Extra solver workspace is conservatively
+admitted as 64 bytes per target point, 8 per source point, 1024 per requested
+fitting sample and 128 per target triangle, with a 256 MiB limit.
 Input transport and model buffers have separate admission. Exceeding the limit
 fails explicitly rather than silently decimating the target.
 
@@ -3451,3 +3455,29 @@ Numeric datum GUI forms capture the workspace revision when opened. If another
 agent or operation changes that workspace before Apply, the draft is rejected
 without changing the model. Close and reopen the form to load the current state;
 Cancel still discards only the local draft.
+
+## Point-cloud meshing
+
+Use `mesh_process` with `operation:{kind:"pointCloudMesh",plane:"xy",maxEdgeLength:2}`
+for projected meshing, or `operation:{kind:"pointCloudPoisson",normalMode:"provided",depth:8,densityThreshold:0}`
+for general 3D screened Poisson reconstruction. Both share the GUI Edit scan
+commands, process a whole visible unlocked raw point cloud of 3–500,000 points,
+and create a separate selected mesh while preserving the source. Omit
+`selectionOnly`, `targetId`, and `targetIds`; `createNew:false` is rejected.
+
+Projected meshing supports `plane` values `xy`, `xz`, and `yz`. A zero
+`maxEdgeLength` fills the projected convex hull, including holes; a positive
+length in millimetres removes triangles with longer edges. Conflicting heights
+at one projected location and collinear projections are rejected.
+
+Poisson requires consistently oriented normals. `provided` validates source
+normals; `estimate-provided` uses them as orientation anchors;
+`estimate-outward` assumes closed components; `estimate-viewpoint` uses a
+world-millimetre scanner `viewpoint`. `normalNeighbors` defaults to 24 (8–48),
+`depth` defaults to 8 (6–10), `pointWeight` defaults to 2, `samplesPerNode` to
+1.5, and `densityThreshold` to 0. Positive density trimming may create open
+boundaries. The worker limits its WASM heap to 1 GiB and its output to two
+million vertices and four million triangles. Inspect job diagnostics for normal
+assumptions, output and trimming counts. Cancellation, invalid input, limits
+and stale or locked requests publish no mesh; Undo/Redo and retry protection
+use the normal shared job and history semantics.

@@ -16,6 +16,7 @@ import {
   runScanPreviewCommand,
 } from "./shrinkwrap-preview-command";
 import { runReconstructionCommand } from "./reconstruction-command";
+import { runPointCloudMeshCommand, type CloudMeshingOperation } from "./point-cloud-mesh-command";
 import { runAverageCommand } from "./average-command";
 import { runUnrollCommand } from "./unroll-command";
 import { prepareModelSketchPublication } from "../model-sketch-history";
@@ -179,6 +180,7 @@ import { encodeReferenceFrame } from "../reference-frame";
 import { runApplicationJobCommand } from "./application-job-command";
 import { ORIGIN_PLANES, type OriginPlane } from "../origin";
 import type { ScanClipBounds } from "../scan-clip-box";
+import { partitionMeshSelection } from "../mesh-selection-edit";
 import {
   validateScanSelectionControl,
   type ScanSelectionControl,
@@ -1282,10 +1284,13 @@ export function App() {
   useEffect(() => {
     if (datumPreview.current && datumPreview.current.base !== entities) {
       datumPreview.current = null;
-      void workspaceApi.invoke("preview_discard", {
-        target: "datum",
-        expectedRevision: workspaceApi.currentRevision(),
-        requestId: crypto.randomUUID(),
+      queueMicrotask(() => {
+        if (!datumPreview.current)
+          void workspaceApi.invoke("preview_discard", {
+            target: "datum",
+            expectedRevision: workspaceApi.currentRevision(),
+            requestId: crypto.randomUUID(),
+          });
       });
     }
     viewport.current?.setEntities(
@@ -2389,6 +2394,7 @@ export function App() {
     mirrorMesh: () => openScanTool("mirrorMesh"),
     unroll: () => openScanTool("unroll"),
     fineAlign: () => showTools("fineAlign"),
+    surfaceRefinement: () => showTools("surfaceRefinement"),
     globalFineAlign: () => {
       if (globalAlignmentError || datumPreview.current || scanPreview) {
         setError(
@@ -3034,6 +3040,50 @@ export function App() {
       }
       setScanToolProgress("");
       setScanToolFraction(undefined);
+    }
+  }
+  async function runCloudMeshing(operation: CloudMeshingOperation) {
+    if (
+      !selected ||
+      busy ||
+      scanToolAbort.current ||
+      !referencePreviewAllowsTools()
+    )
+      return;
+    const controller = new AbortController();
+    scanToolAbort.current = controller;
+    scanToolAccepting.current = true;
+    setProcessingBusy(true);
+    setError("");
+    try {
+      const result = await runPointCloudMeshCommand(
+        workspaceApi,
+        selected.id,
+        operation,
+        {
+          signal: controller.signal,
+          onProgress: (fraction, stage) =>
+            setMessage(`${stage} · ${Math.round(fraction * 100)}%`),
+        },
+      );
+      setMessage(
+        String(
+          (result.diagnostics as Record<string, unknown> | undefined)
+            ?.summary ?? "Mesh created.",
+        ),
+      );
+    } catch (error) {
+      if (controller.signal.aborted)
+        setMessage(
+          `${operation.kind === "pointCloudPoisson" ? "Poisson reconstruction" : "Projected meshing"} cancelled.`,
+        );
+      else setError(errorText(error));
+    } finally {
+      if (scanToolAbort.current === controller) {
+        scanToolAbort.current = null;
+        scanToolAccepting.current = false;
+      }
+      setProcessingBusy(false);
     }
   }
   async function applyScanTool(parameters: ScanToolParameters) {
@@ -3894,7 +3944,7 @@ export function App() {
               setImportProgress({ name: file.name, fraction }),
           }));
       }
-      if (!batch) pendingImportFit.current = entity.id;
+      pendingImportFit.current = batch ? null : entity.id;
       setImportProgress({ name: file.name, fraction: null });
       setMessage(`Rendering ${file.name}…`);
       try {
@@ -6311,9 +6361,11 @@ export function App() {
             onCancel={cancelLandmarks}
           />
         )}
-        <ToolWorkspace.Provider value={workspace}>
+        <ToolWorkspace.Provider
+          value={datumAlignmentOpen ? "coordinateSetup" : workspace}
+        >
           <aside
-            className={`inspector ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
+            className={`inspector compact-options ${datumAlignmentOpen ? "datum-command-host" : ""} ${workspace === "scanTools" || (workspace === "mesh" && selected) ? "command-host" : ""}`}
             style={
               interactiveOpen ||
               globalAlignmentOpen ||
@@ -6337,7 +6389,9 @@ export function App() {
                 (scanPanel || splitMeshOpen)
               ) && (
                 <h2>
-                  {workspaceTitle(workspace) ??
+                  {(datumAlignmentOpen
+                    ? "Coordinate alignment"
+                    : workspaceTitle(workspace)) ??
                     (
                       {
                         mesh: "Edit scan",
@@ -6359,6 +6413,8 @@ export function App() {
                   <button
                     aria-label="Close tool options"
                     onClick={() => {
+                      if (datumAlignmentOpen)
+                        void uiCommand("ui_set", { datumAlignmentOpen: false });
                       scanToolAbort.current?.abort();
                       scanReferencePick.current = null;
                       setToolPanelOpen(false);
@@ -6561,6 +6617,16 @@ export function App() {
                       selection={triangleMask}
                       busy={busy}
                       onApply={runPointEdit}
+                      onMesh={runCloudMeshing}
+                      hasNormals={
+                        selected.normals?.length === selected.positions.length
+                      }
+                      onPoisson={(operation) =>
+                        runCloudMeshing({
+                          kind: "pointCloudPoisson",
+                          ...operation,
+                        })
+                      }
                     />
                   ) : undefined
                 }

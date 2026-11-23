@@ -114,6 +114,7 @@ import {
   indexedRenderNormals,
 } from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { fineAlignmentInput } from "../fine-alignment-input";
 import { prepareLandmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
@@ -1131,6 +1132,26 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      const cloudMeshing =
+        kind === "pointCloudMesh" || kind === "pointCloudPoisson";
+      if (cloudMeshing) {
+        if (e.kind !== "pointcloud" || e.kernelId || e.parametric)
+          throw Error("Point-cloud meshing requires a raw point cloud.");
+        if (!e.visible) throw Error("Show the point cloud before meshing.");
+        if (
+          a.selectionOnly !== undefined ||
+          a.targetId ||
+          a.targetIds !== undefined ||
+          a.createNew === false
+        )
+          throw Error(
+            "Point-cloud meshing uses the whole cloud and creates a new mesh; omit selectionOnly, targets and createNew:false.",
+          );
+        if (e.meshSelection?.hidden.length)
+          throw Error(
+            "Show all cloud points before meshing, or extract a separate cloud.",
+          );
+      }
       if (
         op.createSketches !== undefined &&
         (kind !== "scanEdit" ||
@@ -1177,7 +1198,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         );
       if (
         e.kind === "pointcloud" &&
-        !["paired", "global", "icp", "pointCloudEdit"].includes(kind) &&
+        !["paired", "global", "icp", "pointCloudEdit", "pointCloudMesh", "pointCloudPoisson"].includes(kind) &&
         !reconstruction
       )
         throw new Error("This operation requires triangle mesh geometry.");
@@ -1210,6 +1231,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "refinementTargets" in op ||
         "deferCloudTransform" in op ||
         "outputPlacement" in op ||
+        "targetSurface" in op ||
+        "sourceNormals" in op ||
+        "targetNormals" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -1296,6 +1320,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? partitionTriangles(e.positions, selection).selected
             : e.positions,
       } as ProcessingRequest;
+      if (kind === "pointCloudPoisson")
+        Object.assign(request, { normals: e.normals });
       if (
         (kind === "paired" || kind === "icp" || kind === "global") &&
         e.kind === "mesh" &&
@@ -1318,11 +1344,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         });
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
+        const target = sampledObject(s, a.targetId);
         Object.assign(request, {
           target:
-            kind === "icp"
-              ? registrationTargetPoints(sampledObject(s, a.targetId))
-              : sampledObject(s, a.targetId).positions,
+            kind === "icp" ? registrationTargetPoints(target) : target.positions,
+          ...(kind === "icp" ? fineAlignmentInput(e, target) : {}),
           sourceTriangleMask:
             kind === "icp" && e.kind !== "pointcloud"
               ? alignmentTriangleMask(
@@ -1537,12 +1563,22 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
-          (reconstruction && e.kind === "pointcloud"
+          (cloudMeshing
             ? {
-                ...scanMeshCopy(e, e.id, positions),
-                name: e.name,
-                visible: e.visible,
-                constructionOrderKey: e.constructionOrderKey,
+                ...scanMeshCopy(e, id(), positions),
+                ...(result.indexedMesh
+                  ? {
+                      indexedMesh: result.indexedMesh,
+                      normals: indexedRenderNormals(result.indexedMesh),
+                    }
+                  : {}),
+              }
+            : reconstruction && e.kind === "pointcloud"
+              ? {
+                  ...scanMeshCopy(e, e.id, positions),
+                  name: e.name,
+                  visible: e.visible,
+                  constructionOrderKey: e.constructionOrderKey,
               }
             : e.kind === "pointcloud"
               ? {
@@ -1578,10 +1614,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (
-          a.createNew ??
-          (!!average ||
-            !!nativeReconstruction ||
-            (kind === "scanTools" && op.operation.kind === "unroll"))
+          cloudMeshing ||
+          (a.createNew ??
+            (!!average ||
+              !!nativeReconstruction ||
+              (kind === "scanTools" && op.operation.kind === "unroll")))
         ) {
           updated.id = id();
           if (updated.constructionOrderKey !== undefined)
@@ -1589,8 +1626,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               [...s.entities, { id: updated.id }],
               [updated.id],
             ).orderedSources[0].constructionOrderKey;
-          updated.name = nativeReconstruction
-            ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
+          updated.name = cloudMeshing
+            ? `${e.name} - ${kind === "pointCloudPoisson" ? "Poisson" : "Projected"} mesh`
+            : nativeReconstruction
+              ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
             : average
               ? "Average mesh"
               : kind === "scanTools" && op.operation.kind === "unroll"
@@ -1734,7 +1773,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         );
       }
       if (
-        (segmentPublication || average || nativeReconstruction) &&
+        (segmentPublication || average || nativeReconstruction || cloudMeshing) &&
         created.length
       )
         host.select(created[0].id);

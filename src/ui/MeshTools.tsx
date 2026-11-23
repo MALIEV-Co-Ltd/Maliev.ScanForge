@@ -11,8 +11,10 @@ import { processScanRegistration } from "../scan-registration";
 import { registrationTargetPoints } from "../registration-target";
 
 function fineAlignmentStatus(reason: string): string {
-  return reason === "targetReached"
-    ? "Target accuracy reached"
+  return reason === "insufficientOverlap"
+    ? "Insufficient overlap; geometry unchanged"
+    : reason === "targetReached"
+      ? "Target accuracy reached"
     : reason === "stoppedImproving"
       ? "Stopped improving; target accuracy not reached"
       : "Iteration limit reached; target accuracy not reached";
@@ -178,9 +180,13 @@ export function MeshTools({
         return;
       }
       const registration = outcome.registration;
+      if (registration && "applied" in registration && !registration.applied) {
+        onStatus("Insufficient overlap; geometry unchanged");
+        return;
+      }
       const summary = registration
         ? "overlapRms" in registration
-          ? ` · Overlap RMS ${registration.overlapRms.toPrecision(4)} mm · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
+          ? ` · Overlap RMS ${registration.overlapRms === null ? "unavailable" : `${registration.overlapRms.toPrecision(4)} mm`} · Whole-cloud RMS ${registration.wholeCloudRms.toPrecision(4)} mm · ${fineAlignmentStatus(registration.terminationReason)}`
           : ` · RMS ${registration.rms.toPrecision(4)} mm · ${registration.converged ? "converged" : "iteration limit reached"}`
         : "";
       onStatus(`${label} complete${summary}`);
@@ -735,7 +741,9 @@ export function MeshTools({
             "terminationReason" in result.registration && (
               <p>
                 {fineAlignmentStatus(result.registration.terminationReason)} ·
-                Overlap RMS {result.registration.overlapRms.toPrecision(4)} mm ·
+                Overlap RMS {result.registration.overlapRms === null
+                  ? "unavailable"
+                  : `${result.registration.overlapRms.toPrecision(4)} mm`} ·
                 Target {result.registration.targetRms} mm
               </p>
             )}

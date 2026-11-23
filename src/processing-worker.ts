@@ -1,4 +1,6 @@
 import { growConnectedSelection } from "./connected-selection";
+import { meshPointCloud } from "./point-cloud-meshing";
+import { meshPointCloudPoisson } from "./point-cloud-poisson";
 import {
   createHoleFillReporter,
   type HoleFillProgress,
@@ -311,6 +313,10 @@ scope.onmessage = async ({ data: incoming }) => {
             }
           : {}),
       };
+    } else if (request.kind === "pointCloudMesh") {
+      Object.assign(result, meshPointCloud(request, progress));
+    } else if (request.kind === "pointCloudPoisson") {
+      Object.assign(result, await meshPointCloudPoisson(request, progress));
     } else if (request.kind === "pointCloudEdit") {
       result.pointCloudEdit = editPointCloud(request, progress);
       result.diagnostics = result.pointCloudEdit.diagnostics;
@@ -687,7 +693,10 @@ scope.onmessage = async ({ data: incoming }) => {
               onProgress: (fraction, rms) =>
                 progress(fraction, `ICP residual ${rms.toPrecision(4)} mm`),
             });
+      const applyRegistration =
+        !isFineAlignmentResult(registration) || registration.applied;
       if (
+        applyRegistration &&
         !request.deferCloudTransform &&
         !(request.kind === "paired" && request.refinementTargets)
       )
@@ -701,6 +710,7 @@ scope.onmessage = async ({ data: incoming }) => {
         );
       result.registration = registration;
       if (
+        applyRegistration &&
         request.sourceIndexed &&
         !(request.kind === "paired" && request.refinementTargets)
       ) {
@@ -751,6 +761,9 @@ scope.onmessage = async ({ data: incoming }) => {
         ...(isFineAlignmentResult(registration)
           ? {
               algorithm: registration.matching,
+              applied: registration.applied,
+              normalCompatibility: registration.normalCompatibility,
+              rejectedNormalPoints: registration.rejectedNormalPoints,
               targetRms: registration.targetRms,
               targetReached: registration.targetReached,
               terminationReason: registration.terminationReason,

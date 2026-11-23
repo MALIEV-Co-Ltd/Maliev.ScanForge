@@ -147,6 +147,8 @@ it("retains better overlap fits above the accuracy target when more iterations r
     ...options,
     maxIterations: 6,
   });
+  if (short.overlapRms === null || long.overlapRms === null)
+    throw new Error("Expected overlap for both fitted poses.");
   expect(long.overlapRms).toBeLessThanOrEqual(short.overlapRms + 1e-12);
 });
 it("reports iteration exhaustion and validates target RMS", () => {
@@ -279,4 +281,18 @@ it("cancels during work and reports monotonically increasing progress", () => {
     },
   });
   expect(previous).toBe(1);
+});
+
+it("counts tested target triangles for surface alignment", () => {
+  const vertices = new Float32Array([0, 0, 0, 20, 0, 0, 0, 20, 0, 20, 20, 0]);
+  const triangles = new Uint32Array([0, 1, 2, 1, 3, 2]);
+  const target = Array.from(triangles).flatMap((id) => Array.from(vertices.slice(id * 3, id * 3 + 3)));
+  const result = registerFineAlignment(plane(0.1), target, {
+    targetSurface: { vertices, triangles },
+    sampleSize: 30,
+    targetRms: 0.02,
+    maxDistance: 2,
+  });
+  expect(result.matching).toBe("fullTargetSurface");
+  expect(result.distanceTests).toBeGreaterThan(0);
 });

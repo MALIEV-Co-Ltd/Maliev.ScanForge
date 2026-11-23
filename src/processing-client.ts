@@ -1,4 +1,12 @@
 import type { Positions } from "./types";
+import {
+  validatePointCloudPoissonInput,
+  type PointCloudPoissonRequest,
+} from "./point-cloud-poisson-input";
+import {
+  POINT_CLOUD_MESH_MAX_POINTS,
+  type PointCloudMeshRequest,
+} from "./point-cloud-meshing";
 import { admitAverageInputs } from "./scan-average-request";
 import { reindexPointColors, validatePointColors } from "./point-cloud-colors";
 import type { HoleFillProgress } from "./hole-fill-progress";
@@ -36,6 +44,8 @@ import type {
 } from "./sketch-section";
 
 export type ProcessingRequest =
+  | PointCloudPoissonRequest
+  | PointCloudMeshRequest
   | NativeSurfaceRefinementRequest
   | PointCloudEditRequest
   | ScanPreviewRequest
@@ -112,6 +122,10 @@ export type ProcessingRequest =
       sourceTriangleMask?: Uint8Array;
       positions: Positions;
       target: Positions;
+      /** Internal scene-bound geometry and normals, never agent-supplied. */
+      targetSurface?: import("./types").IndexedMesh;
+      sourceNormals?: Positions;
+      targetNormals?: Positions;
       maxDistance: number;
       maxIterations: number;
       sampleSize: number;
@@ -167,7 +181,7 @@ export interface ProcessingResult {
   topology?: TopologySummary;
   registration?:
     RegistrationResult | import("./fine-registration").FineAlignmentResult;
-  diagnostics: Record<string, number | string | boolean>;
+  diagnostics: Record<string, number | string | boolean | null>;
 }
 export type ProcessingResponse =
   | { progress: number; stage: string; details?: HoleFillProgress }
@@ -200,6 +214,25 @@ export function processMesh(
 ): Promise<ProcessingResult> {
   if (request.kind === "scanEdit" && request.tolerance === undefined)
     request = { ...request, tolerance: SCAN_TOPOLOGY_TOLERANCE };
+  if (request.kind === "pointCloudPoisson") {
+    try {
+      request = validatePointCloudPoissonInput(request);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    options = { ...options, reuseTopology: false };
+  }
+  if (
+    request.kind === "pointCloudMesh" &&
+    (request.positions.length % 3 ||
+      request.positions.length < 9 ||
+      request.positions.length > POINT_CLOUD_MESH_MAX_POINTS * 3)
+  )
+    return Promise.reject(
+      Error(
+        "Projected meshing requires 3 to 500,000 points; reduce the cloud first.",
+      ),
+    );
   if (
     request.kind === "scanTools" &&
     request.operation.kind === "averageMesh"
@@ -846,6 +879,20 @@ function runProcessingRequest(
               : clone(copied.outputPlacement.sourcePositions),
         };
       }
+      if (copied.kind === "icp") {
+        if (copied.sourceNormals)
+          copied.sourceNormals = clone(copied.sourceNormals);
+        if (copied.targetNormals)
+          copied.targetNormals = clone(copied.targetNormals);
+        if (copied.targetSurface) {
+          const mesh = copied.targetSurface;
+          const triangles = Uint32Array.from(mesh.triangles);
+          transfers.push(triangles.buffer);
+          copied.targetSurface = { vertices: clone(mesh.vertices), triangles };
+        }
+      }
+      if (copied.kind === "pointCloudPoisson" && copied.normals)
+        copied.normals = clone(copied.normals);
       if (copied.kind === "nativeRefine") {
         copied.additionalTargets = copied.additionalTargets?.map((target) => {
           const triangles = Uint32Array.from(target.indexedMesh.triangles);
@@ -995,6 +1042,24 @@ function runProcessingRequest(
       }
       if (copied.kind === "scanTools") {
         copied.operation = { ...copied.operation };
+        if (copied.operation.kind === "averageMesh") {
+          if (copied.operation.sourceTopology) {
+            const mesh = copied.operation.sourceTopology;
+            const triangles = Uint32Array.from(mesh.triangles);
+            transfers.push(triangles.buffer);
+            copied.operation.sourceTopology = {
+              vertices: clone(mesh.vertices),
+              triangles,
+            };
+          }
+          copied.operation.targetTopology =
+            copied.operation.targetTopology?.map((mesh) => {
+              if (!mesh) return undefined;
+              const triangles = Uint32Array.from(mesh.triangles);
+              transfers.push(triangles.buffer);
+              return { vertices: clone(mesh.vertices), triangles };
+            });
+        }
         if (
           copied.operation.kind === "averageMesh" ||
           copied.operation.kind === "repolygonize" ||

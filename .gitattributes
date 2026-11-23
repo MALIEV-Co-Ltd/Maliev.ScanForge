@@ -18,3 +18,7 @@ docs/evidence/m5-20261025/*.mjs.txt -text -whitespace
 
 # Retained acceptance receipts are hashed as exact bytes.
 docs/evidence/m1-20261025/** -text -whitespace
+
+# Preserve the byte identities pinned in Poisson provenance.
+public/poisson/poisson.mjs -text -whitespace
+public/poisson/LICENSE.txt -text -whitespace
