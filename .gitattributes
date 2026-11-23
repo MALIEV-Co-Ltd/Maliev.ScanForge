@@ -10,3 +10,5 @@ docs/evidence/m6-inspection-20261025/*.obj -text -whitespace
 docs/evidence/m6-inspection-20261025/*.mtl -text -whitespace
 docs/evidence/m6-inspection-20261025/*.iges -text -whitespace
 tests/fixtures/m6-sparse-cloud.asc -text -whitespace
+
+cloud-inputs/alignment-example-files/** filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "asc-1.asc",
+    "bytes": 7679386,
+    "sha256": "4d1931c0f45b25951b682b54aba4b4ff3e9c0ebbd2f796e8615858691ff7e26c"
+  },
+  {
+    "name": "asc-2.asc",
+    "bytes": 74418231,
+    "sha256": "6eeac4519d4e0a8d583cf336254789af402ee9690c2ef8c5432ba60f05f04243"
+  },
+  {
+    "name": "asc-3.asc",
+    "bytes": 100922768,
+    "sha256": "f960b08417912d4ed5dda52d8a5a67a5dead8f9bc5b0cd6f765e10a71a982898"
+  },
+  {
+    "name": "final-aligned-and-merged-mesh.stl",
+    "bytes": 185499534,
+    "sha256": "a26aa1e3e9f572292fc40ba48074f1a9e736f7df9cee87ab4367bde5da8e91d5"
+  },
+  {
+    "name": "ply-1.ply",
+    "bytes": 6926970,
+    "sha256": "e2fc6d49404977638222be9d31b63dedbc7c0a4adca4aba4af711168d5783c05"
+  },
+  {
+    "name": "ply-2.ply",
+    "bytes": 68084515,
+    "sha256": "3acf90227bea8e98e97d0eddeb57324d6c29767d622c86d65337d927bca5e75f"
+  },
+  {
+    "name": "ply-3.ply",
+    "bytes": 92765339,
+    "sha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2"
+  },
+  {
+    "name": "scan-1.stl",
+    "bytes": 13657034,
+    "sha256": "6dfc4db5ed4ad2ed5c2f9295a11c50c2dda5db3240cd82ce80c1d1f3e38af6c9"
+  },
+  {
+    "name": "scan-2.stl",
+    "bytes": 127370334,
+    "sha256": "3156b02a12c632abc3953597c3a606b4eb36ad49f65738e7fc1b29cc3a13e7ad"
+  },
+  {
+    "name": "scan-3.stl",
+    "bytes": 166345584,
+    "sha256": "f19c7bd3e8dab3afc8c52316afdca9235bddd533d8996552af0809a764f2342e"
+  }
+]
