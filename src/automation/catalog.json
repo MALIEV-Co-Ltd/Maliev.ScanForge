@@ -19,7 +19,9 @@
           "uniqueItems": true
         }
       },
-      "required": ["entityIds"],
+      "required": [
+        "entityIds"
+      ],
       "additionalProperties": false
     }
   },
@@ -41,7 +43,7 @@
   },
   {
     "name": "backup_restore",
-    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
+    "description": "Restore a browser backup with complete model history, continuing its existing backup identity. Restore can reuse verified live numeric arrays from successful exports; stale or unavailable candidates fall back to independent reconstruction. Requires explicit project replacement. Frames restored visible geometry and awaits presentation before completion. Legacy neutral/white point clouds without an explicit color mode migrate to solid green; explicit saved modes and RGB bytes are retained. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -54,7 +56,9 @@
         },
         "replace": {
           "type": "boolean",
-          "enum": [true]
+          "enum": [
+            true
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -66,7 +70,12 @@
           "maxLength": 200
         }
       },
-      "required": ["backupId", "replace", "expectedRevision", "requestId"],
+      "required": [
+        "backupId",
+        "replace",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -93,7 +102,11 @@
           "maxLength": 200
         }
       },
-      "required": ["backupId", "expectedRevision", "requestId"],
+      "required": [
+        "backupId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -139,7 +152,9 @@
           "type": "boolean"
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -157,7 +172,9 @@
           "maxLength": 200
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -211,7 +228,10 @@
             },
             "pointColorMode": {
               "type": "string",
-              "enum": ["source", "solid"],
+              "enum": [
+                "source",
+                "solid"
+              ],
               "description": "source uses file RGB when present, otherwise object color; solid uses object color."
             },
             "visible": {
@@ -238,7 +258,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "patch", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "patch",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -267,7 +292,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -307,7 +336,10 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -330,7 +362,10 @@
           "description": "Unique retry receipt; reuse only an identical request."
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -359,7 +394,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -388,7 +427,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -407,7 +450,9 @@
           "description": ""
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -488,7 +533,12 @@
               "description": "Zero-based XYZ point slots for point-cloud objects."
             }
           },
-          "required": ["entityId", "expectedRevision", "requestId", "points"],
+          "required": [
+            "entityId",
+            "expectedRevision",
+            "requestId",
+            "points"
+          ],
           "additionalProperties": false
         }
       ]
@@ -510,7 +560,11 @@
         },
         "operation": {
           "type": "string",
-          "enum": ["copy", "cut", "delete"]
+          "enum": [
+            "copy",
+            "cut",
+            "delete"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -523,7 +577,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "operation",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -548,13 +607,15 @@
           "description": "Topology weld tolerance in mm; defaults to the GUI value of 0.001. Pass 0.000001 explicitly to reproduce the previous API default."
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
   {
     "name": "mesh_process",
-    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome.",
+    "description": "Execute scan tools, repair, smooth, reduce, segment, registration, scan editing, selection morphology or section extraction. Source geometry is owned by the workspace. Flip Normals retains valid indexed vertex identities, reverses indexed triangle winding and refreshes computed normals; indexed sources above 27 million vertex coordinates reject before worker dispatch. Segmentation objects retain their classifications and fits; responses expose segmentClassifications in segment order. Point clouds support pointCloudEdit deletion, extraction, point-count or voxel simplification, smoothing and radius-connected selection. Fine ICP matches the full target with bounded configurable source sampleSize (3-100000). overlapPercent defaults to 85 and replaces legacy trimFraction when supplied; do not supply both. targetRms defaults to 0.5 mm and checks overlapRms with overlapSatisfied, never whole-cloud RMS. Final wholeCloudRms (also legacy rms), maxError and pairs evaluate all eligible source points without trimming or distance rejection. overlapRms/overlapPoints (also inlierRms/inlierPairs) measure the closest requested percentage of eligible source points, gated by maxDistance. Insufficient matching points set overlapSatisfied:false and prevent targetReached. requiredOverlapPoints, fittingSamples, sampleSize, overlapPercent and targetRmsBasis:overlap make the accuracy basis explicit; overlapFraction/rejectedPoints expose distance-gated coverage. terminationReason is targetReached, stoppedImproving or iterationLimit; targetReached is the accuracy test, while converged includes a plateau. ICP targetSampleSize is accepted for compatibility but does not decimate the target. Whole-cloud paired, ICP and global registration preserve point type and native accumulated pose over immutable local buffers, with bounded CPU transforms; omit selectionOnly for point-cloud registration. Result diagnostics expose pointCloudPose and execution details. Bridge previews reuse prepared source topology without adopting preview geometry; committed bridges retain their successor topology. Hole refinement supports long fixed bridge rails with graded interior density. Inventory reports include holeOrder: closed-boundary indices sorted by descending boundary length, matching the GUI hole list without renumbering geometry references. Re-polygonize defaults to native signed-field extraction and half-count optimization, consuming visible raw meshes in scene order when targetIds is omitted. It creates a new owner and hides unchanged inputs; createNew:false explicitly replaces the requested owner. Native topology may remain open/nonmanifold and is reported. method=voxel retains the previous closed-shell behavior and replacement default. Internal indexed carriers resolve from workspace objects only. Unroll orients an exact CAD cylinder axis so its largest-magnitude component is positive (ties X, Y, Z); explicit numeric and construction directions retain their supplied sign. It selects the least-aligned world axis as the radial seed (ties X, Y, Z), shared by the mesh and Roll frame. Unroll publishes its output mesh, visible saved Sketch and hidden tangent Roll frame with retained radius in one transaction; terminal unroll reports all three identities and frame/mapping values. Model undo/redo/seek restores only the owned sketch identities. Split targetId binds persisted reference-plane frames as infinite planes; ordinary mesh cutters remain finite, including planar meshes with fits. Explicit operation plane parameters take precedence. Finite mesh Split updates the source as one indexed mesh and reports connected components; unchanged cuts return changed:false. Its cutter ordering, hit and point counts have separate 1 GiB-derived temporary estimates; exceeding one rejects before publication, and reducing cutter complexity can make a retry feasible. Uncertain floating-point face coverage is checked against exact binary-coordinate area vectors before rejection; winding, edge and constraint checks still apply. Sampled CAD and other non-mesh cutters retain the existing segment-producing path. Reference-plane Split, extraction and segmentation retain the source hidden, create independently visible opaque parts, and select the first result. Source visibility is restored by model Undo/Redo/Seek and project reopening; unrelated display choices are preserved. Empty segment output rejects atomically. For Flip Normals with an eligible indexed source, job_get can report Validating indexed topology at zero progress after validation starts; job_cancel requests cancellation and terminal status confirms the outcome. pointCloudPoisson performs general 3D screened Poisson reconstruction of a whole visible raw point cloud (3-500000 points), creates a new mesh and preserves the source. It requires oriented normals: provided validates existing vectors; estimate-provided rebuilds PCA normals using valid source orientations as component anchors; estimate-outward assumes closed components; estimate-viewpoint requires a world XYZ scanner viewpoint. normalNeighbors defaults24 (8-48). Depth6-10 defaults8; pointWeight2, samplesPerNode1.5, densityThreshold0. Zero trimming can close holes and extend open scans; positive threshold removes triangles below vertex sampling-depth density and may create boundaries/components. Fixed degree2, Neumann, scale1.1, single worker, 1GiB WASM heap, at most2million vertices/4million triangles. Geometry/normals bind from workspace; omit selectionOnly and targets, createNew:false refused. Diagnostics expose source count, normal mode/assumptions, parameters, density range/median/P95, trimming/cleanup counts, output sizes and WASM heap. Invalid normals, memory/output limits, empty trim, cancellation and lock/revision failures publish nothing. pointCloudMesh creates a new projected Delaunay 2.5D mesh from a whole visible raw point cloud (3-500000 points), preserving the cloud. Choose plane xy/xz/yz for a single-valued surface; multiple heights at identical projected coordinates are refused. No normals required. maxEdgeLength in mm prunes full 3D triangle edges; 0 disables pruning and fills the convex hull, including holes. Omit selectionOnly and targets; createNew:false is rejected. Diagnostics expose sourcePoints, uniqueProjectedPoints, duplicatePoints, triangles, prunedTriangles and projectionPlane.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -573,7 +634,107 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["scanTools"]
+                  "enum": [
+                    "pointCloudPoisson"
+                  ]
+                },
+                "normalMode": {
+                  "type": "string",
+                  "enum": [
+                    "provided",
+                    "estimate-provided",
+                    "estimate-outward",
+                    "estimate-viewpoint"
+                  ],
+                  "default": "provided",
+                  "description": "Provided validates existing oriented normals. estimate-provided estimates PCA normals and uses existing orientations as component anchors. Outward assumes closed components; viewpoint assumes a single scanner position. Estimation uses a graph-consistent spanning forest."
+                },
+                "normalNeighbors": {
+                  "type": "integer",
+                  "minimum": 8,
+                  "maximum": 48,
+                  "default": 24
+                },
+                "viewpoint": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "description": "Scanner viewpoint XYZ in world millimeters; required with estimate-viewpoint."
+                },
+                "depth": {
+                  "type": "integer",
+                  "minimum": 6,
+                  "maximum": 10,
+                  "default": 8,
+                  "description": "Maximum octree depth. Detail and resource use increase with depth; the worker has a fixed 1 GiB WASM heap ceiling."
+                },
+                "pointWeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "default": 2
+                },
+                "samplesPerNode": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 100,
+                  "default": 1.5
+                },
+                "densityThreshold": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 32,
+                  "default": 0,
+                  "description": "Remove triangles with any vertex below this Poisson sampling-depth density. Zero disables trimming; positive values can open boundaries and remove sparse regions."
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "pointCloudMesh"
+                  ]
+                },
+                "plane": {
+                  "type": "string",
+                  "enum": [
+                    "xy",
+                    "xz",
+                    "yz"
+                  ],
+                  "description": "Projection plane for a single-valued surface; not closed 3D reconstruction."
+                },
+                "maxEdgeLength": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Maximum full 3D triangle edge in mm. Zero disables pruning and fills the projected convex hull, including holes."
+                }
+              },
+              "required": [
+                "kind",
+                "plane"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "scanTools"
+                  ]
                 },
                 "operation": {
                   "oneOf": [
@@ -582,11 +743,17 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["reducePolygons"]
+                          "enum": [
+                            "reducePolygons"
+                          ]
                         },
                         "mode": {
                           "type": "string",
-                          "enum": ["triangles", "percentage", "deviation"]
+                          "enum": [
+                            "triangles",
+                            "percentage",
+                            "deviation"
+                          ]
                         },
                         "targetTriangles": {
                           "type": "integer",
@@ -609,7 +776,10 @@
                           "exclusiveMinimum": 0
                         }
                       },
-                      "required": ["kind", "mode"],
+                      "required": [
+                        "kind",
+                        "mode"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -617,7 +787,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["reduceNoise"]
+                          "enum": [
+                            "reduceNoise"
+                          ]
                         },
                         "iterations": {
                           "type": "integer",
@@ -638,7 +810,9 @@
                           "type": "boolean"
                         }
                       },
-                      "required": ["kind"],
+                      "required": [
+                        "kind"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -646,7 +820,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["scaleMesh"]
+                          "enum": [
+                            "scaleMesh"
+                          ]
                         },
                         "factor": {
                           "type": "number",
@@ -661,7 +837,10 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "factor"],
+                      "required": [
+                        "kind",
+                        "factor"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -669,10 +848,14 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["flipNormals"]
+                          "enum": [
+                            "flipNormals"
+                          ]
                         }
                       },
-                      "required": ["kind"],
+                      "required": [
+                        "kind"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -680,7 +863,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["shrinkwrap"]
+                          "enum": [
+                            "shrinkwrap"
+                          ]
                         },
                         "sampleInterval": {
                           "type": "number",
@@ -712,12 +897,18 @@
                         },
                         "scope": {
                           "type": "string",
-                          "enum": ["whole", "selected", "isolated"],
+                          "enum": [
+                            "whole",
+                            "selected",
+                            "isolated"
+                          ],
                           "default": "whole",
                           "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
                         }
                       },
-                      "required": ["kind"],
+                      "required": [
+                        "kind"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -725,11 +916,16 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["repolygonize"]
+                          "enum": [
+                            "repolygonize"
+                          ]
                         },
                         "method": {
                           "type": "string",
-                          "enum": ["native", "voxel"],
+                          "enum": [
+                            "native",
+                            "voxel"
+                          ],
                           "description": "Defaults to native for all-mesh inputs and voxel when the source or selected targets include a point cloud. Explicit native rejects point-cloud inputs. Native uses the signed field, ordered repair and enabled half-count optimization; its output may remain open or nonmanifold. Voxel retains the closed occupancy-shell workflow. Method selection, input binding and ownership are shared by GUI and MCP."
                         },
                         "resolution": {
@@ -738,7 +934,9 @@
                           "description": "Sampling spacing in mm, default 0.5; not a maximum-deviation tolerance. Native accepts raw meshes with independent signed-field/finalization/optimization working budgets and reports open or nonmanifold topology without claiming watertightness. Voxel accepts raw meshes and XYZ point clouds, including mixed inputs; every XYZ point uses radius sqrt(0.75) times spacing and scanner normals are not used. Reconstruction admits up to 500 million input coordinates and 256 MiB of private numeric transport payload including native indexed descriptors; immutable Float32 shared buffers are borrowed by a disposable worker. Payload admission is not a process memory bound. Voxel retains one billion grid points, 500 million sampling candidates and sixteen million output triangles. Oversized work fails without changing geometry or silently coarsening resolution."
                         }
                       },
-                      "required": ["kind"],
+                      "required": [
+                        "kind"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -746,7 +944,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["averageMesh"]
+                          "enum": [
+                            "averageMesh"
+                          ]
                         },
                         "tolerance": {
                           "type": "number",
@@ -754,7 +954,9 @@
                           "description": "Search radius in mm, narrowed to positive finite Float32 (default 10). Boundary-region hits on open edges and hits exactly at the radius are excluded. Contributions accumulate in Float32 in object-list order."
                         }
                       },
-                      "required": ["kind"],
+                      "required": [
+                        "kind"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -762,7 +964,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["mirrorMesh"]
+                          "enum": [
+                            "mirrorMesh"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -789,7 +993,11 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "center", "normal"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "normal"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -797,7 +1005,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["unroll"]
+                          "enum": [
+                            "unroll"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -831,7 +1041,12 @@
                           "description": "Copies translated along the arc-length axis. Aggregate output must fit the 3 million facet limit. Creates a separate owner by default; createNew:false explicitly replaces the source."
                         }
                       },
-                      "required": ["kind", "center", "axis", "radius"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "axis",
+                        "radius"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -839,7 +1054,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["unroll"]
+                          "enum": [
+                            "unroll"
+                          ]
                         },
                         "offsetDegrees": {
                           "type": "number",
@@ -859,13 +1076,19 @@
                           "description": "Existing cylinder reference object. Exact CAD uses its analytic cylinder parameters; one cylinder face with optional planar caps is required. Multiple cylinders and mixed curved bodies reject without changing geometry. Construction cylinders retain their existing binding."
                         }
                       },
-                      "required": ["kind", "cylinderId"],
+                      "required": [
+                        "kind",
+                        "cylinderId"
+                      ],
                       "additionalProperties": false
                     }
                   ]
                 }
               },
-              "required": ["kind", "operation"],
+              "required": [
+                "kind",
+                "operation"
+              ],
               "additionalProperties": false
             },
             {
@@ -873,7 +1096,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["repair"]
+                  "enum": [
+                    "repair"
+                  ]
                 },
                 "tolerance": {
                   "type": "number",
@@ -908,7 +1133,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["smooth"]
+                  "enum": [
+                    "smooth"
+                  ]
                 },
                 "tolerance": {
                   "type": "number",
@@ -925,7 +1152,12 @@
                   "maximum": 1
                 }
               },
-              "required": ["kind", "tolerance", "iterations", "strength"],
+              "required": [
+                "kind",
+                "tolerance",
+                "iterations",
+                "strength"
+              ],
               "additionalProperties": false
             },
             {
@@ -933,14 +1165,19 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["decimate"]
+                  "enum": [
+                    "decimate"
+                  ]
                 },
                 "cellSize": {
                   "type": "number",
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "cellSize"],
+              "required": [
+                "kind",
+                "cellSize"
+              ],
               "additionalProperties": false
             },
             {
@@ -948,7 +1185,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["segment"]
+                  "enum": [
+                    "segment"
+                  ]
                 },
                 "tolerance": {
                   "type": "number",
@@ -960,7 +1199,11 @@
                   "maximum": 180
                 }
               },
-              "required": ["kind", "tolerance", "angleDegrees"],
+              "required": [
+                "kind",
+                "tolerance",
+                "angleDegrees"
+              ],
               "additionalProperties": false
             },
             {
@@ -968,7 +1211,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["paired"]
+                  "enum": [
+                    "paired"
+                  ]
                 },
                 "refineSurface": {
                   "type": "boolean",
@@ -1002,7 +1247,11 @@
                   "maxItems": 3000
                 }
               },
-              "required": ["kind", "sourceLandmarks", "targetLandmarks"],
+              "required": [
+                "kind",
+                "sourceLandmarks",
+                "targetLandmarks"
+              ],
               "additionalProperties": false
             },
             {
@@ -1010,7 +1259,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["icp"]
+                  "enum": [
+                    "icp"
+                  ]
                 },
                 "overlapPercent": {
                   "type": "number",
@@ -1070,7 +1321,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["global"]
+                  "enum": [
+                    "global"
+                  ]
                 },
                 "maxDistance": {
                   "type": "number",
@@ -1117,14 +1370,23 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["selectionMorphology"]
+                  "enum": [
+                    "selectionMorphology"
+                  ]
                 },
                 "operation": {
                   "type": "string",
-                  "enum": ["grow", "shrink", "boundary"]
+                  "enum": [
+                    "grow",
+                    "shrink",
+                    "boundary"
+                  ]
                 }
               },
-              "required": ["kind", "operation"],
+              "required": [
+                "kind",
+                "operation"
+              ],
               "additionalProperties": false
             },
             {
@@ -1132,7 +1394,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["connectedSelection"]
+                  "enum": [
+                    "connectedSelection"
+                  ]
                 },
                 "allConnected": {
                   "type": "boolean"
@@ -1147,7 +1411,11 @@
                   "maximum": 180
                 }
               },
-              "required": ["kind", "tolerance", "angleDegrees"],
+              "required": [
+                "kind",
+                "tolerance",
+                "angleDegrees"
+              ],
               "additionalProperties": false
             },
             {
@@ -1155,7 +1423,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sketchSection"]
+                  "enum": [
+                    "sketchSection"
+                  ]
                 },
                 "options": {
                   "type": "object",
@@ -1163,7 +1433,11 @@
                   "properties": {
                     "plane": {
                       "type": "string",
-                      "enum": ["OXY", "OYZ", "OXZ"]
+                      "enum": [
+                        "OXY",
+                        "OYZ",
+                        "OXZ"
+                      ]
                     },
                     "offset": {
                       "type": "number"
@@ -1184,7 +1458,10 @@
                   "additionalProperties": false
                 }
               },
-              "required": ["kind", "options"],
+              "required": [
+                "kind",
+                "options"
+              ],
               "additionalProperties": false
             },
             {
@@ -1192,7 +1469,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["scanEdit"]
+                  "enum": [
+                    "scanEdit"
+                  ]
                 },
                 "action": {
                   "type": "string",
@@ -1210,6 +1489,13 @@
                     "defeature",
                     "split"
                   ]
+                },
+                "inventoryScope": {
+                  "type": "string",
+                  "enum": [
+                    "components"
+                  ],
+                  "description": "Inventory only: return component faces and areas without calculating holes or boundaries. The inventory scope identifies this partial result; omit for the full inventory."
                 },
                 "createSketches": {
                   "type": "boolean",
@@ -1237,7 +1523,11 @@
                 },
                 "mode": {
                   "type": "string",
-                  "enum": ["entire", "partial", "bridge"]
+                  "enum": [
+                    "entire",
+                    "partial",
+                    "bridge"
+                  ]
                 },
                 "start": {
                   "type": "integer",
@@ -1277,18 +1567,21 @@
                         "minimum": 0
                       }
                     },
-                    "required": ["boundary", "point"],
+                    "required": [
+                      "boundary",
+                      "point"
+                    ],
                     "additionalProperties": false
                   }
                 },
                 "strength": {
-                  "description": "Selected-area smoothing defaults to 0.5 and requires (0,1]. Boundary smoothing defaults to 1; [0,1] maps to native slider positions 0â€“10, rounded to the nearest step. Zero selects minimum native strength, not a disabled operation.",
+                  "description": "Selected-area smoothing defaults to 0.5 and requires (0,1]. Boundary smoothing defaults to 1; [0,1] maps to native slider positions 0\u00e2\u20ac\u201c10, rounded to the nearest step. Zero selects minimum native strength, not a disabled operation.",
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 "iterations": {
-                  "description": "Selected-area smoothing defaults to 6 vertex passes. Boundary smoothing defaults to 1 complete command repetition, each with 10â€“20 vertex passes plus fitted-curve projection and boundary-preserving correction. Explicit values override these defaults.",
+                  "description": "Selected-area smoothing defaults to 6 vertex passes. Boundary smoothing defaults to 1 complete command repetition, each with 10\u00e2\u20ac\u201c20 vertex passes plus fitted-curve projection and boundary-preserving correction. Explicit values override these defaults.",
                   "type": "integer",
                   "minimum": 1,
                   "maximum": 100
@@ -1313,7 +1606,10 @@
                       "maxItems": 3
                     }
                   },
-                  "required": ["origin", "normal"],
+                  "required": [
+                    "origin",
+                    "normal"
+                  ],
                   "additionalProperties": false
                 },
                 "tolerance": {
@@ -1328,7 +1624,10 @@
                   "description": "Positive boundary projection simplification tolerance or spatial-sketch fitting tolerance in mm. Spatial fitting defaults to 0.05 and is limited to 1024 closed boundaries and 200000 boundary points."
                 }
               },
-              "required": ["kind", "action"],
+              "required": [
+                "kind",
+                "action"
+              ],
               "additionalProperties": false
             },
             {
@@ -1336,7 +1635,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["pointCloudEdit"]
+                  "enum": [
+                    "pointCloudEdit"
+                  ]
                 },
                 "action": {
                   "type": "string",
@@ -1381,7 +1682,10 @@
                   "description": "Maximum cumulative displacement from original sample, mm; default 0.05."
                 }
               },
-              "required": ["kind", "action"],
+              "required": [
+                "kind",
+                "action"
+              ],
               "additionalProperties": false
             },
             {
@@ -1389,7 +1693,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["nativeRefine"]
+                  "enum": [
+                    "nativeRefine"
+                  ]
                 },
                 "seedVertices": {
                   "type": "array",
@@ -1424,7 +1730,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "sampleBudget", "initialRadius"],
+              "required": [
+                "kind",
+                "sampleBudget",
+                "initialRadius"
+              ],
               "additionalProperties": false
             }
           ]
@@ -1469,7 +1779,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "operation",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -1545,7 +1860,12 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["plane", "sphere", "cylinder", "cone"]
+          "enum": [
+            "plane",
+            "sphere",
+            "cylinder",
+            "cone"
+          ]
         },
         "selectionOnly": {
           "type": "boolean",
@@ -1567,11 +1887,17 @@
               "minimum": 0
             }
           },
-          "required": ["center", "radius"],
+          "required": [
+            "center",
+            "radius"
+          ],
           "additionalProperties": false
         }
       },
-      "required": ["entityId", "kind"],
+      "required": [
+        "entityId",
+        "kind"
+      ],
       "additionalProperties": false
     }
   },
@@ -1591,13 +1917,21 @@
         },
         "axis": {
           "type": "string",
-          "enum": ["x", "y", "z"]
+          "enum": [
+            "x",
+            "y",
+            "z"
+          ]
         },
         "offset": {
           "type": "number"
         }
       },
-      "required": ["entityId", "axis", "offset"],
+      "required": [
+        "entityId",
+        "axis",
+        "offset"
+      ],
       "additionalProperties": false
     }
   },
@@ -1627,7 +1961,10 @@
               "description": "Symmetric acceptance/color threshold in mm; default 0.1."
             }
           },
-          "required": ["entityId", "fit"],
+          "required": [
+            "entityId",
+            "fit"
+          ],
           "additionalProperties": false
         },
         {
@@ -1659,7 +1996,11 @@
               "description": "Default false. True uses nearest reference triangle winding, not watertight inside/outside."
             }
           },
-          "required": ["entityId", "referenceId", "maxDistance"],
+          "required": [
+            "entityId",
+            "referenceId",
+            "maxDistance"
+          ],
           "additionalProperties": false
         }
       ],
@@ -1692,7 +2033,12 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["distance", "angle", "radius", "diameter"]
+          "enum": [
+            "distance",
+            "angle",
+            "radius",
+            "diameter"
+          ]
         },
         "third": {
           "type": "array",
@@ -1703,7 +2049,10 @@
           "maxItems": 3
         }
       },
-      "required": ["first", "second"],
+      "required": [
+        "first",
+        "second"
+      ],
       "additionalProperties": false
     }
   },
@@ -1733,7 +2082,9 @@
           "maxLength": 200
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -1752,7 +2103,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["primitive"]
+                  "enum": [
+                    "primitive"
+                  ]
                 },
                 "input": {
                   "oneOf": [
@@ -1761,7 +2114,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["box"]
+                          "enum": [
+                            "box"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -1781,7 +2136,11 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "center", "size"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "size"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -1789,7 +2148,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sphere"]
+                          "enum": [
+                            "sphere"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -1804,7 +2165,11 @@
                           "exclusiveMinimum": 0
                         }
                       },
-                      "required": ["kind", "center", "radius"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "radius"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -1812,7 +2177,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["cylinder"]
+                          "enum": [
+                            "cylinder"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -1853,7 +2220,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["cone"]
+                          "enum": [
+                            "cone"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -1897,7 +2266,10 @@
                   ]
                 }
               },
-              "required": ["kind", "input"],
+              "required": [
+                "kind",
+                "input"
+              ],
               "additionalProperties": false
             },
             {
@@ -1905,7 +2277,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["importBrep"]
+                  "enum": [
+                    "importBrep"
+                  ]
                 },
                 "brep": {
                   "type": "string",
@@ -1913,7 +2287,10 @@
                   "maxLength": 1000000
                 }
               },
-              "required": ["kind", "brep"],
+              "required": [
+                "kind",
+                "brep"
+              ],
               "additionalProperties": false
             },
             {
@@ -1921,7 +2298,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["extrude"]
+                  "enum": [
+                    "extrude"
+                  ]
                 },
                 "profile": {
                   "oneOf": [
@@ -1930,7 +2309,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["polygon"]
+                          "enum": [
+                            "polygon"
+                          ]
                         },
                         "points": {
                           "type": "array",
@@ -1949,7 +2330,10 @@
                           "type": "object"
                         }
                       },
-                      "required": ["kind", "points"],
+                      "required": [
+                        "kind",
+                        "points"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -1957,7 +2341,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sketch"]
+                          "enum": [
+                            "sketch"
+                          ]
                         },
                         "sketch": {
                           "type": "object",
@@ -1968,7 +2354,10 @@
                           "exclusiveMinimum": 0
                         }
                       },
-                      "required": ["kind", "sketch"],
+                      "required": [
+                        "kind",
+                        "sketch"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -1976,14 +2365,19 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sketch-curves"]
+                          "enum": [
+                            "sketch-curves"
+                          ]
                         },
                         "sketch": {
                           "type": "object",
                           "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
-                      "required": ["kind", "sketch"],
+                      "required": [
+                        "kind",
+                        "sketch"
+                      ],
                       "additionalProperties": false
                     }
                   ]
@@ -1997,7 +2391,11 @@
                   "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
-              "required": ["kind", "profile", "height"],
+              "required": [
+                "kind",
+                "profile",
+                "height"
+              ],
               "additionalProperties": false
             },
             {
@@ -2005,14 +2403,19 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sketchSurface"]
+                  "enum": [
+                    "sketchSurface"
+                  ]
                 },
                 "sketch": {
                   "type": "object",
                   "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                 }
               },
-              "required": ["kind", "sketch"],
+              "required": [
+                "kind",
+                "sketch"
+              ],
               "additionalProperties": false
             },
             {
@@ -2020,7 +2423,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["revolve"]
+                  "enum": [
+                    "revolve"
+                  ]
                 },
                 "points": {
                   "type": "array",
@@ -2040,7 +2445,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "points", "angleDegrees"],
+              "required": [
+                "kind",
+                "points",
+                "angleDegrees"
+              ],
               "additionalProperties": false
             },
             {
@@ -2048,7 +2457,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["loft"]
+                  "enum": [
+                    "loft"
+                  ]
                 },
                 "profiles": {
                   "type": "array",
@@ -2072,7 +2483,10 @@
                         "type": "number"
                       }
                     },
-                    "required": ["points", "z"],
+                    "required": [
+                      "points",
+                      "z"
+                    ],
                     "additionalProperties": false
                   },
                   "minItems": 2,
@@ -2082,7 +2496,11 @@
                   "type": "boolean"
                 }
               },
-              "required": ["kind", "profiles", "ruled"],
+              "required": [
+                "kind",
+                "profiles",
+                "ruled"
+              ],
               "additionalProperties": false
             },
             {
@@ -2090,7 +2508,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sweep"]
+                  "enum": [
+                    "sweep"
+                  ]
                 },
                 "points": {
                   "type": "array",
@@ -2119,7 +2539,11 @@
                   "maxItems": 10000
                 }
               },
-              "required": ["kind", "points", "path"],
+              "required": [
+                "kind",
+                "points",
+                "path"
+              ],
               "additionalProperties": false
             },
             {
@@ -2127,14 +2551,19 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["surface"]
+                  "enum": [
+                    "surface"
+                  ]
                 },
                 "patch": {
                   "type": "object",
                   "description": "Validated rational NURBS patch; see surface_get"
                 }
               },
-              "required": ["kind", "patch"],
+              "required": [
+                "kind",
+                "patch"
+              ],
               "additionalProperties": false
             },
             {
@@ -2142,7 +2571,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["closedShell"]
+                  "enum": [
+                    "closedShell"
+                  ]
                 },
                 "patches": {
                   "type": "array",
@@ -2157,7 +2588,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "patches", "tolerance"],
+              "required": [
+                "kind",
+                "patches",
+                "tolerance"
+              ],
               "additionalProperties": false
             },
             {
@@ -2165,7 +2600,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["pattern"]
+                  "enum": [
+                    "pattern"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2182,7 +2619,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "pattern": {
@@ -2192,7 +2631,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["linear"]
+                          "enum": [
+                            "linear"
+                          ]
                         },
                         "count": {
                           "type": "integer",
@@ -2208,7 +2649,11 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "count", "step"],
+                      "required": [
+                        "kind",
+                        "count",
+                        "step"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -2216,7 +2661,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["circular"]
+                          "enum": [
+                            "circular"
+                          ]
                         },
                         "count": {
                           "type": "integer",
@@ -2255,7 +2702,11 @@
                   ]
                 }
               },
-              "required": ["kind", "source", "pattern"],
+              "required": [
+                "kind",
+                "source",
+                "pattern"
+              ],
               "additionalProperties": false
             },
             {
@@ -2263,7 +2714,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["mirror"]
+                  "enum": [
+                    "mirror"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2280,7 +2733,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "planeOrigin": {
@@ -2300,7 +2755,12 @@
                   "maxItems": 3
                 }
               },
-              "required": ["kind", "source", "planeOrigin", "normal"],
+              "required": [
+                "kind",
+                "source",
+                "planeOrigin",
+                "normal"
+              ],
               "additionalProperties": false
             },
             {
@@ -2308,7 +2768,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["transform"]
+                  "enum": [
+                    "transform"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2325,7 +2787,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "translation": {
@@ -2363,11 +2827,17 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["boolean"]
+                  "enum": [
+                    "boolean"
+                  ]
                 },
                 "operation": {
                   "type": "string",
-                  "enum": ["union", "subtract", "intersect"]
+                  "enum": [
+                    "union",
+                    "subtract",
+                    "intersect"
+                  ]
                 },
                 "first": {
                   "type": "object",
@@ -2384,7 +2854,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "second": {
@@ -2402,11 +2874,18 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 }
               },
-              "required": ["kind", "operation", "first", "second"],
+              "required": [
+                "kind",
+                "operation",
+                "first",
+                "second"
+              ],
               "additionalProperties": false
             },
             {
@@ -2414,7 +2893,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["split"]
+                  "enum": [
+                    "split"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2431,7 +2912,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "cutter": {
@@ -2449,11 +2932,17 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 }
               },
-              "required": ["kind", "source", "cutter"],
+              "required": [
+                "kind",
+                "source",
+                "cutter"
+              ],
               "additionalProperties": false
             },
             {
@@ -2461,7 +2950,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["edges"]
+                  "enum": [
+                    "edges"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2478,7 +2969,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "edgeIndices": {
@@ -2496,7 +2989,10 @@
                 },
                 "operation": {
                   "type": "string",
-                  "enum": ["fillet", "chamfer"]
+                  "enum": [
+                    "fillet",
+                    "chamfer"
+                  ]
                 }
               },
               "required": [
@@ -2513,7 +3009,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["offset"]
+                  "enum": [
+                    "offset"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2530,14 +3028,20 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "distance": {
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "distance"],
+              "required": [
+                "kind",
+                "source",
+                "distance"
+              ],
               "additionalProperties": false
             },
             {
@@ -2545,7 +3049,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["shell"]
+                  "enum": [
+                    "shell"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2562,7 +3068,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "faceIndices": {
@@ -2578,7 +3086,12 @@
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "faceIndices", "thickness"],
+              "required": [
+                "kind",
+                "source",
+                "faceIndices",
+                "thickness"
+              ],
               "additionalProperties": false
             },
             {
@@ -2586,7 +3099,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["thicken"]
+                  "enum": [
+                    "thicken"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2603,14 +3118,20 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "thickness": {
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "thickness"],
+              "required": [
+                "kind",
+                "source",
+                "thickness"
+              ],
               "additionalProperties": false
             },
             {
@@ -2618,7 +3139,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sew"]
+                  "enum": [
+                    "sew"
+                  ]
                 },
                 "sources": {
                   "type": "array",
@@ -2637,7 +3160,9 @@
                         "maximum": 1
                       }
                     },
-                    "required": ["featureId"],
+                    "required": [
+                      "featureId"
+                    ],
                     "additionalProperties": false
                   },
                   "minItems": 1,
@@ -2648,7 +3173,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "sources", "tolerance"],
+              "required": [
+                "kind",
+                "sources",
+                "tolerance"
+              ],
               "additionalProperties": false
             },
             {
@@ -2657,7 +3186,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["trimSurfaces"]
+                  "enum": [
+                    "trimSurfaces"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -2674,7 +3205,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "cutters": {
@@ -2697,7 +3230,9 @@
                         "maximum": 1
                       }
                     },
-                    "required": ["featureId"],
+                    "required": [
+                      "featureId"
+                    ],
                     "additionalProperties": false
                   }
                 },
@@ -2724,7 +3259,12 @@
                   "description": "Maximum retained-point distance from an exact resulting surface, in millimetres. Boundary ties reject."
                 }
               },
-              "required": ["kind", "source", "cutters", "keepPoints"],
+              "required": [
+                "kind",
+                "source",
+                "cutters",
+                "keepPoints"
+              ],
               "additionalProperties": false
             }
           ]
@@ -2754,7 +3294,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["recipe", "name", "expectedRevision", "requestId"],
+      "required": [
+        "recipe",
+        "name",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -2779,7 +3324,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["primitive"]
+                  "enum": [
+                    "primitive"
+                  ]
                 },
                 "input": {
                   "oneOf": [
@@ -2788,7 +3335,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["box"]
+                          "enum": [
+                            "box"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -2808,7 +3357,11 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "center", "size"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "size"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -2816,7 +3369,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sphere"]
+                          "enum": [
+                            "sphere"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -2831,7 +3386,11 @@
                           "exclusiveMinimum": 0
                         }
                       },
-                      "required": ["kind", "center", "radius"],
+                      "required": [
+                        "kind",
+                        "center",
+                        "radius"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -2839,7 +3398,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["cylinder"]
+                          "enum": [
+                            "cylinder"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -2880,7 +3441,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["cone"]
+                          "enum": [
+                            "cone"
+                          ]
                         },
                         "center": {
                           "type": "array",
@@ -2924,7 +3487,10 @@
                   ]
                 }
               },
-              "required": ["kind", "input"],
+              "required": [
+                "kind",
+                "input"
+              ],
               "additionalProperties": false
             },
             {
@@ -2932,7 +3498,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["importBrep"]
+                  "enum": [
+                    "importBrep"
+                  ]
                 },
                 "brep": {
                   "type": "string",
@@ -2940,7 +3508,10 @@
                   "maxLength": 1000000
                 }
               },
-              "required": ["kind", "brep"],
+              "required": [
+                "kind",
+                "brep"
+              ],
               "additionalProperties": false
             },
             {
@@ -2948,7 +3519,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["extrude"]
+                  "enum": [
+                    "extrude"
+                  ]
                 },
                 "profile": {
                   "oneOf": [
@@ -2957,7 +3530,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["polygon"]
+                          "enum": [
+                            "polygon"
+                          ]
                         },
                         "points": {
                           "type": "array",
@@ -2976,7 +3551,10 @@
                           "type": "object"
                         }
                       },
-                      "required": ["kind", "points"],
+                      "required": [
+                        "kind",
+                        "points"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -2984,7 +3562,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sketch"]
+                          "enum": [
+                            "sketch"
+                          ]
                         },
                         "sketch": {
                           "type": "object",
@@ -2995,7 +3575,10 @@
                           "exclusiveMinimum": 0
                         }
                       },
-                      "required": ["kind", "sketch"],
+                      "required": [
+                        "kind",
+                        "sketch"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -3003,14 +3586,19 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["sketch-curves"]
+                          "enum": [
+                            "sketch-curves"
+                          ]
                         },
                         "sketch": {
                           "type": "object",
                           "description": "Sketch v1: one closed analytic line/arc profile, validated by validateSketch. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                         }
                       },
-                      "required": ["kind", "sketch"],
+                      "required": [
+                        "kind",
+                        "sketch"
+                      ],
                       "additionalProperties": false
                     }
                   ]
@@ -3024,7 +3612,11 @@
                   "description": "Distance in millimetres opposite the profile normal; defaults to zero. With a positive opposite distance, combined height is at most 1e9 mm."
                 }
               },
-              "required": ["kind", "profile", "height"],
+              "required": [
+                "kind",
+                "profile",
+                "height"
+              ],
               "additionalProperties": false
             },
             {
@@ -3032,14 +3624,19 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sketchSurface"]
+                  "enum": [
+                    "sketchSurface"
+                  ]
                 },
                 "sketch": {
                   "type": "object",
                   "description": "Embedded editable Sketch v1 snapshot with optional frame and scan reference, constraints and one closed analytic nonconstruction line/arc profile; centrally solved and validated before exact planar face creation. Saved-sketch changes do not automatically rebuild this feature. CAD solver admission for submitted/evaluated recipes precedes detailed validation: at most 128 authored points, 256 constraints, 10000 stored curves, 512 residual rows, 65536 dense cells and 250000000 estimated work units. Unused points and construction curves count; residual-free sketches have no iterative work charge. Stored cached recipes remain structurally readable without execution admission; explicit resubmission and actual reevaluation still require admission."
                 }
               },
-              "required": ["kind", "sketch"],
+              "required": [
+                "kind",
+                "sketch"
+              ],
               "additionalProperties": false
             },
             {
@@ -3047,7 +3644,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["revolve"]
+                  "enum": [
+                    "revolve"
+                  ]
                 },
                 "points": {
                   "type": "array",
@@ -3067,7 +3666,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "points", "angleDegrees"],
+              "required": [
+                "kind",
+                "points",
+                "angleDegrees"
+              ],
               "additionalProperties": false
             },
             {
@@ -3075,7 +3678,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["loft"]
+                  "enum": [
+                    "loft"
+                  ]
                 },
                 "profiles": {
                   "type": "array",
@@ -3099,7 +3704,10 @@
                         "type": "number"
                       }
                     },
-                    "required": ["points", "z"],
+                    "required": [
+                      "points",
+                      "z"
+                    ],
                     "additionalProperties": false
                   },
                   "minItems": 2,
@@ -3109,7 +3717,11 @@
                   "type": "boolean"
                 }
               },
-              "required": ["kind", "profiles", "ruled"],
+              "required": [
+                "kind",
+                "profiles",
+                "ruled"
+              ],
               "additionalProperties": false
             },
             {
@@ -3117,7 +3729,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sweep"]
+                  "enum": [
+                    "sweep"
+                  ]
                 },
                 "points": {
                   "type": "array",
@@ -3146,7 +3760,11 @@
                   "maxItems": 10000
                 }
               },
-              "required": ["kind", "points", "path"],
+              "required": [
+                "kind",
+                "points",
+                "path"
+              ],
               "additionalProperties": false
             },
             {
@@ -3154,14 +3772,19 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["surface"]
+                  "enum": [
+                    "surface"
+                  ]
                 },
                 "patch": {
                   "type": "object",
                   "description": "Validated rational NURBS patch; see surface_get"
                 }
               },
-              "required": ["kind", "patch"],
+              "required": [
+                "kind",
+                "patch"
+              ],
               "additionalProperties": false
             },
             {
@@ -3169,7 +3792,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["closedShell"]
+                  "enum": [
+                    "closedShell"
+                  ]
                 },
                 "patches": {
                   "type": "array",
@@ -3184,7 +3809,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "patches", "tolerance"],
+              "required": [
+                "kind",
+                "patches",
+                "tolerance"
+              ],
               "additionalProperties": false
             },
             {
@@ -3192,7 +3821,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["pattern"]
+                  "enum": [
+                    "pattern"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3209,7 +3840,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "pattern": {
@@ -3219,7 +3852,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["linear"]
+                          "enum": [
+                            "linear"
+                          ]
                         },
                         "count": {
                           "type": "integer",
@@ -3235,7 +3870,11 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["kind", "count", "step"],
+                      "required": [
+                        "kind",
+                        "count",
+                        "step"
+                      ],
                       "additionalProperties": false
                     },
                     {
@@ -3243,7 +3882,9 @@
                       "properties": {
                         "kind": {
                           "type": "string",
-                          "enum": ["circular"]
+                          "enum": [
+                            "circular"
+                          ]
                         },
                         "count": {
                           "type": "integer",
@@ -3282,7 +3923,11 @@
                   ]
                 }
               },
-              "required": ["kind", "source", "pattern"],
+              "required": [
+                "kind",
+                "source",
+                "pattern"
+              ],
               "additionalProperties": false
             },
             {
@@ -3290,7 +3935,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["mirror"]
+                  "enum": [
+                    "mirror"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3307,7 +3954,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "planeOrigin": {
@@ -3327,7 +3976,12 @@
                   "maxItems": 3
                 }
               },
-              "required": ["kind", "source", "planeOrigin", "normal"],
+              "required": [
+                "kind",
+                "source",
+                "planeOrigin",
+                "normal"
+              ],
               "additionalProperties": false
             },
             {
@@ -3335,7 +3989,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["transform"]
+                  "enum": [
+                    "transform"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3352,7 +4008,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "translation": {
@@ -3390,11 +4048,17 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["boolean"]
+                  "enum": [
+                    "boolean"
+                  ]
                 },
                 "operation": {
                   "type": "string",
-                  "enum": ["union", "subtract", "intersect"]
+                  "enum": [
+                    "union",
+                    "subtract",
+                    "intersect"
+                  ]
                 },
                 "first": {
                   "type": "object",
@@ -3411,7 +4075,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "second": {
@@ -3429,11 +4095,18 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 }
               },
-              "required": ["kind", "operation", "first", "second"],
+              "required": [
+                "kind",
+                "operation",
+                "first",
+                "second"
+              ],
               "additionalProperties": false
             },
             {
@@ -3441,7 +4114,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["split"]
+                  "enum": [
+                    "split"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3458,7 +4133,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "cutter": {
@@ -3476,11 +4153,17 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 }
               },
-              "required": ["kind", "source", "cutter"],
+              "required": [
+                "kind",
+                "source",
+                "cutter"
+              ],
               "additionalProperties": false
             },
             {
@@ -3488,7 +4171,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["edges"]
+                  "enum": [
+                    "edges"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3505,7 +4190,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "edgeIndices": {
@@ -3523,7 +4210,10 @@
                 },
                 "operation": {
                   "type": "string",
-                  "enum": ["fillet", "chamfer"]
+                  "enum": [
+                    "fillet",
+                    "chamfer"
+                  ]
                 }
               },
               "required": [
@@ -3540,7 +4230,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["offset"]
+                  "enum": [
+                    "offset"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3557,14 +4249,20 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "distance": {
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "distance"],
+              "required": [
+                "kind",
+                "source",
+                "distance"
+              ],
               "additionalProperties": false
             },
             {
@@ -3572,7 +4270,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["shell"]
+                  "enum": [
+                    "shell"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3589,7 +4289,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "faceIndices": {
@@ -3605,7 +4307,12 @@
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "faceIndices", "thickness"],
+              "required": [
+                "kind",
+                "source",
+                "faceIndices",
+                "thickness"
+              ],
               "additionalProperties": false
             },
             {
@@ -3613,7 +4320,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["thicken"]
+                  "enum": [
+                    "thicken"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3630,14 +4339,20 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "thickness": {
                   "type": "number"
                 }
               },
-              "required": ["kind", "source", "thickness"],
+              "required": [
+                "kind",
+                "source",
+                "thickness"
+              ],
               "additionalProperties": false
             },
             {
@@ -3645,7 +4360,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["sew"]
+                  "enum": [
+                    "sew"
+                  ]
                 },
                 "sources": {
                   "type": "array",
@@ -3664,7 +4381,9 @@
                         "maximum": 1
                       }
                     },
-                    "required": ["featureId"],
+                    "required": [
+                      "featureId"
+                    ],
                     "additionalProperties": false
                   },
                   "minItems": 1,
@@ -3675,7 +4394,11 @@
                   "exclusiveMinimum": 0
                 }
               },
-              "required": ["kind", "sources", "tolerance"],
+              "required": [
+                "kind",
+                "sources",
+                "tolerance"
+              ],
               "additionalProperties": false
             },
             {
@@ -3684,7 +4407,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["trimSurfaces"]
+                  "enum": [
+                    "trimSurfaces"
+                  ]
                 },
                 "source": {
                   "type": "object",
@@ -3701,7 +4426,9 @@
                       "maximum": 1
                     }
                   },
-                  "required": ["featureId"],
+                  "required": [
+                    "featureId"
+                  ],
                   "additionalProperties": false
                 },
                 "cutters": {
@@ -3724,7 +4451,9 @@
                         "maximum": 1
                       }
                     },
-                    "required": ["featureId"],
+                    "required": [
+                      "featureId"
+                    ],
                     "additionalProperties": false
                   }
                 },
@@ -3751,7 +4480,12 @@
                   "description": "Maximum retained-point distance from an exact resulting surface, in millimetres. Boundary ties reject."
                 }
               },
-              "required": ["kind", "source", "cutters", "keepPoints"],
+              "required": [
+                "kind",
+                "source",
+                "cutters",
+                "keepPoints"
+              ],
               "additionalProperties": false
             }
           ]
@@ -3767,7 +4501,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "recipe", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "recipe",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -3796,11 +4535,16 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["preset"]
+              "enum": [
+                "preset"
+              ]
             },
             "profile": {
               "type": "string",
-              "enum": ["rectangle", "circle"]
+              "enum": [
+                "rectangle",
+                "circle"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -3812,7 +4556,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "profile", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "profile",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -3820,11 +4569,17 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["plane"]
+              "enum": [
+                "plane"
+              ]
             },
             "plane": {
               "type": "string",
-              "enum": ["OXY", "OYZ", "OXZ"]
+              "enum": [
+                "OXY",
+                "OYZ",
+                "OXZ"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -3836,7 +4591,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "plane", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "plane",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -3844,7 +4604,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["planeOffset"]
+              "enum": [
+                "planeOffset"
+              ]
             },
             "offsetMm": {
               "type": "number",
@@ -3861,7 +4623,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "offsetMm", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "offsetMm",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -3869,7 +4636,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["pointAdd"]
+              "enum": [
+                "pointAdd"
+              ]
             },
             "position": {
               "type": "array",
@@ -3891,7 +4660,11 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -3899,7 +4672,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["pointSet"]
+              "enum": [
+                "pointSet"
+              ]
             },
             "pointId": {
               "type": "string",
@@ -3925,7 +4700,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "pointId", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "pointId",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false,
           "minProperties": 5
         },
@@ -3936,7 +4716,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["segmentAdd"]
+                  "enum": [
+                    "segmentAdd"
+                  ]
                 },
                 "expectedRevision": {
                   "type": "integer",
@@ -3948,7 +4730,11 @@
                   "maxLength": 200
                 }
               },
-              "required": ["kind", "expectedRevision", "requestId"],
+              "required": [
+                "kind",
+                "expectedRevision",
+                "requestId"
+              ],
               "additionalProperties": false
             },
             {
@@ -3956,7 +4742,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["segmentAdd"]
+                  "enum": [
+                    "segmentAdd"
+                  ]
                 },
                 "a": {
                   "type": "string",
@@ -3976,7 +4764,13 @@
                   "maxLength": 200
                 }
               },
-              "required": ["kind", "a", "b", "expectedRevision", "requestId"],
+              "required": [
+                "kind",
+                "a",
+                "b",
+                "expectedRevision",
+                "requestId"
+              ],
               "additionalProperties": false
             }
           ]
@@ -3986,7 +4780,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["segmentSet"]
+              "enum": [
+                "segmentSet"
+              ]
             },
             "segmentId": {
               "type": "string",
@@ -4010,7 +4806,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "segmentId", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "segmentId",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false,
           "minProperties": 5
         },
@@ -4021,7 +4822,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["arcAdd"]
+                  "enum": [
+                    "arcAdd"
+                  ]
                 },
                 "clockwise": {
                   "type": "boolean"
@@ -4036,7 +4839,11 @@
                   "maxLength": 200
                 }
               },
-              "required": ["kind", "expectedRevision", "requestId"],
+              "required": [
+                "kind",
+                "expectedRevision",
+                "requestId"
+              ],
               "additionalProperties": false
             },
             {
@@ -4044,7 +4851,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["arcAdd"]
+                  "enum": [
+                    "arcAdd"
+                  ]
                 },
                 "a": {
                   "type": "string",
@@ -4088,7 +4897,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["arcSet"]
+              "enum": [
+                "arcSet"
+              ]
             },
             "arcId": {
               "type": "string",
@@ -4119,7 +4930,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "arcId", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "arcId",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false,
           "minProperties": 5
         },
@@ -4128,7 +4944,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["construction"]
+              "enum": [
+                "construction"
+              ]
             },
             "curveId": {
               "type": "string",
@@ -4161,11 +4979,18 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["remove"]
+              "enum": [
+                "remove"
+              ]
             },
             "target": {
               "type": "string",
-              "enum": ["point", "segment", "arc", "constraint"]
+              "enum": [
+                "point",
+                "segment",
+                "arc",
+                "constraint"
+              ]
             },
             "id": {
               "type": "string",
@@ -4181,7 +5006,13 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "target", "id", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "target",
+            "id",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -4189,7 +5020,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["dimension"]
+              "enum": [
+                "dimension"
+              ]
             },
             "constraintId": {
               "type": "string",
@@ -4224,7 +5057,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["constraintAdd"]
+              "enum": [
+                "constraintAdd"
+              ]
             },
             "constraint": {
               "oneOf": [
@@ -4233,14 +5068,19 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["fixed"]
+                      "enum": [
+                        "fixed"
+                      ]
                     },
                     "point": {
                       "type": "string",
                       "minLength": 1
                     }
                   },
-                  "required": ["kind", "point"],
+                  "required": [
+                    "kind",
+                    "point"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4248,7 +5088,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["coincident"]
+                      "enum": [
+                        "coincident"
+                      ]
                     },
                     "a": {
                       "type": "string",
@@ -4259,7 +5101,11 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["kind", "a", "b"],
+                  "required": [
+                    "kind",
+                    "a",
+                    "b"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4267,14 +5113,20 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["horizontal", "vertical"]
+                      "enum": [
+                        "horizontal",
+                        "vertical"
+                      ]
                     },
                     "segment": {
                       "type": "string",
                       "minLength": 1
                     }
                   },
-                  "required": ["kind", "segment"],
+                  "required": [
+                    "kind",
+                    "segment"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4302,7 +5154,12 @@
                       "maximum": 1000000000
                     }
                   },
-                  "required": ["kind", "a", "b", "value"],
+                  "required": [
+                    "kind",
+                    "a",
+                    "b",
+                    "value"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4310,7 +5167,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["radius"]
+                      "enum": [
+                        "radius"
+                      ]
                     },
                     "arc": {
                       "type": "string",
@@ -4322,7 +5181,11 @@
                       "maximum": 1000000000
                     }
                   },
-                  "required": ["kind", "arc", "value"],
+                  "required": [
+                    "kind",
+                    "arc",
+                    "value"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4346,7 +5209,11 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["kind", "first", "second"],
+                  "required": [
+                    "kind",
+                    "first",
+                    "second"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4354,7 +5221,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["angle"]
+                      "enum": [
+                        "angle"
+                      ]
                     },
                     "first": {
                       "type": "string",
@@ -4370,7 +5239,12 @@
                       "maximum": 1000000000
                     }
                   },
-                  "required": ["kind", "first", "second", "value"],
+                  "required": [
+                    "kind",
+                    "first",
+                    "second",
+                    "value"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4378,7 +5252,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["tangent"]
+                      "enum": [
+                        "tangent"
+                      ]
                     },
                     "first": {
                       "type": "string",
@@ -4393,7 +5269,12 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["kind", "first", "second", "point"],
+                  "required": [
+                    "kind",
+                    "first",
+                    "second",
+                    "point"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -4401,7 +5282,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["symmetric"]
+                      "enum": [
+                        "symmetric"
+                      ]
                     },
                     "first": {
                       "type": "string",
@@ -4419,7 +5302,13 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["kind", "first", "second", "axis", "reverse"],
+                  "required": [
+                    "kind",
+                    "first",
+                    "second",
+                    "axis",
+                    "reverse"
+                  ],
                   "additionalProperties": false
                 }
               ]
@@ -4434,7 +5323,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "constraint", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "constraint",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -4442,7 +5336,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["solve"]
+              "enum": [
+                "solve"
+              ]
             },
             "tolerance": {
               "type": "number",
@@ -4467,7 +5363,11 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         }
       ]
@@ -4486,7 +5386,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["line"]
+              "enum": [
+                "line"
+              ]
             },
             "points": {
               "type": "array",
@@ -4536,7 +5438,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["circle"]
+              "enum": [
+                "circle"
+              ]
             },
             "points": {
               "type": "array",
@@ -4563,7 +5467,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "points",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -4571,7 +5480,10 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["circle3", "arc3"]
+              "enum": [
+                "circle3",
+                "arc3"
+              ]
             },
             "points": {
               "type": "array",
@@ -4598,7 +5510,12 @@
               "maxLength": 200
             }
           },
-          "required": ["kind", "points", "expectedRevision", "requestId"],
+          "required": [
+            "kind",
+            "points",
+            "expectedRevision",
+            "requestId"
+          ],
           "additionalProperties": false
         },
         {
@@ -4606,7 +5523,9 @@
           "properties": {
             "kind": {
               "type": "string",
-              "enum": ["move"]
+              "enum": [
+                "move"
+              ]
             },
             "pointId": {
               "type": "string",
@@ -4672,7 +5591,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["sketch", "expectedRevision", "requestId"],
+      "required": [
+        "sketch",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -4694,11 +5617,17 @@
         },
         "firstEnd": {
           "type": "string",
-          "enum": ["a", "b"]
+          "enum": [
+            "a",
+            "b"
+          ]
         },
         "secondEnd": {
           "type": "string",
-          "enum": ["a", "b"]
+          "enum": [
+            "a",
+            "b"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -4740,11 +5669,17 @@
         },
         "firstEnd": {
           "type": "string",
-          "enum": ["a", "b"]
+          "enum": [
+            "a",
+            "b"
+          ]
         },
         "secondEnd": {
           "type": "string",
-          "enum": ["a", "b"]
+          "enum": [
+            "a",
+            "b"
+          ]
         },
         "radiusMm": {
           "type": "number",
@@ -4813,7 +5748,12 @@
           "maxLength": 200
         }
       },
-      "required": ["stroke", "radiusMm", "expectedRevision", "requestId"],
+      "required": [
+        "stroke",
+        "radiusMm",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -4854,7 +5794,12 @@
           "description": "Unique retry receipt; reuse only identical requests, retained for latest256 requests."
         }
       },
-      "required": ["axis", "curveIds", "expectedRevision", "requestId"],
+      "required": [
+        "axis",
+        "curveIds",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -4870,7 +5815,9 @@
           "type": "object"
         }
       },
-      "required": ["sketch"],
+      "required": [
+        "sketch"
+      ],
       "additionalProperties": false
     }
   },
@@ -4889,7 +5836,9 @@
           "description": ""
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -4933,7 +5882,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["patch", "expectedRevision", "requestId"],
+      "required": [
+        "patch",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -4972,11 +5925,18 @@
             },
             "projection": {
               "type": "string",
-              "enum": ["xy", "xz", "yz"]
+              "enum": [
+                "xy",
+                "xz",
+                "yz"
+              ]
             },
             "method": {
               "type": "string",
-              "enum": ["projected-grid", "approximate"]
+              "enum": [
+                "projected-grid",
+                "approximate"
+              ]
             },
             "regularizationWeight": {
               "type": "number",
@@ -4989,7 +5949,12 @@
               "maximum": 100000
             }
           },
-          "required": ["countU", "countV", "projection", "sampleLimit"]
+          "required": [
+            "countU",
+            "countV",
+            "projection",
+            "sampleLimit"
+          ]
         },
         "selectionOnly": {
           "type": "boolean",
@@ -5006,13 +5971,18 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "options", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "options",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
   {
     "name": "project_import",
-    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
+    "description": "Import a completed artifact: project, STL/OBJ/polygon PLY, ASC point cloud or STEP/IGES/BREP. Fresh ASC clouds start in solid lime green while retaining file RGB for source mode. Fresh workspaces preserve scan coordinates; omitted placeAtOrigin uses settings.importPlaceAtOrigin; placeAtOrigin=true centers scan XY bounds and places its base on Z=0 after unit conversion. CAD/project placement is retained. replace=true required for project replacement. Project replacement frames restored visible geometry and awaits presentation. Verified large numeric arrays from successful exports may be reused weakly during restore; changed or unavailable arrays are independently reconstructed. Legacy neutral/white clouds without an explicit color mode migrate to solid green. Geometry stays local. ASC attribute interpretation is shared with GUI; ascAttributes overrides settings.importAscAttributes for this request. Admitted semantic references, including derived points and pair/average lines with supported sources, are validated in current, Undo and Redo states. Unsupported or broken source identities reject without replacing the open workspace.",
     "readOnly": false,
     "job": true,
     "inputSchema": {
@@ -5026,7 +5996,13 @@
         },
         "unit": {
           "type": "string",
-          "enum": ["mm", "cm", "m", "in", "ft"]
+          "enum": [
+            "mm",
+            "cm",
+            "m",
+            "in",
+            "ft"
+          ]
         },
         "replace": {
           "type": "boolean"
@@ -5047,11 +6023,18 @@
         },
         "ascAttributes": {
           "type": "string",
-          "enum": ["xyz-rgb", "xyz-normal"],
+          "enum": [
+            "xyz-rgb",
+            "xyz-normal"
+          ],
           "description": "ASC files only. xyz-rgb reads XYZ plus integer RGB with white XYZ fallback; xyz-normal explicitly preserves XYZ NX NY NZ scanner normals. Omit to use settings.importAscAttributes (initially xyz-rgb). Explicit override does not change the preference."
         }
       },
-      "required": ["artifactId", "expectedRevision", "requestId"],
+      "required": [
+        "artifactId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5065,7 +6048,13 @@
       "properties": {
         "unit": {
           "type": "string",
-          "enum": ["mm", "cm", "m", "in", "ft"]
+          "enum": [
+            "mm",
+            "cm",
+            "m",
+            "in",
+            "ft"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -5094,17 +6083,24 @@
         },
         "ascAttributes": {
           "type": "string",
-          "enum": ["xyz-rgb", "xyz-normal"],
+          "enum": [
+            "xyz-rgb",
+            "xyz-normal"
+          ],
           "description": "ASC files only. xyz-rgb reads XYZ plus integer RGB with white XYZ fallback; xyz-normal explicitly preserves XYZ NX NY NZ scanner normals. Omit to use settings.importAscAttributes (initially xyz-rgb). Explicit override does not change the preference."
         }
       },
-      "required": ["artifactIds", "expectedRevision", "requestId"],
+      "required": [
+        "artifactIds",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
   {
     "name": "project_export",
-    "description": "Export project, visible STL or exact STEP as a local artifact. STEP normally selects exact CAD within the visibility scope; cadOnly:true also reports excludedEntityIds. Set cadOnly:false to require every included object to be exact CAD. GUI STEP export uses the same cancellable job. Does not write arbitrary filesystem paths.",
+    "description": "Export project, visible STL or exact STEP as a local artifact. STEP requires every included object to be exact CAD unless cadOnly:true selects the exact CAD subset and reports excludedEntityIds. GUI STEP export uses the same cancellable job. Does not write arbitrary filesystem paths.",
     "readOnly": true,
     "job": true,
     "inputSchema": {
@@ -5112,7 +6108,11 @@
       "properties": {
         "format": {
           "type": "string",
-          "enum": ["project", "stl", "step"]
+          "enum": [
+            "project",
+            "stl",
+            "step"
+          ]
         },
         "visible": {
           "type": "boolean"
@@ -5122,7 +6122,9 @@
           "description": "STEP only: omit non-CAD references and report their IDs. Default false retains strict mixed-scene rejection."
         }
       },
-      "required": ["format"],
+      "required": [
+        "format"
+      ],
       "additionalProperties": false
     }
   },
@@ -5136,7 +6138,10 @@
       "properties": {
         "scope": {
           "type": "string",
-          "enum": ["model", "sketch"],
+          "enum": [
+            "model",
+            "sketch"
+          ],
           "default": "model",
           "description": "Use sketch only for the current active saved sketch or legacy draft edit session; omitted keeps existing model history."
         },
@@ -5151,7 +6156,10 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5165,7 +6173,10 @@
       "properties": {
         "scope": {
           "type": "string",
-          "enum": ["model", "sketch"],
+          "enum": [
+            "model",
+            "sketch"
+          ],
           "default": "model",
           "description": "Use sketch only for the current active saved sketch or legacy draft edit session; omitted keeps existing model history."
         },
@@ -5180,7 +6191,10 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5216,7 +6230,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["view", "expectedRevision", "requestId"],
+      "required": [
+        "view",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5237,7 +6255,11 @@
             },
             "theme": {
               "type": "string",
-              "enum": ["light", "dark", "system"]
+              "enum": [
+                "light",
+                "dark",
+                "system"
+              ]
             },
             "wireframe": {
               "type": "boolean"
@@ -5276,7 +6298,10 @@
             },
             "importAscAttributes": {
               "type": "string",
-              "enum": ["xyz-rgb", "xyz-normal"],
+              "enum": [
+                "xyz-rgb",
+                "xyz-normal"
+              ],
               "description": "Default ASC interpretation for future GUI/MCP imports. Initially xyz-rgb. Does not reinterpret existing scans or create model history."
             }
           },
@@ -5294,7 +6319,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["patch", "expectedRevision", "requestId"],
+      "required": [
+        "patch",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5313,7 +6342,9 @@
           "description": ""
         }
       },
-      "required": ["jobId"],
+      "required": [
+        "jobId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5332,7 +6363,9 @@
           "description": ""
         }
       },
-      "required": ["jobId"],
+      "required": [
+        "jobId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5365,7 +6398,11 @@
           "description": ""
         }
       },
-      "required": ["name", "base64", "offset"],
+      "required": [
+        "name",
+        "base64",
+        "offset"
+      ],
       "additionalProperties": false
     }
   },
@@ -5393,7 +6430,9 @@
           "maximum": 262144
         }
       },
-      "required": ["artifactId"],
+      "required": [
+        "artifactId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5412,7 +6451,9 @@
           "description": ""
         }
       },
-      "required": ["artifactId"],
+      "required": [
+        "artifactId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5444,7 +6485,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["discard", "expectedRevision", "requestId"],
+      "required": [
+        "discard",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5481,7 +6526,10 @@
           "description": "Shift-click range semantics in object tree order; skips locked/unselectable objects"
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5515,7 +6563,10 @@
           "description": "Objects to toggle once each; omit to use current selected objects."
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5554,7 +6605,11 @@
           "maxLength": 200
         }
       },
-      "required": ["expectedRevision", "requestId", "name"],
+      "required": [
+        "expectedRevision",
+        "requestId",
+        "name"
+      ],
       "additionalProperties": false
     }
   },
@@ -5581,7 +6636,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["index", "expectedRevision", "requestId"],
+      "required": [
+        "index",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5633,7 +6692,14 @@
         },
         "tool": {
           "type": "string",
-          "enum": ["wand", "brush", "freehand", "line", "rectangle", "circle"]
+          "enum": [
+            "wand",
+            "brush",
+            "freehand",
+            "line",
+            "rectangle",
+            "circle"
+          ]
         },
         "through": {
           "type": "boolean"
@@ -5642,7 +6708,9 @@
           "oneOf": [
             {
               "type": "null",
-              "enum": [null]
+              "enum": [
+                null
+              ]
             },
             {
               "type": "object",
@@ -5668,7 +6736,10 @@
                   "maxItems": 3
                 }
               },
-              "required": ["min", "max"],
+              "required": [
+                "min",
+                "max"
+              ],
               "additionalProperties": false
             }
           ]
@@ -5687,7 +6758,12 @@
           "type": "boolean"
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId", "action"],
+      "required": [
+        "entityId",
+        "expectedRevision",
+        "requestId",
+        "action"
+      ],
       "additionalProperties": false
     }
   },
@@ -5720,7 +6796,10 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["rectangle", "circle"]
+                  "enum": [
+                    "rectangle",
+                    "circle"
+                  ]
                 },
                 "start": {
                   "type": "array",
@@ -5743,7 +6822,11 @@
                   "maxItems": 2
                 }
               },
-              "required": ["kind", "start", "end"],
+              "required": [
+                "kind",
+                "start",
+                "end"
+              ],
               "additionalProperties": false
             },
             {
@@ -5751,7 +6834,10 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["brush", "lasso"]
+                  "enum": [
+                    "brush",
+                    "lasso"
+                  ]
                 },
                 "points": {
                   "type": "array",
@@ -5774,7 +6860,11 @@
                   "maximum": 2000
                 }
               },
-              "required": ["kind", "points", "radius"],
+              "required": [
+                "kind",
+                "points",
+                "radius"
+              ],
               "additionalProperties": false
             }
           ]
@@ -5784,10 +6874,19 @@
         },
         "operation": {
           "type": "string",
-          "enum": ["replace", "add", "subtract"]
+          "enum": [
+            "replace",
+            "add",
+            "subtract"
+          ]
         }
       },
-      "required": ["entityId", "expectedRevision", "requestId", "region"],
+      "required": [
+        "entityId",
+        "expectedRevision",
+        "requestId",
+        "region"
+      ],
       "additionalProperties": false
     }
   },
@@ -5807,7 +6906,11 @@
         },
         "operation": {
           "type": "string",
-          "enum": ["all", "clear", "invert"]
+          "enum": [
+            "all",
+            "clear",
+            "invert"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -5820,7 +6923,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "operation",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5840,7 +6948,11 @@
         },
         "action": {
           "type": "string",
-          "enum": ["save", "load", "delete"]
+          "enum": [
+            "save",
+            "load",
+            "delete"
+          ]
         },
         "name": {
           "type": "string",
@@ -5865,7 +6977,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "action", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "action",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5879,7 +6996,13 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["create", "activate", "rename", "delete", "visibility"]
+          "enum": [
+            "create",
+            "activate",
+            "rename",
+            "delete",
+            "visibility"
+          ]
         },
         "sketchId": {
           "type": "string",
@@ -5908,7 +7031,11 @@
         },
         "framePlane": {
           "type": "string",
-          "enum": ["XY", "YZ", "XZ"],
+          "enum": [
+            "XY",
+            "YZ",
+            "XZ"
+          ],
           "description": "Coordinate-system sketch plane, default XY. Requires planeSourceId; ordinary reference planes accept only XY."
         },
         "normalOffset": {
@@ -5928,7 +7055,11 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["action", "expectedRevision", "requestId"],
+      "required": [
+        "action",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -5948,7 +7079,10 @@
         },
         "operation": {
           "type": "string",
-          "enum": ["cleanup", "alignPrincipalAxes"]
+          "enum": [
+            "cleanup",
+            "alignPrincipalAxes"
+          ]
         },
         "expectedRevision": {
           "type": "integer",
@@ -5961,7 +7095,12 @@
           "description": "Unique retry receipt; reuse only identical request, retained for latest256 requests"
         }
       },
-      "required": ["entityId", "operation", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "operation",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -6028,7 +7167,10 @@
         },
         "axis": {
           "type": "string",
-          "enum": ["u", "v"]
+          "enum": [
+            "u",
+            "v"
+          ]
         },
         "parameter": {
           "type": "number",
@@ -6061,21 +7203,38 @@
           "properties": {
             "referenceEdge": {
               "type": "string",
-              "enum": ["u0", "u1", "v0", "v1"]
+              "enum": [
+                "u0",
+                "u1",
+                "v0",
+                "v1"
+              ]
             },
             "targetEdge": {
               "type": "string",
-              "enum": ["u0", "u1", "v0", "v1"]
+              "enum": [
+                "u0",
+                "u1",
+                "v0",
+                "v1"
+              ]
             },
             "continuity": {
               "type": "string",
-              "enum": ["C0", "C1"]
+              "enum": [
+                "C0",
+                "C1"
+              ]
             },
             "reverse": {
               "type": "boolean"
             }
           },
-          "required": ["referenceEdge", "targetEdge", "continuity"],
+          "required": [
+            "referenceEdge",
+            "targetEdge",
+            "continuity"
+          ],
           "additionalProperties": false
         },
         "expectedRevision": {
@@ -6094,11 +7253,15 @@
           "properties": {
             "format": {
               "type": "string",
-              "enum": ["scanforge-nurbs"]
+              "enum": [
+                "scanforge-nurbs"
+              ]
             },
             "version": {
               "type": "integer",
-              "enum": [1]
+              "enum": [
+                1
+              ]
             },
             "countU": {
               "type": "integer",
@@ -6174,7 +7337,11 @@
           "additionalProperties": false
         }
       },
-      "required": ["operation", "expectedRevision", "requestId"],
+      "required": [
+        "operation",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -6227,11 +7394,17 @@
               "exclusiveMinimum": 0
             }
           },
-          "required": ["segments", "triangleBudget", "weldTolerance"],
+          "required": [
+            "segments",
+            "triangleBudget",
+            "weldTolerance"
+          ],
           "additionalProperties": false
         }
       },
-      "required": ["options"],
+      "required": [
+        "options"
+      ],
       "additionalProperties": false
     }
   },
@@ -6245,11 +7418,17 @@
       "properties": {
         "scope": {
           "type": "string",
-          "enum": ["application", "viewport"]
+          "enum": [
+            "application",
+            "viewport"
+          ]
         },
         "format": {
           "type": "string",
-          "enum": ["png", "jpeg"]
+          "enum": [
+            "png",
+            "jpeg"
+          ]
         },
         "maxWidth": {
           "type": "integer",
@@ -6325,7 +7504,11 @@
           "maxLength": 100
         }
       },
-      "required": ["expectedRevision", "requestId", "name"],
+      "required": [
+        "expectedRevision",
+        "requestId",
+        "name"
+      ],
       "additionalProperties": false
     }
   },
@@ -6348,7 +7531,10 @@
           "maxLength": 128
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -6433,7 +7619,12 @@
         },
         "mode": {
           "type": "string",
-          "enum": ["inspect", "measure", "section", "brush"]
+          "enum": [
+            "inspect",
+            "measure",
+            "section",
+            "brush"
+          ]
         },
         "toolPanelOpen": {
           "type": "boolean"
@@ -6443,7 +7634,12 @@
         },
         "settingsSection": {
           "type": "string",
-          "enum": ["appearance", "spacemouse", "import", "agents"]
+          "enum": [
+            "appearance",
+            "spacemouse",
+            "import",
+            "agents"
+          ]
         },
         "dismissError": {
           "type": "boolean"
@@ -6455,7 +7651,10 @@
           "type": "boolean"
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -6491,7 +7690,12 @@
         },
         "action": {
           "type": "string",
-          "enum": ["automatic", "connectDriver", "disconnect", "preferences"]
+          "enum": [
+            "automatic",
+            "connectDriver",
+            "disconnect",
+            "preferences"
+          ]
         },
         "preferences": {
           "type": "object",
@@ -6522,7 +7726,11 @@
           "additionalProperties": false
         }
       },
-      "required": ["expectedRevision", "requestId", "action"],
+      "required": [
+        "expectedRevision",
+        "requestId",
+        "action"
+      ],
       "additionalProperties": false
     }
   },
@@ -6536,7 +7744,11 @@
       "properties": {
         "view": {
           "type": "string",
-          "enum": ["main", "moving", "fixed"]
+          "enum": [
+            "main",
+            "moving",
+            "fixed"
+          ]
         }
       },
       "required": [],
@@ -6555,7 +7767,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6569,11 +7785,16 @@
             },
             "action": {
               "type": "string",
-              "enum": ["navigation"]
+              "enum": [
+                "navigation"
+              ]
             },
             "orbitMode": {
               "type": "string",
-              "enum": ["free", "constrained"],
+              "enum": [
+                "free",
+                "constrained"
+              ],
               "description": "Session orbit mode. Constrained keeps world Z upright; free preserves unrestricted trackball orbit."
             },
             "zoomWindowActive": {
@@ -6581,7 +7802,11 @@
               "description": "Arm or cancel the next left-drag window zoom without changing model selection."
             }
           },
-          "required": ["expectedRevision", "requestId", "action"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -6589,7 +7814,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6603,7 +7832,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["zoomWindow"]
+              "enum": [
+                "zoomWindow"
+              ]
             },
             "x0": {
               "type": "number",
@@ -6646,7 +7877,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6660,7 +7895,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["fit"]
+              "enum": [
+                "fit"
+              ]
             },
             "entityId": {
               "type": "string",
@@ -6671,7 +7908,11 @@
               "type": "boolean"
             }
           },
-          "required": ["expectedRevision", "requestId", "action"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -6679,7 +7920,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6693,11 +7938,18 @@
             },
             "action": {
               "type": "string",
-              "enum": ["rotate"]
+              "enum": [
+                "rotate"
+              ]
             },
             "direction": {
               "type": "string",
-              "enum": ["left", "right", "up", "down"]
+              "enum": [
+                "left",
+                "right",
+                "up",
+                "down"
+              ]
             },
             "degrees": {
               "type": "number",
@@ -6731,7 +7983,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6745,14 +8001,24 @@
             },
             "action": {
               "type": "string",
-              "enum": ["projection"]
+              "enum": [
+                "projection"
+              ]
             },
             "projection": {
               "type": "string",
-              "enum": ["orthographic", "perspective"]
+              "enum": [
+                "orthographic",
+                "perspective"
+              ]
             }
           },
-          "required": ["expectedRevision", "requestId", "action", "projection"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action",
+            "projection"
+          ],
           "additionalProperties": false
         },
         {
@@ -6760,7 +8026,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6774,10 +8044,16 @@
             },
             "action": {
               "type": "string",
-              "enum": ["sketchNormal"]
+              "enum": [
+                "sketchNormal"
+              ]
             }
           },
-          "required": ["expectedRevision", "requestId", "action"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -6785,7 +8061,11 @@
           "properties": {
             "view": {
               "type": "string",
-              "enum": ["main", "moving", "fixed"]
+              "enum": [
+                "main",
+                "moving",
+                "fixed"
+              ]
             },
             "expectedRevision": {
               "type": "integer",
@@ -6799,7 +8079,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["camera"]
+              "enum": [
+                "camera"
+              ]
             },
             "position": {
               "type": "array",
@@ -6838,7 +8120,10 @@
             },
             "projection": {
               "type": "string",
-              "enum": ["orthographic", "perspective"]
+              "enum": [
+                "orthographic",
+                "perspective"
+              ]
             }
           },
           "required": [
@@ -6864,7 +8149,11 @@
       "properties": {
         "view": {
           "type": "string",
-          "enum": ["main", "moving", "fixed"]
+          "enum": [
+            "main",
+            "moving",
+            "fixed"
+          ]
         },
         "x": {
           "type": "number",
@@ -6882,7 +8171,10 @@
           "maximum": 20
         }
       },
-      "required": ["x", "y"],
+      "required": [
+        "x",
+        "y"
+      ],
       "additionalProperties": false
     }
   },
@@ -6922,7 +8214,11 @@
           "maxLength": 200
         }
       },
-      "required": ["expectedRevision", "requestId", "name"],
+      "required": [
+        "expectedRevision",
+        "requestId",
+        "name"
+      ],
       "additionalProperties": false
     }
   },
@@ -6994,7 +8290,11 @@
           "maxLength": 128
         }
       },
-      "required": ["target", "expectedRevision", "requestId"],
+      "required": [
+        "target",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7039,7 +8339,9 @@
           "description": "Optional original render triangle slot. Resolves exactly one CAD face using its half-open tessellation range; fitted-only and semantic reference objects cannot resolve a triangle."
         }
       },
-      "required": ["entityId"],
+      "required": [
+        "entityId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7089,10 +8391,16 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["point"]
+                    "enum": [
+                      "point"
+                    ]
                   }
                 },
-                "required": ["kind", "point", "axis"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7118,7 +8426,9 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["plane"]
+                    "enum": [
+                      "plane"
+                    ]
                   },
                   "direction": {
                     "type": "array",
@@ -7131,7 +8441,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "point", "axis", "direction"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis",
+                  "direction"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7157,7 +8472,9 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["direction"]
+                    "enum": [
+                      "direction"
+                    ]
                   },
                   "direction": {
                     "type": "array",
@@ -7170,7 +8487,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "point", "axis", "direction"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis",
+                  "direction"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7209,7 +8531,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "entityId", "referenceId", "axis"],
+                "required": [
+                  "kind",
+                  "entityId",
+                  "referenceId",
+                  "axis"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7217,11 +8544,21 @@
                 "properties": {
                   "kind": {
                     "type": "string",
-                    "enum": ["origin"]
+                    "enum": [
+                      "origin"
+                    ]
                   },
                   "reference": {
                     "type": "string",
-                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                    "enum": [
+                      "XY",
+                      "YZ",
+                      "XZ",
+                      "X",
+                      "Y",
+                      "Z",
+                      "origin"
+                    ]
                   },
                   "axis": {
                     "type": "integer",
@@ -7232,7 +8569,11 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["kind", "reference", "axis"],
+                "required": [
+                  "kind",
+                  "reference",
+                  "axis"
+                ],
                 "additionalProperties": false
               }
             ]
@@ -7276,7 +8617,12 @@
           "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
         }
       },
-      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
+      "required": [
+        "entityIds",
+        "constraints",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7326,10 +8672,16 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["point"]
+                    "enum": [
+                      "point"
+                    ]
                   }
                 },
-                "required": ["kind", "point", "axis"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7355,7 +8707,9 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["plane"]
+                    "enum": [
+                      "plane"
+                    ]
                   },
                   "direction": {
                     "type": "array",
@@ -7368,7 +8722,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "point", "axis", "direction"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis",
+                  "direction"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7394,7 +8753,9 @@
                   },
                   "kind": {
                     "type": "string",
-                    "enum": ["direction"]
+                    "enum": [
+                      "direction"
+                    ]
                   },
                   "direction": {
                     "type": "array",
@@ -7407,7 +8768,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "point", "axis", "direction"],
+                "required": [
+                  "kind",
+                  "point",
+                  "axis",
+                  "direction"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7446,7 +8812,12 @@
                     "maxItems": 3
                   }
                 },
-                "required": ["kind", "entityId", "referenceId", "axis"],
+                "required": [
+                  "kind",
+                  "entityId",
+                  "referenceId",
+                  "axis"
+                ],
                 "additionalProperties": false
               },
               {
@@ -7454,11 +8825,21 @@
                 "properties": {
                   "kind": {
                     "type": "string",
-                    "enum": ["origin"]
+                    "enum": [
+                      "origin"
+                    ]
                   },
                   "reference": {
                     "type": "string",
-                    "enum": ["XY", "YZ", "XZ", "X", "Y", "Z", "origin"]
+                    "enum": [
+                      "XY",
+                      "YZ",
+                      "XZ",
+                      "X",
+                      "Y",
+                      "Z",
+                      "origin"
+                    ]
                   },
                   "axis": {
                     "type": "integer",
@@ -7469,7 +8850,11 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["kind", "reference", "axis"],
+                "required": [
+                  "kind",
+                  "reference",
+                  "axis"
+                ],
                 "additionalProperties": false
               }
             ]
@@ -7513,7 +8898,12 @@
           "description": "Enable bounded CPU worker execution for large scans (default true); false uses cancellable serial chunks with identical native arithmetic."
         }
       },
-      "required": ["entityIds", "constraints", "expectedRevision", "requestId"],
+      "required": [
+        "entityIds",
+        "constraints",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7546,7 +8936,10 @@
           "maxLength": 128
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7569,7 +8962,10 @@
           "maxLength": 128
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7652,12 +9048,19 @@
         },
         "targetScope": {
           "type": "string",
-          "enum": ["visibleScene", "fixed"],
+          "enum": [
+            "visibleScene",
+            "fixed"
+          ],
           "default": "visibleScene",
           "description": "Begin defaults to visibleScene: visible exact CAD first, then other visible indexed scans in scene order. fixed preserves single-target refinement. target-scope changes this choice and resets preview while retaining picks."
         }
       },
-      "required": ["action", "expectedRevision", "requestId"],
+      "required": [
+        "action",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -7695,7 +9098,9 @@
               "description": "Unique retry receipt; reuse only for an identical request."
             },
             "action": {
-              "enum": ["begin"]
+              "enum": [
+                "begin"
+              ]
             },
             "entityIds": {
               "type": "array",
@@ -7712,7 +9117,11 @@
               "type": "boolean"
             }
           },
-          "required": ["expectedRevision", "requestId", "action"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -7738,7 +9147,9 @@
               "minimum": 0
             },
             "action": {
-              "enum": ["configure"]
+              "enum": [
+                "configure"
+              ]
             },
             "strength": {
               "type": "integer",
@@ -7749,7 +9160,11 @@
               "type": "boolean"
             },
             "mirrorPlane": {
-              "enum": ["XY", "YZ", "XZ"]
+              "enum": [
+                "XY",
+                "YZ",
+                "XZ"
+              ]
             }
           },
           "required": [
@@ -7785,7 +9200,9 @@
               "minimum": 0
             },
             "action": {
-              "enum": ["step"]
+              "enum": [
+                "step"
+              ]
             },
             "kind": {
               "enum": [
@@ -7840,7 +9257,9 @@
               "minimum": 0
             },
             "action": {
-              "enum": ["reset"]
+              "enum": [
+                "reset"
+              ]
             }
           },
           "required": [
@@ -7875,7 +9294,9 @@
               "minimum": 0
             },
             "action": {
-              "enum": ["currentView"]
+              "enum": [
+                "currentView"
+              ]
             }
           },
           "required": [
@@ -7910,11 +9331,23 @@
               "minimum": 0
             },
             "action": {
-              "enum": ["drag"]
+              "enum": [
+                "drag"
+              ]
             },
             "handle": {
               "type": "integer",
-              "enum": [1, 2, 3, 4, 5, 6, 10, 11, 12],
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                10,
+                11,
+                12
+              ],
               "description": "1/2/3 translate in YZ/XZ/XY planes; 4/5/6 translate on X/Y/Z axes; 10/11/12 rotate about X/Y/Z."
             },
             "from": {
@@ -8002,7 +9435,12 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["create", "compare", "accept", "cancel"]
+          "enum": [
+            "create",
+            "compare",
+            "accept",
+            "cancel"
+          ]
         },
         "entityId": {
           "type": "string",
@@ -8019,7 +9457,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["shrinkwrap"]
+                  "enum": [
+                    "shrinkwrap"
+                  ]
                 },
                 "sampleInterval": {
                   "type": "number",
@@ -8051,12 +9491,18 @@
                 },
                 "scope": {
                   "type": "string",
-                  "enum": ["whole", "selected", "isolated"],
+                  "enum": [
+                    "whole",
+                    "selected",
+                    "isolated"
+                  ],
                   "default": "whole",
                   "description": "Selected excludes hidden triangles. Isolated requires an actual hidden subset and uses visible triangles."
                 }
               },
-              "required": ["kind"],
+              "required": [
+                "kind"
+              ],
               "additionalProperties": false
             },
             {
@@ -8064,7 +9510,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["reduceNoise"]
+                  "enum": [
+                    "reduceNoise"
+                  ]
                 },
                 "iterations": {
                   "type": "integer",
@@ -8085,7 +9533,9 @@
                   "type": "boolean"
                 }
               },
-              "required": ["kind"],
+              "required": [
+                "kind"
+              ],
               "additionalProperties": false
             },
             {
@@ -8093,11 +9543,17 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["reducePolygons"]
+                  "enum": [
+                    "reducePolygons"
+                  ]
                 },
                 "mode": {
                   "type": "string",
-                  "enum": ["triangles", "percentage", "deviation"]
+                  "enum": [
+                    "triangles",
+                    "percentage",
+                    "deviation"
+                  ]
                 },
                 "targetTriangles": {
                   "type": "integer",
@@ -8120,7 +9576,10 @@
                   "type": "boolean"
                 }
               },
-              "required": ["kind", "mode"],
+              "required": [
+                "kind",
+                "mode"
+              ],
               "additionalProperties": false
             },
             {
@@ -8128,7 +9587,9 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["scaleMesh"]
+                  "enum": [
+                    "scaleMesh"
+                  ]
                 },
                 "factor": {
                   "type": "number",
@@ -8143,7 +9604,10 @@
                   "maxItems": 3
                 }
               },
-              "required": ["kind", "factor"],
+              "required": [
+                "kind",
+                "factor"
+              ],
               "additionalProperties": false
             },
             {
@@ -8151,18 +9615,28 @@
               "properties": {
                 "kind": {
                   "type": "string",
-                  "enum": ["mirrorMesh"]
+                  "enum": [
+                    "mirrorMesh"
+                  ]
                 },
                 "plane": {
                   "type": "string",
-                  "enum": ["OXY", "OYZ", "OXZ", "object"]
+                  "enum": [
+                    "OXY",
+                    "OYZ",
+                    "OXZ",
+                    "object"
+                  ]
                 },
                 "referenceId": {
                   "type": "string",
                   "minLength": 1
                 }
               },
-              "required": ["kind", "plane"],
+              "required": [
+                "kind",
+                "plane"
+              ],
               "additionalProperties": false
             }
           ]
@@ -8206,7 +9680,12 @@
           "description": "Comparison display range in mm; defaults to deviation for polygon reduction."
         }
       },
-      "required": ["action", "entityId", "expectedRevision", "requestId"],
+      "required": [
+        "action",
+        "entityId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -8247,7 +9726,10 @@
           "maxLength": 128
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -8274,7 +9756,11 @@
           "maxLength": 128
         }
       },
-      "required": ["previewId", "expectedRevision", "requestId"],
+      "required": [
+        "previewId",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -8302,7 +9788,10 @@
           "maxLength": 128
         }
       },
-      "required": ["expectedRevision", "requestId"],
+      "required": [
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -8340,7 +9829,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["show"]
+              "enum": [
+                "show"
+              ]
             },
             "inspectionId": {
               "type": "string",
@@ -8371,10 +9862,16 @@
             },
             "action": {
               "type": "string",
-              "enum": ["clear"]
+              "enum": [
+                "clear"
+              ]
             }
           },
-          "required": ["expectedRevision", "requestId", "action"],
+          "required": [
+            "expectedRevision",
+            "requestId",
+            "action"
+          ],
           "additionalProperties": false
         },
         {
@@ -8392,7 +9889,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["measurement"]
+              "enum": [
+                "measurement"
+              ]
             },
             "measurement": {
               "type": "object",
@@ -8415,7 +9914,12 @@
                 },
                 "kind": {
                   "type": "string",
-                  "enum": ["distance", "angle", "radius", "diameter"]
+                  "enum": [
+                    "distance",
+                    "angle",
+                    "radius",
+                    "diameter"
+                  ]
                 },
                 "third": {
                   "type": "array",
@@ -8426,7 +9930,10 @@
                   "maxItems": 3
                 }
               },
-              "required": ["first", "second"],
+              "required": [
+                "first",
+                "second"
+              ],
               "additionalProperties": false
             }
           },
@@ -8453,7 +9960,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["section"]
+              "enum": [
+                "section"
+              ]
             },
             "entityId": {
               "type": "string",
@@ -8462,7 +9971,11 @@
             },
             "axis": {
               "type": "string",
-              "enum": ["x", "y", "z"]
+              "enum": [
+                "x",
+                "y",
+                "z"
+              ]
             },
             "offset": {
               "type": "number"
@@ -8516,7 +10029,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["save"]
+              "enum": [
+                "save"
+              ]
             },
             "name": {
               "type": "string",
@@ -8545,10 +10060,16 @@
                     },
                     "kind": {
                       "type": "string",
-                      "enum": ["deviation"]
+                      "enum": [
+                        "deviation"
+                      ]
                     }
                   },
-                  "required": ["entityId", "fit", "kind"],
+                  "required": [
+                    "entityId",
+                    "fit",
+                    "kind"
+                  ],
                   "additionalProperties": false
                 },
                 {
@@ -8581,7 +10102,9 @@
                     },
                     "kind": {
                       "type": "string",
-                      "enum": ["deviation"]
+                      "enum": [
+                        "deviation"
+                      ]
                     }
                   },
                   "required": [
@@ -8597,7 +10120,9 @@
                   "properties": {
                     "kind": {
                       "type": "string",
-                      "enum": ["measurement"]
+                      "enum": [
+                        "measurement"
+                      ]
                     },
                     "measurement": {
                       "type": "object",
@@ -8620,7 +10145,12 @@
                         },
                         "kind": {
                           "type": "string",
-                          "enum": ["distance", "angle", "radius", "diameter"]
+                          "enum": [
+                            "distance",
+                            "angle",
+                            "radius",
+                            "diameter"
+                          ]
                         },
                         "third": {
                           "type": "array",
@@ -8631,11 +10161,17 @@
                           "maxItems": 3
                         }
                       },
-                      "required": ["first", "second"],
+                      "required": [
+                        "first",
+                        "second"
+                      ],
                       "additionalProperties": false
                     }
                   },
-                  "required": ["kind", "measurement"],
+                  "required": [
+                    "kind",
+                    "measurement"
+                  ],
                   "additionalProperties": false
                 }
               ]
@@ -8665,7 +10201,9 @@
             },
             "action": {
               "type": "string",
-              "enum": ["delete"]
+              "enum": [
+                "delete"
+              ]
             },
             "inspectionId": {
               "type": "string",
@@ -8698,7 +10236,9 @@
           "maxLength": 200
         }
       },
-      "required": ["inspectionId"],
+      "required": [
+        "inspectionId"
+      ],
       "additionalProperties": false
     }
   },
@@ -8728,7 +10268,11 @@
           "maxLength": 200
         },
         "family": {
-          "enum": ["vertices", "edges", "faces"]
+          "enum": [
+            "vertices",
+            "edges",
+            "faces"
+          ]
         },
         "offset": {
           "type": "integer",
@@ -8741,7 +10285,10 @@
           "maximum": 100
         }
       },
-      "required": ["entityId", "family"],
+      "required": [
+        "entityId",
+        "family"
+      ],
       "additionalProperties": false
     }
   },
@@ -8764,7 +10311,9 @@
               "type": "object",
               "properties": {
                 "kind": {
-                  "enum": ["vertex"]
+                  "enum": [
+                    "vertex"
+                  ]
                 },
                 "vertexIndex": {
                   "type": "integer",
@@ -8772,14 +10321,19 @@
                   "maximum": 9007199254740991
                 }
               },
-              "required": ["kind", "vertexIndex"],
+              "required": [
+                "kind",
+                "vertexIndex"
+              ],
               "additionalProperties": false
             },
             {
               "type": "object",
               "properties": {
                 "kind": {
-                  "enum": ["edge-endpoint"]
+                  "enum": [
+                    "edge-endpoint"
+                  ]
                 },
                 "edgeIndex": {
                   "type": "integer",
@@ -8787,17 +10341,26 @@
                   "maximum": 9007199254740991
                 },
                 "endpoint": {
-                  "enum": ["start", "end"]
+                  "enum": [
+                    "start",
+                    "end"
+                  ]
                 }
               },
-              "required": ["kind", "edgeIndex", "endpoint"],
+              "required": [
+                "kind",
+                "edgeIndex",
+                "endpoint"
+              ],
               "additionalProperties": false
             },
             {
               "type": "object",
               "properties": {
                 "kind": {
-                  "enum": ["edge-fraction"]
+                  "enum": [
+                    "edge-fraction"
+                  ]
                 },
                 "edgeIndex": {
                   "type": "integer",
@@ -8810,14 +10373,20 @@
                   "maximum": 1
                 }
               },
-              "required": ["kind", "edgeIndex", "fraction"],
+              "required": [
+                "kind",
+                "edgeIndex",
+                "fraction"
+              ],
               "additionalProperties": false
             },
             {
               "type": "object",
               "properties": {
                 "kind": {
-                  "enum": ["screen"]
+                  "enum": [
+                    "screen"
+                  ]
                 },
                 "x": {
                   "type": "number",
@@ -8830,7 +10399,11 @@
                   "maximum": 1
                 },
                 "view": {
-                  "enum": ["main", "moving", "fixed"]
+                  "enum": [
+                    "main",
+                    "moving",
+                    "fixed"
+                  ]
                 },
                 "faceIndex": {
                   "type": "integer",
@@ -8838,7 +10411,11 @@
                   "maximum": 9007199254740991
                 }
               },
-              "required": ["kind", "x", "y"],
+              "required": [
+                "kind",
+                "x",
+                "y"
+              ],
               "additionalProperties": false
             }
           ]
@@ -8853,7 +10430,11 @@
           "maxLength": 200
         }
       },
-      "required": ["entityId", "selection", "expectedRevision"],
+      "required": [
+        "entityId",
+        "selection",
+        "expectedRevision"
+      ],
       "additionalProperties": false
     }
   },
@@ -8877,7 +10458,10 @@
           "description": "Zero-based index in the current original source point order, not a sampled display slot."
         }
       },
-      "required": ["entityId", "pointIndex"],
+      "required": [
+        "entityId",
+        "pointIndex"
+      ],
       "additionalProperties": false
     }
   },
@@ -8891,11 +10475,20 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["point", "line"]
+          "enum": [
+            "point",
+            "line"
+          ]
         },
         "mode": {
           "type": "string",
-          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
+          "enum": [
+            "midpoint",
+            "center",
+            "pair",
+            "threePlanes",
+            "average"
+          ]
         },
         "entityId": {
           "type": "string",
@@ -8912,7 +10505,10 @@
           "maximum": 100
         }
       },
-      "required": ["kind", "mode"],
+      "required": [
+        "kind",
+        "mode"
+      ],
       "additionalProperties": false
     }
   },
@@ -8926,15 +10522,28 @@
       "properties": {
         "action": {
           "type": "string",
-          "enum": ["preview", "apply", "cancel"]
+          "enum": [
+            "preview",
+            "apply",
+            "cancel"
+          ]
         },
         "kind": {
           "type": "string",
-          "enum": ["point", "line"]
+          "enum": [
+            "point",
+            "line"
+          ]
         },
         "mode": {
           "type": "string",
-          "enum": ["midpoint", "center", "pair", "threePlanes", "average"]
+          "enum": [
+            "midpoint",
+            "center",
+            "pair",
+            "threePlanes",
+            "average"
+          ]
         },
         "sourceEntityId": {
           "type": "string",
@@ -9026,7 +10635,10 @@
                   "maximum": 9007199254740991
                 }
               },
-              "required": ["entityId", "pointIndex"],
+              "required": [
+                "entityId",
+                "pointIndex"
+              ],
               "additionalProperties": false,
               "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
             },
@@ -9039,7 +10651,9 @@
                   "maxLength": 200
                 }
               },
-              "required": ["acquisitionJobId"],
+              "required": [
+                "acquisitionJobId"
+              ],
               "additionalProperties": false
             }
           ],
@@ -9061,7 +10675,10 @@
                   "maximum": 9007199254740991
                 }
               },
-              "required": ["entityId", "pointIndex"],
+              "required": [
+                "entityId",
+                "pointIndex"
+              ],
               "additionalProperties": false,
               "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
             },
@@ -9074,7 +10691,9 @@
                   "maxLength": 200
                 }
               },
-              "required": ["acquisitionJobId"],
+              "required": [
+                "acquisitionJobId"
+              ],
               "additionalProperties": false
             }
           ],
@@ -9096,7 +10715,10 @@
                   "maximum": 9007199254740991
                 }
               },
-              "required": ["entityId", "pointIndex"],
+              "required": [
+                "entityId",
+                "pointIndex"
+              ],
               "additionalProperties": false,
               "description": "Server-resolved cloud vertex numeric intent. Use the acquisition response revision as outer expectedRevision. Mutually exclusive with the corresponding typed coordinate field; no encoded bits or caller provenance."
             },
@@ -9109,7 +10731,9 @@
                   "maxLength": 200
                 }
               },
-              "required": ["acquisitionJobId"],
+              "required": [
+                "acquisitionJobId"
+              ],
               "additionalProperties": false
             }
           ],
@@ -9133,7 +10757,9 @@
               },
               "selection": {
                 "type": "string",
-                "enum": ["object"],
+                "enum": [
+                  "object"
+                ],
                 "description": "Pair mode and stored numeric reference lines only: select the source object without a location, retaining the zero Float32 pick record observed for native dropdown selection. Excludes parameter and planeUV."
               },
               "retainedIndex": {
@@ -9154,7 +10780,9 @@
                 "description": "Plane pair sources only: local U,V millimetres within planeUVBounds from source discovery. Uses the projected unit tangent and normal-cross-tangent basis, then rounds the world hit once to F32. Excludes parameter."
               }
             },
-            "required": ["entityId"],
+            "required": [
+              "entityId"
+            ],
             "additionalProperties": false
           },
           "description": "kind:line mode:pair/average only. Ordered semantic sources, repetitions preserved. For average mode, an explicit empty array clears sources and evaluates from the existing or owned prior; omitted sourcePicks retains existing records. A point forbids parameter; a finite line requires a fraction except that pair mode accepts selection:object for stored numeric reference lines, matching the observed native dropdown zero pick record. Parameter is consumed once as start+(end-start)*fraction in authoritative world F64, then each coordinate rounds once to F32 without numeric N6/G15 baking. Server owns retained records and common identity keys. Use retainedIndex with the matching entityId to reuse one record from the current existing derived edit or owned preview; omit sourcePicks to reuse all records exactly. Max1000 is an application work bound, not native arity. For a plane pair source supply planeUV:[u,v] local mm, excluding parameter; source discovery reports planeUVBounds. Missing legacy size requires an explicit numeric plane edit or a newly fitted plane; no extent is reconstructed from old display geometry."
@@ -9164,7 +10792,11 @@
           "description": "Preview-only existing numeric edit initialization. With true, provide an existing entityId or an owned EDIT session/version and kind; omit all numeric, pick, mode and source replacements. Server prepares accepted point coordinates through N7 pre-round/fixed6-even/G15, or stored line endpoints through direct fixed6-even/G15 without point pre-round. Derived definitions and new-object seeds reject. Explicit typed create/update values keep their exact existing meaning."
         }
       },
-      "required": ["action", "expectedRevision", "requestId"],
+      "required": [
+        "action",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   },
@@ -9178,7 +10810,10 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["plane", "frame"]
+          "enum": [
+            "plane",
+            "frame"
+          ]
         },
         "entityId": {
           "type": "string",
@@ -9262,7 +10897,12 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["plane", "sphere", "cylinder", "cone"]
+          "enum": [
+            "plane",
+            "sphere",
+            "cylinder",
+            "cone"
+          ]
         },
         "selectionOnly": {
           "type": "boolean",
@@ -9284,7 +10924,10 @@
               "minimum": 0
             }
           },
-          "required": ["center", "radius"],
+          "required": [
+            "center",
+            "radius"
+          ],
           "additionalProperties": false
         },
         "name": {
@@ -9302,7 +10945,12 @@
           "maxLength": 200
         }
       },
-      "required": ["entityId", "kind", "expectedRevision", "requestId"],
+      "required": [
+        "entityId",
+        "kind",
+        "expectedRevision",
+        "requestId"
+      ],
       "additionalProperties": false
     }
   }

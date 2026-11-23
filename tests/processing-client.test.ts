@@ -930,7 +930,11 @@ describe("processing worker resource ownership", () => {
     const final = replies.at(-1)!;
     const result = (final.message as { result: ProcessingResult }).result;
     expect(result.scanEdit?.segments?.[0]).toEqual(positions);
-    expect(final.transfers).toEqual([result.scanEdit!.segments![0].buffer]);
+    const segment = result.scanEdit!.segments![0];
+    expect(segment).toBeInstanceOf(Float32Array);
+    if (!(segment instanceof Float32Array))
+      throw new Error("Expected Float32 segment");
+    expect(final.transfers).toEqual([segment.buffer]);
     await scope.onmessage?.({
       data: {
         kind: "selectionMorphology",

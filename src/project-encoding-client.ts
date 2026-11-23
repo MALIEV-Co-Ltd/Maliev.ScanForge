@@ -1,3 +1,4 @@
+import { projectNumericReuse } from "./project-numeric-reuse";
 import {
   containsLargeNumericArrays,
   packProjectTransport,
@@ -8,6 +9,7 @@ import { diskBackedBlob } from "./transient-blob-storage";
 import { rememberProjectSharedChunks } from "./project-shared-chunks";
 import {
   projectEncodingChunkSources,
+  projectEncodingNumericSources,
   resolveEncodingChunkTokens,
 } from "./project-encoding-chunks";
 
@@ -158,6 +160,7 @@ function encodeQueued(
         }
         let worker: Worker | undefined;
         let chunkSources: SharedArrayBuffer[] = [];
+        let numericSources: number[][] = [];
         const storage = new AbortController();
         let lease: ReturnType<typeof setTimeout> | undefined;
         let finished = false;
@@ -211,6 +214,7 @@ function encodeQueued(
                   )
                     return;
                   rememberProjectSharedChunks(chunks);
+                  projectNumericReuse.remember(numericSources);
                   finish(undefined, file);
                 },
                 (error) =>
@@ -240,6 +244,7 @@ function encodeQueued(
           );
           const snapshot = projectEncodingSnapshot(session);
           chunkSources = projectEncodingChunkSources(snapshot);
+          numericSources = projectEncodingNumericSources(snapshot);
           if (!containsLargeNumericArrays(snapshot))
             worker.postMessage(
               chunkSources.length

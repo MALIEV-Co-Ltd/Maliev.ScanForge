@@ -2,6 +2,8 @@ import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
 import { transformPositions } from "./geometry";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
+import { isEncodingNumeric } from "./project-encoding-numeric";
+import { finiteArrayValues, finiteTypedValues } from "./finite-typed-values";
 
 /** Transform coordinates without changing source vertex IDs or face connectivity. */
 export function transformIndexedMesh(
@@ -55,18 +57,26 @@ export function indexedMeshMatches(
   const { vertices, triangles, normals, geometryNormals, facetNormals } =
     value as IndexedMesh;
   if (
-    !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
+    !(
+      Array.isArray(vertices) ||
+      vertices instanceof Float32Array ||
+      isEncodingNumeric(vertices)
+    ) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
     !vertices.length ||
     vertices.length % 3 ||
     !triangles.length ||
     triangles.length % 3 ||
     triangles.length * 3 !== positions.length ||
-    !vertices.every(Number.isFinite) ||
+    !(Array.isArray(vertices)
+      ? finiteArrayValues(vertices)
+      : finiteTypedValues(vertices)) ||
     (normals !== undefined &&
       (!(Array.isArray(normals) || normals instanceof Float32Array) ||
         normals.length !== vertices.length ||
-        !normals.every(Number.isFinite))) ||
+        !(Array.isArray(normals)
+          ? finiteArrayValues(normals)
+          : finiteTypedValues(normals)))) ||
     (geometryNormals !== undefined &&
       (!(
         Array.isArray(geometryNormals) ||

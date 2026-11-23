@@ -14,6 +14,7 @@ export function prepareNativeAlignmentSurface(
     filterExcluded?: boolean;
     triangleFlags?: ArrayLike<number>;
     cachedBounds?: NoiseBounds;
+    onTriangleTest?: () => void;
   } = {},
 ) {
   const adjacency = nativeBuildAlignmentAdjacency(vertices, triangles, options);
@@ -35,6 +36,8 @@ export function prepareNativeAlignmentSurface(
     surface,
     adjacency,
     degenerate: faces.degenerate,
-    query: createNativeAlignmentSurfaceQuery(surface),
+    query: createNativeAlignmentSurfaceQuery(surface, {
+      onTriangleTest: options.onTriangleTest,
+    }),
   };
 }

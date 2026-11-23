@@ -32,7 +32,7 @@ export type AlignmentWorkerSurface = Omit<
 /** Query an already prepared target. Construction and native vertex ordering remain separate gates. */
 export function createNativeAlignmentSurfaceQuery(
   surface: AlignmentWorkerSurface,
-  options: { includeTriangle?: boolean } = {},
+  options: { includeTriangle?: boolean; onTriangleTest?: () => void } = {},
 ) {
   const count = surface.points.length / 9;
   if (
@@ -52,6 +52,8 @@ export function createNativeAlignmentSurfaceQuery(
     region = [0];
   const normal = [0, 0, 0];
   const scratch = createNoiseTriangleScratch();
+  const visited = new Uint16Array(count);
+  let queryId = 0;
   const root = surface.root;
   const query =
     "format" in root
@@ -83,9 +85,16 @@ export function createNativeAlignmentSurfaceQuery(
     point: readonly number[],
     radius: number,
   ): AlignmentQueryHit | undefined => {
+    if (++queryId === 0x10000) {
+      visited.fill(0);
+      queryId = 1;
+    }
     let bestRegion = 0;
     const bestClosest = [0, 0, 0];
     const hit = query(point, radius, (triangle, searchRadius) => {
+      // Octree leaves repeat faces; a shrinking radius cannot improve a repeated evaluation.
+      if (visited[triangle] === queryId) return Infinity;
+      visited[triangle] = queryId;
       if (surface.filterHidden && (surface.triangleFlags?.[triangle] ?? 0) & 1)
         return Infinity;
       for (let axis = 0; axis < 3; axis++) {
@@ -94,6 +103,7 @@ export function createNativeAlignmentSurfaceQuery(
         c[axis] = surface.points[triangle * 9 + 6 + axis];
         normal[axis] = surface.normals[triangle * 3 + axis];
       }
+      options.onTriangleTest?.();
       const distance = noiseTriangleDistance(
         point,
         a,

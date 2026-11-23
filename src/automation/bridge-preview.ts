@@ -55,7 +55,11 @@ export function bridgePreviewResponse(
     if (positions[i] !== Math.fround(source[i]))
       throw new Error("Bridge preview unexpectedly changed source geometry.");
   }
-  const patch = Array.from(positions.subarray(source.length));
+  const patch = Array.from(
+    positions instanceof Float32Array
+      ? positions.subarray(source.length)
+      : positions.slice(source.length),
+  );
   if (
     patch.some((value) => !Number.isFinite(value)) ||
     edit.diagnostics.addedTriangles !== patch.length / 9

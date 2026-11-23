@@ -32,7 +32,6 @@ import { createSketchEditOperations } from "./sketch-edit-operations";
 import { analyzePrimitiveFit, createFittedPlane } from "../primitive-fitting";
 import { fittedPrimitive } from "../fitted-primitive";
 import { entityDisplayStats } from "../entity-display-stats";
-import { selectStepExportEntities } from "../step-export";
 import { referenceDeletionDependents } from "../reference-midpoint";
 import { inspectReferenceFrame } from "../reference-frame";
 import { transformPlaneFrame, validatePlaneFrame } from "../plane-frame";
@@ -115,6 +114,7 @@ import {
   indexedRenderNormals,
 } from "../indexed-mesh";
 import { nativeSurfaceRefinementRequest } from "../native-surface-refinement";
+import { fineAlignmentInput } from "../fine-alignment-input";
 import { prepareLandmarkRefinementTargets } from "../landmark-alignment";
 import { rotatePointNormals } from "../point-cloud";
 import { exportStl, validatePositions, validateProject } from "../io";
@@ -575,11 +575,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     c: CommandContext,
     fit = true,
   ) {
-    const s = host.snapshot(),
-      blob = c.artifactBlob(a.artifactId),
+    const blob = c.artifactBlob(a.artifactId),
       name = (blob as File).name ?? a.name ?? "import.stl",
-      extension = name.split(".").pop()?.toLowerCase();
-    if (extension === "scanforge" || extension === "json") {
+      extension = name.split(".").pop()?.toLowerCase(),
+      isProject = extension === "scanforge" || extension === "json",
+      settings = isProject ? undefined : host.snapshot().settings;
+    if (isProject) {
       if (!a.replace) throw new Error("Project import requires replace:true.");
       const session = await decodeProjectFile(blob, c.signal),
         project = session.project,
@@ -666,10 +667,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       entity = await prepareImportedScan(new File([blob], name), {
         unit: a.unit ?? "mm",
         placeAtOrigin:
-          a.placeAtOrigin ?? s.settings?.importPlaceAtOrigin === true,
+          a.placeAtOrigin ?? settings?.importPlaceAtOrigin === true,
         ascAttributes:
           a.ascAttributes ??
-          s.settings?.importAscAttributes ??
+          settings?.importAscAttributes ??
           DEFAULT_ASC_ATTRIBUTES,
         signal: c.signal,
         onProgress: (fraction) => c.progress(fraction, "Importing scan"),
@@ -1131,6 +1132,26 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       let e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
+      const cloudMeshing =
+        kind === "pointCloudMesh" || kind === "pointCloudPoisson";
+      if (cloudMeshing) {
+        if (e.kind !== "pointcloud" || e.kernelId || e.parametric)
+          throw Error("Point-cloud meshing requires a raw point cloud.");
+        if (!e.visible) throw Error("Show the point cloud before meshing.");
+        if (
+          a.selectionOnly !== undefined ||
+          a.targetId ||
+          a.targetIds !== undefined ||
+          a.createNew === false
+        )
+          throw Error(
+            "Point-cloud meshing uses the whole cloud and creates a new mesh; omit selectionOnly, targets and createNew:false.",
+          );
+        if (e.meshSelection?.hidden.length)
+          throw Error(
+            "Show all cloud points before meshing, or extract a separate cloud.",
+          );
+      }
       if (
         op.createSketches !== undefined &&
         (kind !== "scanEdit" ||
@@ -1177,7 +1198,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         );
       if (
         e.kind === "pointcloud" &&
-        !["paired", "global", "icp", "pointCloudEdit"].includes(kind) &&
+        !["paired", "global", "icp", "pointCloudEdit", "pointCloudMesh", "pointCloudPoisson"].includes(kind) &&
         !reconstruction
       )
         throw new Error("This operation requires triangle mesh geometry.");
@@ -1210,6 +1231,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         "refinementTargets" in op ||
         "deferCloudTransform" in op ||
         "outputPlacement" in op ||
+        "targetSurface" in op ||
+        "sourceNormals" in op ||
+        "targetNormals" in op ||
         "seeds" in op
       )
         throw new Error(
@@ -1296,6 +1320,8 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             ? partitionTriangles(e.positions, selection).selected
             : e.positions,
       } as ProcessingRequest;
+      if (kind === "pointCloudPoisson")
+        Object.assign(request, { normals: e.normals });
       if (
         (kind === "paired" || kind === "icp" || kind === "global") &&
         e.kind === "mesh" &&
@@ -1318,11 +1344,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         });
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
+        const target = sampledObject(s, a.targetId);
         Object.assign(request, {
           target:
-            kind === "icp"
-              ? registrationTargetPoints(sampledObject(s, a.targetId))
-              : sampledObject(s, a.targetId).positions,
+            kind === "icp" ? registrationTargetPoints(target) : target.positions,
+          ...(kind === "icp" ? fineAlignmentInput(e, target) : {}),
           sourceTriangleMask:
             kind === "icp" && e.kind !== "pointcloud"
               ? alignmentTriangleMask(
@@ -1537,12 +1563,22 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (positions && edit?.diagnostics.changed !== false) {
         const updated =
           result.cloudPreview ??
-          (reconstruction && e.kind === "pointcloud"
+          (cloudMeshing
             ? {
-                ...scanMeshCopy(e, e.id, positions),
-                name: e.name,
-                visible: e.visible,
-                constructionOrderKey: e.constructionOrderKey,
+                ...scanMeshCopy(e, id(), positions),
+                ...(result.indexedMesh
+                  ? {
+                      indexedMesh: result.indexedMesh,
+                      normals: indexedRenderNormals(result.indexedMesh),
+                    }
+                  : {}),
+              }
+            : reconstruction && e.kind === "pointcloud"
+              ? {
+                  ...scanMeshCopy(e, e.id, positions),
+                  name: e.name,
+                  visible: e.visible,
+                  constructionOrderKey: e.constructionOrderKey,
               }
             : e.kind === "pointcloud"
               ? {
@@ -1578,10 +1614,11 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         if (!positions.length)
           next = next.filter((entity) => entity.id !== e.id);
         else if (
-          a.createNew ??
-          (!!average ||
-            !!nativeReconstruction ||
-            (kind === "scanTools" && op.operation.kind === "unroll"))
+          cloudMeshing ||
+          (a.createNew ??
+            (!!average ||
+              !!nativeReconstruction ||
+              (kind === "scanTools" && op.operation.kind === "unroll")))
         ) {
           updated.id = id();
           if (updated.constructionOrderKey !== undefined)
@@ -1589,8 +1626,10 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               [...s.entities, { id: updated.id }],
               [updated.id],
             ).orderedSources[0].constructionOrderKey;
-          updated.name = nativeReconstruction
-            ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
+          updated.name = cloudMeshing
+            ? `${e.name} - ${kind === "pointCloudPoisson" ? "Poisson" : "Projected"} mesh`
+            : nativeReconstruction
+              ? `Polygonized ${(op.operation.resolution ?? 0.5).toFixed(3)} mm`
             : average
               ? "Average mesh"
               : kind === "scanTools" && op.operation.kind === "unroll"
@@ -1617,6 +1656,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               segments,
               result.segmentClassifications,
               id,
+              edit?.segmentIndexedMeshes,
             );
       if (segmentPublication) {
         next = segmentPublication.entities;
@@ -1687,7 +1727,16 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
               artifact: json(
                 c,
                 {
-                  inventory: edit?.inventory,
+                  inventory: edit?.inventory && {
+                    ...edit.inventory,
+                    components: edit.inventory.components.map((component) => ({
+                      ...component,
+                      triangles:
+                        component.triangles instanceof Uint32Array
+                          ? Array.from(component.triangles)
+                          : component.triangles,
+                    })),
+                  },
                   curves: edit?.curves,
                   spatialCurves: edit?.spatialCurves,
                   sketchSection: result.sketchSection,
@@ -1724,7 +1773,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         );
       }
       if (
-        (segmentPublication || average || nativeReconstruction) &&
+        (segmentPublication || average || nativeReconstruction || cloudMeshing) &&
         created.length
       )
         host.select(created[0].id);
@@ -2195,10 +2244,17 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name = `${s.name}.scanforge`;
         mime = "application/x-scanforge";
       } else if (a.format === "step") {
-        const shapes = a.cadOnly === false ? entities : selectStepExportEntities(s.entities, a.visible !== false);
-        if (a.cadOnly === false && (!shapes.length || shapes.some((entity) => !entity.kernelId)))
+        const shapes = a.cadOnly
+          ? entities.filter((entity) => entity.kernelId)
+          : entities;
+        if (a.cadOnly)
+          excludedEntityIds = entities
+            .filter((entity) => !entity.kernelId)
+            .map((entity) => entity.id);
+        if (!shapes.length && a.cadOnly)
+          throw Error("STEP export requires at least one exact CAD object.");
+        if (!shapes.length || shapes.some((entity) => !entity.kernelId))
           throw new Error("STEP export requires exact CAD for every exported object.");
-        if (a.cadOnly === true) excludedEntityIds = entities.filter((entity) => !entity.kernelId).map((entity) => entity.id);
         data = await host.cad().exportStep(shapes.map((e) => e.kernelId!));
         name = `${s.name}.step`;
         mime = "application/step";

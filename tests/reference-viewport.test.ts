@@ -454,13 +454,25 @@ it("renders and picks a small numeric plane at a large origin without narrowing 
     expect(state.pickAt({ clientX: 50, clientY: 50 })).toBe("plane");
     expect(plane.positions).toBe(source);
     expect(Array.from(source)).toEqual(before);
+    const movedPositions = Array.from(plane.positions, (value, i) =>
+      i % 3 === 0 ? value + 10 : value,
+    );
     view.setEntities(
-      [{ ...plane, kind: "mesh", planeFrame: undefined }],
+      [
+        {
+          ...plane,
+          kind: "mesh",
+          planeFrame: undefined,
+          positions: movedPositions,
+        },
+      ],
       plane.id,
     );
     expect(state.objects.get(plane.id).mesh.matrix.elements).toEqual(
-      new THREE.Matrix4().elements,
+      new THREE.Matrix4().makeTranslation(100000010.125, -20, 30).elements,
     );
+    expect(state.bounds.min.toArray()).toEqual([100000010.0625, -20.0625, 30]);
+    expect(state.bounds.max.toArray()).toEqual([100000010.1875, -19.9375, 30]);
   } finally {
     view.setEntities([], null);
   }

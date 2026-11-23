@@ -3,6 +3,8 @@ dist
 public/kernel
 # Preserve upstream packaged dependencies as distributed.
 public/vendor
+# Generated Poisson runtime is hash-verified as distributed.
+public/poisson/poisson.mjs
 .resources
 package-lock.json
 LICENSE

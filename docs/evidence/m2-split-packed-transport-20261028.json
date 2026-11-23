@@ -1,0 +1,16 @@
+{
+  "scope": "Internal binary64 worker transport for precise finite-mesh Split, restoring number-array geometry before the shared GUI/MCP publication boundary.",
+  "candidate": "Uncommitted combined working tree based on b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02; not the published PR head.",
+  "behavior": "The worker transfers binary64 position and indexed-vertex buffers; the client restores the existing coordinate arrays and preserves a shared-array alias when both carriers are identical. Persistent worker source geometry stays attached. A worker publication failure restores its prior canonical source and topology cache. Public MCP schemas and project formats remain unchanged.",
+  "validation": {
+    "focused": "108 tests across worker, client, Split publication and candidate controls passed under m2-packed-rollback-green-20261028-r1.json. Red controls showed missing packed transport, missing client restoration and failed-publication cache corruption before correction.",
+    "typecheck": "15 integrated source/test batches passed; m2-packed-integrated-types-20261028-r1.json.",
+    "suite": "813 files passed, 29 skipped; 51502 tests passed, one expected failure, 76 skipped; m2-packed-integrated-suite-20261028-r1-guard.json. The expected failure concerns Float32-only seam materialization.",
+    "browser": "Isolated production build scanforge-ef2d171067b1a4bc passed a manufactured large-coordinate GUI/public-MCP Split replay, exact output equality, area, picking, canvas selection, Undo/Redo and binary reopening, with no page or console errors; m2-packed-browser-precision-20261028-r1-guard.json. A folded-cutter GUI/public-MCP replay also passed equality, ownership, Undo/Redo and reopening; m2-packed-browser-folded-20261028-r1-guard.json.",
+    "largeDispatcher": "The largest original scan passed the persistent worker-dispatch/structured-clone test with exact binary64 coordinate digests, indexed agreement, preserved source and area. The final rollback code recorded a 2403880960-byte job peak; m2-packed-implementation-ply3-20261028-r2-guard.json."
+  },
+  "limitations": [
+    "The large-scan dispatcher test uses an in-process worker harness and simulated structured cloning; real browser-worker memory and the full large-scan GUI/MCP lifecycle have not been measured.",
+    "Native Split equivalence, general geometry, cancellation during active work and M2's other acceptance gates remain open."
+  ]
+}

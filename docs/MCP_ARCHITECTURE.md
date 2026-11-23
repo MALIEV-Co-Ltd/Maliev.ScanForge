@@ -207,13 +207,18 @@ revision/retry fencing, preview publication and history semantics remain in use.
 This adds accuracy parameters and structured results to the existing operation,
 not a separate GUI or agent implementation.
 
-Fine alignment target binding shares `registrationTargetPoints` between GUI and
-MCP. Raw indexed meshes use referenced canonical vertices, preserving the complete
-target surface point set without allocating repeated triangle corners. Unused
-vertices are excluded and cloud/exact-CAD carriers retain their existing route.
-The exact nearest-point tree stores Float64 subtree bounds to prune unmatched
-regions; conservative workspace admission includes those bounds. Its public
-`distanceTests` result makes direct distance work observable.
+Fine alignment binds target geometry and normals from the workspace through the
+shared GUI/MCP operation. Mesh targets query visible target triangles, while
+point-cloud targets use a full nearest-point tree with Float64 subtree bounds.
+Conservative workspace admission includes both tree bounds and target triangles.
+The public `distanceTests` result counts direct point or triangle distance tests
+according to the reported matching mode. Insufficient compatible overlap is not
+published as an alignment.
+
+Projected and Poisson point-cloud meshing use the same revisioned `mesh_process`
+job from GUI and MCP. Both retain source ownership, worker cancellation, retry
+protection and atomic history publication; their parameters and limits are in the
+agent guide.
 
 ## Scan selection and reference preview admission
 
@@ -309,7 +314,7 @@ to that same operation. Native ownership transfers before camera/presentation
 work, so later display failures cannot dispose the active restored CAD client.
 
 Adaptive point display adds `pointAutoDensity` (default true) and `pointDensity`
-(10â€“100 percent, default 100) to the existing shared `object_update` contract.
+(10–100 percent, default 100) to the existing shared `object_update` contract.
 The inspector invokes this handler directly. Codecs, validation, workspace
 revision keys and display preservation during modeling undo include both fields.
 `AdaptivePointDisplay` updates a shader uniform from projected bounds with bounded
@@ -325,7 +330,7 @@ retain original coordinates. Adaptive display is a projected-bounds sampling
 heuristic, not a spatial LOD hierarchy or a reduction in submitted source vertices.
 
 Point-cloud display controls call `object_update` from both GUI and MCP.
-`pointSize` (1â€“10 screen pixels) and `pointColorMode` (`source` or `solid`)
+`pointSize` (1–10 screen pixels) and `pointColorMode` (`source` or `solid`)
 are validated display metadata, tracked by workspace revisions, saved by the
 project codecs and preserved across modeling undo. `object_get` reports the
 effective defaults of 1 px and source mode. The viewport changes materials
@@ -979,7 +984,7 @@ counts and scope travel through the existing processing diagnostics contract.
 ## Public Global Fine Align preview boundary
 
 The earlier private scan-set groundwork now has a bounded public workflow for
-2â€“32 visible, unlocked raw triangle meshes. The Global fine align panel and MCP
+2–32 visible, unlocked raw triangle meshes. The Global fine align panel and MCP
 call `createGlobalAlignmentOperations` in
 `src/automation/global-alignment-operations.ts`; they share the input factory in
 `src/global-alignment-input.ts` and the existing scan-set controller. Point-cloud
@@ -2172,7 +2177,7 @@ fitted/CAD metadata, nonrigid bases and out-of-bounds display endpoints.
 normalizing or converting them to Float32. JSON project version 3 and binary
 manifest version 5 store twelve little-endian Float64 values as hexadecimal
 `frameBits`, ordered origin, U, V, normal, plus positive `displaySize`. Existing
-JSON versions and binary manifests 2â€“4 remain readable. Both project codecs
+JSON versions and binary manifests 2–4 remain readable. Both project codecs
 validate current, history and future entities. Frame-only changes participate
 in model history, geometry digests, API revision identity and construction
 preview bindings. Inspection returns detached structured frame data and its
