@@ -49,6 +49,8 @@ const verifiedWorkflows: Record<string, string> = {
   back: "docs/VALIDATION.md: browser standard views",
   wireframe: "docs/VALIDATION.md: browser shading controls",
   objectColor: "docs/VALIDATION.md: browser appearance controls",
+  autoColorize:
+    "docs/AGENT_GUIDE.md: scene auto colors; tests/auto-color-api.test.ts and isolated GUI/MCP color assignment validation",
   settings: "docs/VALIDATION.md: browser light/dark appearance controls",
   delete: "docs/VALIDATION.md: browser deletion and undo with live scan counts",
   exportStep:

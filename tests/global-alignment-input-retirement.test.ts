@@ -77,14 +77,13 @@ it("retires command-owned scan descriptors through their borrowed alias without 
     expect(derived[index].carrier).not.toBe(authored[index].normals);
   }
   const summary = structuredClone(prepared.summary);
-  // Baseline is expected to fail here: release is declared optional but absent.
   expect(prepared.release).toBeTypeOf("function");
   prepared.release!();
   expect(prepared.input.scans).toHaveLength(0);
   expect(scansAlias).toHaveLength(0);
   prepared.release!();
   expect(prepared.summary).toEqual(summary);
-  expect(prepared.entities).toEqual(entities);
+  expect(prepared.entities).toMatchObject(entities);
   for (let index = 0; index < entities.length; index++) {
     const entity = entities[index],
       original = authored[index];
@@ -92,6 +91,10 @@ it("retires command-owned scan descriptors through their borrowed alias without 
     expect(entity.indexedMesh!.vertices).toBe(original.vertices);
     expect(entity.indexedMesh!.triangles).toBe(original.triangles);
     expect(entity.indexedMesh!.normals).toBe(original.normals);
+    expect(entity.indexedMesh!.geometryNormals).toBeUndefined();
+    expect(prepared.entities[index].indexedMesh!.geometryNormals).toBe(
+      derived[index].carrier,
+    );
     expect([
       Array.from(entity.positions),
       Array.from(entity.indexedMesh!.vertices),

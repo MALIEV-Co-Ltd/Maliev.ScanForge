@@ -1,4 +1,5 @@
 import type { MeshProcessingOptions, MeshTopology } from "./mesh-processing";
+import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer.ts";
 
 const FLOAT_MAX = 3.4028234663852886e38;
 const f32 = Math.fround;
@@ -11,9 +12,14 @@ function check(options: MeshProcessingOptions, index = 0) {
 /** Angle-weighted normals with the original single-precision accumulation. */
 export function noiseNormals(
   t: { vertices: ArrayLike<number>; triangles: ArrayLike<number> },
-  options: MeshProcessingOptions = {},
+  options: MeshProcessingOptions & { sharedReadonlyBuffers?: boolean } = {},
 ) {
-  const out = new Float32Array(t.vertices.length);
+  const out = new Float32Array(
+    allocateImportedReadonlyBuffer(
+      t.vertices.length * 4,
+      options.sharedReadonlyBuffers,
+    ),
+  );
   const v = t.vertices;
   const ids = new Uint32Array(3);
   const p = new Float64Array(9);

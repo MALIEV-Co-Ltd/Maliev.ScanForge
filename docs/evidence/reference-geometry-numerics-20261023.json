@@ -1,0 +1,617 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "numerical_foundation_in_progress",
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "newConstructionOperationAdvertised": false,
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "focusedAnalysis": [
+    {
+      "artifact": {
+        "privateArtifact": "construction-helpers-noanalysis-r1/evidence.json",
+        "sha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644",
+        "bytes": 145184
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-helpers-noanalysis-r1-cad.receipt.json",
+        "sha256": "dd70b3edec5a9d8f5e3b114791802b3710fed809b600da267eafbf4fe88d986a",
+        "bytes": 1852,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.067882299990742,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 1091260416,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "functions": [
+        {
+          "address": "0x14040d7d0",
+          "instructionCount": 165
+        },
+        {
+          "address": "0x14040da70",
+          "instructionCount": 267
+        },
+        {
+          "address": "0x14040def0",
+          "instructionCount": 254
+        },
+        {
+          "address": "0x14041af20",
+          "instructionCount": 39
+        },
+        {
+          "address": "0x14041afa0",
+          "instructionCount": 103
+        },
+        {
+          "address": "0x14041b150",
+          "instructionCount": 40
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-math-noanalysis-r1/evidence.json",
+        "sha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4",
+        "bytes": 62640
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-math-noanalysis-r1-cad.receipt.json",
+        "sha256": "c0254f5f7cdeffedc72d3913fadc79b5120e2a406bc08161ff2c4b28d13d7149",
+        "bytes": 1835,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 10.919413900002837,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 891310080,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "functions": [
+        {
+          "address": "0x1404100b0",
+          "instructionCount": 125
+        },
+        {
+          "address": "0x140211e90",
+          "instructionCount": 121
+        },
+        {
+          "address": "0x140154070",
+          "instructionCount": 35
+        },
+        {
+          "address": "0x140d5cfac",
+          "instructionCount": 1
+        },
+        {
+          "address": "0x140d5cfbe",
+          "instructionCount": 1
+        },
+        {
+          "address": "0x14040c5c0",
+          "instructionCount": 104
+        }
+      ]
+    }
+  ],
+  "staticCorroboration": {
+    "artifact": {
+      "privateArtifact": "construction-numeric-static-r1.json",
+      "sha256": "f7dd2fa78456852270bd70d094fa94730b264fa336f056f696ce87ad52c5a418",
+      "bytes": 41823
+    },
+    "procedureCount": 14,
+    "instructionCount": 3557,
+    "mnemonicAliases": [
+      {
+        "address": "0x14040e55b",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x14040d8bb",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x1404101a2",
+        "ghidraMnemonic": "SETC",
+        "capstoneMnemonic": "SETB"
+      }
+    ],
+    "constants": [
+      {
+        "address": "0x14126ad40",
+        "bytes": "000000000000b03c",
+        "float64": 2.220446049250313e-16
+      },
+      {
+        "address": "0x14126ae00",
+        "bytes": "000000000000803e",
+        "float64": 1.1920928955078125e-7
+      },
+      {
+        "address": "0x14126ae90",
+        "bytes": "2d431cebe2361a3f",
+        "float64": 0.0001
+      },
+      {
+        "address": "0x14126aee8",
+        "bytes": "fca9f1d24d62503f",
+        "float64": 0.001
+      },
+      {
+        "address": "0x14126afa0",
+        "bytes": "399d52a246df913f",
+        "float64": 0.017453292519943295
+      },
+      {
+        "address": "0x14126b170",
+        "bytes": "000000000000e03f",
+        "float64": 0.5
+      },
+      {
+        "address": "0x14126b250",
+        "bytes": "000000000000f03f",
+        "float64": 1.0
+      },
+      {
+        "address": "0x14126b778",
+        "bytes": "000000000000e0bf",
+        "float64": -0.5
+      }
+    ],
+    "identities": [
+      {
+        "kind": "plane",
+        "address": "0x141154ef8",
+        "historicalEvidenceId": "ev_279fd7ea1627cbb31aec3479716a968710069298aa5e450a3b0e1b0fc17f0283",
+        "identifierBytesEqual": true
+      },
+      {
+        "kind": "cylinder",
+        "address": "0x141176ca8",
+        "historicalEvidenceId": "ev_e745bdaa8bb4ab4fb9d04526b9336b82ca2f4b53340e3f52c480421f4eb51ad1",
+        "identifierBytesEqual": true
+      },
+      {
+        "kind": "cone",
+        "address": "0x141176d18",
+        "historicalEvidenceId": "ev_4887610520779dfd2775e34dd50b3b064150c1c0b3014d39342f6c5a47ea9c1a",
+        "identifierBytesEqual": true
+      },
+      {
+        "kind": "line",
+        "address": "0x141154fd8",
+        "historicalEvidenceId": "ev_2d91410c09151eee4625c96c908aa4dfbf0a4d8ab877f48e9a84d40ddfd1ea11",
+        "identifierBytesEqual": true
+      },
+      {
+        "kind": "point",
+        "address": "0x141155a78",
+        "historicalEvidenceId": "ev_c6d97c60386a2c8f51afc339c3cf4e4318dad0af802da9e1fbb8446fd6b64909",
+        "identifierBytesEqual": true
+      },
+      {
+        "kind": "sphere",
+        "address": "0x14117cba8",
+        "historicalEvidenceId": "ev_bc090fa56b9b2f1bf6d493dbfba6d7227f61a9fe9ca76f7f5911d54826349589",
+        "identifierBytesEqual": true
+      }
+    ],
+    "historicalMappingImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1"
+  },
+  "runtimeRead": {
+    "artifact": {
+      "privateArtifact": "native-construction-runtime-bindings-r2.json",
+      "sha256": "1edfab5fb6be45aa1ce3270138a26375cdaecb312dc42ceed6f5501cbd9076a7",
+      "bytes": 5721
+    },
+    "driver": {
+      "privateArtifact": "bind-construction-runtime-r2.py",
+      "sha256": "2f3e9e36bc9dc2fa6805b7d45c9df0becc6f1e984ef5e04c1565bd8b91f6da97",
+      "bytes": 3448
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-bind-construction-runtime-r2-cad.receipt.json",
+      "sha256": "69d05ac7310973103128f4ec78391801e0bf5505207fc680918e9b410f505ff1",
+      "bytes": 2040,
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.2093795999971917,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 90,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 90738688,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "pid": 32152,
+    "creationFileTime": "134372093588457253",
+    "accessMask": 1040,
+    "readBytes": 376006,
+    "readCalls": 2536,
+    "elapsedSeconds": 0.06050979999417905,
+    "handleClosed": true,
+    "targetAssignedToJob": false,
+    "targetModified": false,
+    "nativeFunctionsCalled": false,
+    "codeAnchors": [
+      {
+        "address": "0x14040e340",
+        "bytes": 6232,
+        "sha256": "64e4a80594c9cdd4fc2fa426b83a50dd3a94707f5db25888aaf7fa92231a4e96",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+      },
+      {
+        "address": "0x14041b1e0",
+        "bytes": 4314,
+        "sha256": "00f656d010c7b0a5eb4ca8aed6ee59d86e40be5555ba6795590b724a03e015d6",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+      },
+      {
+        "address": "0x14040d7d0",
+        "bytes": 671,
+        "sha256": "c067906d5740a79736a0b2fdccdc44d8af83f992c4d5d58e32ace0696d73e38f",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14040da70",
+        "bytes": 1152,
+        "sha256": "b9d8cb617fd8243e65ac34e4e875bd4db0daf4528b03878e1e56f649933c1fcf",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14040def0",
+        "bytes": 1112,
+        "sha256": "74e516ab1d2303cd6835c8bcbd1559c47fafecc200af46d3cacdf646851c0aad",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14041af20",
+        "bytes": 142,
+        "sha256": "b12105de0c7ad214fcf0a3a93f691c228859640352ea0e3ac33daeec3efb61e1",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14041afa0",
+        "bytes": 439,
+        "sha256": "2b6f5b6db168f51e4acd7012b18190543c384d878b3e4d2389049d177049aef5",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x14041b150",
+        "bytes": 155,
+        "sha256": "a8602c7dd73619596f648e05036a61b8c2cce1813ea22ffb8e3bbe5ef1207a50",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "d898f3852a51a6f127511bd3917cd96097950e28aac31e303b761828c92e5644"
+      },
+      {
+        "address": "0x1404100b0",
+        "bytes": 583,
+        "sha256": "347af9ec298ca73fba1371a777a98664d80cd56c4fdafc553c1d8b7e3806c38b",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "address": "0x140211e90",
+        "bytes": 629,
+        "sha256": "3c9fe6606b548522d74ed954ef77537677e14d7595a9da745138e58509ff3dee",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "address": "0x140154070",
+        "bytes": 166,
+        "sha256": "e2d743af8c6a53f93fa6fae1895f3367c8fd39ee0f530db11d05a00ce5b8e830",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "address": "0x140d5cfac",
+        "bytes": 15,
+        "sha256": "77dcdfdcca3da5a712420c1deb58f2c7c7af9d4a99cc6ff92be6f8ce64084af5",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "address": "0x140d5cfbe",
+        "bytes": 15,
+        "sha256": "cc14e972bb7e3d7098c7eea199203550e76305329de466d591dc60d3dc342d86",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      },
+      {
+        "address": "0x14040c5c0",
+        "bytes": 494,
+        "sha256": "eb854ac8b3c0210b657b1c9666933f0dbcb12f5b0bde24ad2b74cbbe8154acd5",
+        "twoReadsEqualStatic": true,
+        "sourceEvidenceSha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+      }
+    ],
+    "rtti": [
+      {
+        "kind": "line",
+        "vtable": "0x14117cdf8",
+        "locator": "0x1412f93b0",
+        "descriptor": "0x1415e8ce8",
+        "twoReadsAgree": true
+      },
+      {
+        "kind": "point",
+        "vtable": "0x14117e220",
+        "locator": "0x1412f9cd8",
+        "descriptor": "0x1415e8eb8",
+        "twoReadsAgree": true
+      }
+    ],
+    "imports": [
+      {
+        "iatRva": "0xeaeb88",
+        "symbol": "sqrt",
+        "moduleSha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca"
+      },
+      {
+        "iatRva": "0xeaebb8",
+        "symbol": "cos",
+        "moduleSha256": "dedb7611e1abc1ff3852dcac3d4c93a048d729e25b061973b9969f22698f14ca"
+      }
+    ]
+  },
+  "validation": [
+    {
+      "lane": "red-closest",
+      "passedTests": 0,
+      "expectedFailure": true,
+      "receipt": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-closest-mirror-focused.receipt.json",
+        "sha256": "94c0d4b03a8e729084f53e2dd3742b971fe4cd182d9a5ff86f05b983e91a3c97",
+        "bytes": 1935,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.5617271999944933,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 259035136,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "stdout": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-closest-mirror-focused.stdout.log",
+        "sha256": "4a68357b9062e5853ef0df641c027164be5f828c2abf77c42103caa78e19e56b",
+        "bytes": 216
+      },
+      "stderr": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-closest-mirror-focused.stderr.log",
+        "sha256": "7845774a062087e211ae478a31d0d91cf7b6f7d9e4bea2c15e4e9f2c2c042e72",
+        "bytes": 664
+      }
+    },
+    {
+      "lane": "green-closest",
+      "passedTests": 1038,
+      "expectedFailure": false,
+      "receipt": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-closest-mirror-focused.receipt.json",
+        "sha256": "6219edf34dfa7658f71b8e1252e8cb362937d9e5d072fc2cf59a482b7ce19a86",
+        "bytes": 2211,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 9.752791100007016,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 507719680,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "stdout": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-closest-mirror-focused.stdout.log",
+        "sha256": "ce32bafff2581a029cbc312dc4e28d9d1b69a47f6cc491f961c905fc1f0be568",
+        "bytes": 376
+      },
+      "stderr": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-closest-mirror-focused.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    {
+      "lane": "red-plane",
+      "passedTests": 6,
+      "expectedFailure": true,
+      "receipt": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-plane-mirror-focused.receipt.json",
+        "sha256": "8e91540b6753ed4e7230bd075b8e180c3fde52f7b81e96b80cddde542628b66f",
+        "bytes": 1927,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.5620475000032457,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 272019456,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "stdout": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-plane-mirror-focused.stdout.log",
+        "sha256": "f778a6412f46f5f0c3b82890777d35e0fa64c75557ab5466b4f3a8b8b07b2858",
+        "bytes": 798
+      },
+      "stderr": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-red-plane-mirror-focused.stderr.log",
+        "sha256": "ce902133de3ebde350bf788c00f4922620047dbf72e7e119b6cf425b79b4e494",
+        "bytes": 4526
+      }
+    },
+    {
+      "lane": "green-all",
+      "passedTests": 1045,
+      "expectedFailure": false,
+      "receipt": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-all-mirror-focused.receipt.json",
+        "sha256": "5372a28163dbf1d848553be211ba677444ab5797fcdac2306b3780bb9b3a852b",
+        "bytes": 2195,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 9.703970899994601,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 300,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 514330624,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "stdout": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-all-mirror-focused.stdout.log",
+        "sha256": "5dc95fca4f1b51f59e3cc3bf266cf8174d1d5326adcee5cd17704fdffc587238",
+        "bytes": 376
+      },
+      "stderr": {
+        "privateArtifact": "project-index-validation-reference-numerics-r1-green-all-mirror-focused.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    }
+  ],
+  "mcpCoverage": {
+    "existingSharedPath": "datum_alignment_preview / datum_alignment_apply via scan-native-datum-plane.ts",
+    "contractChanged": false,
+    "newConstructionTools": false,
+    "testedPublicApiSuite": "tests/datum-automation.test.ts"
+  },
+  "limits": [
+    "Current runtime reads establish code/import/type identity, not construction outputs.",
+    "Analytic unit cases are not original-code numerical captures.",
+    "Persistent reference geometry, full mode dispatch, GUI interaction and MCP creation remain incomplete.",
+    "The preserved static image is never executed; the live application is only read."
+  ],
+  "finalVerification": {
+    "scope": "Numerical helper foundation and existing shared datum regression only",
+    "sourcePins": [
+      {
+        "path": "src/reference-geometry-numerics.ts",
+        "sha256": "2301f66092d90b25018348895f09a62039969005e5c8481548196e4555142bff"
+      },
+      {
+        "path": "src/scan-native-datum-plane.ts",
+        "sha256": "9a1a166b2d516c6caed252602b095f6aaafbce5e681cddb0520d437eea3f5d01"
+      },
+      {
+        "path": "tests/reference-geometry-numerics.test.ts",
+        "sha256": "614fd49d3ade1db657b741a8bdaa97fb687f09fcf6af1f7658f43d47c6e6744c"
+      }
+    ],
+    "focusedTestsPassed": 1045,
+    "focusedTestFilesPassed": 7,
+    "buildId": "scanforge-6142a64d7167caf2",
+    "offlineAssets": 271,
+    "receipts": [
+      {
+        "label": "reference-numerics-r1-format",
+        "privateArtifact": "project-index-validation-reference-numerics-r1-format-mirror-focused.receipt.json",
+        "sha256": "57400bc4e271772ee6620fa522c7c8a1e302b9ef51d8bce5dc025cf1c154a47a",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 0.36117029999149963,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerPeakJobMemoryBytes": 127250432,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-numerics-r1-build",
+        "privateArtifact": "project-index-validation-reference-numerics-r1-build-build.receipt.json",
+        "sha256": "0ec4e3d1433558dc9e91e5e362556c79d63133b64ce2d1410a0c0ac43e6ad30e",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 40.82848169999488,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerPeakJobMemoryBytes": 2360053760,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      {
+        "label": "reference-numerics-r2-green-all",
+        "privateArtifact": "project-index-validation-reference-numerics-r2-green-all-mirror-focused.receipt.json",
+        "sha256": "11a53cbdcc0edd0ba765d276dd6aa7d1fec5c738e1000de47db4130082a3f66b",
+        "completed": true,
+        "exitCode": 0,
+        "elapsedSeconds": 9.602708899998106,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "outerPeakJobMemoryBytes": 513343488,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    ],
+    "renderedGuiMcpAcceptance": false,
+    "nativeConstructionOutputComparison": false
+  }
+}

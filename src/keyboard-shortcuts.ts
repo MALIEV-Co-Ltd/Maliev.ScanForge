@@ -12,6 +12,7 @@ export type ShortcutMode =
   "main" | "selection" | "sketch" | "freeform" | "primitive-fit";
 export type ShortcutActionId =
   | "rename-objects"
+  | "delete-objects"
   | "repeat-command"
   | "new"
   | "open"

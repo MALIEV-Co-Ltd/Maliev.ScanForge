@@ -12,7 +12,7 @@ if (freemem() < 3072 * 1048576)
   throw Error("Requires 3072 MiB free; do not lower this admission guard");
 const root = new URL("../", import.meta.url),
   out = new URL(".resources/interactive-public-browser/", root),
-  origin = "http://127.0.0.1:5173";
+  origin = process.env.SCANFORGE_TEST_ORIGIN ?? "http://127.0.0.1:5173";
 const sourceRoot = process.env.SCANFORGE_ALIGNMENT_EXAMPLES;
 assert(sourceRoot, "Set SCANFORGE_ALIGNMENT_EXAMPLES");
 await mkdir(out, { recursive: true });
@@ -128,6 +128,7 @@ async function run() {
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto(origin);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await page.getByRole("tab", { name: "AI agents", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Local bridge URL" })
     .fill("http://127.0.0.1:" + port);
@@ -165,6 +166,17 @@ async function run() {
       ...(await session()),
       ...args,
     });
+  const waitJob = async (jobId) => {
+    for (let i = 0; i < 900; i++) {
+      const job = (await call("job_get", { jobId })).result;
+      if (job.status !== "running") {
+        assert.equal(job.status, "succeeded", JSON.stringify(job));
+        return job.result;
+      }
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    throw Error("Interactive Apply did not finish");
+  };
   const compareBounds = (state, transform) => {
     assert.equal(state.bounds.length, 3);
     for (let i = 0; i < state.entityIds.length; i++) {
@@ -392,6 +404,7 @@ async function run() {
   );
   await mutate("viewport_control", { action: "fit" });
   await page.getByRole("button", { name: "Apply", exact: true }).click();
+  await page.setViewportSize({ width: 1183, height: 1064 });
   await page
     .getByRole("complementary", { name: "Interactive alignment", exact: true })
     .waitFor({ state: "hidden", timeout: 90000 });
@@ -415,7 +428,7 @@ async function run() {
     .waitFor({ state: "hidden" });
   assert.equal((await call("project_get")).result.undo, undo + 1);
   check(
-    "GUI Apply baked once; reopening matched native transformed bounds; Escape cancelled without another history entry",
+    "GUI Apply survived viewport resize and baked once; reopening matched native transformed bounds; Escape cancelled without another history entry",
   );
   await mutate("history_undo");
   begun = await mutate("interactive_alignment_edit", {
@@ -431,6 +444,35 @@ async function run() {
   check(
     "MCP Undo restored all native identity bounds; MCP cancellation preserved redo",
   );
+  await mutate("interactive_alignment_edit", {
+    action: "begin",
+    entityIds: ids,
+    parallel: true,
+  });
+  await edit("step", { kind: "translatePositive", axis: 0, value: 3.125 });
+  await edit("step", { kind: "translateNegative", axis: 1, value: 2.5 });
+  await edit("step", { kind: "translatePositive", axis: 2, value: 50000 });
+  await edit("step", { kind: "translatePositive", axis: 2, value: 0.1 });
+  const applied = await mutate("interactive_alignment_apply", {
+    ...(await session()),
+    parallel: true,
+  });
+  await page.setViewportSize({ width: 1183, height: 944 });
+  assert.deepEqual(await waitJob(applied.result.jobId), {
+    applied: true,
+    entityIds: ids,
+    geometryBakedOnce: true,
+  });
+  assert.equal((await call("project_get")).result.undo, undo + 1);
+  begun = await mutate("interactive_alignment_edit", {
+    action: "begin",
+    entityIds: ids,
+    parallel: true,
+  });
+  begun = await edit("step", { kind: "translatePositive", axis: 0, value: 0 });
+  compareBounds(begun.result, 1);
+  await mutate("preview_discard", { target: "interactive" });
+  check("MCP Apply survived viewport resize and matched GUI geometry/history");
   assert.deepEqual(errors, []);
   report.browserErrors = errors;
   await page.screenshot({ path: fileURLToPath(new URL("gui.png", out)) });

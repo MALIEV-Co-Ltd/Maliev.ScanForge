@@ -103,7 +103,14 @@ try {
     }
     if (!rejected) throw Error("Invalid geometry accepted");
     const controller = new AbortController();
-    const cancelled = encodeProjectFile(session, controller.signal).then(
+    // Use a new snapshot so the completed-file cache cannot settle before abort.
+    const cancelled = encodeProjectFile(
+      {
+        ...session,
+        project: { ...session.project, name: "Cancellation probe" },
+      },
+      controller.signal,
+    ).then(
       () => false,
       (e) => e.name === "AbortError",
     );

@@ -31,7 +31,8 @@ import {
   importConcurrency,
   validateImportBatch,
 } from "../import-batch";
-import { displayMeshStats } from "../scan-render-data";
+import { entityDisplayStats } from "../entity-display-stats";
+import { GeometryStatistics } from "./GeometryStatistics";
 import {
   selectObject,
   reconcileObjectSelection,
@@ -40,6 +41,12 @@ import {
 } from "../object-selection";
 import { AppSelect } from "./AppSelect";
 import { AlignmentReferences } from "./AlignmentReferences";
+import { hasAlignmentReferences } from "../alignment-reference-entity";
+import {
+  encodeReferenceEntityData,
+  supportsSampledGeometry,
+  assertSampledGeometry,
+} from "../reference-entity";
 import { DatumAlignmentTools } from "./DatumAlignmentTools";
 import { GlobalAlignmentTools } from "./GlobalAlignmentTools";
 import { inspectGlobalAlignmentCandidates } from "../global-alignment-input";
@@ -262,7 +269,6 @@ import { MeshTools } from "./MeshTools";
 import { LandmarkAlignmentDialog } from "./LandmarkAlignmentDialog";
 import { releaseProcessingPreview } from "../processing-session";
 import type { WorkspaceHost } from "../automation/api";
-import { pointCloudStats } from "../point-cloud";
 import {
   beginLandmarkAlignment,
   pickLandmark,
@@ -722,6 +728,16 @@ export function App() {
   modeRef.current = mode;
   const knownKernelIds = useRef(new Set<string>());
   const selected = entities.find((e) => e.id === selectedId);
+  const sampledSelected = supportsSampledGeometry(selected);
+  useEffect(() => {
+    if (!selected || sampledSelected) return;
+    try {
+      coordinateAlignmentInterface({ workspace, mode }, selected);
+    } catch {
+      setMode("inspect");
+      setWorkspace("properties");
+    }
+  }, [selected?.id, sampledSelected, mode, workspace]);
   useEffect(() => {
     if (selected && !objectPickable(selected)) setSelectedId(null);
   }, [selected]);
@@ -759,7 +775,7 @@ export function App() {
     selected?.parametric,
   ]);
   brushRef.current = {
-    entity: selected,
+    entity: sampledSelected ? selected : undefined,
     radius: brushRadius,
     subtract: subtractBrush,
     tool: selectionTool,
@@ -767,24 +783,19 @@ export function App() {
   };
   wandRef.current = (mask, remove) => growSelection(mask, remove);
   const selectedTriangleCount = useMemo(
-    () => (triangleMask ? selectionCount(triangleMask) : 0),
-    [triangleMask],
+    () => (sampledSelected && triangleMask ? selectionCount(triangleMask) : 0),
+    [sampledSelected, triangleMask],
   );
   const stats = useMemo(
-    () =>
-      selected
-        ? selected.kind === "pointcloud"
-          ? pointCloudStats(selected.positions)
-          : displayMeshStats(selected.positions)
-        : null,
-    [selected?.positions],
+    () => (selected ? entityDisplayStats(selected) : null),
+    [selected?.kind, selected?.positions, selected?.reference],
   );
   const section = useMemo(
     () =>
-      mode === "section" && selected
+      mode === "section" && selected && sampledSelected
         ? sectionMesh(selected.positions, axis, offset)
         : { segments: [], length: 0 },
-    [mode, selected?.positions, axis, offset],
+    [mode, selected?.positions, sampledSelected, axis, offset],
   );
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -1121,6 +1132,7 @@ export function App() {
   useEffect(() => {
     viewport.current?.setBrush(
       mode === "brush" &&
+        sampledSelected &&
         workspace === "mesh" &&
         toolPanelOpen &&
         !busy &&
@@ -1134,6 +1146,7 @@ export function App() {
     toolPanelOpen,
     busy,
     selected?.kernelId,
+    sampledSelected,
     scanPanel,
     scanBoundaryPaths,
   ]);
@@ -1174,14 +1187,14 @@ export function App() {
     };
   }, [meshClip, selectedId, stats, workspace, toolPanelOpen, busy]);
   useEffect(() => {
-    if (!selected) {
+    if (!selected || !sampledSelected) {
       setTriangleMask(null);
       return;
     }
     const session = sessionFor(selected);
     setTriangleMask(new Uint8Array(session.state.mask));
     setSelectionVersion((v) => v + 1);
-  }, [selectedId, selected?.positions]);
+  }, [selectedId, selected?.positions, sampledSelected]);
   useEffect(() => {
     const origin = wandRegion.current;
     if (!origin || selected?.kind === "pointcloud") return;
@@ -1463,6 +1476,7 @@ export function App() {
         .catch((e) => setError(`CAD cleanup: ${errorText(e)}`));
   }, [entities, history, future]);
   function sessionFor(entity: Entity): SelectionSession {
+    assertSampledGeometry(entity);
     let record = selectionSessions.current.get(entity.id);
     const key = cloudSelectionSource(entity);
     if (!record || record.positions !== key) {
@@ -1478,11 +1492,13 @@ export function App() {
     return record.session;
   }
   function applySelectionState(entity: Entity, state: SelectionState) {
+    assertSampledGeometry(entity);
     setTriangleMask(new Uint8Array(state.mask));
     setSelectionVersion((v) => v + 1);
     setEntities((previous) =>
       previous.map((e) => {
         if (e.id !== entity.id) return e;
+        if (!supportsSampledGeometry(e)) return e;
         const old = e.meshSelection?.hidden ?? [];
         if (
           old.length === state.hidden.length &&
@@ -1524,7 +1540,7 @@ export function App() {
   function selectionVisibility(operation: "hide" | "isolate" | "reveal") {
     wandRegion.current = null;
     wandRefreshAbort.current?.abort();
-    if (!selected || busy) return;
+    if (!selected || !sampledSelected || busy) return;
     const session = sessionFor(selected);
     if (operation === "hide")
       lastHiddenSelection.current = maskIndices(session.state.mask);
@@ -1537,7 +1553,7 @@ export function App() {
     setDirty(true);
   }
   function revealSelectedTriangles() {
-    if (!selected || busy) return;
+    if (!selected || !sampledSelected || busy) return;
     const session = sessionFor(selected),
       revealed = new Set(lastHiddenSelection.current);
     session.set({
@@ -1606,7 +1622,7 @@ export function App() {
     label: string,
     retainFacetSelection = false,
   ) {
-    if (!selected) return;
+    if (!selected || !sampledSelected) return;
     if (!positions.length) {
       operationLabel.current = label;
       commit(entities.filter((entity) => entity.id !== selected.id));
@@ -1716,7 +1732,7 @@ export function App() {
     operation: Omit<ScanEditRequest, "kind" | "positions">,
     label: string,
   ) {
-    if (!selected || busy || scanEditAbort.current) return;
+    if (!selected || !sampledSelected || busy || scanEditAbort.current) return;
     if (selected.kind === "pointcloud") {
       if (operation.action === "smoothSelected")
         await runPointEdit({
@@ -1855,10 +1871,15 @@ export function App() {
     applySelectionState(entity, session.state);
     setMessage(`Restored selection ${saved.name}`);
   }
-  const selectionSession = selected ? sessionFor(selected) : undefined;
+  const selectionSession =
+    selected && sampledSelected ? sessionFor(selected) : undefined;
   void selectionVersion;
   useEffect(() => {
-    const live = new Map(entities.map((e) => [e.id, cloudSelectionSource(e)]));
+    const live = new Map(
+      entities
+        .filter(supportsSampledGeometry)
+        .map((e) => [e.id, cloudSelectionSource(e)]),
+    );
     for (const [id, record] of selectionSessions.current)
       if (live.get(id) !== record.positions)
         selectionSessions.current.delete(id);
@@ -1897,6 +1918,7 @@ export function App() {
     align: openAlignment,
     transform: () => showTools("transform"),
     section: () => {
+      if (!sampledSelected) return;
       setMode("section");
       showTools("section");
     },
@@ -1923,15 +1945,25 @@ export function App() {
       setSplitMeshOpen(true);
     },
     editScan: () => {
+      if (!sampledSelected) return;
       setMode("brush");
       showTools("mesh");
     },
     select: () => {
+      if (!sampledSelected) return;
       setMode("brush");
       showTools("mesh");
     },
     wireframe: () => setWireframe(!wireframe),
     objectColor: () => showTools("objectColor"),
+    autoColorize: entities.length
+      ? () => {
+          void uiCommand("scene_auto_color").then((result) => {
+            if (result.ok)
+              setMessage("Unique colors assigned to all scene objects");
+          });
+        }
+      : undefined,
     loft: () => showTools("loft"),
     sweep: () => showTools("sweep"),
     fillet: () => showTools("fillet"),
@@ -1989,6 +2021,7 @@ export function App() {
     mirrorBody: () => showTools("mirrorBody"),
   };
   const excludedRepeatCommands = new Set([
+    "autoColorize",
     "newDocument",
     "open",
     "save",
@@ -2072,6 +2105,7 @@ export function App() {
             name: selectedIds.length === 1 ? (selected?.name ?? "") : "",
           })
       : undefined,
+    "delete-objects": selectedIds.length ? deleteSelected : undefined,
     "toggle-selected-visibility": selectedIds.length
       ? () => {
           void uiCommand("object_visibility_toggle").then((result) => {
@@ -2089,13 +2123,14 @@ export function App() {
       : undefined,
     "new-sketch": selected ? openSketchCreation : undefined,
     compare: selected ? () => showTools("deviation") : undefined,
-    "selection-wand": selected
-      ? () => {
-          setMode("brush");
-          setSelectionTool("wand");
-          showTools("mesh");
-        }
-      : undefined,
+    "selection-wand":
+      selected && sampledSelected
+        ? () => {
+            setMode("brush");
+            setSelectionTool("wand");
+            showTools("mesh");
+          }
+        : undefined,
     "fit-plane": selected ? () => runFit("plane") : undefined,
     "fit-cylinder": selected ? () => runFit("cylinder") : undefined,
     "fit-cone": selected ? () => runFit("cone") : undefined,
@@ -2123,6 +2158,7 @@ export function App() {
         : undefined,
   };
   const excludedShortcutCommands = new Set([
+    "delete-objects",
     "new",
     "open",
     "save",
@@ -2313,12 +2349,7 @@ export function App() {
       },
       remove: () => {
         if (!target) return;
-        try {
-          commit(entities.filter((entity) => entity.id !== target.id));
-          if (selectedId === target.id) setSelectedId(null);
-        } catch (error) {
-          setError(errorText(error));
-        }
+        void uiCommand("object_delete", { entityId: target.id });
       },
     });
   }
@@ -2430,6 +2461,12 @@ export function App() {
           reconstruct: "extrude",
         } as Record<string, string>
       )[nextWorkspace] ?? nextWorkspace;
+    try {
+      coordinateAlignmentInterface({ workspace: nextWorkspace }, selected);
+    } catch (error) {
+      setError(errorText(error));
+      return;
+    }
     setSplitMeshOpen(false);
     if (nextWorkspace !== "scanTools") scanReferencePick.current = null;
     cancelLandmarks();
@@ -2455,6 +2492,10 @@ export function App() {
     setMode("inspect");
   }
   function openScanTool(tool: ScanToolId) {
+    if (selected && !sampledSelected) {
+      setError("This tool requires sampled scan geometry.");
+      return;
+    }
     if (selected?.kind === "pointcloud") {
       if (tool !== "reducePolygons" && tool !== "reduceNoise") {
         setError(
@@ -3129,21 +3170,18 @@ export function App() {
     });
   }
   function deleteSelected() {
-    if (!selected || selected.locked) return;
-    try {
-      entityFeatureModel(
-        entities.filter((entity) => entity.id !== selected.id),
-      );
-    } catch {
-      setError(
-        "This body is used by a parametric feature. Remove its dependent features first.",
-      );
-      return;
-    }
-    commit(entities.filter((entity) => entity.id !== selected.id));
-    setSelectedId(null);
-    setMeasure([]);
-    setMessage("Object deleted");
+    if (!selectedIds.length) return;
+    void uiCommand("object_delete", { entityIds: [...selectedIds] }).then(
+      (result) => {
+        if (!result.ok) return;
+        setMeasure([]);
+        setMessage(
+          selectedIds.length === 1
+            ? "Object deleted"
+            : "Selected objects deleted",
+        );
+      },
+    );
   }
   function exportMesh() {
     void action("Exporting mesh…", () => {
@@ -3679,6 +3717,10 @@ export function App() {
     );
   }
   function runFit(kind: "plane" | "sphere" | "cylinder" | "cone") {
+    if (selected && !sampledSelected) {
+      setError("Fitting requires sampled mesh or point-cloud geometry.");
+      return;
+    }
     setWorkspace("fit");
     setToolPanelOpen(true);
     void action(`Fitting ${kind}…`, () => {
@@ -4849,6 +4891,7 @@ export function App() {
         interactiveTargetError={interactiveTargetError}
         globalAlignmentError={globalAlignmentError}
         hasSelection={!!selected}
+        selectionKind={selected?.kind}
         landmarkSourceId={landmarkSource?.id ?? null}
         canUndo={!!history.length}
         canRedo={!!future.length}
@@ -5020,8 +5063,9 @@ export function App() {
                         },
                         {
                           label: "Edit scan selection",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
+                            if (!sampledSelected) return;
                             setMode("brush");
                             setWorkspace("mesh");
                             setToolPanelOpen(true);
@@ -5029,9 +5073,9 @@ export function App() {
                         },
                         {
                           label: "Select all triangles",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
-                            if (selected)
+                            if (selected && sampledSelected)
                               changeSelection(
                                 new Uint8Array(
                                   selected.positions.length /
@@ -5042,9 +5086,9 @@ export function App() {
                         },
                         {
                           label: "Invert triangle selection",
-                          disabled: busy || !selected,
+                          disabled: busy || !selected || !sampledSelected,
                           run: () => {
-                            if (selected)
+                            if (selected && sampledSelected)
                               changeSelection(
                                 Uint8Array.from(
                                   {
@@ -5707,7 +5751,10 @@ export function App() {
                 busy={busy}
                 onApply={runPointEdit}
               />
-            ) : workspace === "mesh" && selected && splitMeshOpen ? (
+            ) : workspace === "mesh" &&
+              selected &&
+              sampledSelected &&
+              splitMeshOpen ? (
               <SplitMeshPanel
                 key={selected.id}
                 cutters={entities.filter((entity) => entity.id !== selected.id)}
@@ -5738,7 +5785,10 @@ export function App() {
                   setSplitMeshOpen(false);
                 }}
               />
-            ) : workspace === "mesh" && selected && scanPanel ? (
+            ) : workspace === "mesh" &&
+              selected &&
+              sampledSelected &&
+              scanPanel ? (
               <ScanTopologyPanels
                 key={`${selected.id}-${scanPanel}`}
                 section={scanPanel}
@@ -5761,7 +5811,7 @@ export function App() {
                 onWireframe={setWireframe}
                 onOpacity={(opacity) => updateSelected({ opacity })}
               />
-            ) : workspace === "mesh" && selected ? (
+            ) : workspace === "mesh" && selected && sampledSelected ? (
               <EditScanDialog
                 key={selected.id}
                 name={selected.name}
@@ -5869,11 +5919,17 @@ export function App() {
                             </strong>
                           )}
                           <small>
-                            {selected.kernelId
-                              ? "Exact CAD + display mesh"
-                              : selected.kind === "plane"
-                                ? "Reference surface"
-                                : "Triangle mesh"}{" "}
+                            {selected.kind === "referencePoint"
+                              ? "Reference point"
+                              : selected.kind === "referenceLine"
+                                ? "Reference line"
+                                : selected.kind === "pointcloud"
+                                  ? "Point cloud"
+                                  : selected.kernelId
+                                    ? "Exact CAD + display mesh"
+                                    : selected.kind === "plane"
+                                      ? "Reference surface"
+                                      : "Triangle mesh"}{" "}
                             · mm
                           </small>
                         </div>
@@ -5900,42 +5956,13 @@ export function App() {
                                 sampled geometry, not the complete source.
                               </p>
                             )}
-                          <dl>
-                            <dt>
-                              {selected.kind === "pointcloud"
-                                ? "Points"
-                                : "Vertices (triangle soup)"}
-                            </dt>
-                            <dd>{number(stats.vertices)}</dd>
-                            {selected.kind !== "pointcloud" && (
-                              <>
-                                <dt>Triangles</dt>
-                                <dd>{number(stats.triangles)}</dd>
-                              </>
-                            )}
-                            <dt>Bounds (mm)</dt>
-                            <dd>{stats.size.map(number).join(" × ")}</dd>
-                            {selected.kind !== "pointcloud" && (
-                              <>
-                                <dt>Surface area (mm²)</dt>
-                                <dd>{number(stats.area)}</dd>
-                                <dt>Volume estimate (mm³)</dt>
-                                <dd>{number(stats.volume)}</dd>
-                              </>
-                            )}
-                          </dl>
-                          {selected.kind !== "pointcloud" && (
-                            <p className="muted">
-                              Volume assumes a closed, consistently oriented
-                              mesh.
-                            </p>
-                          )}
+                          <GeometryStatistics stats={stats} />
                         </Panel>
                       </ToolSection>
                       {workspace === "properties" &&
-                        (selected.kernelId || selected.fit) && (
+                        hasAlignmentReferences(selected) && (
                           <AlignmentReferences
-                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.fit)}`}
+                            key={`${selected.id}:${selected.kernelId ?? JSON.stringify(selected.reference ? encodeReferenceEntityData(selected.reference) : selected.fit)}`}
                             entityId={selected.id}
                             onRead={(offset, signal) =>
                               readAlignmentReferences(
@@ -7009,14 +7036,11 @@ export function App() {
             ? `Importing ${importProgress.name}${importProgress.fraction === null ? "…" : ` · ${Math.round(importProgress.fraction * 100)}%`}`
             : message
         }
-        facets={
-          selected && selected.kind !== "pointcloud"
-            ? selected.positions.length / 9
-            : undefined
-        }
-        points={
-          selected?.kind === "pointcloud"
-            ? selected.positions.length / 3
+        facets={stats?.kind === "mesh" ? stats.triangles : undefined}
+        points={stats?.kind === "pointcloud" ? stats.vertices : undefined}
+        reference={
+          stats?.kind === "reference"
+            ? { points: stats.points, lines: stats.lines }
             : undefined
         }
         shortcuts={shortcutContext}
@@ -7057,6 +7081,7 @@ export function App() {
               planePicking,
               mode,
               brushActive:
+                sampledSelected &&
                 toolPanelOpen &&
                 workspace === "mesh" &&
                 mode === "brush" &&

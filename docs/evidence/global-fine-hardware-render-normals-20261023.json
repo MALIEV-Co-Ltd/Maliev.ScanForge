@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "scope": "Hardware and fallback normal-source binding; static data flow plus read-only live API/export and code verification",
+  "originalAnalysisSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "seededAnalysisSha256": "811309bb2dc840d05985be498e5c494155dec4d95f521389c397c553542f2b21",
+  "originalSectionsUnchanged": 13,
+  "findings": {
+    "recordStrideBytes": 48,
+    "normalOffsetBytes": 16,
+    "normalComponents": 3,
+    "normalComponentType": "Float32",
+    "normalProducer": "Stored geometry vertex normals copied unchanged by the hardware record worker",
+    "descriptor": "glNormalPointer with GL_FLOAT, stride 48, offset 16",
+    "fallback": "glNormal3f receives the same vertex field for smooth rendering; flat fallback uses facet normals",
+    "authoredScannerNormals": "Separate application fields; these are not the native geometry-normal field established here"
+  },
+  "nativeEvidence": [
+    {
+      "procedure": "0x1408b33f0",
+      "role": "Copies complete vertex records, preserving normal bytes in both color branches",
+      "evidenceId": "ev_60dc5e04c74a0b0d5dc50cfa42e962cd1bdc9e2d3a741f908ad47eff4d54757e"
+    },
+    {
+      "procedure": "0x1408b27c0",
+      "role": "Builds and uploads the interleaved hardware record buffer",
+      "evidenceId": "ev_6ceb51fe7f0e882ff509d4df8a0647d1d56517a8157df4f7bc5dd34cfb60ee54"
+    },
+    {
+      "procedure": "0x1408b2250",
+      "role": "Registers the normal descriptor at byte offset 16",
+      "evidenceId": "ev_ad87515b2d27626de570eee6bf359f25e2664970108bbd69b8d23eb86f898a6e"
+    },
+    {
+      "procedure": "0x1408b1df0",
+      "role": "Declares three Float32 components and 48-byte stride",
+      "evidenceId": "ev_4551dbd2bff85c36ff8ea6930262936b0f52f57bcc5f77c35e6418e9a64d1a49"
+    },
+    {
+      "procedure": "0x1408c3f30",
+      "role": "Enables the normal array and submits its descriptor through the bound OpenGL import",
+      "evidenceId": "ev_02e3b7d62250fa99c54d85dc51de1430ba45c2b5eebfe3dd2d2ba6131b1305d0"
+    },
+    {
+      "procedure": "0x1408b38f0",
+      "role": "Binds the vertex buffer and descriptor before indexed drawing",
+      "evidenceId": "ev_939c6286f563f2134880a82d8b7689b8aeebb578e2dfe0060abb9e4580ed6586"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "reportSha256": "46d16f900157db389e3790167c427afea06c45586d23166a6a39959ef0f99edd",
+    "retainedBundleSha256": "7daf9edd3988f71a0fb08b0d5466897f3736f4303dbb675a126bbc94b6eeb272",
+    "independentInstructionAnchors": 19,
+    "wrongLayoutControlsRejected": 2
+  },
+  "readOnlyRuntimeBinding": {
+    "passed": true,
+    "reportSha256": "68f356a1e4c056a7d19865b471356f8e4538d485d504a13b8a7864b33f4ba064",
+    "symbols": [
+      "glNormalPointer",
+      "glNormal3f",
+      "glVertexPointer",
+      "glEnableClientState"
+    ],
+    "moduleSha256": "659be03cf2b88b5063a35b2637d9ef38122d7f6f30dafff118fa41b273aa5ece",
+    "codeAnchorsReadTwiceAndEqualStatic": 4,
+    "bytesRead": 56108,
+    "readCalls": 394,
+    "processHandleClosed": true,
+    "nativeFunctionsCalled": false,
+    "hooksInstalled": false,
+    "geometryRead": false
+  },
+  "resources": {
+    "jobMemoryBytes": 4294967296,
+    "cpuRate": 2500,
+    "ownedChildrenExited": true,
+    "ownedHandlesClosed": true,
+    "cleanupErrors": []
+  },
+  "limitations": [
+    "This establishes renderer buffer provenance, not observation of a specific draw call in the original alignment run.",
+    "GPU lighting, normalization, visible shading, and complete rendered GUI/MCP acceptance remain unverified.",
+    "The application display-cache discrepancy is not corrected by this evidence checkpoint.",
+    "No application behavior, project format, public MCP schema or resource limit changed."
+  ],
+  "completeNativeRenderingParity": false,
+  "publicGuiMcpWorkflowVerified": false
+}

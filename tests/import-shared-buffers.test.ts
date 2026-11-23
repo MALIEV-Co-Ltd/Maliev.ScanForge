@@ -295,7 +295,7 @@ it.each([false, true])(
     expect(transfers.every((buffer) => buffer instanceof ArrayBuffer)).toBe(
       true,
     );
-    expect(transfers).toHaveLength(isolated ? 1 : 6);
+    expect(transfers).toHaveLength(isolated ? 0 : 6);
     for (const array of Object.values(
       published.indexedMesh,
     ) as ArrayBufferView[])

@@ -15,6 +15,13 @@ import { validateSketch } from "./sketch";
 import { entityFeatureModel } from "./parametric-entities";
 import { validatePlaneFrame } from "./plane-frame";
 import { indexedMeshMatches, retainIndexedMesh } from "./indexed-mesh";
+import {
+  isReferenceEntity,
+  validateReferenceEntity,
+  validateConstructionOrderKeys,
+  encodeReferenceEntityData,
+  decodeReferenceEntityData,
+} from "./reference-entity";
 
 /** Validate imported cloud attributes before converting untrusted JSON bytes. */
 export function validatePointCloudAttributes(entity: {
@@ -182,7 +189,27 @@ export function parseMesh(data: ArrayBuffer, extension: string): Float32Array {
   throw new Error("Supported scan formats: STL, OBJ and polygon PLY.");
 }
 export function parseProject(text: string): Project {
-  return validateProject(JSON.parse(text));
+  const input = JSON.parse(text);
+  if (Array.isArray(input?.entities))
+    input.entities = input.entities.map((entity: Entity) => {
+      if (
+        entity?.reference !== undefined ||
+        entity?.constructionOrderKey !== undefined
+      ) {
+        if (input.version !== 3)
+          throw new Error(
+            "Construction metadata requires project JSON version 3.",
+          );
+        return {
+          ...entity,
+          ...(entity.reference !== undefined
+            ? { reference: decodeReferenceEntityData(entity.reference) }
+            : {}),
+        };
+      }
+      return entity;
+    });
+  return validateProject(input);
 }
 /** Validate decoded project data without expanding binary geometry into JSON. */
 export function validateProject(value: unknown): Project {
@@ -191,7 +218,7 @@ export function validateProject(value: unknown): Project {
   const input = value as Partial<Project>;
   if (
     input.format !== "maliev-scanforge" ||
-    ![1, 2].includes(input.version as number) ||
+    ![1, 2, 3].includes(input.version as number) ||
     input.units !== "mm" ||
     typeof input.name !== "string" ||
     input.name.length > 200 ||
@@ -200,8 +227,11 @@ export function validateProject(value: unknown): Project {
     throw new Error("Unsupported ScanForge project format.");
   }
   const ids = new Set<string>();
+  validateConstructionOrderKeys(input.entities);
   const entities: Entity[] = input.entities.map((entity) => {
-    validatePositions(entity.positions, entity.kind === "pointcloud");
+    const reference = validateReferenceEntity(entity);
+    if (!isReferenceEntity(entity))
+      validatePositions(entity.positions, entity.kind === "pointcloud");
     const pointColors = validatePointCloudAttributes(entity);
     if (
       entity.indexedMesh !== undefined &&
@@ -223,6 +253,8 @@ export function validateProject(value: unknown): Project {
         "cylinder",
         "cone",
         "box",
+        "referencePoint",
+        "referenceLine",
       ].includes(entity.kind) ||
       typeof entity.color !== "string" ||
       !/^#[0-9a-f]{6}$/i.test(entity.color) ||
@@ -317,6 +349,10 @@ export function validateProject(value: unknown): Project {
       name: entity.name,
       kind: entity.kind,
       positions: entity.positions,
+      ...(entity.constructionOrderKey !== undefined
+        ? { constructionOrderKey: entity.constructionOrderKey }
+        : {}),
+      ...(reference !== undefined ? { reference } : {}),
       indexedMesh: entity.indexedMesh,
       normals: entity.normals,
       ...(pointColors !== undefined ? { pointColors } : {}),
@@ -472,6 +508,8 @@ export function serializeProject(
   entities: Entity[],
   authoring?: Project["authoring"],
 ): string {
+  validateConstructionOrderKeys(entities);
+  for (const entity of entities) validateReferenceEntity(entity);
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   for (const entity of entities)
@@ -486,15 +524,22 @@ export function serializeProject(
   return JSON.stringify({
     format: "maliev-scanforge",
     version: entities.some(
-      (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+      (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
     )
-      ? 2
-      : 1,
+      ? 3
+      : entities.some(
+            (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+          )
+        ? 2
+        : 1,
     name,
     units: "mm",
     authoring,
     entities: entities.map(({ kernelId: _kernelId, fit: _fit, ...entity }) => ({
       ...entity,
+      ...(entity.reference !== undefined
+        ? { reference: encodeReferenceEntityData(entity.reference) }
+        : {}),
       positions: Array.from(entity.positions),
       ...(entity.pointColors !== undefined
         ? { pointColors: Array.from(entity.pointColors) }
@@ -510,6 +555,13 @@ export function serializeProject(
             ...(entity.indexedMesh.normals
               ? { normals: Array.from(entity.indexedMesh.normals) }
               : {}),
+            ...(entity.indexedMesh.geometryNormals
+              ? {
+                  geometryNormals: Array.from(
+                    entity.indexedMesh.geometryNormals,
+                  ),
+                }
+              : {}),
           }
         : undefined,
     })),
@@ -521,13 +573,19 @@ export async function serializeProjectBlob(
   entities: Entity[],
   authoring?: Project["authoring"],
 ): Promise<Blob> {
+  validateConstructionOrderKeys(entities);
+  for (const entity of entities) validateReferenceEntity(entity);
   entities = entities.map(retainIndexedMesh);
   for (const entity of entities) validatePointCloudAttributes(entity);
   const version = entities.some(
-    (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+    (e) => e.reference !== undefined || e.constructionOrderKey !== undefined,
   )
-    ? 2
-    : 1;
+    ? 3
+    : entities.some(
+          (e) => e.pointColors !== undefined || e.ascAttributes !== undefined,
+        )
+      ? 2
+      : 1;
   const parts: BlobPart[] = [
     `{"format":"maliev-scanforge","version":${version},"name":${JSON.stringify(name)},"units":"mm",${authoring ? `"authoring":${JSON.stringify(authoring)},` : ""}"entities":[`,
   ];
@@ -542,7 +600,8 @@ export async function serializeProjectBlob(
       pointCloudPlacement: _placement,
       ...metadata
     } = entities[index];
-    validatePositions(positions, metadata.kind === "pointcloud");
+    if (!isReferenceEntity(metadata))
+      validatePositions(positions, metadata.kind === "pointcloud");
     if (metadata.planeFrame !== undefined)
       validatePlaneFrame(metadata.planeFrame, positions, metadata.kind);
     if (metadata.meshSelection !== undefined)
@@ -554,6 +613,9 @@ export async function serializeProjectBlob(
     parts.push(
       JSON.stringify({
         ...metadata,
+        ...(metadata.reference !== undefined
+          ? { reference: encodeReferenceEntityData(metadata.reference) }
+          : {}),
         pointCloudPlacement: cloudPlacementJson(entities[index]),
       }).slice(0, -1),
       ',"positions":[',
@@ -610,6 +672,7 @@ export async function serializeProjectBlob(
         ["vertices", indexedMesh.vertices],
         ["triangles", indexedMesh.triangles],
         ["normals", indexedMesh.normals],
+        ["geometryNormals", indexedMesh.geometryNormals],
       ] as const) {
         if (!values) continue;
         parts.push(field === "vertices" ? "" : ",", `"${field}":[`);

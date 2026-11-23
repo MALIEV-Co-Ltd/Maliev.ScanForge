@@ -3,12 +3,15 @@ import type { NurbsPatch } from "./surfaces";
 import type { Sketch } from "./sketch";
 import type { ParametricFeature } from "./parametric";
 import type { ScanSourceCounts } from "./scan-source";
+import type { ReferenceEntityData } from "./reference-entity";
 export type Positions = number[] | Float32Array;
 export interface IndexedMesh {
   vertices: Positions;
   triangles: number[] | Uint32Array;
   /** Scanner normals in original vertex order, including unused vertices. */
   normals?: Positions;
+  /** Stored computed geometry normals, distinct from scanner-authored vectors. */
+  geometryNormals?: Positions;
 }
 /** Triangle slots refer to the current triangulation and must be sorted and unique. */
 export interface MeshSelectionState {
@@ -23,12 +26,18 @@ export type EntityKind =
   | "sphere"
   | "cylinder"
   | "cone"
-  | "box";
+  | "box"
+  | "referencePoint"
+  | "referenceLine";
 export interface Entity {
   id: string;
   name: string;
   kind: EntityKind;
   positions: Positions;
+  /** Stable raw ordering identity, assigned only in an accepted transaction. */
+  constructionOrderKey?: string;
+  /** Authoritative reference geometry and recipe; positions is empty for these kinds. */
+  reference?: ReferenceEntityData;
   /** Immutable local cloud buffers and native accumulated pose; positions remains a world-space view. */
   pointCloudPlacement?: {
     matrixBits: string;

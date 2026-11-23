@@ -45,7 +45,10 @@ it.each(captures.cases)(
     expect(result.refinement.best).toBe(search.best);
     expect(result.diagnostics.refinementApplied).toBe(joint.applyDelta);
     expect(bits(result.indexedMesh.vertices)).toBe(joint.finalPointBits);
-    expect(bits(result.indexedMesh.normals)).toBe(joint.finalNormalBits);
+    expect(bits(result.indexedMesh.normals!)).toBe(joint.finalNormalBits);
+    expect(bits(result.indexedMesh.geometryNormals)).toBe(
+      joint.finalNormalBits,
+    );
     expect(bits(source.vertices)).toBe(before);
     expect(result.indexedMesh.triangles).toBe(source.triangles);
     const generated = await refineNativeLandmarkAfterCoarse(
@@ -61,7 +64,10 @@ it.each(captures.cases)(
       { initialRadius: search.initialRadius, parallel: false, workerCount: 1 },
     );
     expect(bits(generated.indexedMesh.vertices)).toBe(joint.finalPointBits);
-    expect(bits(generated.indexedMesh.normals)).toBe(joint.finalNormalBits);
+    expect(bits(generated.indexedMesh.geometryNormals)).toBe(
+      joint.finalNormalBits,
+    );
+    expect(generated.indexedMesh.normals).toBeUndefined();
   },
 );
 it("rejects cancellation before region construction", async () => {

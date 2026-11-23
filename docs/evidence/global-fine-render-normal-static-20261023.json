@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "scope": "Static rendering-path follow-up to the original PLY staging comparison",
+  "targetSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "provider": {
+    "name": "Ghidra",
+    "version": "12.1.4"
+  },
+  "retainedBundle": {
+    "file": "native-render-normal-static-r1-20261023.json",
+    "sha256": "4aba8961856b4194c64fd37656c033213d436c74e15001d500d632967491b939",
+    "records": 27
+  },
+  "observations": [
+    {
+      "procedure": "0x140b0c240",
+      "evidenceId": "ev_35b2abacb12e808b28377b4e47521811e4ffab8018b991239dbf992a502248e4",
+      "fact": "Fallback smooth branch reads the three vertex-record Float32 components at +0x10, +0x14, +0x18 and passes them to the indirect call through 0x140eaad10 before submitting vertex coordinates.",
+      "sites": [
+        "0x140b0c686",
+        "0x140b0c68b",
+        "0x140b0c690",
+        "0x140b0c695",
+        "0x140b0c6c6",
+        "0x140b0c6cb",
+        "0x140b0c6d0",
+        "0x140b0c6d5",
+        "0x140b0c706",
+        "0x140b0c70b",
+        "0x140b0c710",
+        "0x140b0c715"
+      ]
+    },
+    {
+      "procedure": "0x140b0c240",
+      "evidenceId": "ev_35b2abacb12e808b28377b4e47521811e4ffab8018b991239dbf992a502248e4",
+      "fact": "Fallback flat branch reads facet-record +0x18, +0x1c, +0x20 into the same indirect call. Hardware path looks up MeshSmoothHardwareRenderer and dispatches virtual slot +0x48.",
+      "hardwareDispatch": "0x140b0c42b"
+    },
+    {
+      "procedure": "0x14088be00",
+      "evidenceId": "ev_4abec73000d1798404258be3beb236ae395c009c66fac14025b6cc0bf90f2b6b",
+      "fact": "Renderer property allocation assigns concrete vtable 0x141247fc0."
+    },
+    {
+      "address": "0x141247fc0",
+      "evidenceId": "ev_f96910a7380fdfae6d31cfe2cc177076d15640e0add2c26ceede2c6e25ad4b79",
+      "fact": "Complete 144-byte vtable read identifies +0x38 as 0x1408b3550 and +0x48 as 0x1408b38f0."
+    }
+  ],
+  "limitations": [
+    "Static data flow does not establish which path ran in the original three-scan session.",
+    "The resolved external pointer at call slot 0x140eaad10 lacks an independently verified API/export binding in this investigation.",
+    "The current Ghidra analysis has no procedure at hardware entries 0x1408b3550, 0x1408b37e0, or 0x1408b38f0. Their buffer data flow remains unresolved; unavailable decompilation is not evidence that the functions are absent.",
+    "No target execution, live process attach, UI action, or rendering comparison was performed.",
+    "No application behavior, public schema, MCP operation, or resource limit changed.",
+    "Public GUI/MCP acceptance and complete native rendering parity remain unverified."
+  ],
+  "publicGuiMcpWorkflowVerified": false,
+  "completeNativeRenderingParity": false
+}

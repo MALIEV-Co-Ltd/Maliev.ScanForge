@@ -1,0 +1,1797 @@
+{
+  "schema": 1,
+  "passed": true,
+  "candidateSource": true,
+  "publicGuiMcpAcceptanceComplete": false,
+  "scope": "Connected actual input, scene, query, local, outer and staged-geometry cores using captured environmental clocks only; browser/public coordinator excluded",
+  "baseline": "Captured R1 pre-alignment indexed geometry of the original three scans. PLY import and browser display are outside this comparison.",
+  "executableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "nativeTraceEvidenceId": "ev_f5053e301fef163bf4d5d2e07116787052423bd6c0428fcd184e7cd57df2c89e",
+  "nativeTraceSha256": "2325314cdc9404587cf2412131181620a16d14d8c3e5cd6e9001e22bf94dc92c",
+  "captureManifestSha256": {
+    "before": "7e81ea5eb2f86d959f76b13f166f66c71911df3e78c89542609ca63d05e37d8a",
+    "after": "c82abd7a5122aea46c0a91b643fd30a2b2cf986a52589176bc72a52fb4b87cc4"
+  },
+  "privateReportSha256": "c5090221559e8030fc9abc0dad0c8c877c66d0c5abc03c38d231bff0c79645a5",
+  "privateDriverSha256": "365937582a27130af575cac9932a931817c79c1e9839c915eca3b62cad937489",
+  "pinsSha256": "2555b93a6cefb81208f38e72c3824ffb525f9e720f9fb2624c37b383afc893fd",
+  "compiledCoreSha256": "3c213790c60fdc70572a998e97e645c597fdaaed14d3f2c390d3b3445ff03db9",
+  "sourcePins": [
+    {
+      "path": "src/cad/alignment-reference.ts",
+      "sha256": "11e14811cb423b85c5796c5f5f049f9e35f26bee8edd98ca3fda4a8239f0e6a6"
+    },
+    {
+      "path": "src/cad/client.ts",
+      "sha256": "183d008497d82dca26ae6e9f50a3fe26f5cd452fb2628550ee855cd78bf026b9"
+    },
+    {
+      "path": "src/datum-transform-kernel.ts",
+      "sha256": "8f3d27d6decc5d9d106c156c018899402a97bdb87b3e327a8de606ffe5321bd3"
+    },
+    {
+      "path": "src/datum-transform-scratch.ts",
+      "sha256": "2669e3d05a0c3069503f7e5babdfa237ffcc2ba7f3a24a888c678f13e50f4366"
+    },
+    {
+      "path": "src/geometry.ts",
+      "sha256": "268df7887f1332a1ff161b62da4af7e1f026124466c898fccda71d3526e37d30"
+    },
+    {
+      "path": "src/hole-fill-progress.ts",
+      "sha256": "147e0eea9d07a8070e45306b37aade2f9cf6290a51a9646edc8b13b0780b5913"
+    },
+    {
+      "path": "src/mesh-edge-index.ts",
+      "sha256": "f19bfd5225b3eb7ca40d0f3b12a97a14683d24694f02f26e563574e8b5aa6855"
+    },
+    {
+      "path": "src/mesh-face-index.ts",
+      "sha256": "dbe89a7f401837a4169a89e1c5f3420f7e9135065423710027edfd7e3627ee1e"
+    },
+    {
+      "path": "src/mesh-processing.ts",
+      "sha256": "422b39aa8959a486f63e4c3b2bbf0b6e66f644b1ab6102a9ad6624ac4233ee23"
+    },
+    {
+      "path": "src/mesh-weld.ts",
+      "sha256": "86c5fa82590796f181858c9c3237346f59f91d1dc54662d5baf1726250312628"
+    },
+    {
+      "path": "src/native-surface-fitting.ts",
+      "sha256": "67e96225d176e547c7595d3e6a61ad4cd21a4616378e26b042c01d7dc5c4dc15"
+    },
+    {
+      "path": "src/native-surface-quadrature.ts",
+      "sha256": "9f0a52496e11177db3f4d52b645cc02d41453e17f41cb0984172a4f2113bcd33"
+    },
+    {
+      "path": "src/parametric.ts",
+      "sha256": "bd0c17dc4377c640eda045dd5f899a4fdac9e3b421dc78a14582f18f837583b1"
+    },
+    {
+      "path": "src/point-cloud-placement.ts",
+      "sha256": "6b20c2ab5f042f81c400a410051aaf6d14431175ca228c6d3a2efe0ba2ebc606"
+    },
+    {
+      "path": "src/scan-global-query-core.ts",
+      "sha256": "700dee4d17323b1ae349b77f8e993716a626eef183ef0b0369a337f7ce31c119"
+    },
+    {
+      "path": "src/scan-global-query-pool.ts",
+      "sha256": "14c5e7b373cf0717d21d3522c20c0fe1cc4dfc7e346a3f19a5c8ffd5aea82632"
+    },
+    {
+      "path": "src/scan-global-query-storage.ts",
+      "sha256": "0fe5ca9764cb862730275f657f4acf031687ea79a99754dac8a7a712be5437f9"
+    },
+    {
+      "path": "src/scan-global-query-worker.ts",
+      "sha256": "5fcb4dbb7cd80e5195fc63f971fae973031fba5d989ea8534f0bfe9066bdcad0"
+    },
+    {
+      "path": "src/scan-global-scene-client.ts",
+      "sha256": "039a0a14ab713ddfc67c51f3105be867435d8e6bf082b260627eb4d33e268dc1"
+    },
+    {
+      "path": "src/scan-global-scene-core.ts",
+      "sha256": "96f016138be65588198850e0b87135748605e0936b46e830cffe8d592ada625f"
+    },
+    {
+      "path": "src/scan-global-scene-transport.ts",
+      "sha256": "04452fe96f223c0f6c3713ac2754fd5680cad632a9d49cf21c931bc6d26e7def"
+    },
+    {
+      "path": "src/scan-global-scene-worker.ts",
+      "sha256": "9670029ffc55581cc4e6440b10a502c6fc2a9bcbe1d065993d489e242db600d4"
+    },
+    {
+      "path": "src/scan-global-worker-cleanup.ts",
+      "sha256": "b677727523c217cb641b9a216342cf99152b4cc8e84933c387e145976c075b10"
+    },
+    {
+      "path": "src/scan-native-alignment-adjacency.ts",
+      "sha256": "83e43f9377d79cd6d696e9804f13ae310ac0a925fe8feebf5840d0bf7c75e1d4"
+    },
+    {
+      "path": "src/scan-native-alignment-buckets.ts",
+      "sha256": "b0d5dd030a5e3e132cc72321dfbef7bc043e2d1a434e793549f7f43af499dc50"
+    },
+    {
+      "path": "src/scan-native-alignment-eigen.ts",
+      "sha256": "5e0f2f6e3627442b564a0999dc1402b64f9c9e9e2f2fc4b460e8292374e8e89d"
+    },
+    {
+      "path": "src/scan-native-alignment-refinement.ts",
+      "sha256": "71f1a37bbcf62a0d1411c9d2321cf20c75ce2bf4b10a4d461f7286d2a4f12efa"
+    },
+    {
+      "path": "src/scan-native-alignment-transform.ts",
+      "sha256": "cdf1a72e51f43321cd5495401e7bc76ccf01a5609b7882cbfebf67e131ae4b61"
+    },
+    {
+      "path": "src/scan-native-alignment.ts",
+      "sha256": "c5eabb958b626a665387c571e86f7ff44b74aba1c18aad1468b0a719987750f6"
+    },
+    {
+      "path": "src/scan-native-atan-table.ts",
+      "sha256": "2ee1482a4dabf8286e8c6aa63f50fafdc61082b725866a432814c732bdf3f7ea"
+    },
+    {
+      "path": "src/scan-native-datum-apply.ts",
+      "sha256": "5d3fef68aa8936578de5ad5ef9f4bca5ba41a2fba5468057591e9dee7d179870"
+    },
+    {
+      "path": "src/scan-native-datum-cad.ts",
+      "sha256": "12059517e8b582799e52ad0aab2afdbfd2eb926e9a93d11012cd3ba59ca1c150"
+    },
+    {
+      "path": "src/scan-native-edge-records.ts",
+      "sha256": "7c5a9475a78e89c9b99e02cf615bf02f9e1826cf651d5a664bd6ef7f6f6f7313"
+    },
+    {
+      "path": "src/scan-native-fma.ts",
+      "sha256": "ca4b403f4294a00782814252f49fe2c0ec73dad7e00d4ae3feb554586deb3a65"
+    },
+    {
+      "path": "src/scan-native-global-atan.ts",
+      "sha256": "9fc2d1889caa84c0e9157fc9426f01221e61e50ec39d7d169ca6c51b0469500f"
+    },
+    {
+      "path": "src/scan-native-global-direct-index.ts",
+      "sha256": "021992d16f6c132ce82275d8efe9b3f24a2b56a9e76a56b64af1da06ebddb388"
+    },
+    {
+      "path": "src/scan-native-global-eigen.ts",
+      "sha256": "6dc2e88f7291dacffc1a63dce11e64cfbf29177d6ca1f6fdf6cb02cee8367354"
+    },
+    {
+      "path": "src/scan-native-global-evaluator-policy.ts",
+      "sha256": "98d53d0f6645e858f62396df20ca7f9d4b6734bb5d17f6b8da06e13c91d95473"
+    },
+    {
+      "path": "src/scan-native-global-evaluator-query.ts",
+      "sha256": "1c04b339afad9f7b8881bfee2ac8ef467e2a5e47f32be5373335967b1024e1e4"
+    },
+    {
+      "path": "src/scan-native-global-facet-normal.ts",
+      "sha256": "285fa88b5c3b104cc2d50468e2e36d0fdd0318b173f3f1e029fb63e77c0b58ad"
+    },
+    {
+      "path": "src/scan-native-global-local.ts",
+      "sha256": "568c420fdf68895061f372622d8d07b48f323675d3b5781642dea1f0f3b5b1f8"
+    },
+    {
+      "path": "src/scan-native-global-mesh-target.ts",
+      "sha256": "6244d191ade116dc10569c89606924579ba703ab817ada963b2e913dc0831e1c"
+    },
+    {
+      "path": "src/scan-native-global-packed-evaluator.ts",
+      "sha256": "13553f62008bb8daf0ab2b56859608b8a43d5c27d31c86066c021ed72eaabf60"
+    },
+    {
+      "path": "src/scan-native-global-packed-index.ts",
+      "sha256": "007b876b9f949d29a345ca21f3a7607fc8f2b68268269c36a0726c2160e18d39"
+    },
+    {
+      "path": "src/scan-native-global-plane.ts",
+      "sha256": "75664c3381c25e2cda8ba4c675cd5d178c77da9d10700602190ec0c1517a9127"
+    },
+    {
+      "path": "src/scan-native-global-point-index.ts",
+      "sha256": "47be055d382800360925f9035d9831d0c2a8a9ae17a0caa311d44d2c86b059ee"
+    },
+    {
+      "path": "src/scan-native-global-query.ts",
+      "sha256": "df543a3420413482986c20834e7cb9a9a13e42fe3ce0e67c5a89774eed50704f"
+    },
+    {
+      "path": "src/scan-native-global-rigid-fit.ts",
+      "sha256": "485e355b6a7654cf76f137c6156dc30a396cddbf7155cf0383f404e797034a19"
+    },
+    {
+      "path": "src/scan-native-global-sampling.ts",
+      "sha256": "8a226329bb4ef0a87177f84b1779a5bfa85acf670353870bc8d8d98cfaa42e6d"
+    },
+    {
+      "path": "src/scan-native-global-scene.ts",
+      "sha256": "443b667f69aa79ac1fd1bc18c6f6d9a47eb9def09c1d01e25be388cea5d89020"
+    },
+    {
+      "path": "src/scan-native-global-surface.ts",
+      "sha256": "9fdff6e9a0d4aa6f7f5cc1e88f3d34c2f6a6913e04fa23cd5dab97c7b2df4119"
+    },
+    {
+      "path": "src/scan-native-global-target-records.ts",
+      "sha256": "00147d9aba5bd9a5a096d4214752c0b0126482b658e606d2eb49e509606b2f8e"
+    },
+    {
+      "path": "src/scan-native-global-target.ts",
+      "sha256": "81457077139dca951246bc346841e576965d90b974294df11bb9afbe94691a73"
+    },
+    {
+      "path": "src/scan-native-global-triangle.ts",
+      "sha256": "faabd2b6dfa3b8683963158130c1992336ca614ab72d6b2be15b1d74d82ea3ec"
+    },
+    {
+      "path": "src/scan-native-global-trig.ts",
+      "sha256": "b5f71a7a964ab9ef371e8f55d6a78a258fbb173cc73264a8cb8c19843a9df76d"
+    },
+    {
+      "path": "src/scan-native-jacobi-eigen.ts",
+      "sha256": "c4e9c28ba2ad5cc88a42a24fa399db5915d597ce6cf893932d1370a272afeaeb"
+    },
+    {
+      "path": "src/scan-native-simplex.ts",
+      "sha256": "08a5ef013b37de0c39d36de9cbc083c8d245ce80c302a565d633791e20d69bbc"
+    },
+    {
+      "path": "src/scan-native-target-storage.ts",
+      "sha256": "e8c703b6670e23b9cf32014a407ba7e64f1d57f1ac3a6c48acea176b8c6e156e"
+    },
+    {
+      "path": "src/scan-noise-octree-bounds.ts",
+      "sha256": "b6d29631d88d9bc6f2105ff2c44420b92288c975463be171ee60c6d1866f24c1"
+    },
+    {
+      "path": "src/scan-noise-octree-query.ts",
+      "sha256": "f9d7dd028ca3ce65872b0b677981a400b79b3f1bf7336312bfec22307098d8a2"
+    },
+    {
+      "path": "src/scan-noise-octree.ts",
+      "sha256": "f2702344ff2c0e364e4f36e25f818e29df8c0412d963994a90a751a8b0791082"
+    },
+    {
+      "path": "src/scan-noise-overlap.ts",
+      "sha256": "2b6e6677848f302aec06b78a7eb92f5cb1a2d3fe6d05ef5017d36b26b3b3c793"
+    },
+    {
+      "path": "src/scan-source.ts",
+      "sha256": "362f098a18e568309fdb44e371a415a84c60712b1dd57a7177e3c691718f3dfa"
+    },
+    {
+      "path": "src/scan-task.ts",
+      "sha256": "ac2b5fee00588c33517539ada55e42b7e9f408ae701513a76b18d0cc1f1f9759"
+    },
+    {
+      "path": "src/sketch-frame.ts",
+      "sha256": "a46e094d9bc486e94e68969ce1b69822492f6917af6ececea0e2a2482d1cdeed"
+    },
+    {
+      "path": "src/sketch-reference.ts",
+      "sha256": "17fb3e32ea35cbc3b6e1c13cc399b80f4e5b66a5d680ea03e7211cee0095876d"
+    },
+    {
+      "path": "src/sketch.ts",
+      "sha256": "8749f0224cef92c69ccb5a7ba6a5fce821a84e5c7bd76b3511c81ed49be6a2d3"
+    },
+    {
+      "path": "src/surface-approximation.ts",
+      "sha256": "23595db4fa722474ed3be626e3cb5dfebc35d9c7de57195cb977bc78e80269e8"
+    },
+    {
+      "path": "src/surfaces.ts",
+      "sha256": "047a2e8fbafb313955c52b8936cb75c01857ff1c9e279745df315ee2ec129b95"
+    },
+    {
+      "path": "src/types.ts",
+      "sha256": "60b96c62efb225fa5258f6cfcaa74d0b9dec798a98a1ffc074da47e43bcb25e9"
+    },
+    {
+      "path": "node_modules/esbuild/lib/main.js",
+      "sha256": "61ec0ba144ff93f4bf0e96ad6fab6f430ede0aa13e27ace8063ed63ba416b3cd"
+    },
+    {
+      "path": "node_modules/@esbuild/win32-x64/esbuild.exe",
+      "sha256": "c7bee37877d0aa6a046e52783fa0a2cf1a9ce5579d68bb3083bda99d4bff18ef"
+    },
+    {
+      "path": "src/scan-native-stl-vertices.ts",
+      "sha256": "b2cb5e00a2223cefdddd485d21defb8ff416aff5bb1fe51f2c22851ffa0603dc"
+    },
+    {
+      "path": "src/import-readonly-buffer.ts",
+      "sha256": "286446ae36750c3bdb32d4491acb4222511fb8bbd024191ed058c5a2c1cacc79"
+    },
+    {
+      "path": "src/scan-native-stl-topology.ts",
+      "sha256": "2b7fcaed2c4a954b4951ed0d74167942dbcab6f2ee4e2d687024df2dfdd3148b"
+    },
+    {
+      "path": "src/scan-native-noise.ts",
+      "sha256": "d82b43320955e62a3588641f8f8d4adfe1872f4f342fbe163f2be564e9f1c427"
+    },
+    {
+      "path": "src/global-alignment-input-core.ts",
+      "sha256": "a85565e02b376169c4c6db300c3c43bc5ea8b537e4e432b2c8fe4e40ece61111"
+    },
+    {
+      "path": "src/scan-native-global-outer.ts",
+      "sha256": "23e07f74e6be1914e9412f4f79de0781cde951f53fdfa0d02273c71213efb8cc"
+    },
+    {
+      "path": "src/datum-transform-core.ts",
+      "sha256": "26f3899965cd81d523a8f57bfa6045136e7feba5fd61a6ee84e293dafb22eec9"
+    }
+  ],
+  "inputs": {
+    "sourceMask": 0,
+    "searchRadiusMm": 0.5,
+    "spacing": 12,
+    "budget": 1000,
+    "nativeSamplerClocks": [1140, 1319, 1442],
+    "outerSeed": 1117283,
+    "normalsDerivedByActualInputCore": true,
+    "flagsFromActualInputCore": true,
+    "capturedLabelsSupplied": false,
+    "capturedQueryPosesSuppliedToSolver": false,
+    "capturedCorrespondencesSuppliedToSolver": false,
+    "capturedFinalMatricesSuppliedToGeometry": false
+  },
+  "sampling": [
+    {
+      "descriptor": "0x5ca4e650",
+      "actual": 1394,
+      "expected": 1394,
+      "groups": [
+        {
+          "ordinal": 0,
+          "actual": 42,
+          "expected": 42,
+          "exact": true
+        },
+        {
+          "ordinal": 1,
+          "actual": 33,
+          "expected": 33,
+          "exact": true
+        },
+        {
+          "ordinal": 2,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 3,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 4,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 5,
+          "actual": 37,
+          "expected": 37,
+          "exact": true
+        },
+        {
+          "ordinal": 6,
+          "actual": 49,
+          "expected": 49,
+          "exact": true
+        },
+        {
+          "ordinal": 7,
+          "actual": 36,
+          "expected": 36,
+          "exact": true
+        },
+        {
+          "ordinal": 8,
+          "actual": 51,
+          "expected": 51,
+          "exact": true
+        },
+        {
+          "ordinal": 9,
+          "actual": 54,
+          "expected": 54,
+          "exact": true
+        },
+        {
+          "ordinal": 10,
+          "actual": 44,
+          "expected": 44,
+          "exact": true
+        },
+        {
+          "ordinal": 11,
+          "actual": 35,
+          "expected": 35,
+          "exact": true
+        },
+        {
+          "ordinal": 12,
+          "actual": 45,
+          "expected": 45,
+          "exact": true
+        },
+        {
+          "ordinal": 13,
+          "actual": 52,
+          "expected": 52,
+          "exact": true
+        },
+        {
+          "ordinal": 14,
+          "actual": 45,
+          "expected": 45,
+          "exact": true
+        },
+        {
+          "ordinal": 15,
+          "actual": 45,
+          "expected": 45,
+          "exact": true
+        },
+        {
+          "ordinal": 16,
+          "actual": 49,
+          "expected": 49,
+          "exact": true
+        },
+        {
+          "ordinal": 17,
+          "actual": 45,
+          "expected": 45,
+          "exact": true
+        },
+        {
+          "ordinal": 18,
+          "actual": 46,
+          "expected": 46,
+          "exact": true
+        },
+        {
+          "ordinal": 19,
+          "actual": 41,
+          "expected": 41,
+          "exact": true
+        },
+        {
+          "ordinal": 20,
+          "actual": 50,
+          "expected": 50,
+          "exact": true
+        },
+        {
+          "ordinal": 21,
+          "actual": 48,
+          "expected": 48,
+          "exact": true
+        },
+        {
+          "ordinal": 22,
+          "actual": 50,
+          "expected": 50,
+          "exact": true
+        },
+        {
+          "ordinal": 23,
+          "actual": 50,
+          "expected": 50,
+          "exact": true
+        },
+        {
+          "ordinal": 24,
+          "actual": 79,
+          "expected": 79,
+          "exact": true
+        },
+        {
+          "ordinal": 25,
+          "actual": 43,
+          "expected": 43,
+          "exact": true
+        },
+        {
+          "ordinal": 26,
+          "actual": 38,
+          "expected": 38,
+          "exact": true
+        },
+        {
+          "ordinal": 27,
+          "actual": 62,
+          "expected": 62,
+          "exact": true
+        },
+        {
+          "ordinal": 28,
+          "actual": 44,
+          "expected": 44,
+          "exact": true
+        },
+        {
+          "ordinal": 29,
+          "actual": 51,
+          "expected": 51,
+          "exact": true
+        },
+        {
+          "ordinal": 30,
+          "actual": 82,
+          "expected": 82,
+          "exact": true
+        },
+        {
+          "ordinal": 31,
+          "actual": 48,
+          "expected": 48,
+          "exact": true
+        }
+      ],
+      "exact": true
+    },
+    {
+      "descriptor": "0x5ca4e2f0",
+      "actual": 1446,
+      "expected": 1446,
+      "groups": [
+        {
+          "ordinal": 0,
+          "actual": 61,
+          "expected": 61,
+          "exact": true
+        },
+        {
+          "ordinal": 1,
+          "actual": 70,
+          "expected": 70,
+          "exact": true
+        },
+        {
+          "ordinal": 2,
+          "actual": 101,
+          "expected": 101,
+          "exact": true
+        },
+        {
+          "ordinal": 3,
+          "actual": 87,
+          "expected": 87,
+          "exact": true
+        },
+        {
+          "ordinal": 4,
+          "actual": 79,
+          "expected": 79,
+          "exact": true
+        },
+        {
+          "ordinal": 5,
+          "actual": 64,
+          "expected": 64,
+          "exact": true
+        },
+        {
+          "ordinal": 6,
+          "actual": 59,
+          "expected": 59,
+          "exact": true
+        },
+        {
+          "ordinal": 7,
+          "actual": 58,
+          "expected": 58,
+          "exact": true
+        },
+        {
+          "ordinal": 8,
+          "actual": 53,
+          "expected": 53,
+          "exact": true
+        },
+        {
+          "ordinal": 9,
+          "actual": 65,
+          "expected": 65,
+          "exact": true
+        },
+        {
+          "ordinal": 10,
+          "actual": 70,
+          "expected": 70,
+          "exact": true
+        },
+        {
+          "ordinal": 11,
+          "actual": 66,
+          "expected": 66,
+          "exact": true
+        },
+        {
+          "ordinal": 12,
+          "actual": 68,
+          "expected": 68,
+          "exact": true
+        },
+        {
+          "ordinal": 13,
+          "actual": 64,
+          "expected": 64,
+          "exact": true
+        },
+        {
+          "ordinal": 14,
+          "actual": 44,
+          "expected": 44,
+          "exact": true
+        },
+        {
+          "ordinal": 15,
+          "actual": 44,
+          "expected": 44,
+          "exact": true
+        },
+        {
+          "ordinal": 16,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 17,
+          "actual": 58,
+          "expected": 58,
+          "exact": true
+        },
+        {
+          "ordinal": 18,
+          "actual": 52,
+          "expected": 52,
+          "exact": true
+        },
+        {
+          "ordinal": 19,
+          "actual": 60,
+          "expected": 60,
+          "exact": true
+        },
+        {
+          "ordinal": 20,
+          "actual": 55,
+          "expected": 55,
+          "exact": true
+        },
+        {
+          "ordinal": 21,
+          "actual": 52,
+          "expected": 52,
+          "exact": true
+        },
+        {
+          "ordinal": 22,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 23,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 24,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 25,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 26,
+          "actual": 69,
+          "expected": 69,
+          "exact": true
+        },
+        {
+          "ordinal": 27,
+          "actual": 47,
+          "expected": 47,
+          "exact": true
+        },
+        {
+          "ordinal": 28,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 29,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 30,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 31,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        }
+      ],
+      "exact": true
+    },
+    {
+      "descriptor": "0x5ca4d690",
+      "actual": 1625,
+      "expected": 1625,
+      "groups": [
+        {
+          "ordinal": 0,
+          "actual": 67,
+          "expected": 67,
+          "exact": true
+        },
+        {
+          "ordinal": 1,
+          "actual": 72,
+          "expected": 72,
+          "exact": true
+        },
+        {
+          "ordinal": 2,
+          "actual": 100,
+          "expected": 100,
+          "exact": true
+        },
+        {
+          "ordinal": 3,
+          "actual": 88,
+          "expected": 88,
+          "exact": true
+        },
+        {
+          "ordinal": 4,
+          "actual": 83,
+          "expected": 83,
+          "exact": true
+        },
+        {
+          "ordinal": 5,
+          "actual": 70,
+          "expected": 70,
+          "exact": true
+        },
+        {
+          "ordinal": 6,
+          "actual": 62,
+          "expected": 62,
+          "exact": true
+        },
+        {
+          "ordinal": 7,
+          "actual": 64,
+          "expected": 64,
+          "exact": true
+        },
+        {
+          "ordinal": 8,
+          "actual": 53,
+          "expected": 53,
+          "exact": true
+        },
+        {
+          "ordinal": 9,
+          "actual": 61,
+          "expected": 61,
+          "exact": true
+        },
+        {
+          "ordinal": 10,
+          "actual": 70,
+          "expected": 70,
+          "exact": true
+        },
+        {
+          "ordinal": 11,
+          "actual": 80,
+          "expected": 80,
+          "exact": true
+        },
+        {
+          "ordinal": 12,
+          "actual": 73,
+          "expected": 73,
+          "exact": true
+        },
+        {
+          "ordinal": 13,
+          "actual": 74,
+          "expected": 74,
+          "exact": true
+        },
+        {
+          "ordinal": 14,
+          "actual": 56,
+          "expected": 56,
+          "exact": true
+        },
+        {
+          "ordinal": 15,
+          "actual": 52,
+          "expected": 52,
+          "exact": true
+        },
+        {
+          "ordinal": 16,
+          "actual": 63,
+          "expected": 63,
+          "exact": true
+        },
+        {
+          "ordinal": 17,
+          "actual": 50,
+          "expected": 50,
+          "exact": true
+        },
+        {
+          "ordinal": 18,
+          "actual": 53,
+          "expected": 53,
+          "exact": true
+        },
+        {
+          "ordinal": 19,
+          "actual": 57,
+          "expected": 57,
+          "exact": true
+        },
+        {
+          "ordinal": 20,
+          "actual": 55,
+          "expected": 55,
+          "exact": true
+        },
+        {
+          "ordinal": 21,
+          "actual": 60,
+          "expected": 60,
+          "exact": true
+        },
+        {
+          "ordinal": 22,
+          "actual": 45,
+          "expected": 45,
+          "exact": true
+        },
+        {
+          "ordinal": 23,
+          "actual": 63,
+          "expected": 63,
+          "exact": true
+        },
+        {
+          "ordinal": 24,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 25,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 26,
+          "actual": 54,
+          "expected": 54,
+          "exact": true
+        },
+        {
+          "ordinal": 27,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 28,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 29,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 30,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        },
+        {
+          "ordinal": 31,
+          "actual": 0,
+          "expected": 0,
+          "exact": true
+        }
+      ],
+      "exact": true
+    }
+  ],
+  "queries": [
+    {
+      "id": 1,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 244,
+      "actualRecords": 244,
+      "matchingSourceRecords": 244,
+      "matchingRecords": 244,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 2,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 245,
+      "actualRecords": 245,
+      "matchingSourceRecords": 245,
+      "matchingRecords": 245,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 3,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 245,
+      "actualRecords": 245,
+      "matchingSourceRecords": 245,
+      "matchingRecords": 245,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 4,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 247,
+      "actualRecords": 247,
+      "matchingSourceRecords": 247,
+      "matchingRecords": 247,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 5,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 246,
+      "actualRecords": 246,
+      "matchingSourceRecords": 246,
+      "matchingRecords": 246,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 6,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 244,
+      "actualRecords": 244,
+      "matchingSourceRecords": 244,
+      "matchingRecords": 244,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 7,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 243,
+      "actualRecords": 243,
+      "matchingSourceRecords": 243,
+      "matchingRecords": 243,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 8,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 242,
+      "actualRecords": 242,
+      "matchingSourceRecords": 242,
+      "matchingRecords": 242,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 9,
+      "localId": 1,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 242,
+      "actualRecords": 242,
+      "matchingSourceRecords": 242,
+      "matchingRecords": 242,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 10,
+      "localId": 2,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 11,
+      "localId": 2,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1006,
+      "actualRecords": 1006,
+      "matchingSourceRecords": 1006,
+      "matchingRecords": 1006,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 12,
+      "localId": 2,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1002,
+      "actualRecords": 1002,
+      "matchingSourceRecords": 1002,
+      "matchingRecords": 1002,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 13,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 988,
+      "actualRecords": 988,
+      "matchingSourceRecords": 988,
+      "matchingRecords": 988,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 14,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 998,
+      "actualRecords": 998,
+      "matchingSourceRecords": 998,
+      "matchingRecords": 998,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 15,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 998,
+      "actualRecords": 998,
+      "matchingSourceRecords": 998,
+      "matchingRecords": 998,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 16,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1001,
+      "actualRecords": 1001,
+      "matchingSourceRecords": 1001,
+      "matchingRecords": 1001,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 17,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1001,
+      "actualRecords": 1001,
+      "matchingSourceRecords": 1001,
+      "matchingRecords": 1001,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 18,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 19,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1003,
+      "actualRecords": 1003,
+      "matchingSourceRecords": 1003,
+      "matchingRecords": 1003,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 20,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1009,
+      "actualRecords": 1009,
+      "matchingSourceRecords": 1009,
+      "matchingRecords": 1009,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 21,
+      "localId": 3,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 22,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 23,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1007,
+      "actualRecords": 1007,
+      "matchingSourceRecords": 1007,
+      "matchingRecords": 1007,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 24,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 25,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1009,
+      "actualRecords": 1009,
+      "matchingSourceRecords": 1009,
+      "matchingRecords": 1009,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 26,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1007,
+      "actualRecords": 1007,
+      "matchingSourceRecords": 1007,
+      "matchingRecords": 1007,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 27,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1009,
+      "actualRecords": 1009,
+      "matchingSourceRecords": 1009,
+      "matchingRecords": 1009,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 28,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1006,
+      "actualRecords": 1006,
+      "matchingSourceRecords": 1006,
+      "matchingRecords": 1006,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 29,
+      "localId": 4,
+      "descriptor": "0x5ca4d690",
+      "expectedRecords": 1007,
+      "actualRecords": 1007,
+      "matchingSourceRecords": 1007,
+      "matchingRecords": 1007,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 30,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 988,
+      "actualRecords": 988,
+      "matchingSourceRecords": 988,
+      "matchingRecords": 988,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 31,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 996,
+      "actualRecords": 996,
+      "matchingSourceRecords": 996,
+      "matchingRecords": 996,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 32,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1001,
+      "actualRecords": 1001,
+      "matchingSourceRecords": 1001,
+      "matchingRecords": 1001,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 33,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1004,
+      "actualRecords": 1004,
+      "matchingSourceRecords": 1004,
+      "matchingRecords": 1004,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 34,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1005,
+      "actualRecords": 1005,
+      "matchingSourceRecords": 1005,
+      "matchingRecords": 1005,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 35,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1001,
+      "actualRecords": 1001,
+      "matchingSourceRecords": 1001,
+      "matchingRecords": 1001,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 36,
+      "localId": 5,
+      "descriptor": "0x5ca4e2f0",
+      "expectedRecords": 1007,
+      "actualRecords": 1007,
+      "matchingSourceRecords": 1007,
+      "matchingRecords": 1007,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 37,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 243,
+      "actualRecords": 243,
+      "matchingSourceRecords": 243,
+      "matchingRecords": 243,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 38,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 244,
+      "actualRecords": 244,
+      "matchingSourceRecords": 244,
+      "matchingRecords": 244,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 39,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 242,
+      "actualRecords": 242,
+      "matchingSourceRecords": 242,
+      "matchingRecords": 242,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 40,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 242,
+      "actualRecords": 242,
+      "matchingSourceRecords": 242,
+      "matchingRecords": 242,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 41,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 243,
+      "actualRecords": 243,
+      "matchingSourceRecords": 243,
+      "matchingRecords": 243,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 42,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 242,
+      "actualRecords": 242,
+      "matchingSourceRecords": 242,
+      "matchingRecords": 242,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 43,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 241,
+      "actualRecords": 241,
+      "matchingSourceRecords": 241,
+      "matchingRecords": 241,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 44,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 244,
+      "actualRecords": 244,
+      "matchingSourceRecords": 244,
+      "matchingRecords": 244,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    },
+    {
+      "id": 45,
+      "localId": 6,
+      "descriptor": "0x5ca4e650",
+      "expectedRecords": 246,
+      "actualRecords": 246,
+      "matchingSourceRecords": 246,
+      "matchingRecords": 246,
+      "generatedPosesExact": true,
+      "examples": [],
+      "exact": true
+    }
+  ],
+  "localResults": [
+    {
+      "localId": 1,
+      "id": "0x5ca4e650",
+      "pass": 0,
+      "queries": 9,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 8
+    },
+    {
+      "localId": 2,
+      "id": "0x5ca4e2f0",
+      "pass": 0,
+      "queries": 3,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 2
+    },
+    {
+      "localId": 3,
+      "id": "0x5ca4d690",
+      "pass": 0,
+      "queries": 9,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 8
+    },
+    {
+      "localId": 4,
+      "id": "0x5ca4d690",
+      "pass": 1,
+      "queries": 8,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 7
+    },
+    {
+      "localId": 5,
+      "id": "0x5ca4e2f0",
+      "pass": 1,
+      "queries": 7,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 6
+    },
+    {
+      "localId": 6,
+      "id": "0x5ca4e650",
+      "pass": 1,
+      "queries": 9,
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true,
+      "statusExact": true,
+      "iterations": 8
+    }
+  ],
+  "finalStates": [
+    {
+      "id": "0x5ca4e650",
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true
+    },
+    {
+      "id": "0x5ca4e2f0",
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true
+    },
+    {
+      "id": "0x5ca4d690",
+      "poseExact": true,
+      "diagnosticsExact": true,
+      "flagsExact": true
+    }
+  ],
+  "outer": {
+    "passes": 2,
+    "order": ["0x5ca4e650", "0x5ca4e2f0", "0x5ca4d690"],
+    "seed": 1117283,
+    "gaugeId": "0x5ca4d690",
+    "applications": [
+      {
+        "id": "0x5ca4e650",
+        "matrix": [
+          0.999997343120175, 2.415456530601455e-5, 0.002305031268327893,
+          0.7120221328009052, -2.0367954228103696e-5, 0.999998650447607,
+          -0.0016427684289128928, -0.5032514410956155, -0.002305067837924728,
+          0.0016427171155032293, 0.9999959940633467, -0.01571406196612645
+        ]
+      },
+      {
+        "id": "0x5ca4e2f0",
+        "matrix": [
+          0.9999999648968823, 3.932264585356968e-6, 0.00026493540998232977,
+          0.0735378010847433, -3.900854398399952e-6, 0.9999999929643544,
+          -0.0001185583166298611, -0.03292128415336218, -0.00026493587432100795,
+          0.00011855727899363522, 0.9999999578765761, 0.018992358408133226
+        ]
+      },
+      {
+        "id": "0x5ca4d690",
+        "matrix": [
+          0.999999987385684, 5.558805401212177e-5, 0.00014879045695102567,
+          0.02816468526602695, -5.557362551250844e-5, 0.9999999937537767,
+          -9.697432024121051e-5, -0.018910871921418902, -0.00014879584663539863,
+          9.696605019281137e-5, 0.9999999842286904, 0.02216533353468066
+        ]
+      },
+      {
+        "id": "0x5ca4e650",
+        "matrix": [
+          0.999999987385684, -5.557362551250844e-5, -0.00014879584663539863,
+          -0.028162437746893736, 5.558805401212177e-5, 0.9999999937537767,
+          9.696605019281137e-5, 0.018907156898407506, 0.00014879045695102567,
+          -9.697432024121051e-5, 0.9999999842286904, -0.022171357690444687
+        ]
+      },
+      {
+        "id": "0x5ca4e2f0",
+        "matrix": [
+          0.999999987385684, -5.557362551250844e-5, -0.00014879584663539863,
+          -0.028162437746893736, 5.558805401212177e-5, 0.9999999937537767,
+          9.696605019281137e-5, 0.018907156898407506, 0.00014879045695102567,
+          -9.697432024121051e-5, 0.9999999842286904, -0.022171357690444687
+        ]
+      },
+      {
+        "id": "0x5ca4d690",
+        "matrix": [
+          0.999999987385684, -5.557362551250844e-5, -0.00014879584663539863,
+          -0.028162437746893736, 5.558805401212177e-5, 0.9999999937537767,
+          9.696605019281137e-5, 0.018907156898407506, 0.00014879045695102567,
+          -9.697432024121051e-5, 0.9999999842286904, -0.022171357690444687
+        ]
+      }
+    ],
+    "outerClockCalls": 1,
+    "nativeReturnStatus": 0
+  },
+  "geometry": [
+    {
+      "descriptor": "0x5ca4e650",
+      "owner": 49737776,
+      "vertices": 140113,
+      "facets": 274154,
+      "topologyUnchanged": true,
+      "fields": [
+        {
+          "name": "positions.f32",
+          "values": 420339,
+          "actualSha256": "989146c136e537d2a37233e95c46b539590f4fbb60ae562579573b8cf2f77f3d",
+          "expectedSha256": "989146c136e537d2a37233e95c46b539590f4fbb60ae562579573b8cf2f77f3d",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "vertex-normals.f32",
+          "values": 420339,
+          "actualSha256": "b5905a564d546a0edd08a9dc0c26120386d0a471dd250b8111f4ecd3088a194f",
+          "expectedSha256": "b5905a564d546a0edd08a9dc0c26120386d0a471dd250b8111f4ecd3088a194f",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "facet-normals.f32",
+          "values": 822462,
+          "actualSha256": "75355411f24622a81202656923a80fe2982ffecacdaa946f901fcb72a082f200",
+          "expectedSha256": "75355411f24622a81202656923a80fe2982ffecacdaa946f901fcb72a082f200",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        }
+      ]
+    },
+    {
+      "descriptor": "0x5ca4e2f0",
+      "owner": 49740032,
+      "vertices": 1375494,
+      "facets": 2697877,
+      "topologyUnchanged": true,
+      "fields": [
+        {
+          "name": "positions.f32",
+          "values": 4126482,
+          "actualSha256": "094ae8cc4ea5a280044989865c491511db34e2a26e4ad6cf8073d0bb78a55ae6",
+          "expectedSha256": "094ae8cc4ea5a280044989865c491511db34e2a26e4ad6cf8073d0bb78a55ae6",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "vertex-normals.f32",
+          "values": 4126482,
+          "actualSha256": "63e5f91c0e5aed54f0f1f98acc74fc541129d3bc9312901b2bcb16ff67a51899",
+          "expectedSha256": "63e5f91c0e5aed54f0f1f98acc74fc541129d3bc9312901b2bcb16ff67a51899",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "facet-normals.f32",
+          "values": 8093631,
+          "actualSha256": "a31da0acfd55f6004d4ecc5708e202c48d7c4ca7973ec65deffc7ecf34686291",
+          "expectedSha256": "a31da0acfd55f6004d4ecc5708e202c48d7c4ca7973ec65deffc7ecf34686291",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        }
+      ]
+    },
+    {
+      "descriptor": "0x5ca4d690",
+      "owner": 49737024,
+      "vertices": 1865848,
+      "facets": 3691133,
+      "topologyUnchanged": true,
+      "fields": [
+        {
+          "name": "positions.f32",
+          "values": 5597544,
+          "actualSha256": "f1cc8ee4e3c6fdddbe3c1f869d3d5432b542866d13b92f37f9be38304d6c726f",
+          "expectedSha256": "f1cc8ee4e3c6fdddbe3c1f869d3d5432b542866d13b92f37f9be38304d6c726f",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "vertex-normals.f32",
+          "values": 5597544,
+          "actualSha256": "76cfa11f9b115dbdb7d6399274847ad137aa7d9e47daf4d6fb737b3811f3ea85",
+          "expectedSha256": "76cfa11f9b115dbdb7d6399274847ad137aa7d9e47daf4d6fb737b3811f3ea85",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        },
+        {
+          "name": "facet-normals.f32",
+          "values": 11073399,
+          "actualSha256": "1f8f3040c11aaa0e7d27a1bb53bd3810e53d75f13e7ad0376fba32236b453682",
+          "expectedSha256": "1f8f3040c11aaa0e7d27a1bb53bd3810e53d75f13e7ad0376fba32236b453682",
+          "mismatchedWords": 0,
+          "exact": true,
+          "examples": []
+        }
+      ]
+    }
+  ],
+  "exactFloat32Values": 40278222,
+  "nativeResult": {
+    "status": 0,
+    "stable": 3,
+    "converged": 0
+  },
+  "resourceAdmission": {
+    "sceneEstimateBytes": 513981160,
+    "sceneLimitBytes": 536870912,
+    "queryCoreStorage": {
+      "limit": 536870912,
+      "reserved": 235342416,
+      "live": 320351908,
+      "peak": 354461377
+    }
+  },
+  "resources": {
+    "receiptSha256": "69993cf8cefad13651880a00322c671d7b56697bad9c0e597073449324fec0fb",
+    "jobMemoryLimitBytes": 4294967296,
+    "cpuRate": 2500,
+    "aggregatePeakJobMemoryBytes": 654581760,
+    "replayElapsedMs": 16298,
+    "ownerElapsedSeconds": 16.375232300008065,
+    "childExited": true,
+    "childJobActive": 0,
+    "ownedHandlesClosed": true,
+    "cleanupErrors": []
+  },
+  "mcpCoverage": "Uses numerical input, scene, query, local, outer and datum-transform cores shared by GUI/MCP alignment. It does not invoke public operations or the browser coordinator. Candidate mask correction remains uncommitted pending rendered GUI/MCP comparison.",
+  "validationScope": "No application changes in this checkpoint. The prior candidate build, 114 focused tests, 47709 passing full-suite tests (64 skipped) and CAD smoke remain separate evidence; they were not rerun for this documentation-only checkpoint.",
+  "limitations": [
+    "The replay calls the shared numerical cores directly. It does not invoke runGlobalScanController, the shared browser coordinator, worker transport, public MCP, history, cancellation, import, save/reopen or rendering.",
+    "Captured native clocks are environmental replay inputs. Exact agreement does not prove unrestricted scheduling or every possible scan set.",
+    "The original three before/after captures are repeated non-atomic snapshots. Descriptor/owner association uses verified unique source-coordinate membership.",
+    "R1 owner setter entry was not captured. Final geometry is compared against independent same-run after buffers; generated setter matrices are not asserted to be directly observed owner calls.",
+    "All captured correspondences are active. Opaque leading correspondence bytes and other vertex-record fields are not reproduced.",
+    "The native run was stable but not converged. Exact reproduction is not an independent alignment accuracy certificate.",
+    "The candidate now passes the 512 MiB scene estimate without captured labels. Headless query-pool admission remains a separate conservative route; no fake Worker or browser-capability override was used.",
+    "Process memory reflects this numerical replay under owned Job limits, not a browser memory bound."
+  ]
+}

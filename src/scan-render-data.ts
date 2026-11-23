@@ -2,6 +2,7 @@ import { meshStats } from "./geometry";
 import { indexedMeshMatches } from "./indexed-mesh";
 import type { IndexedMesh, MeshStats, Positions } from "./types";
 import { smoothDisplayNormals } from "./viewport-display";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 
 /** Disposable display data stays outside authored entities and project files. */
 export interface ScanRenderData {
@@ -41,47 +42,14 @@ export function scanRenderData(
   return prepared.get(positions);
 }
 
-function indexedNormals(mesh: IndexedMesh): Float32Array {
-  const sums = new Float32Array(mesh.vertices.length);
-  const triangles = mesh.triangles;
-  for (let i = 0; i < triangles.length; i += 3) {
-    const a = triangles[i] * 3,
-      b = triangles[i + 1] * 3,
-      c = triangles[i + 2] * 3;
-    const vertices = mesh.vertices;
-    const abx = vertices[b] - vertices[a],
-      aby = vertices[b + 1] - vertices[a + 1],
-      abz = vertices[b + 2] - vertices[a + 2];
-    const acx = vertices[c] - vertices[a],
-      acy = vertices[c + 1] - vertices[a + 1],
-      acz = vertices[c + 2] - vertices[a + 2];
-    const x = aby * acz - abz * acy,
-      y = abz * acx - abx * acz,
-      z = abx * acy - aby * acx;
-    for (let corner = 0; corner < 3; corner++) {
-      const offset = triangles[i + corner] * 3;
-      sums[offset] += x;
-      sums[offset + 1] += y;
-      sums[offset + 2] += z;
-    }
-  }
-  for (let i = 0; i < sums.length; i += 3) {
-    const length = Math.hypot(sums[i], sums[i + 1], sums[i + 2]);
-    if (length) {
-      sums[i] /= length;
-      sums[i + 1] /= length;
-      sums[i + 2] /= length;
-    }
-  }
-  return sums;
-}
-
 /** Run in the import worker after unit conversion and placement, before transfer. */
 export function prepareScanRenderData(
-  positions: Float32Array,
+  positions: Positions,
   indexedMesh?: IndexedMesh,
   pointCloud = false,
+  signal?: AbortSignal,
 ): ScanRenderData {
+  signal?.throwIfAborted();
   if (!positions.length || positions.length % (pointCloud ? 3 : 9))
     throw new Error("Render preparation requires complete scan coordinates.");
   const stats = pointCloud ? undefined : meshStats(positions);
@@ -114,7 +82,26 @@ export function prepareScanRenderData(
     normals: pointCloud
       ? undefined
       : mesh
-        ? indexedNormals(mesh)
+        ? meshGeometryNormals(mesh, signal)
         : smoothDisplayNormals(positions),
   };
+}
+
+/** Initialize computed state before publication, without changing source descriptors.
+ * Rendering and the entity borrow the same immutable normal carrier. */
+export function prepareStoredScanRenderData(
+  positions: Positions,
+  indexedMesh?: IndexedMesh,
+  signal?: AbortSignal,
+): ScanRenderData {
+  const result = prepareScanRenderData(positions, indexedMesh, false, signal);
+  if (
+    result.indexedMesh &&
+    result.indexedMesh.geometryNormals !== result.normals
+  )
+    result.indexedMesh = {
+      ...result.indexedMesh,
+      geometryNormals: result.normals,
+    };
+  return result;
 }

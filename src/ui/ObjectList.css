@@ -12,6 +12,13 @@
   min-width: 26px;
   padding-inline: 5px;
 }
+.workspace .object-list > li > .object-name:focus {
+  outline: none;
+}
+.workspace .object-list > li > .object-name:focus-visible > span:last-child {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .workspace .object-list > li > button:hover:not(:disabled) {
   color: var(--text);
   background: var(--hover);

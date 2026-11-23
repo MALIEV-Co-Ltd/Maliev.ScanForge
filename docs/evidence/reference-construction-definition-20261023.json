@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "internal-definition-storage-core; construction feature incomplete",
+  "applicationBehaviorChanged": false,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "nativeSaveReopenAcceptance": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/reference-point-evaluation.ts",
+      "sha256": "26f69e1c61d1f74beaa4dcb994d2ab32e1739fec441aaa3e6dc56878156aa7b2"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "2301f66092d90b25018348895f09a62039969005e5c8481548196e4555142bff"
+    },
+    {
+      "path": "tests/reference-construction-values.test.ts",
+      "sha256": "dce109e1d8c4877c6eff5935f919cb193ad5cc1d05be665a234fefa1aebf05e7"
+    },
+    {
+      "path": "tests/reference-construction-identity.test.ts",
+      "sha256": "ab4cc765de49e11204e70f4c1724aa7db556dbabc2da43abe200fdaee16f411a"
+    },
+    {
+      "path": "tests/reference-point-evaluation.test.ts",
+      "sha256": "44b388384f84f3c45fd87b9376049d1a9a45443f512e5bc4af8d1e7ec955b384"
+    },
+    {
+      "path": "tests/reference-geometry-numerics.test.ts",
+      "sha256": "e024c813191b5aaf2f84643abe03526027e66677b2f382173f79ef9d74995608"
+    },
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "b0f66c849c040c774dec907d919fdd7edd2782a7ddb008aab4dc8424436f947e"
+    },
+    {
+      "path": "src/reference-line-pairs.ts",
+      "sha256": "bbe5f487bc1c3c0f738fdf6041b7cf420a1349676bb66292c9821e713ee39957"
+    },
+    {
+      "path": "tests/reference-line-evaluation.test.ts",
+      "sha256": "d448ea58b6f833b0da393918b0accb1642c5bae6ed933e01c654c0079c593312"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    },
+    {
+      "path": "tests/reference-construction.test.ts",
+      "sha256": "dd63cbf87a8d6fc95f07d227e8cef042174fbdf3d59fc72bf72d1b0f4a8d3ef7"
+    }
+  ],
+  "previousCheckpoint": {
+    "path": "docs/evidence/reference-line-implementation-20261023.json",
+    "sha256": "e918e4c4da88675b896ad2d94b34aff2be032e1a1a4b21dfaa19ebf3fbdd610d"
+  },
+  "sourcePinNote": "These are current source hashes; earlier checkpoints retain their historical scope.",
+  "definitionContract": {
+    "version": 1,
+    "pointModes": ["coordinates", "center", "pair", "threePlanes"],
+    "lineModes": ["endpoints", "pair", "average"],
+    "typedCoordinates": "Finite Float64 XYZ encoded as 48 lower-case hexadecimal characters per triple, little-endian.",
+    "retainedLinePicks": "Exact finite Float32 XYZ encoded as 24 lower-case hexadecimal characters per record, little-endian. Canonical copies reject implicit rounding.",
+    "pickStorageTag": "native-pick-record-f32 describes precision only, not coordinate space.",
+    "commonSources": "Distinct entity IDs with canonical 16-byte order keys, strictly sorted by unsigned raw-key order. No scene lookup or identity generation occurs.",
+    "orderedRecords": "Preserves order and repeated IDs, including IDs absent from the common source set.",
+    "inactiveContainers": "All point modes retain common sources; all line modes retain common sources and ordered records, including numeric modes.",
+    "cardinality": "Empty and extra retained collections are valid storage. Authoring admission is separate.",
+    "stateSeparation": "Prior evaluated geometry, outcome diagnostics and completion word belong beside the definition, not in caller-editable recipe fields.",
+    "validation": "Reject unknown versions/modes/fields, malformed bits, nonfinite values, noncanonical common sets and incompatible types; return detached nested values."
+  },
+  "validation": {
+    "buildSucceeded": true,
+    "buildId": "scanforge-6142a64d7167caf2",
+    "buildAssetCount": 271,
+    "definitionTestsPassed": 49,
+    "analyticTestsPassed": 203,
+    "testFilesPassed": 6,
+    "receipts": [
+      {
+        "purpose": "Expected missing-module red before implementation",
+        "privateArtifact": "project-index-validation-reference-definition-r1-red-mirror-focused.receipt.json",
+        "sha256": "33233104112e385a72195b44665721f67197bbb1750b2f8c080ad3cd67b79020",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 2.5838060999958543,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 261484544,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Full compiler and application build",
+        "privateArtifact": "project-index-validation-reference-definition-r1-build-build.receipt.json",
+        "sha256": "7d6f50887d01cf1b1d1e512e84ae9a44caca728cabd196f2db78e6e9962669ec",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 45.27001350000501,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 2048,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 2360872960,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Source and test formatting",
+        "privateArtifact": "project-index-validation-reference-definition-r1-format-mirror-focused.receipt.json",
+        "sha256": "b5335173a486552775eefe83efc1935c065ecf59df23e309327e45558a0e4d9d",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.2591205000062473,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 107536384,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "203 analytic tests across six files, including 49 definition tests",
+        "privateArtifact": "project-index-validation-reference-definition-r1-green-mirror-focused.receipt.json",
+        "sha256": "a1bd00d3bc18a947ca19059d1f2acdae6dabab5636ab77ea5999699ed1693fa8",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.2697535999905085,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 294699008,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      }
+    ],
+    "buildNote": "Internal modules are not imported into the application yet; bundle identity is unchanged."
+  },
+  "review": {
+    "reviewer": "reference_integration_audit",
+    "scope": "Codec correctness, exact bits, detached copies, discriminants, independent common/record containers and publication boundaries",
+    "actionableDefects": 0,
+    "reviewerRanTests": false
+  },
+  "mcpCoverage": "No user-visible behavior or MCP discovery changed. This internal definition is intended for the same future GUI/MCP operations. Shared sessions, editor, schemas, agent docs, persistence and rendered acceptance remain required before publication.",
+  "remaining": [
+    "Exact source resolution and CAD provider contracts",
+    "Picked point/endpoint acquisition provenance, coordinate frames and exact subfeature bindings",
+    "Unresolved native point fields and retained point arrays",
+    "Definition/evaluation orchestration and separate prior geometry/state",
+    "Actual Entity/project/history/digest integration and definition-only revision tests",
+    "Dependency, transform, duplicate/delete and downstream semantics",
+    "Shared GUI/MCP operations, schemas, editor and agent documentation",
+    "Original-code comparisons, native save/reopen and rendered acceptance"
+  ],
+  "limitations": [
+    "This is a semantic storage core, not a complete native file codec",
+    "JSON round trips exercise the internal codec only, not project serialization entry points",
+    "Encoded differences demonstrate recipe changes remain observable, not that history integration is implemented",
+    "No native execution, live binding or browser access occurred",
+    "No feature completion claim; changes remain uncommitted"
+  ]
+}

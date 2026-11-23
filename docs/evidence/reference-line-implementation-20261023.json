@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "internal-point-and-line-arithmetic; construction feature incomplete",
+  "userDesignApprovalRecorded": true,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "newConstructionOperationAdvertised": false,
+  "mcpCoverage": "Internal evaluators only. No application capability or discovery changed. Shared GUI/MCP construction operations, schemas, editor, persistence and acceptance remain required before publication.",
+  "sources": [
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/reference-point-evaluation.ts",
+      "sha256": "26f69e1c61d1f74beaa4dcb994d2ab32e1739fec441aaa3e6dc56878156aa7b2"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "2301f66092d90b25018348895f09a62039969005e5c8481548196e4555142bff"
+    },
+    {
+      "path": "tests/reference-construction-values.test.ts",
+      "sha256": "dce109e1d8c4877c6eff5935f919cb193ad5cc1d05be665a234fefa1aebf05e7"
+    },
+    {
+      "path": "tests/reference-construction-identity.test.ts",
+      "sha256": "ab4cc765de49e11204e70f4c1724aa7db556dbabc2da43abe200fdaee16f411a"
+    },
+    {
+      "path": "tests/reference-point-evaluation.test.ts",
+      "sha256": "44b388384f84f3c45fd87b9376049d1a9a45443f512e5bc4af8d1e7ec955b384"
+    },
+    {
+      "path": "tests/reference-geometry-numerics.test.ts",
+      "sha256": "e024c813191b5aaf2f84643abe03526027e66677b2f382173f79ef9d74995608"
+    },
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "b0f66c849c040c774dec907d919fdd7edd2782a7ddb008aab4dc8424436f947e"
+    },
+    {
+      "path": "src/reference-line-pairs.ts",
+      "sha256": "bbe5f487bc1c3c0f738fdf6041b7cf420a1349676bb66292c9821e713ee39957"
+    },
+    {
+      "path": "tests/reference-line-evaluation.test.ts",
+      "sha256": "d448ea58b6f833b0da393918b0accb1642c5bae6ed933e01c654c0079c593312"
+    }
+  ],
+  "previousCheckpoint": "docs/evidence/reference-construction-foundation-20261023.json",
+  "sourcePinNote": "These pins supersede current-source claims from the earlier checkpoint; earlier receipts and pins remain historical.",
+  "nativeStaticInputs": [
+    {
+      "privateArtifact": "construction-geometry-noanalysis-r1/evidence.json",
+      "sha256": "62aafd4a3d2d1a015a11810bf2116c77fe0f01fa944451dc86515df71e1d18e0"
+    },
+    {
+      "privateArtifact": "construction-math-noanalysis-r1/evidence.json",
+      "sha256": "5786e43b433f4a93701c70d894afd7efe0cd7324b653203f0d6df65cc8f436a4"
+    },
+    {
+      "privateArtifact": "construction-calculation-noanalysis-r1/evidence.json",
+      "sha256": "881166f8f3587bab95fdaf616ae4ceb29700b03499b789e0ecc48e3f572db292"
+    },
+    {
+      "privateArtifact": "construction-line-controls-noanalysis-r1/evidence.json",
+      "sha256": "dfad3bd025ede14154db51c1c7253872c9f9647a3f53a21bdf174972a259efe2"
+    },
+    {
+      "privateArtifact": "construction-line-bounds-noanalysis-r1/evidence.json",
+      "sha256": "95f31d0dbe8e6e6f3131c8d47f44c36d08324b4ea0b33979f3ff7a86a7e832db"
+    },
+    {
+      "privateArtifact": "construction-line-bounds-validity-noanalysis-r1/evidence.json",
+      "sha256": "cdd4011a251711ff4584f945fe35897587fc56ab3418127b7d30615e8998599b"
+    }
+  ],
+  "staticCorroboration": {
+    "privateArtifact": "reference-line-pairs-static-r1.json",
+    "sha256": "49e51618da52ed221f937465efb18ea9bbc48921bf29fb51dabf2874bee4d31b",
+    "carrierSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+    "procedureCount": 7,
+    "listedInstructionStarts": 2085,
+    "checkedDirectFlows": 179,
+    "scope": "Static-only pair, bounds, endpoint and average arithmetic corroboration. No native execution, live code binding or rendered acceptance. Counts cover analyzer-listed starts, not complete-function proof.",
+    "passed": true
+  },
+  "privateDrivers": [
+    {
+      "privateArtifact": "verify-reference-line-pairs-r1.py",
+      "sha256": "0f6e5d0395a933df8df87d3fb0ff6eeb05cb899bb364509c859cba297ea2dc4d"
+    },
+    {
+      "privateArtifact": "verify-reference-line-pairs-r1.mjs",
+      "sha256": "883bff2264b42d873721cc1b320b05a2390d6ce9231533846a27209f56fc4c04"
+    },
+    {
+      "privateArtifact": "run-verify-reference-line-pairs-r1.py",
+      "sha256": "87723353ec9bbaf5aacb4c07ba49b4a5c46d7a508d9d8ba69ec82b470ba546d8"
+    },
+    {
+      "privateArtifact": "run-reference-line-evaluation-r1.py",
+      "sha256": "d85d652a20b8c28b2df2842878fdc5ef6aa30eae882b67216ea47a364748cff8"
+    }
+  ],
+  "validation": {
+    "analyticTestsPassed": 154,
+    "testFilesPassed": 5,
+    "buildSucceeded": true,
+    "finalTypecheckSucceeded": true,
+    "buildId": "scanforge-6142a64d7167caf2",
+    "buildAssetCount": 271,
+    "buildNote": "Internal helpers are not imported into the application yet; application bundle identity is unchanged.",
+    "receipts": [
+      {
+        "purpose": "Expected missing-module red",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-red-mirror-focused.receipt.json",
+        "sha256": "6ad1872c2d61513294a2396cbb58c71db3f821ed5c711b0ebd0c31be6ba9962b",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.5613881000026595,
+        "outerPeakJobMemoryBytes": 263905280,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Initial line evaluator formatting",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-format-mirror-focused.receipt.json",
+        "sha256": "c49ed0346ae02bfb0e904cfd5e3dcfa2e82b128334f95fec0eeb32ea5c14dde0",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.2582836999936262,
+        "outerPeakJobMemoryBytes": 104308736,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Initial line evaluator build",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-build-build.receipt.json",
+        "sha256": "0d999f7ebc61674c5315fbfa277aface494ebd5f79904e506236e19fc746debc",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 41.835358199998154,
+        "outerPeakJobMemoryBytes": 2362646528,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 2048,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "121 analytic tests across five files",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-green-mirror-focused.receipt.json",
+        "sha256": "f048189efe22f26e4eed396d78eb071d4ecfed56f192fae2d93741be2e3a4cef",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.1175313999992795,
+        "outerPeakJobMemoryBytes": 274763776,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Static bounds merge and span recovery",
+        "privateArtifact": "project-index-validation-construction-line-bounds-noanalysis-r1-cad.receipt.json",
+        "sha256": "d90475d1d6af27fba7108de3b2e9c9a04101db597f6726d6f54385d2b2cd0737",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.220383099993342,
+        "outerPeakJobMemoryBytes": 760647680,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 180,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Static bounds validity recovery",
+        "privateArtifact": "project-index-validation-construction-line-bounds-validity-noanalysis-r1-cad.receipt.json",
+        "sha256": "b80716482ec0249b1e2afc10b2e09ced44ab0b491c5cf7a7b9920f2dfc753775",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 10.766340799993486,
+        "outerPeakJobMemoryBytes": 823250944,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 180,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Expected unsupported pair mode: 21 failures and 25 passing line tests",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-red-pairs-mirror-focused.receipt.json",
+        "sha256": "efd7c77c7260429abed69c6ed45d2e65f57a8ab18dc52fd4fe487cb290d0863a",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.7140329999965616,
+        "outerPeakJobMemoryBytes": 305704960,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Pair evaluator formatting",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-format-pairs-mirror-focused.receipt.json",
+        "sha256": "c8f8b156386efb6eebb2eb91930134100fbf4ec6279f860cd4fd60b4bce7a24c",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.30928400000266265,
+        "outerPeakJobMemoryBytes": 108285952,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Pair evaluator build",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-build-pairs-build.receipt.json",
+        "sha256": "b388e49c638c158b3d4bfd4324b905d09346e5c2e0ba1b0afba45743ea0689f5",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 40.42403629999899,
+        "outerPeakJobMemoryBytes": 2353684480,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 2048,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "143 passes and one incorrect positive-zero expectation; corrected test only",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-green-pairs-mirror-focused.receipt.json",
+        "sha256": "853d8bc3ab6a361db537a2adee419c5adb9aef09142f4a666a0440ea518d6514",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 1.1683134000049904,
+        "outerPeakJobMemoryBytes": 295272448,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "145 analytic tests after signed-zero correction and regression",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-green-signedzero-mirror-focused.receipt.json",
+        "sha256": "47373dc914de9c7edb20c22dfe7ae39412930843b220b31ef5ce104278936c20",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.117749900004128,
+        "outerPeakJobMemoryBytes": 293453824,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Final source and audit-test formatting",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-format-audit-mirror-focused.receipt.json",
+        "sha256": "0b7bd4f26d9bf7b45cf3d6e45a802f5f4f0654649dbd5081bd1f0cb0a9b07288",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.3097111999959452,
+        "outerPeakJobMemoryBytes": 126480384,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "154 analytic tests across five files",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-green-audit-mirror-focused.receipt.json",
+        "sha256": "59d55ac717a0ae146c611381c7fd0354a1d53f908c116021a2e9eafbb086a669",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.1680048999987775,
+        "outerPeakJobMemoryBytes": 293904384,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Final compiler verification with existing build profile",
+        "privateArtifact": "project-index-validation-reference-line-evaluation-r1-typecheck-audit-build.receipt.json",
+        "sha256": "aea07f4176fd904026fda24a859572499822e14928e61e5b4928c08b0738863e",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 32.08242940000491,
+        "outerPeakJobMemoryBytes": 2304712704,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 2048,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "purpose": "Independent instruction, flow, branch, operand and constant corroboration",
+        "privateArtifact": "project-index-validation-verify-reference-line-pairs-r1-cad.receipt.json",
+        "sha256": "3f7815a6d1aa743920b42bd153d1a22ce9ef954d1d697ae91c35eca79565efe0",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.2586471000104211,
+        "outerPeakJobMemoryBytes": 98095104,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 120,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      }
+    ]
+  },
+  "arithmeticAudit": {
+    "reviewer": "reference_numerics_final_review",
+    "scope": "Endpoint setter, ordered average and primitive pairs within finite non-overflowing domain",
+    "implementationDiscrepancies": 0,
+    "testGapsFound": 4,
+    "testGapsAddressed": 4,
+    "nativeExecutionPerformed": false
+  },
+  "establishedSemantics": [
+    "Strict endpoint length admission, typed versus general addition order, retained prior state and completion word",
+    "Ordered repeated average records, direction sign alignment, count and threshold behavior",
+    "All resolved primitive-pair branches with source-order arithmetic and fallback behavior",
+    "Direct plane extents and CAD-derived Float32 bounds merge, span, repeated-first-box midpoint and sentinel validity",
+    "Missing source object versus failed geometric extraction are distinct outcomes"
+  ],
+  "remaining": [
+    "Exact source and subfeature pick resolution, retained point fields and edit controls",
+    "Construction definition and dependency refresh/update-level propagation",
+    "Entity, persistence, history, transforms, duplicate/delete and downstream integration",
+    "Shared GUI/MCP operations, discovery, schemas, editor and agent documentation",
+    "Original-code numerical and save/reopen comparison",
+    "Rendered GUI/MCP and resource-lifetime acceptance"
+  ],
+  "limitations": [
+    "Analytic tests and static instructions do not establish native runtime output equivalence",
+    "Listed instruction counts are not complete-function coverage",
+    "No native image execution, live code binding or browser access occurred",
+    "Finite non-overflowing input domain only; native nonfinite behavior is not established",
+    "All changes remain uncommitted; no feature completion claim"
+  ]
+}

@@ -1,6 +1,7 @@
 import type { ProjectSession } from "./project-file";
 import type { Positions } from "./types";
 import { cacheScanRenderData, type ScanRenderData } from "./scan-render-data";
+import { indexedMeshMatches } from "./indexed-mesh";
 import {
   restoreEncodingSnapshot,
   type ProjectEncodingSnapshot,
@@ -102,7 +103,16 @@ export function decodeProjectInBackground(
                   !display.positions ||
                   !r ||
                   !(r.normals instanceof Float32Array) ||
-                  r.normals.length !== display.positions.length ||
+                  (r.indexedMesh
+                    ? !session.project.entities.some(
+                        (e) =>
+                          e.positions === display.positions &&
+                          e.indexedMesh === r.indexedMesh,
+                      ) ||
+                      !indexedMeshMatches(r.indexedMesh, display.positions) ||
+                      r.normals !== r.indexedMesh.geometryNormals ||
+                      r.normals.length !== r.indexedMesh.vertices.length
+                    : r.normals.length !== display.positions.length) ||
                   !r.bounds?.every(Number.isFinite) ||
                   r.bounds.length !== 6 ||
                   !Number.isFinite(r.radius) ||

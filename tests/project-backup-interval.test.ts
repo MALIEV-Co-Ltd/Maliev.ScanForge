@@ -5,6 +5,44 @@ import {
   backupProjectId,
 } from "../src/project-backup";
 
+it("does not keep saved geometry or history alive after switching projects", async () => {
+  const geometry = { positions: new Float32Array([1, 2, 3]) };
+  const history = [{ geometry }];
+  const save = vi.fn(async () => {});
+  const writer = new IntervalBackupController<unknown>(
+    save,
+    async () => {},
+    () => {},
+  );
+  writer.update("old", geometry, [geometry, history, "name"], true);
+  await writer.tick();
+  writer.update("new", {}, [], true);
+  // Inspect ownership directly rather than depending on forced GC or timing.
+  const saved = (
+    writer as unknown as { saved: Map<string, readonly unknown[]> }
+  ).saved;
+  expect(saved.get("old")).not.toContain(geometry);
+  expect(saved.get("old")).not.toContain(history);
+  writer.update("old", geometry, [geometry, history, "name"], true);
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(1);
+  writer.update("old", geometry, [{ ...geometry }, history, "name"], true);
+  await writer.tick();
+  expect(save).toHaveBeenCalledTimes(2);
+  writer.stop();
+});
+
+it("releases the current snapshot when the writer stops", () => {
+  const writer = new IntervalBackupController<unknown>(
+    async () => {},
+    async () => {},
+    () => {},
+  );
+  writer.update("project", { geometry: new Float32Array([1]) }, [], true);
+  writer.stop();
+  expect((writer as unknown as { current?: unknown }).current).toBeUndefined();
+});
+
 it("retries a deferred snapshot and then saves the latest session", async () => {
   const save = vi
     .fn()

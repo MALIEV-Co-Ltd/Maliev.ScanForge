@@ -1,0 +1,353 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "semantic inspection and sampled-geometry eligibility; reference feature incomplete",
+  "applicationBehaviorChanged": true,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "0eb564237f0c688788b0d21e910c543fc39d0db2e21ee56aaac85bb80adab633"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/scan-mesh-copy.ts",
+      "sha256": "cb09c0efd0f113d61c6a2180a34b8a09586816670f011c68f8e9702ce4a2360f"
+    },
+    {
+      "path": "src/automation/operations.ts",
+      "sha256": "97759780a90f12f1f681cf1859d7f540908daf439dc2a8cfcffb37839533b589"
+    },
+    {
+      "path": "src/automation/authoring-operations.ts",
+      "sha256": "37e1eb6050e6d6c2486363fd1fa5b5fac76e9932d2c01d570cfdc7266c761da4"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "d7def37d5d17d0ee88b8dd21061728db98a8510323ddcc2a53acfc501164c8d5"
+    },
+    {
+      "path": "src/project-file.ts",
+      "sha256": "7988c91230c41ef30836673aa74623622b962504daea459abf6ad93e17015ac9"
+    },
+    {
+      "path": "src/project-decoding-worker.ts",
+      "sha256": "9464de058778e4a4847332a50de496e96ee2b7c52488add0576795b5163d74fa"
+    },
+    {
+      "path": "tests/reference-entity-operations.test.ts",
+      "sha256": "4b93ab55032b53e7782de4fe14f68d1b7338d277cd49bf600f9a91e1b062c1cc"
+    },
+    {
+      "path": "tests/reference-project.test.ts",
+      "sha256": "647c82baeca6fa3e4edca7eeb5926a8dfa8c8d169983d69f31a9af76c4247506"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "83b66257005512a70e792bf90b357892f652e99a318e1e1f107307b0ce1159a2"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "a6f92d4adfbbabfb72e50a0a28888db52fe2d1e72426dae60efc60f6cf217993"
+    }
+  ],
+  "coverage": [
+    "Detached Float64 point and finite-line bounds preserve raw direction, reversed axes and degenerate extents",
+    "Shared object_get/project_get expose semantic counts, geometry, definitions and exact encoded numeric companions",
+    "Actual MCP object_get/artifact_read round trip preserves exact semantic geometry without empty triangle substitutes",
+    "Inspection reports stored geometry with unknown outcome, source identity matching and ordered duplicate record presence without evaluation or mutation",
+    "Shared GUI mesh-copy helper rejects semantic objects, including calls supplying substitute triangles",
+    "Sampling/editability/topology/deviation/selection operations reject semantic sources before worker dispatch or mutation",
+    "Read-only mesh processing and consumed secondary-target paths reject semantic geometry",
+    "Actual MCP topology job reports structured failure with no processing worker or model mutation"
+  ],
+  "verification": {
+    "initialRed": "32 regressions failed before implementation",
+    "initialBuild": "TypeScript rejected an un-narrowed union; explicit property narrowing repaired it",
+    "targetRed": "10 new bypass regressions failed while the other 34 passed",
+    "focused": {
+      "passedTests": 228,
+      "passedFiles": 7,
+      "newTests": 44
+    },
+    "full": {
+      "passedTests": 48171,
+      "skippedTests": 64,
+      "failedTests": 0
+    },
+    "fullReceipt": "project-index-validation-reference-inspection-r1-full-targets-full.receipt.json",
+    "reviewScope": "Coordinator source-flow audit; whole-feature independent review remains outstanding"
+  },
+  "validation": [
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-build-final-build.receipt.json",
+      "sha256": "d91413e254b91810f1e568ee09067af43eb31b2f041aba8bd238ae7f458d05c7",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.44037090000347,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2500108288,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-build-initial-build.receipt.json",
+      "sha256": "767fbde5c4d85be637c280ddc6d7d88d1b7a12a912deb5d39ee47328cae4f221",
+      "exitCode": 2,
+      "completed": false,
+      "elapsedSeconds": 24.00146549999772,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2497896448,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-build-targets-build.receipt.json",
+      "sha256": "0245566605606e2067974d332c6fb118da73ab213f7edc3a1e5f59fc6f470250",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.84369729999162,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2508951552,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-build-typed-build.receipt.json",
+      "sha256": "25ea545021d279ff378cd7cc4f5bb411190c4a24eefd9733fbc02db80fac8f14",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.24698719999287,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2496315392,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-format-final-mirror-focused.receipt.json",
+      "sha256": "d72dfe3cdb4ec56440d0eb426515c8fe24a02634edb9f76131f557412813119e",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.914660599999479,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 155803648,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-format-initial-mirror-focused.receipt.json",
+      "sha256": "3aa769e73b8921f1409f256eced9ef1be389e8caa40277b8a888977bf960b1d2",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.4106498000037391,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 145555456,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-format-targets-mirror-focused.receipt.json",
+      "sha256": "f328d71493824f0d9956d6b958a78efc809dfa04bf55f3d7732c9106cc94f4af",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 1.2697847000090405,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 153165824,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-full-targets-full.receipt.json",
+      "sha256": "3e66cbf4e3f76141de06d4bb3d8210bfc70573b3a2c8025cb23db823992230ac",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 261.42676870001014,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 600,
+      "outerPeakJobMemoryBytes": 1008025600,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-green-targets-mirror-focused.receipt.json",
+      "sha256": "5233c529eda30d9c3f6c2bd72666bc60bbf5645c1ce0749339f363c4a4392244",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 3.895968600001652,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 387440640,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-green-typed-mirror-focused.receipt.json",
+      "sha256": "5a57af4bb75052bb3281c7cde8672620c1d14323193b701d3c057f9531feea92",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 3.8451679999998305,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 383799296,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-red-initial-mirror-focused.receipt.json",
+      "sha256": "a015636571bb88f3e200c3b9cba55e1cf2fc1bd1cc010fc08d97601720ad1337",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.5205726999993203,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 361537536,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-inspection-r1-red-targets-mirror-focused.receipt.json",
+      "sha256": "0f54ac0699f7a6e36a8b205465de239c352876842dd0d6fb719b4718abfc02cc",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.622589100006735,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 389169152,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  ],
+  "mcpCoverage": "Existing object_get/project_get, geometry artifacts, topology jobs, selection and sampled processing share the semantic helpers and guards. GUI mesh-copy uses the same helper. Agent documentation records inspection meaning and the still-closed shared project admission gate.",
+  "remaining": [
+    "Viewport rendering, picking, camera/navigation bounds, selected-object statistics and remaining GUI consumers",
+    "Datum-reference adapters and semantic point/line use by downstream operations",
+    "Exact native scene/source/pick resolution, construction sessions and dependency propagation",
+    "Native output/save-reopen acceptance and rendered GUI/MCP comparison before publication"
+  ],
+  "limitations": [
+    "Reference-bearing project import remains rejected",
+    "No native image executed",
+    "No browser access occurred",
+    "No feature completion or commit claim"
+  ]
+}

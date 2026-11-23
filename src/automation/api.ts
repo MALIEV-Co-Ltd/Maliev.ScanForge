@@ -9,6 +9,10 @@ import type { InteractiveDragInput } from "../interactive-alignment-math";
 import type { InteractivePointerDrag } from "../interactive-camera";
 import type { InteractiveMirrorBackend } from "../interactive-mirror-backend";
 import catalog from "./catalog.json";
+import {
+  diskBackedBlob,
+  DISK_BLOB_BLOCK_BYTES,
+} from "../transient-blob-storage";
 import { cloudPlacement } from "../point-cloud-placement";
 import { releaseDatumPreview } from "./datum-preview-resources";
 import {
@@ -183,7 +187,7 @@ export type ApiResult =
       error: { code: string; message: string };
     };
 type Schema = Record<string, any>;
-const ARTIFACT_BYTES = 512 * 1024 * 1024;
+const ARTIFACT_BYTES = 1024 * 1024 * 1024;
 const ARTIFACT_COUNT = 64;
 const ARTIFACT_CHUNK_BYTES = 1024 * 1024;
 const ARTIFACT_LEASE_MS = 900000;
@@ -337,6 +341,8 @@ export class ApplicationApi {
 
   currentRevision() {
     const next = this.host.snapshot();
+    // Camera/layout measurements can change while a geometry job is running.
+    const { scale, effectiveGridSpacing, ...settings } = next.settings;
     const identity = (value?: object | null) => {
       if (!value) return 0;
       if (!this.identities.has(value))
@@ -349,6 +355,8 @@ export class ApplicationApi {
         e.id,
         e.name,
         e.kind,
+        e.constructionOrderKey,
+        identity(e.reference),
         e.color,
         e.opacity,
         e.visible,
@@ -380,7 +388,7 @@ export class ApplicationApi {
         identity(s.sketch),
       ]),
       activeSketchId: next.authoring.activeSketchId,
-      settings: next.settings,
+      settings,
     });
     if (this.stateKey !== undefined && key !== this.stateKey) this.revision++;
     this.stateKey = key;
@@ -652,6 +660,7 @@ export class ApplicationApi {
             "Upload chunks cannot exceed 1 MiB decoded.",
           );
         let blob = new Blob([data]);
+        let priorEntry: ReturnType<ApplicationApi["getArtifact"]> | undefined;
         if (args.artifactId) {
           const prior = this.artifacts.get(args.artifactId as string);
           if (!prior || prior.info.name !== args.name)
@@ -665,11 +674,35 @@ export class ApplicationApi {
               "Chunk offset must equal artifact size.",
             );
           blob = new Blob([prior.blob, data]);
+          priorEntry = prior;
         } else if (args.offset !== 0)
           throw new ApiError(
             "UPLOAD_CONFLICT",
             "First chunk offset must be zero.",
           );
+        const previousBytes = priorEntry?.blob.size ?? 0;
+        if (
+          Math.floor(blob.size / DISK_BLOB_BLOCK_BYTES) >
+          Math.floor(previousBytes / DISK_BLOB_BLOCK_BYTES)
+        ) {
+          blob = await diskBackedBlob(blob);
+          if (this.disposed)
+            throw new ApiError("DISCONNECTED", "Workspace closed.");
+          this.sweepArtifacts();
+          if (args.artifactId && !this.artifacts.has(args.artifactId as string))
+            throw new ApiError(
+              "NOT_FOUND",
+              "Upload artifact expired or was deleted.",
+            );
+          if (
+            args.artifactId &&
+            this.artifacts.get(args.artifactId as string) !== priorEntry
+          )
+            throw new ApiError(
+              "UPLOAD_CONFLICT",
+              "Upload changed while its chunk was stored; retry from the current size.",
+            );
+        }
         const result = this.storeArtifact(
           blob,
           args.name as string,
@@ -691,12 +724,15 @@ export class ApplicationApi {
             .slice(offset, offset + ((args.length as number) ?? 65536))
             .arrayBuffer(),
         );
-        let text = "";
-        for (const byte of data) text += String.fromCharCode(byte);
+        // Bound conversion scratch; per-byte concatenation creates a string
+        // node for every byte during repeated full-project downloads.
+        const text: string[] = [];
+        for (let start = 0; start < data.length; start += 8192)
+          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text),
+          base64: btoa(text.join("")),
           nextOffset: offset + data.length,
           eof: offset + data.length === entry.blob.size,
         });
@@ -896,7 +932,7 @@ export class ApplicationApi {
     )
       throw new ApiError(
         "RESOURCE_LIMIT",
-        "Artifact storage exceeds 64 artifacts or 512 MiB; delete artifacts before retrying.",
+        "Artifact storage exceeds 64 artifacts or 1 GiB; delete artifacts before retrying.",
       );
     const info = { artifactId: id, name, mime, bytes: blob.size };
     this.artifacts.set(id, { info, blob, used: Date.now() });

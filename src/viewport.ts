@@ -50,6 +50,12 @@ import type {
   ScanBridgeSession,
 } from "./scan-bridge-gesture";
 import { cloudPlacement, cloudPoseMatrix } from "./point-cloud-placement";
+import { isReferenceEntity } from "./reference-entity";
+import {
+  createReferenceDisplay,
+  updateReferenceDisplay,
+  type ReferenceDisplay,
+} from "./reference-display";
 import { scanRenderData } from "./scan-render-data";
 import {
   scanDisplayBuffers,
@@ -207,6 +213,7 @@ export class Viewport {
   private readonly controls: TrackballControls;
   private readonly observer: ResizeObserver;
   private readonly objects = new Map<string, Item>();
+  private referenceObjects = new Map<string, ReferenceDisplay>();
   private interactivePosePreview?: InteractivePosePreview;
   private interactiveMirror?: InteractiveMirrorController;
   private interactiveMirrorBackend?: InteractiveMirrorBackend;
@@ -612,6 +619,8 @@ export class Viewport {
           ).unproject(this.camera);
         },
         selection: () => {
+          const reference = this.referenceObjects?.get(this.selectedId ?? "");
+          if (reference?.object.visible) return reference.bounds.clone();
           const item = this.objects.get(this.selectedId ?? "");
           if (!item?.mesh.visible) return;
           const box = new THREE.Box3().setFromObject(
@@ -644,6 +653,8 @@ export class Viewport {
       const scene = new THREE.Box3();
       for (const item of visible)
         scene.union(new THREE.Box3().setFromObject(item.mesh));
+      for (const reference of this.referenceObjects?.values() ?? [])
+        if (reference.object.visible) scene.union(reference.bounds);
       const selected = this.selectedId
         ? this.objects.get(this.selectedId)
         : undefined;
@@ -653,6 +664,11 @@ export class Viewport {
           ? new THREE.Box3().setFromObject(this.triangleSelection)
           : new THREE.Box3().setFromObject(selected.mesh);
       }
+      const selectedReference = this.referenceObjects?.get(
+        this.selectedId ?? "",
+      );
+      if (selectedReference?.object.visible)
+        selection = selectedReference.bounds.clone();
       this.navigationPivot.update(
         now,
         scene,
@@ -693,11 +709,15 @@ export class Viewport {
     this.raycaster.setFromCamera(screen, this.camera);
     const meshes = [...this.objects.values()]
       .filter((item) => item.mesh.visible)
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(false));
     // Render one depth pixel rather than silently retaining a stale pivot or
     // scanning a large unindexed mesh. Include every mesh to retain occlusion.
     if (meshes.some((mesh) => !canQueryNavigationSurface(mesh))) {
-      if (meshes.some((mesh) => mesh instanceof THREE.Points)) return;
+      if (meshes.some((mesh) => !(mesh instanceof THREE.Mesh))) return;
       return this.navigationDepthPoint(meshes as THREE.Mesh[], screen);
     }
     for (const mesh of meshes) mesh.updateWorldMatrix(true, false);
@@ -825,7 +845,10 @@ export class Viewport {
     this.advanceViewTransition(performance.now() + 1000);
     return pickCamera(
       this.camera,
-      [...this.objects.values()].map((item) => item.mesh),
+      [
+        ...[...this.objects.values()].map((item) => item.mesh),
+        ...this.referenceCandidates(false),
+      ],
       x,
       y,
       maxHits,
@@ -2786,7 +2809,11 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(true));
     const hit = this.raycaster
       .intersectObjects(candidates, false)
       .find((candidate) =>
@@ -2840,6 +2867,20 @@ export class Viewport {
     this.pickTargetId = entityId;
   }
 
+  private referenceCandidates(pickable: boolean) {
+    if (pickable && this.brushing) return [];
+    return [...(this.referenceObjects?.values() ?? [])]
+      .map((display) => display.object)
+      .filter(
+        (object) =>
+          object.visible &&
+          (!pickable ||
+            (object.userData.objectPickable !== false &&
+              (!this.pickTargetId ||
+                object.userData.entityId === this.pickTargetId))),
+      );
+  }
+
   selectionChoicesAt(
     event: Pick<PointerEvent, "clientX" | "clientY">,
   ): CanvasPickChoice[] {
@@ -2870,7 +2911,11 @@ export class Viewport {
           (!this.pickTargetId ||
             item.mesh.userData.entityId === this.pickTargetId),
       )
-      .map((item) => item.pointCloud ?? item.mesh);
+      .map(
+        (item): THREE.Mesh | THREE.Points | THREE.Line =>
+          item.pointCloud ?? item.mesh,
+      )
+      .concat(this.referenceCandidates(true));
     return this.raycaster
       .intersectObjects(meshes, false)
       .filter((hit) =>
@@ -2889,10 +2934,15 @@ export class Viewport {
           id,
           label: hit.object.name || id,
           choose: () => {
-            if (!this.objects.get(id)?.mesh.visible) return;
+            if (!(
+              this.objects.get(id)?.mesh.visible ||
+              this.referenceObjects?.get(id)?.object.visible
+            ))
+              return;
             this.onSelect(id);
+            const point = pickedWorldPoint(hit);
             this.onPick(
-              [hit.point.x, hit.point.y, hit.point.z],
+              [point.x, point.y, point.z],
               id,
               hit.faceIndex == null
                 ? undefined
@@ -2915,8 +2965,18 @@ export class Viewport {
     if (selectedId !== this.selectedId) this.clearDeviations();
     this.selectedId = selectedId;
     const ids = new Set(entities.map((entity) => entity.id));
+    const referenceIds = new Set(
+      entities.filter(isReferenceEntity).map((entity) => entity.id),
+    );
+    this.referenceObjects ??= new Map();
+    for (const [id, display] of this.referenceObjects) {
+      if (!referenceIds.has(id)) {
+        display.dispose();
+        this.referenceObjects.delete(id);
+      }
+    }
     for (const [id, item] of this.objects?.entries() ?? []) {
-      if (!ids.has(id)) {
+      if (!ids.has(id) || referenceIds.has(id)) {
         this.scene.remove(item.mesh);
         item.selectionIndex?.dispose();
         item.mesh.geometry.dispose();
@@ -2932,6 +2992,18 @@ export class Viewport {
     }
     this.bounds.makeEmpty();
     for (const entity of entities) {
+      if (isReferenceEntity(entity)) {
+        let display = this.referenceObjects.get(entity.id);
+        if (!display || display.data !== entity.reference) {
+          const next = createReferenceDisplay(entity);
+          display?.dispose();
+          this.referenceObjects.set(entity.id, next);
+          this.scene.add(next.object);
+          display = next;
+        } else updateReferenceDisplay(display, entity);
+        if (entity.visible) this.bounds.union(display.bounds);
+        continue;
+      }
       let item = this.objects.get(entity.id);
       if (!item) {
         const material = new THREE.MeshStandardMaterial({
@@ -3205,6 +3277,9 @@ export class Viewport {
           this.bounds.getSize(new THREE.Vector3()).length() / 800,
           0.05,
         );
+      if (this.raycaster)
+        this.raycaster.params.Line.threshold =
+          this.raycaster.params.Points.threshold;
       this.extent = Math.max(
         this.bounds.getSize(new THREE.Vector3()).length(),
         0.01,
@@ -3292,10 +3367,13 @@ export class Viewport {
     if (this.zoomWindowActive) this.setZoomWindowActive(false);
     this.viewTransition = undefined;
     const item = entityId ? this.objects.get(entityId) : undefined;
-    if (entityId && !item) return;
+    const reference = entityId
+      ? this.referenceObjects?.get(entityId)
+      : undefined;
+    if (entityId && !item && !reference) return;
     let bounds = item
       ? (item.worldBounds?.clone() ?? new THREE.Box3().setFromObject(item.mesh))
-      : this.bounds;
+      : (reference?.bounds.clone() ?? this.bounds);
     if (
       item &&
       selection &&
@@ -3477,6 +3555,15 @@ export class Viewport {
     this.invalidate();
   }
   private applyClipPlanes(): void {
+    for (const [id, display] of this.referenceObjects?.entries() ?? []) {
+      display.object.material.clippingPlanes = [
+        ...(this.clipping ? [this.clippingPlane] : []),
+        ...(this.clipBoxState?.id === id
+          ? scanClipPlanes(this.clipBoxState.bounds)
+          : []),
+      ];
+      display.object.material.needsUpdate = true;
+    }
     for (const [id, item] of this.objects?.entries() ?? []) {
       item.mesh.material.clippingPlanes = [
         ...(this.clipping ? [this.clippingPlane] : []),
@@ -4457,6 +4544,9 @@ export class Viewport {
       item.pointCloud?.material.dispose();
     }
     this.objects.clear();
+    for (const display of this.referenceObjects?.values() ?? [])
+      display.dispose();
+    this.referenceObjects?.clear();
     this.clearGroup(this.section);
     this.clearGroup(this.measurement);
     this.clearGroup(this.triangleSelection);

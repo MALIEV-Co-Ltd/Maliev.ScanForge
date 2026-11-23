@@ -1,4 +1,6 @@
 import type { Entity } from "./types";
+import { resolveConstructionIdentities } from "./reference-construction-identity";
+import { isReferenceEntity } from "./reference-entity";
 
 /** Flip each target once, retaining geometry, selection and unselected identities. */
 export function toggleObjectVisibility(
@@ -28,6 +30,21 @@ export function duplicateObject(
   id: string,
   entities: Entity[],
 ): Entity {
+  if (isReferenceEntity(source))
+    throw new Error("Reference construction duplication is not yet supported.");
+  const constructionOrderKey =
+    source.constructionOrderKey === undefined
+      ? undefined
+      : resolveConstructionIdentities(
+          [
+            ...entities,
+            ...(entities.some((entity) => entity.id === source.id)
+              ? []
+              : [source]),
+            { id },
+          ],
+          [id],
+        ).orderedSources[0].constructionOrderKey;
   let name = `${source.name} copy`;
   for (let index = 2; entities.some((entity) => entity.name === name); index++)
     name = `${source.name} copy ${index}`;
@@ -39,6 +56,7 @@ export function duplicateObject(
     locked: false,
     selectable: true,
     parametric: undefined,
+    ...(constructionOrderKey !== undefined ? { constructionOrderKey } : {}),
   };
 }
 

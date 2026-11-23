@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "internal source primitive adapters; construction feature incomplete",
+  "applicationBehaviorChanged": false,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/reference-construction-identity.ts",
+      "sha256": "f4bb532ba3cbb3c1e90c9f1dcb9af12dab9c90c7333f7ed04a743ce6017c0992"
+    },
+    {
+      "path": "src/reference-point-evaluation.ts",
+      "sha256": "26f69e1c61d1f74beaa4dcb994d2ab32e1739fec441aaa3e6dc56878156aa7b2"
+    },
+    {
+      "path": "src/reference-geometry-numerics.ts",
+      "sha256": "2301f66092d90b25018348895f09a62039969005e5c8481548196e4555142bff"
+    },
+    {
+      "path": "tests/reference-construction-values.test.ts",
+      "sha256": "dce109e1d8c4877c6eff5935f919cb193ad5cc1d05be665a234fefa1aebf05e7"
+    },
+    {
+      "path": "tests/reference-construction-identity.test.ts",
+      "sha256": "ab4cc765de49e11204e70f4c1724aa7db556dbabc2da43abe200fdaee16f411a"
+    },
+    {
+      "path": "tests/reference-point-evaluation.test.ts",
+      "sha256": "44b388384f84f3c45fd87b9376049d1a9a45443f512e5bc4af8d1e7ec955b384"
+    },
+    {
+      "path": "tests/reference-geometry-numerics.test.ts",
+      "sha256": "e024c813191b5aaf2f84643abe03526027e66677b2f382173f79ef9d74995608"
+    },
+    {
+      "path": "src/reference-line-evaluation.ts",
+      "sha256": "b0f66c849c040c774dec907d919fdd7edd2782a7ddb008aab4dc8424436f947e"
+    },
+    {
+      "path": "src/reference-line-pairs.ts",
+      "sha256": "bbe5f487bc1c3c0f738fdf6041b7cf420a1349676bb66292c9821e713ee39957"
+    },
+    {
+      "path": "tests/reference-line-evaluation.test.ts",
+      "sha256": "d448ea58b6f833b0da393918b0accb1642c5bae6ed933e01c654c0079c593312"
+    },
+    {
+      "path": "src/reference-construction.ts",
+      "sha256": "5bf220e2f19129251b47bd6287cfd2721a9b8aac93e70286d22e143adbaa6b20"
+    },
+    {
+      "path": "tests/reference-construction.test.ts",
+      "sha256": "dd63cbf87a8d6fc95f07d227e8cef042174fbdf3d59fc72bf72d1b0f4a8d3ef7"
+    },
+    {
+      "path": "src/reference-construction-evaluation.ts",
+      "sha256": "d3ee66e0b94e6cedc3ee861a53776e650c67a34beea26aa871661021688c0d90"
+    },
+    {
+      "path": "tests/reference-construction-evaluation.test.ts",
+      "sha256": "b6717d722721e874b829a0bafd4666c70178b61cf6cb05d532a0d19a77e3c3cc"
+    },
+    {
+      "path": "src/reference-source-primitives.ts",
+      "sha256": "7c5a57e44c99bc9035299f86e4f9059bdd323fd596c3b1974fee3199dd63a92c"
+    },
+    {
+      "path": "tests/reference-source-primitives.test.ts",
+      "sha256": "e29cbf4606e789a891f93a08689e11fa3f0cf3ba499f19e085350f7d2a3072bb"
+    },
+    {
+      "path": "src/scan-native-datum-cad.ts",
+      "sha256": "12059517e8b582799e52ad0aab2afdbfd2eb926e9a93d11012cd3ba59ca1c150"
+    },
+    {
+      "path": "tests/scan-native-datum-cad-axis.test.ts",
+      "sha256": "fda940e95eb1200df033d01301b03639273fa5655100ba95f8d97e8f1e6ad937"
+    },
+    {
+      "path": "tests/scan-native-datum-cad-plane.test.ts",
+      "sha256": "aa2f8254b4d8f7f7600e45cc380beea84af7f073425bee59beaf236b4e4d85a3"
+    },
+    {
+      "path": "tests/fixtures/alignment-datum-cad-axis-native.json",
+      "sha256": "f8f0bb7744988321874368f811149d80209e40e447a4e3d1525ce26f8f02b381"
+    },
+    {
+      "path": "tests/fixtures/alignment-datum-cad-plane-native.json",
+      "sha256": "1227e2d99d15af3a393a2b5e7d27a4f630dadd631cea2f5cf4d0f97f7ad55196"
+    }
+  ],
+  "previousCheckpoint": {
+    "path": "docs/evidence/reference-construction-evaluation-20261023.json",
+    "sha256": "f3e918a65cccaabb87fd95574a8f318fbf2f30cf0a69ac96862c3e175ba1ec4d"
+  },
+  "nativeStaticBasis": {
+    "path": "docs/evidence/reference-source-resolution-20261023.json",
+    "sha256": "ced798babd79f3afd72a0016fb36cf5d49d5d13e114b9c3f0951ec393d4028a3",
+    "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90"
+  },
+  "contract": {
+    "directPoint": "Copy stored sphere/reference-point XYZ.",
+    "directAxis": "Cylinder/reference-line: stored extent times direction plus origin. Preserve zero/negative extents and unnormalized directions at this snapshot boundary.",
+    "directCone": "Start uses offset times direction plus origin; end uses (length + offset) times direction plus origin, independently of rounded start.",
+    "directPlane": "Copy origin, normal, equation offset and direct half-sizes separately.",
+    "cadAxis": "Only resolved OpenCascade cylinder, cone and torus parameters. Reuse nativeDatumCadAxisReference and reconstruct end as direction times returned positive extent plus start; do not use the trimmed last-V point.",
+    "missingObjects": "Undefined object produces unavailable/objectResolved=false; explicit unsupported direct type produces unavailable/objectResolved=true.",
+    "validation": "Reject malformed/nonfinite supported snapshots and output overflow. This finite-domain admission is an application contract, not a claim about native NaN/infinity behavior.",
+    "excluded": "Host lookup, multi-interface dispatch priority, source admission, unit/frame conversion, provider picking, CAD planes, classification 7 and alternate-provider extent."
+  },
+  "historicalFixtures": {
+    "axisCases": 72,
+    "planeCases": 32,
+    "axisImageSha256": "e10b727582bc2b59f2e243ee7f247642957e388fc6bb995d7931afb9e77f78d1",
+    "note": "Existing fixture tests compare saved controller fields byte-for-byte. The new oblique endpoint test derives its expectation from captured start/direction/length; endpoint bytes were not themselves captured. Neither proves current-image construction runtime equivalence."
+  },
+  "validation": {
+    "buildSucceeded": true,
+    "buildId": "scanforge-6142a64d7167caf2",
+    "buildAssetCount": 271,
+    "testsPassed": 370,
+    "testFilesPassed": 10,
+    "newSourceTestsPassed": 28,
+    "priorConstructionTestsPassed": 236,
+    "historicalCadRegressionTestsPassed": 106,
+    "receipts": [
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-build-build.receipt.json",
+        "sha256": "b87ef1dfe0dbd5155a437cc8736e89e7234bf29209c54176aca9d89006f194e1",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 32.390907000008156,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 3072,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 2503053312,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-build-review-build.receipt.json",
+        "sha256": "73e671ddef3d195f550ffc43855eefff792189cdbc853724ec4491bcc03e52fe",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 33.29760979999264,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 3072,
+        "guardMiB": 4096,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 2444976128,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-format-mirror-focused.receipt.json",
+        "sha256": "19c491640758b232f2e980f361e4be030e99ba43dc93b542058abf01617f86dc",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.20864199999778066,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 103895040,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-format-review-mirror-focused.receipt.json",
+        "sha256": "3d64ffa664c3c2e686132f33b61174d6bd0693fa0d8f86a2a216adcc83180e0a",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.20934430000488646,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 104071168,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-green-mirror-focused.receipt.json",
+        "sha256": "88508c0037585670f0d2c8745e0eefd2ba94f8546f3b28b4fe0afaea59cb1055",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.7741985000029672,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 297443328,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-green-review-mirror-focused.receipt.json",
+        "sha256": "d93cfeb48f73fee271089e342fcd5a30799ef0afe3ccd236188de33e7e5dec76",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 1.8253769000002649,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 299909120,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-reference-source-primitives-r1-red-mirror-focused.receipt.json",
+        "sha256": "8f6b784b6c94d762a27fb046b26fcbf307b7f48d046b3778e0f2d986042a8812",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.6130169999960344,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 300,
+        "outerPeakJobMemoryBytes": 260263936,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      }
+    ]
+  },
+  "review": {
+    "reviewer": "reference_numerics_final_review",
+    "actionableDefects": 0,
+    "addedCoverage": [
+      "Zero/negative direct stored extents",
+      "Oblique endpoint reconstruction using historical captured fields"
+    ],
+    "reviewerRanTests": false
+  },
+  "descriptorExploration": {
+    "artifacts": [
+      {
+        "privateArtifact": "construction-descriptors-r1.json",
+        "sha256": "508b91dbcb38d7f75d0eb7ef83e1cc597c60378bce2b89cbe1a4246d30685554"
+      },
+      {
+        "privateArtifact": "construction-descriptor-refs-r1.json",
+        "sha256": "8c0f5f23bc7c6d59cb1e0609b5592443002680af9036fa56e12dd24f816040b9"
+      }
+    ],
+    "result": "Raw descriptor identity bytes and 662 LEA-reference candidates found; no matching full-width immediate candidates. The requested 128-byte type-name range derived from adjacent RTTI did not map through the static reader; shorter reads and runtime bindings were not attempted. No class identity or complete cross-reference coverage inferred.",
+    "failedAttempts": "First Python invocation used the Node-only runner incorrectly; corrected with an owned Node bridge. First candidate collection exceeded its arbitrary output assertion; revised to retain all candidates and print compact counts. Initial RTTI-name read failed unmapped-range validation; retained raw records without claiming names.",
+    "receipts": [
+      {
+        "privateArtifact": "project-index-validation-construction-descriptors-r1-cad.receipt.json",
+        "sha256": "169d38f061af94f74d1e37fc24dfae96b3bc4114a538e4eee993438394d25b1b",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.05661659999168478,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 30986240,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-construction-descriptors-r2-cad.receipt.json",
+        "sha256": "2f9f4dc082ce1c57df135b343e6151a6a1bbca83b864e6ad2f6cbc495844ba31",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.30993649999436457,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 93790208,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-construction-descriptors-r3-cad.receipt.json",
+        "sha256": "90e38f150388e5b5129b21124c33ac5ddd16a77817eedd6e9014e3bfe70a6093",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.25881240000308026,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 95264768,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-construction-descriptors-r4-cad.receipt.json",
+        "sha256": "2b22e74c510a951d6c2e083f1fe425bf99609b216aaf96fd35b1144795171356",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.2591097999975318,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 93708288,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-construction-descriptor-refs-r1-cad.receipt.json",
+        "sha256": "1b4c2f5694c5b402fe8af5a516709cd5ad4d3242d5d2cdc9a4e5d6ab940785c6",
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.41031370000564493,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 125214720,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      },
+      {
+        "privateArtifact": "project-index-validation-construction-descriptor-refs-r2-cad.receipt.json",
+        "sha256": "034a02675920a2955e94a8217437e3a9189d5e7748542b404510642a6415e60a",
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 0.41050019999966025,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "heapMiB": 1024,
+        "guardMiB": 3072,
+        "leaseSeconds": 60,
+        "outerPeakJobMemoryBytes": 125476864,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "rootExited": true,
+        "cleanupErrors": []
+      }
+    ]
+  },
+  "mcpCoverage": "Internal helpers only. No application capability or MCP discovery changed; complete shared GUI/MCP workflows, schemas, agent docs and rendered acceptance remain required before publication.",
+  "remaining": [
+    "Exact scene and retained-pick resolution",
+    "Coordinate frames, units, provider and subfeature identities",
+    "Unresolved point fields and controller editing paths",
+    "Semantic entity/project/history/digest integration",
+    "Dependency/transform/duplicate/delete behavior",
+    "Shared GUI/MCP lifecycle and rendered/native acceptance"
+  ],
+  "limitations": [
+    "No native image was executed",
+    "No browser access occurred",
+    "No feature completion or commit claim"
+  ]
+}

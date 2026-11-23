@@ -1,0 +1,294 @@
+{
+  "date": "2026-10-24",
+  "scope": "Known-parameter analytic straight-line witness and retained-candidate read-only diagnostic. Full reconstruction remains active.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-line-self-connection.ts",
+      "sha256": "2461f7ea9cdb62c749147e88d7666c1a25e68754588275e67621bccd47ecb355"
+    },
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "20d1916e8eb316e88982c2aad566f86205ce59fbd5d392511f175b3bf8b39f8d"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "cf9e8a17201830cb48fc29eb77f00d773d600e293a34082274d477ff550eb469"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "a93564f2c9c4a5ad459f738050091a1bbed0b8f8bb3bd7757ce617513857d1f0"
+    },
+    {
+      "path": "src/sketch-line-prepared.ts",
+      "sha256": "9d02e8c3e784e6f5fceb2c94e0738057f162933086ecbec45825d58e218077ed"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "55fb3102eca7f67a6df5e80cf7ff266fb8cba40855568a423d90418ec5931c11"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "tests/sketch-line-self-connection.test.ts",
+      "sha256": "5f43865c9c312104224871035f7249ec47dde334c7dc64570d0af873c3639c7b"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "69201c98f91951c2b5eba3533d8109c8b4f5c74d47d9408edd714d66b15d62e5"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "32d976a39495515c88305a833969db435a1aa42f7cb371b4b0441be7fc88fbff"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "23ff98f1d2c13ad9455fcbf7fce210207ebcdafa6c1b36d47a5b8592c995234b"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "64aa6a3d7d2297bcecf912bf0ba9a67976854a0a5921a253e1129cc36a7707e8"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "92466a62611117ac8a124abc5959a2540b61101290c191b65b8cd05b92c29d83"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "2218a2184693c4949c2d977c58c0a96b86c8288db675b43867bea63ad71f411b"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "b3e69b8a3c624f4314692e9372b004a8e3881d68e9f49647daffb41aadef4d9c"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "b3e69b8a3c624f4314692e9372b004a8e3881d68e9f49647daffb41aadef4d9c"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "14cbfa932dec9b9135954981d4f29f7ebd321c5afb3f25b53f8b80b18a685743"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "trace-line-self-connection-r4.py",
+      "sha256": "8d98fcb274e84e3d88108e8a41d267862547840bcedbdcccfe1ddd95f1906b0f"
+    },
+    {
+      "name": "line-self-connection-trace-r4.json",
+      "sha256": "69dd24ad8f6a99794f122081fa3eafd69fe34cdda3340875f22abfe8c92a7609"
+    },
+    {
+      "name": "trace-line-witness-r1.py",
+      "sha256": "0689547c431c686bf57ba51cdc7b8211103c6232c35c3119fef3c610d9f39317"
+    },
+    {
+      "name": "line-witness-trace-r1.json",
+      "sha256": "78a58c84d6177a7c09938315a8d215c3cc1369a8a52cd3af587bd90576760aa9"
+    },
+    {
+      "name": "verify-line-witness-r1.py",
+      "sha256": "41cb417780b2909082b51994efb7e24424da959ed1f58d8d9f12beed49c6adbd"
+    },
+    {
+      "name": "line-witness-verified-r1.json",
+      "sha256": "f3ceadee7bf01fc512780e5157596b1108f326c8180c2c69a52740f157c9db16"
+    },
+    {
+      "name": "line-endpoint-evaluation-verified-witness-r1.json",
+      "sha256": "882a7cfea2fca4c0b41cdf999fee2cf4c4424e52cc26ef713d6f170543a302dd"
+    },
+    {
+      "name": "run-sketch-line-witness-r1.py",
+      "sha256": "9f665fa6182d32533fe1acff4b91769d6d09dde9c7c937ea9a978628de1a54b1"
+    }
+  ],
+  "helperSha256": "b3e69b8a3c624f4314692e9372b004a8e3881d68e9f49647daffb41aadef4d9c",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "offlineCache": "scanforge-2445d611c25136b7",
+  "static": {
+    "distinctInstructionStartsRechecked": 3638,
+    "selectedAnchors": 34,
+    "lineDispatchTables": 2,
+    "constants": 2,
+    "analyticEvaluator": {
+      "procedures": 3,
+      "listedStarts": 219,
+      "anchors": 22
+    },
+    "scope": "Known endpoint parameters bypass cache projection; nonperiodic line preserves them; arithmetic mean parameter then analytic evaluation. Other indirect cases not resolved."
+  },
+  "validation": {
+    "buildPassed": true,
+    "heapMiB": 3072,
+    "aggregateJobGiB": 4,
+    "focusedTests": 94,
+    "focusedFiles": 7,
+    "newUnitTests": 8,
+    "kernelGroups": 8,
+    "replacementCycles": 100,
+    "draftKernelGroups": 16,
+    "candidateKernelGroups": 31,
+    "cadSmoke": true,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false,
+    "servedHelperMatchesLocal": true,
+    "devServerPid": 28864,
+    "workerDispatcherMatchesHead": true
+  },
+  "semantics": [
+    "Explicit squared threshold; lazy witness only after endpoint proximity.",
+    "Known parameters retained, no projection or guessed default settings.",
+    "Arithmetic mean is (last + first) * 0.5, followed by existing analytic direction * parameter + origin.",
+    "Candidate diagnostic is detached, read-only and unavailable after disposal.",
+    "Finite/unset errors are application boundary guards; no complete native status inferred."
+  ],
+  "expectedFailures": [
+    "Missing module before implementation.",
+    "First kernel fixture assumed nominal midpoint; actual converted interval changes the witness parameter by one bit. Corrected fixture passed without implementation change."
+  ],
+  "mcp": "Internal common worker method only; existing public sketch_get/sketch_set/sketch_manage contracts unchanged. No GUI-only authoring or unsupported advertised operation.",
+  "limitations": [
+    "Unset parameter recovery, other curve kinds and downstream connection topology remain open.",
+    "Complete native body admission and production backend/child adapter remain unproven.",
+    "Ordered sketch model, shared GUI/MCP editor and all full-objective milestone/acceptance work remain required."
+  ],
+  "receipts": [
+    {
+      "name": "trace-line-self-connection-r4-cad",
+      "sha256": "813377d44d462c3a859847a5a0e08ee7647e383631d679c91200e56954c016a0",
+      "exitCode": 0,
+      "peakBytes": 134668288,
+      "seconds": 0.8647406999953091,
+      "terminalClean": true
+    },
+    {
+      "name": "trace-line-witness-r1-cad",
+      "sha256": "41ad1d08f46fee2d5c7885664aeeb291faebacec0e77acbe58a26dff7f2cd346",
+      "exitCode": 0,
+      "peakBytes": 134856704,
+      "seconds": 0.6634292999806348,
+      "terminalClean": true
+    },
+    {
+      "name": "verify-line-witness-r1-cad",
+      "sha256": "57d586cf8710d5e0fa782ca22be613aa67184fcf76ffa0841f9506ea7566c521",
+      "exitCode": 0,
+      "peakBytes": 232443904,
+      "seconds": 1.1695877000165638,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-red-mirror-focused",
+      "sha256": "523f2c6534f990f55e01abb542a103c262feb04d7ae45221f254b35d5c925323",
+      "exitCode": 1,
+      "peakBytes": 284237824,
+      "seconds": 1.3705192999914289,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-unit-mirror-focused",
+      "sha256": "7cac0dc1dbf14e8a552f6c662bc3ac806f27e97c78ee1e9dd30fd1eb0e3b88b4",
+      "exitCode": 0,
+      "peakBytes": 283377664,
+      "seconds": 1.370777799980715,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-unit-final-mirror-focused",
+      "sha256": "eab0a05accd67b62b3d8518c4eebc1844601e659fd63db92a139a4205997dede",
+      "exitCode": 0,
+      "peakBytes": 283303936,
+      "seconds": 1.3708027000247966,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-format-mirror-focused",
+      "sha256": "f9924b4ac630f6f544a0cf64eb62d6b9b3dc996a4698dcaa1ec9e47a09237311",
+      "exitCode": 0,
+      "peakBytes": 93270016,
+      "seconds": 0.3095993000024464,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-format-final-mirror-focused",
+      "sha256": "fc1c0c04b696c3efd32aa1f48ea0d4df052791d8a510c5670d471d9ae5fdedb9",
+      "exitCode": 0,
+      "peakBytes": 92049408,
+      "seconds": 0.30961119997664355,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-build-build",
+      "sha256": "ccc04b33189d5bc6d71b800f84bd5cd0a9355f481738557e3126c0c0470f67c6",
+      "exitCode": 0,
+      "peakBytes": 2543005696,
+      "seconds": 56.96811649997835,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-kernel-mirror-focused",
+      "sha256": "777f93c8fa09281cfddcfbefee6ec2b1e7f5e96cd3ca346afccca18975bf8a32",
+      "exitCode": 1,
+      "peakBytes": 440823808,
+      "seconds": 0.6140404999896418,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-witness-r1-kernel-corrected-mirror-focused",
+      "sha256": "fb36bed0184deca00991afeb2a8a130b1f3a0f6d1748534ea4a4093070f5f4d6",
+      "exitCode": 0,
+      "peakBytes": 449429504,
+      "seconds": 0.8145180999999866,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-child-line-witness-mirror-focused",
+      "sha256": "b7c169ed88643ca81aeab6f521d0a689e2f4b92fd3dce4829274d42ea85eda09",
+      "exitCode": 0,
+      "peakBytes": 488185856,
+      "seconds": 0.9162567000021227,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-kernel-line-witness-mirror-focused",
+      "sha256": "069040dcb14627da2a425012fe4cb2d5164fb37f3e45eab5c01e382b4cd2e4c4",
+      "exitCode": 0,
+      "peakBytes": 484548608,
+      "seconds": 0.6641303999931552,
+      "terminalClean": true
+    },
+    {
+      "name": "sketch-line-failure-path-r1-cad-line-witness-cad",
+      "sha256": "205f0ec547b162c883eb8e724140c08e72c9d338a684be2d6d12c189e63ad561",
+      "exitCode": 0,
+      "peakBytes": 736456704,
+      "seconds": 10.981756699999096,
+      "terminalClean": true
+    }
+  ]
+}

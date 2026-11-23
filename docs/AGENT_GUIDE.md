@@ -55,8 +55,11 @@ cancellation, the same selected source can resume within its existing preparatio
 lease; disposal or replacement cancels that retry. Exceptions from import completion
 callbacks reject the import and release its lease. Tool parameters and schemas are
 unchanged. The original three-scan import and navigation replay passes under the
-existing 2 GiB diagnostic Job limit with bounded speculative admission. A longer
-replay still exceeds that cap when automatic backup encoding starts; full native
+historical 2 GiB diagnostic Job limit with bounded speculative admission. That
+longer replay exceeded its cap when automatic backup encoding started; it does
+not describe the current validation limit. The later full-history 736 MB GUI/MCP
+project round trip passes under 4 GiB in a persistent browser profile; see
+[large-project transfer evidence](LARGE_PROJECT_MCP_TRANSFER.md). Full native
 alignment remains unverified. See [import scheduling evidence](VIEWPORT_PERFORMANCE.md#imports-and-speculative-topology-preparation).
 
 Loading or selecting a raw triangle scan schedules topology preparation after
@@ -367,7 +370,30 @@ Use `backup_delete` with the selected `backupId`, `expectedRevision`, and a fres
 
 Backups are local to the paired browser origin and save changed data at 30-second intervals. Refresh or shutdown may lose work since the last completed interval. Stable project identities are shared across file copies; two tabs working on the same identity share its backup, with the last completed write taking precedence. New documents have separate identities. See [project files and recovery](PROJECT_FILES.md).
 
-Save/export and automatic backups encode numeric geometry in canonical chunks of at most 1 MiB and stream compressed payloads into Blobs. MCP project export uses the same codec, with unchanged project formats, geometry hashes, history and cancellation. This bounds numeric staging, not total memory: compressed output, browser storage and BRep text remain additional allocations. No new parameter is needed.
+GUI and MCP document replacement release the previous pending automatic-backup
+snapshot immediately. Saved-state change detection does not retain old geometry
+or undo history. An already active backup can retain its snapshot until completion
+or cancellation; the 30-second save interval and recovery contracts are unchanged.
+
+Binary restoration decompresses directly into final readonly shared buffers when
+cross-origin isolation is available, avoiding a second complete decompressed
+geometry copy. GUI opening, MCP `project_import`, and `backup_restore` retain
+the same chunk hash checks, buffer aliases, history, cancellation and fallback.
+
+Browser binary project saves/exports of at least 64 MiB use temporary IndexedDB backing before
+publication. MCP uploads checkpoint their accumulated bytes to the same disk
+backing at each 64 MiB boundary. Successful staging deletes the temporary database
+record; live immutable Blobs retain the bytes through browser-managed ownership.
+Storage failures preserve the previous upload and report an operation failure;
+retry from its reported size. Interrupted staging records expire after 15 minutes
+and are swept on subsequent staging. Each open/transaction has a 30-second timeout.
+Environments without IndexedDB retain ordinary Blob storage. Logical artifact
+quotas, read/upload chunk limits and the process validation cap are unchanged.
+Use a normal persistent browser profile for disk-backed large transfers. Chromium
+private/incognito contexts keep IndexedDB Blobs in memory; they do not provide
+the same memory reduction, even when IndexedDB APIs are available.
+
+Save/export and automatic backups encode numeric geometry in canonical chunks of at most 1 MiB and stream compressed payloads into Blobs. Completed payloads are checkpointed through temporary Blob storage when the pending batch reaches 64 MiB, before encoding further payloads. A batch can exceed that threshold by its last payload; this is not a total-memory cap. MCP `project_export` uses the same codec, with unchanged project formats, geometry hashes, history and cancellation. A checkpoint failure rejects the save/export; automatic backups retain the previous successful file. Persistent profiles provide disk backing; private contexts and hosts without IndexedDB retain memory backing. Browser storage, individual compressed payloads and BRep text remain additional allocations. No new parameter is needed.
 
 1. Read `scanforge://agent-guide`, then discover tool schemas.
 2. Call `project_get`. Retain object IDs, feature IDs, units and the response's top-level `revision`.
@@ -378,20 +404,49 @@ Save/export and automatic backups encode numeric geometry in canonical chunks of
 
 Never infer that an operation succeeded from a status message or transport success. Check `ok`, the job's terminal status and its result. Read the model state after modeling changes.
 
-Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Binary format 2/3, source geometry, scanner normals, selections and undo/redo history remain unchanged. Derived display normals preserve previous restore shading. See `docs/PROJECT_LOAD_PERFORMANCE.md` for measurements and limits.
+Project and backup restoration decode, validate and prepare current mesh display buffers in one leased background worker before replacing the workspace. GUI opening and MCP `project_import`/`backup_restore` share cancellation, failure handling and the two-minute lease. Failed or cancelled restoration preserves the open project. Large ordinary numeric arrays travel in lossless Float64 staging buffers with cooperative reconstruction, avoiding blocking structured-clone work during restore and automatic backup. Only newly created staging buffers or decoded worker-owned buffers transfer; existing authored and history buffers stay attached. Source geometry, scanner normals, selections and undo/redo history remain intact. Indexed display buffers borrow stored computed normals; older active indexed meshes initialize absent computed normals from their topology. See `docs/PROJECT_LOAD_PERFORMANCE.md` for earlier measurements and limits.
+
+GUI Save, automatic backup and MCP `project_export` share concurrent encoding of
+the same immutable snapshot. Each caller retains its own cancellation: cancelling
+one export leaves another caller's backup running; the last cancellation retires
+the worker. Different geometry, history, metadata or authoring state remains
+serialized separately. The last completed file has only a weak cache reference;
+existing consumers own its lifetime, and a collected result is encoded afresh.
 
 Normal buffers may use compact Float32 storage internally. GUI opening and MCP `project_import` / `project_export` share validation and retain exact binary normal values, including signed zero; JSON exports continue to use numeric arrays. No format version changes. The connected Global Fine Align controller now has the bounded raw-mesh [preview workflow](#global-fine-align-preview-apply-and-cancel); exact-CAD support and complete original-application parity remain gated. It is distinct from the supported `mesh_process` coarse-registration kind `global`. See `docs/NATIVE_GLOBAL_FINE_ALIGNMENT.md`.
 
-Global Fine Align derives command-local alignment normals from each mesh's
-topology during shared GUI/MCP preparation. Imported object normals, including
-scanner-provided PLY normals, remain preserved on the source object.
-The same preparation excludes boundary vertices from source sampling using
-command-local mask-1 flags derived from the native directed-edge neighbor
-semantics. This applies to GUI and `global_alignment_preview`; original topology,
-positions and scanner normals remain unchanged. Flags cost four bytes per indexed
-vertex. Adjacency scratch is checked as allocated under the existing 512 MiB
-preparation admission; a storage failure settles the preview job without applying
-geometry. See `docs/GLOBAL_ALIGNMENT_SOURCE_FLAGS.md` for evidence and limits.
+Undo/Redo and timeline selection initialize missing computed normals when an older
+indexed history entity becomes active. GUI and MCP history operations share this
+path; retained snapshots and authored scanner values stay unchanged. Existing
+computed fields are reused, and `object_get` exposes the activated state.
+
+Indexed meshes may contain `geometryNormals`, separate from scanner-authored
+`normals`. It stores three finite Float32 computed components per original vertex,
+including unused vertices. Import initializes this field with native angle-weighted
+normals. Alignment and rigid transforms rotate the stored vectors through each
+Float32 stage without regenerating or normalizing them. JSON exports represent the
+field as a numeric array; binary project/backup codecs retain its exact Float32
+values in current, undo and redo records without a format-version change.
+`object_get(includeGeometry:true)` includes the field in its geometry artifact;
+`object_geometry_digest` exposes `indexedMesh.geometryNormals` independently from
+`indexedMesh.normals`, with the existing count, encoding, storage and SHA-256 data.
+
+Global Fine Align borrows validated stored computed normals during shared GUI/MCP
+preparation. Legacy indexed meshes without the field derive it in a disposable
+worker and retain it on private acceptance entities; preview/cancel never changes
+the original objects. The preparation summary reports actual derivation workers,
+which can be zero for already prepared meshes. Malformed computed fields reject
+preparation. Scanner-provided PLY normals remain separate and preserved.
+The same preparation uses source mask `0`, retaining boundary vertices in source
+sampling. `global_alignment_state` and the preview result expose this value in
+`inputSummary.mask`. The earlier mask-1 boundary exclusion confused the native
+target-index stride with its separate source mask. GUI and
+`global_alignment_preview` share the correction; original topology, positions
+and scanner normals remain unchanged. Preparation returns zeroed flags
+at four bytes per indexed vertex without building boundary adjacency. Existing
+512 MiB preparation admission and failure handling remain enforced; a storage
+failure settles the preview job without applying geometry. See
+`docs/GLOBAL_ALIGNMENT_SOURCE_FLAGS.md` for evidence and validation limits.
 
 ### Response contract
 
@@ -516,13 +571,16 @@ Supply it to `cad_create` with `name`, the current `expectedRevision`, a fresh `
 
 Upload bytes through `artifact_put` with the original filename, base64 content and `offset:0`. For files larger than a chunk, append subsequent chunks with the returned `artifactId`, the same filename and the exact current byte offset. Each chunk is at most 1 MiB decoded; do not send the entire large scan as one MCP message. An empty first chunk can create the upload handle.
 
-`capabilities_get.limits` reports `artifactBytes` (512 MiB aggregate),
+`capabilities_get.limits` reports `artifactBytes` (1 GiB aggregate),
 `artifactCount` (64 handles), `artifactChunkBytes` (1 MiB) and
 `artifactLeaseSeconds` (900 seconds of inactivity). Delete transfer artifacts
 when finished to release capacity. An expired upload cannot be resumed; start
 a new handle and upload from offset zero. Rejected appends preserve the retained
 artifact. These are logical transfer-byte limits, not process-memory guarantees;
-the shared importer's geometry and worker admissions still apply.
+the shared importer's geometry and worker admissions still apply. The larger
+transfer budget admits full-history aligned projects above 512 MiB without
+changing the 4 GiB validation-process cap. Download and delete an exported
+artifact before uploading another large copy to avoid charging both copies.
 
 Call `project_import` with the completed `artifactId`, `unit:"mm"`, current revision and request ID. Units may be `mm`, `cm`, `m`, `in`, or `ft`; all workspace coordinates are millimetres. Importing a project requires `replace:true`, which replaces the workspace and its authoring/history. Export unsaved work before replacement. STEP/IGES/BREP units follow the existing CAD importer.
 
@@ -550,6 +608,10 @@ PLY mesh import retains supplied finite vertex normals and expands them in origi
 Ctrl+Z/Ctrl+Y use model history in the main workspace. Mesh selection uses its local undo/redo while a local step exists, then falls back to model history. Text fields and modal dialogs keep their native keyboard behavior. MCP retains explicit `history_undo`, `history_redo`, and triangle-selection operations.
 
 Press **V** to toggle each selected object's visibility, retaining the object selection. The entire set changes atomically, using the existing display behavior outside modeling history. Agents use `object_visibility_toggle` with optional `entityIds`; omitting IDs uses the current object selection. Explicit IDs support hidden and locked objects because visibility is a display setting. Empty/stale targets fail before mutation. Geometry and triangle selections remain unchanged. Typing, visible dialogs and busy operations keep V inactive.
+
+**Scan Data → Colors → Auto colorize** assigns a different solid `#RRGGBB` sRGB object color to every object in scene order, including hidden and locked objects. It starts with a restrained CAD-style palette and extends it deterministically, checking uniqueness after RGB quantization. Repeating on an unchanged scene keeps the same assignments; adding, removing or reordering objects can change subsequent assignments on the next click. Up to 10,000 objects are supported, with no partial changes for empty or oversized scenes. Object colors persist in projects. Auto colorize disables the grey/red Normals view to reveal the assigned colors immediately. Selection, opacity, geometry and captured per-point RGB buffers remain intact; captured RGB and analysis overlays retain their existing rendering precedence. This follows existing display-metadata history semantics: modeling Undo/Redo does not revert colors. Agents call `scene_auto_color` with `expectedRevision` and `requestId`, receiving `changed`, `normalsDisplay: false` and `objects: [{entityId, color}]`; `object_get` and `project_get` expose the same assigned colors. The ribbon uses that same executor and its revision, retry and busy guards. No selection is required.
+
+Press **Delete** in the main workspace to delete all selected objects in one Undo step. Text fields, dialogs, busy operations and mesh/sketch editing modes retain their own keyboard handling; holding Delete does not repeat deletion. Keyboard, ribbon and context-menu deletion use the shared `object_delete` operation. Agents can supply `entityId` for one object, `entityIds` (1–10,000 unique IDs) for a batch, or omit both to use the current object selection. Supplying both is invalid. The operation validates every target before committing: locked/missing objects, retained dependent features and split-output restrictions prevent the entire deletion. It returns deleted `entityIds`, plus the compatible `entityId` for a single target. Revision checks, retry receipts and modeling Undo/Redo remain in effect.
 
 PLY mesh imports retain original vertex order and triangle indices. Full-resolution
 binary STL imports retain connectivity reconstructed by the verified native reader
@@ -615,7 +677,21 @@ references** panel in Object properties. Pass `entityId`, optionally `centerAt`
 (1–100, default 50). This native job returns a `jobId`; use `job_get` to await
 completion and `job_cancel` to cancel. It returns `units`, `total`, `nextOffset`
 and reference records with stable object-local IDs, kind, source, point,
-direction and optional length. CAD records include face index and the matching
+direction and optional length. Semantic reference points and lines, when present
+in an internal workspace, return `source: "referenceConstruction"` with IDs
+`<entityId>/reference/point` and `<entityId>/reference/direction`. Points copy
+stored XYZ; lines expose the existing datum adapter's finite-segment midpoint,
+raw direction and nonnegative stored extent as `length` (retaining signed zero).
+A line does not also expose
+a point constraint. `centerAt` has no effect on these stored point/line sources.
+Invalid semantic payloads and nonfinite derived midpoints fail the job without
+changing the source. These IDs can bind `alignment_preview` and `alignment_apply`
+for supported moving scans/CAD; reference constructions remain read-only sources,
+including when locked. The GUI source selector and properties inspection use the
+same discovery path. Creation and project import remain gated pending the rest
+of construction integration and rendered/native acceptance. Historical numerical
+fixtures cover the adapter; this is not a new native GUI capture.
+CAD records include face index and the matching
 display triangle range. Fitted primitives expose only supported reference types;
 unsupported CAD surfaces remain explicit unsupported records. When an exact
 body also retains fitted primitive metadata, both sources are listed with
@@ -770,7 +846,7 @@ This shared workflow does not establish numerical parity with the native fitter.
 
 - One operation admission lane protects the owning model. Lightweight state reads and job/artifact tools remain available while a job runs. A second geometry operation returns `BUSY`.
 - Jobs expire after 15 minutes; mesh/surface/import workers also retain their existing shorter inactivity/hard leases. CAD retains its existing 90-second per-operation timeout. Cancellation is cooperative: synchronous native CAD may finish before its output is discarded and the lane is released. Poll the terminal job status; do not assume `job_cancel` completed native cleanup immediately.
-- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 512 MiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
+- The latest 32 geometry jobs are retained. Artifact storage is limited to 64 artifacts totaling 1 GiB, with a 15-minute inactivity lease and 1 MiB decoded upload chunks. These are automation transfer limits; they do not change the shared importer's geometry/worker admissions or the editor's manual file limits. Delete completed transfer artifacts before the next large upload when needed.
 - Primitive fits use at most 20,000 sampled vertices. Point-cloud selection slots identify XYZ records; mesh selection slots identify facets. Existing `analysis_fit` arithmetic is retained: `selectionOnly:true` extracts selected coordinates into Float32 storage before sampling; omitted/false uses original whole-source coordinates. Hidden metadata does not independently filter this primitive-fit operation. GUI empty selection retains whole-input fallback, while explicit MCP selection requires a nonempty mask. Synchronous section/deviation analysis is capped at 250,000 triangles; reduce a separate copy or a supported selected region when needed. Modeling estimates are not certified metrology.
 - Locked objects and affected locked dependents cannot be edited. Geometry changes invalidate stale triangle selection/authoring where applicable. Individual split outputs cannot be deleted alone.
 - Edge/face references remain kernel indices. Refresh state and revision after topology changes. Persistent topology naming is not implemented.
@@ -832,9 +908,72 @@ transaction is constant-time. Undo/Redo, preview discard and project recovery
 retain the pose. Geometry-changing edits discard inherited placement when they
 replace the world-coordinate buffers. Binary exports containing posed clouds use
 manifest version 3, or version 4 when cloud attributes are present, and share
-local buffers across history; the reader also accepts version 2. JSON exports
-include both world compatibility geometry and placement, using wire version 2
-when cloud attributes are present.
+local buffers across history; the reader also accepts version 2. Construction
+identity metadata selects binary manifest version 5, which also preserves cloud
+attributes and placement. JSON exports include both world compatibility geometry
+and placement, using wire version 2 for cloud attributes or version 3 for
+construction identity metadata.
+
+Ordinary objects may carry a persisted `constructionOrderKey`, exposed by
+`object_get` as 32 lowercase hexadecimal characters. It is read-only through
+`object_update`; duplicate an object through `object_duplicate` to receive a new
+identity. GUI duplication uses the same operation. Project save/reopen and model
+Undo/Redo preserve these keys, and duplicate or malformed keys within one scene
+are rejected. Keys may recur across different history states for the same object.
+
+Point/line reference construction remains under implementation. Its internal
+codecs preserve precise semantic geometry and recipes, but GUI project opening,
+MCP `project_import` and `backup_restore` reject files containing these objects
+in the current scene, Undo history or Redo history. The failure leaves the open
+workspace intact and reports that reference construction objects are not yet
+supported. Such files must wait for reference rendering and operation support;
+changing their version tags or removing semantic metadata is not a migration.
+No reference construction command is advertised yet.
+
+The reference inspection contract is implemented for integration testing while
+that admission gate remains closed. `object_get` and `project_get` report semantic
+`points`, `lines`, `triangles` and Float64 `bounds.min/max` in millimeters.
+`reference.geometry` and `reference.definition` contain readable saved values;
+`geometryEncoding` and `definitionEncoding` retain exact numeric bits, including
+signed zeros, across JSON transport. `includeGeometry` returns a geometry artifact
+with `units`, `semantic` and `encoding`, rather than an empty triangle buffer.
+The encoded form is authoritative when comparing bits.
+
+`reference.evaluation` reports `{status:"stored", outcome:null}` because the
+persisted internal completion word does not identify the last evaluation outcome.
+Inspection does not evaluate the recipe or claim a successful/fallback result.
+`sourceBindings` reports `identity-matched`, `missing-object`, `unassigned-key` or
+`identity-mismatch` in saved common-source order. `recordBindings` retains each
+line record's index and object presence, including duplicates; presence does not
+establish a resolved geometric pick. Inspection never assigns keys or repairs
+links. Mesh-copy, sampled analysis/editing and element-selection paths reject
+semantic references before worker dispatch or mutation. These contracts do not
+enable creation, import or dependency propagation.
+
+The GUI geometry inspector and status bar use these same semantic counts and
+precise bounds. A reference shows point/line counts and its position or bounds;
+it does not show triangle vertices, surface area or mesh volume. Bounds-derived
+display statistics refresh when the semantic payload changes, even if the empty
+display carrier is reused. These display centers are bounding-box centers, not
+the datum adapter's arithmetic convention. `ui_set` rejects brush/section modes
+and sampled-geometry panels for reference selections before changing interface
+state; choose a sampled mesh/cloud or CAD object for those tools. GUI navigation
+uses the same validator. Element selection and section analysis also retain
+their shared sampled-geometry rejection. Reference imports remain gated and
+server-rendered inspector tests do not establish rendered/native GUI acceptance.
+
+Reference viewport integration remains behind that import gate. Its point/line
+display path is separate from triangle meshes and preserves authoritative
+Float64 bounds for scene and object framing. Display vertices use Float32 offsets
+from the stored start/point; offsets outside finite Float32 range fail explicitly
+without replacing saved geometry. Canvas and `viewport_pick` use precise semantic
+hit points and report `referenceKind:"point"|"line"`, `triangleIndex:null` and no
+cloud `pointIndex`. Visibility, locking, selectability and clipping affect hits;
+visible locked objects still contribute to the scene-scaled hit tolerance.
+Reference picks remain outside triangle/point-cloud brush selection. Decorative
+CAD edge lines do not become semantic reference hits. These CPU scene/raycast
+contracts have automated coverage; rendered GPU/native acceptance, GUI statistics
+and datum consumers remain outstanding.
 
 The first alignment of a cloud loaded from a JSON project retains the active
 point selection while converting local storage to Float32. Subsequent poses and
@@ -948,8 +1087,9 @@ separate incomplete path, and the point-pair ribbon remains independently gated.
 
 ### Indexed scanner normals in alignment
 
-PLY normals are retained both as display normals and as optional `indexedMesh.normals`
-in original vertex order, including unused vertices. `object_get` with
+PLY scanner normals are retained as authored corner normals and as optional
+`indexedMesh.normals` in original vertex order, including unused vertices. These
+authored fields are distinct from the derived display-cache normals. `object_get` with
 `includeGeometry:true` returns those indexed normals in its geometry artifact.
 JSON, streamed JSON and binary project save/reopen preserve them. Older projects
 without this optional field remain supported.
@@ -960,8 +1100,12 @@ Meshes without this data use the existing native-derived normal generator.
 Paired/ICP/global and origin/reference alignment rotate indexed normals with the
 scan; metadata changes retain them and invalidated topology is discarded.
 `mesh_transform` preserves normals through rotation, without applying translation
-or uniform scale to the vectors. The GUI and MCP derive display normals from the
-same transformed indexed records. No new operation parameter is required.
+or uniform scale to the vectors. GUI and MCP alignment share the same staging
+operation, which derives display-cache normals from the transformed indexed
+geometry. It does not use the authored scanner normals for that cache. Native
+rendering parity remains unverified; see
+[the original PLY staging comparison](NATIVE_GLOBAL_ORIGINAL_PLY_STAGING.md).
+No new operation parameter is required.
 
 # Picked-point alignment session editing
 
@@ -1091,7 +1235,7 @@ Subsequent edits require `sessionId`, `expectedSessionVersion`, the current proj
 
 GUI and MCP share these operations and the same live session store. Preview changes GPU matrices without baking authored geometry or adding history. Measured bounds are fresh after numeric steps and Current View; fast drags, Begin and Reset do not publish measured bounds. `viewport_get.interactiveMirror` reports asynchronous mirror readiness/failure. Unrelated geometry, selection, launchers, import, history and preview edits are blocked while the session owns the scans. Camera navigation remains available.
 
-`interactive_alignment_apply` returns a cancellable job receipt. Poll `job_get`; success bakes the poses once and creates one history entry if geometry changed. Use `preview_discard` with `target: interactive` (or GUI Cancel/Escape) to cancel and release the session pool/display without changing committed geometry. It does not invoke another preview's discard handler. Refresh session versions after each accepted edit; identical requests retain the existing retry contract. See [native alignment evidence](NATIVE_INTERACTIVE_ALIGNMENT.md).
+`interactive_alignment_apply` returns a cancellable job receipt. Poll `job_get`; success bakes the poses once and creates one history entry if geometry changed. Computed viewport scale and effective grid spacing remain observable in `project_get.settings` but do not change the project revision, so camera motion or layout updates during Apply do not cause a workspace conflict. Actual project and authored setting changes still invalidate running work. Use `preview_discard` with `target: interactive` (or GUI Cancel/Escape) to cancel and release the session pool/display without changing committed geometry. It does not invoke another preview's discard handler. Refresh session versions after each accepted edit; identical requests retain the existing retry contract. See [native alignment evidence](NATIVE_INTERACTIVE_ALIGNMENT.md).
 Camera navigation picks the surface under the pointer once at orbit start and keeps that world point fixed throughout the drag, without changing the initial framing. While a visible large mesh has no ready CPU surface index, a temporary one-pixel GPU depth pass picks the visible triangle surface with transforms and clipping, without a synchronous full-scan query. Empty space uses the view-center surface, then the previous pivot/target. Large point clouds retain the camera fallback independently of measured-point selection. Ordinary selection and MCP `viewport_pick` retain their exact hit and triangle-ID contracts.
 
 MCP `viewport_control` with `action: "rotate"` accepts optional paired `x`/`y` coordinates in normalized top-left `[0,1]` space. Supply them to rotate around that visible surface using the same surface picker and orbit correction as mouse navigation; a missing surface returns an error without moving the camera. Omit both for the existing target-centered rotation. Read `viewport_get` before/after to inspect the camera result.
@@ -1421,6 +1565,8 @@ Read `sketch_get`, then call `sketch_trim_stroke` with `stroke:[[u,v],...]`, pos
 
 The response has `changed`, `removedCurveIds` (original IDs deleted completely), `retainedCurveIds` (retained pieces of affected curves; the first piece can reuse its original ID) and `intersectionCount` (distinct geometric intersections across the input, not just painted hits). Use `sketch_get` for exact retained curves and shared point IDs. A no-hit returns `changed:false` without adding history or changing revision. Changed results call the same draft operation once, giving one sketch Undo/Redo edit independently of model history. Reuse the same request ID only for an identical retry.
 
+A retained piece of an ordinary nonperiodic arc becomes a straight segment when the absolute normalized chord-direction dot product about its evaluated midpoint is strictly greater than `0.9999996192282494`; equality retains an arc. Both small sweeps and nearly full sweeps can qualify. Periodic circles keep their existing curved replacement policy. Conversion preserves the curve ID and construction flag; read both `segments` and `arcs` in `sketch_get` rather than assuming that an ID stays in the same collection. An unused center point is removed unless other geometry or a point constraint still references it. Affected constraints remain an atomic rejection. This classification uses application analytic curve evaluation; complete native numerical trim equivalence is not established.
+
 Affected curve/endpoint constraints, ambiguous coincident overlaps, invalid geometry and resource limits fail atomically. The error identifies affected constraint IDs; remove relations explicitly before retrying. This conservative policy is an application contract, not verified native constraint transfer. Limits are 4096 stroke samples, 32768 input/output points, 4096 constraints, 512 stored input curves, 65536 distinct intersections, 8192 output curves and 2000000 counted work units including conservative validation cost. Inputs below individual count limits can still exceed the work budget. The helper yields and checks ownership/cancellation; no partial result is published.
 
 In the GUI choose **Paint trim**, set **Trim radius (mm)** and paint in the model view. Preview changes display only; release submits this shared operation once. Escape, right-click, capture loss, draft/tool changes and pointer cancellation discard the gesture. The pointer-down project revision is retained, so an intervening authored edit cannot cause a stale preview to overwrite the draft. Native numerical equivalence and undocumented brush/constraint policies remain separate acceptance gates.
@@ -1607,3 +1753,32 @@ worker-owned storage; retained model/history buffers never detach. Public schema
 revision/retry/cancellation rules, worker leases and file formats are unchanged.
 `object_geometry_digest` reports the actual shared or private backing and the same
 canonical hashes. See [restoration validation](PROJECT_LOAD_PERFORMANCE.md#binary-topology-and-history-publication).
+
+## Converted line kernel compatibility
+
+The internal converted-line backend preserves prepared direction bits through
+a checked adapter for the bundled kernel. When replacing kernel bindings, run
+`tests/kernel-line-direction-fidelity-smoke.mjs` under owned resource admission
+and a finite lease, alongside the existing CAD checks. Unsupported binding or
+layout errors require a compatible adapter/kernel pair; do not bypass the
+checks or infer a successful native body from a candidate. See
+[CAD direction fidelity](CAD_DIRECTION_FIDELITY.md). Public sketch tools and
+schemas are unchanged by this internal correction.
+
+Also run `tests/kernel-line-open-topology-smoke.mjs` for converted-line kernel
+compatibility: it checks distinct endpoint identities, orientation, short spans
+and retirement. Its passing open-edge fixtures do not authorize closed-profile
+or complete native admission claims.
+
+`tests/kernel-line-child-smoke.mjs` also checks line-child source projection into
+the ordered collection, staged replacement and collection-owned retirement.
+`tests/sketch-line-collection.test.ts` covers retained and empty sources,
+owner/child placements, source codec and shared pick resolution. These are
+internal integration checks; the unfinished ordered editor and complete native
+admission are not advertised as available public sketch operations.
+
+Also run `tests/kernel-line-draft-fork-smoke.mjs` when changing the line draft or
+kernel bindings. It checks independently owned copies of partial draft state,
+rejected-wire preservation, cancellation, source changes, cleanup failures and
+100 retirement cycles. This application staging copy is not native cloning or a
+completed public editor capability.

@@ -1,5 +1,7 @@
 import type { Entity } from "./types";
 import { canonicalCloud, cloudPlacement } from "./point-cloud-placement";
+import { indexedMeshMatches } from "./indexed-mesh";
+import { meshGeometryNormals } from "./mesh-geometry-normals";
 export interface Revision {
   entities: Entity[];
   label: string;
@@ -39,6 +41,8 @@ export function modelChanged(before: Entity[], after: Entity[]): boolean {
     return (
       !old ||
       old.kind !== next.kind ||
+      old.constructionOrderKey !== next.constructionOrderKey ||
+      old.reference !== next.reference ||
       cloudPlacement(old)?.matrixBits !== cloudPlacement(next)?.matrixBits ||
       old.positions !== next.positions ||
       old.kernelId !== next.kernelId ||
@@ -53,6 +57,22 @@ export function restoreModelDisplay(
   current: Entity[],
 ): Entity[] {
   return target.map((entity) => {
+    // Legacy history is initialized only when activated. Preserve the retained
+    // snapshot and borrow its geometry; subsequent history steps retain this field.
+    if (
+      entity.kind === "mesh" &&
+      !entity.kernelId &&
+      entity.indexedMesh &&
+      !(entity.indexedMesh.geometryNormals instanceof Float32Array) &&
+      indexedMeshMatches(entity.indexedMesh, entity.positions)
+    )
+      entity = {
+        ...entity,
+        indexedMesh: {
+          ...entity.indexedMesh,
+          geometryNormals: meshGeometryNormals(entity.indexedMesh),
+        },
+      };
     const live = current.find((e) => e.id === entity.id);
     if (!live) return entity;
     return canonicalCloud({
@@ -84,7 +104,12 @@ export function changeLabel(before: Entity[], after: Entity[]): string {
   for (const next of after) {
     const old = before.find((entity) => entity.id === next.id);
     if (!old) continue;
-    if (old.positions !== next.positions) return `Modify ${next.name}`;
+    if (
+      old.positions !== next.positions ||
+      old.reference !== next.reference ||
+      old.constructionOrderKey !== next.constructionOrderKey
+    )
+      return `Modify ${next.name}`;
     if (old.visible !== next.visible)
       return `${next.visible ? "Show" : "Hide"} ${next.name}`;
     if (old.name !== next.name) return `Rename ${old.name}`;

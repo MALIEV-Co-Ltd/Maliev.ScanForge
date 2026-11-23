@@ -52,6 +52,13 @@ export const SHORTCUT_REGISTRY: readonly ShortcutBinding[] = [
   binding("Mod+S", "Save project", "save"),
   binding("F2", "Rename selected objects", "rename-objects", undefined, true),
   binding(
+    "Delete",
+    "Delete selected objects",
+    "delete-objects",
+    ["main"],
+    true,
+  ),
+  binding(
     "V",
     "Toggle selected objects visibility",
     "toggle-selected-visibility",

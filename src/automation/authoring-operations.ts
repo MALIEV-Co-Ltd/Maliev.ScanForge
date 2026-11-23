@@ -17,6 +17,7 @@ import { validateSketch, rectangleSketch } from "../sketch";
 import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
 import { lockedObjectEdit } from "../object-operations";
+import { assertSampledGeometry } from "../reference-entity";
 
 /** Authoring tools reuse the same helpers as the editor's surface/sketch/selection controls. */
 export function createAuthoringOperations(
@@ -28,6 +29,7 @@ export function createAuthoringOperations(
     return e;
   };
   const editable = (e: Entity) => {
+    assertSampledGeometry(e);
     if (e.locked || e.kernelId || e.parametric)
       throw new Error("Use an unlocked mesh copy before this operation");
   };
@@ -83,6 +85,7 @@ export function createAuthoringOperations(
     selection_modify: (a, c) => {
       const s = host.snapshot(),
         e = find(a.entityId);
+      assertSampledGeometry(e);
       if (e.locked || e.selectable === false)
         throw new Error("Object cannot be selected");
       const prior =
@@ -107,6 +110,7 @@ export function createAuthoringOperations(
       const s = host.snapshot(),
         e = find(a.entityId),
         saved = e.meshSelection?.saved ?? [];
+      assertSampledGeometry(e);
       const selection =
         s.selectedId === e.id && s.selection?.length === e.positions.length / 9
           ? s.selection

@@ -1,5 +1,6 @@
 import type { Handler, WorkspaceHost } from "./api";
 import type { Entity } from "../types";
+import { assertSampledGeometry, isReferenceEntity } from "../reference-entity";
 
 export interface ViewportCommand {
   action:
@@ -45,6 +46,29 @@ export function coordinateAlignmentInterface(
   patch: InterfacePatch,
   selected?: Entity,
 ): InterfacePatch {
+  if (
+    selected &&
+    isReferenceEntity(selected) &&
+    (patch.mode === "brush" ||
+      patch.mode === "section" ||
+      [
+        "mesh",
+        "section",
+        "scanTools",
+        "fit",
+        "repairMesh",
+        "deviation",
+        "transform",
+        "processing",
+        "segmentMesh",
+        "smoothMesh",
+        "decimateMesh",
+        "pointNoise",
+        "pointReduce",
+        "fineAlign",
+      ].includes(patch.workspace ?? ""))
+  )
+    assertSampledGeometry(selected);
   if (!patch.datumAlignmentOpen) return patch;
   if (
     !selected ||

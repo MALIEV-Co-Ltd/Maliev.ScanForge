@@ -5,6 +5,7 @@ import { backgroundMeshPreparation } from "../scan-background-preparation";
 import { createInteractiveOperations } from "./interactive-alignment-operations";
 import { isSampledScan } from "../scan-source";
 import { renameObjects } from "../object-renaming";
+import { autoColorScene } from "../scene-auto-color";
 import { createAlignmentOperations } from "./alignment-operations";
 import { createDatumOperations } from "./datum-operations";
 import { createGlobalAlignmentOperations } from "./global-alignment-operations";
@@ -38,6 +39,10 @@ import {
 } from "../parametric";
 import { duplicateObject, toggleObjectVisibility } from "../object-operations";
 import { scanMeshCopy } from "../scan-mesh-copy";
+import {
+  assertSampledGeometry,
+  inspectReferenceEntity,
+} from "../reference-entity";
 import { partitionTriangles, selectionCount } from "../selection";
 import {
   meshStats,
@@ -239,8 +244,14 @@ function object(state: WorkspaceSnapshot, entityId: string) {
   if (!entity) throw new Error(`Object ${entityId} is not in this project.`);
   return entity;
 }
+function sampledObject(state: WorkspaceSnapshot, entityId: string) {
+  const entity = object(state, entityId);
+  assertSampledGeometry(entity);
+  return entity;
+}
 function editable(entity: Entity, meshOnly = false) {
   if (entity.locked) throw new Error("Object is locked.");
+  assertSampledGeometry(entity);
   if (meshOnly && entity.kind === "pointcloud")
     throw new Error(
       "This tool requires triangle mesh geometry, not a point cloud.",
@@ -248,7 +259,8 @@ function editable(entity: Entity, meshOnly = false) {
   if (meshOnly && (entity.kernelId || entity.parametric))
     throw new Error("Create a mesh copy before editing exact CAD geometry.");
 }
-function summary(e: Entity) {
+function summary(e: Entity, scene: readonly Entity[]) {
+  const reference = inspectReferenceEntity(e, scene);
   const {
     positions,
     normals: _normals,
@@ -259,6 +271,7 @@ function summary(e: Entity) {
     indexedMesh: _indexedMesh,
     pointCloudPlacement: _placement,
     pointColors: _pointColors,
+    reference: _reference,
     ...metadata
   } = e;
   return {
@@ -281,9 +294,10 @@ function summary(e: Entity) {
           },
         }
       : {}),
-    ...(e.kind === "pointcloud"
-      ? { points: positions.length / 3 }
-      : { triangles: positions.length / 9 }),
+    ...(reference ??
+      (e.kind === "pointcloud"
+        ? { points: positions.length / 3 }
+        : { triangles: positions.length / 9 })),
     ...(e.kind === "mesh" && !e.kernelId && !e.parametric
       ? { meshPreparation: backgroundMeshPreparation(e.positions) }
       : {}),
@@ -292,6 +306,7 @@ function summary(e: Entity) {
   };
 }
 function mask(state: WorkspaceSnapshot, e: Entity, required = true) {
+  assertSampledGeometry(e);
   const slots = e.positions.length / (e.kind === "pointcloud" ? 3 : 9);
   const selection = state.selectedId === e.id ? state.selection : null;
   if (!selection || selection.length !== slots) {
@@ -311,6 +326,7 @@ function selectedPositions(
   e: Entity,
   selectionOnly?: boolean,
 ): Positions {
+  assertSampledGeometry(e);
   if (!selectionOnly) return e.positions;
   return e.kind === "pointcloud"
     ? editPointCloud({
@@ -506,7 +522,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         name: s.name,
         projectId: s.projectId,
         units: "mm",
-        objects: s.entities.map(summary),
+        objects: s.entities.map((entity) => summary(entity, s.entities)),
         selectedId: s.selectedId,
         selectedIds: s.selectedIds ?? (s.selectedId ? [s.selectedId] : []),
         selectionAnchorId: s.selectionAnchorId ?? s.selectedId,
@@ -577,30 +593,45 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         onProgress: (fraction) => c.progress(fraction, "Hashing geometry"),
       }),
     object_get: (a, c) => {
-      const e = object(host.snapshot(), a.entityId);
+      const state = host.snapshot(),
+        e = object(state, a.entityId);
+      const details = summary(e, state.entities);
       return {
-        ...summary(e),
+        ...details,
         ...(a.includeGeometry
           ? {
               geometry: json(
                 c,
-                {
-                  positions: Array.from(e.positions),
-                  indexedMesh: e.indexedMesh
-                    ? {
-                        vertices: Array.from(e.indexedMesh.vertices),
-                        triangles: Array.from(e.indexedMesh.triangles),
-                        ...(e.indexedMesh.normals
-                          ? { normals: Array.from(e.indexedMesh.normals) }
-                          : {}),
-                      }
-                    : undefined,
-                  normals: e.normals ? Array.from(e.normals) : undefined,
-                  pointColors: e.pointColors
-                    ? Array.from(e.pointColors)
-                    : undefined,
-                  edgePositions: e.edgePositions,
-                },
+                "reference" in details
+                  ? {
+                      units: "mm",
+                      semantic: details.reference.geometry,
+                      encoding: details.reference.geometryEncoding,
+                    }
+                  : {
+                      positions: Array.from(e.positions),
+                      indexedMesh: e.indexedMesh
+                        ? {
+                            vertices: Array.from(e.indexedMesh.vertices),
+                            triangles: Array.from(e.indexedMesh.triangles),
+                            ...(e.indexedMesh.normals
+                              ? { normals: Array.from(e.indexedMesh.normals) }
+                              : {}),
+                            ...(e.indexedMesh.geometryNormals
+                              ? {
+                                  geometryNormals: Array.from(
+                                    e.indexedMesh.geometryNormals,
+                                  ),
+                                }
+                              : {}),
+                          }
+                        : undefined,
+                      normals: e.normals ? Array.from(e.normals) : undefined,
+                      pointColors: e.pointColors
+                        ? Array.from(e.pointColors)
+                        : undefined,
+                      edgePositions: e.edgePositions,
+                    },
                 "geometry.json",
               ),
             }
@@ -620,6 +651,35 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         objects: next
           .filter((entity) => targets.has(entity.id))
           .map((entity) => ({ entityId: entity.id, visible: entity.visible })),
+      };
+    },
+    scene_auto_color: (_a, c) => {
+      c.check();
+      const state = host.snapshot();
+      const result = autoColorScene(state.entities);
+      const showColors = state.settings.normalsDisplay !== false;
+      if (result.changed || showColors) {
+        const write = () => {
+          if (result.changed)
+            host.commit(
+              result.entities.map(retainIndexedMesh),
+              "Auto colorize objects",
+            );
+          if (showColors) host.settings({ normalsDisplay: false });
+        };
+        if (c.mutate) c.mutate(write);
+        else {
+          c.check();
+          write();
+        }
+      }
+      return {
+        changed: result.changed,
+        normalsDisplay: false,
+        objects: result.entities.map((entity) => ({
+          entityId: entity.id,
+          color: entity.color,
+        })),
       };
     },
     object_rename: (a, c) => {
@@ -663,31 +723,49 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       return { entityId: copy.id };
     },
     object_delete: (a, c) => {
-      const s = host.snapshot(),
-        e = object(s, a.entityId);
-      editable(e);
-      if (
-        e.parametric &&
-        s.entities.some(
-          (x) =>
-            x.parametric &&
-            x.parametric.feature.id !== e.parametric!.feature.id &&
-            featureDependencies(x.parametric.feature.recipe).some(
-              (r) => r.featureId === e.parametric!.feature.id,
-            ),
+      const s = host.snapshot();
+      if (a.entityId !== undefined && a.entityIds !== undefined)
+        throw new Error("Specify entityId or entityIds, not both.");
+      const ids: string[] =
+        a.entityId !== undefined
+          ? [a.entityId]
+          : (a.entityIds ??
+            s.selectedIds ??
+            (s.selectedId ? [s.selectedId] : []));
+      if (!ids.length) throw new Error("Select at least one object to delete.");
+      const targets = new Set(ids);
+      if (targets.size !== ids.length)
+        throw new Error("Object IDs must be unique.");
+      for (const id of ids) {
+        const e = object(s, id);
+        editable(e);
+        if (
+          e.parametric &&
+          s.entities.some(
+            (x) =>
+              !targets.has(x.id) &&
+              x.parametric &&
+              x.parametric.feature.id !== e.parametric!.feature.id &&
+              featureDependencies(x.parametric.feature.recipe).some(
+                (r) => r.featureId === e.parametric!.feature.id,
+              ),
+          )
         )
-      )
-        throw new Error("Remove dependent features first.");
-      if (e.parametric?.feature.recipe.kind === "split")
-        throw new Error(
-          "Delete both split outputs together through the feature workflow.",
-        );
+          throw new Error("Remove dependent features first.");
+        if (e.parametric?.feature.recipe.kind === "split")
+          throw new Error(
+            "Delete both split outputs together through the feature workflow.",
+          );
+      }
       commit(
         c,
-        s.entities.filter((x) => x.id !== e.id),
-        "Delete object",
+        s.entities.filter((x) => !targets.has(x.id)),
+        ids.length === 1 ? "Delete object" : "Delete objects",
       );
-      return { entityId: e.id };
+      return {
+        ...(ids.length === 1 ? { entityId: ids[0] } : {}),
+        entityIds: ids,
+      };
     },
     mesh_copy: (a, c) => {
       const s = host.snapshot(),
@@ -726,6 +804,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
         e = object(s, a.entityId);
       if (e.locked || e.selectable === false)
         throw new Error("Object cannot be selected.");
+      assertSampledGeometry(e);
       const pointCloud = e.kind === "pointcloud";
       if (pointCloud ? !Array.isArray(a.points) : !Array.isArray(a.triangles))
         throw new Error(
@@ -829,6 +908,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_analyze: async (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      assertSampledGeometry(e);
       if (e.kind === "pointcloud")
         throw new Error("Point clouds do not have triangle topology.");
       const result = await processMesh(
@@ -849,7 +929,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     mesh_process: async (a, c) => {
       const bridgePreview = validateBridgePreview(a);
       const s = host.snapshot(),
-        e = object(s, a.entityId);
+        e = sampledObject(s, a.entityId);
       const op = structuredClone(a.operation);
       const kind = op.kind as ProcessingRequest["kind"];
       if (
@@ -978,7 +1058,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "icp" || kind === "global") {
         if (!a.targetId) throw new Error("Alignment requires targetId.");
         Object.assign(request, {
-          target: object(s, a.targetId).positions,
+          target: sampledObject(s, a.targetId).positions,
           sourceTriangleMask: selection,
         });
       }
@@ -993,7 +1073,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           request,
           await prepareLandmarkRefinementTargets(
             e,
-            [object(s, a.targetId)],
+            [sampledObject(s, a.targetId)],
             (kernelId) => host.cad().alignmentMesh(kernelId),
             op.workerCount ?? 2,
             op.parallel ?? true,
@@ -1017,7 +1097,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
           request,
           nativeSurfaceRefinementRequest(
             e,
-            ids.map((id) => object(s, id)),
+            ids.map((id) => sampledObject(s, id)),
             op.sampleBudget,
             op.initialRadius,
             selection,
@@ -1030,7 +1110,9 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
       if (kind === "scanEdit")
         Object.assign(request, {
           selection,
-          ...(a.targetId ? { target: object(s, a.targetId).positions } : {}),
+          ...(a.targetId
+            ? { target: sampledObject(s, a.targetId).positions }
+            : {}),
         });
       if (kind === "connectedSelection")
         Object.assign(request, { seeds: mask(s, e) });
@@ -1077,12 +1159,12 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
             );
           op.operation.targets = reconstructionTargets(
             e,
-            (a.targetIds ?? []).map((id: string) => object(s, id)),
+            (a.targetIds ?? []).map((id: string) => sampledObject(s, id)),
           );
         }
         if (op.operation.kind === "averageMesh") {
           if (!a.targetId) throw new Error("Average mesh requires targetId.");
-          op.operation.targets = [object(s, a.targetId).positions];
+          op.operation.targets = [sampledObject(s, a.targetId).positions];
         }
         if (op.operation.kind === "reduceNoise")
           op.operation.selection = selection;
@@ -1269,6 +1351,7 @@ export function createOperations(host: WorkspaceHost): Record<string, Handler> {
     analysis_deviation: (a, c) => {
       const s = host.snapshot(),
         e = object(s, a.entityId);
+      assertSampledGeometry(e);
       if (e.positions.length > 2_250_000)
         throw new Error(
           "Deviation analysis is limited to 250,000 triangles; reduce a mesh copy first.",

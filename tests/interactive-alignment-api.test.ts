@@ -7,6 +7,9 @@ import {
 import { createInteractiveOperations } from "../src/automation/interactive-alignment-operations";
 import type { InteractiveAlignmentState } from "../src/interactive-alignment-session";
 import type { CadClient } from "../src/cad/client";
+import { createInteractiveEditor } from "../src/automation/interactive-editor";
+import type { InteractiveMirrorBackend } from "../src/interactive-mirror-backend";
+import { noiseNormals } from "../src/scan-native-noise";
 const setup = () => {
   const source = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const snapshot: WorkspaceSnapshot = {
@@ -89,6 +92,38 @@ const setup = () => {
     },
   };
 };
+it.each([true, false])(
+  "uses computed mesh state for the shared interactive mirror source (stored=%s)",
+  async (stored) => {
+    const h = setup(),
+      entity = h.snapshot.entities[0];
+    entity.indexedMesh = {
+      vertices: entity.positions,
+      triangles: new Uint32Array([0, 1, 2]),
+      normals: new Float32Array(9).fill(2),
+      ...(stored ? { geometryNormals: new Float32Array(9).fill(0.25) } : {}),
+    };
+    try {
+      const result = await h.api.invoke("interactive_alignment_edit", {
+        action: "begin",
+        parallel: false,
+        ...h.args("normal-begin"),
+      });
+      expect(result.ok).toBe(true);
+      const backend = vi
+        .mocked(h.host.installInteractiveMirror!)
+        .mock.calls.at(-1)![0] as InteractiveMirrorBackend;
+      const source = await backend.source(entity.id);
+      expect(source.normals).toEqual(
+        entity.indexedMesh.geometryNormals ?? noiseNormals(entity.indexedMesh),
+      );
+      expect(entity.indexedMesh.normals).toEqual(new Float32Array(9).fill(2));
+    } finally {
+      h.api.dispose();
+    }
+  },
+);
+
 it("publishes the shared Interactive session over MCP with revision/session/retry protection and one Apply history entry", async () => {
   const h = setup();
   try {
@@ -163,6 +198,123 @@ it("publishes the shared Interactive session over MCP with revision/session/retr
       ok: true,
       result: { active: false },
     });
+  } finally {
+    h.api.dispose();
+  }
+});
+it.each(["GUI", "MCP"])(
+  "applies a multi-scan rotation/translation through %s while viewport measurements change",
+  async (caller) => {
+    const h = setup();
+    h.snapshot.entities = [0, 1, 2].map((i) => ({
+      ...h.snapshot.entities[0],
+      id: `scan-${i}`,
+      positions: new Float32Array(h.source),
+    }));
+    h.snapshot.selectedIds = h.snapshot.entities.map((e) => e.id);
+    h.snapshot.selectedId = "scan-0";
+    h.snapshot.settings = {
+      automaticGrid: true,
+      gridSpacing: 10,
+      effectiveGridSpacing: 10,
+      scale: { distanceMm: 20, widthPx: 80, reference: "view-center" },
+    };
+    const editor = createInteractiveEditor(h.api, () => h.state);
+    try {
+      await editor.edit({ action: "begin", parallel: false });
+      await editor.edit({
+        action: "step",
+        kind: "rotatePositive",
+        axis: 2,
+        value: 90,
+      });
+      await editor.edit({
+        action: "step",
+        kind: "translatePositive",
+        axis: 0,
+        value: 3,
+      });
+      const revision = h.api.currentRevision();
+      vi.mocked(h.host.activity).mockImplementation((running) => {
+        if (running) {
+          h.snapshot.settings.effectiveGridSpacing = 20;
+          h.snapshot.settings.scale = {
+            distanceMm: 50,
+            widthPx: 95,
+            reference: "view-center",
+          };
+        }
+      });
+      if (caller === "GUI") {
+        expect(await editor.apply()).toMatchObject({
+          applied: true,
+          geometryBakedOnce: true,
+        });
+      } else {
+        const request = {
+          ...h.session(),
+          ...h.args("viewport-apply"),
+          parallel: false,
+        };
+        const receipt = await h.api.invoke(
+          "interactive_alignment_apply",
+          request,
+        );
+        expect(receipt.ok).toBe(true);
+        let job: any;
+        for (let i = 0; i < 50; i++) {
+          job = await h.api.invoke("job_get", {
+            jobId: (receipt as any).result.jobId,
+          });
+          if (job.result?.status !== "running") break;
+          await new Promise((r) => setTimeout(r, 0));
+        }
+        expect(job).toMatchObject({
+          ok: true,
+          result: {
+            status: "succeeded",
+            result: { applied: true, geometryBakedOnce: true },
+          },
+        });
+        expect(
+          await h.api.invoke("interactive_alignment_apply", request),
+        ).toEqual(receipt);
+      }
+      expect(h.api.currentRevision()).toBe(revision + 1);
+      expect(h.snapshot.history).toHaveLength(1);
+      expect(h.state).toBe(null);
+      for (const entity of h.snapshot.entities) {
+        expect(entity.positions[0]).toBeCloseTo(3);
+        expect(entity.positions[3]).toBeCloseTo(3);
+        expect(entity.positions[4]).toBeCloseTo(1);
+        expect(entity.positions[6]).toBeCloseTo(2);
+      }
+      expect(h.source[0]).toBe(0);
+    } finally {
+      h.api.dispose();
+    }
+  },
+);
+it("rejects actual settings changes during Apply and preserves the preview and committed geometry", async () => {
+  const h = setup();
+  const editor = createInteractiveEditor(h.api, () => h.state);
+  try {
+    await editor.edit({ action: "begin", parallel: false });
+    await editor.edit({
+      action: "step",
+      kind: "translatePositive",
+      axis: 0,
+      value: 1,
+    });
+    vi.mocked(h.host.activity).mockImplementation((running) => {
+      if (running) h.snapshot.settings.gridSpacing = 50;
+    });
+    await expect(editor.apply()).rejects.toThrow(
+      "Workspace changed while operation ran",
+    );
+    expect(h.snapshot.history).toHaveLength(0);
+    expect(h.snapshot.entities[0].positions).toBe(h.source);
+    expect(h.state?.changed).toBe(true);
   } finally {
     h.api.dispose();
   }

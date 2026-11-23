@@ -10,9 +10,13 @@ export interface ScanFile {
   slice(start?: number, end?: number): { arrayBuffer(): Promise<ArrayBuffer> };
   arrayBuffer(): Promise<ArrayBuffer>;
 }
+/** Published imports may include computed state in addition to file-authored normals. */
+export type ImportedIndexedMesh = ReturnType<typeof parsePlyTopology> & {
+  geometryNormals?: Float32Array;
+};
 export interface ScanImportOptions {
   ascAttributes?: AscAttributes;
-  onIndexedMesh?: (mesh: ReturnType<typeof parsePlyTopology>) => void;
+  onIndexedMesh?: (mesh: ImportedIndexedMesh) => void;
   onPointCloud?: (cloud: {
     normals?: Float32Array;
     pointColors?: Uint8Array;

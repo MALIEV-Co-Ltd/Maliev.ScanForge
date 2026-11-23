@@ -1,0 +1,225 @@
+{
+  "date": "2026-10-24",
+  "scope": "Static fresh line initializer and startup registration; no complete native admission.",
+  "providerSha256": "e7e4530b101ed4a276b616a863ab5499418adf518efad3bfc6523a69865f5f58",
+  "sourcePins": [
+    {
+      "path": "src/sketch-line-self-connection.ts",
+      "sha256": "2461f7ea9cdb62c749147e88d7666c1a25e68754588275e67621bccd47ecb355"
+    },
+    {
+      "path": "src/sketch-wire-self-connection.ts",
+      "sha256": "d87f5886a4aac3c13aa6fa0bedec7b0e9699de10fba6ab0c97b057b52a686df5"
+    },
+    {
+      "path": "src/cad/sketch-line-wire-candidate.ts",
+      "sha256": "8a37043d344ae6f79b24e7e5c06c5549c9b22590c4c493a4ac78c1cf5caf30ad"
+    },
+    {
+      "path": "src/cad/sketch-backend.ts",
+      "sha256": "60557e4ee57f5e9d30e314d4675ff075cf446bed5941974b602b7df74a51f53d"
+    },
+    {
+      "path": "src/sketch-line-conversion.ts",
+      "sha256": "a93564f2c9c4a5ad459f738050091a1bbed0b8f8bb3bd7757ce617513857d1f0"
+    },
+    {
+      "path": "src/sketch-line-prepared.ts",
+      "sha256": "9d02e8c3e784e6f5fceb2c94e0738057f162933086ecbec45825d58e218077ed"
+    },
+    {
+      "path": "src/cad/sketch-line-backend-draft.ts",
+      "sha256": "9a2d27cc68b3db2695f3b620379b5db209bb44bcb3812125cdfb079632a08677"
+    },
+    {
+      "path": "src/cad/sketch-line-curve.ts",
+      "sha256": "4c0ae38e69b27016b64f71f285d3dd02294f16e78826e6531d3949f7ee51d8c2"
+    },
+    {
+      "path": "tests/sketch-line-self-connection.test.ts",
+      "sha256": "5f43865c9c312104224871035f7249ec47dde334c7dc64570d0af873c3639c7b"
+    },
+    {
+      "path": "tests/sketch-wire-self-connection.test.ts",
+      "sha256": "5824805ce5004931a6744c035be683c8db8d9fbb4645104a13676a68fa173316"
+    },
+    {
+      "path": "tests/kernel-wire-self-connection-smoke.mjs",
+      "sha256": "c546bcb1617efd88915276a1e715a3759ed9f8c1266984b34b31a632dd1c7b07"
+    },
+    {
+      "path": "docs/NATIVE_REFERENCE_GEOMETRY.md",
+      "sha256": "b4508c8846b3518e2dd10c4d134f2ef3570062d2f61a063f85ee73852bad2801"
+    },
+    {
+      "path": "docs/SKETCH_MODEL_INTEGRATION.md",
+      "sha256": "0283b8507d646189ce15a67c755eb35bb33058bc5f5766d149e1ffb705a5035f"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "f1a1d31a0e23a166c6addc2987012ecdcd2a72cf288120b911de07c34a88e5ca"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "037c5103690829c3eb3f0189febac54f5bb54b334b7af78db002555e3eea5f7e"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-23-reference-construction.md",
+      "sha256": "fea941e2d0271f120583ed1ef4549aa6a089f71f177329f33e3759c8196132f5"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "6e841dc899708c059e21bff5acd58cc9069b4563c17aaa446a767f6adb82e921"
+    },
+    {
+      "path": "src/automation/api.ts",
+      "sha256": "dd27c27aa17aff0b9bb6d254ac84c1bf9adc8e4b8a22520f39e96bb36811c844"
+    },
+    {
+      "path": "public/cad-worker.js",
+      "sha256": "b42fde92395f5e2bfb55f6e4203b25900f2ff79187efbf1f35ef765edd6281aa"
+    },
+    {
+      "path": "public/kernel/sketch-backend.js",
+      "sha256": "2ec2f1b5e2835b44e64f01e93b3e8cf01e5eb10d9e1cc07b9d144e63a36af3bf"
+    },
+    {
+      "path": "dist/kernel/sketch-backend.js",
+      "sha256": "2ec2f1b5e2835b44e64f01e93b3e8cf01e5eb10d9e1cc07b9d144e63a36af3bf"
+    },
+    {
+      "path": "dist/sw.js",
+      "sha256": "9f06c1dbd6eea064cf113adcd2cfc99f41dd1e1f2e53b0b2427e0bddcd76e518"
+    },
+    {
+      "path": "src/sketch-line-projection.ts",
+      "sha256": "73756e5e3fb05d7afeda8820c8cc7f1bcfa951ee1e927260f96e8146169a0f75"
+    },
+    {
+      "path": "tests/sketch-line-projection.test.ts",
+      "sha256": "d2f22584386eb5b22f11a9d5a787029db2f3bf757d6cca21ddb82648160e6001"
+    },
+    {
+      "path": "src/cad/sketch-prepared-direction.ts",
+      "sha256": "05ce8a8874cad729f8c4ef4e0cbdd6f2ef744f4637e3b9ca1c4dd05bb4dea8da"
+    },
+    {
+      "path": "tests/kernel-line-direction-fidelity-smoke.mjs",
+      "sha256": "9e74533843f5399c662cca39e20dc98b98a838fd76bcb48e4e95ce130c0e5826"
+    },
+    {
+      "path": "docs/CAD_DIRECTION_FIDELITY.md",
+      "sha256": "ef5d142e933cccc8e34330cf2847a3f9566adfac40a060527c2e2025575b9aaf"
+    },
+    {
+      "path": "tests/kernel-line-open-topology-smoke.mjs",
+      "sha256": "cb0e5e6cfb95fccde3f4857a0f891eff01f67b0a5d12d20bc75540139178f14e"
+    },
+    {
+      "path": "src/sketch-wire-attachment.ts",
+      "sha256": "5c118532f45477f8a308f21b62c8cd1f1822456d6f339cb2efa52884448d1038"
+    },
+    {
+      "path": "tests/sketch-wire-attachment.test.ts",
+      "sha256": "6b2de28e061f9a9b1f066a2580a3a92bce29a53211b2bad30896936e484aaae3"
+    },
+    {
+      "path": "tests/kernel-line-attachment-smoke.mjs",
+      "sha256": "d062d7f40189e67e5a6d354052c941d36e4ee24c244c6344a9e34c35b1c5b0b5"
+    }
+  ],
+  "privateArtifacts": [
+    {
+      "name": "line-fresh-initializer-trace-r1.json",
+      "sha256": "adc8c42d8f2acae0defdfa7b26ad9d13174bd7ec86d1d5bf0b70730d9cd2b4a0"
+    },
+    {
+      "name": "line-fresh-initializer-trace-r2.json",
+      "sha256": "c0ddd2e36ef8273d13cf8c5a7f9897c23df341cd0ff6846d82a0d904185a3b00"
+    },
+    {
+      "name": "line-fresh-initializer-trace-r3.json",
+      "sha256": "2d7b6483e7f73befe55192a27ca53877a6e9a90b40b56a9671179c8befb55dcd"
+    },
+    {
+      "name": "trace-line-fresh-initializer-r1.py",
+      "sha256": "ce21f9f296e76af6487bffbf68293b6059196acf3eeeaa3dc9fc037e9a3211ac"
+    },
+    {
+      "name": "trace-line-fresh-initializer-r2.py",
+      "sha256": "b861f1d570916ca58bd421c2e60459070ffb3af51327eced1c5b5e00b916360d"
+    },
+    {
+      "name": "trace-line-fresh-initializer-r3.py",
+      "sha256": "c25708c4c94fc62e3c0b1a96bca20d360790dc97122b2ef845b9b60fe6abcca2"
+    },
+    {
+      "name": "verify-line-fresh-initializer-r1.py",
+      "sha256": "6de1fa0ab990ba77bf237ef40fb70e4c336287a8251d8c452ac01ed924e72dfe"
+    },
+    {
+      "name": "line-fresh-initializer-verified-r1.json",
+      "sha256": "a0915f752ac4c8a2588e69bf3a5bb45fde3f8a3ac0ac59e379620a2cba324bef"
+    },
+    {
+      "name": "record-line-fresh-initializer-r1.py",
+      "sha256": "2795aac268a1c0b9bb71f3e4ccb6e68b3dc7d02eb2169d62b1811d5a6d002652"
+    }
+  ],
+  "priorRuntimeEvidence": {
+    "path": "docs\\evidence\\reference-sketch-attachment-disposition-20261024.json",
+    "sha256": "4d51e0c22e57050cb6357a49bfd3c8559cea3928e690fc8985c2a460e8a1fbb1"
+  },
+  "static": {
+    "distinctInstructionStarts": 200,
+    "initializerAnchors": 11,
+    "startupRegistrationBound": true,
+    "finding": "Selected initializer clears ownership/dependency fields and writes unset coordinate sentinels.",
+    "onlyDirectCall": "Metadata write preparation; transitive effects not established."
+  },
+  "helperSha256": "2ec2f1b5e2835b44e64f01e93b3e8cf01e5eb10d9e1cc07b9d144e63a36af3bf",
+  "wasmSha256": "6cc2f3fa1611d32ad7563f7092aa1bf58741124302630cef7d21561ecd7b7284",
+  "offlineCache": "scanforge-1fd6e242fe1c94de",
+  "validation": {
+    "runtimeChangedSincePriorEvidence": false,
+    "buildOrTestsRerunForStaticOnlyStep": false,
+    "priorRuntimeResultsReused": true,
+    "fullSuiteRun": false,
+    "originalNativeRun": false,
+    "renderedFeatureAcceptance": false
+  },
+  "mcp": "Static evidence only; shared worker and public contracts unchanged. Complete GUI/MCP editor and acceptance remain required.",
+  "limitations": [
+    "No claim fields stay empty after allocation callbacks or later construction.",
+    "Initial failed automatic unwind lookup retained; explicit previously bound leaf and startup call used for corrected trace.",
+    "Pattern discovery alone was not accepted: startup call, complete selected registration branch and initializer bytes were checked.",
+    "No native process execution, executable mapping or live geometry reads.",
+    "Full original goal and all milestone acceptance remain active."
+  ],
+  "receipts": [
+    {
+      "name": "trace-line-fresh-initializer-r1-cad",
+      "sha256": "fa56637dc9e151688067f2b34b3a411d936e400164c61e01fee07246e0a44815",
+      "terminalClean": true,
+      "peakBytes": 134115328
+    },
+    {
+      "name": "trace-line-fresh-initializer-r2-cad",
+      "sha256": "a593bb949759019f61607e92c90cab81776245da4a79105793d0f7645c10621f",
+      "terminalClean": true,
+      "peakBytes": 207192064
+    },
+    {
+      "name": "trace-line-fresh-initializer-r3-cad",
+      "sha256": "63355c8b4a054722b13b25305a6c559928f74752e88ee6522b9db328078886c2",
+      "terminalClean": true,
+      "peakBytes": 139235328
+    },
+    {
+      "name": "verify-line-fresh-initializer-r1-cad",
+      "sha256": "d0e1298937818c4ed9f50ca02336f7cf8339930b500f7185351028f8207cc4b0",
+      "terminalClean": true,
+      "peakBytes": 134914048
+    }
+  ]
+}

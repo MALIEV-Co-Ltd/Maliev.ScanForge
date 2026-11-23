@@ -450,6 +450,9 @@ function runProcessingRequest(
               ...(target.indexedMesh.normals
                 ? { normals: clone(target.indexedMesh.normals) }
                 : {}),
+              ...(target.indexedMesh.geometryNormals
+                ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
+                : {}),
             },
           };
         });
@@ -461,6 +464,9 @@ function runProcessingRequest(
             vertices: clone(mesh.vertices),
             triangles,
             ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+            ...(mesh.geometryNormals
+              ? { geometryNormals: clone(mesh.geometryNormals) }
+              : {}),
           };
         }
       }
@@ -475,6 +481,9 @@ function runProcessingRequest(
               triangles,
               ...(target.indexedMesh.normals
                 ? { normals: clone(target.indexedMesh.normals) }
+                : {}),
+              ...(target.indexedMesh.geometryNormals
+                ? { geometryNormals: clone(target.indexedMesh.geometryNormals) }
                 : {}),
             },
           };
@@ -501,6 +510,9 @@ function runProcessingRequest(
           vertices: clone(mesh.vertices),
           triangles,
           ...(mesh.normals ? { normals: clone(mesh.normals) } : {}),
+          ...(mesh.geometryNormals
+            ? { geometryNormals: clone(mesh.geometryNormals) }
+            : {}),
         };
       }
       if (copied.kind === "scanEdit" && copied.target)

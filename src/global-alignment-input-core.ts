@@ -1,6 +1,5 @@
 import { nativeStlTopology } from "./scan-native-stl-topology";
 import { noiseNormals } from "./scan-native-noise";
-import { nativeBuildAlignmentNeighbourMasks } from "./scan-native-alignment-adjacency";
 import {
   createNativeTargetStorageBudget,
   nativeTargetStorage,
@@ -50,23 +49,16 @@ export function executeGlobalAlignmentInputPreparation(
         normals.byteLength +
         1048576,
   );
-  const flags = withNativeTargetStorageBudget(budget, () => {
-    const flags = new Uint32Array(
-      nativeTargetStorage(mesh.vertices, (mesh.vertices.length / 3) * 4),
-    );
-    const neighbors = nativeBuildAlignmentNeighbourMasks(
-      mesh.vertices,
-      mesh.triangles,
-    );
-    // Native command mask 1 excludes endpoints of unlinked directed facet edges.
-    for (let face = 0; face < neighbors.length; face++)
-      for (let edge = 0; edge < 3; edge++) {
-        if (neighbors[face] & (1 << edge)) continue;
-        flags[mesh.triangles[face * 3 + edge]] = 1;
-        flags[mesh.triangles[face * 3 + ((edge + 1) % 3)]] = 1;
-      }
-    return flags;
-  });
+  // Native temporary groups return no direct mesh interface in preparation,
+  // skipping boundary marking. Mask zero keeps every source vertex eligible.
+  // Retain the worker's admitted, separate flag carrier and response contract.
+  const flags = withNativeTargetStorageBudget(
+    budget,
+    () =>
+      new Uint32Array(
+        nativeTargetStorage(mesh.vertices, (mesh.vertices.length / 3) * 4),
+      ),
+  );
   return { ...mesh, normals, flags };
 }
 export type GlobalAlignmentPreparationResponse =

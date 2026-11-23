@@ -1,0 +1,1433 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "static_lifecycle_contract_recovered_in_part",
+  "applicationBehaviorChanged": false,
+  "nativeFunctionsCalled": false,
+  "renderedGuiMcpAcceptance": false,
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "focusedAnalysis": [
+    {
+      "artifact": {
+        "privateArtifact": "construction-lifecycle-noanalysis-r1/evidence.json",
+        "sha256": "d01bbc5c95e2961393bc6b838e80460822d2e7788e785a5029e242082bcd5e90",
+        "bytes": 38140
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-lifecycle-noanalysis-r1-cad.receipt.json",
+        "sha256": "9aef29f5ca32c007b58b0af72049a870aa09832a4e26184b67a203693d4453d6",
+        "bytes": 1860,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 10.970214299988584,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 879460352,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x14040fc70",
+          "listedInstructionCount": 23,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14040fc10",
+          "listedInstructionCount": 23,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041c370",
+          "listedInstructionCount": 23,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041c310",
+          "listedInstructionCount": 23,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406f60",
+          "listedInstructionCount": 10,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406f90",
+          "listedInstructionCount": 10,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406fc0",
+          "listedInstructionCount": 13,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140407000",
+          "listedInstructionCount": 13,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406530",
+          "listedInstructionCount": 40,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406510",
+          "listedInstructionCount": 2,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140406460",
+          "listedInstructionCount": 4,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x1404063f0",
+          "listedInstructionCount": 22,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-persistence-noanalysis-r1/evidence.json",
+        "sha256": "bf0cdfbfdb9a1e0bddfc336be273c6a482d6923bb3011fcadde12375e3203e2c",
+        "bytes": 116167
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-persistence-noanalysis-r1-cad.receipt.json",
+        "sha256": "3dfc839b5af67cf7d85638888fc3a7767a32ccb6dda7d8dd5331a46566fa6d33",
+        "bytes": 1870,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.420976099994732,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 752975872,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x14040d460",
+          "listedInstructionCount": 188,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041ad20",
+          "listedInstructionCount": 128,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140405e20",
+          "listedInstructionCount": 3,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140405560",
+          "listedInstructionCount": 6,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14040d340",
+          "listedInstructionCount": 69,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041ac20",
+          "listedInstructionCount": 65,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140408440",
+          "listedInstructionCount": 120,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140407870",
+          "listedInstructionCount": 102,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-publication-noanalysis-r1/evidence.json",
+        "sha256": "2b8dc08a34d2dfd66e678f5fdc00774188627ebfff8bc2e4ac23ae814dcd646e",
+        "bytes": 294871
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-publication-noanalysis-r1-cad.receipt.json",
+        "sha256": "7cd764ac8d82df134eaf0fe8772d3490ad7490b7ba48980b71117123f0d20f79",
+        "bytes": 1869,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.576441500001238,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 850083840,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x14082a080",
+          "listedInstructionCount": 83,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140827ea0",
+          "listedInstructionCount": 1360,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14084c260",
+          "listedInstructionCount": 136,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14040fd90",
+          "listedInstructionCount": 79,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041c3d0",
+          "listedInstructionCount": 79,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14040d780",
+          "listedInstructionCount": 21,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-object-records-noanalysis-r1/evidence.json",
+        "sha256": "98745527fecbe627209096c32aa72aba23e444c4f1224ab2a1955275f715fc5f",
+        "bytes": 62390
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-object-records-noanalysis-r1-cad.receipt.json",
+        "sha256": "4ada2dbb668ac7b8392385656a15eb2bb5e2ef0f22117e118c2ecef952fcc117",
+        "bytes": 1885,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.166884099991876,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 844697600,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x14040d150",
+          "listedInstructionCount": 15,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14040d190",
+          "listedInstructionCount": 89,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041aac0",
+          "listedInstructionCount": 15,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14041ab00",
+          "listedInstructionCount": 65,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140407040",
+          "listedInstructionCount": 90,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140405e40",
+          "listedInstructionCount": 60,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140404a60",
+          "listedInstructionCount": 7,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140407210",
+          "listedInstructionCount": 21,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-factory-noanalysis-r1/evidence.json",
+        "sha256": "92ae090bdd56399139463f2de6f41fc8bac854daeeca7721814d0b20d4a56dd0",
+        "bytes": 84295
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-factory-noanalysis-r1-cad.receipt.json",
+        "sha256": "8404cafeb77b4d7d99b1bfa2c746864997bebe52899d8a691720016ed14b7486",
+        "bytes": 1850,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.219301999997697,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 945926144,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x140805700",
+          "listedInstructionCount": 202,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x1404075f0",
+          "listedInstructionCount": 54,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x1405db7d0",
+          "listedInstructionCount": 251,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-restore-noanalysis-r2/evidence.json",
+        "sha256": "43d9af25c8b644a0feb53f7e69037f91636a07b39041a0f17864add0b1077942",
+        "bytes": 252878
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-restore-noanalysis-r2-cad.receipt.json",
+        "sha256": "f3fa307657e3dbaf2b7853108725821cea70145f6a8cdfea2ebafa11397386c4",
+        "bytes": 1850,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 16.980729499991867,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 878133248,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x1404676d0",
+          "listedInstructionCount": 547,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x1408059f0",
+          "listedInstructionCount": 155,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-field-records-noanalysis-r1/evidence.json",
+        "sha256": "7d322e7f257ded65ea6c5918a98d2549e3eebc969cb03627021279671240b38a",
+        "bytes": 128593
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-field-records-noanalysis-r1-cad.receipt.json",
+        "sha256": "9c198ee62ca174aa1287de845f30f2623843ecba1d203f0366a8f2d0e7cddff6",
+        "bytes": 1880,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.625152799999341,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 888832000,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x140474e90",
+          "listedInstructionCount": 215,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140475210",
+          "listedInstructionCount": 396,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x1404174e0",
+          "listedInstructionCount": 66,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140417640",
+          "listedInstructionCount": 85,
+          "decompileCompleted": true
+        }
+      ]
+    },
+    {
+      "artifact": {
+        "privateArtifact": "construction-reference-records-noanalysis-r1/evidence.json",
+        "sha256": "1e25e9920f29828c6843c04872aa6a7bcf678ff76b54006f223a239c91ab0a3f",
+        "bytes": 196791
+      },
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-reference-records-noanalysis-r1-cad.receipt.json",
+        "sha256": "0aba9e83e87d8bcea1a2711d2381ac4bd3c8518d21cc5ffff1e80aec57d0c3bb",
+        "bytes": 1899,
+        "exitCode": 0,
+        "completed": true,
+        "elapsedSeconds": 11.522982199996477,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 180,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 836947968,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      },
+      "entries": [
+        {
+          "candidate": "0x140489120",
+          "listedInstructionCount": 459,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140489840",
+          "listedInstructionCount": 379,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x140471f30",
+          "listedInstructionCount": 256,
+          "decompileCompleted": true
+        },
+        {
+          "candidate": "0x14046f820",
+          "listedInstructionCount": 93,
+          "decompileCompleted": true
+        }
+      ]
+    }
+  ],
+  "staticVerification": {
+    "artifact": {
+      "privateArtifact": "construction-lifecycle-static-r1.json",
+      "sha256": "48dc50ce90890a12a1e8dd0a8f770e08039549853fe203214d1f3dbd112fd419",
+      "bytes": 29438
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-verify-construction-lifecycle-r1-cad.receipt.json",
+      "sha256": "bdf88fba6da23a15b8f1cdecc25c67b67d46c33ee3c500b50b99959630018c9f",
+      "bytes": 1839,
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.30924320001213346,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 120,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 95961088,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "procedureCount": 47,
+    "listedInstructionCount": 6165,
+    "checkedDirectFlowTargets": 306,
+    "mnemonicAliasDifferences": [
+      {
+        "address": "0x140406fec",
+        "ghidraMnemonic": "SETC",
+        "capstoneMnemonic": "SETB"
+      },
+      {
+        "address": "0x14040702c",
+        "ghidraMnemonic": "SETC",
+        "capstoneMnemonic": "SETB"
+      },
+      {
+        "address": "0x140405e28",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404078ff",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      },
+      {
+        "address": "0x140827f09",
+        "ghidraMnemonic": "CMOVNZ",
+        "capstoneMnemonic": "CMOVNE"
+      },
+      {
+        "address": "0x140828c57",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      },
+      {
+        "address": "0x140404a70",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1405db8bc",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      },
+      {
+        "address": "0x140467823",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x140467a2a",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      },
+      {
+        "address": "0x140467a46",
+        "ghidraMnemonic": "CMOVNZ",
+        "capstoneMnemonic": "CMOVNE"
+      },
+      {
+        "address": "0x140474f17",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140474f2f",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140474fa9",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140474fb5",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14047505c",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x1404750ac",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404750bd",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404750cb",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404752a3",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404752b9",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140475378",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140475386",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14047539e",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x140475484",
+        "ghidraMnemonic": "CMPXCHG.LOCK",
+        "capstoneMnemonic": "LOCK CMPXCHG"
+      },
+      {
+        "address": "0x14047549d",
+        "ghidraMnemonic": "CMPXCHG.LOCK",
+        "capstoneMnemonic": "LOCK CMPXCHG"
+      },
+      {
+        "address": "0x140475535",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x140475585",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14047568d",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x1404756d8",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404756e9",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14047581d",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x1404891a3",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404891b5",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14048924b",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14048932d",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x1404893e2",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x14048949c",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x1404894ea",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140489529",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14048955a",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      },
+      {
+        "address": "0x1404898c1",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x1404898d4",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x14048996e",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140489a59",
+        "ghidraMnemonic": "MOV",
+        "capstoneMnemonic": "MOVABS"
+      },
+      {
+        "address": "0x140489b0e",
+        "ghidraMnemonic": "SETZ",
+        "capstoneMnemonic": "SETE"
+      },
+      {
+        "address": "0x140489b60",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140489ba2",
+        "ghidraMnemonic": "SETNZ",
+        "capstoneMnemonic": "SETNE"
+      },
+      {
+        "address": "0x140489bd3",
+        "ghidraMnemonic": "CMOVZ",
+        "capstoneMnemonic": "CMOVE"
+      }
+    ],
+    "coverage": "Independent decoding of the analyzer-listed instruction starts and direct flow targets. Listings collected before decompilation can omit subsequently recovered switch arms; counts are not complete-function instruction counts. No native execution or geometry output comparison."
+  },
+  "runtimeCodeBinding": {
+    "artifact": {
+      "privateArtifact": "native-construction-lifecycle-r3.json",
+      "sha256": "ba0b4dd09b8748526d12812d0e904b381f14e9383960e24a463bb0e01207f844",
+      "bytes": 17867
+    },
+    "driver": {
+      "privateArtifact": "bind-construction-lifecycle-r3.py",
+      "sha256": "b6e3b35428e965ce088cbd62967e5373e04d98f32349c3cc0b6008c7a904c747",
+      "bytes": 5759
+    },
+    "receipt": {
+      "privateArtifact": "project-index-validation-bind-construction-lifecycle-r3-cad.receipt.json",
+      "sha256": "30163ab4936a3273c2dcf4bae5e657c2629e1f863e8cdcbf86ed632768f82670",
+      "bytes": 2050,
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 0.3092394000123022,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "leaseSeconds": 90,
+      "guardMiB": 3072,
+      "outerPeakJobMemoryBytes": 95645696,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "cleanupErrors": []
+    },
+    "pid": 32152,
+    "creationFileTime": "134372093588457253",
+    "accessMask": 1040,
+    "handleClosed": true,
+    "readBytes": 480754,
+    "readCalls": 158,
+    "elapsedSeconds": 0.15523730000131764,
+    "exceptionDirectory": {
+      "rva": "0x8ab3eac",
+      "bytes": 413016,
+      "imageBytes": 150818816,
+      "sha256": "11eca40984ddf48d66bd91a8978e9e700a7ebad6286d58752098aa3f9b263907",
+      "entryCount": 34418,
+      "sortedStarts": false
+    },
+    "directoryValidation": {
+      "invalidEntryCount": 0,
+      "invalidSamples": [],
+      "outOfOrderCount": 4,
+      "outOfOrderSamples": [34406, 34410, 34412, 34414]
+    },
+    "codeRanges": [
+      {
+        "begin": "0x14040fc70",
+        "endExclusive": "0x14040fcca",
+        "bytes": 90,
+        "sha256": "6b997bcaed6c56839540a99cefdfb2721f75ac7736c95aeca106008ef8797e9e",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040fc10",
+        "endExclusive": "0x14040fc6a",
+        "bytes": 90,
+        "sha256": "ed7cbc8a562b20c1e2976039857027a7140cc03e6263f885d26673c574952d13",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041c370",
+        "endExclusive": "0x14041c3ca",
+        "bytes": 90,
+        "sha256": "01d8156b60ac8b3f953013a24221eea5240ee8b12923a1cd26975cf3a2bc913a",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041c310",
+        "endExclusive": "0x14041c36a",
+        "bytes": 90,
+        "sha256": "adc15627dd85c5285b45d2c989853cc2bf846802b5af5dca177c1e01dc3914d7",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140406f60",
+        "endExclusive": "0x140406f89",
+        "bytes": 41,
+        "sha256": "5a41b70b19db77270ad12d7deae49e6378e81c2fb95041067fa37850d724bdf5",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140406f90",
+        "endExclusive": "0x140406fb9",
+        "bytes": 41,
+        "sha256": "660621b25c71afab024ab73fac2bb5bfc38476cc7c0e76bdcae93579a80b51ea",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140406fc0",
+        "endExclusive": "0x140406ff5",
+        "bytes": 53,
+        "sha256": "98baec18f63f516bbbf139cc602fed72e401a930d11f95e0ce53c212b74257f4",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140407000",
+        "endExclusive": "0x140407035",
+        "bytes": 53,
+        "sha256": "a754105bcb1ef9f67f3adca4521966ceda5b66927a5e9f8d865275a6faebebdf",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140406530",
+        "endExclusive": "0x14040653c",
+        "bytes": 12,
+        "sha256": "26a26448e769e6f107e9be73b90298ee6bad781873ee847a5ead27c7e1f298cd",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "analyzer-body-range-containing-entry-not-unwind-verified",
+        "metadataEntryReread": false
+      },
+      {
+        "begin": "0x140406510",
+        "endExclusive": "0x140406518",
+        "bytes": 8,
+        "sha256": "68570815097e2d8e18580876390fd57f8a18ac3d4cbb71c56180117d1f9ac144",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "analyzer-body-range-containing-entry-not-unwind-verified",
+        "metadataEntryReread": false
+      },
+      {
+        "begin": "0x140406460",
+        "endExclusive": "0x140406470",
+        "bytes": 16,
+        "sha256": "bb010cf676c942470a4f5536d306d6e5a3ec7b4f3fc711afb8dc8cfbb2606695",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "analyzer-body-range-containing-entry-not-unwind-verified",
+        "metadataEntryReread": false
+      },
+      {
+        "begin": "0x1404063f0",
+        "endExclusive": "0x14040643c",
+        "bytes": 76,
+        "sha256": "c9734fd9396b3df59aace18c204a7546cec485702769656edeeb5c00c858af67",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040d460",
+        "endExclusive": "0x14040d771",
+        "bytes": 785,
+        "sha256": "852f5ccbd7b09b0216a16a9f71a3173dac0431d9b0a2a926564f0c296733ad17",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041ad20",
+        "endExclusive": "0x14041af1d",
+        "bytes": 509,
+        "sha256": "3531ce53f65889fdcf96a68301462a7d25fd0ec1b11fb59f0e267a751a465dff",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140405e20",
+        "endExclusive": "0x140405e2c",
+        "bytes": 12,
+        "sha256": "e1d7640c582f42db3281c1c3bef18cd168c523f42cae4039fb14ea785fd5989f",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "analyzer-body-range-containing-entry-not-unwind-verified",
+        "metadataEntryReread": false
+      },
+      {
+        "begin": "0x140405560",
+        "endExclusive": "0x140405571",
+        "bytes": 17,
+        "sha256": "69c98e9fbd4628a270fc71ea74653b4e08f6ad786db68644d712a5f1dcfa28f8",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040d340",
+        "endExclusive": "0x14040d453",
+        "bytes": 275,
+        "sha256": "40dcbd4e7567c0efedb8e09f6d7fb904306c1d59de45dbe9bee208f67ab61a59",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041ac20",
+        "endExclusive": "0x14041ad1a",
+        "bytes": 250,
+        "sha256": "113f17e1168870aef10a1ff80db8a297debc3c2c5d14c954578a6842fe220e9d",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140408440",
+        "endExclusive": "0x1404085f5",
+        "bytes": 437,
+        "sha256": "5f6bd13efa3ee0773c4c81724dc43d7c4287f787a5df9f38847498a9b1483c37",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140407870",
+        "endExclusive": "0x140407888",
+        "bytes": 24,
+        "sha256": "2049beb6c204cb632ed1fd1f32467689df3fa1025c47d167194822f1f66ee74b",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14082a080",
+        "endExclusive": "0x14082a1c7",
+        "bytes": 327,
+        "sha256": "7abc1a796597fb4b8edfc1558bd9425e10cbd56e6b252dce1044ac29fcbcb57a",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140827ea0",
+        "endExclusive": "0x140829244",
+        "bytes": 5028,
+        "sha256": "edd75d1cdd2333d3f4cec074e4736a04f4dbbef78fb960b1eb5138122bc302bc",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14084c260",
+        "endExclusive": "0x14084c470",
+        "bytes": 528,
+        "sha256": "4048634223cad984bd27df822e87038224ddb081afb255a970c15749f40e4401",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040fd90",
+        "endExclusive": "0x14040feef",
+        "bytes": 351,
+        "sha256": "a7d7f33c95039a840dd79634d3943ec8b44735b438327bc39ce3822aac56fd7c",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041c3d0",
+        "endExclusive": "0x14041c52f",
+        "bytes": 351,
+        "sha256": "f01376ad7363813d6d982cd178859fbf2e85dace34af97e2e8a181b181811dc8",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040d780",
+        "endExclusive": "0x14040d7cb",
+        "bytes": 75,
+        "sha256": "1cb6ab44cffe0a25ebfa4337697a4c1959921ebd6226b38dcb97a19aeb4f4a3d",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040d150",
+        "endExclusive": "0x14040d18f",
+        "bytes": 63,
+        "sha256": "97222a29063a8acdaf71f5d9eacaa9df27a1115335f23d577e1a272c0fa6b3d1",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14040d190",
+        "endExclusive": "0x14040d336",
+        "bytes": 422,
+        "sha256": "5859fa22a108a0cf0b8f9a6b8ebc9385031f15c8d0818765c95dd76f5e9d8e29",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041aac0",
+        "endExclusive": "0x14041aaff",
+        "bytes": 63,
+        "sha256": "31ad28e04e04b2d18a67905f422e5fb1f811ddea01fbd392e3eaa1386b4f6e08",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14041ab00",
+        "endExclusive": "0x14041ac15",
+        "bytes": 277,
+        "sha256": "9771fd22b7d462095df35f9e734429f65b616419fcf9841f67f0f1c01100de61",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140407040",
+        "endExclusive": "0x1404071c2",
+        "bytes": 386,
+        "sha256": "f89740557f3ef7b96ef435d9f8aed7fcecbe49cbf4e5526a70a1c2113bbfdc07",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140405e40",
+        "endExclusive": "0x140405f16",
+        "bytes": 214,
+        "sha256": "9de58c895e6bcb0995aed0941ff3d66199f64b59299682a3002f036a0a7f1689",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140404a60",
+        "endExclusive": "0x140404a78",
+        "bytes": 24,
+        "sha256": "a26542ed25ec09acfab64c46a7e99ad8eb4e7e9a5cd11152ea2c21b2ddb26bdd",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140407210",
+        "endExclusive": "0x140407260",
+        "bytes": 80,
+        "sha256": "7d85e63adebbc80525774510dd756ce77b933d82d8976b2b4792d40f99c201a1",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140805700",
+        "endExclusive": "0x1408059ec",
+        "bytes": 748,
+        "sha256": "e7b8fd3c6701273bcc862be3c86576b66490e55d6b2e3dcf4ce5d9002a1437e9",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x1404075f0",
+        "endExclusive": "0x1404076dc",
+        "bytes": 236,
+        "sha256": "8aec9f410aa92bf027ab98b8ba945f71bc9cfe113adafc0cbefb246b09e3d294",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x1405db7d0",
+        "endExclusive": "0x1405dbbda",
+        "bytes": 1034,
+        "sha256": "cfed9d445e9054cddee81c501d88729a0b0caf11c2ec359b4ca251930ada7b81",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x1404676d0",
+        "endExclusive": "0x14046b14c",
+        "bytes": 14972,
+        "sha256": "323f549dec883f01d734690c0aadd73dcbf16dffeac95f845a0764b6317e8f3c",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x1408059f0",
+        "endExclusive": "0x140805c29",
+        "bytes": 569,
+        "sha256": "f23c915bdaa6efa708225cb1d3b2862847b7500303d6891fc002955621ec82b1",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140474e90",
+        "endExclusive": "0x140475076",
+        "bytes": 486,
+        "sha256": "b72d73fc279c4c8e7760e1c0af3329e62a4da95415a2a8a48243f0b150d53784",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140475210",
+        "endExclusive": "0x140475550",
+        "bytes": 832,
+        "sha256": "072e3d535190026f22c8af6267bf6b3b8c076e6509385ca6523e33600ae64fb3",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x1404174e0",
+        "endExclusive": "0x14041763f",
+        "bytes": 351,
+        "sha256": "037aedeb5af824014fd80d1b5975b5670b24606545dd9d33d656e5b4401daafb",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140417640",
+        "endExclusive": "0x140417656",
+        "bytes": 22,
+        "sha256": "3dbb8914d3782b707f45cdb7b90a7d91c3a6b8422051835f5d4cbaa1f3409a94",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140489120",
+        "endExclusive": "0x1404894b5",
+        "bytes": 917,
+        "sha256": "9b5b381fc32097c1e12e835d44da6508d3fd07f70b7196ec1755a4630825586f",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140489840",
+        "endExclusive": "0x140489b2a",
+        "bytes": 746,
+        "sha256": "c74912cd20726de83bc0a92152b3a54a0703068cb3099bb6bd9a4cf8b80df3c5",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x140471f30",
+        "endExclusive": "0x1404722b6",
+        "bytes": 902,
+        "sha256": "96ac514af36f17e39b6a8ca58bd6ae0fa2e6f050444d967de99e0a089b16c0fc",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      },
+      {
+        "begin": "0x14046f820",
+        "endExclusive": "0x14046f962",
+        "bytes": 322,
+        "sha256": "805a819df2863e248db716ee5a1b8ccc34d8aea69452f4b5b71fc747ad5205c0",
+        "twoReadsEqualStatic": true,
+        "rangeSource": "advertised-exception-directory",
+        "metadataEntryReread": true
+      }
+    ],
+    "coverage": "47 code ranges match static bytes twice. 43 use containing advertised metadata entries; four have no entry in that directory and use only the analyzer body range containing the entry. Disjoint tail-call ranges are not merged. These four ranges do not establish complete function ownership. Chained unwind ownership and runtime execution remain unverified.",
+    "targetAssignedToJob": false,
+    "targetModified": false,
+    "nativeFunctionsCalled": false
+  },
+  "dispatch": {
+    "tables": {
+      "privateArtifact": "construction-lifecycle-tables-r1.json",
+      "sha256": "3af6c8a85ff19cc1e03d537922ef1c0c4d4d7f28bd0c87ee4338d63a8deae6e3",
+      "bytes": 12562
+    },
+    "readerTable": {
+      "privateArtifact": "construction-reader-table-r1.json",
+      "sha256": "d831124976331b1d80138b1b45171e2f468c2179f2ca04b9c38d3e0041509d0f",
+      "bytes": 768
+    },
+    "lineObjectVtable": "0x14117cdf8",
+    "pointObjectVtable": "0x14117e220",
+    "readerVtableCandidate": "0x141189e78",
+    "lineRecordMethod": "0x140489120",
+    "pointRecordMethod": "0x140489840",
+    "commonReferenceRecordMethod": "0x140471f30",
+    "readerEntry": "0x1404676d0",
+    "lineCase": 38,
+    "pointCase": 39,
+    "runtimeInstanceDispatchObserved": false
+  },
+  "findings": [
+    {
+      "id": "source-and-dependent-links",
+      "evidenceType": "static call and memory data flow, linked to prior generic refresh evidence",
+      "summary": "Acceptance removes old reverse links and clears the source-reference set before adding mode-specific source identifiers. Separate ordered sets retain inputs and dependents. Shared methods insert, erase and clear each set.",
+      "entries": [
+        "0x140573930",
+        "0x14057fcd0",
+        "0x140406f60",
+        "0x140406f90",
+        "0x140406fc0",
+        "0x140407000"
+      ]
+    },
+    {
+      "id": "persistent-identity-and-links",
+      "evidenceType": "static paired write/read branches",
+      "summary": "The common reference record stores the 16-byte object identity, update level, counted source identifiers and counted dependent identifiers. Load clears each destination set and inserts its saved identifiers. Names are serialized separately as counted UTF-16 code units.",
+      "entries": ["0x140471f30", "0x14046f820"]
+    },
+    {
+      "id": "persistent-line-definition",
+      "evidenceType": "static paired write/read branches",
+      "summary": "The reference-line record retains double-precision start/end coordinates, the four-byte construction mode, counted 28-byte entries split into 16-byte identity and 12-byte coordinate portions, and a separate counted array of 12-byte coordinate records. These arrays are distinct from the common input/dependent sets.",
+      "entries": ["0x140489120"]
+    },
+    {
+      "id": "persistent-point-definition",
+      "evidenceType": "static paired write/read branches",
+      "summary": "The reference-point record retains its three double-precision coordinates, three four-byte fields at object offsets 0x2b8/0x2bc/0x2c0, a 12-byte field at 0x2c4, and a counted array of 12-byte coordinate records. The first field is the construction mode; meanings and mode coverage of the others still require control-path correlation.",
+      "entries": ["0x140489840"]
+    },
+    {
+      "id": "distinct-geometry-payload",
+      "evidenceType": "static paired write/read branches",
+      "summary": "Object-level geometry payload methods are separate from the full reference records. Their line load reconstructs a normalized direction and length; they do not by themselves prove preservation of the construction recipe.",
+      "entries": ["0x14040d340", "0x14040d460", "0x14041ac20", "0x14041ad20"]
+    }
+  ],
+  "priorGraphEvidence": [
+    "docs/NATIVE_ALIGNMENT.md#published-authoring-roots",
+    "docs/NATIVE_DATUM_ALIGNMENT.md#generic-scene-refresh-execution"
+  ],
+  "rejectedAttempts": [
+    {
+      "label": "bind-construction-unwind-r1",
+      "reason": "Initial advertised-directory validation rejected its ordering; no boundary claim retained.",
+      "receipt": {
+        "privateArtifact": "project-index-validation-bind-construction-unwind-r1-cad.receipt.json",
+        "sha256": "3a6b68173e3596267b3b4a05e930515d24fb12c910b38c8178a288c6955dab00",
+        "bytes": 2036,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.1586128000053577,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 90,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 59043840,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    {
+      "label": "bind-construction-unwind-r2",
+      "reason": "Diagnostics found four out-of-order tail records and zero invalid address records. Superseded by a full linear scan.",
+      "receipt": {
+        "privateArtifact": "project-index-validation-bind-construction-unwind-r2-cad.receipt.json",
+        "sha256": "f325324accccf540760cb7a1bb16db9cb727075f39e5cebe61392d2f707e193c",
+        "bytes": 2036,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.1576411999994889,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 90,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 58986496,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    {
+      "label": "construction-mode-accessors-r1",
+      "reason": "Broad field-candidate scan reached its 512-result guard. Refined scan retained only candidates with static data pointers; the guard was not raised.",
+      "receipt": {
+        "privateArtifact": "project-index-validation-construction-mode-accessors-r1-cad.receipt.json",
+        "sha256": "be88f91315109d42ade0c693451a335102c814db4a7d66bfb4a4f22299655b28",
+        "bytes": 1830,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 14.101779200005694,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 120,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 117932032,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    {
+      "label": "bind-construction-lifecycle-r1",
+      "reason": "Four selected entries have no advertised unwind record; the first attempt stopped at the first missing record.",
+      "receipt": {
+        "privateArtifact": "project-index-validation-bind-construction-lifecycle-r1-cad.receipt.json",
+        "sha256": "233a5ec33f68d003abe15b41c0134ff7b22b5ed21565a4a507f9ad0efb4ffbca",
+        "bytes": 2051,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.2588932999933604,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 90,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 94666752,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    },
+    {
+      "label": "bind-construction-lifecycle-r2",
+      "reason": "An analyzer body included a disjoint tail-call target. Superseded by separate handling of the body range containing the entry.",
+      "receipt": {
+        "privateArtifact": "project-index-validation-bind-construction-lifecycle-r2-cad.receipt.json",
+        "sha256": "68fe82414f78b60a5cc6e6ba17d380c2b1cbe18fef2c26630d2f008f724cb30a",
+        "bytes": 2051,
+        "exitCode": 1,
+        "completed": false,
+        "elapsedSeconds": 0.2082996999961324,
+        "jobMemoryBytes": 4294967296,
+        "cpuRate": 2500,
+        "leaseSeconds": 90,
+        "guardMiB": 3072,
+        "outerPeakJobMemoryBytes": 95027200,
+        "childJobActive": 0,
+        "outerJobClosed": true,
+        "childJobClosed": true,
+        "processHandleClosed": true,
+        "threadHandleClosed": true,
+        "cleanupErrors": []
+      }
+    }
+  ],
+  "rejectedBoundaryCandidate": {
+    "artifact": {
+      "privateArtifact": "construction-restore-noanalysis-r1/evidence.json",
+      "sha256": "e6e9dc7fbbbba58e1e468e3bc6e2b30bbe1e7f776f71e8d4899e469e6805909a",
+      "bytes": 28112
+    },
+    "candidate": "0x140467480",
+    "reason": "The padding-derived entry did not contain the desired constructor calls. Current exception-directory entries instead identify 0x1404676d0."
+  },
+  "mcpCoverage": {
+    "existingDatumOperationsUnchanged": true,
+    "newConstructionToolsAdvertised": false,
+    "requiredIntegration": "Shared construction operations must retain and expose recipe, resolved geometry, source references, dependent state and recovery diagnostics through both GUI and MCP."
+  },
+  "limitations": [
+    "Static field reads/writes are not an observed native save/reopen result.",
+    "No native construction functions were executed, and no user geometry was read or modified.",
+    "The dynamic reader instance type and live serialization dispatch were not observed.",
+    "Four code ranges have no entry in the advertised exception directory; their analyzer ranges are not complete-function ownership claims.",
+    "Analyzer instruction listings collected before decompilation can omit subsequently recovered switch arms.",
+    "Deletion policy, all failure paths, picked-record interpretation and dependent rebuild numerical results remain open.",
+    "No application implementation or rendered GUI/MCP construction acceptance is established by this evidence."
+  ]
+}

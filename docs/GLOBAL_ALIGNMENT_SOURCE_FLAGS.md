@@ -1,4 +1,71 @@
-# Global alignment source boundary flags
+# Global alignment source eligibility
+
+## Corrected group-command preparation (2026-10-23)
+
+The shared GUI/MCP command now uses source mask **0** and retains boundary
+vertices in sampling. Its disposable input worker returns a zeroed Uint32 flag
+carrier without computing boundary adjacency. Imported topology, positions and
+scanner normals remain authored data. Existing worker response validation,
+resource admission, cancellation, stale checks, cached Apply and history remain
+shared by the panel and `global_alignment_preview`. The existing state and
+preview responses report `inputSummary.mask: 0`; no additional tool is needed.
+
+The earlier mask-1 interpretation below was incorrect. Controller constructor
+`0x140af88b0` initializes source mask `+0xa8` to zero. Preparation
+`0x140aead00` copies it to `+0x60`. Command entry `0x140af89d0` copies settings
+only to `+0x68..+0x87`; the value one at `+0x80` is the raw target index stride,
+not the source mask.
+
+A later passive GUI capture observed all three preparation tasks, each with
+marker mask zero. At the actual mesh-interface return site `0x140aeb049`, every
+temporary group returned null. The conditional path that clears flags and calls
+the boundary marker was therefore skipped. Each group was bound to its unique
+original owner through a checked one-member list. The observer read 464 metadata
+bytes, called no native functions, read no geometry payloads, completed all three
+returns and verified restored code anchors after detaching. Its bounded mock
+suite passed 24 cases. This capture is a separate run from the numerical replay.
+
+Using mask zero and preserved captured owner flags, the full-size first-run
+numerical replay matches all 96 angular sample counts, consumes all 3,901
+recorded sampler clocks and reproduces all 45 ordered query results: 31,463
+records with identical source/target coordinates, distance bits and active
+state. Sample totals are 1,394, 1,446 and 1,625. All 6,663,164 reconstructed
+facet normals also match. The previous mask-1 preparation failed this comparison.
+
+The [evidence record](evidence/global-fine-source-mask-query-replay-20261023.json)
+separates static field checks, the later live preparation observation and the
+earlier numerical replay. The replay uses captured native vertex normals,
+recorded clocks and query-entry poses. It exercises the scene/query cores, not
+the public worker coordinator, normal derivation or complete GUI/MCP workflow.
+It took 14,445 ms and peaked at 526,028,800 bytes across its owned Job under the
+unchanged 4 GiB cap and 25% CPU quota. Owned processes exited and handles closed.
+These measurements are not a browser memory bound or full alignment acceptance.
+
+An additional connected replay uses the actual input-preparation core's derived
+normals and zero flags, supplying no captured labels to scene preparation. All
+45 queries and 31,463 records still match exactly. A separate full input-core
+comparison checks all 10,144,365 vertex-normal Float32 values with zero differing
+words and unchanged input buffers. The connected run took 15,761 ms and peaked
+at 524,152,832 bytes under the same owned Job limits. Recorded clocks and query
+poses remain environmental inputs; public scheduling and rendering are excluded.
+
+Application regression tests cover zero flags across the 33 retained topology
+cases, boundary inclusion in the real sampler, exact flag-storage admission,
+unchanged authored buffers and actual shared input preparation through the MCP
+operation/state contract. Before correction, 36 focused tests failed on the
+expected behavior. After correction, all 114 focused tests and 47,709 full-suite
+tests passed, with 64 skips. Production build `scanforge-2de97bc109bac489` and CAD
+smoke passed. The MCP unit transport harness executes the worker core but mocks
+worker transport and the outer solver. Rendered GUI/MCP comparison
+for this correction remains outstanding; this candidate is not complete or
+ready to commit under repository parity requirements.
+
+## Historical boundary-mask implementation (superseded)
+
+The following sections retain the earlier implementation and its validation
+history. Their source-mask and group-dispatch interpretation is superseded by
+the evidence above. The adjacency fixtures still establish the generic builder's
+behavior; they do not establish that this group command invokes that builder.
 
 Shared GUI/MCP Global Fine Align input preparation now supplies the source
 exclusion flags already supported by the scene sampler. Previously omitted

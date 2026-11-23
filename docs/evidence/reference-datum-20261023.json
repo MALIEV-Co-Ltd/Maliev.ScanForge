@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "semantic datum source integration; construction feature remains gated",
+  "applicationBehaviorChanged": true,
+  "newConstructionOperationAdvertised": false,
+  "nativeNumericReplay": false,
+  "renderedGuiMcpAcceptance": false,
+  "sources": [
+    {
+      "path": "src/alignment-reference-entity.ts",
+      "sha256": "5874ffecfb0cd4960d85fee653623a58e0bddedc9660cbff16f4120079a66b6f"
+    },
+    {
+      "path": "src/automation/alignment-operations.ts",
+      "sha256": "05ac6c70c380271ace98d8e14a1d590869c8203ced97b165befe690a119a3f7a"
+    },
+    {
+      "path": "src/automation/datum-operations.ts",
+      "sha256": "f4d32d515455a97db012a80d8a3b0b65afdfb321ac2322ba09d03742744ca499"
+    },
+    {
+      "path": "src/automation/catalog.json",
+      "sha256": "bcaf41a89ae01d22faf011dbd3baa4d46e164bd86b1661c48f4b3ad57a8c4306"
+    },
+    {
+      "path": "src/reference-entity.ts",
+      "sha256": "0eb564237f0c688788b0d21e910c543fc39d0db2e21ee56aaac85bb80adab633"
+    },
+    {
+      "path": "src/reference-construction-values.ts",
+      "sha256": "e7df52c78d060ea5bc10e8ee17d6f3ee73cf5444d1df21926c19c63359c1b85b"
+    },
+    {
+      "path": "src/scan-native-datum-feature.ts",
+      "sha256": "5d68c81c352dc386ac6df89b03dddf4c61b052998a32cd01760dd8e600bab1b6"
+    },
+    {
+      "path": "src/ui/DatumReferencePicker.tsx",
+      "sha256": "a0cc97585867b1c34de2cb15ea4baab06118170ada31700f5651aed4dc49118a"
+    },
+    {
+      "path": "src/ui/AlignmentReferences.tsx",
+      "sha256": "17005fb54878a89a331bc2fb8fce073c51fc7525be14b4dc821abebfa9c95836"
+    },
+    {
+      "path": "src/ui/DatumAlignmentTools.tsx",
+      "sha256": "56fbeaa5835c05f0270a5c087d2c94dd82619bd78e7d1d9f89e20a106ec35243"
+    },
+    {
+      "path": "src/ui/App.tsx",
+      "sha256": "7e3384a1e193ebe74482589b7e5ce652a01dc3a157cdf5d0608c83f19c660fd1"
+    },
+    {
+      "path": "tests/reference-datum.test.tsx",
+      "sha256": "6f2ee363a446c64a9a9d2146bf25c89bdf2eaa9c94717558457ec2c440cd5862"
+    },
+    {
+      "path": "tests/fixtures/alignment-datum-feature-native.json",
+      "sha256": "9f2ca4b3fd76d70b658bb584785323c0058f074f98932282938d4014b2a70286"
+    },
+    {
+      "path": "docs/AGENT_GUIDE.md",
+      "sha256": "8af745c56aec05cf0619c2066a3183229880570714549f9815626c6f9a056551"
+    },
+    {
+      "path": "docs/MCP_ARCHITECTURE.md",
+      "sha256": "657d748880b746c3f9f4d5675980317bbdfde8ed1ae295e163c9b24209e5201f"
+    }
+  ],
+  "coverage": [
+    "Shared alignment_references validates semantic payloads and exposes stored point or finite-line direction references",
+    "Forty historical segment-midpoint fixtures compare exact Float64 point/direction bytes through ApplicationApi jobs",
+    "Precise point copies, raw directions, signed zero, positive/zero extent and bounded pagination preserve source state",
+    "Malformed payloads, missing keys, sampled metadata, negative extent, nonfinite derived midpoint and CAD triangle lookup are rejected",
+    "Locked semantic sources constrain supported moving scans through Preview and Apply; source objects remain unchanged",
+    "Stale revisions fail; changed semantic geometry is reread; repeated request IDs apply once",
+    "Server-rendered GUI selector options include semantic sources while moving target checkboxes exclude them",
+    "Properties alignment discovery includes semantic entities and precise payload bits invalidate its component identity"
+  ],
+  "verification": {
+    "initialRed": "51 failures and one passing CAD-triangle rejection before implementation",
+    "initialBuild": "Two test-fixture tuple type errors; corrected with explicit XYZ tuples",
+    "initialFocused": "715 passed; one test incorrectly expected negative stored extent to be valid. Existing semantic codec rejects negative lengths. Preserved that contract and added explicit negative-extent rejection plus signed-zero coverage.",
+    "focused": {
+      "passedTests": 719,
+      "passedFiles": 9,
+      "newTests": 55
+    },
+    "full": {
+      "passedTests": 48238,
+      "skippedTests": 64,
+      "failedTests": 0
+    },
+    "fullReceipt": "project-index-validation-reference-datum-r1-full-final-full.receipt.json",
+    "focusedReceipt": "project-index-validation-reference-datum-r1-green-final-mirror-focused.receipt.json",
+    "buildReceipt": "project-index-validation-reference-datum-r1-build-final-build.receipt.json",
+    "bundle": "scanforge-d1ecd750252f9da7",
+    "scope": "ApplicationApi registry/job integration and server-rendered selector markup; no browser/GPU/native GUI execution"
+  },
+  "validation": [
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-build-final-build.receipt.json",
+      "sha256": "b8bc61d666e161026bfea6bb85cbdafba18a8676ac21e60186900b39bfaa9622",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.58346320001874,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2490273792,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-build-initial-build.receipt.json",
+      "sha256": "781ea9d2dc6fc6ab7a611edcc02f266e28ca10c116c61d62c6c2a53f6c922029",
+      "exitCode": 2,
+      "completed": false,
+      "elapsedSeconds": 23.949196300003678,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2498564096,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-build-tuple-build.receipt.json",
+      "sha256": "6d13a59758917c1b520b54300073ed4d51ed221a6e856115758dcaad143894e4",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 32.69069519999903,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 3072,
+      "guardMiB": 4096,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 2495926272,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-format-final-mirror-focused.receipt.json",
+      "sha256": "ffd8f5edc2b32c7bbb8062c6a4e949afa4f3da207a5a6fc1d8dacbbaee9f57d2",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 1.2184604000067338,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 193544192,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-format-initial-mirror-focused.receipt.json",
+      "sha256": "c57e8131ef4b951373b3c82bd8ed98f9e41b699b9dfb66211edd42d738679fa1",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 1.268954400002258,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 190640128,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-full-final-full.receipt.json",
+      "sha256": "cc631ce90d91d06b0ba1e8e5fee66c8a8b9226bea4ad8e64232a8c38d41301c4",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 260.9995803000056,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 600,
+      "outerPeakJobMemoryBytes": 970088448,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-green-extent-mirror-focused.receipt.json",
+      "sha256": "8358f4c9ab101702b55faf6ed14a87e1bfeedbb5f9f58bc4efa97d8d2126487e",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 11.817162099992856,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 493404160,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-green-final-mirror-focused.receipt.json",
+      "sha256": "2b8420af079fad3c157466d2933123778cae7448c61d495f336874cd0ecce0be",
+      "exitCode": 0,
+      "completed": true,
+      "elapsedSeconds": 11.974678800004767,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 539455488,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-green-initial-mirror-focused.receipt.json",
+      "sha256": "beb74d324833b3ad0bfd6c18fd55184a6ae81b9fd430caec95d27dd57e5986b9",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 11.822480499977246,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 508301312,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    },
+    {
+      "privateArtifact": "project-index-validation-reference-datum-r1-red-initial-mirror-focused.receipt.json",
+      "sha256": "7e941b3162ffc333116db862c219e1aa93e32392fd81cea29c01abafae0ffcca",
+      "exitCode": 1,
+      "completed": false,
+      "elapsedSeconds": 1.7244081999815535,
+      "jobMemoryBytes": 4294967296,
+      "cpuRate": 2500,
+      "heapMiB": 1024,
+      "guardMiB": 3072,
+      "leaseSeconds": 300,
+      "outerPeakJobMemoryBytes": 391028736,
+      "childJobActive": 0,
+      "outerJobClosed": true,
+      "childJobClosed": true,
+      "processHandleClosed": true,
+      "threadHandleClosed": true,
+      "rootExited": true,
+      "cleanupErrors": []
+    }
+  ],
+  "mcpCoverage": "Existing alignment_references, alignment_preview and alignment_apply operate through the shared ApplicationApi registry and strict catalog schemas used by GUI and MCP. Existing job cancellation/revision checks and retry semantics remain intact. No new construction operation is advertised. The selector markup and API behavior are tested, but browser transport/rendered GUI-MCP comparison is still outstanding.",
+  "remaining": [
+    "GUI semantic statistics and triangle-only controls",
+    "Exact native picked-source resolution",
+    "Construction preview/apply display admission, sessions and dependency lifecycle",
+    "Rendered GUI/MCP and current-image native acceptance"
+  ],
+  "limitations": [
+    "Native numbers are compared with existing historical fixtures, not fresh native execution",
+    "Construction recipes are not reevaluated by datum discovery",
+    "Reference movement and public construction/import remain gated",
+    "No browser access or preserved native-image execution",
+    "No feature completion, commit or push"
+  ]
+}
