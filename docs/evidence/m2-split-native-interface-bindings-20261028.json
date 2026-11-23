@@ -1,0 +1,30 @@
+{
+  "scope": "Static interface binding for the Split-related candidate caller on a retained runtime-derived image; no native Split run.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "bindings": [
+    {
+      "identifier": "0x141164ba0",
+      "callerRole": "Queried on the source object's payload before proceeding.",
+      "priorEvidence": "global-fine-child-mesh-query-native.json identifies this as the raw-mesh interface in a separately retained image.",
+      "crossCheck": "On the present image, candidate query 0x140b39b40 compares both identifier qwords and returns the same -0x158 adjustment recorded by the prior controlled query."
+    },
+    {
+      "identifier": "0x14115ca98",
+      "callerRole": "Queried on the selected target; its nonzero result is passed to 0x14067cec0 only if three other interface queries and one state field are zero.",
+      "priorEvidence": "landmark-scene-contract-native.json and landmark-scene-scan-type.json identify a scan-mesh wrapper on a separately retained image.",
+      "crossCheck": "On the present image, candidate query 0x14088ae10 compares both identifier qwords and returns the same -0x2e0 adjustment recorded by the prior controlled query."
+    },
+    {
+      "identifier": "0x14114bbf0",
+      "callerRole": "One of the three other selected-target interface queries whose nonzero result routes away from the 0x14067cec0-only branch.",
+      "priorEvidence": "reference-source-identities-20261023.json identifies the CAD-model interface using the same analysis-image hash.",
+      "crossCheck": "Candidate query 0x14049e900 in this image compares both identifier qwords and uses a -0x360 adjustment."
+    }
+  ],
+  "validation": "Three selected query routines were decompiled in a no-auto-analysis Ghidra run under m2-split-native-types-static-20261028-r1-guard.json with a 4 GiB job limit and confirmed cleanup. Evidence SHA-256 fddbb6e3ccf7385062598c21e355a7bca48b0c18858dc6fb45e53abad6d0bd65.",
+  "limitations": [
+    "The two prior controlled query runs used a different retained analysis-image hash; matching addresses and static query structure support a binding but do not prove both captures are identical.",
+    "The other two target interface identifiers and selected-object runtime values remain unresolved; a nonzero wrapper result alone does not prove which branch is taken.",
+    "No native geometry, result count, ownership, or GUI/MCP parity is established."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "scope": "Original PLY3 Split followed by public MCP project export and reopen",
+  "bundle": "scanforge-a195abaab1693f1e",
+  "result": {
+    "guiSplitCommitted": true,
+    "export": "Browser command timed out while awaiting the export job",
+    "reopenAndHistory": "Not reached",
+    "peakJobBytes": 4430180352,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-persistence-20261028-r1-guard.json"
+  },
+  "diagnosticRepeat": {
+    "result": "Browser command timed out while awaiting the export job",
+    "peakJobBytes": 4447801344,
+    "cleanupConfirmed": true,
+    "guiDigestAt": "2026-10-28T12:00:47.075Z",
+    "peakSampleAt": "2026-10-28T12:00:47.672759Z",
+    "method": "Cumulative job peak sampled every two seconds; sampler runs within the job and contributes memory.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-persistence-timeline-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "Both attempts failed the 4 GiB gate and did not reach reopen; the export allocation responsible has not been isolated.",
+    "Native Split equivalence and M2 closure remain unverified."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "scope": "Static observation of a retained runtime-derived image; no native Split execution or result ownership established.",
+  "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "imageProvenance": "native-capture-42612/provenance.json links the retained analysis image to the installed executable hash; the hashes differ because the analysis image is runtime-derived.",
+  "candidate": "0x14032a500",
+  "evidenceSha256": "9b0ac4bfb8bf61b888573c043210847edd798639afe2a54c9ce28560201f4ff1",
+  "independentInstructionStarts": "m2-split-native-provenance-20261027-r1.json records 814 matching Ghidra and Capstone instruction starts for this candidate; this does not independently verify inferred types or runtime reachability.",
+  "observation": "In the retained decompilation, a loop examines three pairs of pointers from a record, tests flags on each referenced record and searches a tree using a pair of integer fields. After a matching pair is found, it sets bit 4 on both records and writes zero to a pointer slot. Ghidra instructions at 0x14032afc3 through 0x14032afcf contain the two flag writes and zero pointer write.",
+  "interpretation": "This is consistent with marking cut vertices and breaking an edge adjacency, but record types and field meanings remain inferred. It is not evidence for how many objects are published or how disconnected components are classified.",
+  "limitations": [
+    "No runtime Split invocation, control input, output mesh, or object count was observed.",
+    "Function boundaries, data structure types and candidate reachability remain unverified.",
+    "Neither the folded-cutter part-count mismatch nor the disjoint-source ownership mismatch can be resolved from this observation."
+  ]
+}

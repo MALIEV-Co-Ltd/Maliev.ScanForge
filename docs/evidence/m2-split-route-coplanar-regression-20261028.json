@@ -1,0 +1,14 @@
+{
+  "scope": "Attempted shared finite-cutter Split integration; route was disabled after regressions and is not active in production.",
+  "findings": [
+    "The proposed single-mesh route exposes an exact-contact collision for JSON-number coordinates when a cutter is coplanar with one source face and crosses its neighboring face.",
+    "The contact collector records the shared edge twice from the same cutter. The coplanar face supplies approximate parameters without exact provenance; the adjacent face supplies exact cutter-edge witnesses in reverse edge order. Their parameters differ by binary rounding while both produce the same rounded point. The merger rejects an exact contact paired with an unverified one; blindly merging would risk hiding a real collapsed interval.",
+    "The attempted route also changed established separate-segment publication expectations. Native static evidence suggests source-mesh replacement, but direct native validation and the published contract remain unresolved."
+  ],
+  "verification": "The temporary route produced six failures in the guarded five-file integration run, including the pre-existing legacy finite-interior test and the new JSON-number precision error. The temporary production route was removed. The restored path and candidate controls passed 117 tests with two explicit expected failures under m2-single-route-disabled-20261028-r1.json. The temporary diagnostic test was removed; collector data remain in m2-edge-debug.json.",
+  "next": "Prove exact coplanar cutter-edge/source-edge contact identity across neighboring faces before routing the candidate; retain rejection of distinct contacts that round to one coordinate.",
+  "limitations": [
+    "The shared production route still has the finite-interior seam defect.",
+    "Native Split output, real worker, rendered GUI and public MCP for the candidate remain unverified."
+  ]
+}

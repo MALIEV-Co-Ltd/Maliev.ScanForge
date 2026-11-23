@@ -351,6 +351,33 @@ it("does not publish a completed precise candidate after cancellation", async ()
   expect(h.host.commit).not.toHaveBeenCalled();
   expect(mesh.visible).toBe(true);
 });
+it("binds a sampled CAD cutter to the segment route through MCP", async () => {
+  const mesh = entity({
+    positions: new Float32Array([0, 0, 0, 2, 0, 0, 0, 2, 0]),
+  });
+  const tool = entity({
+    id: "cad-cutter",
+    kind: "cad",
+    kernelId: "cad-cutter-kernel",
+    positions: new Float32Array([1, -2, -1, 1, 4, -1, 1, -2, 3]),
+  });
+  const h = harness([mesh, tool]);
+  const result = (await h.ops.mesh_process(
+    {
+      entityId: mesh.id,
+      targetId: tool.id,
+      operation: { kind: "scanEdit", action: "split" },
+    },
+    h.context,
+  )) as { entityIds: string[] };
+  expect(vi.mocked(processMesh).mock.calls[0][0]).toMatchObject({
+    target: tool.positions,
+    targetIsNonMesh: true,
+  });
+  expect(result.entityIds).toHaveLength(2);
+  expect(h.state.entities.find((e) => e.id === mesh.id)!.visible).toBe(false);
+  expect(h.state.entities.find((e) => e.id === tool.id)).toBe(tool);
+});
 it("binds a fitted plane cutter as the same infinite plane used by the GUI", async () => {
   const h = harness([source, cutter]);
   const expected = runScanEdit({

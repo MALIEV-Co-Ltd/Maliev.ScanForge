@@ -1,0 +1,29 @@
+{
+  "scope": "Static candidate trace following a Split-related call on a retained runtime-derived analysis image. No native Split command was executed.",
+  "installedExecutableSha256": "0e356623a92089001fa464da8f899fb645cd927e63eed002f6a06386257c8f2d",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "candidateChain": [
+    "0x14067cec0",
+    "0x14032a500",
+    "0x14033bc70",
+    "0x14034aba0"
+  ],
+  "observations": [
+    "The retained decompilation of 0x14067cec0 calls 0x14033bc70 after a successful 0x14032a500 and passes its return to 0x14034aba0.",
+    "Candidate 0x14033bc70 allocates one container, labels records and invokes 0x14033b7c0 from each initially unlabelled record. The latter traverses up to three non-null linked records and propagates the label subject to flags.",
+    "Candidate 0x14033bc70 invokes 0x14033ba20 once per label with the same allocated container. Candidate 0x14033ba20 marks referenced records and appends selected records and triples into that container.",
+    "Candidate 0x14034aba0 replaces one pointer field and updates apparent back-pointers."
+  ],
+  "interpretation": "The static structure is consistent with labelling connected face regions, copying them into a single mesh-like container and attaching it to the existing object. This interpretation is tentative; field types, object identity and visible result semantics are inferred.",
+  "provenance": {
+    "publicationEvidenceSha256": "7c2e6b8b9668466882b3d21e65cea04e3138450c36cf95d5757b82ffed447320",
+    "helperEvidenceSha256": "01ab672f4c4ecab13370bd6930cc4099800ad097be6796691d55392ddcdd86e3",
+    "independentDecode": "Ghidra instruction starts were decoded with Capstone. All 108, 19 and 161 starts of candidates 0x14033bc70, 0x14034aba0 and 0x14033ba20 had matching mnemonics. Candidate 0x14033b7c0 had 172 starts, with one cmovz/cmove mnemonic alias difference; operands, function boundaries and semantic types were not independently verified.",
+    "resourceGuard": "Both static analyses ran separately under a 4 GiB job guard with cleanup confirmed."
+  },
+  "limitations": [
+    "The entry point and branches have not been demonstrated reachable from an actual native Split operation.",
+    "No native input, output, object count, GUI state, ownership, or save/reopen behavior was observed.",
+    "This evidence alone does not resolve the folded-cutter and disjoint-source part-count mismatches."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "scope": "Diagnostic instrumentation of worker-side project transport during original PLY3 Split export",
+  "diagnosticBundle": "scanforge-52686c72ad3dec9a",
+  "observation": {
+    "transportLengths": [33306813, 5626452],
+    "workerUnpackStarted": true,
+    "workerUnpackCompleted": false,
+    "workerEncodingCompleted": false,
+    "result": "Browser command timed out",
+    "peakJobBytes": 4433670144,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encode-worker-trace-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The worker reached the start of numeric transport unpacking but did not report completion before the timeout. This does not identify the exact allocation or whether the worker was terminated by the job limit.",
+    "The diagnostic console instrumentation was removed from the application source after the isolated bundle was built.",
+    "Large-scan export and reopen remain unverified, as do native Split parity and M2 closure."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "scope": "Static analysis of source mesh replacement and component-property refresh in the candidate mesh Split path; no native Split command executed.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "observations": [
+    "Candidate 0x14067cec0 obtains the source raw-mesh interface, saves a copy via 0x14067aa20, runs the candidate split helper and on success passes the output of 0x14033bc70 to the source object's pointer-replacement helper 0x14034aba0.",
+    "After the operation it invokes 0x14067a730. That helper accesses the UTF-16 name cSubMeshesProperty on the source object, clears a collection, traverses records from the source mesh, calls 0x14067a410 for newly labelled records, and stores the resulting count in the controller and mesh.",
+    "Candidate 0x14067aad0 replaces the source object's pointer with the saved copy and optionally calls the same property-refresh helper. Its role as an Undo or Cancel action is not proven from this code alone."
+  ],
+  "interpretation": "The candidate route is consistent with one source object whose mesh is replaced and whose submesh property is refreshed. It does not independently establish UI-visible object inventory, exact component contents or Undo semantics.",
+  "validation": "Ghidra decompiled the three helpers without whole-image auto-analysis under m2-split-native-history-static-20261028-r1-guard.json. Independent Capstone decoding covered all 173 Ghidra instruction starts, with one cmovz/cmove mnemonic alias. Both jobs used the 4 GiB guard and confirmed cleanup. Private Ghidra evidence SHA-256 583b16120875f6ad32fac47c3a330f7d23dd953a2ef2af897dc1d9c4de16c0cd.",
+  "limitations": [
+    "Static function boundaries and inferred object types are not independently established.",
+    "The route has not been observed during a native Split on the prepared mesh fixtures.",
+    "No native facet counts, result ownership, save/reopen, selection, undo or GUI/MCP comparison was obtained."
+  ]
+}

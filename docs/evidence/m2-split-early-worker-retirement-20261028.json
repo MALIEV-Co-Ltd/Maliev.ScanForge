@@ -1,0 +1,46 @@
+{
+  "scope": "M2 precise Split worker handoff",
+  "change": "After validating the packed Split response, retire its disposable worker before restoring transferable binary64 coordinates to the existing public number-array representation. Job cleanup and error handling still complete after restoration.",
+  "focused": {
+    "testsPassed": 100,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-early-worker-tests-20261028-r2.json",
+    "coverage": "Includes a prior failing regression for retirement before coordinate reads, restoration failure cleanup, malformed responses, worker/client handoff and Split readiness."
+  },
+  "bundle": {
+    "manifest": "scanforge-a195abaab1693f1e",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-early-worker-bundle-20261028-r1-guard.json"
+  },
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-early-worker-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "guiMcpGeometryEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "repeatedRedo": true,
+    "consoleAndPageErrors": 0,
+    "jobLimitBytes": 4294967296,
+    "runs": [
+      {
+        "peakJobBytes": 4048871424,
+        "cleanupConfirmed": true,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-early-worker-original-ply3-20261028-r1-guard.json"
+      },
+      {
+        "peakJobBytes": 4043612160,
+        "cleanupConfirmed": true,
+        "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-early-worker-original-ply3-20261028-r2-guard.json"
+      }
+    ]
+  },
+  "limitations": [
+    "The two guarded runs cover this one original scan, cutter, browser and workflow; they do not establish a general bound for all projects.",
+    "The original-scan workflow did not test save/reopen or cancellation while the operation was running.",
+    "Native Split parity and all remaining M2 acceptance gates remain open."
+  ]
+}

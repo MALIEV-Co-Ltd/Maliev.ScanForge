@@ -1,0 +1,40 @@
+{
+  "scope": "M2 Split exact-sized seam vertex allocation",
+  "change": "Assign output vertex IDs first, then allocate coordinates for the actual number of distinct output vertices rather than the maximum number of triangle corners.",
+  "focused": {
+    "testsPassed": 117,
+    "expectedFailures": 1,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-seam-regressions-20261028-r1.json"
+  },
+  "bundle": {
+    "manifest": "scanforge-e1223d5a3f05492b",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-seam-bundle-20261028-r1-guard.json"
+  },
+  "typecheck": {
+    "batchesPassed": 15,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-seam-typecheck-20261028-r1.json"
+  },
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-seam-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "inputFaces": 3691133,
+    "outputFaces": 3700757,
+    "guiMcpGeometryEqual": true,
+    "sourceUndo": true,
+    "cutterPreserved": true,
+    "repeatedRedo": true,
+    "consoleAndPageErrors": 0,
+    "peakJobBytes": 4361191424,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-exact-seam-original-ply3-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The workflow completed, but measured peak job memory exceeded the 4 GiB validation gate by 66224128 bytes.",
+    "This is not native Split equivalence, large-project persistence acceptance, or M2 closure."
+  ]
+}

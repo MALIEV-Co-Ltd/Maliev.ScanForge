@@ -1,0 +1,16 @@
+{
+  "scope": "Bounded static analysis of native Split-related caller and alternate candidate branches; no installed-native operation was executed.",
+  "analysisImageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "observations": [
+    "Candidate 0x14067df80 reads the UTF-16 label SplitMesh Curve Tolerance, performs multiple identifier-based object checks and reads dialog state before selecting among candidate calls 0x14067d270, 0x14067cec0 and 0x14067b440.",
+    "The caller contains the messages Cut or combine work only with solid CAD bodies. and Cut from a mesh works only with a solid body. These are static strings; which specific identifier selects which object category is unresolved.",
+    "The retained decompilation of 0x14067b440 calls 0x14032a500 and includes two call sites to the region-copy candidate 0x14033bc70 in separate code blocks. One block conditionally invokes the pointer replacement candidate 0x14034aba0. This shows distinct candidate paths and does not establish their runtime frequency or visible object count."
+  ],
+  "validation": "Ghidra decompiled the three candidates without automatic whole-image analysis under m2-split-native-caller-static-20261028-r1-guard.json: 246, 791 and 1620 instructions. Independent Capstone decoding covered each Ghidra instruction start; reported mnemonic differences were cmov aliases and lock-prefix ordering. This does not independently establish operands, function boundaries or inferred types. Guarded jobs cleaned up.",
+  "privateEvidenceSha256": "31564a2578fd4723acf4a4782fe254c3265dc386aeaf85719150701b1cc9232d",
+  "limitations": [
+    "Runtime reachability and branch selection for real mesh, surface, plane or solid cutters are not established.",
+    "The string-bearing routine alone cannot establish result object count, geometry or ownership.",
+    "No native input, output or GUI/MCP comparison was obtained."
+  ]
+}

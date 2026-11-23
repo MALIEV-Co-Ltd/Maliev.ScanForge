@@ -1,0 +1,14 @@
+{
+  "scope": "Preparation of precise single-mesh Split transport through shared worker and publication contracts; experimental candidate is injected by tests and not routed in production.",
+  "changes": [
+    "Scan-edit results can retain number-array positions as well as Float32 positions; the worker only transfers typed buffers and forwards an indexed successor after validating its correspondence to positions.",
+    "The GUI replacement callback accepts the same position representations. Bridge previews continue to accept their existing Float32 geometry, and the MCP bridge response handles both position representations.",
+    "An injected candidate result passes a structured-clone worker-boundary control. A mocked shared automation operation replaces the source object, retains its indexed topology and preserves the previous geometry in history."
+  ],
+  "verification": "Six focused files passed 117 tests under m2-single-worker-green-20261028-r1.json. Targeted TypeScript covering the worker, App and publication test passed under m2-single-publish-types-wide-20261028-r3.json. Both guarded jobs stayed below the 4 GiB limit and confirmed cleanup.",
+  "limitations": [
+    "Candidate injection and mocked publication are not actual public MCP or rendered GUI verification.",
+    "The production Split algorithm is not switched to this candidate; native comparison, source/target lifecycle, undo/reopen and full M2 acceptance remain open.",
+    "The local combined preview does not include these uncommitted changes."
+  ]
+}

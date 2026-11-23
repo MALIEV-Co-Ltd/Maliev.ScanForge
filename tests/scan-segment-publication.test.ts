@@ -183,6 +183,14 @@ it("filters non-triangle cutters and validates persisted reference-plane geometr
     }),
   ).toThrow(/plane frame/);
   expect(
+    scanSplitCutter({
+      ...plane,
+      kind: "mesh",
+      planeFrame: undefined,
+      kernelId: undefined,
+    }),
+  ).toEqual({ target: triangle, targetIsNonMesh: false });
+  expect(
     scanSplitCutter({ ...plane, kind: "mesh", planeFrame: undefined }),
-  ).toEqual({ target: triangle });
+  ).toEqual({ target: triangle, targetIsNonMesh: true });
 });

@@ -1,0 +1,30 @@
+{
+  "scope": "Original PLY3 Split project export worker handoff",
+  "bundle": "scanforge-a195abaab1693f1e",
+  "observation": {
+    "workerCreated": true,
+    "workerDispatched": true,
+    "workerResponseObserved": false,
+    "stagedNumericLengths": [33306813, 5626452],
+    "dispatchMillisecondsAfterExportRequest": 136,
+    "terminalResult": "Browser command timed out before a worker response",
+    "peakJobBytes": 4433989632,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-original-split-export-diagnostic-20261028-r1-guard.json"
+  },
+  "discardedExperiment": {
+    "change": "Release references to worker-owned transport buffers after their corresponding arrays are reconstructed.",
+    "focusedTestsPassed": 53,
+    "bundle": "scanforge-ea449e01cb053126",
+    "result": "Export still timed out before reopening; the measured peak remained above the limit.",
+    "peakJobBytes": 4438360064,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-encode-consume-persistence-20261028-r1-guard.json",
+    "disposition": "Removed the unproven change after validation."
+  },
+  "limitations": [
+    "Worker dispatch narrows the failure to the time after the handoff; it does not identify the precise worker-side allocation or exclude other concurrent work.",
+    "Export, reopen, native Split parity and the remaining M2 gates remain open."
+  ]
+}

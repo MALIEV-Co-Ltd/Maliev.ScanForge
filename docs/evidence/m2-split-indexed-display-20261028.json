@@ -1,0 +1,18 @@
+{
+  "scope": "Prepare compact indexed display data in the shared Split worker while retaining the former position-welded, area-weighted display normals. This is application evidence, not native comparison.",
+  "candidate": "Uncommitted combined working tree based on b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02; not the published PR head.",
+  "implementation": "The worker welds the expanded output with the same Float32 quantization and computes the same Three.js display normals as the former viewport fallback, then maps those values to the authored indexed vertex order. The client caches the transferred display data for the exact output positions and indexed object before GUI/MCP publication. Authored coordinates, indexed connectivity, public schemas and saved formats do not change.",
+  "validation": {
+    "normalControl": "Manufactured non-coplanar and large-coordinate Splits compared every compact indexed normal against the former expanded welded display normal, exactly; m2-compact-display-normals-20261028-r2.json.",
+    "focused": "72 worker, client and display tests passed; m2-render-worker-green-20261028-r1.json. Separate red controls established the prior absence of worker display data and client cache handoff.",
+    "typecheck": "15 integrated source/test batches passed; m2-indexed-display-types-20261028-r1.json.",
+    "worker": "The persistent dispatcher/structured-clone test on the original 3691133-face PLY passed precision hashes, indexed agreement, area and source preservation; recorded peak 2520956928 bytes, m2-indexed-display-worker-ply3-20261028-r1-guard.json.",
+    "smallBrowser": "Production build scanforge-e1a787ea592eed1b passed large-coordinate GUI/public-MCP geometry equality, picking, canvas selection, undo/redo and binary reopening without page or console errors; m2-indexed-display-browser-precision-20261028-r1-guard.json.",
+    "largeBrowser": "On original ply-3 and a finite cutter the GUI Split, original-buffer Undo, subsequent public-MCP Split, full GUI/MCP geometry digest equality and second Undo completed. Redo returned identical position, indexed-vertex and triangle hashes but the whole-object digest assertion failed because computed geometryNormals and facetNormals had been added. restoreModelDisplay in src/history.ts intentionally initializes missing computed normals when a mesh history snapshot is activated. The run recorded peak 4428075008 bytes against a configured 4294967296-byte job limit and cleaned up. The recorded page JS heap after GUI commit was 1412769457 bytes, compared with 2011088218 in the earlier preallocated-restore run; these are individual observations, not an isolated controlled allocation profile. Receipt: m2-indexed-display-original-ply3-20261028-r1-guard.json."
+  },
+  "limitations": [
+    "The full large-scan browser run failed its whole-object digest assertion and exceeded the configured job limit; it is not a passing bounded acceptance run.",
+    "The large-scan output normals were not compared to native QuickSurface, and persistence, cancellation during normal preparation and other M2 gates remain open.",
+    "The normal-preservation control is a finite manufactured case; arbitrary geometry and renderer equivalence are not established by it."
+  ]
+}

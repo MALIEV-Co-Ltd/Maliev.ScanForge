@@ -2,6 +2,7 @@ import type { Entity, IndexedMesh, Positions, Vec3 } from "./types";
 import { transformPositions } from "./geometry";
 import { allocateImportedReadonlyBuffer } from "./import-readonly-buffer";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
+import { isEncodingNumeric } from "./project-encoding-numeric";
 
 /** Transform coordinates without changing source vertex IDs or face connectivity. */
 export function transformIndexedMesh(
@@ -55,7 +56,11 @@ export function indexedMeshMatches(
   const { vertices, triangles, normals, geometryNormals, facetNormals } =
     value as IndexedMesh;
   if (
-    !(Array.isArray(vertices) || vertices instanceof Float32Array) ||
+    !(
+      Array.isArray(vertices) ||
+      vertices instanceof Float32Array ||
+      isEncodingNumeric(vertices)
+    ) ||
     !(Array.isArray(triangles) || triangles instanceof Uint32Array) ||
     !vertices.length ||
     vertices.length % 3 ||

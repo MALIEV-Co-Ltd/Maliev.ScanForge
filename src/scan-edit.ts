@@ -69,6 +69,8 @@ export interface ScanEditRequest {
   iterations?: number;
   plane?: { origin: Vec3; normal: Vec3 };
   target?: Positions;
+  /** Trusted binding for sampled non-mesh cutters; not an MCP parameter. */
+  targetIsNonMesh?: boolean;
   tolerance?: number;
   fitTolerance?: number;
 }
@@ -332,7 +334,7 @@ function scanEdit(
     throw new Error(
       "Triangle selection mask must contain one 0 or 1 per triangle.",
     );
-  if (r.action === "split" && r.target && !r.plane) {
+  if (r.action === "split" && r.target && !r.plane && !r.targetIsNonMesh) {
     const cutterTopology = analyzeMesh(r.target, {
       ...o,
       topologyCache: undefined,

@@ -193,6 +193,17 @@ Numeric geometry chunks retain their original immutable shared backing and
 reuse/aliasing behavior. The shared project import and GUI open/backup paths use
 this same codec; no format or transport contract changes.
 
+Precise finite-mesh Split returns indexed coordinates through an internal
+transferable binary64 worker message. The processing client restores the
+existing number-array result before GUI or MCP publication. The worker restores
+its previous source if publication fails; after receiving a valid precise Split
+result, the client retires the worker before restoring the transferred arrays,
+instead of retaining a duplicate successor. Project
+formats and public MCP schemas are unchanged.
+The worker also prepares compact indexed display normals using the same welded
+normal calculation as the expanded viewport fallback. The client caches those
+disposable buffers for the shared GUI/MCP result without changing authored normals.
+
 ## Shared fine alignment and target binding
 
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
@@ -846,6 +857,12 @@ The App now mounts the Interactive session store and viewport/mirror adapters, w
 ## Project restoration and numeric transport
 
 GUI save/export, automatic backups and MCP project export use the same codec. Numeric encoding hashes canonical little-endian values incrementally in chunks of at most 1 MiB, then streams those values through gzip into Blob payloads. Content and identity deduplication, decoded bytes, project formats and restoration remain unchanged. The chunk limit bounds numeric staging only; retained output, browser compression storage and BRep text can still consume additional memory. Existing encoding cancellation, queue ownership and the two-minute worker lease remain in force.
+
+The disposable encoder may keep transferred Float64 staging buffers for mesh
+positions and indexed vertices when every reference to the array has one of
+those roles. Buffers used elsewhere retain ordinary arrays. The private worker
+validation accepts only these marked buffers; public project geometry contracts,
+file encodings and decoded array types remain unchanged.
 
 In cross-origin-isolated browsers, the shared GUI/MCP scan importer allocates final indexed PLY/STL expanded positions and PLY corner normals in shared buffers before publication. Packed binary PLY also shares final indexed vertices, normals and triangle indices; the binary STL path shares its final indexed vertices and triangle indices. Computed geometry normals use the same immutable shared-storage policy and are borrowed by display data. Decoder scratch stays private, and the general PLY loader retains ordinary indexed coordinate buffers. Unit conversion and origin placement finish before publication. Published geometry is immutable. Speculative topology reports may borrow shared positions in their retained worker; before any later non-report operation, that worker copies its canonical source and rebinds cached source identities while retaining adjacency. Other processing requests receive private copies. Save/export/automatic-backup workers read shared storage without cloning those buffers. Nonisolated browsers retain ordinary buffers. Project format versions and tool inputs are unchanged; geometry artifacts expose the optional computed field.
 
