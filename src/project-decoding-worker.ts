@@ -28,8 +28,10 @@ scope.onmessage = async ({ data }) => {
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
       onDecodedFloat64: (values, bytes) => decodedFloat64.set(values, bytes),
     });
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-session-complete', at:performance.now()})}`);
     assertReferenceWorkspaceAdmission(session);
     session = prepareRestoredProjectDisplays(session);
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-displays-complete', at:performance.now()})}`);
     const seen = new Set();
     const displays = session.project.entities.flatMap((e) => {
       const result = scanRenderData(e.positions);
@@ -45,6 +47,7 @@ scope.onmessage = async ({ data }) => {
         reuseNumericBuffer: (values) => decodedFloat64.get(values),
       },
     );
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-packet-complete', at:performance.now()})}`);
     scope.postMessage({ packet: encoded.packet }, encoded.transfers);
   } catch (error) {
     scope.postMessage({

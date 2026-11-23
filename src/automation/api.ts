@@ -231,6 +231,16 @@ export const ARTIFACT_BYTES = 1024 * 1024 * 1024;
 const ARTIFACT_COUNT = 64;
 const ARTIFACT_CHUNK_BYTES = 1024 * 1024;
 const ARTIFACT_LEASE_MS = 900000;
+let experimentalArtifactReader: Worker | undefined;
+function experimentalArtifactRead(blob: Blob): Promise<string> {
+  experimentalArtifactReader ??= new Worker(new URL("./artifact-read-experimental-worker.ts", import.meta.url), {type: "module"});
+  const worker = experimentalArtifactReader;
+  return new Promise((resolve, reject) => {
+    worker.onmessage = ({data}) => data.error ? reject(new Error(data.error)) : resolve(data.base64);
+    worker.onerror = (error) => reject(new Error(error.message));
+    worker.postMessage(blob);
+  });
+}
 function discoveryKeywords(value: unknown): string[] {
   if (Array.isArray(value)) return value.flatMap(discoveryKeywords);
   if (!value || typeof value !== "object") return [];
@@ -832,27 +842,21 @@ export class ApplicationApi {
             "INVALID_ARGUMENT",
             "Offset exceeds artifact size.",
           );
-        const data = new Uint8Array(
-          await entry.blob
-            .slice(offset, offset + ((args.length as number) ?? 65536))
-            .arrayBuffer(),
-        );
+        const part = entry.blob.slice(offset, offset + ((args.length as number) ?? 65536));
+        const base64 = await experimentalArtifactRead(part);
         this.checkOwner(ownerEpoch);
-        // Bound conversion scratch; per-byte concatenation creates a string
-        // node for every byte during repeated full-project downloads.
-        const text: string[] = [];
-        for (let start = 0; start < data.length; start += 8192)
-          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text.join("")),
-          nextOffset: offset + data.length,
-          eof: offset + data.length === entry.blob.size,
+          base64,
+          nextOffset: offset + part.size,
+          eof: offset + part.size === entry.blob.size,
         });
       }
       if (command === "artifact_delete") {
         this.artifacts.delete(args.artifactId as string);
+        experimentalArtifactReader?.terminate();
+        experimentalArtifactReader = undefined;
         return this.success({ deleted: true });
       }
       if (

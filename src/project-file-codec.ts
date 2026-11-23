@@ -97,19 +97,7 @@ type RecordData = Omit<
 };
 const magic = new TextEncoder().encode("SCANFRG2");
 async function digest(bytes: Uint8Array): Promise<string> {
-  // WebCrypto rejects shared buffers; the existing incremental hash borrows
-  // their bytes without allocating another full decompressed chunk.
-  if (!(bytes.buffer instanceof ArrayBuffer))
-    return projectValueHash(bytes, "u8").sha256;
-  return Array.from(
-    new Uint8Array(
-      await crypto.subtle.digest(
-        "SHA-256",
-        new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength),
-      ),
-    ),
-    (x) => x.toString(16).padStart(2, "0"),
-  ).join("");
+  return projectValueHash(bytes, "u8").sha256;
 }
 /** Portable, lossless binary container. Identical revision payloads are stored once. */
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
@@ -450,6 +438,7 @@ export async function decodeProjectContents(
   }
   let expected = 0;
   for (const chunk of m.chunks as Chunk[]) {
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-chunk-start', index:data.length, bytes:chunk?.bytes, rawBytes:chunk?.rawBytes, at:performance.now()})}`);
     if (
       !chunk ||
       chunk.offset !== expected ||
@@ -514,8 +503,10 @@ export async function decodeProjectContents(
       await reader.cancel();
       reader.releaseLock();
     }
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-chunk-read', index:data.length, borrowed, privateFloat64, used, at:performance.now()})}`);
     if (used !== bytes.length || (await digest(bytes)) !== chunk.sha256)
       return invalid();
+    console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-chunk-hashed', index:data.length, at:performance.now()})}`);
     if (
       typeof SharedArrayBuffer !== "undefined" &&
       bytes.buffer instanceof SharedArrayBuffer
@@ -526,6 +517,7 @@ export async function decodeProjectContents(
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
+  console.log(`M2_WORKER_TRACE ${JSON.stringify({event:'decode-chunks-complete', at:performance.now()})}`);
   const decoded = new Map<string, ProjectValue>();
   function read(ref: Ref, typedIndices = false): ProjectValue {
     if (
