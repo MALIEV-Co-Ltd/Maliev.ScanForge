@@ -293,6 +293,50 @@ try {
   };
   const cases = [
     {
+      name: "original-scan-face-7207",
+      source: [
+        19.898012161254883, 47.31754684448242, -315.9837341308594,
+        20.04651641845703, 47.50707244873047, -315.9645080566406,
+        20.04990005493164, 47.18638610839844, -315.8510437011719,
+      ],
+      target: [
+        19.9250431060791, -149.8528594970703, -442.96917724609375,
+        19.9250431060791, -149.8528594970703, 72.22071838378906,
+        19.9250431060791, 406.9168701171875, -442.96917724609375,
+      ],
+      kind: "mesh",
+      parts: 2,
+      method: "open surface signed nearest grouping",
+      originalFaceWinding: true,
+    },
+    {
+      name: "sloped-edge-crossing",
+      source: [0, 0, 0, 1, 3, 0, 0, 4, 0],
+      target: [0, 0, -1, 1, 3, -1, 0, 0, 2],
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      requiredPoint: [2 / 3, 2, 0],
+    },
+    {
+      name: "finite-interior-cut",
+      source: [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      target: [0.5, 0.1, -1, 0.5, 0.3, -1, 0.5, 0.1, 1],
+      kind: "mesh",
+      parts: process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT ? 2 : 1,
+      method: "open surface signed nearest grouping",
+      finiteInterior: true,
+    },
+    {
+      name: "tilted-coplanar-identical",
+      source: [0, 0, 0, 7, 5, 21, 2, 2, 17],
+      target: [0, 0, 0, 7, 5, 21, 2, 2, 17],
+      kind: "mesh",
+      parts: 1,
+      method: "open surface signed nearest grouping",
+      unchangedPart: true,
+    },
+    {
       name: "coplanar-shared-edge",
       source: [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
       target: [0, 0.1, -1, 0, 0.9, -1, 0, 0.5, 1],
@@ -380,16 +424,32 @@ try {
       method: "closed mesh ray parity",
     },
   ];
-  const area = (positions) => {
+  const sourceNormal = (p) => {
+    const u = [0, 1, 2].map((i) => p[i + 3] - p[i]);
+    const v = [0, 1, 2].map((i) => p[i + 6] - p[i]);
+    return [
+      u[1] * v[2] - u[2] * v[1],
+      u[2] * v[0] - u[0] * v[2],
+      u[0] * v[1] - u[1] * v[0],
+    ];
+  };
+  const area = (positions, reference) => {
     let result = 0;
     for (let i = 0; i < positions.length; i += 9) {
       const u = [0, 1, 2].map((a) => positions[i + 3 + a] - positions[i + a]),
         v = [0, 1, 2].map((a) => positions[i + 6 + a] - positions[i + a]);
       const z = u[0] * v[1] - u[1] * v[0];
-      assert(z >= -1e-8, "Split reversed source winding");
-      result +=
-        Math.hypot(u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], z) *
-        0.5;
+      const normal = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], z];
+      if (reference)
+        assert(
+          normal.reduce(
+            (sum, value, axis) => sum + value * reference[axis],
+            0,
+          ) > 0,
+          "Split reversed source winding",
+        );
+      else assert(z >= -1e-8, "Split reversed source winding");
+      result += Math.hypot(...normal) * 0.5;
     }
     return result;
   };
@@ -398,6 +458,7 @@ try {
   const results = [];
   const inputDirectory = process.env.SCANFORGE_SPLIT_INPUT_DIR;
   const fileInputs = {
+    "finite-interior-cut": ["source.stl", "cutter.stl"],
     "finite-planar-mesh": ["disjoint-source.stl", "finite-plane-cutter.stl"],
     "closed-convex": ["square-source.stl", "convex-cutter.stl"],
     "closed-concave": ["square-source.stl", "concave-cutter.stl"],
@@ -406,6 +467,10 @@ try {
     inputDirectory &&
     JSON.parse(await readFile(`${inputDirectory}/manifest.json`, "utf8"));
   const expectedFileHashes = {
+    "source.stl":
+      "126431c2e8a871619b5bb055df2833fdb762f7a7dabd3f54fe8346446473a75d",
+    "cutter.stl":
+      "64fee32d99371d7f81a6c172a2309a1c5e6639ec5c9ee5840fa72ec006e572e6",
     "disjoint-source.stl":
       "86208348d2200cf78ad30ccd78b194a97aa10ba28b997a86ddcddffb125496f2",
     "finite-plane-cutter.stl":
@@ -586,6 +651,12 @@ try {
       c.parts,
       "Split did not honor the requested cutter class",
     );
+    if (c.unchangedPart)
+      rawEqual(
+        output[0].positions,
+        c.source,
+        "Coplanar split changed the source facet",
+      );
     assert.equal(
       (await call("application_inspect")).result.selectedId,
       output[0].metadata.id,
@@ -608,7 +679,56 @@ try {
           assert(p.positions[i] <= c.sourceYBounds[1] + 1e-6);
         }
     }
-    const areas = output.map((p) => area(p.positions));
+    if (c.requiredPoint) {
+      assert(
+        output.some((part) => {
+          for (let i = 0; i < part.positions.length; i += 3)
+            if (
+              c.requiredPoint.every(
+                (value, axis) =>
+                  Math.abs(part.positions[i + axis] - value) < 1e-6,
+              )
+            )
+              return true;
+          return false;
+        }),
+        "Split omitted the finite sloped-edge crossing",
+      );
+    }
+    const reference = c.originalFaceWinding
+      ? sourceNormal(c.source)
+      : undefined;
+    const areas = output.map((p) => area(p.positions, reference));
+    if (c.finiteInterior && process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT) {
+      const intervals = output.map((part) => {
+        const found = [];
+        for (let i = 0; i < part.positions.length; i += 9)
+          for (let j = 0; j < 3; j++) {
+            const a = i + 3 * j,
+              b = i + 3 * ((j + 1) % 3);
+            if (
+              Math.abs(part.positions[a] - 0.5) < 1e-6 &&
+              Math.abs(part.positions[b] - 0.5) < 1e-6
+            )
+              found.push(
+                [part.positions[a + 1], part.positions[b + 1]].sort(
+                  (x, y) => x - y,
+                ),
+              );
+          }
+        return found;
+      });
+      assert(
+        intervals[0].some(([a, b]) =>
+          intervals[1].some(([c, d]) => {
+            const lo = Math.max(a, c),
+              hi = Math.min(b, d);
+            return hi - lo > 1e-6 && (lo < 0.1 - 1e-5 || hi > 0.2 + 1e-5);
+          }),
+        ),
+        "Expected current output to expose the false boundary",
+      );
+    }
     if (c.sharedEdge) {
       const edges = new Map();
       for (const part of output)
@@ -660,7 +780,8 @@ try {
       assert(endpoints.some((value) => Math.abs(value - 0.7) < 1e-6));
     }
     assert(
-      Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source)) <= 1e-5,
+      Math.abs(areas.reduce((a, b) => a + b, 0) - area(c.source, reference)) <=
+        1e-5,
       "Split does not conserve independent triangle area",
     );
     if (c.areas)
@@ -675,6 +796,11 @@ try {
     return verifyState(state, c);
   };
   for (const c of cases) {
+    if (
+      process.env.SCANFORGE_SPLIT_CASE &&
+      c.name !== process.env.SCANFORGE_SPLIT_CASE
+    )
+      continue;
     if (inputDirectory && !fileInputs[c.name]) continue;
     const baseline = await load(c);
     await open(c);
@@ -842,9 +968,20 @@ try {
       inputCoordinateSha256: digest(c.source),
       cutterCoordinateSha256: digest(c.target),
       parts: c.parts,
+      ...(c.finiteInterior && process.env.SCANFORGE_SPLIT_OBSERVE_CURRENT
+        ? { observedFalseBoundaryOutsideCutter: true, acceptancePassed: false }
+        : {}),
       outputCoordinateSha256: mcp.map((p) => digest(p.positions)),
-      areas: mcp.map((p) => area(p.positions)),
-      sourceArea: area(c.source),
+      areas: mcp.map((p) =>
+        area(
+          p.positions,
+          c.originalFaceWinding ? sourceNormal(c.source) : undefined,
+        ),
+      ),
+      sourceArea: area(
+        c.source,
+        c.originalFaceWinding ? sourceNormal(c.source) : undefined,
+      ),
       method: done.result.diagnostics.cutter,
       guiMcpGeometryAndMetadata: true,
       sourceAndCutterRetained: true,

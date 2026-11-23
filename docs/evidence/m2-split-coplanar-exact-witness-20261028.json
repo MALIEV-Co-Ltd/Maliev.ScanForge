@@ -1,0 +1,10 @@
+{
+  "scope": "Experimental finite Split contact provenance for a shared edge between a coplanar face and a noncoplanar neighboring face; production route remains unchanged.",
+  "change": "For a coplanar source edge, construct a transverse witness plane through that edge and derive exact cutter-edge crossings. A witness is retained only when its rounded point matches the recorded contact; multiple matching crossings with different exact identities are rejected. The existing exact identity guard remains in place for truly distinct collapsed contacts.",
+  "verification": "The previously failing JSON-number shared-edge control now passes with both cutter windings, indexed correspondence, area conservation and source/cutter preservation. Six focused files passed 107 tests with two expected failures under m2-coplanar-witness-winding-20261028-r1.json; these include the existing distinct-contact collision rejection. The original 3,691,133-face scan passed under m2-coplanar-witness-original-20261028-r1-guard.json, peaking at 1,592,369,152 bytes and preserving area/source buffers. Targeted TypeScript passed. All guarded jobs confirmed cleanup under 4 GiB.",
+  "limitations": [
+    "The shared production Split route is not connected to this candidate and still has the finite-interior defect.",
+    "The coplanar control is manufactured and does not establish arbitrary coplanar overlap or native output semantics.",
+    "Actual browser-worker, GUI/public MCP, native comparison and complete M2 acceptance remain open."
+  ]
+}

@@ -169,6 +169,169 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
+it("restores transferable precise Split coordinates before exposing the result", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target: positions,
+  });
+  const worker = ProcessingWorkerDouble.latest;
+  const indexed = { vertices: [], triangles: new Uint32Array([0, 1, 2]) };
+  const renderData = {
+    indexedMesh: indexed,
+    normals: new Float32Array(9),
+    bounds: [0, 0, 0, 1, 1, 1],
+    radius: 1,
+  };
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: indexed,
+      renderData,
+    },
+    packedScanEdit: {
+      positions: new Float64Array([
+        100000000, -0, 0, 100000004, 4.125, 0, 99999992, 16, 0,
+      ]),
+      vertices: new Float64Array([
+        100000000, -0, 0, 100000004, 4.125, 0, 99999992, 16, 0,
+      ]),
+    },
+  });
+  const result = await pending;
+  expect(result.scanEdit?.positions).toEqual([
+    100000000, -0, 0, 100000004, 4.125, 0, 99999992, 16, 0,
+  ]);
+  expect(result.indexedMesh?.vertices).toEqual(result.scanEdit?.positions);
+  expect(scanRenderData(result.scanEdit!.positions!)).toBe(renderData);
+});
+it("retires a packed Split worker before restoring its large coordinates", async () => {
+  const pending = processMesh(
+    { kind: "scanEdit", action: "split", positions, target: positions },
+    { reuseTopology: true },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  let readAfterTermination = false;
+  const values = new Proxy(new Float64Array(positions), {
+    get(target, key) {
+      if (key === "0") readAfterTermination = worker.terminated;
+      return Reflect.get(target, key, target);
+    },
+  });
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: values, vertices: values },
+  });
+  await pending;
+  expect(readAfterTermination).toBe(true);
+});
+
+it("rejects a packed Split restoration failure after retiring its worker", async () => {
+  const pending = processMesh(
+    { kind: "scanEdit", action: "split", positions, target: positions },
+    { reuseTopology: true },
+  );
+  const worker = ProcessingWorkerDouble.latest;
+  const values = new Proxy(new Float64Array(positions), {
+    get(target, key) {
+      if (key === "0") throw new Error("Restore failed");
+      return Reflect.get(target, key, target);
+    },
+  });
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: values, vertices: values },
+  });
+  await expect(pending).rejects.toThrow("Restore failed");
+  expect(worker.terminated).toBe(true);
+});
+
+it("preserves aliased packed Split coordinates and rejects malformed responses", async () => {
+  const pending = processMesh({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target: positions,
+  });
+  const packed = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  ProcessingWorkerDouble.latest.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: packed, vertices: packed },
+  });
+  const result = await pending;
+  expect(result.indexedMesh?.vertices).toBe(result.scanEdit?.positions);
+  const bad = processMesh({
+    kind: "scanEdit",
+    action: "split",
+    positions,
+    target: positions,
+  });
+  ProcessingWorkerDouble.latest.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array() },
+    },
+    packedScanEdit: {
+      positions: new Float64Array([1]),
+      vertices: new Float64Array(),
+    },
+  });
+  await expect(bad).rejects.toThrow(/packed Split/);
+});
+it("releases a completed precise Split worker and starts a fresh worker for its successor", async () => {
+  const pending = processMesh(
+    { kind: "scanEdit", action: "split", positions, target: positions },
+    { reuseTopology: true },
+  );
+  await Promise.resolve();
+  const worker = ProcessingWorkerDouble.latest;
+  const values = new Float64Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
+  worker.reply({
+    result: {
+      kind: "scanEdit",
+      diagnostics: {},
+      scanEdit: { diagnostics: {} },
+      indexedMesh: { vertices: [], triangles: new Uint32Array([0, 1, 2]) },
+    },
+    packedScanEdit: { positions: values, vertices: values },
+  });
+  const result = await pending;
+  expect(worker.terminated).toBe(true);
+  const next = processMesh(
+    {
+      kind: "scanEdit",
+      action: "inventory",
+      positions: result.scanEdit!.positions!,
+    },
+    { reuseTopology: true },
+  );
+  await Promise.resolve();
+  const replacement = ProcessingWorkerDouble.latest;
+  expect(replacement).not.toBe(worker);
+  expect(replacement.sent?.positions).toEqual(result.scanEdit!.positions);
+  replacement.reply({ result: { kind: "scanEdit", diagnostics: {} } });
+  await next;
+});
 describe("processing worker resource ownership", () => {
   it.each(["complete", "error", "cancel"])(
     "publishes shared job progress and clears it on %s",
@@ -930,7 +1093,11 @@ describe("processing worker resource ownership", () => {
     const final = replies.at(-1)!;
     const result = (final.message as { result: ProcessingResult }).result;
     expect(result.scanEdit?.segments?.[0]).toEqual(positions);
-    expect(final.transfers).toEqual([result.scanEdit!.segments![0].buffer]);
+    const segment = result.scanEdit!.segments![0];
+    expect(segment).toBeInstanceOf(Float32Array);
+    if (!(segment instanceof Float32Array))
+      throw new Error("Expected Float32 segment");
+    expect(final.transfers).toEqual([segment.buffer]);
     await scope.onmessage?.({
       data: {
         kind: "selectionMorphology",

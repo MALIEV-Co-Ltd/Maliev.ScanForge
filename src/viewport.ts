@@ -170,6 +170,7 @@ type Item = {
   renderPositions?: Positions;
   renderTopology?: Entity["indexedMesh"];
   displayBuffers?: ReturnType<typeof scanDisplayBuffers>;
+  localOrigin?: THREE.Vector3;
   deviationGeometry?: THREE.BufferGeometry;
   worldBounds?: THREE.Box3;
   color: string;
@@ -3236,12 +3237,49 @@ export class Viewport {
             ? []
             : (entity.meshSelection?.hidden ?? []),
         );
+        item.localOrigin = undefined;
+        if (
+          !placement &&
+          entity.kind !== "pointcloud" &&
+          !entity.kernelId &&
+          Array.isArray(display.positions) &&
+          display.positions.some((value) => Math.fround(value) !== value)
+        ) {
+          const bounds = [
+            Infinity,
+            Infinity,
+            Infinity,
+            -Infinity,
+            -Infinity,
+            -Infinity,
+          ];
+          for (let i = 0; i < entity.positions.length; i += 3)
+            for (let axis = 0; axis < 3; axis++) {
+              bounds[axis] = Math.min(bounds[axis], entity.positions[i + axis]);
+              bounds[axis + 3] = Math.max(
+                bounds[axis + 3],
+                entity.positions[i + axis],
+              );
+            }
+          item.localOrigin = new THREE.Vector3(
+            ...([0, 1, 2].map(
+              (axis) => bounds[axis] + (bounds[axis + 3] - bounds[axis]) / 2,
+            ) as [number, number, number]),
+          );
+        }
+        const displayCoordinates = item.localOrigin
+          ? Float32Array.from(
+              display.positions,
+              (value, index) =>
+                value - item!.localOrigin!.getComponent(index % 3),
+            )
+          : display.positions;
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
-          display.positions instanceof Float32Array
-            ? new THREE.BufferAttribute(display.positions, 3)
-            : new THREE.Float32BufferAttribute(display.positions, 3),
+          displayCoordinates instanceof Float32Array
+            ? new THREE.BufferAttribute(displayCoordinates, 3)
+            : new THREE.Float32BufferAttribute(displayCoordinates, 3),
         );
         if (display.index)
           geometry.setIndex(new THREE.BufferAttribute(display.index, 1));
@@ -3272,8 +3310,12 @@ export class Viewport {
         if (prepared) {
           const [minX, minY, minZ, maxX, maxY, maxZ] = prepared.bounds;
           geometry.boundingBox = new THREE.Box3(
-            new THREE.Vector3(minX, minY, minZ),
-            new THREE.Vector3(maxX, maxY, maxZ),
+            new THREE.Vector3(minX, minY, minZ).sub(
+              item.localOrigin ?? new THREE.Vector3(),
+            ),
+            new THREE.Vector3(maxX, maxY, maxZ).sub(
+              item.localOrigin ?? new THREE.Vector3(),
+            ),
           );
           geometry.boundingSphere = new THREE.Sphere(
             geometry.boundingBox.getCenter(new THREE.Vector3()),
@@ -3340,7 +3382,9 @@ export class Viewport {
         );
         item.mesh.updateMatrixWorld(true);
       } else {
-        item.mesh.matrix.identity();
+        item.mesh.position.copy(item.localOrigin ?? new THREE.Vector3());
+        item.mesh.updateMatrix();
+        item.mesh.updateMatrixWorld(true);
       }
       item.mesh.visible = entity.visible;
       item.mesh.userData.objectPickable =
@@ -3455,7 +3499,12 @@ export class Viewport {
             ),
           );
           this.bounds.union(item.worldBounds);
-        } else this.bounds.union(item.mesh.geometry.boundingBox);
+        } else
+          this.bounds.union(
+            item.mesh.geometry.boundingBox
+              .clone()
+              .translate(item.localOrigin ?? new THREE.Vector3()),
+          );
       }
     }
     if (!this.bounds.isEmpty()) {
@@ -4351,6 +4400,7 @@ export class Viewport {
       positions,
       rgb,
       positions.length === item.positions.length ? item.hidden : undefined,
+      item.localOrigin?.toArray() as [number, number, number] | undefined,
     );
     overlay.material.clippingPlanes = item.mesh.material.clippingPlanes;
     const setBounds = display
@@ -4403,7 +4453,10 @@ export class Viewport {
     this.triangleSelection.visible = !this.noiseComparison;
     // A selection reset can render one effect after the newly selected geometry.
     // Never upload stale triangle slots from the previous object.
-    const points = !!this.objects?.get(this.selectedId ?? "")?.pointCloud;
+    const item = this.objects?.get(this.selectedId ?? "");
+    const points = !!item?.pointCloud;
+    const origin =
+      item && item.positions === positions ? item.localOrigin : undefined;
     const stride = points ? 3 : 9;
     if (positions && mask && mask.length * stride === positions.length) {
       let count = 0;
@@ -4414,7 +4467,8 @@ export class Viewport {
         for (let i = 0; i < mask.length; i++)
           if (mask[i])
             for (let j = 0; j < stride; j++)
-              buffer[next++] = positions[i * stride + j];
+              buffer[next++] =
+                positions[i * stride + j] - (origin?.getComponent(j % 3) ?? 0);
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute("position", new THREE.BufferAttribute(buffer, 3));
         const overlay = points
@@ -4442,6 +4496,9 @@ export class Viewport {
             );
         const processingOutline =
           this.selectionProcessing?.install(overlay.material, geometry) ?? [];
+        if (origin)
+          for (const object of [overlay, ...processingOutline])
+            object.position.copy(origin);
         this.triangleSelection.add(overlay, ...processingOutline);
       }
     }
@@ -4635,11 +4692,18 @@ export class Viewport {
           true,
         );
         const geometry = new THREE.BufferGeometry();
+        const displayCoordinates = item.localOrigin
+          ? Float32Array.from(
+              display.positions,
+              (value, index) =>
+                value - item.localOrigin!.getComponent(index % 3),
+            )
+          : display.positions;
         geometry.setAttribute(
           "position",
-          display.positions instanceof Float32Array
-            ? new THREE.BufferAttribute(display.positions, 3)
-            : new THREE.Float32BufferAttribute(display.positions, 3),
+          displayCoordinates instanceof Float32Array
+            ? new THREE.BufferAttribute(displayCoordinates, 3)
+            : new THREE.Float32BufferAttribute(displayCoordinates, 3),
         );
         if (display.normals)
           geometry.setAttribute(

@@ -1,0 +1,39 @@
+{
+  "scope": "M2 Split seam sorting scratch reuse and peak timing",
+  "change": "Reuse the completed edge-sort scratch buffer for output triangle indices after all sorted-edge consumers finish.",
+  "focused": {
+    "testsPassed": 117,
+    "expectedFailures": 1,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-scratch-regressions-20261028-r1.json"
+  },
+  "precisionBrowser": {
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-scratch-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3": {
+    "passed": false,
+    "guiSplitAndUndo": true,
+    "mcpSplit": "Browser command timed out",
+    "peakJobBytes": 4422438912,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-scratch-original-ply3-20261028-r1-guard.json"
+  },
+  "diagnosticTimeline": {
+    "passed": true,
+    "peakJobBytes": 4239253504,
+    "peakObservedAt": "2026-10-28T11:46:42.135390Z",
+    "mcpSplitCommittedAt": "2026-10-28T11:46:42.734Z",
+    "guiSplitCommittedAt": "2026-10-28T11:45:56.251Z",
+    "guiCommitPeakBytes": 3862196224,
+    "method": "Cumulative Windows Job peak sampled every two seconds; the sampler runs inside the guarded job and contributes its own memory.",
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-seam-scratch-timeline-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The diagnostic run passed under the cap, but the immediately preceding unsampled run timed out and exceeded it; the memory gate remains open.",
+    "The sampled peak coincided with the second Split publication, not the later Redo digest; sampling does not identify the specific allocation.",
+    "Native Split parity and M2 closure remain unverified."
+  ]
+}

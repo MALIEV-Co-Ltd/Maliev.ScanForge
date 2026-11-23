@@ -45,7 +45,10 @@ import { registerNativeLandmarks } from "./native-landmark-registration";
 import { refineNativeLandmarkAfterCoarse } from "./native-landmark-refinement";
 import { nativeAlignmentOriginalVertexIndices } from "./scan-native-alignment-landmarks";
 import { expandPlyTopology } from "./ply-topology";
-import { prepareScanRenderData } from "./scan-render-data";
+import {
+  prepareScanRenderData,
+  prepareSplitRenderData,
+} from "./scan-render-data";
 import { meshGeometryNormals, meshFacetNormals } from "./mesh-geometry-normals";
 import type {
   ProcessingRequest,
@@ -138,6 +141,8 @@ scope.onmessage = async ({ data: incoming }) => {
   )
     topologyCache = {};
   const previousCache = { ...topologyCache };
+  let packedSplitRollback:
+    { positions: ProcessingRequest["positions"] | undefined } | undefined;
   let lastProgress = -Infinity;
   let lastStage = "";
   const reportHoles = createHoleFillReporter((fraction, stage, details) =>
@@ -269,16 +274,22 @@ scope.onmessage = async ({ data: incoming }) => {
           throw new Error(
             "Scan edit indices do not match the source geometry.",
           );
-        const topology = analyzeIndexedMesh(
-          Float64Array.from(request.sourceIndexed.vertices),
-          Uint32Array.from(request.sourceIndexed.triangles),
-          { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
-        );
-        topologyCache = {
-          positions: request.positions,
-          tolerance: request.tolerance ?? 1e-6,
-          topology,
-        };
+        if (
+          request.action !== "split" ||
+          request.plane ||
+          request.targetIsNonMesh
+        ) {
+          const topology = analyzeIndexedMesh(
+            Float64Array.from(request.sourceIndexed.vertices),
+            Uint32Array.from(request.sourceIndexed.triangles),
+            { tolerance: request.tolerance ?? 1e-6, onProgress: progress },
+          );
+          topologyCache = {
+            positions: request.positions,
+            tolerance: request.tolerance ?? 1e-6,
+            topology,
+          };
+        }
       }
       let selectedVertices: Float64Array<ArrayBuffer> | undefined;
       if (request.action === "smoothSelected") {
@@ -305,6 +316,20 @@ scope.onmessage = async ({ data: incoming }) => {
           : undefined,
       });
       result.diagnostics = result.scanEdit.diagnostics;
+      if (result.scanEdit.indexedMesh) {
+        if (
+          !result.scanEdit.positions ||
+          !indexedMeshMatches(
+            result.scanEdit.indexedMesh,
+            result.scanEdit.positions,
+          )
+        )
+          throw new Error(
+            "Scan edit indexed output does not match its positions.",
+          );
+        result.indexedMesh = result.scanEdit.indexedMesh;
+        delete result.scanEdit.indexedMesh;
+      }
       if (
         (request.action === "boundarySmooth" ||
           request.action === "smoothSelected") &&
@@ -698,12 +723,19 @@ scope.onmessage = async ({ data: incoming }) => {
       result.pointCloudEdit?.positions ??
       result.scanEdit?.positions ??
       result.positions;
+    const packPreciseSplit =
+      request.kind === "scanEdit" &&
+      request.action === "split" &&
+      Array.isArray(result.scanEdit?.positions) &&
+      Array.isArray(result.indexedMesh?.vertices);
     if (
       geometryKey !== undefined &&
       successor &&
       request.kind !== "scanPreview" &&
       !(request.kind === "scanEdit" && request.previewOnly)
     ) {
+      if (packPreciseSplit)
+        packedSplitRollback = { positions: canonicalPositions };
       // Keep the worker's canonical geometry and any already-built adjacency.
       // Transferring that buffer would detach the successor cache; only the
       // dedicated scene/history copy crosses back to the main thread.
@@ -711,10 +743,11 @@ scope.onmessage = async ({ data: incoming }) => {
       topologyCache.positions = successor;
       canonicalPositions = successor;
       if (result.pointCloudEdit?.positions)
-        result.pointCloudEdit.positions = successor.slice();
-      else if (result.scanEdit?.positions)
-        result.scanEdit.positions = successor.slice();
-      else result.positions = successor.slice();
+        result.pointCloudEdit.positions =
+          result.pointCloudEdit.positions.slice();
+      else if (result.scanEdit?.positions && !packPreciseSplit)
+        result.scanEdit.positions = result.scanEdit.positions.slice();
+      else if (result.positions) result.positions = result.positions.slice();
     }
     if (result.pointCloudEdit?.positions)
       transfers.push(result.pointCloudEdit.positions.buffer);
@@ -724,12 +757,24 @@ scope.onmessage = async ({ data: incoming }) => {
       transfers.push(result.pointCloudEdit.selection.buffer);
     if (result.pointCloudEdit?.sourceIndices)
       transfers.push(result.pointCloudEdit.sourceIndices.buffer);
-    if (result.scanEdit?.positions)
+    if (result.scanEdit?.positions instanceof Float32Array)
       transfers.push(result.scanEdit.positions.buffer);
     if (result.scanEdit?.selection)
       transfers.push(result.scanEdit.selection.buffer);
     for (const segment of result.scanEdit?.segments ?? [])
-      transfers.push(segment.buffer);
+      if (segment instanceof Float32Array) transfers.push(segment.buffer);
+    for (const mesh of result.scanEdit?.segmentIndexedMeshes ?? []) {
+      if (!mesh) continue;
+      for (const values of [
+        mesh.vertices,
+        mesh.triangles,
+        mesh.normals,
+        mesh.geometryNormals,
+        mesh.facetNormals,
+      ])
+        if (values instanceof Float32Array || values instanceof Uint32Array)
+          transfers.push(values.buffer);
+    }
     if (result.selection) transfers.push(result.selection.buffer);
     // Display borrows the computed state already transformed with the mesh.
     if (result.indexedMesh && result.positions) {
@@ -737,6 +782,14 @@ scope.onmessage = async ({ data: incoming }) => {
       result.renderData = prepareScanRenderData(
         result.positions,
         result.indexedMesh,
+      );
+      if (result.renderData.normals)
+        transfers.push(result.renderData.normals.buffer as ArrayBuffer);
+    } else if (packPreciseSplit) {
+      progress(0.99, "Preparing mesh display");
+      result.renderData = prepareSplitRenderData(
+        result.scanEdit!.positions!,
+        result.indexedMesh!,
       );
       if (result.renderData.normals)
         transfers.push(result.renderData.normals.buffer as ArrayBuffer);
@@ -759,14 +812,33 @@ scope.onmessage = async ({ data: incoming }) => {
     if (result.noiseComparison?.renderDistances)
       transfers.push(result.noiseComparison.renderDistances.buffer);
     for (const segment of result.segments ?? []) transfers.push(segment.buffer);
+    let packedScanEdit:
+      { positions: Float64Array; vertices: Float64Array } | undefined;
+    if (packPreciseSplit) {
+      const edit = result.scanEdit!,
+        indexed = result.indexedMesh!;
+      const positions = Float64Array.from(edit.positions!);
+      const vertices =
+        edit.positions === indexed.vertices
+          ? positions
+          : Float64Array.from(indexed.vertices);
+      packedScanEdit = { positions, vertices };
+      delete edit.positions;
+      indexed.vertices = [];
+      transfers.push(positions.buffer, vertices.buffer);
+    }
     // Published shared geometry stays attached; only private buffers transfer.
-    scope.postMessage({ result }, [
-      ...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer)),
-    ]);
+    scope.postMessage(
+      { result, ...(packedScanEdit ? { packedScanEdit } : {}) },
+      [...new Set(transfers.filter((buffer) => buffer instanceof ArrayBuffer))],
+    );
   } catch (error) {
     // A rejected edit may have analyzed temporary geometry. Never reinterpret
     // that temporary mesh as the next request's original input.
-    if (topologyCache.positions !== canonicalPositions)
+    if (packedSplitRollback) {
+      canonicalPositions = packedSplitRollback.positions;
+      topologyCache = previousCache;
+    } else if (topologyCache.positions !== canonicalPositions)
       topologyCache = previousCache;
     scope.postMessage({
       error: error instanceof Error ? error.message : String(error),

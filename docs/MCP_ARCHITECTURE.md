@@ -1,5 +1,16 @@
 # ScanForge shared application API and MCP
 
+Precise finite-mesh Split returns indexed coordinates through an internal
+transferable binary64 worker message. The processing client restores the
+existing number-array result before GUI or MCP publication. The worker restores
+its previous source if publication fails; after receiving a valid precise Split
+result, the client retires the worker before restoring the transferred arrays,
+instead of retaining a duplicate successor. Project
+formats and public MCP schemas are unchanged.
+The worker also prepares compact indexed display normals using the same welded
+normal calculation as the expanded viewport fallback. The client caches those
+disposable buffers for the shared GUI/MCP result without changing authored normals.
+
 Fine ICP uses `registerFineAlignment` in the processing worker for both GUI and
 `mesh_process`. Fitting uses bounded source samples and every target point;
 independent final evaluation measures all eligible source points and separates

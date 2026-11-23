@@ -165,7 +165,10 @@ export interface ProcessingResult {
 }
 export type ProcessingResponse =
   | { progress: number; stage: string; details?: HoleFillProgress }
-  | { result: ProcessingResult }
+  | {
+      result: ProcessingResult;
+      packedScanEdit?: { positions: Float64Array; vertices: Float64Array };
+    }
   | { error: string };
 export interface ProcessingOptions {
   /** Geometry arrays must be immutable; replace the array after any edit. */
@@ -306,6 +309,12 @@ function processingJobLabel(request: ProcessingRequest) {
   return label;
 }
 
+function restorePreciseCoordinates(source: Float64Array): number[] {
+  const result = new Array<number>(source.length);
+  for (let i = 0; i < source.length; i++) result[i] = source[i];
+  return result;
+}
+
 function runProcessingRequest(
   request: ProcessingRequest,
   options: ProcessingOptions,
@@ -325,6 +334,7 @@ function runProcessingRequest(
     const worker = session?.worker ?? createWorker();
     const job = beginWorkingJob(processingJobLabel(request));
     let settled = false,
+      workerReleased = false,
       inactivity: ReturnType<typeof setTimeout>;
     const scope = globalThis as typeof globalThis & {
       addEventListener?: (type: string, listener: () => void) => void;
@@ -340,6 +350,8 @@ function runProcessingRequest(
       clearTimeout(hardLease);
       options.signal?.removeEventListener("abort", abort);
       scope.removeEventListener?.("pagehide", abort);
+      if (workerReleased) return;
+      workerReleased = true;
       if (session)
         session.release(
           usable,
@@ -418,6 +430,41 @@ function runProcessingRequest(
         fail(new Error("Unexpected mesh processing response."));
         return;
       }
+      if (event.data.packedScanEdit) {
+        try {
+          const packed = event.data.packedScanEdit;
+          const edit = event.data.result.scanEdit,
+            indexed = event.data.result.indexedMesh;
+          if (
+            request.kind !== "scanEdit" ||
+            request.action !== "split" ||
+            !edit ||
+            !indexed ||
+            edit.positions !== undefined ||
+            indexed.vertices.length !== 0 ||
+            !(packed.positions instanceof Float64Array) ||
+            !(packed.vertices instanceof Float64Array) ||
+            packed.positions.length % 9 !== 0 ||
+            packed.vertices.length % 3 !== 0
+          )
+            throw new Error("Unexpected packed Split response.");
+          // The result owns transferable buffers and this worker has no
+          // reusable Split adjacency. Retire it before allocating restored
+          // arrays so its private geometry can be reclaimed sooner.
+          if (session) session.release(false);
+          else worker.terminate();
+          workerReleased = true;
+          const restored = restorePreciseCoordinates(packed.positions);
+          edit.positions = restored;
+          indexed.vertices =
+            packed.positions === packed.vertices
+              ? restored
+              : restorePreciseCoordinates(packed.vertices);
+        } catch (error) {
+          fail(error);
+          return;
+        }
+      }
       if (request.kind === "pointCloudEdit" && request.pointColors) {
         try {
           const edit = event.data.result.pointCloudEdit;
@@ -464,8 +511,19 @@ function runProcessingRequest(
           event.data.result.positions,
           event.data.result.renderData,
         );
+      else if (
+        event.data.result.scanEdit?.positions &&
+        event.data.result.renderData
+      )
+        cacheScanRenderData(
+          event.data.result.scanEdit.positions,
+          event.data.result.renderData,
+        );
       cleanup(
-        true,
+        // A precise Split builds new topology outside the reusable adjacency
+        // cache. Retiring its worker avoids retaining a second large copy of
+        // the successor; the next operation can initialize from scene data.
+        !event.data.packedScanEdit,
         request.kind === "scanPreview" ||
           (request.kind === "scanEdit" && request.previewOnly)
           ? undefined

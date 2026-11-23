@@ -1,0 +1,30 @@
+{
+  "scope": "M2 Split display weld allocation experiment",
+  "change": "Round coordinates to Float32 on access during display welding instead of allocating an expanded Float32 coordinate copy; preserve the existing quantization and display normals.",
+  "focusedTests": {
+    "passed": 184,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-weld-no-expanded-copy-20261028-r1.json",
+    "coverage": "Includes seeded byte-exact display-normal comparisons, rounding edge cases, Split and worker/client tests."
+  },
+  "precisionBrowser": {
+    "passed": true,
+    "guiMcpGeometryEqual": true,
+    "undoRedo": true,
+    "saveReopen": true,
+    "peakJobBytes": 915591168,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-weld-direct-browser-precision-20261028-r1-guard.json"
+  },
+  "originalPly3Browser": {
+    "passed": false,
+    "guiSplitAndUndo": true,
+    "mcpSplit": "Browser command timed out before completion",
+    "peakJobBytes": 4462645248,
+    "jobLimitBytes": 4294967296,
+    "cleanupConfirmed": true,
+    "receipt": "C:/Users/Shoung/Documents/Codex/2026-10-22/clo/work/m2-weld-direct-original-ply3-20261028-r1-guard.json"
+  },
+  "limitations": [
+    "The original-scan browser run did not satisfy the 4 GiB memory gate or complete the GUI/MCP comparison.",
+    "The display-weld change is not evidence of native Split parity or M2 closure."
+  ]
+}

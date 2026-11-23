@@ -81,6 +81,15 @@ Failed, cancelled or stale-revision jobs publish no selection. One successful
 selection change records one selection-history step. Obtain a fresh revision
 after camera/editor changes and use a new request ID after correcting a rejected
 request; exact retries retain the original receipt.
+For mesh positions stored as number arrays, the worker receives binary64 values
+and constructs its Float32 BVH relative to the mesh bounds center. Selection
+continues to use world-space camera and clipping coordinates. Worker parallelism
+accounts for the larger precise input; the BVH remains Float32 and its precision
+depends on the mesh's spatial extent.
+Precise number-array scan meshes also use a local display origin for viewport
+picking and selection overlays; `viewport_pick` continues to report world-space
+points and rendered triangle slots. The display buffer remains Float32 relative
+to that origin, so its precision likewise depends on mesh extent.
 
 The internal new-draft initializer now distinguishes constructor/scene seeding
 from typed input writes, including the native zero-span line behavior. It does
@@ -2456,8 +2465,8 @@ Explicit publication returns `sketchIds` and the curve artifact in the terminal 
 
 ### Split cutter and result ownership
 
-For `mesh_process` / `scanEdit/split`, `targetId` resolves the same cutting object as the GUI. A `kind:plane` reference uses its stored `planeFrame` as an infinite plane (or a legacy live plane fit if no stored frame exists). An ordinary mesh remains a finite cutter even if it has plane-fit metadata. Open/folded meshes and closed convex/concave cutters retain their existing fragment/grouping algorithms. Point clouds and semantic objects without triangle geometry are not mesh cutters. Explicit operation `plane` parameters remain authoritative when supplied. Output parts are uncapped; inspect diagnostics for the actual cutter path and inside/outside facet counts.
+For `mesh_process` / `scanEdit/split`, `targetId` resolves the same cutting object as the GUI. A `kind:plane` reference uses its stored `planeFrame` as an infinite plane (or a legacy live plane fit if no stored frame exists). An ordinary mesh remains a finite cutter even if it has plane-fit metadata. A finite mesh cutter updates the source mesh with indexed, uncapped geometry; its connected components remain available to inventory and component operations. A cutter with no intersections leaves the source unchanged and reports `changed:false`. Diagnostics include `affectedFaces`, `sourceFaces`, `parts`, `cutEdges` and `sourceIdentity`. Sampled CAD and other non-mesh cutters retain the existing segment-producing path; their native behavior still requires comparison. Point clouds and semantic objects without triangle geometry are not mesh cutters. Explicit operation `plane` parameters remain authoritative when supplied.
 
-Split, component extraction and segmentation publish independent visible mesh parts through one GUI/MCP helper. They retain raw source/cutter coordinates, hide the source, select the first created result and return its IDs in result order. New parts use normal opaque part appearance, names `Source name segment N`, and only their own classification fits. Source-file provenance is retained, while exact/parametric/construction identity is not inherited. Empty leading results do not shift classification lookup or original segment indices. No nonempty output means rejection without model/history mutation. Source visibility belongs to the modeling transaction: model Undo/Redo/Seek and binary reopening restore it while keeping unrelated display changes independent. The retained source can also be shown explicitly using `object_update`. Existing lock, revision/retry, cancellation, resource and history guards apply.
+Reference-plane Split, component extraction and segmentation publish independent visible mesh parts through one GUI/MCP helper. They retain raw source/cutter coordinates, hide the source, select the first created result and return its IDs in result order. New parts use normal opaque part appearance, names `Source name segment N`, and only their own classification fits. Source-file provenance is retained, while exact/parametric/construction identity is not inherited. Empty leading results do not shift classification lookup or original segment indices. No nonempty output means rejection without model/history mutation. Source visibility belongs to the modeling transaction: model Undo/Redo/Seek and binary reopening restore it while keeping unrelated display changes independent. The retained source can also be shown explicitly using `object_update`. Finite mesh Split instead returns the source ID and updates its geometry, preserving the cutter. Existing lock, revision/retry, cancellation, resource and history guards apply.
 
 Boundary smoothing rejects degenerate triangles, nonmanifold edges and nonmanifold vertices before fitting or publication. Use mesh diagnostics and repair the source first. This failure preserves geometry, canonical topology and history through both the GUI and MCP.

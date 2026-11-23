@@ -1,0 +1,24 @@
+{
+  "scope": "Isolated Chrome/public-MCP replay of the original ply-3 scan and a manufactured finite planar cutter using production build scanforge-ef2d171067b1a4bc. This is application evidence, not native comparison.",
+  "inputSha256": "bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2",
+  "inputFaces": 3691133,
+  "observation": "The GUI imported the original PLY, imported the cutter, completed Split and produced a new source state. Geometry digest collection completed for the GUI result and unchanged cutter. Undo completed and the original geometry digest matched. The subsequent public-MCP Split was submitted, but a job_get request returned BRIDGE_UNAVAILABLE with Browser command timed out. Its final state and any equality with the GUI result were not established.",
+  "resource": "The configured owned job limit was 4294967296 bytes. The recorded peak was 4550238208 bytes, 255270912 bytes above the configured limit. The wrapper reported owned descendants remained after the parent exited, requested job termination, and confirmed zero active descendants after cleanup. The browser ledger also reports its browser and bridge ports closed and recorded owned parent PIDs exited. An instrumented repeat (r4) reproduced the same public-MCP timeout with peak 4552572928 bytes. The page-reported JavaScript heap was 442767527 bytes after source import, 1869879459 bytes after GUI Split committed and 1977005521 bytes after Undo and source digest verification, before the second Split. A further worker-message instrumented run (r5) timed out while polling session_get during the first GUI Split; its peak was 4347047936 bytes and it did not reach the message sample. Page heap is not total browser or owned-job memory and does not identify which objects are live or collectible.",
+  "receipts": [
+    "m2-original-split-browser-ply3-20261028-r3-guard.json",
+    "m2-original-split-browser-ply3-20261028-r3/split-lifecycle-browser-ledger.json",
+    "m2-original-split-browser-ply3-20261028-r3/original-split-gui.png",
+    "m2-original-split-browser-ply3-20261028-r4-guard.json",
+    "m2-original-split-browser-ply3-20261028-r4/split-lifecycle-browser-ledger.json",
+    "m2-original-split-browser-ply3-20261028-r5-guard.json",
+    "m2-original-split-browser-ply3-20261028-r5/split-lifecycle-browser-ledger.json"
+  ],
+  "failedAttempts": [
+    "The r1 driver failed to start due to a duplicate local digest identifier; no browser started.",
+    "The r2 driver imported the original but selected the wrong cutter option name and timed out before Split; its owned processes and ports cleaned up."
+  ],
+  "limitations": [
+    "The timed-out MCP result, output parity, redo, project reopening, native comparison and actual source of the peak are unresolved.",
+    "The 4 GiB guard and Chrome's 2048 MiB JavaScript heap configuration were not raised. The job's reported peak exceeded its configured job limit and must not be described as a successful bounded run."
+  ]
+}

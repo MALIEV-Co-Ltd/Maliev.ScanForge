@@ -1,0 +1,13 @@
+{
+  "scope": "Read-only static caller candidates from a retained runtime-derived image; no native command executed.",
+  "imageSha256": "a82f29917eae7fdc4ea1f34785f734fb0ba0981c916043cd4b1fffbddd7fbd90",
+  "observation": "A raw direct-relative-call scan found a candidate call at 0x14067e271 to the Split-string-bearing 0x14067cec0; exception-table data places it inside 0x14067df80..0x14067e363. A sequential Capstone decode from that recorded start reaches the call. Nearby conditional branches select calls to 0x14067d270, 0x14067cec0 or 0x14067b440; multiple entry paths call the candidate geometry helper 0x14032a500.",
+  "interpretation": "The Split-string-bearing routine has a candidate caller, but instruction boundaries are not independently established and static linkage does not show which path an interactive Split takes or how output objects are owned.",
+  "privateArtifactSha256": "413c4d332118b64f1a1f4e75ba8f971a1e4de97c5b45e14892a024263a7c8546",
+  "validation": "The raw scan ran in m2-split-direct-callers-20261028-r2-guard.json under the 4 GiB job limit, with cleanup confirmed. An earlier REA xrefs query initiated whole-image Ghidra auto-analysis of the runtime-derived image; it was stopped and returned no result. The local process was confirmed exited.",
+  "limitations": [
+    "Direct-call byte candidates may include false instruction starts and do not enumerate indirect calls.",
+    "The runtime-derived image has invalid PE import entries; exception-table and decoded boundaries are candidate evidence, not verified semantics.",
+    "Native input, result count, geometry, and GUI or MCP behavior remain unobserved."
+  ]
+}

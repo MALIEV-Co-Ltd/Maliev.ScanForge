@@ -1,0 +1,15 @@
+{
+  "scope": "Release the retained worker after a successful packed precise Split. Subsequent operations initialize a new worker from the current scene; GUI and MCP share this processing client.",
+  "candidate": "Uncommitted combined working tree based on b6fcef2c6e99e0bc61c96ae3b9fb512be951ab02; not the published PR head.",
+  "rationale": "The finite Split output has new connectivity and the worker clears the old topology cache before adopting the successor. Retiring the completed worker avoids retaining its large successor copy, at the cost of recreating a worker and transferring the current source on the next operation. Other operations and failed Split publication keep their existing lifecycle.",
+  "validation": {
+    "ownership": "A red/green client test established that the completed worker is terminated and a subsequent inventory starts a fresh worker with the restored successor. 83 focused worker, client, display and Split publication tests passed; m2-retire-split-green-20261028-r1.json.",
+    "smallBrowser": "Production build scanforge-edcd65b38de06b36 passed large-coordinate GUI/public-MCP geometry equality, canvas selection, picking, Undo/Redo and project reopening; m2-retire-browser-precision-20261028-r1-guard.json.",
+    "largeBrowser": "Original ply-3 (3691133 input faces) completed GUI Split, original-buffer Undo, public-MCP Split with identical GUI/MCP digests, and repeated Undo/Redo. Positions and indexed vertices/triangles matched the original GUI output after Redo. History activation initialized geometryNormals and facetNormals; a second Undo/Redo retained their complete digests exactly. No page or console errors were recorded. The job reported a 4400590848-byte peak against the configured 4294967296-byte limit, an excess of 105623552 bytes; m2-retire-original-ply3-20261028-r1-guard.json. The wrapper passed its own process result and confirmed cleanup, but this is not a passing 4 GiB memory gate."
+  },
+  "limitations": [
+    "A previous large-browser whole-object digest assertion failed when history initialized computed normals; this replay checks raw geometry and explicitly checks the new normal carriers and their repeated-Redo stability instead of asserting they existed in the earlier result.",
+    "The large browser peak remains above the configured job limit. The memory reduction, if any, has not been isolated from run-to-run variance and must not be represented as a solved memory issue.",
+    "Real native Split comparison, save/reopen for the large scan, cancellation during active work, broader normal behavior and the other M2 acceptance gates remain open."
+  ]
+}

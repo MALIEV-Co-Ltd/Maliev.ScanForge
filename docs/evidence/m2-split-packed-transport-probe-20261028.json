@@ -1,0 +1,23 @@
+{
+  "scope": "Test-harness probe of precise Split worker output transport, not an application implementation or a browser measurement.",
+  "fixture": "Original ply-3.ply (SHA-256 bf738cb1da7aa2e2d26bc143c33e04313ad5096069d91cc22338cd0b01e9dcc2), 3691133 input faces and the same midpoint finite planar cutter used in m2-shared-split-original-scans-20261028.json.",
+  "method": "The actual processing-worker dispatcher runs with a persistent geometry key. Its test scope postMessage either uses its ordinary structuredClone transfer list or, in the probe only, converts the two number-array coordinate carriers to Float64Array, transfers those buffers, and converts them back to number arrays on receipt. The probe checks SHA-256 of canonical little-endian binary64 coordinates before packing and after unpacking, indexed/expanded equality, source-buffer hashes, surface area and nonempty cut diagnostics. Neither probe mutates production transport code.",
+  "measurements": {
+    "ordinaryPersistent": {
+      "peakJobBytes": 4295245824,
+      "guard": "m2-persistent-original-ply3-20261028-r1-guard.json"
+    },
+    "packedPersistent": {
+      "peakJobBytes": 2398220288,
+      "guard": "m2-packed-probe-original-ply3-20261028-r2-guard.json"
+    },
+    "configuredJobLimitBytes": 4294967296,
+    "ordinaryPeakAboveLimitBytes": 278528,
+    "packedReductionBytes": 1897025536
+  },
+  "limitations": [
+    "The probe packs inside a mocked postMessage and unpacks in the same process; browser workers and main-thread scheduling or independent process memory have not been measured.",
+    "This does not validate persistent cache reuse, cancellation, error handling, all alias relationships, GUI/public-MCP behavior, project persistence or native equivalence after an application transport change.",
+    "The normal path reported a peak slightly above the configured job limit. The guarded test passed and cleaned up, but the measurement does not demonstrate usable headroom."
+  ]
+}
