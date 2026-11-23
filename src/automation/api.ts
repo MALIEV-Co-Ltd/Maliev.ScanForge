@@ -840,13 +840,15 @@ export class ApplicationApi {
         this.checkOwner(ownerEpoch);
         // Bound conversion scratch; per-byte concatenation creates a string
         // node for every byte during repeated full-project downloads.
+        const native = (data as Uint8Array & { toBase64?: () => string }).toBase64;
         const text: string[] = [];
-        for (let start = 0; start < data.length; start += 8192)
-          text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
+        if (!native)
+          for (let start = 0; start < data.length; start += 8192)
+            text.push(String.fromCharCode(...data.subarray(start, start + 8192)));
         return this.success({
           ...entry.info,
           offset,
-          base64: btoa(text.join("")),
+          base64: native ? native.call(data) : btoa(text.join("")),
           nextOffset: offset + data.length,
           eof: offset + data.length === entry.blob.size,
         });

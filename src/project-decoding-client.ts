@@ -100,6 +100,7 @@ export function decodeProjectInBackground(
                     projectNumericReuse.match(values, check, undefined, used),
                 },
               );
+              console.log("M2_WORKER_TRACE " + JSON.stringify({event:"main-transport-done",at:performance.now()}));
               check();
               if (
                 !decoded?.snapshot?.session?.project ||

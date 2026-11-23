@@ -34,6 +34,7 @@ export async function packProjectTransport(
     check?: () => void;
     cooperative?: boolean;
     reuseNumericBuffer?: (values: number[]) => Float64Array | undefined;
+    deferredNumeric?: (value: unknown) => boolean;
   } = {},
 ) {
   const memo = new Map<object, unknown>(),
@@ -44,6 +45,13 @@ export async function packProjectTransport(
     check();
     if (!v || typeof v !== "object") return v;
     if (memo.has(v)) return memo.get(v);
+    if (options.ownedTypedArrays && v instanceof Float64Array && options.deferredNumeric?.(v) && v.buffer instanceof ArrayBuffer) {
+      const ref = {};
+      memo.set(v, ref);
+      numbers.push({ref, values: v});
+      buffers.add(v.buffer);
+      return ref;
+    }
     if (ArrayBuffer.isView(v)) {
       if (options.ownedTypedArrays && v.buffer instanceof ArrayBuffer)
         buffers.add(v.buffer);
@@ -181,6 +189,7 @@ export async function unpackProjectTransport<T = unknown>(
   }
   for (const entry of packet.numbers) {
     check();
+    if (options.releaseOwnedNumericBuffers) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"main-number-start",length:entry.values?.length,at:performance.now()}));
     if (
       !entry?.ref ||
       typeof entry.ref !== "object" ||
@@ -196,6 +205,7 @@ export async function unpackProjectTransport<T = unknown>(
       entry.values,
       usedNumericArrays,
     );
+    if (options.releaseOwnedNumericBuffers) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"main-number-match",length:entry.values.length,reused:!!values,at:performance.now()}));
     check();
     if (values) {
       if (
@@ -216,6 +226,7 @@ export async function unpackProjectTransport<T = unknown>(
         }
     }
     if (!values) {
+      if (options.releaseOwnedNumericBuffers) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"main-number-allocate",length:entry.values.length,at:performance.now()}));
       values = new Array<number>(entry.values.length);
       for (let first = 0; first < values.length; first += CHUNK) {
         check();
@@ -226,6 +237,7 @@ export async function unpackProjectTransport<T = unknown>(
       }
     }
     usedNumericArrays.add(values);
+    if (options.releaseOwnedNumericBuffers) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"main-number-ready",length:entry.values.length,at:performance.now()}));
     memo.set(entry.ref, values);
     const buffer = entry.values.buffer;
     if (

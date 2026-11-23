@@ -58,6 +58,7 @@ export class ProjectNumericReuse {
         candidate.length !== bytes.length
       )
         continue;
+      if (bytes.length === 5612016) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"match-candidate", length:bytes.length, at:performance.now()}));
       let equal = true;
       for (let first = 0; first < bytes.length && equal; first += this.chunk) {
         check();
@@ -69,8 +70,13 @@ export class ProjectNumericReuse {
             break;
           }
         }
-        if (equal && end < bytes.length) await yieldTask();
+        if (equal && end < bytes.length) {
+          if (bytes.length === 5612016 && (first < this.chunk * 2 || first % 1048576 === 0)) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"match-yield-start", first, end, at:performance.now()}));
+          await yieldTask();
+          if (bytes.length === 5612016 && (first < this.chunk * 2 || first % 1048576 === 0)) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"match-yield-end", first, end, at:performance.now()}));
+        }
       }
+      if (bytes.length === 5612016) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"match-first-pass-done", equal, compared, at:performance.now()}));
       if (!equal || candidate.length !== bytes.length) continue;
       // Nothing can mutate a normal array concurrently during this final pass.
       // Rechecking catches a mutation of an earlier chunk while we yielded.
@@ -82,6 +88,7 @@ export class ProjectNumericReuse {
         }
       }
       check();
+      if (bytes.length === 5612016) console.log("M2_WORKER_TRACE " + JSON.stringify({event:"match-final-pass-done", equal, compared, at:performance.now()}));
       if (equal && candidate.length === bytes.length) return candidate;
     }
     return undefined;

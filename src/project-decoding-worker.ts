@@ -7,6 +7,7 @@ import { prepareRestoredProjectDisplays } from "./restored-scan-display";
 import { scanRenderData } from "./scan-render-data";
 import { packProjectTransport } from "./project-transport";
 import { assertReferenceWorkspaceAdmission } from "./reference-entity";
+import { isEncodingNumeric } from "./project-encoding-numeric";
 const scope = self as unknown as {
   onmessage:
     | ((
@@ -24,6 +25,7 @@ scope.onmessage = async ({ data }) => {
     let session = await decodeProjectContents(data.file, {
       sharedReadonlyBuffers: true,
       privateFloat64Chunks: true,
+      deferMeshFloat64: true,
       reusableChunks: data.reusableChunks,
       onSharedChunk: (chunk) => sharedChunks.push(chunk),
       onDecodedFloat64: (values, bytes) => decodedFloat64.set(values, bytes),
@@ -42,6 +44,7 @@ scope.onmessage = async ({ data }) => {
       {
         ownedTypedArrays: true,
         cooperative: false,
+        deferredNumeric: isEncodingNumeric,
         reuseNumericBuffer: (values) => decodedFloat64.get(values),
       },
     );

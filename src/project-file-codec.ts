@@ -1,4 +1,5 @@
 import { validateMeshFacetNormals } from "./mesh-geometry-normals";
+import { markExperimentalDecodedNumeric } from "./project-encoding-numeric";
 import {
   parseProject,
   validateProject,
@@ -97,19 +98,8 @@ type RecordData = Omit<
 };
 const magic = new TextEncoder().encode("SCANFRG2");
 async function digest(bytes: Uint8Array): Promise<string> {
-  // WebCrypto rejects shared buffers; the existing incremental hash borrows
-  // their bytes without allocating another full decompressed chunk.
-  if (!(bytes.buffer instanceof ArrayBuffer))
-    return projectValueHash(bytes, "u8").sha256;
-  return Array.from(
-    new Uint8Array(
-      await crypto.subtle.digest(
-        "SHA-256",
-        new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength),
-      ),
-    ),
-    (x) => x.toString(16).padStart(2, "0"),
-  ).join("");
+  // Diagnostic candidate: hash borrowed chunks without a full WebCrypto copy.
+  return projectValueHash(bytes, "u8").sha256;
 }
 /** Portable, lossless binary container. Identical revision payloads are stored once. */
 /** Same lossless encoder used inside the bounded worker and non-browser hosts. */
@@ -384,6 +374,7 @@ export async function decodeProjectContents(
     onSharedChunk?: (chunk: ProjectSharedChunk) => void;
     onDecodedFloat64?: (values: number[], bytes: Float64Array) => void;
     privateFloat64Chunks?: boolean;
+    deferMeshFloat64?: boolean;
   } = {},
 ): Promise<ProjectSession> {
   const header = new Uint8Array(await file.slice(0, 16).arrayBuffer());
@@ -526,6 +517,30 @@ export async function decodeProjectContents(
     expected += chunk.bytes;
   }
   if (expected !== total) return invalid();
+  const deferred = new Set<number>();
+  if (options.deferMeshFloat64) {
+    const meshOwners = new Set<object>(), indexedOwners = new Set<object>();
+    for (const record of m.records as RecordData[]) {
+      if (record?.kind === "mesh") {
+        meshOwners.add(record);
+        if (record.indexedMesh) indexedOwners.add(record.indexedMesh);
+      }
+    }
+    const eligible = new Set<number>(), excluded = new Set<number>();
+    const visit = (value: unknown, parent?: object, key?: string) => {
+      if (!value || typeof value !== "object") return;
+      const item = value as Record<string, unknown>;
+      if (Number.isInteger(item.chunk)) {
+        const index = item.chunk as number;
+        if (item.type === "f64" && parent && ((meshOwners.has(parent) && key === "positions") || (indexedOwners.has(parent) && key === "vertices"))) eligible.add(index);
+        else excluded.add(index);
+        return;
+      }
+      for (const [name, child] of Object.entries(item)) visit(child, value, name);
+    };
+    visit(m.records);
+    for (const index of eligible) if (!excluded.has(index)) deferred.add(index);
+  }
   const decoded = new Map<string, ProjectValue>();
   function read(ref: Ref, typedIndices = false): ProjectValue {
     if (
@@ -557,6 +572,11 @@ export async function decodeProjectContents(
     else {
       const width = ref.type === "f64" ? 8 : 4;
       if (bytes.length % width) return invalid();
+      if (ref.type === "f64" && deferred.has(ref.chunk) && privateChunk[ref.chunk] && bytes.buffer instanceof ArrayBuffer && bytes.byteOffset % 8 === 0 && new Uint8Array(new Uint16Array([1]).buffer)[0] === 1) {
+        result = markExperimentalDecodedNumeric(new Float64Array(bytes.buffer, bytes.byteOffset, bytes.length / 8)) as unknown as number[];
+        decoded.set(key, result);
+        return result;
+      }
       // Decoded chunks own their bytes. Keep typed geometry views rather than
       // widening topology and repacking it into Float64 transport staging.
       if (

@@ -7,6 +7,10 @@ import type { ProjectEncodingSnapshot } from "./project-encoding-snapshot";
 // These buffers exist only inside the disposable encoder worker. Public project
 // validation continues to reject arbitrary Float64Array geometry.
 const owned = new WeakSet<Float64Array>();
+export function markExperimentalDecodedNumeric(value: Float64Array): Float64Array {
+  owned.add(value);
+  return value;
+}
 export function isEncodingNumeric(value: unknown): value is Float64Array {
   return value instanceof Float64Array && owned.has(value);
 }
